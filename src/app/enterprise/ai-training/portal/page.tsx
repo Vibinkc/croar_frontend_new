@@ -2,12 +2,12 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
 
-export default function SimulationPortal() {
+function SimulationPortalContent() {
     const { token, userId } = useAuth();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -174,5 +174,17 @@ export default function SimulationPortal() {
                 </div>
             </section>
         </div>
+    );
+}
+
+export default function SimulationPortal() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
+                <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        }>
+            <SimulationPortalContent />
+        </Suspense>
     );
 }
