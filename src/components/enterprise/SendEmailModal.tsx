@@ -10,6 +10,7 @@ interface SendEmailModalProps {
 }
 
 export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, token }: SendEmailModalProps) {
+    const slug = "default"; // Added to fix "Cannot find name 'slug'" error
     const [templates, setTemplates] = useState<any[]>([]);
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
     const [subject, setSubject] = useState("");
