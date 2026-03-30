@@ -111,7 +111,7 @@ export default function DeployedNodesList() {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="px-2 py-1 rounded-md bg-slate-50 border border-slate-200 text-xs font-mono text-slate-500">
-                                                    {c.slug}.academik.ai
+                                                    {c.slug}.3.94.202.48
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">

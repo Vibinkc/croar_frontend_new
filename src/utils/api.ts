@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-export const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "https://academik.ai/server";
+export const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://3.94.202.48:8000";
 
 interface FetchOptions extends RequestInit {
     params?: Record<string, string>;
