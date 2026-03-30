@@ -15,9 +15,9 @@ interface Task {
     description: string;
     column: string;
     status: string;
-    due_date?: string;
+    due_date?: string | null;
     assignee?: Member;
-    employee_id?: string;
+    employee_id?: string | null;
 }
 
 interface ProjectKanbanProps {
