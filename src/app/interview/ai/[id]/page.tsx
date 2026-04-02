@@ -18,8 +18,7 @@ import {
   Cpu,
   Monitor
 } from "lucide-react";
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+import { BACKEND_URL } from "@/utils/api";
 
 export default function AIInterviewPage() {
   const { id: applicationId } = useParams();

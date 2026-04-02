@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { BACKEND_URL } from "@/utils/api";
 
 export default function ScenarioManagement() {
     const { token } = useAuth();
@@ -41,7 +42,7 @@ export default function ScenarioManagement() {
 
     const fetchScenarios = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/scenarios`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/scenarios`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -55,7 +56,7 @@ export default function ScenarioManagement() {
 
     const fetchEmployees = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/employees/`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/employees/`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -69,7 +70,7 @@ export default function ScenarioManagement() {
         if (!aiPrompt.trim()) return;
         setIsAiGenerating(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/scenarios/ai-generate`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/scenarios/ai-generate`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,
@@ -103,8 +104,8 @@ export default function ScenarioManagement() {
         setSubmitting(true);
         const method = editingId ? 'PUT' : 'POST';
         const url = editingId 
-            ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/scenarios/${editingId}`
-            : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/scenarios`;
+            ? `${BACKEND_URL}/api/v1/enterprise/simulations/scenarios/${editingId}`
+            : `${BACKEND_URL}/api/v1/enterprise/simulations/scenarios`;
 
         try {
             const res = await fetch(url, {
@@ -130,7 +131,7 @@ export default function ScenarioManagement() {
     const handleDelete = async (id: string) => {
         if (!confirm("Are you sure you want to delete this scenario?")) return;
         try {
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/scenarios/${id}`, {
+            await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/scenarios/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -144,7 +145,7 @@ export default function ScenarioManagement() {
         if (selectedEmployees.length === 0 || !isAssigningId) return;
         setAssigning(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/assignments`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/assignments`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,

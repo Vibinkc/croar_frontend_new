@@ -49,7 +49,6 @@ export default function GlobalTasksPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
-    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
     useEffect(() => {
         if (token) {

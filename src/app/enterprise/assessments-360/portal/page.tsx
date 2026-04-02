@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
+import { BACKEND_URL } from "@/utils/api";
 
 export default function UnifiedEmployeePortal() {
     const router = useRouter();
@@ -33,7 +34,7 @@ export default function UnifiedEmployeePortal() {
         const trimmedEmail = credentials.email.trim();
         
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/surveys/portal/login?employee_id=${trimmedId}&email=${trimmedEmail}`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/surveys/portal/login?employee_id=${trimmedId}&email=${trimmedEmail}`, {
                 method: 'POST'
             });
             const data = await res.json();
@@ -55,7 +56,7 @@ export default function UnifiedEmployeePortal() {
 
     const startSimulation = async (scenarioId: string, assignmentId: string) => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/sessions`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/sessions`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json'

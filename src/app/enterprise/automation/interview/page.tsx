@@ -4,9 +4,8 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { format } from "date-fns";
 import { AnimatePresence } from "framer-motion";
+import { BACKEND_URL } from "@/utils/api";
 import TemplateBuilder from "./TemplateBuilder";
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

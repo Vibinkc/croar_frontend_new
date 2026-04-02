@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { BACKEND_URL } from "@/utils/api";
 
 interface Question {
     id: string;
@@ -41,7 +42,7 @@ export default function X360QuestionBank() {
 
     const fetchQuestions = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -60,7 +61,7 @@ export default function X360QuestionBank() {
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,
@@ -81,7 +82,7 @@ export default function X360QuestionBank() {
         if (aiConfig.categories.length === 0) return;
         setIsGenerating(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions/ai-generate`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions/ai-generate`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,
@@ -107,9 +108,8 @@ export default function X360QuestionBank() {
 
     const saveGenerated = async () => {
         try {
-            // Sequential save for simplicity, in production would be batch
             for (const q of generatedQuestions) {
-                await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions`, {
+                await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                     method: 'POST',
                     headers: { 
                         'Authorization': `Bearer ${token}`,

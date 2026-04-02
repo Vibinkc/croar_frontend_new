@@ -2,6 +2,7 @@
 
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
+import { FRONTEND_DOMAIN } from "@/utils/api";
 
 export default function TermsPage() {
     return (
@@ -14,13 +15,13 @@ export default function TermsPage() {
 
                     <h2 className="text-2xl font-bold mt-8 mb-4 text-[#0d0e1b]">1. Introduction</h2>
                     <p className="mb-4">
-                        Welcome to 3.94.202.48. These Terms and Conditions govern your use of our website and services.
+                        Welcome to {FRONTEND_DOMAIN}. These Terms and Conditions govern your use of our website and services.
                         By accessing or using our platform, you agree to be bound by these terms. Disagreeing with any of these terms prohibits you from using our services.
                     </p>
 
                     <h2 className="text-2xl font-bold mt-8 mb-4 text-[#0d0e1b]">2. Intellectual Property</h2>
                     <p className="mb-4">
-                        The content, features, and functionality of 3.94.202.48, including but not limited to text, graphics, logos, and software, are the exclusive property of 3.94.202.48 and are protected by international copyright and trademark laws.
+                        The content, features, and functionality of {FRONTEND_DOMAIN}, including but not limited to text, graphics, logos, and software, are the exclusive property of {FRONTEND_DOMAIN} and are protected by international copyright and trademark laws.
                     </p>
 
                     <h2 className="text-2xl font-bold mt-8 mb-4 text-[#0d0e1b]">3. User Responsibilities</h2>

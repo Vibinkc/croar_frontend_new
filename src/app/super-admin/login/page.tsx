@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { BACKEND_URL } from "@/utils/api";
+import { BACKEND_URL, FRONTEND_DOMAIN } from "@/utils/api";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -78,7 +78,7 @@ export default function SuperAdminLoginPage() {
                             <span className="material-icons-outlined text-4xl text-blue-500">terminal</span>
                         </div>
                         <h1 className="text-4xl font-black tracking-tighter uppercase mb-2">
-                            3.94.<span className="text-blue-600">202.48</span>
+                            {FRONTEND_DOMAIN.split('.').slice(0, 2).join('.')}.<span className="text-blue-600">{FRONTEND_DOMAIN.split('.').slice(2).join('.')}</span>
                         </h1>
                         <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">Institutional Platform Architecture</p>
                     </div>
@@ -99,7 +99,7 @@ export default function SuperAdminLoginPage() {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="w-full bg-slate-950 border border-slate-800 p-4 pl-11 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/50 outline-none transition-all placeholder:text-slate-700"
-                                            placeholder="root@3.94.202.48"
+                                            placeholder={`root@${FRONTEND_DOMAIN}`}
                                         />
                                     </div>
                                 </div>

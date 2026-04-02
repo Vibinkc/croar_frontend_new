@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiClient } from "@/utils/api";
+import { apiClient, FRONTEND_DOMAIN } from "@/utils/api";
 import Link from "next/link";
 
 export default function DeployedNodesList() {
@@ -111,7 +111,7 @@ export default function DeployedNodesList() {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="px-2 py-1 rounded-md bg-slate-50 border border-slate-200 text-xs font-mono text-slate-500">
-                                                    {c.slug}.3.94.202.48
+                                                    {c.slug}.{FRONTEND_DOMAIN}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">

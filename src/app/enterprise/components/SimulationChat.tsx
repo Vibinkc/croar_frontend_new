@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { BACKEND_URL } from "@/utils/api";
 
 interface Message {
     role: "user" | "assistant" | "system";
@@ -39,7 +40,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
             const headers: Record<string, string> = {};
             if (token) headers['Authorization'] = `Bearer ${token}`;
             
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/sessions/${sessionId}`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/sessions/${sessionId}`, {
                 headers
             });
             const data = await res.json();
@@ -65,7 +66,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
             const headers: Record<string, string> = { 'Content-Type': 'application/json' };
             if (token) headers['Authorization'] = `Bearer ${token}`;
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/sessions/${sessionId}/chat`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/sessions/${sessionId}/chat`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ message: userMsg })
@@ -85,7 +86,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
             const headers: Record<string, string> = {};
             if (token) headers['Authorization'] = `Bearer ${token}`;
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/sessions/${sessionId}/complete`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/sessions/${sessionId}/complete`, {
                 method: 'POST',
                 headers
             });

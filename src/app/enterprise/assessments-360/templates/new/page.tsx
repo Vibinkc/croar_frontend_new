@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { BACKEND_URL } from "@/utils/api";
 
 interface Question {
     id: string;
@@ -36,7 +37,7 @@ export default function CreateX360Template() {
 
     const fetchQuestions = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -54,7 +55,7 @@ export default function CreateX360Template() {
         if (!industryNature) return;
         setGeneratingAi(true);
         try {
-            const genRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions/ai-generate`, {
+            const genRes = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions/ai-generate`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,
@@ -72,7 +73,7 @@ export default function CreateX360Template() {
                 const newQuestionIds: string[] = [];
                 
                 for (const q of aiQuestions) {
-                    const saveRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions`, {
+                    const saveRes = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                         method: 'POST',
                         headers: { 
                             'Authorization': `Bearer ${token}`,
@@ -108,7 +109,7 @@ export default function CreateX360Template() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/templates`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/templates`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,

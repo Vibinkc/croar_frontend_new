@@ -6,6 +6,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
+import { BACKEND_URL } from "@/utils/api";
 
 function SimulationPortalContent() {
     const { token, userId } = useAuth();
@@ -29,10 +30,10 @@ function SimulationPortalContent() {
         setLoading(true);
         try {
             const [scRes, asRes] = await Promise.all([
-                fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/scenarios`, {
+                fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/scenarios`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }),
-                fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/assignments/me`, {
+                fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/assignments/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
             ]);
@@ -51,7 +52,7 @@ function SimulationPortalContent() {
 
     const startSession = async (scenarioId: string, assignmentId: string | null = null) => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/sessions`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/sessions`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,

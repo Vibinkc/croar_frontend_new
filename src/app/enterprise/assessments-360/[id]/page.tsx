@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { apiClient } from "@/utils/api";
+import { apiClient, BACKEND_URL } from "@/utils/api";
 
 interface Question {
     id: string;
@@ -47,8 +47,7 @@ export default function X360FillAssessment() {
 
     const fetchPendingTasks = async (raterId: string) => {
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-            const res = await fetch(`${baseUrl}/api/v1/enterprise/x360/portal/assignments-by-rater/${raterId}`);
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/portal/assignments-by-rater/${raterId}`);
             if (res.ok) {
                 const data = await res.json();
                 setPendingTasks(data.filter((t: any) => t.id !== assignmentId));
@@ -61,15 +60,14 @@ export default function X360FillAssessment() {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
                 // Try standard endpoint first
-                let res = await fetch(`${baseUrl}/api/v1/enterprise/x360/assessments/${assignmentId}`, {
+                let res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/assessments/${assignmentId}`, {
                     headers: token ? { 'Authorization': `Bearer ${token}` } : {}
                 });
 
                 // If fails or no token, try portal endpoint
                 if (!res.ok) {
-                    res = await fetch(`${baseUrl}/api/v1/enterprise/x360/portal/assessments/${assignmentId}`);
+                    res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/portal/assessments/${assignmentId}`);
                 }
 
                 if (res.ok) {
@@ -111,8 +109,7 @@ export default function X360FillAssessment() {
                     ...val
                 }))
             };
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-            const res = await fetch(`${baseUrl}/api/v1/enterprise/x360/assessments/${assignmentId}/submit`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/assessments/${assignmentId}/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { BACKEND_URL } from "@/utils/api";
 
 interface Question {
     id: string;
@@ -35,14 +36,14 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
         const fetchData = async () => {
             try {
                 // 1. Fetch all questions
-                const qRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions`, {
+                const qRes = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const qData = await qRes.json();
                 if (Array.isArray(qData)) setQuestions(qData);
 
                 // 2. Fetch existing template
-                const tRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/templates`, {
+                const tRes = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/templates`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const tData = await tRes.json();
@@ -65,7 +66,7 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
 
     const fetchQuestions = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -81,7 +82,7 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
         if (!industryNature) return;
         setGeneratingAi(true);
         try {
-            const genRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions/ai-generate`, {
+            const genRes = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions/ai-generate`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,
@@ -99,7 +100,7 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                 const newQuestionIds: string[] = [];
                 
                 for (const q of aiQuestions) {
-                    const saveRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/questions`, {
+                    const saveRes = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                         method: 'POST',
                         headers: { 
                             'Authorization': `Bearer ${token}`,
@@ -135,7 +136,7 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
         e.preventDefault();
         setSubmitting(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/templates/${id}`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/templates/${id}`, {
                 method: 'PUT',
                 headers: { 
                     'Authorization': `Bearer ${token}`,

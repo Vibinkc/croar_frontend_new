@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { BACKEND_URL } from "@/utils/api";
 
 interface Question {
     id: string;
@@ -35,7 +36,7 @@ export default function X360Templates() {
 
     const fetchTemplates = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/templates`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/templates`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -54,7 +55,7 @@ export default function X360Templates() {
     const handleDelete = async (id: string) => {
         if (!window.confirm("Are you sure you want to delete this template?")) return;
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/x360/templates/${id}`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/templates/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

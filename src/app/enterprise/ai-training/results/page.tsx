@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { BACKEND_URL } from "@/utils/api";
 
 export default function ResultsDashboard() {
     const { token } = useAuth();
@@ -16,7 +17,7 @@ export default function ResultsDashboard() {
 
     const fetchResults = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/enterprise/simulations/results`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/results`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();

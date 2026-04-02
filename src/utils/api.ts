@@ -1,6 +1,11 @@
 import Cookies from "js-cookie";
 
-export const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://3.94.202.48:8000";
+export const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "";
+export const FRONTEND_DOMAIN = process.env.NEXT_PUBLIC_FRONTEND_DOMAIN || (typeof window !== "undefined" ? window.location.hostname : "3.94.202.48");
+
+if (!BACKEND_URL && typeof window !== "undefined") {
+    console.warn("NEXT_PUBLIC_API_URL is not defined. API calls will likely fail.");
+}
 
 interface FetchOptions extends RequestInit {
     params?: Record<string, string>;
