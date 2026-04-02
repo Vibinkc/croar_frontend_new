@@ -139,8 +139,7 @@ export const useDiscussionSession = (sessionId: string) => {
         const backendUrl = BACKEND_URL;
         let wsUrl;
 
-        // Ensure token is passed mostly for auth, handled by middleware/backend
-        // We use 'token' query param
+        // Ensure token is passed for auth, handled by backend
         const params = new URLSearchParams();
         if (token) params.append('token', token);
 
@@ -148,17 +147,12 @@ export const useDiscussionSession = (sessionId: string) => {
             // Remove trailing slash if present to avoid double slashes
             const base = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
             // If backend URL is set, derive WS URL from it (replaces http/https with ws/wss)
-            const wsBase = base.replace(/^http(s)?/, 'ws$1'); // Handles http->ws, https->wss properly
+            const wsBase = base.replace(/^http(s)?/, 'ws$1'); 
             wsUrl = `${wsBase}/api/v1/discussion/ws/${sessionId}?${params.toString()}`;
         } else {
-            // Fallback logic
+            // Intelligent fallback to current host if BACKEND_URL is not provided
             const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-            // INTELLIGENT LOCALHOST FALLBACK
-            let wsHost = window.location.host;
-            // If running locally (localhost/127.0.0.1) force connection to 127.0.0.1:8000
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                wsHost = "127.0.0.1:8000";
-            }
+            const wsHost = window.location.host; 
             wsUrl = `${wsProtocol}//${wsHost}/api/v1/discussion/ws/${sessionId}?${params.toString()}`;
         }
 
