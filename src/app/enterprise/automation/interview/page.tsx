@@ -293,6 +293,7 @@ export default function InterviewAutomationPage() {
 
       const payload = {
         ...form,
+        job_requirement_id: form.job_requirement_id || null,
         stage_index: Number(form.stage_index),
         stage_name: form.stage_name.trim() || null,
         email_template_id: form.email_template_id || null,
@@ -304,7 +305,7 @@ export default function InterviewAutomationPage() {
         start_date: form.start_date || null,
         end_date: form.end_date || null,
         interview_type: form.interview_type,
-        interview_template_id: form.interview_type === "AI" ? form.interview_template_id : null,
+        interview_template_id: form.interview_type === "AI" ? (form.interview_template_id || null) : null,
       };
       const url = editingId
         ? `${BACKEND_URL}/api/v1/enterprise/interview-automation/${editingId}`
