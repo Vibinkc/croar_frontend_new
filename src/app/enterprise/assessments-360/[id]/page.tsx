@@ -60,13 +60,16 @@ export default function X360FillAssessment() {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                // Try standard endpoint first
-                let res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/assessments/${assignmentId}`, {
-                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-                });
+                // Try standard endpoint only if token is present
+                let res;
+                if (token) {
+                    res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/assessments/${assignmentId}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                }
 
-                // If fails or no token, try portal endpoint
-                if (!res.ok) {
+                // If no token or standard endpoint fails, use portal endpoint
+                if (!res || !res.ok) {
                     res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/portal/assessments/${assignmentId}`);
                 }
 
@@ -109,11 +112,10 @@ export default function X360FillAssessment() {
                     ...val
                 }))
             };
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/assessments/${assignmentId}/submit`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/portal/assessments/${assignmentId}/submit`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(payload)
             });
