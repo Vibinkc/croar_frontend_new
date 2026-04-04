@@ -60,20 +60,17 @@ export default function X360FillAssessment() {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                // Try standard endpoint only if token is present
-                let res;
-                if (token) {
+                // Always try portal endpoint first for public users or if not logged in
+                let res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/portal/assessments/${assignmentId}`);
+
+                // Fallback to standard recruiter endpoint only if portal fails and token exists
+                if (!res.ok && token) {
                     res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/assessments/${assignmentId}`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                 }
 
-                // If no token or standard endpoint fails, use portal endpoint
-                if (!res || !res.ok) {
-                    res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/portal/assessments/${assignmentId}`);
-                }
-
-                if (res.ok) {
+                if (res && res.ok) {
                     const data = await res.json();
                     setAssignment(data.assignment);
                     const sortedQuestions = data.template.questions
