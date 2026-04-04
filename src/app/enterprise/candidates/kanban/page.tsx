@@ -362,9 +362,7 @@ export default function KanbanBoardPage() {
             if (res.ok) {
                 const data = await res.json();
                 setJobs(data);
-                if (data.length > 0 && !selectedJobId) {
-                    setSelectedJobId(data[0].id);
-                }
+                // Removed automatic selection of first job to allow for "All Jobs" view by default
             }
         } catch (e) {
             console.error("Error fetching jobs:", e);
@@ -601,11 +599,11 @@ export default function KanbanBoardPage() {
     }
 
     const activeFiltersCount = [
-        !!selectedJobId,
-        !!selectedCompanyId,
-        selectedLocation !== "ALL",
+        selectedJobId && selectedJobId !== "ALL" && selectedJobId !== "",
+        selectedCompanyId && selectedCompanyId !== "ALL" && selectedCompanyId !== "",
+        selectedLocation !== "ALL" && selectedLocation !== "",
         minMatchScore > 0,
-        appliedPeriod !== "ALL"
+        appliedPeriod !== "ALL" && appliedPeriod !== ""
     ].filter(Boolean).length;
 
     return (
@@ -618,9 +616,11 @@ export default function KanbanBoardPage() {
                     <div className="flex items-center gap-3 mr-4">
                         <button
                             onClick={() => setIsFilterExpanded(!isFilterExpanded)}
-                            className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all ${isFilterExpanded ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+                            title="Toggle Filters"
+                            className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${isFilterExpanded ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
                         >
                             <span className="material-icons-outlined text-xl">{isFilterExpanded ? 'filter_list_off' : 'filter_list'}</span>
+                            <span className="text-[11px] font-bold uppercase tracking-wider">Filters</span>
                         </button>
                         <h1 className="text-lg font-black text-slate-900 tracking-tighter uppercase leading-none hidden xl:block">Pipeline</h1>
                     </div>
@@ -643,8 +643,8 @@ export default function KanbanBoardPage() {
                             <div className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-full border border-indigo-100 animate-in fade-in slide-in-from-right-2">
                                 <span className="text-[10px] font-black uppercase tracking-widest">{activeFiltersCount} Filters Active</span>
                                 <button onClick={() => {
-                                    setSelectedJobId("ALL");
-                                    setSelectedCompanyId("ALL");
+                                    setSelectedJobId("");
+                                    setSelectedCompanyId("");
                                     setSelectedLocation("ALL");
                                     setMinMatchScore(0);
                                     setAppliedPeriod("ALL");
@@ -684,7 +684,12 @@ export default function KanbanBoardPage() {
                                             onChange={(e) => setSelectedCompanyId(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
                                         >
-                                            {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                            <option value="">All Clients</option>
+                                            {companies.length === 0 ? (
+                                                <option disabled>No clients available</option>
+                                            ) : (
+                                                companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)
+                                            )}
                                         </select>
                                     </div>
                                 </div>
@@ -699,7 +704,12 @@ export default function KanbanBoardPage() {
                                             onChange={(e) => setSelectedJobId(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer truncate"
                                         >
-                                            {jobs.map(job => <option key={job.id} value={job.id}>{job.title}</option>)}
+                                            <option value="">All Job Requirements</option>
+                                            {jobs.length === 0 ? (
+                                                <option disabled>No jobs available</option>
+                                            ) : (
+                                                jobs.map(job => <option key={job.id} value={job.id}>{job.title}</option>)
+                                            )}
                                         </select>
                                     </div>
                                 </div>
