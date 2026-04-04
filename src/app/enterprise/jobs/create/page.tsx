@@ -475,9 +475,9 @@ export default function CreateJobPage() {
                                     const maxId = Math.max(0, ...formData.workflow_stages.map(s => parseInt(s.id) || 0));
                                     const newStage: WorkflowStage = {
                                         id: (maxId + 1).toString(),
-                                        name: 'New Interview Node',
-                                        type: 'Interview',
-                                        icon: 'groups'
+                                        name: `Technical Interview ${maxId > 0 ? maxId + 1 : ''}`,
+                                        type: 'Technical Interview',
+                                        icon: 'psychology'
                                     };
                                     setFormData(prev => ({ ...prev, workflow_stages: [...prev.workflow_stages, newStage] }));
                                 }} className="w-full py-4.5 rounded-2xl bg-slate-900 text-white text-sm font-bold shadow-xl shadow-slate-200 hover:bg-black transition-all flex items-center justify-center gap-2">

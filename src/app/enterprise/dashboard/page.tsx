@@ -76,22 +76,22 @@ export default function EnterpriseDashboard() {
             features: ["Smart Sync", "Cross Check", "Batch Ops"]
         },
         {
-            title: "Talent Pool",
-            description: "Search the global Academik node network for validated elite talent.",
-            icon: "public",
-            path: "/enterprise/candidates/kanban",
-            badge: "Direct Sourcing",
+            title: "360 Assessments",
+            description: "Critically evaluate multi-rater feedback and organizational review metrics.",
+            icon: "360",
+            path: "/enterprise/assessments-360",
+            badge: "Talent Insight",
             color: "emerald",
-            features: ["Skill Matrix", "Verified Tier", "Public API"]
+            features: ["Multi-Rater", "Blind Review", "Peer Matrix"]
         },
         {
-            title: "Evaluation Matrix",
-            description: "Critically evaluate AI assessment telemetry and selection metrics.",
-            icon: "analytics",
-            path: "/enterprise/assessments-360",
-            badge: "Data Verification",
+            title: "HR Surveys",
+            description: "Deploy engagement and DEI pulse checks across your entire organization.",
+            icon: "poll",
+            path: "/enterprise/surveys",
+            badge: "Cultural Health",
             color: "rose",
-            features: ["Audio Trace", "Bias Filter", "Output Valid"]
+            features: ["Pulse Check", "DEI Analytics", "Global Poll"]
         }
     ];
 
