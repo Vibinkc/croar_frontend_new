@@ -552,10 +552,14 @@ export default function AutomationNodeModal({
                           <button
                             onClick={handleGeneratePreview}
                             disabled={loading}
-                            className="w-full py-3 bg-[#7C3AED]/10 text-[#7C3AED] rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#7C3AED] hover:text-white transition-all flex items-center justify-center gap-2 border border-[#7C3AED]/20"
+                            className="w-full py-3 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#7C3AED]/20 disabled:opacity-50"
                           >
-                             <span className="material-symbols-rounded text-lg">auto_awesome</span>
-                             {form.generated_questions?.length ? "Regenerate AI Preview" : "Generate AI Preview"}
+                             {loading ? (
+                               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                             ) : (
+                               <span className="material-symbols-rounded text-lg">auto_awesome</span>
+                             )}
+                             {form.generated_questions?.length ? "Regenerate Draft with AI" : "Draft Questions with AI"}
                           </button>
                         </div>
                       </>
@@ -705,21 +709,35 @@ export default function AutomationNodeModal({
                     )}
                   </div>
                 </>
-              ) : (
+) : (
                 <div className="space-y-6">
                    {type === "assessment" && (
                      <div className="space-y-4">
                         <div className="flex items-center justify-between mb-2">
                            <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest">Question Bank</h3>
                            <button 
-                             onClick={() => {
-                               const newQ = { id: crypto.randomUUID(), question: "New Question", options: ["A", "B", "C", "D"], correct_answer: "A", explanation: "" };
-                               setForm((f: any) => ({ ...f, generated_questions: [...(f.generated_questions || []), newQ] }));
-                             }}
-                             className="text-[10px] font-bold text-[#7C3AED] hover:underline uppercase"
-                           >
-                             + Add Question
-                           </button>
+                              onClick={() => {
+                                const newQ = form.assessment_type === 'CODING' ? {
+                                  id: crypto.randomUUID(),
+                                  type: 'CODING',
+                                  title: 'New Coding Task',
+                                  problem_statement: '',
+                                  difficulty: 'Medium'
+                                } : {
+                                  id: crypto.randomUUID(),
+                                  type: 'APTITUDE',
+                                  question: 'New Question',
+                                  options: ['', '', '', ''],
+                                  correct_answer: '',
+                                  explanation: ''
+                                };
+                                setForm((f: any) => ({ ...f, generated_questions: [...(f.generated_questions || []), newQ] }));
+                              }}
+                              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
+                            >
+                              <span className="material-symbols-rounded text-sm">add</span>
+                              Add Question
+                            </button>
                         </div>
                         {(!form.generated_questions || form.generated_questions.length === 0) ? (
                           <div className="py-12 flex flex-col items-center justify-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
@@ -728,56 +746,99 @@ export default function AutomationNodeModal({
                              <button onClick={() => setActiveTab("config")} className="mt-2 text-[10px] text-[#7C3AED] font-black uppercase hover:underline">Go to Config to Generate</button>
                           </div>
                         ) : (
-                          <div className="space-y-3">
+                          <div className="space-y-6">
                              {form.generated_questions.map((q: any, i: number) => (
-                               <div key={q.id || i} className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm group">
-                                  <div className="flex justify-between gap-2 mb-2">
-                                     <span className="text-[10px] font-black text-slate-300 uppercase">Q{i+1}</span>
+                               <div key={q.id || i} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative group">
+                                  <div className="absolute -top-2 -left-2 w-7 h-7 bg-[#7C3AED] text-white rounded-lg flex items-center justify-center font-black italic shadow-md text-xs">#{i + 1}</div>
+                                  
+                                  <div className="flex justify-between gap-2 mb-4">
+                                     <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest ml-6">
+                                       {q.type || form.assessment_type} Task
+                                     </span>
                                      <button 
                                        onClick={() => {
                                          setForm((f: any) => ({ ...f, generated_questions: f.generated_questions.filter((_: any, idx: number) => idx !== i) }));
                                        }}
-                                       className="w-6 h-6 rounded-lg flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                       className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
                                      >
-                                        <span className="material-symbols-rounded text-sm">delete</span>
+                                        <span className="material-symbols-rounded text-base">delete</span>
                                      </button>
                                   </div>
-                                  <input 
-                                    type="text" 
-                                    value={q.question} 
-                                    onChange={(e) => {
-                                      const newQs = [...form.generated_questions];
-                                      newQs[i].question = e.target.value;
-                                      setForm((f: any) => ({ ...f, generated_questions: newQs }));
-                                    }}
-                                    className="w-full border-none p-0 text-sm font-bold text-slate-700 focus:ring-0 mb-3"
-                                    placeholder="Enter question text..."
-                                  />
-                                  <div className="grid grid-cols-2 gap-2">
-                                     {q.options?.map((opt: string, optIdx: number) => (
-                                       <div key={optIdx} className="flex items-center gap-2">
-                                          <input 
-                                            type="radio" 
-                                            checked={q.correct_answer === opt}
-                                            onChange={() => {
-                                              const newQs = [...form.generated_questions];
-                                              newQs[i].correct_answer = opt;
-                                              setForm((f: any) => ({ ...f, generated_questions: newQs }));
-                                            }}
-                                            className="text-[#7C3AED] focus:ring-[#7C3AED]"
-                                          />
-                                          <input 
-                                            type="text" 
-                                            value={opt}
+
+                                  <div className="space-y-4">
+                                    {(q.type === 'APTITUDE' || (!q.type && form.assessment_type === 'APTITUDE')) ? (
+                                      <>
+                                        <div>
+                                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Question Text</label>
+                                          <textarea 
+                                            value={q.question} 
                                             onChange={(e) => {
                                               const newQs = [...form.generated_questions];
-                                              newQs[i].options[optIdx] = e.target.value;
+                                              newQs[i].question = e.target.value;
                                               setForm((f: any) => ({ ...f, generated_questions: newQs }));
                                             }}
-                                            className="border-none p-0 text-xs font-medium text-slate-500 focus:ring-0 flex-1"
+                                            className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all h-20 resize-none font-medium text-slate-700"
+                                            placeholder="Enter question text..."
                                           />
-                                       </div>
-                                     ))}
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                          {(q.options || []).map((opt: string, optIdx: number) => (
+                                            <div key={optIdx} className="relative">
+                                              <input 
+                                                value={opt} 
+                                                onChange={(e) => {
+                                                  const newQs = [...form.generated_questions];
+                                                  newQs[i].options[optIdx] = e.target.value;
+                                                  setForm((f: any) => ({ ...f, generated_questions: newQs }));
+                                                }}
+                                                className={`w-full bg-slate-50 border-2 rounded-xl pl-10 pr-4 py-2.5 text-xs font-bold transition-all ${q.correct_answer === opt ? "border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]" : "border-transparent text-slate-600"}`}
+                                                placeholder={`Option ${optIdx + 1}`}
+                                              />
+                                              <button 
+                                                onClick={() => {
+                                                  const newQs = [...form.generated_questions];
+                                                  newQs[i].correct_answer = opt;
+                                                  setForm((f: any) => ({ ...f, generated_questions: newQs }));
+                                                }}
+                                                className={`absolute left-2.5 top-2.5 w-5 h-5 rounded-md flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
+                                              >
+                                                <span className="material-symbols-rounded text-xs">{q.correct_answer === opt ? "check" : "circle"}</span>
+                                              </button>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <div>
+                                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Problem Title</label>
+                                          <input 
+                                            type="text"
+                                            value={q.title || ''} 
+                                            onChange={(e) => {
+                                              const newQs = [...form.generated_questions];
+                                              newQs[i].title = e.target.value;
+                                              setForm((f: any) => ({ ...f, generated_questions: newQs }));
+                                            }}
+                                            className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-black text-slate-800 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all"
+                                            placeholder="e.g. Implement a Binary Search"
+                                          />
+                                        </div>
+                                        <div>
+                                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Problem Statement</label>
+                                          <textarea 
+                                            value={q.problem_statement || ''} 
+                                            onChange={(e) => {
+                                              const newQs = [...form.generated_questions];
+                                              newQs[i].problem_statement = e.target.value;
+                                              setForm((f: any) => ({ ...f, generated_questions: newQs }));
+                                            }}
+                                            className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all h-32 resize-none font-medium"
+                                            placeholder="Enter the problem details..."
+                                          />
+                                        </div>
+                                      </>
+                                    )}
                                   </div>
                                </div>
                              ))}
