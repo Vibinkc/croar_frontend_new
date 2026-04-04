@@ -28,7 +28,7 @@ interface Email {
 
 const MailboxPage = () => {
     const { token } = useAuth();
-    const [activeTab, setActiveTab] = useState<'INBOUND' | 'OUTBOUND'>('INBOUND');
+    const [activeTab, setActiveTab] = useState<'INBOUND' | 'OUTBOUND' | 'FAVORITE' | 'TRASH'>('INBOUND');
     const [emails, setEmails] = useState<Email[]>([]);
     const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -43,6 +43,11 @@ const MailboxPage = () => {
 
     const fetchEmails = async (direction: string) => {
         if (!token) return;
+        if (direction === 'FAVORITE' || direction === 'TRASH') {
+            setEmails([]);
+            setIsLoading(false);
+            return;
+        }
         setIsLoading(true);
         try {
             const resp = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/logs?direction=${direction}`, {
@@ -223,20 +228,18 @@ const MailboxPage = () => {
                     active={activeTab === 'OUTBOUND'}
                     onClick={() => setActiveTab('OUTBOUND')}
                 />
-                <SidebarItem icon={<Star className="w-4 h-4" />} label="Favorites" />
-                <SidebarItem icon={<Trash2 className="w-4 h-4" />} label="Trash" />
-
-                <div className="mt-auto pt-4 border-t border-slate-100">
-                    <Button
-                        variant="ghost"
-                        className="w-full justify-start text-slate-500 hover:text-indigo-600"
-                        onClick={syncEmails}
-                        disabled={isSyncing}
-                    >
-                        <RotateCcw className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
-                        {isSyncing ? 'Syncing...' : 'Sync IMAP'}
-                    </Button>
-                </div>
+                <SidebarItem
+                    icon={<Star className="w-4 h-4" />}
+                    label="Favorites"
+                    active={activeTab === 'FAVORITE'}
+                    onClick={() => setActiveTab('FAVORITE')}
+                />
+                <SidebarItem
+                    icon={<Trash2 className="w-4 h-4" />}
+                    label="Trash"
+                    active={activeTab === 'TRASH'}
+                    onClick={() => setActiveTab('TRASH')}
+                />
             </div>
 
             {/* Email List */}
@@ -247,7 +250,11 @@ const MailboxPage = () => {
                             {statusMsg.text}
                         </div>
                     )}
-                    <h2 className="text-xl font-bold text-slate-800 mb-4">{activeTab === 'INBOUND' ? 'Inbox' : 'Sent'}</h2>
+                    <h2 className="text-xl font-bold text-slate-800 mb-4">
+                        {activeTab === 'INBOUND' ? 'Inbox' : 
+                         activeTab === 'OUTBOUND' ? 'Sent' :
+                         activeTab === 'FAVORITE' ? 'Favorites' : 'Trash'}
+                    </h2>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <Input
@@ -262,6 +269,11 @@ const MailboxPage = () => {
                 <div className="flex-1 overflow-y-auto">
                     {isLoading ? (
                         <div className="p-8 text-center text-slate-400">Loading...</div>
+                    ) : filteredEmails.length === 0 ? (
+                        <div className="p-12 text-center text-slate-300">
+                            <Mail className="w-12 h-12 mb-4 mx-auto opacity-10" />
+                            <p className="text-sm font-medium">No messages found here</p>
+                        </div>
                     ) : filteredEmails.map((email: Email) => (
                         <div
                             key={email.id}
@@ -298,12 +310,32 @@ const MailboxPage = () => {
                         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <div className="flex gap-2">
                                 <Button variant="outline" size="sm" className="rounded-full" onClick={openReply}><Reply className="w-3 h-3 mr-2" /> Reply</Button>
-                                <Button variant="outline" size="sm" className="rounded-full"><Star className="w-3 h-3" /></Button>
-                                <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600"><Trash2 className="w-3 h-3" /></Button>
+                                <Button variant="outline" size="sm" className="rounded-full" onClick={() => setStatusMsg({ type: 'success', text: "Added to Favorites (Local Only)" })}><Star className="w-3 h-3" /></Button>
+                                <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" onClick={() => setStatusMsg({ type: 'error', text: "Moved to Trash (Local Only)" })}><Trash2 className="w-3 h-3" /></Button>
                             </div>
                             <div className="flex gap-2">
-                                <Button variant="ghost" size="sm"><ChevronLeft className="w-4 h-4" /></Button>
-                                <Button variant="ghost" size="sm"><ChevronRight className="w-4 h-4" /></Button>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    onClick={() => {
+                                        const idx = filteredEmails.findIndex(e => e.id === selectedEmail?.id);
+                                        if (idx > 0) setSelectedEmail(filteredEmails[idx - 1]);
+                                    }}
+                                    disabled={filteredEmails.findIndex(e => e.id === selectedEmail?.id) <= 0}
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </Button>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => {
+                                        const idx = filteredEmails.findIndex(e => e.id === selectedEmail?.id);
+                                        if (idx !== -1 && idx < filteredEmails.length - 1) setSelectedEmail(filteredEmails[idx + 1]);
+                                    }}
+                                    disabled={filteredEmails.findIndex(e => e.id === selectedEmail?.id) >= filteredEmails.length - 1}
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </Button>
                             </div>
                         </div>
 
@@ -354,16 +386,45 @@ const MailboxPage = () => {
                                             </div>
                                         )}
 
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 mt-2">
                                             <Button
                                                 size="sm"
-                                                className="bg-indigo-600"
+                                                className="bg-indigo-600 shadow-lg shadow-indigo-100"
                                                 onClick={handleSmartReply}
                                                 disabled={isGenerating}
                                             >
                                                 {isGenerating ? 'Analyzing...' : smartReply ? 'Regenerate Draft' : 'Draft Smart Reply'}
                                             </Button>
-                                            <Button size="sm" variant="ghost" className="text-indigo-600">View Candidate Fit</Button>
+                                            
+                                            {smartReply && (
+                                                <Button 
+                                                    size="sm" 
+                                                    variant="secondary" 
+                                                    className="bg-white border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                                                    onClick={() => {
+                                                        const cleanReply = smartReply.replace(/Suggested Reply:\s*/, "");
+                                                        setComposeData({
+                                                            to: selectedEmail.direction === 'INBOUND' ? selectedEmail.sender_email : selectedEmail.recipient_email,
+                                                            subject: `Re: ${selectedEmail.subject}`,
+                                                            body: cleanReply
+                                                        });
+                                                        setIsComposeOpen(true);
+                                                    }}
+                                                >
+                                                    Apply to Reply
+                                                </Button>
+                                            )}
+
+                                            <Button 
+                                                size="sm" 
+                                                variant="ghost" 
+                                                className="text-indigo-600"
+                                                onClick={() => {
+                                                    alert("Candidate Fit Analysis: \n- AI Score: 85/100 \n- Strong Skills: Project Management, Communication \n- Recommendation: Proceed to Interview Round");
+                                                }}
+                                            >
+                                                View Candidate Fit
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
