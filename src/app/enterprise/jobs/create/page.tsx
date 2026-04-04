@@ -600,25 +600,13 @@ export default function CreateJobPage() {
                                     <span className="material-symbols-rounded text-lg">dashboard</span>
                                     Go to Job Management
                                 </button>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <button 
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(getShareLink());
-                                            alert("Link copied to clipboard!");
-                                        }} 
-                                        className="w-full py-5 border-2 border-slate-50 rounded-2xl text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <span className="material-symbols-rounded text-lg">content_copy</span>
-                                        Copy Link
-                                    </button>
-                                    <button 
-                                        onClick={() => window.open(getShareLink(), '_blank')} 
-                                        className="w-full py-5 border-2 border-slate-50 rounded-2xl text-[#7C3AED] font-bold text-sm hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <span className="material-symbols-rounded text-lg">visibility</span>
-                                        View Listing
-                                    </button>
-                                </div>
+                                <button 
+                                    onClick={() => window.open(getShareLink(), '_blank')} 
+                                    className="w-full py-5 border-2 border-slate-50 rounded-2xl text-[#7C3AED] font-bold text-sm hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <span className="material-symbols-rounded text-lg">visibility</span>
+                                    View Public Listing
+                                </button>
                             </div>
                         </motion.div>
                     </motion.div>
