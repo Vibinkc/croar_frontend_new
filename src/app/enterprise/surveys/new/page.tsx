@@ -32,7 +32,7 @@ export default function LaunchSurvey() {
         template_id: "",
         name: "",
         start_date: new Date().toISOString().split('T')[0],
-        end_date: "",
+        end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         target_group: "ALL" as "ALL" | "CUSTOM",
         employee_ids: [] as string[]
     });

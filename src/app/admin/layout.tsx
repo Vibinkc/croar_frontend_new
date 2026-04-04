@@ -99,7 +99,7 @@ export default function AdminLayout({
                         </div>
                         <Link href="/admin/job-simulation" className={navLinkClass("/admin/job-simulation")}>
                             <span className="material-icons-outlined text-xl">psychology</span>
-                            Role-Based Learning
+                            Neural Coaching Lab
                         </Link>
                         <Link href="/admin/aptitude" className={navLinkClass("/admin/aptitude")}>
                             <span className="material-icons-outlined text-xl">calculate</span>
