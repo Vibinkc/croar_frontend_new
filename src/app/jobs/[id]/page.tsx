@@ -36,6 +36,16 @@ export default function PublicJobPage() {
                 const data = await res.json();
                 setJob(data.job);
                 setOrgName(data.organization);
+                
+                // Initialize boolean fields with "No"
+                const initialData: Record<string, string> = {};
+                data.job.application_fields?.forEach((f: any) => {
+                    if (f.type === 'boolean') {
+                        const key = f.label.toLowerCase().replace(/\s+/g, '_');
+                        initialData[key] = "No";
+                    }
+                });
+                setFormData(initialData);
             }
         } catch (error) {
             console.error("Error fetching job:", error);
@@ -285,13 +295,38 @@ export default function PublicJobPage() {
                                             );
                                         }
 
+                                        if (field.type === 'boolean') {
+                                            const isChecked = formData[fieldKey] === "Yes";
+                                            return (
+                                                <div key={field.id} className="p-5 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isChecked ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-500'}`}>
+                                                            <span className="material-symbols-rounded text-xl">{field.icon || 'check_circle'}</span>
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{field.label}</label>
+                                                            <span className={`text-[11px] font-bold ${isChecked ? 'text-emerald-400' : 'text-slate-500'}`}>{isChecked ? 'Selected: Yes' : 'Selected: No'}</span>
+                                                        </div>
+                                                    </div>
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => setFormData({ ...formData, [fieldKey]: isChecked ? "No" : "Yes" })}
+                                                        className={`w-12 h-6 rounded-full flex items-center px-1 transition-all shadow-lg ${isChecked ? 'bg-emerald-500 shadow-emerald-500/20' : 'bg-slate-700'}`}
+                                                    >
+                                                        <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${isChecked ? 'translate-x-6' : 'translate-x-0'}`} />
+                                                    </button>
+                                                </div>
+                                            );
+                                        }
+
                                         return (
                                             <div key={field.id} className="space-y-1">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{field.label}</label>
                                                 <div className="relative">
                                                     <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">{field.icon || 'edit'}</span>
                                                     <input
-                                                        type={field.type === 'email' ? 'email' : 'text'}
+                                                        type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : 'text'}
+                                                        step="any"
                                                         placeholder={`Enter ${field.label}`}
                                                         className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-indigo-500 focus:bg-white/10 outline-none transition-all text-white font-bold text-sm placeholder:text-slate-600"
                                                         value={formData[fieldKey] || ""}

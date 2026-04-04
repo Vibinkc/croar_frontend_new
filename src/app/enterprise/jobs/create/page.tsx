@@ -97,6 +97,11 @@ export default function CreateJobPage() {
     ];
 
     const handleSubmit = async () => {
+        if (isExperienceInvalid || isSalaryInvalid) {
+            alert("Please correct the invalid range values for Experience or Salary before publishing.");
+            return;
+        }
+
         setIsSubmitting(true);
         try {
             const payload = {
@@ -319,11 +324,25 @@ export default function CreateJobPage() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-slate-500 px-1">Experience (Min)</label>
-                                                <input type="number" min="0" className={`w-full px-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isExperienceInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
+                                                <input 
+                                                    type="number" 
+                                                    min="0" 
+                                                    onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                                                    className={`w-full px-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isExperienceInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} 
+                                                    value={formData.experience_min} 
+                                                    onChange={e => setFormData({ ...formData, experience_min: e.target.value })} 
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-slate-500 px-1">Experience (Max)</label>
-                                                <input type="number" min="0" className={`w-full px-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isExperienceInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
+                                                <input 
+                                                    type="number" 
+                                                    min="0" 
+                                                    onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                                                    className={`w-full px-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isExperienceInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} 
+                                                    value={formData.experience_max} 
+                                                    onChange={e => setFormData({ ...formData, experience_max: e.target.value })} 
+                                                />
                                             </div>
                                             {isExperienceInvalid && <p className="col-span-2 text-[10px] font-bold text-rose-500 px-1 uppercase tracking-tight">Max experience must be greater than Min</p>}
                                         </div>
@@ -332,14 +351,30 @@ export default function CreateJobPage() {
                                                 <label className="text-xs font-bold text-slate-500 px-1">Min Salary (LPA)</label>
                                                 <div className="relative">
                                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-xs">₹</span>
-                                                    <input type="number" min="0" placeholder="e.g. 5" className={`w-full pl-8 pr-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isSalaryInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
+                                                    <input 
+                                                        type="number" 
+                                                        min="0" 
+                                                        onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                                                        placeholder="e.g. 5" 
+                                                        className={`w-full pl-8 pr-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isSalaryInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} 
+                                                        value={formData.salary_min} 
+                                                        onChange={e => setFormData({ ...formData, salary_min: e.target.value })} 
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-slate-500 px-1">Max Salary (LPA)</label>
                                                 <div className="relative">
                                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-xs">₹</span>
-                                                    <input type="number" min="0" placeholder="e.g. 15" className={`w-full pl-8 pr-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isSalaryInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
+                                                    <input 
+                                                        type="number" 
+                                                        min="0" 
+                                                        onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                                                        placeholder="e.g. 15" 
+                                                        className={`w-full pl-8 pr-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isSalaryInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} 
+                                                        value={formData.salary_max} 
+                                                        onChange={e => setFormData({ ...formData, salary_max: e.target.value })} 
+                                                    />
                                                 </div>
                                             </div>
                                             {isSalaryInvalid && <p className="col-span-2 text-[10px] font-bold text-rose-500 px-1 uppercase tracking-tight">Max salary must be greater than Min</p>}
