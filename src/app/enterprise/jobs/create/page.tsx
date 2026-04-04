@@ -194,6 +194,25 @@ export default function CreateJobPage() {
         return `${window.location.origin}/jobs/${createdJobId}`;
     };
 
+    const isExperienceInvalid = parseInt(formData.experience_max) < parseInt(formData.experience_min);
+    const isSalaryInvalid = formData.salary_min && formData.salary_max && parseFloat(formData.salary_max) < parseFloat(formData.salary_min);
+
+    const STAGE_TYPES = [
+        { name: 'Screening', icon: 'person_search' },
+        { name: 'Aptitude', icon: 'calculate' },
+        { name: 'Coding', icon: 'code' },
+        { name: 'Technical Interview', icon: 'psychology' },
+        { name: 'HR Interview', icon: 'groups' },
+        { name: 'Final Selection', icon: 'verified_user' }
+    ];
+
+    const canGoNext = () => {
+        if (currentStep === 1) {
+            return formData.title && !isExperienceInvalid && !isSalaryInvalid;
+        }
+        return true;
+    };
+
     return (
         <div className="h-full min-h-screen bg-[#FDFDFF] flex flex-col p-6 animate-in fade-in duration-700 overflow-hidden">
             {/* Header Control Bar */}
@@ -212,8 +231,9 @@ export default function CreateJobPage() {
                     {steps.map((step) => (
                         <button
                             key={step.id}
-                            onClick={() => setCurrentStep(step.id)}
-                            className={`flex items-center gap-3 px-6 py-2.5 rounded-xl transition-all ${currentStep === step.id ? "bg-white text-[#7C3AED] shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"}`}
+                            disabled={step.id > currentStep && !canGoNext()}
+                            onClick={() => canGoNext() && setCurrentStep(step.id)}
+                            className={`flex items-center gap-3 px-6 py-2.5 rounded-xl transition-all ${currentStep === step.id ? "bg-white text-[#7C3AED] shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600 disabled:opacity-30"}`}
                         >
                             <span className={`text-xs font-bold w-5 h-5 flex items-center justify-center rounded-lg border ${currentStep === step.id ? "border-[#7C3AED]/20 bg-[#7C3AED]/5" : "border-slate-200 bg-white"}`}>{step.id}</span>
                             <span className="text-xs font-bold uppercase tracking-wider">{step.name}</span>
@@ -222,7 +242,8 @@ export default function CreateJobPage() {
                 </div>
 
                 <button
-                    className="px-8 py-3.5 rounded-2xl bg-[#7C3AED] text-white text-sm font-bold shadow-lg shadow-indigo-500/20 hover:bg-[#6D28D9] transition-all active:scale-95 flex items-center gap-2 group"
+                    disabled={!canGoNext()}
+                    className="px-8 py-3.5 rounded-2xl bg-[#7C3AED] text-white text-sm font-bold shadow-lg shadow-indigo-500/20 hover:bg-[#6D28D9] transition-all active:scale-95 flex items-center gap-2 group disabled:opacity-50 disabled:grayscale"
                     onClick={() => currentStep < 3 ? setCurrentStep(currentStep + 1) : handleSubmit()}
                 >
                     {isSubmitting ? "Deploying..." : currentStep === 3 ? "Publish Job" : "Next Step"}
@@ -298,28 +319,30 @@ export default function CreateJobPage() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-slate-500 px-1">Experience (Min)</label>
-                                                <input type="number" className="w-full px-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none focus:border-[#7C3AED] transition-all" value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
+                                                <input type="number" min="0" className={`w-full px-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isExperienceInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-slate-500 px-1">Experience (Max)</label>
-                                                <input type="number" className="w-full px-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none focus:border-[#7C3AED] transition-all" value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
+                                                <input type="number" min="0" className={`w-full px-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isExperienceInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
                                             </div>
+                                            {isExperienceInvalid && <p className="col-span-2 text-[10px] font-bold text-rose-500 px-1 uppercase tracking-tight">Max experience must be greater than Min</p>}
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-slate-500 px-1">Min Salary (LPA)</label>
                                                 <div className="relative">
                                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-xs">₹</span>
-                                                    <input type="number" placeholder="e.g. 5" className="w-full pl-8 pr-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none focus:border-[#7C3AED] transition-all" value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
+                                                    <input type="number" min="0" placeholder="e.g. 5" className={`w-full pl-8 pr-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isSalaryInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-slate-500 px-1">Max Salary (LPA)</label>
                                                 <div className="relative">
                                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-xs">₹</span>
-                                                    <input type="number" placeholder="e.g. 15" className="w-full pl-8 pr-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none focus:border-[#7C3AED] transition-all" value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
+                                                    <input type="number" min="0" placeholder="e.g. 15" className={`w-full pl-8 pr-5 py-4 rounded-2xl border bg-white font-semibold text-sm outline-none transition-all ${isSalaryInvalid ? 'border-rose-200 bg-rose-50/20' : 'border-slate-100 focus:border-[#7C3AED]'}`} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
                                                 </div>
                                             </div>
+                                            {isSalaryInvalid && <p className="col-span-2 text-[10px] font-bold text-rose-500 px-1 uppercase tracking-tight">Max salary must be greater than Min</p>}
                                         </div>
                                     </div>
                                 </div>
@@ -479,17 +502,37 @@ export default function CreateJobPage() {
                                                 }} className="w-7 h-7 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-300 hover:text-[#7C3AED] disabled:opacity-20 shadow-sm"><span className="material-symbols-rounded text-base">expand_more</span></button>
                                             </div>
                                             <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">0{idx + 1}</div>
-                                            <div className="flex-1">
+                                            <div className="flex-1 space-y-3">
                                                 <input
                                                     type="text"
                                                     className="w-full bg-transparent border-none outline-none text-sm font-bold text-slate-800 p-0 focus:text-[#7C3AED] transition-colors"
                                                     value={node.name}
                                                     onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, name: e.target.value } : s) }))}
                                                 />
-                                                <div className="flex items-center gap-2 mt-0.5 text-slate-400">
-                                                    <span className="text-[9px] font-bold uppercase tracking-widest">{node.type}</span>
-                                                    <span className="w-0.5 h-0.5 rounded-full bg-slate-200"></span>
-                                                    <span className="material-symbols-rounded text-sm">{node.icon}</span>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Type</span>
+                                                        <select
+                                                            className="bg-slate-50 border-none outline-none text-[10px] font-bold text-slate-500 uppercase px-3 py-1.5 rounded-lg cursor-pointer hover:bg-slate-100 transition-all shadow-sm"
+                                                            value={node.type}
+                                                            onChange={(e) => {
+                                                                const type = e.target.value;
+                                                                const icon = STAGE_TYPES.find(t => t.name === type)?.icon || 'groups';
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, type, icon } : s)
+                                                                }));
+                                                            }}
+                                                        >
+                                                            {STAGE_TYPES.map(t => (
+                                                                <option key={t.name} value={t.name}>{t.name}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-100">
+                                                        <span className="material-symbols-rounded text-base text-slate-400">{node.icon}</span>
+                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{node.type}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <button onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-lg hover:bg-rose-50 text-slate-200 hover:text-rose-500 transition-all flex items-center justify-center"><span className="material-symbols-rounded text-lg">close</span></button>

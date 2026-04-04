@@ -245,18 +245,13 @@ export default function EnterpriseDashboard() {
                             </div>
                         </div>
 
-                        <div className="mt-10 space-y-4">
+                        <div className="mt-10">
                             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 relative group overflow-hidden">
                                 <div className="absolute top-0 left-0 w-1 h-full bg-[#7C3AED]"></div>
                                 <p className="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-tight">
                                     System suggests <span className="text-[#7C3AED]">Optimization_Beta</span>. Candidate throughput is 14% higher than average.
                                 </p>
                             </div>
-
-                            <button className="w-full py-4 rounded-xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-2 group shadow-xl shadow-slate-200">
-                                <span className="material-symbols-rounded text-lg transition-transform group-hover:rotate-180">settings_applications</span>
-                                Control_Settings
-                            </button>
                         </div>
                     </div>
                 </div>
