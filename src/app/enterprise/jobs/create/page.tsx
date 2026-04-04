@@ -436,7 +436,7 @@ export default function CreateJobPage() {
                                         id: Date.now().toString(),
                                         label: 'New Question',
                                         type: 'text',
-                                        icon: 'help_outline',
+                                        icon: 'text_fields',
                                         is_required: false
                                     };
                                     setFormData(prev => ({ ...prev, application_fields: [...prev.application_fields, newField] }));

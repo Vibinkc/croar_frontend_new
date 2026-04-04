@@ -89,6 +89,7 @@ interface CandidateModalProps {
 }
 
 function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefresh, onboardingTemplates, stages }: CandidateModalProps) {
+    const { token } = useAuth();
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
     if (!isOpen || !application) return null;
 
@@ -139,8 +140,14 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                 </select>
                                 <button 
                                     onClick={async () => {
-                                        const token = localStorage.getItem("token");
-                                        if (!token) return;
+                                        if (!selectedTemplate) {
+                                            alert("Please select an onboarding template first.");
+                                            return;
+                                        }
+                                        if (!token) {
+                                            alert("Your session has expired. Please log in again.");
+                                            return;
+                                        }
                                         try {
                                             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/onboarding/initiate`, {
                                                 method: "POST",
@@ -150,7 +157,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                                 },
                                                 body: JSON.stringify({ 
                                                     application_id: application.id,
-                                                    template_id: selectedTemplate || null
+                                                    template_id: selectedTemplate
                                                 })
                                             });
                                             if (res.ok) {
