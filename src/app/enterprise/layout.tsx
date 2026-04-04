@@ -95,7 +95,7 @@ export default function EnterprisePortalLayout({
         {
             title: "AI & TRAINING",
             items: [
-                { label: "Neural Coaching Lab", icon: "psychology", path: "/enterprise/ai-training/portal" },
+                // { label: "Neural Coaching Lab", icon: "psychology", path: "/enterprise/ai-training/portal" },
                 { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios" },
             ]
         },

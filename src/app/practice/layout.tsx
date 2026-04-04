@@ -55,7 +55,7 @@ function LayoutContent({
         {
             title: "Learning & Skills",
             items: [
-                { name: "Neural Coaching Lab", path: "/practice/job-simulation", icon: "psychology" },
+                // { name: "Neural Coaching Lab", path: "/practice/job-simulation", icon: "psychology" },
                 { name: "Aptitude", path: "/practice/aptitude", icon: "calculate" },
                 { name: "Coding", path: "/practice/coding", icon: "code" },
                 { name: "Communication", path: "/practice/communication", icon: "record_voice_over" },
