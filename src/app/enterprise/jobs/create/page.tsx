@@ -596,8 +596,29 @@ export default function CreateJobPage() {
                             <h2 className="relative z-10 text-4xl font-bold text-slate-900 tracking-tight mb-4">Job Requisition Live!</h2>
                             <p className="relative z-10 text-sm text-slate-400 font-medium leading-relaxed mb-12">Deployment synchronized. Your job is now active and ready for candidates.</p>
                             <div className="relative z-10 flex flex-col gap-3">
-                                <button onClick={() => router.push("/enterprise/jobs")} className="w-full py-5 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-black transition-all shadow-xl">Back to Dashboard</button>
-                                <button onClick={() => window.open(getShareLink(), '_blank')} className="w-full py-5 border-2 border-slate-50 rounded-2xl text-[#7C3AED] font-bold text-sm hover:bg-indigo-50 transition-all">View Public Listing</button>
+                                <button onClick={() => router.push("/enterprise/jobs")} className="w-full py-5 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-black transition-all shadow-xl flex items-center justify-center gap-2">
+                                    <span className="material-symbols-rounded text-lg">dashboard</span>
+                                    Go to Job Management
+                                </button>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <button 
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(getShareLink());
+                                            alert("Link copied to clipboard!");
+                                        }} 
+                                        className="w-full py-5 border-2 border-slate-50 rounded-2xl text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <span className="material-symbols-rounded text-lg">content_copy</span>
+                                        Copy Link
+                                    </button>
+                                    <button 
+                                        onClick={() => window.open(getShareLink(), '_blank')} 
+                                        className="w-full py-5 border-2 border-slate-50 rounded-2xl text-[#7C3AED] font-bold text-sm hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <span className="material-symbols-rounded text-lg">visibility</span>
+                                        View Listing
+                                    </button>
+                                </div>
                             </div>
                         </motion.div>
                     </motion.div>
