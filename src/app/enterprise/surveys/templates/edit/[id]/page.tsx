@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
@@ -19,7 +19,8 @@ interface Question {
     options?: string; // stringified JSON array
 }
 
-export default function CreateTemplate() {
+export default function EditTemplate({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const { token } = useAuth();
     const router = useRouter();
     const [types, setTypes] = useState<SurveyType[]>([]);
@@ -40,18 +41,37 @@ export default function CreateTemplate() {
     });
 
     useEffect(() => {
-        const fetchTypes = async () => {
+        const fetchData = async () => {
             try {
-                const res = await apiClient.get('/api/v1/enterprise/surveys/types');
-                if (res.ok) setTypes(await res.json());
+                const [typesRes, tplRes] = await Promise.all([
+                    apiClient.get('/api/v1/enterprise/surveys/types'),
+                    apiClient.get(`/api/v1/enterprise/surveys/templates/${id}`)
+                ]);
+                
+                if (typesRes.ok) setTypes(await typesRes.json());
+                if (tplRes.ok) {
+                    const tpl = await tplRes.json();
+                    setFormData({
+                        survey_type_id: tpl.survey_type_id,
+                        title: tpl.title,
+                        description: tpl.description || "",
+                        questions: tpl.questions.map((q: any) => ({
+                            text: q.text,
+                            type: q.type,
+                            scale_min: q.scale_min || 1,
+                            scale_max: q.scale_max || 5,
+                            options: q.options || JSON.stringify(["Option 1", "Option 2"])
+                        }))
+                    });
+                }
             } catch (error) {
                 console.error(error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchTypes();
-    }, []);
+        fetchData();
+    }, [id]);
 
     const addQuestion = () => {
         setFormData(prev => ({
@@ -130,12 +150,16 @@ export default function CreateTemplate() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const res = await apiClient.post('/api/v1/enterprise/surveys/templates', formData);
+            const res = await apiClient.put(`/api/v1/enterprise/surveys/templates/${id}`, formData);
             if (res.ok) {
+                alert("Framework updated successfully!");
                 router.push('/enterprise/surveys/templates');
+            } else {
+                alert("Failed to update framework.");
             }
         } catch (error) {
             console.error(error);
+            alert("An error occurred while saving.");
         } finally {
             setSubmitting(false);
         }
@@ -156,8 +180,8 @@ export default function CreateTemplate() {
                         <span className="material-symbols-rounded">arrow_back</span>
                     </button>
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900 tracking-tight leading-none mb-1">Create Framework</h1>
-                        <p className="text-slate-500 text-xs font-medium">Design systematic question stacks for feedback cycles</p>
+                        <h1 className="text-xl font-bold text-slate-900 tracking-tight leading-none mb-1">Edit Framework</h1>
+                        <p className="text-slate-500 text-xs font-medium">Refine your systematic question stacks</p>
                     </div>
                 </div>
                 <div className="flex gap-3">
@@ -174,7 +198,7 @@ export default function CreateTemplate() {
                         disabled={submitting || !formData.survey_type_id || !formData.title || formData.questions.length === 0 || formData.questions.some(q => !q.text.trim())}
                         className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold text-xs hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 disabled:opacity-50 disabled:shadow-none"
                     >
-                        {submitting ? 'Deploying...' : 'Deploy Framework'}
+                        {submitting ? 'Saving Changes...' : 'Save Framework'}
                     </button>
                 </div>
             </header>
@@ -337,7 +361,7 @@ export default function CreateTemplate() {
                             disabled={submitting || !formData.survey_type_id || !formData.title || formData.questions.length === 0 || formData.questions.some(q => !q.text.trim())}
                             className="px-16 py-4 bg-indigo-600 text-white rounded-2xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-[1.01] transition-all disabled:opacity-30 disabled:shadow-none"
                         >
-                            {submitting ? 'Deploying...' : 'Deploy Framework'}
+                            {submitting ? 'Saving Changes...' : 'Save Framework'}
                         </button>
                     </div>
                 </form>

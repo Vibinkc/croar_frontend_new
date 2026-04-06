@@ -150,7 +150,10 @@ export default function X360NewCycle() {
                                 {templates.map(tpl => (
                                     <div 
                                         key={tpl.id}
-                                        onClick={() => setFormData({...formData, template_id: tpl.id})}
+                                        onClick={() => setFormData(prev => ({
+                                            ...prev, 
+                                            template_id: prev.template_id === tpl.id ? "" : tpl.id
+                                        }))}
                                         className={`p-4 border-2 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-4 ${formData.template_id === tpl.id ? 'border-indigo-600 bg-indigo-50/30' : 'border-slate-50 bg-slate-50 hover:border-slate-200'}`}
                                     >
                                         <div className="min-w-0">

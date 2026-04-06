@@ -12,6 +12,7 @@ interface Template {
     body: string;
     variables: string[];
     created_at?: string;
+    updated_at?: string;
 }
 
 export default function EmailTemplatesPage() {
@@ -37,6 +38,25 @@ export default function EmailTemplatesPage() {
             fetchTemplates();
         }
     }, [token]);
+
+    const formatDate = (dateString?: string) => {
+        if (!dateString) return "Never";
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const getErrorMessage = (data: any) => {
+        if (typeof data.detail === 'string') return data.detail;
+        if (Array.isArray(data.detail)) {
+            return data.detail.map((e: any) => e.msg || e).join(", ");
+        }
+        return null;
+    };
 
     const fetchTemplates = async () => {
         setIsLoading(true);
@@ -138,11 +158,13 @@ export default function EmailTemplatesPage() {
                     setIsAiMode(false); // Switch back to edit mode
                 }
             } else {
-                alert("Failed to generate template. Please try again.");
+                const errorData = await res.json().catch(() => ({}));
+                const errMsg = getErrorMessage(errorData);
+                alert(`Failed to generate: ${errMsg || "Check your prompt and try again."}`);
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            alert("Error generating template.");
+            alert(`Error generating template: ${e.message || "A network error occurred."}`);
         } finally {
             setIsGenerating(false);
         }
@@ -162,11 +184,13 @@ export default function EmailTemplatesPage() {
             if (res.ok) {
                 setTemplates(prev => prev.filter(t => t.id !== id));
             } else {
-                alert("Failed to delete template");
+                const errorData = await res.json().catch(() => ({}));
+                const errMsg = getErrorMessage(errorData);
+                alert(`Failed to delete: ${errMsg || "Template not found or permission denied."}`);
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            alert("Error deleting template");
+            alert(`Error deleting template: ${e.message || "A network error occurred."}`);
         }
     };
 
@@ -191,11 +215,13 @@ export default function EmailTemplatesPage() {
                 fetchTemplates();
                 setIsModalOpen(false);
             } else {
-                alert("Failed to save template");
+                const errorData = await res.json().catch(() => ({}));
+                const errMsg = getErrorMessage(errorData);
+                alert(`Failed to save: ${errMsg || "Verify required fields and try again."}`);
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            alert("Error saving template");
+            alert(`Error saving template: ${e.message || "A network error occurred."}`);
         }
     };
 
@@ -263,7 +289,7 @@ export default function EmailTemplatesPage() {
                                         Last Edited
                                     </span>
                                     <span className="text-[10px] font-bold text-slate-500">
-                                        Just now
+                                        {formatDate(template.updated_at || template.created_at)}
                                     </span>
                                 </div>
                             </motion.div>

@@ -10,22 +10,25 @@ export default function SurveyDashboard() {
     const { token } = useAuth();
     const router = useRouter();
     const [instances, setInstances] = useState<any[]>([]);
+    const [templates, setTemplates] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchInstances = async () => {
+        const fetchData = async () => {
             try {
-                const res = await apiClient.get('/api/v1/enterprise/surveys/instances');
-                if (res.ok) {
-                    setInstances(await res.json());
-                }
+                const [instRes, tplRes] = await Promise.all([
+                    apiClient.get('/api/v1/enterprise/surveys/instances'),
+                    apiClient.get('/api/v1/enterprise/surveys/templates')
+                ]);
+                if (instRes.ok) setInstances(await instRes.json());
+                if (tplRes.ok) setTemplates(await tplRes.json());
             } catch (error) {
                 console.error(error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchInstances();
+        fetchData();
     }, []);
 
     if (loading) return (
@@ -39,7 +42,7 @@ export default function SurveyDashboard() {
             <div className="flex justify-between items-end pb-6 border-b border-slate-100">
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">HR Surveys</h1>
-                    <p className="text-slate-500 font-medium text-sm mt-1 italic">Measure engagement, satisfaction, and culture with 13 specialized survey types.</p>
+                    <p className="text-slate-500 font-medium text-sm mt-1 italic">Measure engagement, satisfaction, and culture with {templates.length} specialized survey types.</p>
                 </div>
                 <div className="flex gap-4">
                     <Link 
@@ -89,7 +92,7 @@ export default function SurveyDashboard() {
                         </div>
                         <div>
                             <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Available Frameworks</p>
-                            <p className="text-2xl font-black text-slate-900 leading-none">13</p>
+                            <p className="text-2xl font-black text-slate-900 leading-none">{templates.length}</p>
                         </div>
                     </div>
                 </div>
@@ -160,7 +163,9 @@ export default function SurveyDashboard() {
                                                 <button 
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        apiClient.post(`/api/v1/enterprise/surveys/instances/${instance.id}/notify`, {});
+                                                        apiClient.post(`/api/v1/enterprise/surveys/instances/${instance.id}/notify`, {})
+                                                            .then(() => alert("Reminder sent successfully!"))
+                                                            .catch(() => alert("Failed to send reminder."));
                                                     }}
                                                     className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all border border-indigo-100 flex items-center gap-2"
                                                 >

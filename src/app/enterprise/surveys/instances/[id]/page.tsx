@@ -73,7 +73,11 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                 <div className="flex gap-4">
                     {report.completed_invites < report.total_invites && (
                         <button 
-                            onClick={() => apiClient.post(`/api/v1/enterprise/surveys/instances/${id}/notify`, {})}
+                            onClick={() => {
+                                apiClient.post(`/api/v1/enterprise/surveys/instances/${id}/notify`, {})
+                                    .then(() => alert("Reminders sent to all pending participants!"))
+                                    .catch(() => alert("Failed to send reminders."));
+                            }}
                             className="px-6 py-3 bg-white border border-slate-200 text-slate-900 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 hover:bg-slate-50 transition-all"
                         >
                             <span className="material-symbols-rounded text-lg">campaign</span>

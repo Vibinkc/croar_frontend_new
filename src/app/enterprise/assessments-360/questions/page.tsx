@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
@@ -35,6 +35,13 @@ export default function X360QuestionBank() {
     });
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedQuestions, setGeneratedQuestions] = useState<any[]>([]);
+    const suggestionsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (generatedQuestions.length > 0 && suggestionsRef.current) {
+            suggestionsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }, [generatedQuestions]);
 
     useEffect(() => {
         fetchQuestions();
@@ -301,23 +308,29 @@ export default function X360QuestionBank() {
                 <main className="col-span-12 lg:col-span-8 space-y-8">
                     {/* AI Preview */}
                     {generatedQuestions.length > 0 && (
-                        <section className="bg-amber-50 rounded-[2.5rem] p-8 border border-amber-100 animate-in fade-in slide-in-from-top-4 duration-500">
-                            <div className="flex justify-between items-center mb-6">
-                                <div>
-                                    <h3 className="text-xl font-bold text-amber-900">Review AI Suggestions</h3>
-                                    <p className="text-amber-700 text-sm">Review these generated questions before adding them to your library.</p>
+                        <section ref={suggestionsRef} className="bg-amber-50/50 rounded-[2.5rem] p-8 border-2 border-amber-200 animate-in fade-in slide-in-from-top-4 duration-500 shadow-2xl shadow-amber-100/50">
+                            <div className="flex justify-between items-center mb-8 bg-white/50 p-6 rounded-3xl border border-amber-100/50">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600 shadow-inner border border-amber-200/50">
+                                        <span className="material-symbols-rounded text-3xl animate-bounce">auto_awesome</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-black text-amber-900 tracking-tight">AI Suggestions Ready</h3>
+                                        <p className="text-amber-700/70 text-sm font-medium">Review, refine, and add these AI-curated questions.</p>
+                                    </div>
                                 </div>
-                                <div className="flex gap-3">
+                                <div className="flex gap-4">
                                     <button 
                                         onClick={() => setGeneratedQuestions([])}
-                                        className="px-6 py-3 text-amber-700 font-bold text-sm hover:bg-amber-100 rounded-2xl transition-all"
+                                        className="px-6 py-3 text-amber-700 font-black text-[10px] uppercase tracking-widest hover:bg-amber-100 rounded-2xl transition-all border border-amber-200"
                                     >
-                                        Discard
+                                        Discard All
                                     </button>
                                     <button 
                                         onClick={saveGenerated}
-                                        className="px-6 py-3 bg-amber-600 text-white font-black text-sm rounded-2xl shadow-lg shadow-amber-200 hover:bg-amber-700 transition-all uppercase tracking-widest"
+                                        className="px-8 py-3 bg-amber-600 text-white font-black text-[10px] rounded-2xl shadow-xl shadow-amber-200 hover:bg-amber-700 transition-all uppercase tracking-[0.2em] flex items-center gap-2"
                                     >
+                                        <span className="material-symbols-rounded text-lg">library_add</span>
                                         Add to Library ({generatedQuestions.length})
                                     </button>
                                 </div>

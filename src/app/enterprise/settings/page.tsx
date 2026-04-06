@@ -150,6 +150,12 @@ export default function OrganizationProfilePage() {
         }
     };
 
+    const hasChanges = 
+        name !== (profile?.name || "") ||
+        logoUrl !== (profile?.logo_url || "") ||
+        industry !== (profile?.industry || "") ||
+        location !== (profile?.location || "");
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-screen bg-[#F8FAFC]">
@@ -186,7 +192,7 @@ export default function OrganizationProfilePage() {
                 <div className="relative z-10 flex items-center gap-4">
                     <button
                         onClick={handleSave}
-                        disabled={isSaving}
+                        disabled={isSaving || !hasChanges}
                         className="px-8 py-4 bg-[#0F172A] hover:bg-[#1E293B] text-white font-black rounded-2xl shadow-2xl transition-all flex items-center gap-3 disabled:opacity-50 active:scale-95"
                     >
                         {isSaving ? (

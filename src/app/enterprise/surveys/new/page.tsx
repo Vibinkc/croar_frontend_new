@@ -70,10 +70,15 @@ export default function LaunchSurvey() {
         try {
             const res = await apiClient.post('/api/v1/enterprise/surveys/launch', formData);
             if (res.ok) {
+                alert("Survey campaign launched successfully!");
                 router.push('/enterprise/surveys');
+            } else {
+                const error = await res.json();
+                alert(`Failed to launch survey: ${error.message || "Unknown error"}`);
             }
         } catch (error) {
             console.error(error);
+            alert("An error occurred while launching. Please try again.");
         } finally {
             setSubmitting(false);
         }
