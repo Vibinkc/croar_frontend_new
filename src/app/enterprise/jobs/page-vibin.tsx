@@ -221,8 +221,20 @@ export default function EnterpriseJobsPage() {
                         <p className="text-xs text-slate-500 mb-6 max-w-xs mx-auto">
                             There are no jobs matching your current filters.
                         </p>
-                        {searchQuery && (
-                            <button onClick={() => setSearchQuery("")} className="px-4 py-2 bg-slate-100 text-slate-600 font-bold text-xs rounded-lg hover:bg-slate-200 transition-all">Clear Filters</button>
+                        { (searchQuery || selectedCompanyId !== "ALL" || selectedLocation !== "ALL" || selectedType !== "ALL" || activeTab !== "ALL") && (
+                            <button 
+                                onClick={() => {
+                                    setSearchQuery("");
+                                    setSelectedCompanyId("ALL");
+                                    setSelectedLocation("ALL");
+                                    setSelectedType("ALL");
+                                    setActiveTab("ALL");
+                                }} 
+                                className="px-5 py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-black shadow-xl shadow-slate-100 transition-all active:scale-95 flex items-center gap-2"
+                            >
+                                <span className="material-symbols-rounded text-lg">filter_list_off</span>
+                                Reset All Filters
+                            </button>
                         )}
                     </div>
                 ) : (

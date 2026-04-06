@@ -592,7 +592,15 @@ export default function AutomationNodeModal({
                           </div>
                           {form.interview_type === "AI" && (
                             <div>
-                              <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5 ml-1">AI Template</label>
+                               <div className="flex items-center justify-between mb-1.5 ml-1">
+                                 <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest">AI Template</label>
+                                 <button 
+                                   onClick={() => window.open('/enterprise/settings/interview-templates', '_blank')}
+                                   className="text-[10px] font-bold text-[#7C3AED] hover:underline uppercase"
+                                 >
+                                   + Create New
+                                 </button>
+                               </div>
                               <select value={form.interview_template_id} onChange={(e) => setForm((f: any) => ({ ...f, interview_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 bg-white">
                                 <option value="">Select AI Template</option>
                                 {interviewTemplates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -650,6 +658,15 @@ export default function AutomationNodeModal({
                               {emailTemplates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
                             </select>
                           </div>
+                        </div>
+                        <div className="pt-2">
+                           <button
+                             onClick={handleGenerateTimeSlots}
+                             className="w-full py-3 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#7C3AED]/20"
+                           >
+                              <span className="material-symbols-rounded text-lg">schedule</span>
+                              Next: Configure Time Slots
+                           </button>
                         </div>
                       </>
                     )}
