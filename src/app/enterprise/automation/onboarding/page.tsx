@@ -185,13 +185,18 @@ export default function OnboardingAutomationPage() {
     }
     setSaving(true);
     try {
-      const payload = {
-        ...form,
+      const payload: Record<string, any> = {
         stage_index: Number(form.stage_index),
-        stage_name: form.stage_name.trim() || null,
+        stage_name: form.stage_name?.trim() || null,
+        template_id: form.template_id,
         email_template_id: form.email_template_id || null,
+        is_enabled: form.is_enabled,
         auto_move: form.auto_move,
       };
+      
+      if (!editingId) {
+        payload.job_requirement_id = form.job_requirement_id;
+      }
       const url = editingId
         ? `${BACKEND_URL}/api/v1/enterprise/onboarding-automation/${editingId}`
         : `${BACKEND_URL}/api/v1/enterprise/onboarding-automation/`;
@@ -444,8 +449,9 @@ export default function OnboardingAutomationPage() {
                   </label>
                   <select
                     value={form.job_requirement_id}
-                    onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#4f46e5]/10 focus:border-[#4f46e5] transition-all"
+                    onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 0, stage_name: "" }))}
+                    disabled={!!editingId}
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#4f46e5]/10 focus:border-[#4f46e5] disabled:bg-slate-50 disabled:text-slate-400 transition-all"
                   >
                     <option value="">Select job…</option>
                     {jobs.map((j) => (
@@ -461,13 +467,21 @@ export default function OnboardingAutomationPage() {
                   </label>
                   {jobRounds.length > 0 ? (
                     <select
-                      onChange={handleRoundSelect}
-                      defaultValue={editingId ? `${form.stage_index}|${form.stage_name}` : ""}
+                      onChange={(e) => {
+                        const idx = Number(e.target.value);
+                        if (idx === 0) {
+                          setForm(f => ({ ...f, stage_index: 0, stage_name: "" }));
+                          return;
+                        }
+                        const round = jobRounds[idx - 1];
+                        setForm(f => ({ ...f, stage_index: idx, stage_name: round?.name || "" }));
+                      }}
+                      value={form.stage_index}
                       className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#4f46e5]/10 focus:border-[#4f46e5] transition-all"
                     >
-                      <option value="">Pick stage…</option>
+                      <option value={0}>Pick stage…</option>
                       {jobRounds.map((r, i) => (
-                        <option key={i} value={`${i + 1}|${r.name}`}>
+                        <option key={i} value={i + 1}>
                           Stage {i + 1}: {r.name}
                         </option>
                       ))}
