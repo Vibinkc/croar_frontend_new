@@ -174,7 +174,15 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 router.push("/enterprise/employees");
             } else {
                 const err = await res.json();
-                alert(err.detail || "Failed to save employee");
+                let errMsg = "Failed to save employee";
+                if (err.detail) {
+                    if (Array.isArray(err.detail)) {
+                        errMsg = err.detail.map((e: any) => `${e.loc?.slice(-1)[0] || 'Field'}: ${e.msg}`).join('\n');
+                    } else {
+                        errMsg = err.detail;
+                    }
+                }
+                alert(errMsg);
             }
         } catch (error) {
             console.error("Error saving employee:", error);
@@ -473,7 +481,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                             </div>
                             <div className="space-y-4">
                                 <h3 className="text-sm font-bold text-slate-800">Documents</h3>
-                                <p className="text-[10px] text-slate-500 font-semibold italic">Uploaded documents during onboarding and post-onboarding.</p>
+                                <p className="text-[10px] text-slate-500 font-semibold italic md:pr-4 leading-relaxed">Onboarding documents and related details are managed entirely through the Candidate Onboarding Portal. Records here are read-only references synced securely from their onboarding session.</p>
                                 <div className="space-y-2">
                                     {formData.documents.map((doc: any, idx: number) => (
                                         <a key={idx} href={doc.file_path} target="_blank" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-white hover:shadow-sm border border-slate-200 transition-all">
