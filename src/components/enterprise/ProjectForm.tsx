@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
 import ProjectKanban from "./ProjectKanban";
+import { Reorder } from "framer-motion";
 
 interface ProjectFormProps {
     projectId?: string;
@@ -110,6 +111,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                 } else {
                     fetchProjectData();
                     alert("Project updated successfully!");
+                    router.push("/enterprise/projects");
                 }
             } else {
                 const err = await res.json();
@@ -310,20 +312,32 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                 <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Kanban Workflow</h4>
                                 <p className="text-[10px] text-slate-400 font-bold ml-1 mt-1">Define the custom stages for your project's task board.</p>
                             </div>
-                            
                             <div className="flex flex-wrap gap-3">
-                                {formData.kanban_columns?.map((col: string, idx: number) => (
-                                    <div key={idx} className="flex items-center gap-2 bg-indigo-50/50 border border-indigo-100/50 px-4 py-2 rounded-xl group animate-in fade-in slide-in-from-left-2 duration-300" style={{ animationDelay: `${idx * 50}ms` }}>
-                                        <span className="text-xs font-black text-indigo-600 uppercase tracking-widest">{col}</span>
-                                        <button 
-                                            type="button" 
-                                            onClick={() => handleRemoveColumn(col)}
-                                            className="text-indigo-300 hover:text-rose-500 transition-colors"
+                                <Reorder.Group 
+                                    axis="x" 
+                                    values={formData.kanban_columns} 
+                                    onReorder={(newOrder) => setFormData((prev: any) => ({ ...prev, kanban_columns: newOrder }))}
+                                    className="flex flex-wrap gap-3"
+                                >
+                                    {formData.kanban_columns?.map((col: string, idx: number) => (
+                                        <Reorder.Item 
+                                            key={col} 
+                                            value={col}
+                                            className="flex items-center gap-2 bg-indigo-50/50 border border-indigo-100/50 px-4 py-2 rounded-xl group cursor-grab active:cursor-grabbing hover:bg-indigo-100/50 transition-colors animate-in fade-in slide-in-from-left-2 duration-300"
+                                            style={{ animationDelay: `${idx * 50}ms` }}
                                         >
-                                            <span className="material-symbols-rounded text-base font-black">close</span>
-                                        </button>
-                                    </div>
-                                ))}
+                                            <span className="material-symbols-rounded text-slate-400 text-sm">drag_indicator</span>
+                                            <span className="text-xs font-black text-indigo-600 uppercase tracking-widest">{col}</span>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => handleRemoveColumn(col)}
+                                                className="text-indigo-300 hover:text-rose-500 transition-colors"
+                                            >
+                                                <span className="material-symbols-rounded text-base font-black">close</span>
+                                            </button>
+                                        </Reorder.Item>
+                                    ))}
+                                </Reorder.Group>
                                 <div className="flex gap-2">
                                     <input
                                         value={newColumnName}
