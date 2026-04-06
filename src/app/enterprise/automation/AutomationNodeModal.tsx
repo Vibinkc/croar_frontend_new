@@ -235,9 +235,33 @@ export default function AutomationNodeModal({
   };
 
   const handleSave = async () => {
-    if (!form.job_requirement_id || (type !== 'onboarding' && !form.criteria.trim())) {
-      showToast("Please fill in required fields.", "error");
+    if (!form.job_requirement_id || form.job_requirement_id === "undefined") {
+      showToast("Please select a target job.", "error");
       return;
+    }
+
+    if (type !== 'onboarding' && (!form.criteria || !form.criteria.trim())) {
+      showToast("Please fill in trigger condition.", "error");
+      return;
+    }
+
+    if (type === "interview") {
+      if (!form.start_date || !form.end_date || !form.start_time || !form.end_time || !form.duration || !form.daily_limit) {
+        showToast("Please fill in all required date, time, and limit fields.", "error");
+        return;
+      }
+      if (new Date(form.start_date) > new Date(form.end_date)) {
+        showToast("Available To date must be equal or after Available From date.", "error");
+        return;
+      }
+      if (form.interview_type === "AI" && !form.interview_template_id) {
+        showToast("Please select an AI template.", "error");
+        return;
+      }
+      if (form.interview_type === "GMEET" && !form.interviewer_email?.trim()) {
+        showToast("Please provide interviewer email for Google Meet.", "error");
+        return;
+      }
     }
 
     if (!form.is_immediate && form.send_at) {
@@ -611,32 +635,36 @@ export default function AutomationNodeModal({
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Available From</label>
-                            <input type="date" value={form.start_date} onChange={(e) => setForm((f: any) => ({ ...f, start_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Available From <span className="text-red-400">*</span></label>
+                            <input type="date" value={form.start_date} min={new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: any) => ({ ...f, start_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Available To</label>
-                            <input type="date" value={form.end_date} onChange={(e) => setForm((f: any) => ({ ...f, end_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Available To <span className="text-red-400">*</span></label>
+                            <input type="date" value={form.end_date} min={form.start_date || new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: any) => ({ ...f, end_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-4 gap-4">
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Start Time</label>
-                            <input type="time" value={form.start_time} onChange={(e) => setForm((f: any) => ({ ...f, start_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm" />
+                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Start Time <span className="text-red-400">*</span></label>
+                            <input type="time" value={form.start_time} onChange={(e) => setForm((f: any) => ({ ...f, start_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">End Time</label>
-                            <input type="time" value={form.end_time} onChange={(e) => setForm((f: any) => ({ ...f, end_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm" />
+                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">End Time <span className="text-red-400">*</span></label>
+                            <input type="time" value={form.end_time} onChange={(e) => setForm((f: any) => ({ ...f, end_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Duration</label>
-                            <select value={form.duration} onChange={(e) => setForm((f: any) => ({ ...f, duration: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-2 py-3 text-sm font-bold bg-white">
+                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Duration <span className="text-red-400">*</span></label>
+                            <select value={form.duration} onChange={(e) => setForm((f: any) => ({ ...f, duration: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-2 py-3 text-sm font-bold bg-white focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]">
                               <option value="15">15m</option>
                               <option value="30">30m</option>
                               <option value="45">45m</option>
                               <option value="60">60m</option>
                             </select>
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Daily Limit <span className="text-red-400">*</span></label>
+                            <input type="number" min={1} value={form.daily_limit} onChange={(e) => setForm((f: any) => ({ ...f, daily_limit: Number(e.target.value) }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                         </div>
 
@@ -884,9 +912,15 @@ export default function AutomationNodeModal({
                            <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest">Time Slots</h3>
                            <button 
                              onClick={() => {
+                               const limit = Number(form.daily_limit) || 0;
+                               if (limit > 0 && form.time_slots?.length >= limit) {
+                                  showToast(`Daily limit of ${limit} slots reached.`, "error");
+                                  return;
+                               }
                                setForm((f: any) => ({ ...f, time_slots: [...(f.time_slots || []), "09:00"] }));
                              }}
-                             className="text-[10px] font-bold text-[#7C3AED] hover:underline uppercase"
+                             disabled={Number(form.daily_limit) > 0 && form.time_slots?.length >= Number(form.daily_limit)}
+                             className="text-[10px] font-bold text-[#7C3AED] hover:underline uppercase disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:no-underline"
                            >
                              + Add Slot
                            </button>
