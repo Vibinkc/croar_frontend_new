@@ -36,6 +36,7 @@ interface Automation {
   generated_questions: any[] | null;
   test_duration: number;
   email_template_id: string | null;
+  template_id: string | null;
   email_template?: {
     id: string;
     name: string;
@@ -63,6 +64,7 @@ interface FormState {
   question_count: number | string;
   test_duration: number | string;
   email_template_id: string;
+  template_id: string;
   is_enabled: boolean;
   is_immediate: boolean;
   auto_move: boolean;
@@ -80,6 +82,7 @@ const EMPTY_FORM: FormState = {
   question_count: 10,
   test_duration: 30,
   email_template_id: "",
+  template_id: "",
   is_enabled: true,
   is_immediate: true,
   auto_move: false,
@@ -100,6 +103,7 @@ export default function AssessmentAutomationPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [automations, setAutomations] = useState<Automation[]>([]);
   const [selectedJobId, setSelectedJobId] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -109,6 +113,8 @@ export default function AssessmentAutomationPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [previewingAutomation, setPreviewingAutomation] = useState<Automation | null>(null);
+  const [originalForm, setOriginalForm] = useState<FormState | null>(null);
+  const [originalQuestions, setOriginalQuestions] = useState<any[] | null>(null);
   const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
   const [assessmentTemplates, setAssessmentTemplates] = useState<any[]>([]);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
@@ -208,7 +214,7 @@ export default function AssessmentAutomationPage() {
 
   const openEdit = (a: Automation) => {
     setEditingId(a.id);
-    setForm({
+    const newForm = {
       job_requirement_id: a.job_requirement_id,
       stage_index: a.stage_index,
       stage_name: a.stage_name ?? "",
@@ -218,12 +224,18 @@ export default function AssessmentAutomationPage() {
       question_count: a.question_count || 10,
       test_duration: a.test_duration,
       email_template_id: a.email_template_id || "",
+      template_id: a.template_id || "",
       is_enabled: a.is_enabled,
       is_immediate: a.is_immediate,
       auto_move: a.auto_move || false,
       send_at: a.send_at ? toLocalISO(a.send_at) : "",
-      generated_questions: a.generated_questions || null,
-    });
+      generated_questions: (a.generated_questions || []).map((q: any) => ({
+        ...q,
+        id: q.id || crypto.randomUUID(),
+      })) || null,
+    };
+    setForm(newForm);
+    setOriginalForm(newForm);
     setShowModal(true);
   };
 
@@ -231,6 +243,8 @@ export default function AssessmentAutomationPage() {
     setShowModal(false);
     setEditingId(null);
     setForm(EMPTY_FORM);
+    setOriginalForm(null);
+    setOriginalQuestions(null);
     setActiveTab('config');
   };
 
@@ -249,6 +263,12 @@ export default function AssessmentAutomationPage() {
       showToast("Please enter a topic for the assessment.", "error");
       return;
     }
+    if (!form.is_immediate && form.send_at) {
+      if (new Date(form.send_at) < new Date()) {
+        showToast("Scheduled time cannot be in the past.", "error");
+        return;
+      }
+    }
     setSaving(true);
     try {
       const qs = `type=${form.type}&topic=${encodeURIComponent(form.topic)}&count=${form.question_count}`;
@@ -257,12 +277,21 @@ export default function AssessmentAutomationPage() {
         headers: authHeaders,
       });
       if (res.ok) {
-        const questions = await res.json();
-        setForm(f => ({ ...f, generated_questions: questions }));
+        let questions = await res.json();
+        // Handle both raw array and { questions: [...] } format
+        const qArray = Array.isArray(questions) ? questions : (questions.questions || []);
+        
+        // Ensure each question has an ID for proper React rendering
+        const finalQuestions = qArray.map((q: any) => ({
+          ...q,
+          id: q.id || crypto.randomUUID()
+        }));
+
+        setForm(f => ({ ...f, generated_questions: finalQuestions }));
         setActiveTab('questions');
-        showToast("Preview generated! Please review questions.");
+        showToast("Questions generated! Please review questions.");
       } else {
-        showToast("Failed to generate preview.", "error");
+        showToast("Failed to generate questions.", "error");
       }
     } finally {
       setSaving(false);
@@ -274,17 +303,30 @@ export default function AssessmentAutomationPage() {
       showToast("Job selection is required.", "error");
       return;
     }
+    if (!form.is_immediate && form.send_at) {
+      if (new Date(form.send_at) < new Date()) {
+        showToast("Scheduled time cannot be in the past.", "error");
+        return;
+      }
+    }
     setSaving(true);
     try {
       const payload = {
-        ...form,
-        stage_index: Number(form.stage_index),
+        job_requirement_id: form.job_requirement_id,
+        stage_index: Number(form.stage_index) || 0,
         stage_name: form.stage_name.trim() || null,
+        criteria: form.criteria || "Assessment Trigger",
+        type: form.type,
+        topic: form.topic,
+        question_count: Number(form.question_count),
+        test_duration: Number(form.test_duration),
         email_template_id: form.email_template_id || null,
-        generated_questions: form.generated_questions,
+        template_id: form.template_id || null,
+        is_enabled: form.is_enabled,
         is_immediate: form.is_immediate,
         auto_move: form.auto_move,
         send_at: form.is_immediate || !form.send_at ? null : new Date(form.send_at).toISOString(),
+        generated_questions: form.generated_questions,
       };
       const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/`, {
         method: "POST",
@@ -329,16 +371,30 @@ export default function AssessmentAutomationPage() {
 
   const handleUpdate = async () => {
     if (!editingId) return;
+    if (!form.is_immediate && form.send_at) {
+      if (new Date(form.send_at) < new Date()) {
+        showToast("Scheduled time cannot be in the past.", "error");
+        return;
+      }
+    }
     setSaving(true);
     try {
       const payload = {
-        ...form,
+        job_requirement_id: form.job_requirement_id,
         stage_index: Number(form.stage_index),
         stage_name: form.stage_name.trim() || null,
+        criteria: form.criteria,
+        type: form.type,
+        topic: form.topic,
+        question_count: Number(form.question_count),
+        test_duration: Number(form.test_duration),
         email_template_id: form.email_template_id || null,
+        template_id: form.template_id || null,
+        is_enabled: form.is_enabled,
         is_immediate: form.is_immediate,
         auto_move: form.auto_move,
         send_at: form.is_immediate || !form.send_at ? null : new Date(form.send_at).toISOString(),
+        generated_questions: form.generated_questions,
       };
       const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${editingId}`, {
         method: "PATCH",
@@ -433,14 +489,24 @@ export default function AssessmentAutomationPage() {
   };
 
   const handleAddQuestion = () => {
-    const newQ = {
+    const currentType = (previewingAutomation?.type || form.type) === "CODING" ? "CODING" : "APTITUDE";
+    
+    const newQ: any = {
       id: crypto.randomUUID(),
-      type: "APTITUDE",
-      question: "New Question",
-      options: ["Option 1", "Option 2", "Option 3", "Option 4"],
-      correct_answer: "Option 1",
-      explanation: ""
+      type: currentType,
     };
+
+    if (currentType === "CODING") {
+      newQ.title = "New Coding Problem";
+      newQ.description = "Enter problem description...";
+      newQ.problem_statement = "// Write your problem statement or starter code here...";
+    } else {
+      newQ.question = "New Aptitude Question";
+      newQ.options = ["Option 1", "Option 2", "Option 3", "Option 4"];
+      newQ.correct_answer = "Option 1";
+      newQ.explanation = "";
+    }
+
     if (previewingAutomation) {
       setPreviewingAutomation(prev => ({
         ...prev!,
@@ -452,6 +518,7 @@ export default function AssessmentAutomationPage() {
         generated_questions: [...(f.generated_questions || []), newQ]
       }));
     }
+    showToast("Manual question added!");
   };
 
   // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -479,6 +546,22 @@ export default function AssessmentAutomationPage() {
       stage_name: nameParts.join("|"),
     }));
   };
+  
+  const filteredAutomations = automations.filter((a) => {
+    const matchesJob = !selectedJobId || a.job_requirement_id === selectedJobId;
+    const s = searchQuery.toLowerCase();
+    const matchesSearch = !searchQuery || 
+      a.topic?.toLowerCase().includes(s) || 
+      a.criteria?.toLowerCase().includes(s) ||
+      jobTitle(a.job_requirement_id).toLowerCase().includes(s) ||
+      a.stage_name?.toLowerCase().includes(s);
+    return matchesJob && matchesSearch;
+  });
+
+  const hasFormChanged = originalForm ? JSON.stringify(form) !== JSON.stringify(originalForm) : true;
+  const hasQuestionsChanged = (previewingAutomation && originalQuestions) 
+    ? JSON.stringify(previewingAutomation.generated_questions) !== JSON.stringify(originalQuestions)
+    : true;
 
   // ─── Render ────────────────────────────────────────────────────────────────
 
@@ -520,20 +603,44 @@ export default function AssessmentAutomationPage() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="flex items-center gap-4 mb-6 pt-4 border-t border-slate-100">
-        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest shrink-0">Filter by</span>
-        <div className="flex items-center gap-2 flex-1 max-w-xs">
-          <select
-            value={selectedJobId}
-            onChange={(e) => setSelectedJobId(e.target.value)}
-            className="w-full border-none bg-slate-50 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-500 focus:ring-2 focus:ring-[#7C3AED]/20"
-          >
-            <option value="">All Jobs</option>
-            {jobs.map((j) => (
-              <option key={j.id} value={j.id}>{j.title}</option>
-            ))}
-          </select>
+      <div className="flex flex-col md:flex-row items-center gap-4 mb-8 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+        <div className="relative group w-full md:max-w-md">
+          <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl transition-colors group-focus-within:text-[#7C3AED]">search</span>
+          <input 
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by topic, round name, or criteria..."
+            className="w-full bg-slate-50 border-none rounded-xl py-2.5 pl-11 pr-4 text-xs font-bold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:bg-white transition-all border border-transparent focus:border-[#7C3AED]/20"
+          />
         </div>
+
+        <div className="hidden md:block h-8 w-px bg-slate-100 mx-2" />
+
+        <div className="flex items-center gap-3 w-full md:w-auto overflow-hidden">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest shrink-0">Filter by</span>
+          <div className="flex items-center gap-2 flex-1 md:min-w-[200px]">
+            <select
+              value={selectedJobId}
+              onChange={(e) => setSelectedJobId(e.target.value)}
+              className="w-full border-none bg-slate-50 rounded-xl px-4 py-2 text-xs font-black text-slate-600 uppercase tracking-tight focus:ring-4 focus:ring-[#7C3AED]/5 hover:bg-slate-100 transition-all cursor-pointer appearance-none"
+            >
+              <option value="">All Jobs</option>
+              {jobs.map((j) => (
+                <option key={j.id} value={j.id}>{j.title}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {(searchQuery || selectedJobId) && (
+          <button 
+            onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
+            className="text-[10px] font-bold text-[#7C3AED] hover:underline uppercase shrink-0 px-2"
+          >
+            Reset
+          </button>
+        )}
       </div>
 
       {/* List */}
@@ -541,7 +648,7 @@ export default function AssessmentAutomationPage() {
         <div className="flex justify-center py-20">
           <div className="w-8 h-8 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
         </div>
-      ) : automations.length === 0 ? (
+      ) : filteredAutomations.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
             <span className="material-symbols-rounded text-[#7C3AED] text-4xl">psychology</span>
@@ -553,7 +660,7 @@ export default function AssessmentAutomationPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {automations.map((a) => (
+          {filteredAutomations.map((a) => (
             <div
               key={a.id}
               className={`bg-white border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
@@ -622,7 +729,10 @@ export default function AssessmentAutomationPage() {
                 </button>
                 {a.generated_questions && (
                   <button
-                    onClick={() => setPreviewingAutomation(a)}
+                    onClick={() => {
+                      setPreviewingAutomation(a);
+                      setOriginalQuestions(a.generated_questions);
+                    }}
                     className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-emerald-50 text-emerald-500 transition-all"
                     title="Preview Questions"
                   >
@@ -763,6 +873,7 @@ export default function AssessmentAutomationPage() {
                                if (templ) {
                                   setForm(f => ({
                                       ...f,
+                                      template_id: templateId,
                                       type: templ.type,
                                       topic: templ.topic,
                                       question_count: templ.question_count,
@@ -942,6 +1053,22 @@ export default function AssessmentAutomationPage() {
                           </p>
                         </div>
                       )}
+
+                      <div className="pt-4 mt-6 border-t border-slate-100">
+                        <button
+                          onClick={handleGeneratePreview}
+                          disabled={saving || !form.job_requirement_id || !form.topic}
+                          className="w-full py-4 bg-[#7C3AED] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-xl shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-3 border border-[#7C3AED]/20 disabled:opacity-50"
+                        >
+                          {saving ? (
+                            <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <span className="material-symbols-rounded text-xl">auto_awesome</span>
+                          )}
+                          {form.generated_questions?.length ? "Regenerate Draft with AI" : "Draft Questions with AI"}
+                        </button>
+                        <p className="text-[10px] text-slate-400 mt-3 text-center font-bold uppercase tracking-widest opacity-60">Step 1: Configure & Draft</p>
+                      </div>
                     </div>
                 </div>
               ) : (
@@ -1025,6 +1152,14 @@ export default function AssessmentAutomationPage() {
                                       className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
                                     />
                                   </div>
+                                  <div>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Problem Statement</label>
+                                    <textarea 
+                                      value={q.problem_statement} 
+                                      onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
+                                      className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
+                                    />
+                                  </div>
                                 </>
                               )}
                             </div>
@@ -1038,7 +1173,7 @@ export default function AssessmentAutomationPage() {
                         </div>
                         <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">No Preview Yet</h3>
                         <p className="max-w-[240px] text-[10px] font-bold text-slate-300 uppercase tracking-widest leading-relaxed mt-2">
-                          Click "Generate Preview" in the configuration tab to see AI-generated questions here.
+                          Click "Generate AI Questions" in the configuration tab to see AI-generated questions here.
                         </p>
                       </div>
                     )}
@@ -1057,8 +1192,8 @@ export default function AssessmentAutomationPage() {
                 {editingId ? (
                   <button
                     onClick={handleUpdate}
-                    disabled={saving}
-                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
+                    disabled={saving || !hasFormChanged}
+                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                   >
                     {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">save</span>}
                     Save Changes
@@ -1079,7 +1214,7 @@ export default function AssessmentAutomationPage() {
                     className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
                   >
                     {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">auto_awesome</span>}
-                    Generate Preview
+                    Generate Draft with AI
                   </button>
                 )}
               </div>
@@ -1102,7 +1237,7 @@ export default function AssessmentAutomationPage() {
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{previewingAutomation.topic} • {previewingAutomation.type}</p>
                 </div>
               </div>
-              <button onClick={() => setPreviewingAutomation(null)} className="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all">
+              <button onClick={() => { setPreviewingAutomation(null); setOriginalQuestions(null); }} className="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all">
                 <span className="material-symbols-rounded text-xl">close</span>
               </button>
             </div>
@@ -1195,6 +1330,7 @@ export default function AssessmentAutomationPage() {
                   onClick={() => {
                     setPreviewingAutomation(null);
                     setIsPreviewingNew(false);
+                    setOriginalQuestions(null);
                   }} 
                   className="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-100 transition-all"
                 >
@@ -1202,8 +1338,8 @@ export default function AssessmentAutomationPage() {
                 </button>
                 <button 
                    onClick={isPreviewingNew ? handleFinalCreate : handleSaveQuestions}
-                   disabled={saving}
-                   className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 flex items-center gap-2"
+                   disabled={saving || (!isPreviewingNew && !hasQuestionsChanged)}
+                   className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 flex items-center gap-2 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                 >
                   {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">{isPreviewingNew ? "rocket_launch" : "cloud_done"}</span>}
                   {isPreviewingNew ? "Confirm & Create Automation" : "Save Question Set"}

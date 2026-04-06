@@ -140,6 +140,13 @@ export default function AutomationNodeModal({
       showToast("Please enter a topic for the assessment.", "error");
       return;
     }
+
+    if (!form.is_immediate && form.send_at) {
+      if (new Date(form.send_at) < new Date()) {
+        showToast("Scheduled time cannot be in the past.", "error");
+        return;
+      }
+    }
     setLoading(true);
     try {
       const qs = `type=${form.assessment_type}&topic=${encodeURIComponent(form.topic)}&count=${form.question_count}`;
@@ -151,9 +158,9 @@ export default function AutomationNodeModal({
         const questions = await res.json();
         setForm((f: any) => ({ ...f, generated_questions: questions }));
         setActiveTab("sub"); // Switch to questions tab
-        showToast("Preview generated! Please review questions.");
+        showToast("Questions generated! Please review questions.");
       } else {
-        showToast("Failed to generate preview.", "error");
+        showToast("Failed to generate questions.", "error");
       }
     } finally {
       setLoading(false);
@@ -231,6 +238,13 @@ export default function AutomationNodeModal({
     if (!form.job_requirement_id || (type !== 'onboarding' && !form.criteria.trim())) {
       showToast("Please fill in required fields.", "error");
       return;
+    }
+
+    if (!form.is_immediate && form.send_at) {
+      if (new Date(form.send_at) < new Date()) {
+        showToast("Scheduled time cannot be in the past.", "error");
+        return;
+      }
     }
 
     setSaving(true);

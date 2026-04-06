@@ -510,7 +510,7 @@ export default function AssessmentTemplatesPage() {
                                                 </div>
                                                 <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">No Questions Found</h3>
                                                 <p className="max-w-[240px] text-[10px] font-bold text-slate-300 uppercase tracking-widest leading-relaxed mt-2">
-                                                    Click &quot;Generate Preview&quot; below to populate with AI questions, or add a manual question.
+                                                    Click &quot;Generate AI Questions&quot; below to populate with AI questions, or add a manual question.
                                                 </p>
                                             </div>
                                         )}
@@ -526,7 +526,7 @@ export default function AssessmentTemplatesPage() {
                                         className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
                                     >
                                         {isGenerating ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">auto_awesome</span>}
-                                        Generate Preview
+                                        Generate AI Questions
                                     </button>
                                 )}
                                 <button
