@@ -171,7 +171,7 @@ export default function AssessmentTemplatesPage() {
                     name,
                     type,
                     topic,
-                    question_count: questionCount,
+                    question_count: generatedQuestions.length || questionCount,
                     test_duration: duration,
                     email_template_id: selectedEmailTemplateId || null,
                     generated_questions: generatedQuestions
@@ -425,7 +425,8 @@ export default function AssessmentTemplatesPage() {
                                             </div>
                                             <button 
                                                 onClick={handleAddQuestion}
-                                                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
+                                                disabled={generatedQuestions.length >= questionCount}
+                                                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 <span className="material-symbols-rounded text-sm">add</span>
                                                 Add Question
@@ -522,7 +523,7 @@ export default function AssessmentTemplatesPage() {
                                 {activeTab === 'config' && (
                                     <button
                                         onClick={handleGenerateQuestions}
-                                        disabled={isGenerating || !name || !topic}
+                                        disabled={isGenerating || !name || !topic || !selectedEmailTemplateId}
                                         className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
                                     >
                                         {isGenerating ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">auto_awesome</span>}
@@ -531,7 +532,7 @@ export default function AssessmentTemplatesPage() {
                                 )}
                                 <button
                                     onClick={handleSave}
-                                    disabled={!name || !topic}
+                                    disabled={!name || !topic || !selectedEmailTemplateId}
                                     className={`px-6 py-3 text-white rounded-xl text-sm font-black uppercase tracking-widest shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center gap-2 ${activeTab === 'questions' ? 'flex-[2] bg-[#7C3AED] hover:bg-[#6d28d9]' : 'flex-1 bg-slate-300 hover:bg-[#7C3AED]'}`}
                                 >
                                     <span className="material-symbols-rounded text-base">save</span>
