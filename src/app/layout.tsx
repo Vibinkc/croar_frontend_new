@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Acroz AI Portal",
+  title: "Croar AI Portal",
   description: "",
   icons: {
     icon: '/favicon.ico',
