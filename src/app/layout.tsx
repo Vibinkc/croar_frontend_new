@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Academik.ai Portal",
-  description: "Master your skills with Academik.ai",
+  title: "Acroz AI Portal",
+  description: "",
   icons: {
     icon: '/favicon.ico',
   },
