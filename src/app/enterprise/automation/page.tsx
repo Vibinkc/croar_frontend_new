@@ -305,35 +305,35 @@ export default function AutomationCanvasPage() {
   return (
     <div className="w-full h-full flex flex-col bg-[#FDFDFF]">
       {/* Header */}
-      <div className="px-6 py-6 border-b border-slate-100 flex-shrink-0 bg-white shadow-sm z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center">
-              <span className="material-symbols-rounded text-[#7C3AED] text-2xl">account_tree</span>
-            </div>
-            <h1 className="text-2xl font-black text-slate-900">Automation Canvas</h1>
+      <div className="px-4 py-3 border-b border-slate-100 flex-shrink-0 bg-white shadow-sm z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0">
+            <span className="material-symbols-rounded text-[#7C3AED] text-xl">account_tree</span>
           </div>
-          <p className="text-slate-500 text-sm ml-13 pl-13">
-            Visualize and build your automated hiring pipelines.
-          </p>
+          <div>
+            <h1 className="text-lg font-black text-slate-900 leading-tight">Automation Canvas</h1>
+            <p className="text-slate-500 text-[11px] font-medium leading-relaxed">
+              Visualize and build your automated hiring pipelines.
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-4">
           <button 
             onClick={() => selectedJobId && fetchAutomations(selectedJobId)}
             disabled={loading || !selectedJobId}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all font-bold text-sm bg-white shadow-sm disabled:opacity-50"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all font-bold text-[11px] bg-white shadow-sm disabled:opacity-50"
           >
-            <span className={`material-symbols-rounded text-lg ${loading ? 'animate-spin' : ''}`}>refresh</span>
+            <span className={`material-symbols-rounded text-base ${loading ? 'animate-spin' : ''}`}>refresh</span>
             SYNC
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="material-symbols-rounded text-slate-400">work</span>
+            <span className="material-symbols-rounded text-slate-400 text-base">work</span>
             <select
               value={selectedJobId}
               onChange={(e) => setSelectedJobId(e.target.value)}
-              className="w-64 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/30 focus:border-[#7C3AED] shadow-sm"
+              className="w-56 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/30 focus:border-[#7C3AED] shadow-sm"
             >
               <option value="">Select a Job to view flow...</option>
               {jobs.map((j) => (

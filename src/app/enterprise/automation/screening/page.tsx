@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
+import { AnimatePresence, motion } from "framer-motion";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -64,13 +66,13 @@ const EMPTY_FORM: FormState = {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function MailAutomationPage() {
+export default function ScreeningAutomationPage() {
   const { token } = useAuth();
 
-  const authHeaders = {
+  const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
+  }), [token]);
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -81,8 +83,11 @@ export default function MailAutomationPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  
+  // Consistency State
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [automationToDelete, setAutomationToDelete] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
   const showToast = (msg: any, type: "success" | "error" = "success") => {
@@ -97,10 +102,10 @@ export default function MailAutomationPage() {
       finalMsg = String(msg || "An error occurred");
     }
     setToast({ msg: finalMsg, type });
-    setTimeout(() => setToast(null), 5000);
+    setTimeout(() => setToast(null), 3000);
   };
 
-  // Fetch jobs & templates on mount (wait for token)
+  // Fetch jobs & templates
   useEffect(() => {
     if (!token) return;
     const fetchMeta = async () => {
@@ -118,10 +123,9 @@ export default function MailAutomationPage() {
       }
     };
     fetchMeta();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, authHeaders]);
 
-  // Fetch automations when job selection changes
+  // Fetch automations
   const fetchAutomations = useCallback(async (jobId?: string) => {
     if (!token) return;
     setLoading(true);
@@ -137,29 +141,14 @@ export default function MailAutomationPage() {
     } finally {
       setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
-
-  useEffect(() => {
-    if (showModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [showModal]);
+  }, [token, authHeaders]);
 
   useEffect(() => {
     fetchAutomations(selectedJobId || undefined);
   }, [selectedJobId, fetchAutomations]);
 
-  // Rounds extracted from the selected job's workflow_stages
   const selectedJob = jobs.find((j) => j.id === form.job_requirement_id);
   const jobRounds: WorkflowStage[] = selectedJob?.workflow_stages ?? [];
-
-  // ── Modal helpers ────────────────────────────────────────────────────────────
 
   const openCreate = () => {
     setEditingId(null);
@@ -178,7 +167,7 @@ export default function MailAutomationPage() {
       auto_move: a.auto_move,
       is_enabled: a.is_enabled,
       is_immediate: a.is_immediate,
-      send_at: a.send_at ? a.send_at.replace(' ', 'T').split('.')[0].slice(0, 16) : "", // Format for datetime-local input
+      send_at: a.send_at ? a.send_at.replace(' ', 'T').split('.')[0].slice(0, 16) : "",
     });
     setShowModal(true);
   };
@@ -189,16 +178,13 @@ export default function MailAutomationPage() {
     setForm(EMPTY_FORM);
   };
 
-  // ── Save ─────────────────────────────────────────────────────────────────────
-
   const handleSave = async () => {
     if (!form.job_requirement_id || !form.criteria.trim() || !form.template_id) {
       showToast("Please fill in all required fields.", "error");
       return;
     }
     if (!form.is_immediate && form.send_at) {
-      const scheduledDate = new Date(form.send_at);
-      if (scheduledDate < new Date()) {
+      if (new Date(form.send_at) < new Date()) {
         showToast("Scheduled time cannot be in the past.", "error");
         return;
       }
@@ -233,8 +219,6 @@ export default function MailAutomationPage() {
     }
   };
 
-  // ── Toggle ───────────────────────────────────────────────────────────────────
-
   const handleToggle = async (a: Automation) => {
     setTogglingId(a.id);
     try {
@@ -247,93 +231,68 @@ export default function MailAutomationPage() {
         setAutomations((prev) =>
           prev.map((item) => (item.id === a.id ? { ...item, is_enabled: !a.is_enabled } : item))
         );
-      } else {
-        showToast("Failed to update status.", "error");
+        showToast(a.is_enabled ? "Disabled" : "Enabled");
       }
     } finally {
       setTogglingId(null);
     }
   };
 
-  // ── Delete ────────────────────────────────────────────────────────────────────
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this automation?")) return;
-    setDeletingId(id);
+  const handleDelete = async () => {
+    if (!automationToDelete) return;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/automation/mail/${id}`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/automation/mail/${automationToDelete}`, {
         method: "DELETE",
         headers: authHeaders,
       });
       if (res.ok) {
         showToast("Automation deleted.");
-        setAutomations((prev) => prev.filter((a) => a.id !== id));
-      } else {
-        showToast("Failed to delete.", "error");
+        setAutomations((prev) => prev.filter((a) => a.id !== automationToDelete));
       }
     } finally {
-      setDeletingId(null);
+      setIsDeleteModalOpen(false);
+      setAutomationToDelete(null);
     }
   };
-
-  // ── Helpers ──────────────────────────────────────────────────────────────────
 
   const jobTitle = (id: string) => jobs.find((j) => j.id === id)?.title ?? "—";
   const templateName = (id: string) => templates.find((t) => t.id === id)?.name ?? "—";
 
-  // ── When user picks a round from dropdown, auto-fill stage_index + stage_name
-  const handleRoundSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    if (val === "") return;
-    const [idxStr, ...nameParts] = val.split("|");
-    setForm((f) => ({
-      ...f,
-      stage_index: Number(idxStr),
-      stage_name: nameParts.join("|"),
-    }));
-  };
-
-  // ─── Render ────────────────────────────────────────────────────────────────
-
   return (
-    <div className="min-h-screen bg-[#FDFDFF] p-6 md:p-8">
+    <div className="min-h-screen bg-[#FDFDFF] p-4 md:p-6 lg:p-8 pt-4 animate-in fade-in duration-500">
       {/* Toast */}
-      {toast && (
-        <div
-          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-semibold transition-all duration-300 ${
-            toast.type === "success" ? "bg-[#7C3AED] text-white" : "bg-red-500 text-white"
-          }`}
-        >
-          <span className="material-symbols-rounded text-base">
-            {toast.type === "success" ? "check_circle" : "error"}
-          </span>
-          {String(toast.msg)}
-        </div>
-      )}
+      <AnimatePresence>
+        {toast && (
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className={`fixed top-5 right-5 z-[500] flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-semibold ${toast.type === "success" ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"}`}>
+            <span className="material-symbols-rounded text-base">{toast.type === "success" ? "check_circle" : "error"}</span>
+            {toast.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-9 h-9 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center">
-            <span className="material-symbols-rounded text-[#7C3AED] text-xl">mark_email_unread</span>
+          <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center shadow-sm">
+            <span className="material-symbols-rounded text-indigo-600 text-xl">fact_check</span>
           </div>
-          <h1 className="text-2xl font-black text-slate-900">Mail Automation</h1>
+          <div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Screening Automation</h1>
+            <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mt-0.5">Rules-Based Candidate Filtering</p>
+          </div>
         </div>
-        <p className="text-slate-500 text-sm ml-12">
-          Configure automated emails for specific jobs and hiring rounds based on any criteria you define.
-        </p>
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
-        <div className="flex items-center gap-2 flex-1">
-          <span className="material-symbols-rounded text-slate-400 text-lg">work</span>
+      {/* Command Bar */}
+      <div className="bg-white rounded-[2rem] border border-slate-100 p-3 shadow-xl shadow-slate-200/40 mb-8 flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-2.5 flex-1 w-full sm:w-auto transition-all focus-within:bg-white focus-within:border-indigo-100 focus-within:ring-4 focus-within:ring-indigo-500/5 group">
+          <span className="material-symbols-rounded text-slate-400 group-focus-within:text-indigo-500 transition-colors">work</span>
           <select
             value={selectedJobId}
             onChange={(e) => setSelectedJobId(e.target.value)}
-            className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/30 focus:border-[#7C3AED]"
+            className="bg-transparent border-none outline-none text-xs font-black text-slate-700 w-full cursor-pointer"
           >
-            <option value="">All Jobs</option>
+            <option value="">All Job Requirements</option>
             {jobs.map((j) => (
               <option key={j.id} value={j.id}>{j.title}</option>
             ))}
@@ -341,339 +300,193 @@ export default function MailAutomationPage() {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors shadow-md shadow-[#7C3AED]/20"
+          className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#0F172A] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
         >
-          <span className="material-symbols-rounded text-base">add</span>
-          New Automation
+          <span className="material-symbols-rounded text-lg">add_circle</span>
+          Add Rule
         </button>
       </div>
 
       {/* List */}
       {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
+        <div className="flex flex-col items-center justify-center py-32 gap-4">
+          <div className="w-10 h-10 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Synchronizing Rules...</p>
         </div>
       ) : automations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
-            <span className="material-symbols-rounded text-[#7C3AED] text-4xl">mark_email_unread</span>
+        <div className="bg-white rounded-[3rem] border border-dashed border-slate-200 p-20 text-center">
+          <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+            <span className="material-symbols-rounded text-4xl text-slate-200">fact_check</span>
           </div>
-          <p className="text-slate-700 font-bold text-lg">No automations yet</p>
-          <p className="text-slate-400 text-sm mt-1 max-w-xs">
-            Create your first mail automation to automatically trigger emails when your criteria are met.
-          </p>
-          <button
-            onClick={openCreate}
-            className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors"
-          >
-            <span className="material-symbols-rounded text-base">add</span>
-            Create Automation
-          </button>
+          <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">No Screening Rules</h3>
+          <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">Deploy your first automated screening rule to streamline your recruitment pipeline.</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {automations.map((a) => (
-            <div
+            <motion.div
+              layout
               key={a.id}
-              className={`bg-white border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
-                a.is_enabled ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
+              className={`group bg-white rounded-[2rem] border p-1.5 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 ${
+                a.is_enabled ? "border-slate-100" : "border-slate-100 opacity-60 grayscale-[0.5]"
               }`}
             >
-              <div className="flex items-start gap-3 flex-1 min-w-0">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${a.is_enabled ? "bg-[#7C3AED]/10" : "bg-slate-100"}`}>
-                  <span className={`material-symbols-rounded text-xl ${a.is_enabled ? "text-[#7C3AED]" : "text-slate-400"}`}>forward_to_inbox</span>
-                </div>
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
-                      Round {a.stage_index}{a.stage_name ? ` · ${a.stage_name}` : ""}
-                    </span>
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${a.is_enabled ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-400"}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${a.is_enabled ? "bg-emerald-500" : "bg-slate-400"}`} />
-                      {a.is_enabled ? "Active" : "Disabled"}
-                    </span>
+              <div className="p-5 space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${a.is_enabled ? "bg-indigo-50 text-indigo-600 shadow-sm" : "bg-slate-50 text-slate-400"}`}>
+                    <span className="material-symbols-rounded text-xl">rule</span>
                   </div>
-                  <p className="text-sm font-bold text-slate-800 truncate">
-                    <span className="text-slate-400 font-medium">If: </span>{a.criteria}
+                  <button onClick={() => handleToggle(a)} disabled={togglingId === a.id} className={`relative w-10 h-5 rounded-full transition-all duration-300 ${a.is_enabled ? "bg-indigo-500 shadow-lg shadow-indigo-100" : "bg-slate-200"}`}>
+                    <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-all duration-300 ${a.is_enabled ? "translate-x-5" : ""}`} />
+                  </button>
+                </div>
+                
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Round {a.stage_index}</span>
+                    <span className="w-1 h-3 rounded-full bg-slate-100" />
+                    <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest truncate max-w-[120px]">{a.stage_name || "SCREENING"}</span>
+                  </div>
+                  <p className="text-sm font-black text-slate-800 tracking-tight line-clamp-2 md:h-10 leading-tight">
+                    <span className="text-slate-400 font-medium">IF: </span>{a.criteria}
                   </p>
-                  <div className="flex flex-wrap gap-3 mt-1.5">
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                      <span className="material-symbols-rounded text-xs">work</span>
-                      {jobTitle(a.job_requirement_id)}
-                    </span>
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                      <span className="material-symbols-rounded text-xs">mail</span>
-                      {templateName(a.template_id)}
-                    </span>
-                    {a.auto_move && (
-                      <span className="flex items-center gap-1 text-[11px] text-[#7C3AED] font-bold bg-[#7C3AED]/5 px-2 py-0.5 rounded-lg border border-[#7C3AED]/10">
-                        <span className="material-symbols-rounded text-xs">keyboard_double_arrow_right</span>
-                        Auto-Move
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                      <span className="material-symbols-rounded text-xs">schedule</span>
-                      {a.is_immediate ? "Immediate" : `Scheduled: ${new Date(a.send_at!).toLocaleString()}`}
-                    </span>
+                </div>
+
+                <div className="space-y-2 pt-2 border-t border-slate-50">
+                  <div className="flex items-center gap-2.5">
+                    <span className="material-symbols-rounded text-slate-300 text-sm">work</span>
+                    <span className="text-[11px] font-bold text-slate-500 truncate">{jobTitle(a.job_requirement_id)}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="material-symbols-rounded text-slate-300 text-sm">mail</span>
+                    <span className="text-[11px] font-bold text-slate-500 truncate">{templateName(a.template_id)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                {/* Toggle */}
-                <button
-                  onClick={() => handleToggle(a)}
-                  disabled={togglingId === a.id}
-                  title={a.is_enabled ? "Disable" : "Enable"}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
-                </button>
-                {/* Edit */}
-                <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
-                  <span className="material-symbols-rounded text-base">edit</span>
-                </button>
-                {/* Delete */}
-                <button onClick={() => handleDelete(a.id)} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
-                  {deletingId === a.id ? (
-                    <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <span className="material-symbols-rounded text-base">delete</span>
+              <div className="bg-slate-50/50 rounded-[1.5rem] p-2 flex items-center justify-between gap-2 overflow-hidden border border-slate-50">
+                <div className="flex gap-2 pl-2">
+                  {a.auto_move && (
+                    <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black text-indigo-500 uppercase tracking-tight shadow-sm">Auto-Move</span>
                   )}
-                </button>
+                  <span className={`px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black uppercase tracking-tight shadow-sm ${a.is_immediate ? "text-emerald-500" : "text-slate-500"}`}>
+                    {a.is_immediate ? "Immediate" : "Scheduled"}
+                  </span>
+                </div>
+                <div className="flex gap-1.5 pr-1 translate-x-2 group-hover:translate-x-0 transition-transform duration-300">
+                  <button onClick={() => openEdit(a)} className="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50 transition-all flex items-center justify-center group/btn shadow-sm">
+                    <span className="material-symbols-rounded text-base">edit</span>
+                  </button>
+                  <button onClick={() => { setAutomationToDelete(a.id); setIsDeleteModalOpen(true); }} className="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-100 hover:bg-rose-50 transition-all flex items-center justify-center shadow-sm">
+                    <span className="material-symbols-rounded text-base">delete</span>
+                  </button>
+                </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
 
-      {/* ── Side Panel (Drawer) ───────────────────────────────────────────────── */}
-      <div className={`fixed inset-0 z-[100] transition-opacity duration-300 ${showModal ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onClick={closeModal} />
-        <div className={`absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${showModal ? "translate-x-0" : "translate-x-full"}`}>
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center">
-                <span className="material-symbols-rounded text-[#7C3AED] text-xl">mark_email_unread</span>
-              </div>
-              <div>
-                <h2 className="text-lg font-black text-slate-800 leading-tight">
-                  {editingId ? "Edit Automation" : "New Automation"}
-                </h2>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Mail Configuration</p>
-              </div>
-            </div>
-            <button onClick={closeModal} className="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
-              <span className="material-symbols-rounded text-xl">close</span>
-            </button>
-          </div>
-
-          {/* Body */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
-            {/* Job */}
-            <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
-                Job Requirement <span className="text-red-400">*</span>
-              </label>
-              <select
-                value={form.job_requirement_id}
-                onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
-                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-              >
-                <option value="">Select job…</option>
-                {jobs.map((j) => (
-                  <option key={j.id} value={j.id}>{j.title}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Round */}
-            <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
-                Hiring Round <span className="text-red-400">*</span>
-              </label>
-              {jobRounds.length > 0 ? (
-                <select
-                  onChange={handleRoundSelect}
-                  defaultValue=""
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                >
-                  <option value="">Pick round…</option>
-                  {jobRounds.map((r, i) => (
-                    <option key={i} value={`${i + 1}|${r.name}`}>
-                      Round {i + 1}: {r.name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <div className="grid grid-cols-5 gap-3">
-                  <input
-                    type="number"
-                    min={1}
-                    value={form.stage_index}
-                    onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
-                    className="col-span-2 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                    placeholder="No."
-                  />
-                  <input
-                    type="text"
-                    value={form.stage_name}
-                    onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
-                    className="col-span-3 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                    placeholder="Label"
-                  />
-                </div>
-              )}
-              {jobRounds.length > 0 && (form.stage_name || Number(form.stage_index) > 1) && (
-                <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#7C3AED]/5 rounded-lg border border-[#7C3AED]/10">
-                  <span className="material-symbols-rounded text-xs text-[#7C3AED]">check_circle</span>
-                  <p className="text-[10px] text-[#7C3AED] font-bold uppercase tracking-tight">
-                    Selected: Round {form.stage_index} — {form.stage_name}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Criteria */}
-            <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
-                Trigger Criteria <span className="text-red-400">*</span>
-              </label>
-              <textarea
-                rows={4}
-                value={form.criteria}
-                onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
-                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all resize-none"
-                placeholder="Describe the condition, e.g. 'AI score > 80' or 'Interview cleared'…"
-              />
-              <p className="text-[10px] text-slate-400 mt-2 px-1">
-                Clear plain-language conditions help your team know when to send.
-              </p>
-            </div>
-
-            {/* Template */}
-            <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
-                Email Template <span className="text-red-400">*</span>
-              </label>
-              {templates.length === 0 ? (
-                <div className="bg-slate-50 rounded-xl p-4 border border-dashed border-slate-200">
-                  <p className="text-xs text-slate-400 text-center">
-                    No templates found. <a href="/enterprise/settings/templates" className="text-[#7C3AED] font-bold hover:underline" target="_blank">Create one</a> first.
-                  </p>
-                </div>
-              ) : (
-                <select
-                  value={form.template_id}
-                  onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                >
-                  <option value="">Select template…</option>
-                  {templates.map((t) => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
-                  ))}
-                </select>
-              )}
-            </div>
-
-            {/* Toggles Group */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-slate-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center">
-                    <span className="material-symbols-rounded text-emerald-500 text-lg">check_circle</span>
+      {/* Side Drawer */}
+      <AnimatePresence>
+        {showModal && (
+          <div className="fixed inset-0 z-[200] flex justify-end overflow-hidden">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onClick={closeModal} />
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="relative w-full max-w-lg bg-white shadow-2xl h-full flex flex-col pointer-events-auto">
+              
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between px-8 py-6 border-b border-slate-50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-[1.5rem] bg-indigo-50 flex items-center justify-center shadow-inner">
+                    <span className="material-symbols-rounded text-indigo-600 text-2xl">settings_input_component</span>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-800">Enable Automation</p>
-                    <p className="text-[10px] text-slate-400 font-medium">Turn rules on/off</p>
+                    <h2 className="text-xl font-black text-slate-800 leading-tight italic uppercase tracking-tight">{editingId ? "Edit Rule" : "Configure Rule"}</h2>
+                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-0.5">Tactical Automation Node</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
+                <button onClick={closeModal} className="w-10 h-10 rounded-2xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
+                  <span className="material-symbols-rounded text-xl">close</span>
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-slate-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center">
-                    <span className="material-symbols-rounded text-slate-600 text-lg">bolt</span>
+              {/* Drawer Body */}
+              <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8 custom-scrollbar">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Target Job Requirement*</label>
+                    <select
+                      value={form.job_requirement_id}
+                      onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
+                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-700 focus:bg-white focus:border-indigo-500 outline-none transition-all"
+                    >
+                      <option value="">Select requirement...</option>
+                      {jobs.map((j) => <option key={j.id} value={j.id}>{j.title}</option>)}
+                    </select>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">Send Immediately</p>
-                    <p className="text-[10px] text-slate-400 font-medium">Auto-send on round change</p>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Connect to Hiring Round</label>
+                    <div className="grid grid-cols-5 gap-3">
+                      <input type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-2xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder="Idx" />
+                      <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} className="col-span-4 bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-indigo-500 focus:bg-white" placeholder="Round Name (e.g. Technical Interview)" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Trigger Condition*</label>
+                    <textarea rows={4} value={form.criteria} onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} className="w-full bg-slate-50 border border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all resize-none" placeholder="IF candidate meets this criteria (e.g. 'Shortlisted' or 'Score > 80')..." />
+                  </div>
+
+                  <div className="space-y-4 pt-4 border-t border-slate-50">
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                      <div>
+                        <p className="text-sm font-black text-slate-800 tracking-tight italic uppercase">Active Status</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rule is currently operational</p>
+                      </div>
+                      <button onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_enabled ? "bg-indigo-500" : "bg-slate-200"}`}>
+                        <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 ${form.is_enabled ? "translate-x-5" : ""}`} />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                      <div>
+                        <p className="text-sm font-black text-slate-800 tracking-tight italic uppercase">Auto-Move Candidate</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Advance workflow on trigger</p>
+                      </div>
+                      <button onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.auto_move ? "bg-indigo-500" : "bg-slate-200"}`}>
+                        <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 ${form.auto_move ? "translate-x-5" : ""}`} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <button
-                  onClick={() => setForm((f) => ({ ...f, is_immediate: !f.is_immediate }))}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_immediate ? "bg-[#7C3AED]" : "bg-slate-200"}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.is_immediate ? "translate-x-5" : "translate-x-0"}`} />
-                </button>
               </div>
 
-              {!form.is_immediate && (
-                <div className="animate-in slide-in-from-top-2 duration-200 px-1">
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
-                    Scheduled Date & Time <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={form.send_at}
-                    onChange={(e) => setForm((f) => ({ ...f, send_at: e.target.value }))}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                  />
-                </div>
-              )}
-
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-slate-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center">
-                    <span className="material-symbols-rounded text-slate-600 text-lg">double_arrow</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">Auto-Move</p>
-                    <p className="text-[10px] text-slate-400 font-medium">Advance to next round</p>
-                  </div>
-                </div>
+              {/* Drawer Footer */}
+              <div className="p-8 border-t border-slate-50 bg-slate-50/30">
                 <button
-                  onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#7C3AED]" : "bg-slate-200"}`}
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full py-4 bg-[#0F172A] text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-slate-200"
                 >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.auto_move ? "translate-x-5" : "translate-x-0"}`} />
+                  {saving ? "SYNCHRONIZING..." : editingId ? "UPDATE RULE" : "DEPLOY RULE"}
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
+        )}
+      </AnimatePresence>
 
-          {/* Footer */}
-          <div className="p-6 border-t border-slate-100 bg-slate-50/50 shrink-0">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="w-full flex items-center justify-center gap-2 h-12 bg-[#7C3AED] text-white rounded-xl text-sm font-black hover:bg-[#6d28d9] transition-all active:scale-[0.98] disabled:opacity-60 shadow-lg shadow-[#7C3AED]/20"
-            >
-              {saving ? (
-                <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>
-                  <span className="material-symbols-rounded text-lg">save</span>
-                  {editingId ? "SAVE CHANGES" : "CREATE AUTOMATION"}
-                </>
-              )}
-            </button>
-            <button 
-              onClick={closeModal}
-              className="w-full mt-3 h-10 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Destroy Automation Node?"
+        message="Are you sure you want to delete this screening rule? This action will immediately halt all automated processing for this specific criteria."
+        confirmLabel="Yes, Destroy"
+        cancelLabel="No"
+        isDestructive={true}
+      />
     </div>
   );
 }

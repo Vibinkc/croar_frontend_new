@@ -522,38 +522,36 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
             {/* Department Modal */}
             {isDeptModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-white rounded-[32px] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-black text-slate-900 tracking-tight">Add Department</h3>
-                            <button onClick={() => setIsDeptModalOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
-                                <span className="material-symbols-rounded text-2xl">close</span>
-                            </button>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-100">
+                        <div className="mb-8">
+                            <h3 className="text-xl font-black text-slate-900 tracking-tight italic uppercase">Add Department Node</h3>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Hierarchical Synchronization</p>
                         </div>
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Department Name</label>
+                        <div className="space-y-8">
+                            <div className="space-y-2 group">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 group-focus-within:text-slate-900 transition-colors">Department Designation</label>
                                 <input 
                                     value={newDeptName}
                                     onChange={(e) => setNewDeptName(e.target.value)}
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all"
-                                    placeholder="e.g. Engineering, Marketing..."
+                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black outline-none focus:border-[#0F172A] focus:bg-white transition-all shadow-inner"
+                                    placeholder="E.G. TECHNICAL OPERATIONS"
                                 />
                             </div>
                             <div className="flex gap-4">
                                 <button 
                                     type="button"
                                     onClick={() => setIsDeptModalOpen(false)}
-                                    className="flex-1 px-6 py-3.5 rounded-2xl border border-slate-200 text-slate-600 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all"
+                                    className="flex-1 px-6 py-4 rounded-2xl border border-slate-200 text-slate-400 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95"
                                 >
                                     Cancel
                                 </button>
                                 <button 
                                     type="button"
                                     onClick={handleAddDepartment}
-                                    className="flex-1 bg-[#7C3AED] text-white px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all active:scale-95"
+                                    className="flex-1 bg-[#0F172A] text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all active:scale-95"
                                 >
-                                    Save Dept
+                                    Sync Node
                                 </button>
                             </div>
                         </div>

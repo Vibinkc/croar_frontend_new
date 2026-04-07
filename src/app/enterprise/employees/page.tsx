@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient, BACKEND_URL } from "@/utils/api";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 interface Department {
     id: string;
@@ -27,6 +28,8 @@ export default function EmployeesPage() {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [employeeToDelete, setEmployeeToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         if (token) {
@@ -49,6 +52,20 @@ export default function EmployeesPage() {
         }
     };
 
+    const handleDelete = async () => {
+        if (!employeeToDelete) return;
+        try {
+            const res = await apiClient.delete(`/api/v1/enterprise/employees/${employeeToDelete}`);
+            if (res.ok) fetchEmployees();
+            else alert("Failed to delete employee");
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsConfirmModalOpen(false);
+            setEmployeeToDelete(null);
+        }
+    };
+
     const filteredEmployees = employees.filter(emp => 
         (emp.first_name + " " + emp.last_name).toLowerCase().includes(searchQuery.toLowerCase()) ||
         emp.employee_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,7 +73,7 @@ export default function EmployeesPage() {
     );
 
     return (
-        <div className="p-6 space-y-4 pt-2 animate-in fade-in duration-500">
+        <div className="p-4 space-y-4 pt-2 animate-in fade-in duration-500">
             {/* Command Bar */}
             <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-30 overflow-x-auto no-scrollbar">
                 <div className="relative group min-w-[200px] flex-1">
@@ -105,41 +122,41 @@ export default function EmployeesPage() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Employee</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Designation</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Department</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Hire Date</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Employee</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Designation</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Department</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Hire Date</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {filteredEmployees.map((emp) => (
                                     <tr key={emp.id} className="hover:bg-slate-50/50 transition-all group">
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-bold text-slate-800">{emp.first_name} {emp.last_name}</span>
-                                                <span className="text-[10px] font-semibold text-slate-500">{emp.employee_id} • {emp.email}</span>
+                                                <span className="text-xs font-bold text-slate-800 leading-tight">{emp.first_name} {emp.last_name}</span>
+                                                <span className="text-[9px] font-semibold text-slate-500">{emp.employee_id} • {emp.email}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <span className="text-xs font-semibold text-slate-600">{emp.designation || "N/A"}</span>
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <span className="text-xs font-semibold text-slate-600">{emp.department?.name || "N/A"}</span>
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <span className="text-xs font-semibold text-slate-600">{emp.hire_date ? new Date(emp.hire_date).toLocaleDateString() : "N/A"}</span>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wide ${
+                                        <td className="px-3 py-1.5">
+                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wide ${
                                                 emp.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-100 text-slate-500 border-slate-200'
                                             }`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${emp.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                                                <span className={`w-1 h-1 rounded-full ${emp.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
                                                 {emp.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-3 py-1.5 text-right">
                                             <div className="flex items-center justify-end gap-1">
                                                 <Link
                                                     href={`/enterprise/employees/${emp.id}`}
@@ -149,16 +166,9 @@ export default function EmployeesPage() {
                                                     <span className="material-symbols-rounded text-lg">edit</span>
                                                 </Link>
                                                 <button
-                                                    onClick={async () => {
-                                                        if (confirm("Are you sure you want to delete this employee?")) {
-                                                            try {
-                                                                const res = await apiClient.delete(`/api/v1/enterprise/employees/${emp.id}`);
-                                                                if (res.ok) fetchEmployees();
-                                                                else alert("Failed to delete employee");
-                                                            } catch (e) {
-                                                                console.error(e);
-                                                            }
-                                                        }
+                                                    onClick={() => {
+                                                        setEmployeeToDelete(emp.id);
+                                                        setIsConfirmModalOpen(true);
                                                     }}
                                                     className="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 flex items-center justify-center transition-all"
                                                     title="Delete Employee"
@@ -174,6 +184,17 @@ export default function EmployeesPage() {
                     </div>
                 )}
             </div>
+
+            <ConfirmationModal
+                isOpen={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                onConfirm={handleDelete}
+                title="Delete Employee?"
+                message="Are you sure you want to delete this employee? This action is permanent and all associated records will be removed."
+                confirmLabel="Yes, Delete"
+                cancelLabel="No"
+                isDestructive={true}
+            />
         </div>
     );
 }

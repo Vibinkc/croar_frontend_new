@@ -156,19 +156,19 @@ export default function EnterprisePortalLayout({
 
             {/* Sidebar */}
             <aside className={`
-                fixed inset-y-0 left-0 z-50 w-60 bg-white border-r border-slate-100 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 md:h-screen
+                fixed inset-y-0 left-0 z-50 w-52 bg-white border-r border-slate-100 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 md:h-screen
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <div className="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col">
                     {/* Logo Section (Standard Student Portal Logo) */}
-                    <div className="p-4 flex items-center justify-between shrink-0 mb-6 border-b border-slate-50">
+                    <div className="p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50">
                         <Link href="/enterprise/dashboard" className="flex items-center gap-2 tracking-tighter">
-                            <span className="text-3xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent italic">CROAR.AI</span>
+                            <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent italic">CROAR.AI</span>
                         </Link>
                     </div>
 
                     {/* Navigation Groups */}
-                    <nav className="space-y-6 px-1">
+                    <nav className="space-y-4 px-1">
                         {navGroups.map((group) => (
                             <div key={group.title}>
                                 <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 px-3">{group.title}</p>
@@ -186,8 +186,8 @@ export default function EnterprisePortalLayout({
                 </div>
 
                 {/* Sidebar Footer User Info (Student Portal Style) */}
-                <div className="p-4 border-t border-slate-50 shrink-0">
-                    <div className="flex items-center gap-3 mb-4 px-2">
+                <div className="p-3 border-t border-slate-50 shrink-0">
+                    <div className="flex items-center gap-2 mb-4 px-2">
                         <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md">
                             {user ? user.charAt(0).toUpperCase() : 'R'}
                         </div>

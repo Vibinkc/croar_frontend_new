@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -83,6 +84,8 @@ export default function MailAutomationPage() {
   const [saving, setSaving] = useState(false);
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [automationToDelete, setAutomationToDelete] = useState<Automation | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
   const showToast = (msg: any, type: "success" | "error" = "success") => {
@@ -257,22 +260,24 @@ export default function MailAutomationPage() {
 
   // ── Delete ────────────────────────────────────────────────────────────────────
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this automation?")) return;
-    setDeletingId(id);
+  const handleDelete = async () => {
+    if (!automationToDelete) return;
+    setDeletingId(automationToDelete.id);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/automation/mail/${id}`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/automation/mail/${automationToDelete.id}`, {
         method: "DELETE",
         headers: authHeaders,
       });
       if (res.ok) {
         showToast("Automation deleted.");
-        setAutomations((prev) => prev.filter((a) => a.id !== id));
+        setAutomations((prev) => prev.filter((a) => a.id !== automationToDelete.id));
       } else {
         showToast("Failed to delete.", "error");
       }
     } finally {
       setDeletingId(null);
+      setIsDeleteModalOpen(false);
+      setAutomationToDelete(null);
     }
   };
 
@@ -296,7 +301,7 @@ export default function MailAutomationPage() {
   // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] p-6 md:p-8">
+    <div className="min-h-screen bg-[#FDFDFF] p-4 animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
@@ -434,7 +439,10 @@ export default function MailAutomationPage() {
                   <span className="material-symbols-rounded text-base">edit</span>
                 </button>
                 {/* Delete */}
-                <button onClick={() => handleDelete(a.id)} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
+                <button onClick={() => {
+                   setAutomationToDelete(a);
+                   setIsDeleteModalOpen(true);
+                }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
                   {deletingId === a.id ? (
                     <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
                   ) : (
@@ -674,6 +682,19 @@ export default function MailAutomationPage() {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setAutomationToDelete(null);
+        }}
+        onConfirm={handleDelete}
+        title="Delete Mail Automation?"
+        message={`Are you sure you want to delete this mail automation for ${automationToDelete ? jobTitle(automationToDelete.job_requirement_id) : 'this job'}? This action is irreversible.`}
+        confirmLabel="Yes, Delete"
+        cancelLabel="No"
+        isDestructive={true}
+      />
     </div>
   );
 }

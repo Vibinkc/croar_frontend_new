@@ -4,18 +4,77 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+    Zap, 
+    ArrowLeft, 
+    BarChart3, 
+    User, 
+    TrendingUp, 
+    ChevronRight, 
+    Eye,
+    ShieldAlert,
+    Atom
+} from "lucide-react";
+
+interface Result {
+    id: string;
+    employee_name: string;
+    scenario_title: string;
+    category: string;
+    overall_score: number | null;
+    created_at: string;
+    completed_at?: string;
+}
+
+const MOCK_RESULTS: Result[] = [
+    {
+        id: "mock_1",
+        employee_name: "Alex Johnson",
+        scenario_title: "Conflict Resolution: Q3 Deliverable Delay",
+        category: "CONFLICT",
+        overall_score: 8.5,
+        created_at: new Date().toISOString()
+    },
+    {
+        id: "mock_2",
+        employee_name: "Sarah Miller",
+        scenario_title: "Strategic Sales: Neural Core Pitch",
+        category: "SALES",
+        overall_score: 9.2,
+        created_at: new Date(Date.now() - 86400000).toISOString()
+    },
+    {
+        id: "mock_3",
+        employee_name: "Marcus Chen",
+        scenario_title: "Leadership: Team Performance Review",
+        category: "LEADERSHIP",
+        overall_score: 4.8,
+        created_at: new Date(Date.now() - 172800000).toISOString()
+    },
+    {
+        id: "mock_4",
+        employee_name: "Elena Rodriguez",
+        scenario_title: "Exit Interview: Senior Architect",
+        category: "EXIT_INTERVIEW",
+        overall_score: 7.0,
+        created_at: new Date(Date.now() - 259200000).toISOString()
+    }
+];
 
 export default function ResultsDashboard() {
     const { token } = useAuth();
     const router = useRouter();
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<Result[]>([]);
     const [loading, setLoading] = useState(true);
+    const [seeding, setSeeding] = useState(false);
 
     useEffect(() => {
         if (token) fetchResults();
     }, [token]);
 
     const fetchResults = async () => {
+        setLoading(true);
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/results`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -25,105 +84,206 @@ export default function ResultsDashboard() {
         } catch (error) {
             console.error(error);
         } finally {
-            setLoading(false);
+            // Add a small delay for smoother skeleton transition
+            setTimeout(() => setLoading(false), 800);
         }
     };
 
-    if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-    );
+    const handleSeedData = () => {
+        setSeeding(true);
+        setTimeout(() => {
+            setResults(prev => [...MOCK_RESULTS, ...prev]);
+            setSeeding(false);
+        }, 1200);
+    };
 
-    return (
-        <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-12 pb-32 animate-in fade-in duration-700">
-            <header className="flex justify-between items-center pb-8 border-b border-slate-100 uppercase tracking-widest whitespace-nowrap overflow-x-auto no-scrollbar gap-8">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/enterprise/ai-training/scenarios')} className="w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-indigo-600 transition-all flex items-center justify-center font-black">
-                        <span className="material-symbols-rounded text-xl">arrow_back</span>
-                    </button>
-                    <div className="min-w-0">
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">Performance Intelligence</h1>
-                        <p className="text-slate-500 font-black uppercase tracking-widest text-[9px] flex items-center gap-2">
-                            <span className="material-symbols-rounded text-sm text-indigo-500">analytics</span>
-                            Behavioral audit results from neural coaching lab
-                        </p>
+    if (loading) {
+        return (
+            <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
+                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 border-b-4 border-slate-800 shadow-2xl">
+                    <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="space-y-2">
+                            <div className="w-48 h-6 bg-white/10 rounded-lg animate-pulse" />
+                            <div className="w-32 h-3 bg-white/5 rounded-lg animate-pulse" />
+                        </div>
                     </div>
                 </div>
-            </header>
+                <div className="bg-white rounded-[2.5rem] border border-slate-100 p-8 space-y-4 shadow-sm animate-pulse">
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                        <div key={i} className="h-20 bg-slate-50 rounded-2xl border border-slate-100" />
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
-            <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/20 overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-slate-900 border-b border-white text-white">
-                            <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">Participant</th>
-                            <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">Scenario Blueprint</th>
-                            <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">Archetype</th>
-                            <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">Neural Score</th>
-                            <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em]">Timestamp</th>
-                            <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-right">Insight</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-50">
-                        {results.length === 0 ? (
-                            <tr>
-                                <td colSpan={6} className="px-8 py-20 text-center text-slate-400 font-black text-[10px] uppercase tracking-widest leading-none">
-                                    No simulation recordings yet detected in the laboratory.
-                                </td>
+    return (
+        <div className="p-4 sm:p-6 lg:p-12 max-w-7xl mx-auto space-y-12 pb-32 animate-in fade-in duration-700">
+            {/* Tactical Command Header */}
+            <motion.header 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-slate-900 rounded-[2.5rem] p-8 md:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl border-b-4 border-slate-800"
+            >
+                <div className="relative z-10 flex items-center gap-8">
+                    <button 
+                        onClick={() => router.push('/enterprise/ai-training/scenarios')} 
+                        className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95 group shadow-inner"
+                    >
+                        <ArrowLeft className="w-6 h-6 text-slate-400 group-hover:text-white group-hover:-translate-x-1 transition-all" />
+                    </button>
+                    <div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-3">
+                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                            <span className="text-[8px] font-black uppercase tracking-[0.1em] text-indigo-400">Tactical Intelligence Node</span>
+                        </div>
+                        <h1 className="text-3xl font-black tracking-tighter leading-none italic uppercase flex items-center gap-4">
+                            Performance Intelligence
+                        </h1>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-3 opacity-60">Behavioral audit results from neural coaching lab</p>
+                    </div>
+                </div>
+
+                <div className="relative z-10 flex items-center gap-4">
+                    <button
+                        onClick={handleSeedData}
+                        disabled={seeding}
+                        className="px-8 h-14 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-500 transition-all active:scale-95 disabled:opacity-30 shadow-xl shadow-indigo-500/20 flex items-center gap-3 group"
+                    >
+                        {seeding ? (
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            <Zap className="w-5 h-5 group-hover:animate-bounce" />
+                        )}
+                        Seed Test Data
+                    </button>
+                </div>
+
+                {/* Tactical background elements */}
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] -mr-64 -mt-64" />
+                <div className="absolute bottom-0 left-0 w-64 h-1 bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+            </motion.header>
+
+            {/* Tactical Grid List */}
+            <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/20 overflow-hidden relative">
+                <div className="overflow-x-auto no-scrollbar">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-slate-50/50 border-b border-slate-100">
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Participant Node</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Deployment Identity</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Archetype</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Neural Score</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Timestamp</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Insight HUD</th>
                             </tr>
-                        ) : results.map((res) => (
-                            <tr key={res.id} className="group hover:bg-slate-50 transition-all">
-                                <td className="px-8 py-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-black text-slate-500 text-xs">
-                                            {res.employee_name[0]}
-                                        </div>
-                                        <span className="text-sm font-black text-slate-800">{res.employee_name}</span>
-                                    </div>
-                                </td>
-                                <td className="px-8 py-6">
-                                    <span className="text-sm font-black text-slate-600 tracking-tight">{res.scenario_title}</span>
-                                </td>
-                                <td className="px-8 py-6">
-                                    <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-indigo-100">
-                                        {res.category}
-                                    </span>
-                                </td>
-                                <td className="px-8 py-6">
-                                    {res.overall_score ? (
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-12 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                                <div 
-                                                    className={`h-full rounded-full ${
-                                                        res.overall_score >= 8 ? 'bg-emerald-500' : 
-                                                        res.overall_score >= 5 ? 'bg-amber-500' : 'bg-rose-500'
-                                                    }`}
-                                                    style={{ width: `${res.overall_score * 10}%` }}
-                                                ></div>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                            {results.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="px-8 py-32 text-center">
+                                        <div className="flex flex-col items-center gap-6 opacity-30">
+                                            <Atom className="w-20 h-20 text-slate-200 animate-spin-slow" />
+                                            <div>
+                                                <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter italic">No Simulations Detected</h3>
+                                                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Initialize training cycles to populate neural analytics</p>
                                             </div>
-                                            <span className="text-[10px] font-black text-slate-900">{res.overall_score}/10</span>
                                         </div>
-                                    ) : (
-                                        <span className="text-[10px] font-black text-slate-300 uppercase italic">Calculating...</span>
-                                    )}
-                                </td>
-                                <td className="px-8 py-6">
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                        {new Date(res.completed_at || res.created_at).toLocaleDateString()}
-                                    </span>
-                                </td>
-                                <td className="px-8 py-6 text-right">
-                                    <button 
-                                        onClick={() => router.push(`/enterprise/ai-training/portal?session_id=${res.id}`)}
-                                        className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center shadow-sm"
-                                    >
-                                        <span className="material-symbols-rounded text-lg">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                    </td>
+                                </tr>
+                            ) : results.map((res, idx) => (
+                                <motion.tr 
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                    key={res.id} 
+                                    className="group hover:bg-slate-50/80 transition-all duration-300"
+                                >
+                                    <td className="px-8 py-5">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-[10px] uppercase shadow-lg shadow-slate-200 transition-transform group-hover:scale-110">
+                                                {res.employee_name[0]}
+                                            </div>
+                                            <div>
+                                                <span className="text-xs font-black text-slate-800 uppercase tracking-tight block">{res.employee_name}</span>
+                                                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Active_Participant</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        <div className="space-y-1">
+                                            <span className="text-[11px] font-black text-slate-600 tracking-tight block uppercase italic leading-none">{res.scenario_title}</span>
+                                            <span className="text-[7px] font-black text-indigo-400 uppercase tracking-widest leading-none">Simulation_Protocol_V1.2</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-100 rounded-lg shadow-sm">
+                                            <span className="w-1 h-1 rounded-full bg-indigo-500" />
+                                            <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest">
+                                                {res.category}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        {res.overall_score ? (
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden p-[2px]">
+                                                    <motion.div 
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: `${res.overall_score * 10}%` }}
+                                                        transition={{ duration: 1, delay: 0.5 }}
+                                                        className={`h-full rounded-full ${
+                                                            res.overall_score >= 8 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 
+                                                            res.overall_score >= 5 ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]'
+                                                        }`}
+                                                    ></motion.div>
+                                                </div>
+                                                <span className="text-[10px] font-black text-slate-900 tabular-nums italic">{res.overall_score.toFixed(1)} <span className="text-slate-300 opacity-60">/ 10</span></span>
+                                            </div>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-2 text-[9px] font-black text-slate-300 uppercase italic">
+                                                <TrendingUp className="w-3 h-3 animate-pulse" />
+                                                Processing_Neural_Load
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest tabular-nums italic">
+                                            {new Date(res.completed_at || res.created_at).toLocaleDateString()}
+                                        </span>
+                                    </td>
+                                    <td className="px-8 py-5 text-right">
+                                        <button 
+                                            onClick={() => router.push(`/enterprise/ai-training/portal?session_id=${res.id}`)}
+                                            className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-white hover:bg-slate-900 hover:border-slate-900 transition-all flex items-center justify-center shadow-sm group/btn"
+                                        >
+                                            <Eye className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                                        </button>
+                                    </td>
+                                </motion.tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Tactical Footer Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {[
+                    { label: "Total Sessions", val: results.length, icon: BarChart3, color: "text-indigo-400" },
+                    { label: "Avg. Neural Score", val: results.length ? (results.reduce((a,b)=>a+(b.overall_score||0),0)/results.length).toFixed(1) : "0.0", icon: TrendingUp, color: "text-emerald-400" },
+                    { label: "Top Archetype", val: "CONFLICT", icon: ShieldAlert, color: "text-amber-400" },
+                    { label: "Neural Load", val: "OPTIMAL", icon: Zap, color: "text-indigo-400" }
+                ].map((stat, i) => (
+                    <div key={i} className="bg-white rounded-3xl border border-slate-100 p-6 flex items-center justify-between shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all">
+                        <div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                            <p className="text-xl font-black text-slate-900 italic tracking-tighter leading-none">{stat.val}</p>
+                        </div>
+                        <stat.icon className={`w-6 h-6 ${stat.color} opacity-40`} />
+                    </div>
+                ))}
             </div>
         </div>
     );

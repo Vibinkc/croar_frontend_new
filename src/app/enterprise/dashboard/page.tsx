@@ -108,14 +108,14 @@ export default function EnterpriseDashboard() {
     return (
         <div className="p-4 space-y-4 animate-in fade-in duration-500 overflow-hidden">
             {/* Tactical Command Header */}
-            <section className="bg-slate-900 rounded-[2rem] p-8 md:p-10 text-white flex flex-col lg:flex-row items-center justify-between gap-12 relative overflow-hidden shadow-2xl">
+            <section className="bg-slate-900 rounded-[2rem] p-6 md:p-8 text-white flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl">
                 <div className="relative z-10 flex-1 space-y-6">
                     <div>
                         <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black tracking-widest uppercase mb-4">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                             Recruitment Control Center v2.4
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none mb-3 uppercase">
+                        <h2 className="text-2xl md:text-4xl font-black tracking-tighter leading-none mb-3 uppercase">
                             {greeting}, <span className="text-indigo-400">{isLoading ? 'COMMANDER' : stats.agent_name}</span>.
                         </h2>
                         <p className="text-slate-400 text-[11px] max-w-sm font-bold uppercase tracking-widest leading-relaxed opacity-70">
@@ -143,9 +143,9 @@ export default function EnterpriseDashboard() {
                         { label: "Total Applications", value: stats.total_applications, icon: "conversion_path", color: "text-rose-400", bg: "bg-rose-500/10" },
                         { label: "Scheduled Interviews", value: stats.interviews_scheduled, icon: "videocam", color: "text-amber-400", bg: "bg-amber-500/10" },
                     ].map((stat) => (
-                        <div key={stat.label} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[1.5rem] p-5 min-w-[160px] flex flex-col gap-3 group hover:bg-white/10 transition-all border-b-4 border-b-transparent hover:border-b-white/20">
+                        <div key={stat.label} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[1.5rem] p-4 min-w-[140px] flex flex-col gap-2 group hover:bg-white/10 transition-all border-b-4 border-b-transparent hover:border-b-white/20">
                             <div className="flex items-center justify-between">
-                                <span className={`material-symbols-rounded text-2xl ${stat.color}`}>{stat.icon}</span>
+                                <span className={`material-symbols-rounded text-xl ${stat.color}`}>{stat.icon}</span>
                                 <div className="flex flex-col items-end">
                                     <span className="text-[7px] font-black text-white/30 uppercase tracking-[0.2em]">Live Feed</span>
                                     <div className="w-4 h-1 bg-white/10 rounded-full overflow-hidden mt-1">
@@ -155,7 +155,7 @@ export default function EnterpriseDashboard() {
                             </div>
                             <div>
                                 <span className="text-[9px] font-black text-white/40 uppercase tracking-widest block mb-1">{stat.label}</span>
-                                <span className="text-3xl font-black tracking-tighter leading-none">
+                                <span className="text-2xl font-black tracking-tighter leading-none">
                                     {isLoading ? '---' : stat.value}
                                 </span>
                             </div>
@@ -172,11 +172,11 @@ export default function EnterpriseDashboard() {
                 <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-5">
                     {modules.map((module) => (
                         <Link href={module.path} key={module.title} className="group">
-                            <div className={`relative ${getColorClasses(module.color).bg} border ${getColorClasses(module.color).border} p-7 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden flex flex-col justify-between`}>
+                            <div className={`relative ${getColorClasses(module.color).bg} border ${getColorClasses(module.color).border} p-5 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden flex flex-col justify-between`}>
                                 <div>
                                     <div className="flex justify-between items-start mb-6">
-                                        <div className={`w-12 h-12 rounded-2xl bg-white border border-slate-50 ${getColorClasses(module.color).text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 shadow-sm`}>
-                                            <span className="material-symbols-rounded text-2xl">{module.icon}</span>
+                                        <div className={`w-10 h-10 rounded-2xl bg-white border border-slate-50 ${getColorClasses(module.color).text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 shadow-sm`}>
+                                            <span className="material-symbols-rounded text-xl">{module.icon}</span>
                                         </div>
                                         <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black tracking-widest uppercase bg-white/50 border border-slate-50 text-slate-400 group-hover:bg-white group-hover:text-[#7C3AED] transition-all`}>
                                             {module.badge}
@@ -184,7 +184,7 @@ export default function EnterpriseDashboard() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <h3 className="text-[15px] font-black text-slate-900 uppercase tracking-tighter group-hover:text-[#7C3AED] transition-colors">
+                                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-tighter group-hover:text-[#7C3AED] transition-colors">
                                             {module.title}
                                         </h3>
                                         <p className="text-[11px] text-slate-500 font-bold leading-relaxed uppercase opacity-70 mb-6">
@@ -211,14 +211,14 @@ export default function EnterpriseDashboard() {
 
                 {/* Strategic Side-Ops */}
                 <div className="lg:col-span-4 space-y-5">
-                    <div className="bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm h-full flex flex-col">
-                        <div className="flex items-center justify-between mb-10">
+                    <div className="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm h-full flex flex-col">
+                        <div className="flex items-center justify-between mb-6">
                             <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Efficiency_Matrix</span>
                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse border-4 border-emerald-50"></div>
                         </div>
 
                         <div className="flex-1 flex flex-col items-center justify-center py-6">
-                            <div className="relative w-48 h-48 group">
+                            <div className="relative w-40 h-40 group">
                                 <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible drop-shadow-2xl">
                                     {[0.2, 0.4, 0.6, 0.8, 1].map((step, i) => (
                                         <circle key={i} cx="50" cy="50" r={50 * step} className="fill-none stroke-slate-50 stroke-[0.5]" />
@@ -245,7 +245,7 @@ export default function EnterpriseDashboard() {
                             </div>
                         </div>
 
-                        <div className="mt-10">
+                        <div className="mt-6">
                             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 relative group overflow-hidden">
                                 <div className="absolute top-0 left-0 w-1 h-full bg-[#7C3AED]"></div>
                                 <p className="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-tight">

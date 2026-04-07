@@ -154,18 +154,18 @@ export default function X360QuestionBank() {
     ];
 
     return (
-        <div className="p-8 max-w-[1600px] mx-auto">
-            <header className="mb-10 flex items-center gap-4">
-                <button onClick={() => router.push('/enterprise/assessments-360')} className="w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-indigo-600 transition-all flex items-center justify-center">
-                    <span className="material-symbols-rounded text-xl">arrow_back</span>
+        <div className="p-4 max-w-[1600px] mx-auto animate-in fade-in duration-500">
+            <header className="mb-6 flex items-center gap-3">
+                <button onClick={() => router.push('/enterprise/assessments-360')} className="w-8 h-8 rounded-lg bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-indigo-600 transition-all flex items-center justify-center">
+                    <span className="material-symbols-rounded text-lg">arrow_back</span>
                 </button>
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Question Bank</h1>
-                    <p className="text-slate-500 mt-2 text-lg">Build and manage your 360-degree feedback framework with AI assistance.</p>
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">Question Bank</h1>
+                    <p className="text-slate-500 mt-1 text-xs font-medium">Build and manage your feedback framework with AI assistance.</p>
                 </div>
             </header>
 
-            <div className="grid grid-cols-12 gap-10 items-start">
+            <div className="grid grid-cols-12 gap-4 items-start">
                 {/* Sidebar */}
                 <aside className="col-span-12 lg:col-span-4 space-y-8 sticky top-8">
                     {/* Manual Form */}
@@ -220,28 +220,28 @@ export default function X360QuestionBank() {
                     </section>
 
                     {/* AI Generator */}
-                    <section className="bg-gradient-to-br from-indigo-600 to-violet-700 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-200">
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
-                                <span className="material-symbols-rounded text-white animate-pulse">auto_awesome</span>
+                    <section className="bg-gradient-to-br from-indigo-600 to-violet-700 p-5 rounded-[2rem] text-white shadow-xl shadow-indigo-100">
+                        <div className="flex items-center gap-3 mb-5">
+                            <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center">
+                                <span className="material-symbols-rounded text-white text-xl animate-pulse">auto_awesome</span>
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold">AI Generator</h2>
-                                <p className="text-indigo-100 text-[10px] uppercase font-black tracking-widest">Powered by GPT-4</p>
+                                <h2 className="text-base font-bold leading-tight">AI Generator</h2>
+                                <p className="text-indigo-100 text-[8px] uppercase font-black tracking-widest">Powered by GPT-4</p>
                             </div>
                         </div>
 
                         <div className="space-y-6">
                             <div>
                                 <label className="block text-[10px] font-black text-indigo-100 uppercase tracking-widest mb-4">Target Categories</label>
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="flex flex-wrap gap-2">
                                     {categories.map(cat => (
                                         <button
                                             key={cat.id}
                                             onClick={() => toggleAiCategory(cat.id)}
-                                            className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-[11px] font-bold transition-all border ${aiConfig.categories.includes(cat.id) ? 'bg-white text-indigo-600 border-white' : 'bg-transparent text-indigo-50 border-white/20 hover:border-white/40'}`}
+                                            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all border whitespace-nowrap min-w-fit ${aiConfig.categories.includes(cat.id) ? 'bg-white text-indigo-600 border-white' : 'bg-transparent text-indigo-50 border-white/20 hover:border-white/40'}`}
                                         >
-                                            <span className="material-symbols-rounded text-base">
+                                            <span className="material-symbols-rounded text-base flex-shrink-0">
                                                 {aiConfig.categories.includes(cat.id) ? 'check_circle' : 'circle'}
                                             </span>
                                             {cat.label}
@@ -275,8 +275,8 @@ export default function X360QuestionBank() {
                                     <label className="block text-[10px] font-black text-indigo-100 uppercase tracking-widest mb-2 px-1">Custom Category</label>
                                     <input 
                                         type="text"
-                                        placeholder="e.g. EMOTIONAL_INTELLIGENCE"
-                                        className="w-full px-5 py-4 bg-white/10 border-none rounded-2xl focus:ring-2 focus:ring-white outline-none text-sm font-bold placeholder:text-indigo-200"
+                                        placeholder="Category..."
+                                        className="w-full px-4 py-3 bg-white/10 border-none rounded-xl focus:ring-1 focus:ring-white outline-none text-xs font-bold placeholder:text-indigo-200"
                                         value={aiConfig.customCategory}
                                         onChange={(e) => setAiConfig({...aiConfig, customCategory: e.target.value})}
                                     />

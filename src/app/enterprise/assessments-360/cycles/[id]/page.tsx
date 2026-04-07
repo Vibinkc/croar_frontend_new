@@ -104,18 +104,18 @@ export default function X360CycleProgress() {
                                 <div className="flex-1">
                                     <div className="flex flex-wrap gap-3">
                                         {ratee.breakdown.map((b, bIdx) => (
-                                            <div key={bIdx} className={`px-4 py-2.5 rounded-2xl border flex items-center gap-3 transition-all ${
+                                            <div key={bIdx} className={`px-3 py-2 rounded-xl border flex items-center gap-2.5 transition-all shrink-0 ${
                                                 b.status === 'COMPLETED' 
                                                 ? 'bg-emerald-50 border-emerald-100 text-emerald-700' 
-                                                : 'bg-white border-slate-100 text-slate-400 opacity-60'
+                                                : 'bg-slate-50/50 border-slate-100 text-slate-400 opacity-60'
                                             }`}>
-                                                <span className="material-symbols-rounded text-lg leading-none">{getRelationIcon(b.rater_relation)}</span>
-                                                <div className="text-left">
-                                                    <p className="text-[7px] font-black uppercase tracking-widest leading-none mb-0.5">{b.rater_relation}</p>
-                                                    <p className="text-[10px] font-bold leading-none">{b.status === 'COMPLETED' ? 'Done' : 'Pending'}</p>
+                                                <span className="material-symbols-rounded text-base leading-none shrink-0">{getRelationIcon(b.rater_relation)}</span>
+                                                <div className="text-left min-w-0">
+                                                    <p className="text-[6px] font-black uppercase tracking-widest leading-none mb-0.5 truncate">{b.rater_relation}</p>
+                                                    <p className="text-[9px] font-black leading-none truncate">{b.status === 'COMPLETED' ? 'Done' : 'Pending'}</p>
                                                 </div>
                                                 {b.status === 'COMPLETED' && (
-                                                    <span className="material-symbols-rounded text-xs">verified</span>
+                                                    <span className="material-symbols-rounded text-[10px] shrink-0">verified</span>
                                                 )}
                                             </div>
                                         ))}

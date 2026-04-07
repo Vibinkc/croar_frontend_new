@@ -134,18 +134,18 @@ export default function GlobalTasksPage() {
     };
 
     return (
-        <div className="p-8 space-y-8 animate-in fade-in duration-500 max-w-[1600px] mx-auto">
+        <div className="p-4 space-y-4 animate-in fade-in duration-500 max-w-[1600px] mx-auto">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Project Tasks</h1>
-                    <p className="text-slate-500 font-medium">Manage and track assignments across all enterprise projects</p>
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight">Project Tasks</h1>
+                    <p className="text-slate-500 text-[11px] font-medium">Manage and track assignments across all enterprise projects</p>
                 </div>
 
                 <div className="flex items-center gap-3 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
                     <span className="material-symbols-rounded text-slate-400 ml-2">filter_list</span>
                     <select
-                        className="bg-transparent border-none text-xs font-black text-slate-900 uppercase tracking-widest focus:ring-0 cursor-pointer min-w-[200px]"
+                        className="bg-transparent border-none text-[10px] font-black text-slate-900 uppercase tracking-widest focus:outline-none focus:ring-0 cursor-pointer min-w-[180px]"
                         value={selectedProjectId}
                         onChange={(e) => setSelectedProjectId(e.target.value)}
                     >
@@ -201,7 +201,7 @@ export default function GlobalTasksPage() {
                             <input
                                 type="text"
                                 placeholder="Search tasks, descriptions or project names..."
-                                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                                className="w-full pl-9 pr-4 py-2 bg-slate-50 border-none rounded-xl text-[11px] font-bold focus:outline-none focus:ring-0 transition-all border border-transparent focus:border-slate-200"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -218,18 +218,19 @@ export default function GlobalTasksPage() {
                                         </Link>
                                     </div>
                                     
-                                    <div className="flex flex-col h-full space-y-4">
-                                        <div className="space-y-1.5">
-                                            <div className="flex items-center gap-2">
-                                                <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${getStatusColor(task.column)}`}>
-                                                    {task.column}
-                                                </span>
-                                                <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-50 px-2.5 py-0.5 rounded-full">
-                                                    {task.project?.name}
-                                                </span>
+                                        <div className="flex flex-col h-full space-y-4">
+                                            <div className="space-y-1.5 pt-1">
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 flex items-center gap-1">
+                                                        <span className="material-symbols-rounded text-[12px]">folder</span>
+                                                        {task.project?.name || "Unlinked Project"}
+                                                    </span>
+                                                    <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border ${getStatusColor(task.column)} shadow-sm`}>
+                                                        {task.column}
+                                                    </span>
+                                                </div>
+                                                <h3 className="text-lg font-black text-slate-800 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{task.title}</h3>
                                             </div>
-                                            <h3 className="text-lg font-black text-slate-800 leading-tight group-hover:text-indigo-600 transition-colors">{task.title}</h3>
-                                        </div>
 
                                         <p className="text-slate-500 text-xs font-medium line-clamp-2 italic text-ellipsis overflow-hidden">
                                             "{task.description || "No description provided."}"

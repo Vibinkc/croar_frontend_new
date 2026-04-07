@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -112,6 +113,8 @@ export default function AssessmentAutomationPage() {
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [automationToDelete, setAutomationToDelete] = useState<Automation | null>(null);
   const [previewingAutomation, setPreviewingAutomation] = useState<Automation | null>(null);
   const [originalForm, setOriginalForm] = useState<FormState | null>(null);
   const [originalQuestions, setOriginalQuestions] = useState<any[] | null>(null);
@@ -413,8 +416,6 @@ export default function AssessmentAutomationPage() {
     }
   };
 
-  // ── Toggle ───────────────────────────────────────────────────────────────────
-
   const handleToggle = async (a: Automation) => {
     setTogglingId(a.id);
     try {
@@ -437,21 +438,24 @@ export default function AssessmentAutomationPage() {
 
   // ── Delete ────────────────────────────────────────────────────────────────────
 
-  const handleGenerateQuestions = async (id: string) => {
-    setGeneratingId(id);
+  const handleDelete = async () => {
+    if (!automationToDelete) return;
+    setDeletingId(automationToDelete.id);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${id}/generate`, {
-        method: "POST",
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${automationToDelete.id}`, {
+        method: "DELETE",
         headers: authHeaders,
       });
       if (res.ok) {
-        showToast("AI Questions generated successfully!");
-        fetchAutomations(selectedJobId || undefined);
+        showToast("Automation deleted.");
+        setAutomations((prev) => prev.filter((item) => item.id !== automationToDelete.id));
       } else {
-        showToast("AI Generation failed.", "error");
+        showToast("Failed to delete.", "error");
       }
     } finally {
-      setGeneratingId(null);
+      setDeletingId(null);
+      setIsDeleteModalOpen(false);
+      setAutomationToDelete(null);
     }
   };
 
@@ -521,6 +525,24 @@ export default function AssessmentAutomationPage() {
     showToast("Manual question added!");
   };
 
+  const handleGenerateQuestions = async (id: string) => {
+    setGeneratingId(id);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${id}/generate`, {
+        method: "POST",
+        headers: authHeaders,
+      });
+      if (res.ok) {
+        showToast("AI Questions generated successfully!");
+        fetchAutomations(selectedJobId || undefined);
+      } else {
+        showToast("AI Generation failed.", "error");
+      }
+    } finally {
+      setGeneratingId(null);
+    }
+  };
+
   // ── Helpers ──────────────────────────────────────────────────────────────────
 
   const jobTitle = (id: string) => jobs.find((j) => j.id === id)?.title ?? "—";
@@ -566,7 +588,7 @@ export default function AssessmentAutomationPage() {
   // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] p-6 md:p-8">
+    <div className="min-h-screen bg-[#FDFDFF] p-4 animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
@@ -749,23 +771,9 @@ export default function AssessmentAutomationPage() {
                 <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED]">
                   <span className="material-symbols-rounded text-base">edit</span>
                 </button>
-                <button onClick={async () => {
-                   if (!confirm("Delete this automation?")) return;
-                   setDeletingId(a.id);
-                   try {
-                     const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${a.id}`, {
-                       method: "DELETE",
-                       headers: authHeaders,
-                     });
-                     if (res.ok) {
-                       showToast("Automation deleted.");
-                       setAutomations((prev) => prev.filter((item) => item.id !== a.id));
-                     } else {
-                       showToast("Failed to delete.", "error");
-                     }
-                   } finally {
-                     setDeletingId(null);
-                   }
+                <button onClick={() => {
+                   setAutomationToDelete(a);
+                   setIsDeleteModalOpen(true);
                 }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500">
                   {deletingId === a.id ? (
                     <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
@@ -1349,6 +1357,19 @@ export default function AssessmentAutomationPage() {
           </div>
         </div>
       )}
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setAutomationToDelete(null);
+        }}
+        onConfirm={handleDelete}
+        title="Delete Assessment Automation?"
+        message={`Are you sure you want to delete this assessment automation for ${automationToDelete ? jobTitle(automationToDelete.job_requirement_id) : 'this job'}? This action is irreversible.`}
+        confirmLabel="Yes, Delete"
+        cancelLabel="No"
+        isDestructive={true}
+      />
     </div>
   );
 }

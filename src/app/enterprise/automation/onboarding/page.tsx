@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { BACKEND_URL } from "@/utils/api";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 // --- Types ---
 
@@ -85,6 +86,8 @@ export default function OnboardingAutomationPage() {
   const [saving, setSaving] = useState(false);
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [automationToDelete, setAutomationToDelete] = useState<OnboardingAutomation | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
   const showToast = (msg: any, type: "success" | "error" = "success") => {
@@ -239,22 +242,24 @@ export default function OnboardingAutomationPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this automation?")) return;
-    setDeletingId(id);
+  const handleDelete = async () => {
+    if (!automationToDelete) return;
+    setDeletingId(automationToDelete.id);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/onboarding-automation/${id}`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/onboarding-automation/${automationToDelete.id}`, {
         method: "DELETE",
         headers: authHeaders,
       });
       if (res.ok) {
         showToast("Automation deleted.");
-        setAutomations((prev) => prev.filter((a) => a.id !== id));
+        setAutomations((prev) => prev.filter((a) => a.id !== automationToDelete.id));
       } else {
         showToast("Failed to delete.", "error");
       }
     } finally {
       setDeletingId(null);
+      setIsDeleteModalOpen(false);
+      setAutomationToDelete(null);
     }
   };
 
@@ -274,7 +279,7 @@ export default function OnboardingAutomationPage() {
   const getEmailTemplateName = (id: string | null) => id ? (emailTemplates.find((t) => t.id === id)?.name ?? "—") : "None";
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] p-6 md:p-8">
+    <div className="min-h-screen bg-[#FDFDFF] p-4 animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
@@ -393,7 +398,10 @@ export default function OnboardingAutomationPage() {
                 <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#4f46e5] transition-colors" title="Edit">
                   <span className="material-symbols-rounded text-base">edit</span>
                 </button>
-                <button onClick={() => handleDelete(a.id)} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
+                <button onClick={() => {
+                   setAutomationToDelete(a);
+                   setIsDeleteModalOpen(true);
+                }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
                   {deletingId === a.id ? (
                     <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
                   ) : (
@@ -584,6 +592,19 @@ export default function OnboardingAutomationPage() {
           </div>
         )}
       </AnimatePresence>
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setAutomationToDelete(null);
+        }}
+        onConfirm={handleDelete}
+        title="Delete Onboarding Automation?"
+        message={`Are you sure you want to delete this onboarding automation for ${automationToDelete ? getJobTitle(automationToDelete.job_requirement_id) : 'this job'}? This action is irreversible.`}
+        confirmLabel="Yes, Delete"
+        cancelLabel="No"
+        isDestructive={true}
+      />
     </div>
   );
 }

@@ -14,7 +14,8 @@ import {
     AlertCircle,
     Save,
     Camera,
-    Zap
+    Zap,
+    Shield
 } from "lucide-react";
 
 interface CompanyProfile {
@@ -38,6 +39,7 @@ export default function OrganizationProfilePage() {
     const [logoUrl, setLogoUrl] = useState("");
     const [industry, setIndustry] = useState("");
     const [location, setLocation] = useState("");
+    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
     useEffect(() => {
         if (token) {
@@ -45,17 +47,19 @@ export default function OrganizationProfilePage() {
         }
     }, [token]);
 
+    const showToast = (msg: string, type: "success" | "error" = "success") => {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 3000);
+    };
+
     const fetchProfile = async () => {
         setIsLoading(true);
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/company/`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
+                headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
                 const data = await res.json();
-                // Assumes the first company in the managed list is the primary one for this agent
                 const primary = Array.isArray(data) ? data[0] : data;
                 if (!primary) {
                     setIsLoading(false);
@@ -70,7 +74,7 @@ export default function OrganizationProfilePage() {
         } catch (e) {
             console.error("Failed to fetch profile", e);
         } finally {
-            setIsLoading(false);
+            setTimeout(() => setIsLoading(false), 800); // Smooth transition
         }
     };
 
@@ -85,9 +89,7 @@ export default function OrganizationProfilePage() {
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/upload/logo`, {
                 method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                },
+                headers: { "Authorization": `Bearer ${token}` },
                 body: formData
             });
 
@@ -95,12 +97,13 @@ export default function OrganizationProfilePage() {
                 const data = await res.json();
                 const fullUrl = data.url.startsWith("http") ? data.url : `${BACKEND_URL}${data.url}`;
                 setLogoUrl(fullUrl);
+                showToast("Logo synchronized.");
             } else {
-                alert("Upload failed. please try again.");
+                showToast("Upload failed.", "error");
             }
         } catch (err) {
             console.error("Upload error:", err);
-            alert("An error occurred during upload.");
+            showToast("Sync error.", "error");
         } finally {
             setIsUploading(false);
         }
@@ -122,29 +125,20 @@ export default function OrganizationProfilePage() {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    name,
-                    logo_url: logoUrl,
-                    industry,
-                    location
-                })
+                body: JSON.stringify({ name, logo_url: logoUrl, industry, location })
             });
 
             if (res.ok) {
                 const data = await res.json();
                 setProfile(data);
-                setName(data.name || "");
-                setLogoUrl(data.logo_url || "");
-                setIndustry(data.industry || "");
-                setLocation(data.location || "");
-                alert(isUpdate ? "Organization profile updated successfully!" : "Organization profile created successfully!");
+                showToast(isUpdate ? "Profile Synchronized" : "Identity Created");
             } else {
                 const errData = await res.json().catch(() => ({}));
-                alert(`Failed to ${isUpdate ? 'update' : 'create'} profile: ${errData.detail || 'Unknown error'}`);
+                showToast(errData.detail || "Save failed.", "error");
             }
         } catch (e) {
             console.error("Error saving profile", e);
-            alert("Error saving profile.");
+            showToast("Server error.", "error");
         } finally {
             setIsSaving(false);
         }
@@ -158,243 +152,267 @@ export default function OrganizationProfilePage() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-screen bg-[#F8FAFC]">
-                <motion.div 
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full"
-                />
+            <div className="p-8 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
+                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 border-b-4 border-slate-800">
+                    <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="space-y-2">
+                            <div className="w-48 h-6 bg-white/10 rounded-lg animate-pulse" />
+                            <div className="w-32 h-3 bg-white/5 rounded-lg animate-pulse" />
+                        </div>
+                    </div>
+                </div>
+                <div className="grid grid-cols-12 gap-10">
+                    <div className="col-span-12 lg:col-span-4 space-y-6">
+                        <div className="bg-slate-900 h-96 rounded-[2.5rem] animate-pulse opacity-50 shadow-2xl" />
+                        <div className="bg-white h-48 rounded-[2rem] border border-slate-100 animate-pulse" />
+                    </div>
+                    <div className="col-span-12 lg:col-span-8">
+                        <div className="bg-white h-[600px] rounded-[2.5rem] border border-slate-100 animate-pulse shadow-sm" />
+                    </div>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-10 selection:bg-indigo-100 selection:text-indigo-900">
-            {/* Header with Glass Effect */}
-            <motion.div 
+        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
+            {/* Toast */}
+            <AnimatePresence>
+                {toast && (
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className={`fixed top-10 right-10 z-[500] px-6 py-4 rounded-2xl shadow-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 ${toast.type === "success" ? "bg-slate-900 text-white" : "bg-rose-500 text-white"}`}>
+                        <span className="material-symbols-rounded text-lg text-emerald-400">{toast.type === "success" ? "verified" : "error"}</span>
+                        {toast.msg}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Tactical Command Header */}
+            <motion.section 
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative bg-white/40 backdrop-blur-md border border-white/60 p-8 rounded-[2.5rem] shadow-xl shadow-indigo-500/5 flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden"
+                className="bg-slate-900 rounded-[2.5rem] p-8 md:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl border-b-4 border-slate-800"
             >
-                <div className="relative z-10 flex items-center gap-6">
-                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-indigo-600/30">
-                        <Building2 className="w-10 h-10 text-white" />
+                <div className="relative z-10 flex items-center gap-8">
+                    <div className="w-20 h-20 bg-white/5 rounded-[2rem] border border-white/10 flex items-center justify-center backdrop-blur-xl shadow-inner group">
+                        <Building2 className="w-10 h-10 text-indigo-400 group-hover:scale-110 transition-transform" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black text-[#0F172A] tracking-tighter">ORGANIZATION PROFILE</h1>
-                        <div className="flex items-center gap-2 mt-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <p className="text-sm text-slate-500 font-bold uppercase tracking-widest leading-none">Identity Control Center</p>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-3">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            <span className="text-[8px] font-black uppercase tracking-[0.1em] text-emerald-400">Live Identity Node</span>
                         </div>
+                        <h1 className="text-3xl font-black tracking-tighter leading-none italic uppercase">Organization Profile</h1>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-3 opacity-60">Global Brand & Localization Control Center</p>
                     </div>
                 </div>
 
-                <div className="relative z-10 flex items-center gap-4">
+                <div className="relative z-10 flex items-center gap-3">
                     <button
                         onClick={handleSave}
                         disabled={isSaving || !hasChanges}
-                        className="px-8 py-4 bg-[#0F172A] hover:bg-[#1E293B] text-white font-black rounded-2xl shadow-2xl transition-all flex items-center gap-3 disabled:opacity-50 active:scale-95"
+                        className="px-8 h-14 bg-white text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-400 hover:text-white transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-slate-900/50 flex items-center gap-3 group"
                     >
                         {isSaving ? (
-                            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity }} className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
+                            <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
                         ) : (
-                            <Save className="w-5 h-5" />
+                            <Save className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                         )}
-                        {isSaving ? "SAVING CHANGES..." : "SYNC BRANDING"}
+                        Sync Core
                     </button>
                 </div>
 
-                {/* Decorative background shape */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
-            </motion.div>
+                {/* Tactical background elements */}
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] -mr-64 -mt-64" />
+                <div className="absolute bottom-0 left-0 w-64 h-1 bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+            </motion.section>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                {/* Left: Identity Preview Card */}
+                {/* Left: Tactical Identity HUD */}
                 <motion.div 
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="lg:col-span-4 space-y-8"
+                    className="lg:col-span-4 space-y-6"
                 >
-                    <div className="bg-[#0F172A] rounded-[3rem] p-10 text-center space-y-8 relative overflow-hidden shadow-2xl shadow-indigo-900/20 group">
-                        <div className="absolute inset-0 bg-gradient-to-b from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="bg-slate-950 rounded-[2.5rem] p-8 text-center space-y-8 relative overflow-hidden shadow-2xl border border-slate-800 group">
+                        <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                         
                         <div className="relative z-10">
-                            <div className="relative w-40 h-40 mx-auto group/logo">
-                                <div className="absolute inset-0 bg-white shadow-inner rounded-[2.5rem] overflow-hidden flex items-center justify-center p-6 border-4 border-slate-800 transition-all group-hover/logo:scale-[1.02] group-hover/logo:border-indigo-500">
+                            <div className="relative w-44 h-44 mx-auto group/logo">
+                                <div className="absolute inset-0 bg-white rounded-[3rem] overflow-hidden flex items-center justify-center p-8 transition-all group-hover/logo:scale-[0.98] shadow-inner-xl">
                                     {logoUrl ? (
                                         <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                                     ) : (
-                                        <Building2 className="w-16 h-16 text-slate-200" />
+                                        <Building2 className="w-20 h-20 text-slate-100" />
                                     )}
                                 </div>
                                 <button 
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="absolute -bottom-2 -right-2 w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl border border-slate-200 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all scale-0 group-hover/logo:scale-100"
+                                    className="absolute -bottom-2 -right-2 w-14 h-14 bg-slate-100 text-slate-900 rounded-2xl flex items-center justify-center shadow-2xl hover:bg-slate-900 hover:text-white transition-all scale-0 group-hover/logo:scale-100"
                                 >
-                                    <Camera className="w-5 h-5" />
+                                    <Camera className="w-6 h-6" />
                                 </button>
-                                <input 
-                                    type="file" 
-                                    ref={fileInputRef} 
-                                    className="hidden" 
-                                    onChange={handleLogoUpload}
-                                    accept="image/*"
-                                />
+                                <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoUpload} accept="image/*" />
                                 {isUploading && (
-                                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm rounded-[2.5rem] flex items-center justify-center">
-                                         <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity }} className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full" />
+                                    <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md rounded-[3rem] flex flex-col items-center justify-center gap-3 border border-white/10">
+                                         <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                                         <span className="text-[8px] font-black uppercase tracking-widest text-white">Uploading...</span>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="relative z-10 space-y-3">
-                            <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] leading-none">Consolidated Entity</p>
-                            <h2 className="text-3xl font-black text-white tracking-tighter leading-tight">{name || "AppXcess"}</h2>
-                            <div className="flex items-center justify-center gap-2 text-slate-400">
-                                <MapPin className="w-4 h-4" />
-                                <span className="text-sm font-bold">{location || "Not Set"}</span>
+                        <div className="relative z-10 space-y-4">
+                            <div>
+                                <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-2 leading-none">Legal Entity Signature</p>
+                                <h2 className="text-3xl font-black text-white tracking-widest leading-none uppercase truncate">{name || "TECH_CORP_NULL"}</h2>
+                            </div>
+                            <div className="flex items-center justify-center gap-2 group/loc cursor-default">
+                                <MapPin className="w-4 h-4 text-emerald-400" />
+                                <span className="text-xs font-black text-slate-400 uppercase tracking-[0.1em] transition-colors group-hover/loc:text-white">{location || "LOC_UNSET"}</span>
                             </div>
                         </div>
 
-                        <div className="relative z-10 pt-6 flex justify-center gap-3">
-                            <div className="px-5 cy-2.5 bg-slate-800/50 rounded-xl border border-white/5 flex items-center gap-2">
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Sync</span>
+                        <div className="relative z-10 pt-4 grid grid-cols-2 gap-3">
+                            <div className="px-4 py-3 bg-white/5 rounded-2xl border border-white/5 flex flex-col items-center gap-1.5 transition-all hover:bg-white/10">
+                                <Shield className="w-4 h-4 text-emerald-500" />
+                                <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest">Secure_Vault</span>
                             </div>
-                            <div className="px-5 cy-2.5 bg-indigo-600/10 rounded-xl border border-indigo-500/20 flex items-center gap-2">
-                                <Zap className="w-3.5 h-3.5 text-indigo-400" />
-                                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Premium</span>
+                            <div className="px-4 py-3 bg-white/5 rounded-2xl border border-white/5 flex flex-col items-center gap-1.5 transition-all hover:bg-white/10">
+                                <Zap className="w-4 h-4 text-indigo-400" />
+                                <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest">High_Prior</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Small Utility Card */}
-                    <div className="bg-white border border-slate-200 p-8 rounded-[2.5rem] shadow-sm">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                                <ExternalLink className="w-5 h-5 text-indigo-600" />
-                            </div>
-                            <p className="text-xs font-black text-[#0F172A] uppercase tracking-widest leading-none">Touchpoint Audit</p>
+                    <div className="bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm">
+                        <div className="flex items-center justify-between mb-8">
+                            <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em]">Operational Readiness</h3>
+                            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                         </div>
-                        <ul className="space-y-4">
+                        <div className="space-y-6">
                             {[
-                                { label: "Branded Portals", status: "Active" },
-                                { label: "Candidate Emails", status: "Enabled" },
-                                { label: "Job Descriptions", status: "Live" }
+                                { label: "Candidate Portals", status: "Active" },
+                                { label: "HR Document Sync", status: "Enabled" },
+                                { label: "Brand Propagation", status: "Live" }
                             ].map((item, idx) => (
-                                <li key={idx} className="flex items-center justify-between text-sm">
-                                    <span className="font-bold text-slate-500">{item.label}</span>
-                                    <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase">{item.status}</span>
-                                </li>
+                                <div key={idx} className="flex flex-col gap-2">
+                                    <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest">
+                                        <span className="text-slate-400">{item.label}</span>
+                                        <span className="text-emerald-500">{item.status}</span>
+                                    </div>
+                                    <div className="w-full h-1 bg-slate-50 rounded-full overflow-hidden">
+                                        <div className="h-full bg-emerald-500 w-full animate-[shimmer_3s_infinite]" />
+                                    </div>
+                                </div>
                             ))}
-                        </ul>
+                        </div>
                     </div>
                 </motion.div>
 
-                {/* Right: Detailed Configuration */}
+                {/* Right: Detailed Configuration Node */}
                 <motion.div 
                     initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
                     className="lg:col-span-8"
                 >
-                    <div className="bg-white border border-slate-200 rounded-[3rem] shadow-xl shadow-slate-200/20 p-12 space-y-12">
-                        {/* Section 1: Core Meta */}
-                        <section className="space-y-8">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <h3 className="text-xl font-black text-[#0F172A] tracking-tight italic uppercase">Core Identity</h3>
-                                    <div className="h-1 w-12 bg-indigo-600 rounded-full" />
+                    <div className="bg-white border border-slate-100 rounded-[2.5rem] shadow-xl shadow-slate-200/20 p-8 lg:p-12 space-y-12 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+                        
+                        {/* Section: Core Identity */}
+                        <section className="space-y-10 relative z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="w-1 bg-[#0F172A] h-8 rounded-full" />
+                                <div>
+                                    <h3 className="text-lg font-black text-slate-900 tracking-tight italic uppercase">Master Profile Settings</h3>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Propagate identity across all sub-nodes</p>
                                 </div>
-                                <Globe className="w-6 h-6 text-slate-300" />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Legal Entity Name</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1 group-focus-within:text-slate-900 transition-colors">Legal Organization Name</label>
                                     <input 
                                         value={name}
                                         onChange={e => setName(e.target.value)}
-                                        className="w-full h-14 bg-slate-50 border border-slate-200 rounded-2xl px-6 text-slate-800 font-bold focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 transition-all outline-none"
-                                        placeholder="Enter company name"
+                                        className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-slate-800 font-black focus:bg-white focus:border-slate-900 transition-all outline-none text-sm shadow-inner"
+                                        placeholder="E.G. APPXCESS LTD"
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Industry Vertical</label>
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1 group-focus-within:text-slate-900 transition-colors">Industry Vertical</label>
                                     <input 
                                         value={industry}
                                         onChange={e => setIndustry(e.target.value)}
-                                        className="w-full h-14 bg-slate-50 border border-slate-200 rounded-2xl px-6 text-slate-800 font-bold focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 transition-all outline-none"
-                                        placeholder="e.g. Fintech, Creative Agency"
+                                        className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-slate-800 font-black focus:bg-white focus:border-slate-900 transition-all outline-none text-sm shadow-inner"
+                                        placeholder="E.G. NEURAL NETWORKS"
                                     />
                                 </div>
                             </div>
                         </section>
 
-                        {/* Section 2: Localization */}
-                        <section className="space-y-8">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <h3 className="text-xl font-black text-[#0F172A] tracking-tight italic uppercase">Primary Locale</h3>
-                                    <div className="h-1 w-12 bg-indigo-600 rounded-full" />
+                        {/* Section: Geographic Hub */}
+                        <section className="space-y-10 relative z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="w-1 bg-[#0F172A] h-8 rounded-full" />
+                                <div>
+                                    <h3 className="text-lg font-black text-slate-900 tracking-tight italic uppercase">Primary Locale Configuration</h3>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Timezone and region locking</p>
                                 </div>
-                                <MapPin className="w-6 h-6 text-slate-300" />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Geographic Headquarters</label>
-                                <input 
-                                    value={location}
-                                    onChange={e => setLocation(e.target.value)}
-                                    className="w-full h-14 bg-slate-50 border border-slate-200 rounded-2xl px-6 text-slate-800 font-bold focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 transition-all outline-none"
-                                    placeholder="e.g. London, United Kingdom"
-                                />
+                            <div className="space-y-3 group">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1 group-focus-within:text-slate-900 transition-colors">Geographic Headquarters</label>
+                                <div className="relative">
+                                    <input 
+                                        value={location}
+                                        onChange={e => setLocation(e.target.value)}
+                                        className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 pl-14 text-slate-800 font-black focus:bg-white focus:border-slate-900 transition-all outline-none text-sm shadow-inner"
+                                        placeholder="E.G. LONDON, UNITED KINGDOM"
+                                    />
+                                    <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+                                </div>
                             </div>
                         </section>
 
-                        {/* Section 3: Branding Assets */}
-                        <section className="space-y-8">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <h3 className="text-xl font-black text-[#0F172A] tracking-tight italic uppercase">Visual Assets</h3>
-                                    <div className="h-1 w-12 bg-indigo-600 rounded-full" />
+                        {/* Section: Asset Management */}
+                        <section className="space-y-10 relative z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="w-1 bg-[#0F172A] h-8 rounded-full" />
+                                <div>
+                                    <h3 className="text-lg font-black text-slate-900 tracking-tight italic uppercase">Master Visual Assets</h3>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Manage high-resolution brand markers</p>
                                 </div>
-                                <Camera className="w-6 h-6 text-slate-300" />
                             </div>
 
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Master Logo CDN Link</label>
+                            <div className="space-y-5">
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1 group-focus-within:text-slate-900 transition-colors">Master Logo Reference (CDN)</label>
                                     <div className="relative">
                                         <input 
                                             value={logoUrl}
                                             onChange={e => setLogoUrl(e.target.value)}
-                                            className="w-full h-14 bg-slate-50 border border-slate-200 rounded-2xl pl-6 pr-40 text-slate-600 font-medium focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 transition-all outline-none text-sm"
-                                            placeholder="https://cdn.example.com/logo.png"
+                                            className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl pl-6 pr-44 text-slate-700 font-bold focus:bg-white focus:border-slate-900 transition-all outline-none text-xs shadow-inner"
+                                            placeholder="HTTPS://CDN.CROAR.AI/ASSETS/LOGO_LIGHT.SVG"
                                         />
                                         <button 
                                             onClick={() => fileInputRef.current?.click()}
-                                            className="absolute right-2 top-2 bottom-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition-all flex items-center gap-2 active:scale-95"
+                                            className="absolute right-2 top-2 bottom-2 px-6 bg-slate-950 hover:bg-slate-800 text-white font-black text-[9px] uppercase tracking-[0.2em] rounded-xl transition-all flex items-center gap-2.5 shadow-lg active:scale-95"
                                         >
-                                            <Upload className="w-3.5 h-3.5" />
-                                            Upload File
+                                            <Upload className="w-3.5 h-3.5 text-indigo-400" />
+                                            Upload Marker
                                         </button>
                                     </div>
                                 </div>
                                 
                                 <AnimatePresence>
                                     {logoUrl && (
-                                        <motion.div 
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            className="flex items-start gap-4 p-5 bg-slate-50 border border-slate-200 rounded-2xl border-dashed"
-                                        >
-                                            <AlertCircle className="w-5 h-5 text-indigo-500 mt-0.5" />
-                                            <p className="text-xs font-bold text-slate-500 leading-relaxed">
-                                                This URL is served globally to all candidates. Ensure the image is hosted on a secure (HTTPS) connection and has a transparent background for best results.
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="p-6 bg-indigo-50/30 border border-indigo-100 rounded-2xl flex gap-4">
+                                            <Shield className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
+                                            <p className="text-[10px] font-bold text-indigo-900/60 leading-relaxed uppercase tracking-tight">
+                                                Visual identity verified. This asset is automatically injected into all candidate touchpoints including email headers, portal login screens, and PDF exports.
                                             </p>
                                         </motion.div>
                                     )}

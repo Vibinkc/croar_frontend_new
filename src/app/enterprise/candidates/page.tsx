@@ -245,42 +245,42 @@ export default function AllCandidatesPage() {
     });
 
     return (
-        <div className="p-6 space-y-6 pt-2 animate-in fade-in duration-500">
+        <div className="p-4 space-y-4 pt-2 animate-in fade-in duration-500">
             {/* Header / Controls */}
-            <div className="flex flex-col xl:flex-row justify-between items-center gap-6 px-6 py-5 bg-white rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-30">
-                <div className="flex items-center gap-6 w-full xl:w-auto">
+            <div className="flex items-center gap-4 px-4 py-2 bg-white rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-30 overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-4 flex-shrink-0">
                     <div className="flex flex-col">
-                        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Candidate Bank</h1>
-                        <p className="text-xs text-slate-500 font-medium">{filteredCandidates.length} Active Profiles</p>
+                        <h1 className="text-lg font-bold text-slate-900 tracking-tight">Candidate Bank</h1>
+                        <p className="text-[10px] text-slate-500 font-medium">{filteredCandidates.length} Active Profiles</p>
                     </div>
-                    <div className="h-8 w-px bg-slate-200 hidden xl:block"></div>
+                    <div className="h-6 w-px bg-slate-200 hidden xl:block"></div>
 
                     {/* Job Filter */}
                     <div className="relative min-w-[200px]">
                         <select
                             value={selectedJobId}
                             onChange={(e) => setSelectedJobId(e.target.value)}
-                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-600 text-xs font-bold rounded-xl px-4 py-2.5 pr-8 focus:outline-none focus:border-[#7C3AED] transition-all cursor-pointer"
+                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-600 text-[11px] font-bold rounded-xl px-3 py-1.5 pr-8 focus:outline-none focus:border-[#7C3AED] transition-all cursor-pointer"
                         >
                             <option value="ALL">All Jobs</option>
                             {jobs.map(job => (
                                 <option key={job.id} value={job.id}>{job.title}</option>
                             ))}
                         </select>
-                        <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">expand_more</span>
+                        <span className="material-symbols-rounded absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-base pointer-events-none">expand_more</span>
                     </div>
                 </div>
 
-                <div className="flex-1 flex items-center gap-4 w-full xl:w-auto justify-end">
+                <div className="flex-1 flex items-center justify-end gap-4 min-w-[300px]">
                     {/* Search */}
                     <div className="flex-1 max-w-md relative group">
-                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-[#7C3AED] transition-colors">search</span>
+                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base group-focus-within:text-[#7C3AED] transition-colors">search</span>
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search name, email, or skills..."
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-10 pr-4 text-xs font-semibold placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/10 focus:bg-white focus:border-[#7C3AED] transition-all"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-[11px] font-semibold placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/10 focus:bg-white focus:border-[#7C3AED] transition-all"
                         />
                     </div>
                 </div>
@@ -308,27 +308,27 @@ export default function AllCandidatesPage() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-slate-50 border-b border-slate-100">
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Candidate</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Applied For</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Skills</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Candidate</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Applied For</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Skills</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {filteredCandidates.map(candidate => (
                                     <tr key={candidate.id} className="hover:bg-slate-50/50 transition-all group">
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-slate-100 text-[#7C3AED] flex items-center justify-center font-bold text-xs border border-indigo-100/50 shadow-sm">
+                                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-slate-100 text-[#7C3AED] flex items-center justify-center font-bold text-[10px] border border-indigo-100/50 shadow-sm">
                                                     {candidate.full_name?.charAt(0)}
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <span className="text-sm font-bold text-slate-800 group-hover:text-[#7C3AED] transition-colors">{candidate.full_name}</span>
-                                                    <span className="text-xs text-slate-500 font-medium">{candidate.email}</span>
+                                                    <span className="text-xs font-bold text-slate-800 group-hover:text-[#7C3AED] transition-colors">{candidate.full_name}</span>
+                                                    <span className="text-[10px] text-slate-500 font-medium">{candidate.email}</span>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             {candidate.applied_jobs && candidate.applied_jobs.length > 0 ? (
                                                 <div className="flex flex-wrap gap-1">
                                                     {candidate.applied_jobs.slice(0, 2).map((job, idx) => (
@@ -344,7 +344,7 @@ export default function AllCandidatesPage() {
                                                 <span className="text-xs text-slate-400 italic">General Pool</span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <div className="flex flex-wrap gap-1.5">
                                                 {candidate.skills?.slice(0, 3).map((s, idx) => (
                                                     <span key={idx} className="inline-flex items-center px-2 py-1 rounded-md bg-blue-50 text-blue-600 text-[10px] font-bold border border-blue-100">
@@ -356,7 +356,7 @@ export default function AllCandidatesPage() {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-3 py-1.5 text-right">
                                             <div className="flex items-center justify-end gap-2">
                                                 {candidate.resume_url && (
                                                     <button

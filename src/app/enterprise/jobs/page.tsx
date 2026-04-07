@@ -122,9 +122,9 @@ export default function EnterpriseJobsPage() {
     ];
 
     return (
-        <div className="p-6 space-y-4 pt-2 animate-in fade-in duration-500">
+        <div className="p-4 space-y-4 pt-2 animate-in fade-in duration-500">
             {/* Ultra-Compact Command Bar */}
-            <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-30 overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-30 overflow-x-auto no-scrollbar">
 
                 {/* Search */}
                 <div className="relative group min-w-[200px] flex-1">
@@ -134,15 +134,15 @@ export default function EnterpriseJobsPage() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search jobs..."
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-10 pr-4 text-[11px] font-bold placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:bg-white focus:border-[#7C3AED] transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-1.5 pl-9 pr-3 text-[11px] font-bold placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:bg-white focus:border-[#7C3AED] transition-all"
                     />
                 </div>
 
-                <div className="h-6 w-px bg-slate-200 mx-1 flex-shrink-0"></div>
+                <div className="h-4 w-px bg-slate-200 mx-0.5 flex-shrink-0"></div>
 
                 {/* Company Filter */}
-                <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-indigo-100 transition-all flex-shrink-0">
-                    <span className="material-symbols-rounded text-slate-400 text-lg">corporate_fare</span>
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-indigo-100 transition-all flex-shrink-0">
+                    <span className="material-symbols-rounded text-slate-400 text-base">corporate_fare</span>
                     <select
                         value={selectedCompanyId}
                         onChange={(e) => setSelectedCompanyId(e.target.value)}
@@ -154,8 +154,8 @@ export default function EnterpriseJobsPage() {
                 </div>
 
                 {/* Location Filter */}
-                <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-indigo-100 transition-all flex-shrink-0">
-                    <span className="material-symbols-rounded text-slate-400 text-lg">location_on</span>
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-indigo-100 transition-all flex-shrink-0">
+                    <span className="material-symbols-rounded text-slate-400 text-base">location_on</span>
                     <select
                         value={selectedLocation}
                         onChange={(e) => setSelectedLocation(e.target.value)}
@@ -167,8 +167,8 @@ export default function EnterpriseJobsPage() {
                 </div>
 
                 {/* Type Filter */}
-                <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-indigo-100 transition-all flex-shrink-0">
-                    <span className="material-symbols-rounded text-slate-400 text-lg">category</span>
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-indigo-100 transition-all flex-shrink-0">
+                    <span className="material-symbols-rounded text-slate-400 text-base">category</span>
                     <select
                         value={selectedType}
                         onChange={(e) => setSelectedType(e.target.value)}
@@ -180,8 +180,8 @@ export default function EnterpriseJobsPage() {
                 </div>
 
                 {/* Status Filter (Dropdown instead of tabs to save space) */}
-                <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-indigo-100 transition-all flex-shrink-0">
-                    <span className="material-symbols-rounded text-slate-400 text-lg">filter_list</span>
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-indigo-100 transition-all flex-shrink-0">
+                    <span className="material-symbols-rounded text-slate-400 text-base">filter_list</span>
                     <select
                         value={activeTab}
                         onChange={(e) => setActiveTab(e.target.value as TabStatus)}
@@ -193,13 +193,13 @@ export default function EnterpriseJobsPage() {
                     </select>
                 </div>
 
-                <div className="h-6 w-px bg-slate-200 mx-1 flex-shrink-0"></div>
+                <div className="h-4 w-px bg-slate-200 mx-0.5 flex-shrink-0"></div>
 
                 <Link
                     href="/enterprise/jobs/create"
-                    className="bg-[#7C3AED] text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap flex-shrink-0"
+                    className="bg-[#7C3AED] text-white px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-1.5 active:scale-95 whitespace-nowrap flex-shrink-0"
                 >
-                    <span className="material-symbols-rounded text-lg">add</span>
+                    <span className="material-symbols-rounded text-base">add</span>
                     Create_Job
                 </Link>
             </div>
@@ -230,62 +230,62 @@ export default function EnterpriseJobsPage() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-slate-50 border-b border-slate-100">
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Job Title</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Location</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Experience</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Job Title</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Location</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Experience</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {filteredJobs.map((job, index) => (
                                     <tr key={job.id} className="hover:bg-slate-50/50 transition-all group">
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <Link href={`/enterprise/jobs/${job.id}`}>
-                                                <span className="text-sm font-bold text-slate-800 hover:text-[#7C3AED] transition-colors cursor-pointer">{job.title}</span>
+                                                <span className="text-xs font-bold text-slate-800 hover:text-[#7C3AED] transition-colors cursor-pointer">{job.title}</span>
                                             </Link>
                                         </td>
 
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <div className="flex items-center gap-1.5">
                                                 <span className="material-symbols-rounded text-sm text-slate-400">location_on</span>
                                                 <span className="text-xs font-semibold text-slate-600">{job.location || "Remote"}</span>
                                             </div>
                                         </td>
 
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
                                                 {job.experience_min || 0}-{job.experience_max || '5'} Yrs
                                             </span>
                                         </td>
 
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 py-1.5">
                                             {job.status_id === 2 ? (
-                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold border border-emerald-100 uppercase tracking-wide">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-[9px] font-bold border border-emerald-100 uppercase tracking-wide">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                                     Active
                                                 </span>
                                             ) : job.status_id === 1 ? (
-                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold border border-slate-200 uppercase tracking-wide">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[9px] font-bold border border-slate-200 uppercase tracking-wide">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                                                     Draft
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-500 text-[10px] font-bold border border-rose-100 uppercase tracking-wide">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-50 text-rose-500 text-[9px] font-bold border border-rose-100 uppercase tracking-wide">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
                                                     Closed
                                                 </span>
                                             )}
                                         </td>
 
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-3 py-1.5 text-right">
                                             <div className="flex items-center justify-end gap-1">
                                                 <Link
                                                     href={`/enterprise/jobs/${job.id}/edit`}
                                                     className="w-8 h-8 rounded-lg text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
                                                     title="Edit Job"
                                                 >
-                                                    <span className="material-symbols-rounded text-lg">edit</span>
+                                                    <span className="material-symbols-rounded text-base">edit</span>
                                                 </Link>
                                                 {job.status_id === 2 && (
                                                     <Link

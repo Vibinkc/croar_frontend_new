@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { apiClient } from "@/utils/api";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 interface Member {
     id: string;
@@ -37,6 +38,8 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
         employee_id: "",
         due_date: ""
     });
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
     const handleDragStart = (e: React.DragEvent, taskId: string) => {
         setDraggedTaskId(taskId);
@@ -96,13 +99,16 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
         }
     };
 
-    const handleDeleteTask = async (taskId: string) => {
-        if (!confirm("Are you sure you want to delete this task?")) return;
+    const handleDeleteTask = async () => {
+        if (!taskToDelete) return;
         try {
-            const res = await apiClient.delete(`/api/v1/enterprise/projects/tasks/${taskId}`);
+            const res = await apiClient.delete(`/api/v1/enterprise/projects/tasks/${taskToDelete}`);
             if (res.ok) onRefresh();
         } catch (e) {
             console.error("Error deleting task:", e);
+        } finally {
+            setIsDeleteModalOpen(false);
+            setTaskToDelete(null);
         }
     };
 
@@ -146,7 +152,10 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     <div className="flex items-start justify-between mb-2">
                                         <h4 className="text-xs font-bold text-slate-800 leading-snug">{task.title}</h4>
                                         <button 
-                                            onClick={() => handleDeleteTask(task.id)}
+                                            onClick={() => {
+                                                setTaskToDelete(task.id);
+                                                setIsDeleteModalOpen(true);
+                                            }}
                                             className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition-all"
                                         >
                                             <span className="material-symbols-rounded text-sm">delete</span>
@@ -244,7 +253,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                             <select
                                                 value={newTaskData.employee_id}
                                                 onChange={(e) => setNewTaskData(prev => ({ ...prev, employee_id: e.target.value }))}
-                                                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-5 py-4 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
+                                                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-5 py-4 text-sm font-bold focus:outline-none focus:ring-0 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
                                             >
                                                 <option value="">Select Assignee</option>
                                                 {members.map(m => (
@@ -295,6 +304,17 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                     </div>
                 </div>
             )}
+
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDeleteTask}
+                title="Delete Task?"
+                message="Are you sure you want to delete this task? All progress will be lost."
+                confirmLabel="Yes, Delete"
+                cancelLabel="No"
+                isDestructive={true}
+            />
         </div>
     );
 }

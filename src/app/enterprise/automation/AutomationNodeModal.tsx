@@ -244,10 +244,11 @@ export default function AutomationNodeModal({
       showToast("Please fill in trigger condition.", "error");
       return;
     }
-
     if (type === "interview") {
-      if (!form.start_date || !form.end_date || !form.start_time || !form.end_time || !form.duration || !form.daily_limit) {
-        showToast("Please fill in all required date, time, and limit fields.", "error");
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      if (new Date(form.start_date) < now) {
+        showToast("Start date cannot be in the past.", "error");
         return;
       }
       if (new Date(form.start_date) > new Date(form.end_date)) {
@@ -413,9 +414,9 @@ export default function AutomationNodeModal({
           <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="relative w-full max-w-lg bg-white shadow-2xl h-full flex flex-col pointer-events-auto">
             
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 shrink-0 bg-white">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0 bg-white">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: headerMeta.bg, color: headerMeta.color }}>
+                <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm" style={{ backgroundColor: headerMeta.bg, color: headerMeta.color }}>
                   <span className="material-symbols-rounded text-xl">{headerMeta.icon}</span>
                 </div>
                 <div>
@@ -424,7 +425,7 @@ export default function AutomationNodeModal({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={onClose} className="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
+                <button onClick={onClose} className="w-9 h-9 rounded-2xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
                   <span className="material-symbols-rounded text-xl">close</span>
                 </button>
               </div>
