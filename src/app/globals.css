@@ -310,3 +310,21 @@ body {
 .animate-pulse-slow {
   animation: pulse-slow 4s ease-in-out infinite;
 }
+
+/* Material Icons/Symbols Optimization */
+.material-icons,
+.material-icons-outlined,
+.material-symbols-rounded {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}

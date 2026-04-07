@@ -262,7 +262,9 @@ export default function PublicJobPage() {
                                         if (field.type === 'file') {
                                             return (
                                                 <div key={field.id} className="space-y-1">
-                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{field.label}</label>
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                                        {field.label} {field.is_required && <span className="text-rose-500">*</span>}
+                                                    </label>
                                                     <div className="relative group">
                                                         <input
                                                             type="file"
@@ -304,7 +306,9 @@ export default function PublicJobPage() {
                                                             <span className="material-symbols-rounded text-xl">{field.icon || 'check_circle'}</span>
                                                         </div>
                                                         <div className="flex flex-col">
-                                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{field.label}</label>
+                                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                                {field.label} {field.is_required && <span className="text-rose-500">*</span>}
+                                                            </label>
                                                             <span className={`text-[11px] font-bold ${isChecked ? 'text-emerald-400' : 'text-slate-500'}`}>{isChecked ? 'Selected: Yes' : 'Selected: No'}</span>
                                                         </div>
                                                     </div>
@@ -321,7 +325,9 @@ export default function PublicJobPage() {
 
                                         return (
                                             <div key={field.id} className="space-y-1">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{field.label}</label>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                                    {field.label} {field.is_required && <span className="text-rose-500">*</span>}
+                                                </label>
                                                 <div className="relative">
                                                     <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">{field.icon || 'edit'}</span>
                                                     <input

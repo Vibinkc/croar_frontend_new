@@ -55,7 +55,7 @@ export default function TemplateBuilder({
       );
       if (res.ok) {
         const data = await res.json();
-        setQuestions(data.questions || []);
+        setQuestions([...questions, ...(data.questions || [])]);
       }
     } catch (error) {
       console.error("Error generating questions:", error);
@@ -66,6 +66,13 @@ export default function TemplateBuilder({
 
   const handleSave = async () => {
     if (!title || !topic) return;
+    
+    // Validate that all questions have non-empty text
+    const hasEmptyQuestions = questions.some(q => !q.question || q.question.trim() === "");
+    if (hasEmptyQuestions) {
+      alert("Please ensure all questions have content before saving.");
+      return;
+    }
     setIsSaving(true);
     try {
       const payload = {
@@ -105,9 +112,9 @@ export default function TemplateBuilder({
   const addQuestion = () => {
     const newQ: Question = {
       id: Math.random().toString(36).substr(2, 9),
-      question: "New Question Text",
+      question: "",
       type: "TECHNICAL",
-      expected_answer_points: ["Point 1"],
+      expected_answer_points: [],
       difficulty: difficulty,
     };
     setQuestions([...questions, newQ]);
@@ -380,7 +387,7 @@ export default function TemplateBuilder({
           <div className="px-8 py-6 border-t border-slate-100 bg-slate-50/30 flex justify-end shrink-0">
             <button
               onClick={handleSave}
-              disabled={isSaving || !title || !topic || questions.length === 0}
+              disabled={isSaving || !title || !topic || questions.length === 0 || questions.some(q => !q.question || q.question.trim() === "")}
               className="flex items-center gap-2 px-8 py-4 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-slate-200 text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-[#7C3AED]/20"
             >
               {isSaving ? (
