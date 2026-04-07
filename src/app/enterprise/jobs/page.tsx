@@ -43,6 +43,7 @@ export default function EnterpriseJobsPage() {
     const [selectedCompanyId, setSelectedCompanyId] = useState<string>("ALL");
     const [selectedLocation, setSelectedLocation] = useState<string>("ALL");
     const [selectedType, setSelectedType] = useState<string>("ALL");
+    const [copiedJobId, setCopiedJobId] = useState<string | null>(null);
 
     useEffect(() => {
         if (token) {
@@ -304,16 +305,39 @@ export default function EnterpriseJobsPage() {
                                                     </button>
                                                     <div className={`absolute right-0 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100 transition-all scale-95 group-hover/menu:scale-100 flex flex-col ${index >= filteredJobs.length - 2 ? "bottom-full mb-1 origin-bottom-right" : "top-full mt-1 origin-top-right"}`}>
                                                         <button
-                                                            onClick={(e) => {
+                                                            onClick={async (e) => {
                                                                 e.preventDefault();
+                                                                e.stopPropagation();
                                                                 const url = `${window.location.origin}/jobs/${job.id}`;
-                                                                navigator.clipboard.writeText(url);
-                                                                alert("Link copied to clipboard.");
+                                                                
+                                                                try {
+                                                                    if (navigator.clipboard && window.isSecureContext) {
+                                                                        await navigator.clipboard.writeText(url);
+                                                                    } else {
+                                                                        const textArea = document.createElement("textarea");
+                                                                        textArea.value = url;
+                                                                        textArea.style.position = "fixed";
+                                                                        textArea.style.left = "-999999px";
+                                                                        textArea.style.top = "-999999px";
+                                                                        document.body.appendChild(textArea);
+                                                                        textArea.focus();
+                                                                        textArea.select();
+                                                                        document.execCommand("copy");
+                                                                        textArea.remove();
+                                                                    }
+                                                                    
+                                                                    setCopiedJobId(job.id);
+                                                                    setTimeout(() => setCopiedJobId(null), 2000);
+                                                                } catch (err) {
+                                                                    console.error("Failed to copy: ", err);
+                                                                }
                                                             }}
-                                                            className="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-[#7C3AED] transition-colors"
+                                                            className={`w-full flex items-center gap-2 px-4 py-2.5 text-xs font-semibold transition-colors ${copiedJobId === job.id ? 'text-emerald-500 bg-emerald-50' : 'text-slate-600 hover:bg-slate-50 hover:text-[#7C3AED]'}`}
                                                         >
-                                                            <span className="material-symbols-rounded text-base">link</span>
-                                                            Copy Link
+                                                            <span className="material-symbols-rounded text-base">
+                                                                {copiedJobId === job.id ? "check_circle" : "link"}
+                                                            </span>
+                                                            {copiedJobId === job.id ? "Copied!" : "Copy Link"}
                                                         </button>
                                                         <div className="h-px bg-slate-50 mx-3 my-1"></div>
                                                         <button
