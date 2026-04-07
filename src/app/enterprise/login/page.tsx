@@ -157,14 +157,7 @@ function EnterpriseLoginContent() {
                         </button>
                     </form>
 
-                    <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 text-center">
-                        <p className="text-xs text-slate-400">
-                            Looking for the student portal?{' '}
-                            <button onClick={() => router.push("/")} className="text-indigo-600 hover:text-indigo-700 font-bold hover:underline">
-                                Go here
-                            </button>
-                        </p>
-                    </div>
+
                 </div>
             </div>
         </div>
