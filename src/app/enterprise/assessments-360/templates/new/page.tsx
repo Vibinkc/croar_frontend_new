@@ -171,77 +171,143 @@ export default function CreateX360Template() {
                 </div>
             </header>
 
-            <main className="max-w-5xl mx-auto p-8 lg:p-12 space-y-12 animate-in fade-in duration-700">
+            <main className="max-w-6xl mx-auto p-8 lg:p-12 space-y-12 animate-in fade-in duration-700">
                 {/* Meta Config */}
-                <section className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Framework Title</label>
+                <section className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 space-y-10 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">Framework Designation</label>
                             <input 
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 placeholder:text-slate-300 transition-all h-[52px]"
+                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
                                 value={formData.name}
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                                 required
-                                placeholder="e.g. Annual Leadership Assessment"
+                                placeholder="e.g. Executive Leadership Quarterly"
                             />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Global Context</label>
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">Strategic Objective</label>
                             <input 
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 placeholder:text-slate-300 transition-all h-[52px]"
+                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
                                 value={formData.description}
                                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                placeholder="Strategic summary for management stakeholders..."
+                                placeholder="Define the core purpose of this assessment..."
                             />
                         </div>
                     </div>
                 </section>
 
-                {/* Selection Pool */}
-                <section className="space-y-6">
-                    <div className="flex justify-between items-center px-1">
-                        <div className="flex items-center gap-3">
-                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Competency Selection pool</h3>
-                            <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-md border border-indigo-100">
-                                {formData.question_ids.length} Selected
-                            </span>
+                {/* Selection Pool - Grouped by Category */}
+                <section className="space-y-10">
+                    <div className="flex justify-between items-center px-2">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl">
+                                <span className="material-symbols-rounded">account_tree</span>
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-black text-slate-900 tracking-tight">Competency Architecture</h3>
+                                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-0.5">Select questions by category for a balanced assessment</p>
+                            </div>
                         </div>
-                        <button 
-                            type="button"
-                            onClick={() => setIsAiWizardOpen(true)}
-                            className="bg-slate-900 text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-indigo-600 px-5 py-2.5 rounded-xl transition-all shadow-md"
-                        >
-                            <span className="material-symbols-rounded text-lg">psychology</span>
-                            AI Strategy Wizard
-                        </button>
+                        <div className="flex items-center gap-4">
+                            <div className="flex flex-col items-end">
+                                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest leading-none mb-1">Total Selected</span>
+                                <span className="text-2xl font-black text-slate-900 leading-none">{formData.question_ids.length}</span>
+                            </div>
+                            <button 
+                                type="button"
+                                onClick={() => setIsAiWizardOpen(true)}
+                                className="h-14 bg-indigo-600 text-white text-[11px] font-black uppercase tracking-[0.15em] flex items-center gap-3 hover:bg-slate-900 px-8 rounded-[2rem] transition-all shadow-xl shadow-indigo-100 group"
+                            >
+                                <span className="material-symbols-rounded text-xl group-hover:rotate-12 transition-transform">psychology</span>
+                                Strategy Wizard
+                            </button>
+                        </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {questions.map(q => (
-                            <div 
-                                key={q.id} 
-                                onClick={() => toggleQuestion(q.id)}
-                                className={`p-6 rounded-2xl cursor-pointer transition-all flex items-start gap-4 border-2 relative group animate-in slide-in-from-bottom-1 ${formData.question_ids.includes(q.id) ? 'border-indigo-600 bg-indigo-50/5' : 'border-slate-100 bg-white hover:border-indigo-100'}`}
-                            >
-                                <div className={`mt-0.5 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${formData.question_ids.includes(q.id) ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-slate-50 border-slate-100 text-transparent'}`}>
-                                    <span className="material-symbols-rounded text-sm font-bold">check</span>
+                    <div className="space-y-16">
+                        {Array.from(new Set(questions.map(q => q.category))).sort().map(cat => {
+                            const catQuestions = questions.filter(q => q.category === cat);
+                            const selectedInCat = catQuestions.filter(q => formData.question_ids.includes(q.id)).length;
+                            
+                            return (
+                                <div key={cat} className="space-y-6">
+                                    <div className="sticky top-20 z-20 flex justify-between items-end pb-4 border-b-2 border-slate-100 bg-[#f8fafc]/80 backdrop-blur-sm -mx-4 px-4 pt-2">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-all ${selectedInCat > 0 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-100 text-slate-400'}`}>
+                                                {selectedInCat}
+                                            </div>
+                                            <div>
+                                                <h4 className="text-lg font-black text-slate-800 tracking-tight">{cat.replace(/_/g, ' ')}</h4>
+                                                <p className="text-slate-400 text-[9px] font-bold uppercase tracking-[0.2em]">{catQuestions.length} Total Options</p>
+                                            </div>
+                                        </div>
+                                        {selectedInCat > 0 && (
+                                            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest animate-in fade-in slide-in-from-right-2">
+                                                {selectedInCat} Competencies Chosen
+                                            </span>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {catQuestions.map(q => (
+                                            <div 
+                                                key={q.id} 
+                                                onClick={() => toggleQuestion(q.id)}
+                                                className={`p-6 rounded-3xl cursor-pointer transition-all flex flex-col gap-4 border-2 relative group animate-in slide-in-from-bottom-2 duration-500 overflow-hidden ${
+                                                    formData.question_ids.includes(q.id) 
+                                                    ? 'border-indigo-600 bg-white shadow-2xl shadow-indigo-100' 
+                                                    : 'border-white bg-white shadow-sm hover:border-slate-200 hover:shadow-xl'
+                                                }`}
+                                            >
+                                                {formData.question_ids.includes(q.id) && (
+                                                    <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-600 flex items-center justify-center translate-x-8 -translate-y-8 rotate-45 shadow-lg">
+                                                        <span className="material-symbols-rounded text-white -rotate-45 mt-6 mr-1 text-sm font-black">check</span>
+                                                    </div>
+                                                )}
+                                                <div className="flex-1">
+                                                    <p className={`text-sm font-bold leading-relaxed transition-colors ${formData.question_ids.includes(q.id) ? 'text-indigo-900' : 'text-slate-600'}`}>
+                                                        {q.text}
+                                                    </p>
+                                                </div>
+                                                <div className="flex justify-between items-center pt-2 border-t border-slate-50 mt-auto">
+                                                    <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">{q.type}</span>
+                                                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${formData.question_ids.includes(q.id) ? 'bg-indigo-50 border-indigo-200 text-indigo-600' : 'bg-slate-50 border-slate-100 text-transparent group-hover:border-slate-300'}`}>
+                                                        <span className="material-symbols-rounded text-base font-black">check</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className={`text-sm font-bold leading-tight transition-colors mb-2 ${formData.question_ids.includes(q.id) ? 'text-indigo-900' : 'text-slate-700'}`}>{q.text}</p>
-                                    <span className="text-[9px] uppercase font-bold text-indigo-600 bg-indigo-50/50 px-2 py-0.5 rounded-md border border-indigo-100 tracking-wider transition-opacity">{q.category}</span>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </section>
 
-                <div className="pt-10 flex flex-col items-center border-t border-slate-100 pb-20">
+                <div className="pt-20 flex flex-col items-center border-t border-slate-200 pb-32">
+                    <div className="flex flex-col items-center mb-10 text-center max-w-sm">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Framework Readiness</p>
+                        <h4 className="text-2xl font-black text-slate-900 mb-2">{formData.question_ids.length} Questions Selected</h4>
+                        <p className="text-slate-500 text-xs font-medium">Review your competency mix above before deploying to your organization.</p>
+                    </div>
                     <button 
                         onClick={handleSave}
                         disabled={submitting || formData.question_ids.length === 0}
-                        className="px-20 py-4 bg-indigo-600 text-white rounded-2xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-[1.01] transition-all disabled:opacity-30 disabled:shadow-none"
+                        className="h-20 px-24 bg-indigo-600 text-white rounded-[2.5rem] font-black text-sm uppercase tracking-[0.25em] shadow-[0_20px_50px_rgba(79,70,229,0.3)] hover:bg-slate-900 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30 disabled:shadow-none flex items-center justify-center gap-4"
                     >
-                        {submitting ? 'Finalizing...' : 'Deploy 360 Framework'}
+                        {submitting ? (
+                            <>
+                                <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                                Sequencing...
+                            </>
+                        ) : (
+                            <>
+                                <span className="material-symbols-rounded text-2xl">rocket_launch</span>
+                                Deploy Assessment Framework
+                            </>
+                        )}
                     </button>
                 </div>
             </main>

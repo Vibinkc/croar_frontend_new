@@ -48,29 +48,18 @@ export default function DeployedNodesList() {
     };
 
     return (
-        <div className="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50/50">
-            {/* Header */}
-            <header className="h-16 bg-white/80 backdrop-blur-sm border-b border-slate-200 flex items-center justify-between px-8 shrink-0 sticky top-0 z-20">
-                <div className="flex items-center gap-4">
-                    <h1 className="text-lg font-black text-slate-900 uppercase tracking-tight">Deployed Cluster Nodes</h1>
-                </div>
-                <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-3">
-                        <div className="text-right">
-                            <p className="text-xs font-bold text-slate-700 leading-tight">Super Administrator</p>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-tight">System Control</p>
-                        </div>
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-sm border border-slate-200">
-                            S
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <main className="flex-1 overflow-y-auto p-4 lg:p-12">
+        <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
+            {/* Page Title */}
+            <div className="flex items-center justify-between mb-8">
+                <h1 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Platform Inventory</h1>
+                <Link href="/super-admin/colleges" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors">
+                    <span className="material-symbols-rounded text-lg">add_box</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Provision Tenant</span>
+                </Link>
+            </div>
                 <div className="max-w-7xl mx-auto">
-                    <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="p-5 border-b border-slate-100 flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-900">
                                     <span className="material-icons-outlined text-lg">view_list</span>
@@ -87,45 +76,45 @@ export default function DeployedNodesList() {
                             <table className="w-full text-left">
                                 <thead className="bg-slate-50 border-b border-slate-100">
                                     <tr>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">College Name</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Slug / URL</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Database</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
+                                        <th className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Organization Name</th>
+                                        <th className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Slug / URL</th>
+                                        <th className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Database</th>
+                                        <th className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                                        <th className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
                                     {colleges.map((c) => (
                                         <tr key={c.id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                                            <td className="px-5 py-3">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center">
                                                         {c.admin_profile_image ? (
                                                             <img src={c.admin_profile_image} className="w-full h-full object-cover rounded-lg" alt="" />
                                                         ) : (
-                                                            <span className="text-xs font-bold text-slate-500">{c.name.charAt(0)}</span>
+                                                            <span className="text-[10px] font-bold text-slate-500">{c.name.charAt(0)}</span>
                                                         )}
                                                     </div>
-                                                    <span className="text-sm font-bold text-slate-700">{c.name}</span>
+                                                    <span className="text-xs font-bold text-slate-700">{c.name}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <span className="px-2 py-1 rounded-md bg-slate-50 border border-slate-200 text-xs font-mono text-slate-500">
+                                            <td className="px-5 py-3">
+                                                <span className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-[10px] font-mono text-slate-500">
                                                     {c.slug}.{FRONTEND_DOMAIN}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <span className="text-xs font-mono text-slate-400">{c.db_name}</span>
+                                            <td className="px-5 py-3">
+                                                <span className="text-[10px] font-mono text-slate-400">{c.db_name}</span>
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-5 py-3">
                                                 <button
                                                     onClick={() => toggleStatus(c)}
-                                                    className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all cursor-pointer ${c.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100 dashed hover:bg-slate-100'}`}
+                                                    className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border transition-all cursor-pointer ${c.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100 dashed hover:bg-slate-100'}`}
                                                 >
                                                     {c.is_active ? 'Active' : 'Offline'}
                                                 </button>
                                             </td>
-                                            <td className="px-6 py-4 text-right">
+                                            <td className="px-5 py-3 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link href={`/super-admin/colleges?edit=${c.id}`} className="p-2 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors" title="Edit Configuration">
                                                         <span className="material-icons-outlined text-lg">edit</span>
@@ -146,7 +135,7 @@ export default function DeployedNodesList() {
                                     {colleges.length === 0 && !isLoading && (
                                         <tr>
                                             <td colSpan={5} className="px-6 py-12 text-center text-slate-400 text-xs font-bold uppercase tracking-widest">
-                                                No nodes deployed yet
+                                                No tenants provisioned yet
                                             </td>
                                         </tr>
                                     )}
@@ -155,7 +144,6 @@ export default function DeployedNodesList() {
                         </div>
                     </div>
                 </div>
-            </main>
         </div>
     );
 }

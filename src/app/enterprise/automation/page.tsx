@@ -46,7 +46,7 @@ interface Automation {
 // ─── Page Component ─────────────────────────────────────────────────────────
 
 export default function AutomationCanvasPage() {
-  const { token } = useAuth();
+  const { token, canAccess } = useAuth();
   const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -274,7 +274,7 @@ export default function AutomationCanvasPage() {
   }, [token, authHeaders, jobs, setNodes, setEdges]);
 
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
-    if (node.id.startsWith("auto-")) {
+    if (node.id.startsWith("auto-") && canAccess("automation:moderate")) {
       // Correct ID extraction: skip "auto-" and the next segment (type)
       const parts = node.id.split("-");
       const type = parts[1];
@@ -284,7 +284,7 @@ export default function AutomationCanvasPage() {
       setEditingId(id);
       setIsModalOpen(true);
     }
-  }, []);
+  }, [canAccess]);
 
   const openCreateModal = (type: "mail" | "assessment" | "interview" | "onboarding") => {
     setEditingId(null);
@@ -383,25 +383,27 @@ export default function AutomationCanvasPage() {
             </ReactFlow>
 
             {/* Floating Actions */}
-            <div className="absolute top-6 right-6 z-10 flex flex-col items-end gap-2 pointer-events-none">
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-white/80 px-2 py-1 rounded backdrop-blur-sm pointer-events-auto shadow-sm">
-                Add Action Node
-              </span>
-              <div className="flex bg-white shadow-xl border border-slate-100 rounded-xl p-1 gap-1 pointer-events-auto">
-                <button onClick={() => openCreateModal("mail")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-indigo-50 text-indigo-500 transition-colors" title="Add Mail Automation">
-                  <span className="material-symbols-rounded text-[20px]">mark_email_unread</span>
-                </button>
-                <button onClick={() => openCreateModal("assessment")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-amber-50 text-amber-500 transition-colors" title="Add Assessment Automation">
-                  <span className="material-symbols-rounded text-[20px]">psychology</span>
-                </button>
-                <button onClick={() => openCreateModal("interview")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-emerald-50 text-emerald-500 transition-colors" title="Add Interview Automation">
-                  <span className="material-symbols-rounded text-[20px]">event_available</span>
-                </button>
-                <button onClick={() => openCreateModal("onboarding")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-purple-50 text-purple-500 transition-colors" title="Add Onboarding Automation">
-                  <span className="material-symbols-rounded text-[20px]">person_add</span>
-                </button>
+            {canAccess("automation:moderate") && (
+              <div className="absolute top-6 right-6 z-10 flex flex-col items-end gap-2 pointer-events-none">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-white/80 px-2 py-1 rounded backdrop-blur-sm pointer-events-auto shadow-sm">
+                  Add Action Node
+                </span>
+                <div className="flex bg-white shadow-xl border border-slate-100 rounded-xl p-1 gap-1 pointer-events-auto">
+                  <button onClick={() => openCreateModal("mail")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-indigo-50 text-indigo-500 transition-colors" title="Add Mail Automation">
+                    <span className="material-symbols-rounded text-[20px]">mark_email_unread</span>
+                  </button>
+                  <button onClick={() => openCreateModal("assessment")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-amber-50 text-amber-500 transition-colors" title="Add Assessment Automation">
+                    <span className="material-symbols-rounded text-[20px]">psychology</span>
+                  </button>
+                  <button onClick={() => openCreateModal("interview")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-emerald-50 text-emerald-500 transition-colors" title="Add Interview Automation">
+                    <span className="material-symbols-rounded text-[20px]">event_available</span>
+                  </button>
+                  <button onClick={() => openCreateModal("onboarding")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-purple-50 text-purple-500 transition-colors" title="Add Onboarding Automation">
+                    <span className="material-symbols-rounded text-[20px]">person_add</span>
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <AutomationNodeModal
               isOpen={isModalOpen}

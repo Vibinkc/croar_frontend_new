@@ -26,14 +26,10 @@ export default function SuperAdminLoginPage() {
             formData.append('username', email);
             formData.append('password', password);
 
-            // Special slug for Super Admin Access
-            const slug = 'nexus';
-
             const res = await fetch(`${BACKEND_URL}/api/v1/auth/token`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "X-College-Slug": slug
                 },
                 body: formData,
             });
@@ -49,11 +45,8 @@ export default function SuperAdminLoginPage() {
                 throw new Error("Access Denied: Super Admin role required");
             }
 
-            // Set the slug in localStorage for subsequent API calls
-            localStorage.setItem('college_slug', 'nexus');
-
             login(data.access_token, data.role);
-            router.push("/super-admin/colleges");
+            router.push("/super-admin");
         } catch (err: any) {
             setError(err.message || "Invalid email or password");
         } finally {

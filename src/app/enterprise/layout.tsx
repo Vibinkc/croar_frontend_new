@@ -11,13 +11,13 @@ export default function EnterprisePortalLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const { role, token, user, isLoading, logout } = useAuth();
+    const { role, token, user, isLoading, logout, permissions, canAccess } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // List of allowed roles for the Enterprise Portal
-    const ALLOWED_ENTERPRISE_ROLES = ["ADMIN", "RECRUITER", "SUPER_ADMIN", "CONSULTANCY"];
+    const ALLOWED_ENTERPRISE_ROLES = ["ADMIN", "RECRUITER", "SUPER_ADMIN", "CONSULTANCY", "RESTRICTED_ACCESS"];
 
     // Skip layout for login, portal and assessment pages
     const isLoginPage = 
@@ -30,16 +30,47 @@ export default function EnterprisePortalLayout({
 
     useEffect(() => {
         if (!isLoading && !isLoginPage) {
-            // Check if user is authenticated and has an allowed role
+            // 1. Check basic authentication
             if (!role || !token) {
                 router.push("/enterprise/login");
-            } else if (!ALLOWED_ENTERPRISE_ROLES.includes(role)) {
-                console.warn(`Unauthorized access attempt to Enterprise Portal by role: ${role}`);
+                return;
+            } 
+            
+            // 2. Check Role Whitelist
+            if (!ALLOWED_ENTERPRISE_ROLES.includes(role)) {
+                console.warn(`[AUTH] Unauthorized access attempt. Role: "${role}" is not in whitelist:`, ALLOWED_ENTERPRISE_ROLES);
                 router.push("/enterprise/login?error=unauthorized");
+                return;
             }
+
+            // 3. Granular Route Guard
+            // Define mapping of route prefixes to required permissions
+            const routePermissions: Record<string, string> = {
+                "/enterprise/jobs": "jobs:read",
+                "/enterprise/candidates": "candidates:read",
+                "/enterprise/communication": "communications:read",
+                "/enterprise/automation": "automation:read",
+                "/enterprise/employees": "employees:read",
+                "/enterprise/projects": "projects:read",
+                "/enterprise/tasks": "tasks:read",
+                "/enterprise/assessments-360": "assessments:read",
+                "/enterprise/surveys": "surveys:read",
+                "/enterprise/team": "organization:moderate",
+                "/enterprise/ai-training": "ai_training:read"
+            };
+
+            // Find matching prefix
+            const matchedRoute = Object.keys(routePermissions).find(prefix => pathname.startsWith(prefix));
+            if (matchedRoute && !canAccess(routePermissions[matchedRoute])) {
+                console.warn(`[AUTH] Access Denied for route: ${pathname}. Missing permission: ${routePermissions[matchedRoute]}`);
+                router.push("/enterprise/dashboard?error=access_denied");
+                return;
+            }
+
+            console.log(`[AUTH] Authorized access granted for role: ${role}`);
         }
         setIsMobileMenuOpen(false);
-    }, [role, token, isLoading, router, pathname, isLoginPage]);
+    }, [role, token, isLoading, router, pathname, isLoginPage, canAccess]);
 
     if (isLoginPage) {
         return <>{children}</>;
@@ -56,66 +87,76 @@ export default function EnterprisePortalLayout({
         );
     }
 
+
     const navGroups = [
         {
             title: "HIRING HUB",
             items: [
-                { label: "Overview", icon: "grid_view", path: "/enterprise/dashboard" },
-                { label: "Job Management", icon: "business_center", path: "/enterprise/jobs" },
-                { label: "Applicant Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban" },
-                { label: "Candidate Mailbox", icon: "alternate_email", path: "/enterprise/communication" },
+                { label: "Overview", icon: "grid_view", path: "/enterprise/dashboard", permission: "organization:read" },
+                { label: "Job Management", icon: "business_center", path: "/enterprise/jobs", permission: "jobs:read" },
+                { label: "Applicant Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
+                { label: "Candidate Mailbox", icon: "alternate_email", path: "/enterprise/communication", permission: "communications:read" },
             ]
         },
         {
             title: "TALENT SEARCH",
             items: [
-                { label: "Candidate Search", icon: "person_search", path: "/enterprise/candidates" },
+                { label: "Candidate Search", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
             ]
         },
         {
             title: "AUTOMATION",
             items: [
-                { label: "Automation Canvas", icon: "account_tree", path: "/enterprise/automation" },
-                { label: "Mail Automation", icon: "mark_email_unread", path: "/enterprise/automation/mail" },
-                { label: "Assessment Automation", icon: "psychology", path: "/enterprise/automation/assessment" },
-                { label: "Interview Automation", icon: "event_available", path: "/enterprise/automation/interview" },
-                { label: "Onboarding Automation", icon: "person_add", path: "/enterprise/automation/onboarding" },
+                { label: "Automation Canvas", icon: "account_tree", path: "/enterprise/automation", permission: "automation:read" },
+                { label: "Mail Automation", icon: "mark_email_unread", path: "/enterprise/automation/mail", permission: "communications:moderate" },
+                { label: "Assessment Automation", icon: "psychology", path: "/enterprise/automation/assessment", permission: "assessments:moderate" },
+                { label: "Interview Automation", icon: "event_available", path: "/enterprise/automation/interview", permission: "interviews:moderate" },
+                { label: "Onboarding Automation", icon: "person_add", path: "/enterprise/automation/onboarding", permission: "onboarding:moderate" },
             ]
         },
         {
             title: "POST ONBOARDING",
             items: [
-                { label: "Employees", icon: "badge", path: "/enterprise/employees" },
-                { label: "Projects", icon: "account_tree", path: "/enterprise/projects" },
-                { label: "Tasks", icon: "checklist", path: "/enterprise/tasks" },
-                { label: "360 Assessments", icon: "360", path: "/enterprise/assessments-360" },
-                { label: "HR Surveys", icon: "poll", path: "/enterprise/surveys" },
+                { label: "Employees", icon: "badge", path: "/enterprise/employees", permission: "employees:read" },
+                { label: "Projects", icon: "account_tree", path: "/enterprise/projects", permission: "projects:read" },
+                { label: "Tasks", icon: "checklist", path: "/enterprise/tasks", permission: "tasks:read" },
+                { label: "360 Assessments", icon: "360", path: "/enterprise/assessments-360", permission: "assessments:read" },
+                { label: "HR Surveys", icon: "poll", path: "/enterprise/surveys", permission: "surveys:read" },
             ]
         },
         {
             title: "AI & TRAINING",
             items: [
-                // { label: "Neural Coaching Lab", icon: "psychology", path: "/enterprise/ai-training/portal" },
-                { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios" },
+                { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios", permission: "ai_training:read" },
             ]
         },
         {
             title: "GENERAL",
             items: [
-                { label: "Organization Profile", icon: "business", path: "/enterprise/settings" },
-                ...(role === "CONSULTANCY" ? [{ label: "Enterprise Partners", icon: "corporate_fare", path: "/enterprise/companies" }] : []),
-                { label: "Email Templates", icon: "mail", path: "/enterprise/settings/templates" },
-                { label: "Assessment Templates", icon: "quiz", path: "/enterprise/settings/assessments" },
-                { label: "Interview Templates", icon: "psychology", path: "/enterprise/settings/interview-templates" },
-                { label: "Onboarding Hub", icon: "person_add", path: "/enterprise/onboarding" },
-                { label: "Onboarding Templates", icon: "rule", path: "/enterprise/settings/onboarding-templates" },
+                { label: "Organization Profile", icon: "business", path: "/enterprise/settings", permission: "organization:read" },
+                { label: "Team Management", icon: "groups", path: "/enterprise/team", permission: "organization:moderate" },
+                { label: "Roles & Permissions", icon: "security", path: "/enterprise/settings/roles", permission: "organization:moderate" },
+                { label: "Enterprise Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
+                { label: "Email Templates", icon: "mail", path: "/enterprise/settings/templates", permission: "communications:read" },
+                { label: "Assessment Templates", icon: "quiz", path: "/enterprise/settings/assessments", permission: "assessments:read" },
+                { label: "Interview Templates", icon: "psychology", path: "/enterprise/settings/interview-templates", permission: "interviews:read" },
+                { label: "Onboarding Hub", icon: "person_add", path: "/enterprise/onboarding", permission: "onboarding:read" },
+                { label: "Onboarding Templates", icon: "rule", path: "/enterprise/settings/onboarding-templates", permission: "onboarding:read" },
             ]
         }
     ];
 
+    // Filter navGroups and items based on permissions
+    const accessibleNavGroups = navGroups
+        .map(group => ({
+            ...group,
+            items: group.items.filter(item => canAccess(item.permission))
+        }))
+        .filter(group => group.items.length > 0);
+
     const navLinkClass = (path: string) => {
         // Collect all possible navigation paths to find the most specific match
-        const allPaths = navGroups.flatMap(g => g.items.map(i => i.path));
+        const allPaths = accessibleNavGroups.flatMap(g => g.items.map(i => i.path));
 
         // A path is active if:
         // 1. It's an exact match
@@ -169,7 +210,7 @@ export default function EnterprisePortalLayout({
 
                     {/* Navigation Groups */}
                     <nav className="space-y-4 px-1">
-                        {navGroups.map((group) => (
+                        {accessibleNavGroups.map((group) => (
                             <div key={group.title}>
                                 <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 px-3">{group.title}</p>
                                 <div className="space-y-0.5">

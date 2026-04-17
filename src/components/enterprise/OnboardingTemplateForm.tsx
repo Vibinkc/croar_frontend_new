@@ -34,7 +34,7 @@ interface OnboardingTemplateFormProps {
 
 export default function OnboardingTemplateForm({ template }: OnboardingTemplateFormProps) {
     const router = useRouter();
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
 
     // Form State
     const [name, setName] = useState("");
@@ -164,6 +164,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                 placeholder="e.g. Executive Onboarding"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                readOnly={!canAccess("onboarding:moderate")}
                             />
                         </div>
                         <div className="space-y-2">
@@ -173,6 +174,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                 placeholder="Purpose of this flow..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
+                                readOnly={!canAccess("onboarding:moderate")}
                             />
                         </div>
                     </div>
@@ -191,31 +193,35 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                         <span className="text-xs font-black opacity-40">{idx + 1}</span>
                                         <span className="text-sm font-black">{s.title}</span>
                                     </div>
-                                    <button 
-                                        onClick={(e) => { e.stopPropagation(); removeSection(s.id); }}
-                                        className={`p-2 rounded-lg transition-colors ${activeSectionId === s.id ? "hover:bg-indigo-500 text-indigo-200 hover:text-white" : "hover:bg-red-50 text-slate-300 hover:text-red-500"}`}
-                                    >
-                                        <span className="material-icons-outlined text-lg">delete</span>
-                                    </button>
+                                     {canAccess("onboarding:moderate") && (
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); removeSection(s.id); }}
+                                            className={`p-2 rounded-lg transition-colors ${activeSectionId === s.id ? "hover:bg-indigo-500 text-indigo-200 hover:text-white" : "hover:bg-red-50 text-slate-300 hover:text-red-500"}`}
+                                        >
+                                            <span className="material-icons-outlined text-lg">delete</span>
+                                        </button>
+                                    )}
                                 </div>
                             ))}
                         </div>
-                        <div className="pt-4 flex gap-3">
-                            <input 
-                                type="text" 
-                                className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3 text-sm font-bold outline-none focus:border-indigo-500"
-                                placeholder="New Section Title..."
-                                value={newSectionTitle}
-                                onChange={(e) => setNewSectionTitle(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && addSection()}
-                            />
-                            <button 
-                                onClick={addSection}
-                                className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-black transition-all"
-                            >
-                                <span className="material-icons-outlined">add</span>
-                            </button>
-                        </div>
+                         {canAccess("onboarding:moderate") && (
+                            <div className="pt-4 flex gap-3">
+                                <input 
+                                    type="text" 
+                                    className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3 text-sm font-bold outline-none focus:border-indigo-500"
+                                    placeholder="New Section Title..."
+                                    value={newSectionTitle}
+                                    onChange={(e) => setNewSectionTitle(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && addSection()}
+                                />
+                                <button 
+                                    onClick={addSection}
+                                    className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-black transition-all"
+                                >
+                                    <span className="material-icons-outlined">add</span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -254,90 +260,94 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{field.type} • {field.required ? "Required" : "Optional"}</p>
                                             </div>
                                         </div>
-                                        <button 
-                                            onClick={() => removeField(activeSectionId, idx)}
-                                            className="opacity-0 group-hover/field:opacity-100 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                                        >
-                                            <span className="material-icons-outlined text-lg">close</span>
-                                        </button>
+                                         {canAccess("onboarding:moderate") && (
+                                            <button 
+                                                onClick={() => removeField(activeSectionId, idx)}
+                                                className="opacity-0 group-hover/field:opacity-100 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                            >
+                                                <span className="material-icons-outlined text-lg">close</span>
+                                            </button>
+                                        )}
                                     </div>
                                 ))}
                             </div>
 
-                            {/* Add New Field Box */}
-                            <div className="bg-white p-8 rounded-[36px] border border-slate-200 shadow-xl shadow-slate-200/40 space-y-6">
-                                <h5 className="text-xs font-black uppercase tracking-widest text-slate-400">Add New Field</h5>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Field Label (Display)</label>
-                                        <input 
-                                            type="text" 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
-                                            placeholder="e.g. Your Mobile Number"
-                                            value={newFieldLabel}
-                                            onChange={(e) => {
-                                                setNewFieldLabel(e.target.value);
-                                                if (!newFieldName) {
-                                                    setNewFieldName(e.target.value.toLowerCase().replace(/\s+/g, "_"));
-                                                }
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Field Type</label>
-                                        <select 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
-                                            value={newFieldType}
-                                            onChange={(e) => setNewFieldType(e.target.value as any)}
-                                        >
-                                            <option value="text">Text Input</option>
-                                            <option value="email">Email Address</option>
-                                            <option value="phone">Phone Number</option>
-                                            <option value="number">Number</option>
-                                            <option value="date">Date Picker</option>
-                                            <option value="select">Dropdown (Select)</option>
-                                            <option value="file">File Upload</option>
-                                        </select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Unique Identifier</label>
-                                        <input 
-                                            type="text" 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
-                                            placeholder="e.g. mobile_number"
-                                            value={newFieldName}
-                                            onChange={(e) => setNewFieldName(e.target.value)}
-                                        />
-                                    </div>
-                                    {newFieldType === "select" && (
+                             {/* Add New Field Box */}
+                            {canAccess("onboarding:moderate") && (
+                                <div className="bg-white p-8 rounded-[36px] border border-slate-200 shadow-xl shadow-slate-200/40 space-y-6">
+                                    <h5 className="text-xs font-black uppercase tracking-widest text-slate-400">Add New Field</h5>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Options (Comma Separated)</label>
+                                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Field Label (Display)</label>
                                             <input 
                                                 type="text" 
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
-                                                placeholder="e.g. Option 1, Option 2, Option 3"
-                                                value={newFieldOptions}
-                                                onChange={(e) => setNewFieldOptions(e.target.value)}
+                                                placeholder="e.g. Your Mobile Number"
+                                                value={newFieldLabel}
+                                                onChange={(e) => {
+                                                    setNewFieldLabel(e.target.value);
+                                                    if (!newFieldName) {
+                                                        setNewFieldName(e.target.value.toLowerCase().replace(/\s+/g, "_"));
+                                                    }
+                                                }}
                                             />
                                         </div>
-                                    )}
-                                    <div className="flex items-end pb-1 gap-3">
-                                        <div 
-                                            onClick={() => setNewFieldRequired(!newFieldRequired)}
-                                            className={`flex items-center gap-3 cursor-pointer p-3 rounded-xl border transition-all ${newFieldRequired ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-white border-slate-100 text-slate-400"}`}
-                                        >
-                                            <span className="material-icons-outlined text-lg">{newFieldRequired ? "check_box" : "check_box_outline_blank"}</span>
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Mark as Required</span>
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Field Type</label>
+                                            <select 
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
+                                                value={newFieldType}
+                                                onChange={(e) => setNewFieldType(e.target.value as any)}
+                                            >
+                                                <option value="text">Text Input</option>
+                                                <option value="email">Email Address</option>
+                                                <option value="phone">Phone Number</option>
+                                                <option value="number">Number</option>
+                                                <option value="date">Date Picker</option>
+                                                <option value="select">Dropdown (Select)</option>
+                                                <option value="file">File Upload</option>
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Unique Identifier</label>
+                                            <input 
+                                                type="text" 
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
+                                                placeholder="e.g. mobile_number"
+                                                value={newFieldName}
+                                                onChange={(e) => setNewFieldName(e.target.value)}
+                                            />
+                                        </div>
+                                        {newFieldType === "select" && (
+                                            <div className="space-y-2">
+                                                <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Options (Comma Separated)</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
+                                                    placeholder="e.g. Option 1, Option 2, Option 3"
+                                                    value={newFieldOptions}
+                                                    onChange={(e) => setNewFieldOptions(e.target.value)}
+                                                />
+                                            </div>
+                                        )}
+                                        <div className="flex items-end pb-1 gap-3">
+                                            <div 
+                                                onClick={() => setNewFieldRequired(!newFieldRequired)}
+                                                className={`flex items-center gap-3 cursor-pointer p-3 rounded-xl border transition-all ${newFieldRequired ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-white border-slate-100 text-slate-400"}`}
+                                            >
+                                                <span className="material-icons-outlined text-lg">{newFieldRequired ? "check_box" : "check_box_outline_blank"}</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Mark as Required</span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <button 
+                                        onClick={addField}
+                                        className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all shadow-lg"
+                                    >
+                                        Add Field to {sections.find(s => s.id === activeSectionId)?.title}
+                                    </button>
                                 </div>
-                                <button 
-                                    onClick={addField}
-                                    className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all shadow-lg"
-                                >
-                                    Add Field to {sections.find(s => s.id === activeSectionId)?.title}
-                                </button>
-                            </div>
+                            )}
                         </motion.div>
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full text-center p-10 space-y-6">
@@ -362,12 +372,14 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                 >
                     Cancel
                 </button>
-                <button 
-                    onClick={handleSave}
-                    className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-2xl shadow-indigo-500/40"
-                >
-                    {template ? "Update Template" : "Save Template"}
-                </button>
+                {canAccess("onboarding:moderate") && (
+                    <button 
+                        onClick={handleSave}
+                        className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-2xl shadow-indigo-500/40"
+                    >
+                        {template ? "Update Template" : "Save Template"}
+                    </button>
+                )}
             </div>
         </div>
     );

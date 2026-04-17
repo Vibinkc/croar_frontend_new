@@ -94,7 +94,7 @@ const EMPTY_FORM: FormState = {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function AssessmentAutomationPage() {
-  const { token } = useAuth();
+  const { token, canAccess } = useAuth();
 
   const authHeaders = {
     "Content-Type": "application/json",
@@ -615,13 +615,15 @@ export default function AssessmentAutomationPage() {
             Generate AI-powered assessments (Aptitude & Coding) automatically for candidates reaching specific hiring rounds.
           </p>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 bg-[#7C3AED] text-white px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95 whitespace-nowrap"
-        >
-          <span className="material-symbols-rounded text-lg">add</span>
-          Create Automation
-        </button>
+        {canAccess("automation:moderate") && (
+          <button
+            onClick={openCreate}
+            className="flex items-center gap-2 bg-[#7C3AED] text-white px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95 whitespace-nowrap"
+          >
+            <span className="material-symbols-rounded text-lg">add</span>
+            Create Automation
+          </button>
+        )}
       </div>
 
       {/* Filter Toolbar */}
@@ -736,19 +738,21 @@ export default function AssessmentAutomationPage() {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                <button
-                  onClick={() => handleGenerateQuestions(a.id)}
-                  disabled={generatingId === a.id}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7C3AED]/10 text-[#7C3AED] rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#7C3AED] hover:text-white transition-all disabled:opacity-50"
-                  title="Generate/Refresh AI Questions"
-                >
-                  {generatingId === a.id ? (
-                    <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <span className="material-symbols-rounded text-sm">auto_awesome</span>
-                  )}
-                  {a.generated_questions ? "Regen AI" : "Gen AI"}
-                </button>
+                {canAccess("automation:moderate") && (
+                  <button
+                    onClick={() => handleGenerateQuestions(a.id)}
+                    disabled={generatingId === a.id}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7C3AED]/10 text-[#7C3AED] rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#7C3AED] hover:text-white transition-all disabled:opacity-50"
+                    title="Generate/Refresh AI Questions"
+                  >
+                    {generatingId === a.id ? (
+                      <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <span className="material-symbols-rounded text-sm">auto_awesome</span>
+                    )}
+                    {a.generated_questions ? "Regen AI" : "Gen AI"}
+                  </button>
+                )}
                 {a.generated_questions && (
                   <button
                     onClick={() => {
@@ -763,24 +767,28 @@ export default function AssessmentAutomationPage() {
                 )}
                 <button
                   onClick={() => handleToggle(a)}
-                  disabled={togglingId === a.id}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"}`}
+                  disabled={togglingId === a.id || !canAccess("automation:moderate")}
+                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${!canAccess("automation:moderate") ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
                 </button>
-                <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED]">
-                  <span className="material-symbols-rounded text-base">edit</span>
-                </button>
-                <button onClick={() => {
-                   setAutomationToDelete(a);
-                   setIsDeleteModalOpen(true);
-                }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500">
-                  {deletingId === a.id ? (
-                    <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <span className="material-symbols-rounded text-base">delete</span>
-                  )}
-                </button>
+                {canAccess("automation:moderate") && (
+                  <>
+                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED]">
+                      <span className="material-symbols-rounded text-base">edit</span>
+                    </button>
+                    <button onClick={() => {
+                       setAutomationToDelete(a);
+                       setIsDeleteModalOpen(true);
+                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500">
+                      {deletingId === a.id ? (
+                        <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <span className="material-symbols-rounded text-base">delete</span>
+                      )}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}

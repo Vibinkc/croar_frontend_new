@@ -27,7 +27,7 @@ interface Email {
 }
 
 const MailboxPage = () => {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const [activeTab, setActiveTab] = useState<'INBOUND' | 'OUTBOUND' | 'FAVORITE' | 'TRASH'>('INBOUND');
     const [emails, setEmails] = useState<Email[]>([]);
     const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
@@ -204,16 +204,18 @@ const MailboxPage = () => {
         <div className="flex h-[calc(100vh-100px)] bg-slate-50 rounded-2xl overflow-hidden border border-slate-200">
             {/* Mailbox Sidebar */}
             <div className="w-64 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
-                <Button
-                    variant="default"
-                    className="w-full mb-6 bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100"
-                    onClick={() => {
-                        setComposeData({ to: '', subject: '', body: '' });
-                        setIsComposeOpen(true);
-                    }}
-                >
-                    <Send className="w-4 h-4 mr-2" /> Compose
-                </Button>
+                {canAccess("communications:create") && (
+                    <Button
+                        variant="default"
+                        className="w-full mb-6 bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100"
+                        onClick={() => {
+                            setComposeData({ to: '', subject: '', body: '' });
+                            setIsComposeOpen(true);
+                        }}
+                    >
+                        <Send className="w-4 h-4 mr-2" /> Compose
+                    </Button>
+                )}
 
                 <SidebarItem
                     icon={<Inbox className="w-4 h-4" />}
@@ -309,9 +311,13 @@ const MailboxPage = () => {
                     <>
                         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <div className="flex gap-2">
-                                <Button variant="outline" size="sm" className="rounded-full" onClick={openReply}><Reply className="w-3 h-3 mr-2" /> Reply</Button>
+                                {canAccess("communications:create") && (
+                                    <Button variant="outline" size="sm" className="rounded-full" onClick={openReply}><Reply className="w-3 h-3 mr-2" /> Reply</Button>
+                                )}
                                 <Button variant="outline" size="sm" className="rounded-full" onClick={() => setStatusMsg({ type: 'success', text: "Added to Favorites (Local Only)" })}><Star className="w-3 h-3" /></Button>
-                                <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" onClick={() => setStatusMsg({ type: 'error', text: "Moved to Trash (Local Only)" })}><Trash2 className="w-3 h-3" /></Button>
+                                {canAccess("communications:delete") && (
+                                    <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" onClick={() => setStatusMsg({ type: 'error', text: "Moved to Trash (Local Only)" })}><Trash2 className="w-3 h-3" /></Button>
+                                )}
                             </div>
                             <div className="flex gap-2">
                                 <Button 
@@ -387,16 +393,18 @@ const MailboxPage = () => {
                                         )}
 
                                         <div className="flex gap-2 mt-2">
-                                            <Button
-                                                size="sm"
-                                                className="bg-indigo-600 shadow-lg shadow-indigo-100"
-                                                onClick={handleSmartReply}
-                                                disabled={isGenerating}
-                                            >
-                                                {isGenerating ? 'Analyzing...' : smartReply ? 'Regenerate Draft' : 'Draft Smart Reply'}
-                                            </Button>
+                                            {canAccess("communications:moderate") && (
+                                                <Button
+                                                    size="sm"
+                                                    className="bg-indigo-600 shadow-lg shadow-indigo-100"
+                                                    onClick={handleSmartReply}
+                                                    disabled={isGenerating}
+                                                >
+                                                    {isGenerating ? 'Analyzing...' : smartReply ? 'Regenerate Draft' : 'Draft Smart Reply'}
+                                                </Button>
+                                            )}
                                             
-                                            {smartReply && (
+                                            {canAccess("communications:create") && smartReply && (
                                                 <Button 
                                                     size="sm" 
                                                     variant="secondary" 

@@ -34,7 +34,7 @@ interface Job {
 type TabStatus = "ALL" | "ACTIVE" | "DRAFTS" | "CLOSED";
 
 export default function EnterpriseJobsPage() {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const [jobs, setJobs] = useState<Job[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -196,13 +196,15 @@ export default function EnterpriseJobsPage() {
 
                 <div className="h-4 w-px bg-slate-200 mx-0.5 flex-shrink-0"></div>
 
-                <Link
-                    href="/enterprise/jobs/create"
-                    className="bg-[#7C3AED] text-white px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-1.5 active:scale-95 whitespace-nowrap flex-shrink-0"
-                >
-                    <span className="material-symbols-rounded text-base">add</span>
-                    Create_Job
-                </Link>
+                {canAccess("jobs:create") && (
+                    <Link
+                        href="/enterprise/jobs/create"
+                        className="bg-[#7C3AED] text-white px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-1.5 active:scale-95 whitespace-nowrap flex-shrink-0"
+                    >
+                        <span className="material-symbols-rounded text-base">add</span>
+                        Create_Job
+                    </Link>
+                )}
             </div>
 
             {/* Content Table */}
@@ -281,13 +283,15 @@ export default function EnterpriseJobsPage() {
 
                                         <td className="px-3 py-1.5 text-right">
                                             <div className="flex items-center justify-end gap-1">
-                                                <Link
-                                                    href={`/enterprise/jobs/${job.id}/edit`}
-                                                    className="w-8 h-8 rounded-lg text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
-                                                    title="Edit Job"
-                                                >
-                                                    <span className="material-symbols-rounded text-base">edit</span>
-                                                </Link>
+                                                {canAccess("jobs:update") && (
+                                                    <Link
+                                                        href={`/enterprise/jobs/${job.id}/edit`}
+                                                        className="w-8 h-8 rounded-lg text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
+                                                        title="Edit Job"
+                                                    >
+                                                        <span className="material-symbols-rounded text-base">edit</span>
+                                                    </Link>
+                                                )}
                                                 {job.status_id === 2 && (
                                                     <Link
                                                         href={`/jobs/${job.id}`}
@@ -340,26 +344,28 @@ export default function EnterpriseJobsPage() {
                                                             {copiedJobId === job.id ? "Copied!" : "Copy Link"}
                                                         </button>
                                                         <div className="h-px bg-slate-50 mx-3 my-1"></div>
-                                                        <button
-                                                            onClick={async (e) => {
-                                                                e.preventDefault();
-                                                                if (confirm("Are you sure you want to delete this job?")) {
-                                                                    try {
-                                                                        const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${job.id}`, {
-                                                                            method: "DELETE",
-                                                                            headers: {
-                                                                                "Authorization": `Bearer ${token}`
-                                                                            }
-                                                                        });
-                                                                        if (res.ok) fetchJobs();
-                                                                    } catch (e) { console.error(e); }
-                                                                }
-                                                            }}
-                                                            className="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-rose-500 hover:bg-rose-50 transition-colors"
-                                                        >
-                                                            <span className="material-symbols-rounded text-base">delete</span>
-                                                            Delete Job
-                                                        </button>
+                                                        {canAccess("jobs:delete") && (
+                                                            <button
+                                                                onClick={async (e) => {
+                                                                    e.preventDefault();
+                                                                    if (confirm("Are you sure you want to delete this job?")) {
+                                                                        try {
+                                                                            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${job.id}`, {
+                                                                                method: "DELETE",
+                                                                                headers: {
+                                                                                    "Authorization": `Bearer ${token}`
+                                                                                }
+                                                                            });
+                                                                            if (res.ok) fetchJobs();
+                                                                        } catch (e) { console.error(e); }
+                                                                    }
+                                                                }}
+                                                                className="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-rose-500 hover:bg-rose-50 transition-colors"
+                                                            >
+                                                                <span className="material-symbols-rounded text-base">delete</span>
+                                                                Delete Job
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>

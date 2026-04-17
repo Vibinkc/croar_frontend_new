@@ -6,52 +6,82 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function SuperAdminSidebar() {
     const pathname = usePathname();
-    const { logout } = useAuth();
+    const { logout, user, role } = useAuth();
 
-    const isActive = (path: string) => {
-        return pathname === path || pathname.startsWith(path + "/");
+    const navGroups = [
+        {
+            title: "PLATFORM MGMT",
+            items: [
+                { label: "Overview", icon: "grid_view", path: "/super-admin" },
+                { label: "Tenants Inventory", icon: "corporate_fare", path: "/super-admin/colleges/list" },
+                { label: "Provision Tenant", icon: "add_business", path: "/super-admin/colleges" },
+            ]
+        },
+        {
+            title: "SYSTEM CONFIG",
+            items: [
+                { label: "Global Roles", icon: "security", path: "/super-admin/roles" },
+                { label: "Organizations", icon: "business", path: "/super-admin/organizations" },
+            ]
+        }
+    ];
+
+    const navLinkClass = (path: string) => {
+        const isActive = pathname === path || (path !== "/super-admin" && pathname.startsWith(path));
+        return `group flex items-center gap-3 px-3 py-1.5 rounded-xl transition-all duration-200 ${isActive
+            ? "bg-[#7C3AED]/10 text-[#7C3AED]"
+            : "text-slate-500 hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]"
+            }`;
     };
 
     return (
-        <div className="w-72 bg-slate-50 border-r border-slate-200 text-slate-800 flex flex-col h-full shrink-0">
-            <div className="p-6 shrink-0 border-b border-slate-200">
-                <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 bg-slate-900 rounded-lg flex items-center justify-center text-white">
-                        <span className="material-icons-outlined text-lg">admin_panel_settings</span>
-                    </div>
-                    <span className="text-sm font-black uppercase tracking-widest text-slate-900">Super Admin</span>
+        <aside className="w-52 bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 shrink-0 transition-all duration-300">
+            <div className="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col">
+                {/* Logo Section */}
+                <div className="p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50">
+                    <Link href="/super-admin" className="flex items-center gap-2 tracking-tighter">
+                        <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent italic">CROAR.AI</span>
+                    </Link>
                 </div>
+
+                {/* Navigation Groups */}
+                <nav className="space-y-4 px-1">
+                    {navGroups.map((group) => (
+                        <div key={group.title}>
+                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 px-3">{group.title}</p>
+                            <div className="space-y-0.5">
+                                {group.items.map((item) => (
+                                    <Link key={item.path} href={item.path} className={navLinkClass(item.path)}>
+                                        <span className="material-symbols-rounded text-xl">{item.icon}</span>
+                                        <span className="text-[10px] font-bold whitespace-nowrap">{item.label}</span>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </nav>
             </div>
 
-            <nav className="mt-6 flex-1 px-4 space-y-2 overflow-y-auto custom-scrollbar">
-                <div className="mb-6">
-                    <h3 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Management</h3>
-
-                    <Link
-                        href="/super-admin/colleges"
-                        className={`group flex items-center px-4 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all duration-200 ${pathname === "/super-admin/colleges" ? "bg-slate-200 text-slate-900" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"}`}
-                    >
-                        <span className="material-icons-outlined mr-3 text-lg">add_business</span>
-                        Deploy Node
-                    </Link>
-
-                    <Link
-                        href="/super-admin/colleges/list"
-                        className={`group flex items-center px-4 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all duration-200 ${isActive("/super-admin/colleges/list") || (pathname.startsWith("/super-admin/colleges/") && pathname !== "/super-admin/colleges" && pathname !== "/super-admin/colleges/list") ? "bg-slate-200 text-slate-900" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"}`}
-                    >
-                        <span className="material-icons-outlined mr-3 text-lg">view_list</span>
-                        Deployed Nodes
-                    </Link>
-
+            {/* Sidebar Footer User Info */}
+            <div className="p-3 border-t border-slate-50 shrink-0">
+                <div className="flex items-center gap-2 mb-4 px-2">
+                    <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                        {user ? user.charAt(0).toUpperCase() : 'S'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-bold text-slate-700 truncate">{user || "root@croar.ai"}</p>
+                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{role || 'SUPER_ADMIN'}</p>
+                    </div>
                 </div>
-            </nav>
 
-            <div className="p-4 border-t border-slate-200 shrink-0">
-                <button onClick={() => logout()} className="group flex items-center w-full px-4 py-3 text-xs font-black uppercase tracking-widest rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200">
-                    <span className="material-icons-outlined mr-3 text-lg">logout</span>
-                    Logout
+                <button
+                    onClick={logout}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-xl transition-all duration-200 group"
+                >
+                    <span className="material-symbols-rounded text-slate-500 text-[20px]">logout</span>
+                    <span className="text-[10px] font-bold">Logout</span>
                 </button>
             </div>
-        </div>
+        </aside>
     );
 }

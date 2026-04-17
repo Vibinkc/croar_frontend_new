@@ -138,7 +138,8 @@ export default function CandidateAssessmentPage() {
     // Mock test execution delay
     await new Promise(r => setTimeout(r, 1500));
     
-    const currentQ = testData.questions[currentIdx];
+    const currentQ = testData.questions?.[currentIdx];
+    if (!currentQ) return;
     const testCases = currentQ.content?.test_cases || [];
     
     // Simple mock runner: if code has "return", pass some, fail some
@@ -256,7 +257,18 @@ export default function CandidateAssessmentPage() {
   }
 
   if (status === "TESTING" && testData) {
-    const currentQuestion = testData.questions[currentIdx];
+    const currentQuestion = testData.questions?.[currentIdx];
+    
+    if (!currentQuestion) {
+      return (
+        <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center text-slate-500">
+           <div className="flex flex-col items-center gap-4">
+              <AlertCircle className="w-12 h-12 text-slate-800" />
+              <p className="text-sm font-black uppercase tracking-widest">No questions found in this assessment</p>
+           </div>
+        </div>
+      );
+    }
     
     return (
       <div className="h-screen bg-[#0A0A0B] flex flex-col text-slate-300 font-sans selection:bg-indigo-500/30">
@@ -311,17 +323,17 @@ export default function CandidateAssessmentPage() {
             </div>
             <div className="flex-1 p-8 overflow-y-auto custom-scrollbar space-y-8">
               <h2 className="text-2xl font-black text-white leading-tight">
-                {currentQuestion.title || "Problem Statement"}
+                {currentQuestion?.title || "Problem Statement"}
               </h2>
               
               <div className="prose prose-invert prose-sm max-w-none text-slate-400 font-medium leading-relaxed">
-                <p>{currentQuestion.question || currentQuestion.problem_statement || currentQuestion.question_text}</p>
+                <p>{currentQuestion?.question || currentQuestion?.problem_statement || currentQuestion?.question_text}</p>
                 
                 {currentQuestion.content?.constraints && (
                   <div className="mt-8">
                     <h4 className="text-white text-xs font-black uppercase tracking-widest mb-3">Constraints</h4>
                     <ul className="space-y-2 list-none p-0">
-                      {(Array.isArray(currentQuestion.content.constraints) ? currentQuestion.content.constraints : [currentQuestion.content.constraints]).map((c: string, i: number) => (
+                      {(Array.isArray(currentQuestion?.content?.constraints) ? currentQuestion.content.constraints : [currentQuestion?.content?.constraints]).map((c: string, i: number) => (
                         <li key={i} className="flex items-center gap-2">
                           <div className="w-1 h-1 rounded-full bg-indigo-500" />
                           {c}
@@ -357,7 +369,7 @@ export default function CandidateAssessmentPage() {
 
           {/* Right Panel: Interactive (Aptitude or Coding) */}
           <div className="w-1/2 flex flex-col bg-slate-950">
-            {currentQuestion.type === "APTITUDE" ? (
+            {currentQuestion?.type === "APTITUDE" ? (
               <div className="flex-1 flex flex-col p-8 lg:p-12 overflow-y-auto custom-scrollbar">
                 <div className="h-12 flex items-center mb-8">
                   <div className="flex items-center gap-2 text-indigo-500">

@@ -30,7 +30,7 @@ interface GlobalStats {
 }
 
 export default function CompaniesPage() {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const [companies, setCompanies] = useState<Company[]>([]);
     const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -142,13 +142,15 @@ export default function CompaniesPage() {
                     <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Strategic Partners</h1>
                     <p className="text-sm text-slate-400 font-bold uppercase tracking-[0.2em] mt-3">Consultancy Node Network & Partnership Management</p>
                 </div>
-                <button
-                    onClick={() => setShowAddModal(true)}
-                    className="self-start md:self-center px-8 py-4 bg-[#7C3AED] text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-[#6D28D9] transition-all shadow-2xl shadow-indigo-200 flex items-center gap-3 group active:scale-95"
-                >
-                    <span className="material-symbols-rounded text-xl group-hover:rotate-90 transition-transform">add</span>
-                    Onboard_Strategic_Partner
-                </button>
+                {canAccess("platform:moderate") && (
+                    <button
+                        onClick={() => setShowAddModal(true)}
+                        className="self-start md:self-center px-8 py-4 bg-[#7C3AED] text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-[#6D28D9] transition-all shadow-2xl shadow-indigo-200 flex items-center gap-3 group active:scale-95"
+                    >
+                        <span className="material-symbols-rounded text-xl group-hover:rotate-90 transition-transform">add</span>
+                        Onboard_Strategic_Partner
+                    </button>
+                )}
             </header>
 
             {/* Overall Analytics Row */}

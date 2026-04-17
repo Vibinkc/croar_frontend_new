@@ -11,7 +11,7 @@ export default function OnboardingDetailsPage() {
     const params = useParams();
     const router = useRouter();
     const { id } = params;
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
 
     const [onboarding, setOnboarding] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -168,7 +168,7 @@ export default function OnboardingDetailsPage() {
                     <h1 className="text-xl font-black text-slate-800 tracking-tight">Onboarding</h1>
                 </div>
                 <div className="flex items-center gap-3">
-                    {onboarding.status?.name !== 'Completed' && (
+                    {canAccess("onboarding:moderate") && onboarding.status?.name !== 'Completed' && (
                         <>
                             <button 
                                 onClick={() => setIsRejectModalOpen(true)}
@@ -186,7 +186,7 @@ export default function OnboardingDetailsPage() {
                             </button>
                         </>
                     )}
-                    {onboarding.status?.name === 'Completed' && (
+                    {canAccess("employees:create") && onboarding.status?.name === 'Completed' && (
                         <button 
                             onClick={() => router.push(`/enterprise/employees/add?candidateId=${onboarding.application?.candidate_id}`)}
                             className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-200 transition-all flex items-center gap-2"
@@ -278,7 +278,7 @@ export default function OnboardingDetailsPage() {
                                                             <div key={field.name} className="space-y-1 relative group/field">
                                                                 <div className="flex items-center justify-between">
                                                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{field.label}</p>
-                                                                    {onboarding.status?.name !== 'Completed' && (
+                                                                    {canAccess("onboarding:moderate") && onboarding.status?.name !== 'Completed' && (
                                                                         <button 
                                                                             onClick={() => toggleFieldRejection(field.name)}
                                                                             className={`w-6 h-6 flex items-center justify-center rounded-lg transition-all opacity-0 group-hover/field:opacity-100 ${
@@ -345,7 +345,7 @@ export default function OnboardingDetailsPage() {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        {onboarding.status?.name !== 'Completed' && doc.status === "Received" && (
+                                        {canAccess("onboarding:moderate") && onboarding.status?.name !== 'Completed' && doc.status === "Received" && (
                                             <button 
                                                 onClick={() => toggleDocRejection(doc.id)}
                                                 className={`w-10 h-10 flex items-center justify-center rounded-xl border transition-all ${

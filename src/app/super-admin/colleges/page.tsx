@@ -95,9 +95,9 @@ function SuperAdminCollegesContent() {
     // Load college into form for Edit Mode
     const loadCollege = (college: any) => {
         setSelectedCollege(college);
-        setName(college.name);
-        setSlug(college.slug);
-        setDbName(college.db_name);
+        setName(college.name || "");
+        setSlug(college.slug || "");
+        setDbName(college.db_name || "");
         setAdminEmail(college.admin_email || "");
         setAdminPassword("");
         setAdminProfileImage(college.admin_profile_image || "");
@@ -200,64 +200,53 @@ function SuperAdminCollegesContent() {
     };
 
     return (
-        /* Main Content */
-        <div className="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50/50">
-            {/* Header */}
-            <header className="h-16 bg-white/80 backdrop-blur-sm border-b border-slate-200 flex items-center justify-between px-8 shrink-0 sticky top-0 z-20">
-                <div className="flex items-center gap-4">
-                    <h1 className="text-lg font-black text-slate-900 uppercase tracking-tight">
-                        {selectedCollege ? `Manage: ${selectedCollege.name}` : "Provisioning Console"}
-                    </h1>
-                </div>
-                <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-3">
-                        <div className="text-right">
-                            <p className="text-xs font-bold text-slate-700 leading-tight">Super Administrator</p>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-tight">System Control</p>
+        <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8 text-center sm:text-left">
+            {/* Page Title */}
+            <div className="flex items-center justify-between mb-8">
+                <h1 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                    {selectedCollege ? `Manage Tenant` : "Tenant Provisioning Console"}
+                </h1>
+                <Link href="/super-admin/colleges/list" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors">
+                    <span className="material-symbols-rounded text-lg">list_alt</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest">View Inventory</span>
+                </Link>
+            </div>
+
+            <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+                    {selectedCollege && (
+                        <div className="absolute top-0 right-0 p-6 flex gap-2">
+                            <Link href={`/super-admin/colleges/${selectedCollege.id}/admins`} className="p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-colors" title="Manage Admins">
+                                <span className="material-icons-outlined text-base">manage_accounts</span>
+                            </Link>
+                            <Link href={`/super-admin/colleges/${selectedCollege.id}/divisions`} className="p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-colors" title="Manage Divisions">
+                                <span className="material-icons-outlined text-base">account_balance</span>
+                            </Link>
+                            <button onClick={() => toggleStatus(selectedCollege)} className={`p-1.5 rounded-lg transition-colors ${selectedCollege.is_active ? 'bg-emerald-50 text-emerald-500 hover:bg-rose-50 hover:text-rose-500' : 'bg-slate-50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-500'}`} title="Toggle Status">
+                                <span className="material-icons-outlined text-base">{selectedCollege.is_active ? 'toggle_on' : 'toggle_off'}</span>
+                            </button>
+                            <button onClick={() => handleDelete(selectedCollege.id)} className="p-1.5 rounded-lg bg-rose-50 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors" title="Delete">
+                                <span className="material-icons-outlined text-base">delete</span>
+                            </button>
                         </div>
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-sm border border-slate-200">
-                            S
+                    )}
+
+                    <div className="flex items-center gap-3 mb-6 pb-5 border-b border-slate-100">
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${selectedCollege ? 'bg-indigo-600 shadow-indigo-200' : 'bg-slate-900 shadow-slate-200'}`}>
+                            <span className="material-icons-outlined text-xl">{selectedCollege ? 'settings_applications' : 'add_business'}</span>
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-black uppercase tracking-tight text-slate-900">{selectedCollege ? 'Configuration' : 'Initialize New Tenant'}</h2>
+                            <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                                {selectedCollege ? `Update settings for ${selectedCollege.slug}` : 'Deploy a new dedicated environment to the cluster.'}
+                            </p>
                         </div>
                     </div>
-                </div>
-            </header>
-
-            <main className="flex-1 overflow-y-auto p-4 lg:p-12 flex justify-center">
-                <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
-                        {selectedCollege && (
-                            <div className="absolute top-0 right-0 p-8 flex gap-2">
-                                <Link href={`/super-admin/colleges/${selectedCollege.id}/admins`} className="p-2 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-colors" title="Manage Admins">
-                                    <span className="material-icons-outlined text-lg">manage_accounts</span>
-                                </Link>
-                                <Link href={`/super-admin/colleges/${selectedCollege.id}/divisions`} className="p-2 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-colors" title="Manage Divisions">
-                                    <span className="material-icons-outlined text-lg">account_balance</span>
-                                </Link>
-                                <button onClick={() => toggleStatus(selectedCollege)} className={`p-2 rounded-xl transition-colors ${selectedCollege.is_active ? 'bg-emerald-50 text-emerald-500 hover:bg-rose-50 hover:text-rose-500' : 'bg-slate-50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-500'}`} title="Toggle Status">
-                                    <span className="material-icons-outlined text-lg">{selectedCollege.is_active ? 'toggle_on' : 'toggle_off'}</span>
-                                </button>
-                                <button onClick={() => handleDelete(selectedCollege.id)} className="p-2 rounded-xl bg-rose-50 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors" title="Delete">
-                                    <span className="material-icons-outlined text-lg">delete</span>
-                                </button>
-                            </div>
-                        )}
-
-                        <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-100">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg ${selectedCollege ? 'bg-indigo-600 shadow-indigo-200' : 'bg-slate-900 shadow-slate-200'}`}>
-                                <span className="material-icons-outlined text-2xl">{selectedCollege ? 'settings_applications' : 'add_business'}</span>
-                            </div>
-                            <div>
-                                <h2 className="text-xl font-black uppercase tracking-tight text-slate-900">{selectedCollege ? 'Configuration' : 'Initialize New Node'}</h2>
-                                <p className="text-xs text-slate-400 font-medium mt-1">
-                                    {selectedCollege ? `Update settings for ${selectedCollege.slug}` : 'Deploy a new college environment to the cluster.'}
-                                </p>
-                            </div>
-                        </div>
 
                         <form onSubmit={handleCreateOrUpdate} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">College Name</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Organization Name</label>
                                     <input
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="e.g. Stanford University"
@@ -324,18 +313,17 @@ function SuperAdminCollegesContent() {
                                 </div>
                             </div>
 
-                            <button
-                                disabled={isLoading}
-                                className={`w-full mt-4 text-white p-5 rounded-xl text-xs font-black uppercase tracking-widest hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl flex items-center justify-center gap-3 group ${selectedCollege ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-900 hover:bg-slate-800 shadow-slate-200'}`}
-                            >
-                                {isLoading ? 'Processing...' : (selectedCollege ? 'Save Changes' : 'Initialize Deployment')}
-                                <span className="material-icons-outlined text-sm group-hover:translate-x-1 transition-transform">{selectedCollege ? 'save' : 'rocket_launch'}</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </main>
+                    <button
+                        disabled={isLoading}
+                        className={`w-full mt-2 text-white p-4 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl flex items-center justify-center gap-3 group ${selectedCollege ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-900 hover:bg-slate-800 shadow-slate-200'}`}
+                    >
+                        {isLoading ? 'Processing...' : (selectedCollege ? 'Save Changes' : 'Initialize Deployment')}
+                        <span className="material-icons-rounded text-sm group-hover:translate-x-1 transition-transform">{selectedCollege ? 'save' : 'rocket_launch'}</span>
+                    </button>
+                </form>
+            </div>
         </div>
+    </div>
     );
 }
 

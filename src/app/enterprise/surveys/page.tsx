@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
 
 export default function SurveyDashboard() {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const router = useRouter();
     const [instances, setInstances] = useState<any[]>([]);
     const [templates, setTemplates] = useState<any[]>([]);
@@ -33,133 +33,140 @@ export default function SurveyDashboard() {
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
-            <div className="flex justify-between items-end pb-6 border-b border-slate-100">
-                <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">HR Surveys</h1>
-                    <p className="text-slate-500 font-medium text-sm mt-1 italic">Measure engagement, satisfaction, and culture with {templates.length} specialized survey types.</p>
+        <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pt-2 animate-in fade-in duration-700">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+                <div className="flex items-center gap-3 px-2">
+                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
+                        <span className="material-symbols-rounded">poll</span>
+                    </div>
+                    <div>
+                        <h1 className="text-lg font-black text-slate-900 tracking-tight">HR Surveys</h1>
+                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Measure engagement and culture</p>
+                    </div>
                 </div>
                 <div className="flex gap-4">
-                    <Link 
-                        href="/enterprise/surveys/templates" 
-                        className="px-6 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all font-black text-[10px] uppercase tracking-widest flex items-center gap-2"
-                    >
-                        <span className="material-symbols-rounded text-lg">description</span>
-                        Templates
-                    </Link>
-                    <Link 
-                        href="/enterprise/surveys/new" 
-                        className="px-10 py-3 bg-slate-900 text-white rounded-2xl hover:bg-indigo-600 transition-all font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 shadow-2xl shadow-indigo-100"
-                    >
-                        <span className="material-symbols-rounded text-lg">add</span>
-                        Launch Survey
-                    </Link>
+                    {canAccess("surveys:moderate") && (
+                        <>
+                            <Link 
+                                href="/enterprise/surveys/templates" 
+                                className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
+                            >
+                                <span className="material-symbols-rounded text-base">description</span>
+                                Templates
+                            </Link>
+                            <Link 
+                                href="/enterprise/surveys/new" 
+                                className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            >
+                                <span className="material-symbols-rounded text-base">add</span>
+                                Launch Survey
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/30">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
-                            <span className="material-symbols-rounded">rocket_launch</span>
-                        </div>
-                        <div>
-                            <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Active Campaigns</p>
-                            <p className="text-2xl font-black text-slate-900 leading-none">{instances.filter(i => i.status === 'ACTIVE').length}</p>
-                        </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-[#7C3AED] transition-all duration-500">
+                    <div className="w-10 h-10 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#7C3AED] group-hover:text-white transition-all duration-500">
+                        <span className="material-symbols-rounded text-xl">rocket_launch</span>
                     </div>
+                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Active Campaigns</p>
+                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{instances.filter(i => i.status === 'ACTIVE').length}</p>
                 </div>
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/30">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
-                            <span className="material-symbols-rounded">checklist</span>
-                        </div>
-                        <div>
-                            <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Total Completed</p>
-                            <p className="text-2xl font-black text-slate-900 leading-none">{instances.filter(i => i.status === 'CLOSED').length}</p>
-                        </div>
+                
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-orange-500 transition-all duration-500">
+                    <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
+                        <span className="material-symbols-rounded text-xl">hourglass_empty</span>
                     </div>
+                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">In Progress</p>
+                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{instances.filter(i => i.status === 'DRAFT').length}</p>
                 </div>
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/30">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
-                            <span className="material-symbols-rounded">poll</span>
-                        </div>
-                        <div>
-                            <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Available Frameworks</p>
-                            <p className="text-2xl font-black text-slate-900 leading-none">{templates.length}</p>
-                        </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-emerald-500 transition-all duration-500">
+                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
+                        <span className="material-symbols-rounded text-xl">check_circle</span>
                     </div>
+                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Total Completed</p>
+                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{instances.filter(i => i.status === 'CLOSED').length}</p>
+                </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-blue-500 transition-all duration-500">
+                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
+                        <span className="material-symbols-rounded text-xl">poll</span>
+                    </div>
+                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Frameworks</p>
+                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{templates.length}</p>
                 </div>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-2xl shadow-slate-200/20 overflow-hidden">
-                <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                    <div className="flex items-center gap-3">
-                        <span className="material-symbols-rounded text-indigo-600 text-xl">history</span>
-                        <h2 className="font-black text-slate-900 text-sm uppercase tracking-tight">Recent Survey Campaigns</h2>
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden">
+                <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+                    <div className="flex items-center gap-2">
+                        <span className="material-symbols-rounded text-[#7C3AED] text-lg">history</span>
+                        <h2 className="font-black text-slate-900 text-[11px] uppercase tracking-tight">Recent Survey Campaigns</h2>
                     </div>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/20">
-                                <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Campaign Details</th>
-                                <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Timeline</th>
-                                <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Status</th>
-                                <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
+                                <th className="px-6 py-3 text-[8px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Campaign Details</th>
+                                <th className="px-6 py-3 text-[8px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Timeline</th>
+                                <th className="px-6 py-3 text-[8px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Status</th>
+                                <th className="px-6 py-3 text-[8px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {instances.length > 0 ? instances.map((instance) => (
                                 <tr key={instance.id} className="group hover:bg-slate-50/50 transition-all cursor-pointer" onClick={() => router.push(`/enterprise/surveys/instances/${instance.id}`)}>
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                                                <span className="material-symbols-rounded text-xl">description</span>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-violet-50 text-[#7C3AED] rounded-lg flex items-center justify-center group-hover:bg-[#7C3AED] group-hover:text-white transition-all">
+                                                <span className="material-symbols-rounded text-base">description</span>
                                             </div>
                                             <div>
-                                                <p className="font-black text-slate-900 leading-tight mb-1">{instance.name}</p>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight italic">Target: {instance.target_group}</p>
+                                                <p className="font-black text-slate-900 leading-tight mb-0.5 text-xs truncate max-w-[200px]">{instance.name}</p>
+                                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight italic">Target: {instance.target_group}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex flex-col gap-1">
-                                            <div className="flex items-center gap-2 text-slate-400">
-                                                <span className="material-symbols-rounded text-xs">calendar_today</span>
-                                                <span className="text-[10px] font-bold font-mono tracking-tighter">
+                                    <td className="px-6 py-4">
+                                        <div className="flex flex-col gap-0.5">
+                                            <div className="flex items-center gap-1.5 text-slate-400">
+                                                <span className="material-symbols-rounded text-[10px]">calendar_today</span>
+                                                <span className="text-[9px] font-bold font-mono tracking-tighter">
                                                     {new Date(instance.start_date).toLocaleDateString()}
                                                 </span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-slate-400">
-                                                <span className="material-symbols-rounded text-xs">event</span>
-                                                <span className="text-[10px] font-bold font-mono tracking-tighter">
+                                            <div className="flex items-center gap-1.5 text-slate-400">
+                                                <span className="material-symbols-rounded text-[10px]">event</span>
+                                                <span className="text-[9px] font-bold font-mono tracking-tighter">
                                                     {new Date(instance.end_date).toLocaleDateString()}
                                                 </span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest inline-flex items-center gap-2 ${
+                                    <td className="px-6 py-4">
+                                        <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest inline-flex items-center gap-1.5 ${
                                             instance.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 
                                             instance.status === 'CLOSED' ? 'bg-slate-50 text-slate-500 border border-slate-100' : 
                                             'bg-amber-50 text-amber-600 border border-amber-100'
                                         }`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${
+                                            <span className={`w-1 h-1 rounded-full ${
                                                 instance.status === 'ACTIVE' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
                                             }`}></span>
                                             {instance.status}
                                         </span>
                                     </td>
-                                    <td className="px-8 py-6 text-right">
-                                        <div className="flex justify-end gap-3">
-                                            {instance.status === 'ACTIVE' && (
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            {instance.status === 'ACTIVE' && canAccess("surveys:moderate") && (
                                                 <button 
                                                     onClick={(e) => {
                                                         e.stopPropagation();
@@ -167,15 +174,15 @@ export default function SurveyDashboard() {
                                                             .then(() => alert("Reminder sent successfully!"))
                                                             .catch(() => alert("Failed to send reminder."));
                                                     }}
-                                                    className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all border border-indigo-100 flex items-center gap-2"
+                                                    className="px-3 py-1.5 bg-violet-50 text-[#7C3AED] rounded-lg font-black text-[8px] uppercase tracking-widest hover:bg-[#7C3AED] hover:text-white transition-all border border-violet-100 flex items-center gap-1.5"
                                                 >
                                                     Remind
-                                                    <span className="material-symbols-rounded text-xs">send</span>
+                                                    <span className="material-symbols-rounded text-[10px]">send</span>
                                                 </button>
                                             )}
-                                            <button className="px-6 py-2 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center gap-2">
-                                                View Report
-                                                <span className="material-symbols-rounded text-xs">analytics</span>
+                                            <button className="px-4 py-1.5 bg-white border border-slate-100 text-slate-900 rounded-lg font-black text-[8px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center gap-1.5">
+                                                View
+                                                <span className="material-symbols-rounded text-[10px]">analytics</span>
                                             </button>
                                         </div>
                                     </td>

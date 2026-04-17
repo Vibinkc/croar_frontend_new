@@ -484,15 +484,15 @@ export default function AutomationNodeModal({
                       <select 
                         value={roundValue} 
                         onChange={handleRoundSelect} 
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all shadow-sm"
+                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all shadow-sm"
                       >
-                        <option value="">Select a stage...</option>
-                        {jobRounds.map((r, i) => <option key={i} value={`${i + 1}|${r.name}`}>Stage {i + 1}: {r.name}</option>)}
+                        <option value="" className="text-slate-900 bg-white">Select a stage...</option>
+                        {jobRounds.map((r, i) => <option key={i} value={`${i + 1}|${r.name}`} className="text-slate-900 bg-white">Stage {i + 1}: {r.name}</option>)}
                       </select>
                     ) : (
                       <div className="grid grid-cols-2 gap-3">
-                        <input type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f: any) => ({ ...f, stage_index: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold" placeholder="Idx" />
-                        <input type="text" value={form.stage_name} onChange={(e) => setForm((f: any) => ({ ...f, stage_name: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold" placeholder="Stage Name" />
+                        <input type="number" min={1} value={form.stage_index || ""} onChange={(e) => setForm((f: any) => ({ ...f, stage_index: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold" placeholder="Idx" />
+                        <input type="text" value={form.stage_name || ""} onChange={(e) => setForm((f: any) => ({ ...f, stage_name: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold" placeholder="Stage Name" />
                       </div>
                     )}
                   </div>
@@ -502,7 +502,7 @@ export default function AutomationNodeModal({
                     <div>
                       <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Trigger Condition {type === "mail" && <span className="text-red-400">*</span>}</label>
                       <textarea 
-                        value={form.criteria} 
+                        value={form.criteria || ""} 
                         onChange={(e) => setForm((f: any) => ({ ...f, criteria: e.target.value }))} 
                         className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 transition-all resize-none" 
                         rows={3}
@@ -519,9 +519,9 @@ export default function AutomationNodeModal({
                     {type === "mail" && (
                       <div>
                         <label className="block text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1.5 ml-1">Email Template <span className="text-red-400">*</span></label>
-                        <select value={form.template_id} onChange={(e) => setForm((f: any) => ({ ...f, template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 bg-white shadow-sm">
-                          <option value="">Select template…</option>
-                          {emailTemplates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                        <select value={form.template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white shadow-sm">
+                          <option value="" className="text-slate-900 bg-white">Select template…</option>
+                          {emailTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                         </select>
                       </div>
                     )}
@@ -548,42 +548,42 @@ export default function AutomationNodeModal({
                             }}
                             className="w-full border border-amber-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 bg-white"
                           >
-                            <option value="">-- Custom Config --</option>
-                            {assessmentTemplates.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                            <option value="" className="text-slate-900 bg-white">-- Custom Config --</option>
+                            {assessmentTemplates.map((t) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Type</label>
-                            <select value={form.assessment_type} onChange={(e) => setForm((f: any) => ({ ...f, assessment_type: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 bg-white">
-                              <option value="APTITUDE">Aptitude</option>
-                              <option value="CODING">Coding</option>
-                              <option value="BOTH">Both</option>
+                            <select value={form.assessment_type || ""} onChange={(e) => setForm((f: any) => ({ ...f, assessment_type: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 bg-white">
+                              <option value="APTITUDE" className="text-slate-900 bg-white">Aptitude</option>
+                              <option value="CODING" className="text-slate-900 bg-white">Coding</option>
+                              <option value="BOTH" className="text-slate-900 bg-white">Both</option>
                             </select>
                           </div>
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Topic <span className="text-red-400">*</span></label>
-                            <input type="text" value={form.topic} onChange={(e) => setForm((f: any) => ({ ...f, topic: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700" placeholder="e.g. Python, SQL" />
+                            <input type="text" value={form.topic || ""} onChange={(e) => setForm((f: any) => ({ ...f, topic: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700" placeholder="e.g. Python, SQL" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Questions</label>
-                            <input type="number" value={form.question_count} onChange={(e) => setForm((f: any) => ({ ...f, question_count: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm" />
+                            <input type="number" value={form.question_count || ""} onChange={(e) => setForm((f: any) => ({ ...f, question_count: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm" />
                           </div>
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Duration (Min)</label>
-                            <input type="number" value={form.test_duration} onChange={(e) => setForm((f: any) => ({ ...f, test_duration: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm" />
+                            <input type="number" value={form.test_duration || ""} onChange={(e) => setForm((f: any) => ({ ...f, test_duration: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm" />
                           </div>
                         </div>
 
                         <div>
                           <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Invite Email Template</label>
-                          <select value={form.email_template_id} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 bg-white">
-                            <option value="">Default Invite Email</option>
-                            {emailTemplates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                          <select value={form.email_template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
+                            <option value="" className="text-slate-900 bg-white">Default Invite Email</option>
+                            {emailTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
 
@@ -610,9 +610,9 @@ export default function AutomationNodeModal({
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5 ml-1">Interview Type</label>
-                            <select value={form.interview_type} onChange={(e) => setForm((f: any) => ({ ...f, interview_type: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 bg-white">
-                              <option value="GMEET">Google Meet</option>
-                              <option value="AI">AI Interview</option>
+                            <select value={form.interview_type || ""} onChange={(e) => setForm((f: any) => ({ ...f, interview_type: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
+                              <option value="GMEET" className="text-slate-900 bg-white">Google Meet</option>
+                              <option value="AI" className="text-slate-900 bg-white">AI Interview</option>
                             </select>
                           </div>
                           {form.interview_type === "AI" && (
@@ -626,9 +626,9 @@ export default function AutomationNodeModal({
                                    + Create New
                                  </button>
                                </div>
-                              <select value={form.interview_template_id} onChange={(e) => setForm((f: any) => ({ ...f, interview_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 bg-white">
-                                <option value="">Select AI Template</option>
-                                {interviewTemplates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                              <select value={form.interview_template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, interview_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
+                                <option value="" className="text-slate-900 bg-white">Select AI Template</option>
+                                {interviewTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                               </select>
                             </div>
                           )}
@@ -637,35 +637,35 @@ export default function AutomationNodeModal({
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Available From <span className="text-red-400">*</span></label>
-                            <input type="date" value={form.start_date} min={new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: any) => ({ ...f, start_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
+                            <input type="date" value={form.start_date || ""} min={new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: any) => ({ ...f, start_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Available To <span className="text-red-400">*</span></label>
-                            <input type="date" value={form.end_date} min={form.start_date || new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: any) => ({ ...f, end_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
+                            <input type="date" value={form.end_date || ""} min={form.start_date || new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: any) => ({ ...f, end_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-4 gap-4">
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Start Time <span className="text-red-400">*</span></label>
-                            <input type="time" value={form.start_time} onChange={(e) => setForm((f: any) => ({ ...f, start_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
+                            <input type="time" value={form.start_time || ""} onChange={(e) => setForm((f: any) => ({ ...f, start_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">End Time <span className="text-red-400">*</span></label>
-                            <input type="time" value={form.end_time} onChange={(e) => setForm((f: any) => ({ ...f, end_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
+                            <input type="time" value={form.end_time || ""} onChange={(e) => setForm((f: any) => ({ ...f, end_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Duration <span className="text-red-400">*</span></label>
-                            <select value={form.duration} onChange={(e) => setForm((f: any) => ({ ...f, duration: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-2 py-3 text-sm font-bold bg-white focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]">
-                              <option value="15">15m</option>
-                              <option value="30">30m</option>
-                              <option value="45">45m</option>
-                              <option value="60">60m</option>
+                            <select value={form.duration || ""} onChange={(e) => setForm((f: any) => ({ ...f, duration: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-2 py-3 text-sm font-bold text-slate-900 bg-white focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]">
+                              <option value="15" className="text-slate-900 bg-white">15m</option>
+                              <option value="30" className="text-slate-900 bg-white">30m</option>
+                              <option value="45" className="text-slate-900 bg-white">45m</option>
+                              <option value="60" className="text-slate-900 bg-white">60m</option>
                             </select>
                           </div>
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Daily Limit <span className="text-red-400">*</span></label>
-                            <input type="number" min={1} value={form.daily_limit} onChange={(e) => setForm((f: any) => ({ ...f, daily_limit: Number(e.target.value) }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
+                            <input type="number" min={1} value={form.daily_limit || ""} onChange={(e) => setForm((f: any) => ({ ...f, daily_limit: Number(e.target.value) }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                         </div>
 
@@ -674,7 +674,7 @@ export default function AutomationNodeModal({
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Interviewer Email</label>
                             <input 
                               type="email" 
-                              value={form.interviewer_email} 
+                              value={form.interviewer_email || ""} 
                               onChange={(e) => setForm((f: any) => ({ ...f, interviewer_email: e.target.value }))} 
                               className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" 
                               placeholder="johndoe@email.com" 
@@ -682,9 +682,9 @@ export default function AutomationNodeModal({
                           </div>
                           <div>
                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Invite Template</label>
-                            <select value={form.email_template_id} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold bg-white">
-                              <option value="">Default Invite</option>
-                              {emailTemplates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                            <select value={form.email_template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
+                              <option value="" className="text-slate-900 bg-white">Default Invite</option>
+                              {emailTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                             </select>
                           </div>
                         </div>
@@ -705,16 +705,16 @@ export default function AutomationNodeModal({
                       <>
                         <div>
                           <label className="block text-[10px] font-black text-purple-600 uppercase tracking-widest mb-1.5 ml-1">Onboarding Template <span className="text-red-400">*</span></label>
-                          <select value={form.template_id} onChange={(e) => setForm((f: any) => ({ ...f, template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 bg-white">
-                            <option value="">Select template…</option>
-                            {onboardingTemplates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                          <select value={form.template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
+                            <option value="" className="text-slate-900 bg-white">Select template…</option>
+                            {onboardingTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
                         <div>
                           <label className="block text-[10px] font-black text-purple-600 uppercase tracking-widest mb-1.5 ml-1">Intro Email Template</label>
-                          <select value={form.email_template_id} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 bg-white">
-                            <option value="">No Intro Email</option>
-                            {emailTemplates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                          <select value={form.email_template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
+                            <option value="" className="text-slate-900 bg-white">No Intro Email</option>
+                            {emailTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
                       </>
@@ -762,7 +762,7 @@ export default function AutomationNodeModal({
                         {!form.is_immediate && (
                           <div className="px-1 animate-in slide-in-from-top-2 duration-300">
                               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Send Date & Time</label>
-                              <input type="datetime-local" value={form.send_at} onChange={(e) => setForm((f: any) => ({ ...f, send_at: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium" />
+                              <input type="datetime-local" value={form.send_at || ""} onChange={(e) => setForm((f: any) => ({ ...f, send_at: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium" />
                           </div>
                         )}
                       </div>

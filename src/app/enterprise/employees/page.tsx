@@ -24,7 +24,7 @@ interface Employee {
 }
 
 export default function EmployeesPage() {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -89,13 +89,15 @@ export default function EmployeesPage() {
 
                 <div className="h-6 w-px bg-slate-200 mx-1 flex-shrink-0"></div>
 
-                <Link
-                    href="/enterprise/employees/add"
-                    className="bg-[#7C3AED] text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap flex-shrink-0"
-                >
-                    <span className="material-symbols-rounded text-lg">add</span>
-                    Add Employee
-                </Link>
+                {canAccess("employees:create") && (
+                    <Link
+                        href="/enterprise/employees/add"
+                        className="bg-[#7C3AED] text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap flex-shrink-0"
+                    >
+                        <span className="material-symbols-rounded text-lg">add</span>
+                        Add Employee
+                    </Link>
+                )}
             </div>
 
             {/* Content Table */}
@@ -158,23 +160,27 @@ export default function EmployeesPage() {
                                         </td>
                                         <td className="px-3 py-1.5 text-right">
                                             <div className="flex items-center justify-end gap-1">
-                                                <Link
-                                                    href={`/enterprise/employees/${emp.id}`}
-                                                    className="w-8 h-8 rounded-lg text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
-                                                    title="Edit Employee"
-                                                >
-                                                    <span className="material-symbols-rounded text-lg">edit</span>
-                                                </Link>
-                                                <button
-                                                    onClick={() => {
-                                                        setEmployeeToDelete(emp.id);
-                                                        setIsConfirmModalOpen(true);
-                                                    }}
-                                                    className="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 flex items-center justify-center transition-all"
-                                                    title="Delete Employee"
-                                                >
-                                                    <span className="material-symbols-rounded text-lg">delete</span>
-                                                </button>
+                                                {canAccess("employees:update") && (
+                                                    <Link
+                                                        href={`/enterprise/employees/${emp.id}`}
+                                                        className="w-8 h-8 rounded-lg text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
+                                                        title="Edit Employee"
+                                                    >
+                                                        <span className="material-symbols-rounded text-lg">edit</span>
+                                                    </Link>
+                                                )}
+                                                {canAccess("employees:delete") && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setEmployeeToDelete(emp.id);
+                                                            setIsConfirmModalOpen(true);
+                                                        }}
+                                                        className="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 flex items-center justify-center transition-all"
+                                                        title="Delete Employee"
+                                                    >
+                                                        <span className="material-symbols-rounded text-lg">delete</span>
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

@@ -89,7 +89,7 @@ interface CandidateModalProps {
 }
 
 function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefresh, onboardingTemplates, stages }: CandidateModalProps) {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
     if (!isOpen || !application) return null;
 
@@ -117,68 +117,72 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                     </div>
                     <div className="flex items-center gap-2">
                         {application.onboarding_id ? (
-                            <button 
-                                onClick={() => {
-                                    window.location.href = `/enterprise/onboarding/${application.onboarding_id}`;
-                                }}
-                                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all shadow-md shadow-emerald-100 flex items-center gap-2"
-                            >
-                                <span className="material-icons-outlined text-[16px]">visibility</span>
-                                View Onboarding
-                            </button>
-                        ) : (
-                            <div className="flex items-center gap-2">
-                                <select 
-                                    className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-[10px] font-bold text-slate-600 outline-none focus:border-indigo-500"
-                                    value={selectedTemplate}
-                                    onChange={(e) => setSelectedTemplate(e.target.value)}
-                                >
-                                    <option value="">Select Template</option>
-                                    {onboardingTemplates.map(t => (
-                                        <option key={t.id} value={t.id}>{t.name}</option>
-                                    ))}
-                                </select>
+                            canAccess("onboarding:read") && (
                                 <button 
-                                    onClick={async () => {
-                                        if (!selectedTemplate) {
-                                            alert("Please select an onboarding template first.");
-                                            return;
-                                        }
-                                        if (!token) {
-                                            alert("Your session has expired. Please log in again.");
-                                            return;
-                                        }
-                                        try {
-                                            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/onboarding/initiate`, {
-                                                method: "POST",
-                                                headers: {
-                                                    "Content-Type": "application/json",
-                                                    "Authorization": `Bearer ${token}`
-                                                },
-                                                body: JSON.stringify({ 
-                                                    application_id: application.id,
-                                                    template_id: selectedTemplate
-                                                })
-                                            });
-                                            if (res.ok) {
-                                                alert("Onboarding initiated successfully!");
-                                                onRefresh();
-                                                onClose();
-                                            } else {
-                                                const err = await res.json();
-                                                alert(err.detail || "Failed to initiate onboarding");
-                                            }
-                                        } catch (e) {
-                                            console.error(e);
-                                            alert("Error initiating onboarding");
-                                        }
+                                    onClick={() => {
+                                        window.location.href = `/enterprise/onboarding/${application.onboarding_id}`;
                                     }}
-                                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all shadow-md shadow-indigo-100 flex items-center gap-2"
+                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all shadow-md shadow-emerald-100 flex items-center gap-2"
                                 >
-                                    <span className="material-icons-outlined text-[16px]">person_add</span>
-                                    Initiate
+                                    <span className="material-icons-outlined text-[16px]">visibility</span>
+                                    View Onboarding
                                 </button>
-                            </div>
+                            )
+                        ) : (
+                            canAccess("onboarding:moderate") && (
+                                <div className="flex items-center gap-2">
+                                    <select 
+                                        className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-[10px] font-bold text-slate-600 outline-none focus:border-indigo-500"
+                                        value={selectedTemplate}
+                                        onChange={(e) => setSelectedTemplate(e.target.value)}
+                                    >
+                                        <option value="">Select Template</option>
+                                        {onboardingTemplates.map(t => (
+                                            <option key={t.id} value={t.id}>{t.name}</option>
+                                        ))}
+                                    </select>
+                                    <button 
+                                        onClick={async () => {
+                                            if (!selectedTemplate) {
+                                                alert("Please select an onboarding template first.");
+                                                return;
+                                            }
+                                            if (!token) {
+                                                alert("Your session has expired. Please log in again.");
+                                                return;
+                                            }
+                                            try {
+                                                const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/onboarding/initiate`, {
+                                                    method: "POST",
+                                                    headers: {
+                                                        "Content-Type": "application/json",
+                                                        "Authorization": `Bearer ${token}`
+                                                    },
+                                                    body: JSON.stringify({ 
+                                                        application_id: application.id,
+                                                        template_id: selectedTemplate
+                                                    })
+                                                });
+                                                if (res.ok) {
+                                                    alert("Onboarding initiated successfully!");
+                                                    onRefresh();
+                                                    onClose();
+                                                } else {
+                                                    const err = await res.json();
+                                                    alert(err.detail || "Failed to initiate onboarding");
+                                                }
+                                            } catch (e) {
+                                                console.error(e);
+                                                alert("Error initiating onboarding");
+                                            }
+                                        }}
+                                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all shadow-md shadow-indigo-100 flex items-center gap-2"
+                                    >
+                                        <span className="material-icons-outlined text-[16px]">person_add</span>
+                                        Initiate
+                                    </button>
+                                </div>
+                            )
                         )}
                         <button onClick={onClose} className="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
                             <span className="material-icons-outlined">close</span>
@@ -282,7 +286,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
 }
 
 export default function KanbanBoardPage() {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const [applications, setApplications] = useState<Application[]>([]);
     const [stages, setStages] = useState<Stage[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -490,6 +494,12 @@ export default function KanbanBoardPage() {
     const handleDrop = (e: React.DragEvent, stageId: number | string) => {
         e.preventDefault();
         setDragOverStageId(null);
+
+        if (!canAccess("candidates:update")) {
+            console.warn("Permission denied: cannot move candidate.");
+            return;
+        }
+
         if (draggedAppId && draggedAppId !== stageId) {
             handleStageChange(draggedAppId, stageId);
         }
@@ -956,48 +966,55 @@ export default function KanbanBoardPage() {
                             exit={{ y: 50, opacity: 0, scale: 0.95 }}
                             className="bg-white shadow-2xl rounded-2xl p-2 flex items-center gap-2 border border-slate-100 ring-4 ring-slate-50/50"
                         >
-                            <button
-                                onClick={handleBulkMove}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all shadow-lg shadow-indigo-200"
-                            >
-                                <span className="material-icons text-[16px]">arrow_forward</span>
-                                Move to Next Round
-                            </button>
+                            {canAccess("candidates:update") && (
+                                <button
+                                    onClick={handleBulkMove}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all shadow-lg shadow-indigo-200"
+                                >
+                                    <span className="material-icons text-[16px]">arrow_forward</span>
+                                    Move to Next Round
+                                </button>
+                            )}
 
+                            {canAccess("communications:read") && (
+                                <button
+                                    onClick={() => setIsEmailModalOpen(true)}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all shadow-lg shadow-slate-200"
+                                >
+                                    <span className="material-icons text-[16px]">email</span>
+                                    Send Email
+                                </button>
+                            )}
 
-                            <div className="w-px h-6 bg-slate-200 mx-2"></div>
+                            {canAccess("assessments:moderate") && (
+                                <button
+                                    onClick={() => setIsAssessmentModalOpen(true)}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all shadow-lg shadow-indigo-200"
+                                >
+                                    <span className="material-icons text-[16px]">psychology</span>
+                                    Send Assessment
+                                </button>
+                            )}
 
-                            <button
-                                onClick={() => setIsEmailModalOpen(true)}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all shadow-lg shadow-slate-200"
-                            >
-                                <span className="material-icons text-[16px]">email</span>
-                                Send Email
-                            </button>
+                            {canAccess("candidates:delete") && (
+                                <button
+                                    onClick={handleBulkDelete}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-white border border-rose-100 hover:bg-rose-50 text-rose-600 rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all"
+                                >
+                                    <span className="material-icons text-[16px]">delete</span>
+                                    Delete
+                                </button>
+                            )}
 
-                            <button
-                                onClick={() => setIsAssessmentModalOpen(true)}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all shadow-lg shadow-indigo-200"
-                            >
-                                <span className="material-icons text-[16px]">psychology</span>
-                                Send Assessment
-                            </button>
-
-                            <button
-                                onClick={handleBulkDelete}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-white border border-rose-100 hover:bg-rose-50 text-rose-600 rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all"
-                            >
-                                <span className="material-icons text-[16px]">delete</span>
-                                Delete
-                            </button>
-
-                            <button
-                                onClick={() => setIsOnboardingModalOpen(true)}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all shadow-sm"
-                            >
-                                <span className="material-icons-outlined text-[16px]">person_add</span>
-                                Initiate Onboarding
-                            </button>
+                            {canAccess("onboarding:moderate") && (
+                                <button
+                                    onClick={() => setIsOnboardingModalOpen(true)}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all shadow-sm"
+                                >
+                                    <span className="material-icons-outlined text-[16px]">person_add</span>
+                                    Initiate Onboarding
+                                </button>
+                            )}
 
                             <div className="px-3 text-xs font-bold text-slate-400 border-l border-slate-100 ml-1">
                                 {selectedApps.size} Selected

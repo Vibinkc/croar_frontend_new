@@ -16,8 +16,8 @@ interface AuthContextType {
     divisionId: number | null;
     divisionName: string | null;
     batch: string | null;
-    login: (token: string, role: string) => void;
-    logout: () => void;
+    permissions: string[];
+    canAccess: (permission?: string) => boolean;
     isLoading: boolean;
 }
 
@@ -34,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [divisionId, setDivisionId] = useState<number | null>(null);
     const [divisionName, setDivisionName] = useState<string | null>(null);
     const [batch, setBatch] = useState<string | null>(null);
+    const [permissions, setPermissions] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const router = useRouter();
@@ -42,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Check for cookie on mount
         const token = Cookies.get("auth_");
         if (token) {
+            fetchMe(token);
             try {
                 const decoded: any = jwtDecode(token);
                 setAccessToken(token);
@@ -75,15 +77,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             } catch (e) {
                 console.error("Invalid token", e);
                 Cookies.remove("auth_");
+                setIsLoading(false);
             }
+        } else {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     }, []);
+
+    const fetchMe = async (token: string) => {
+        try {
+            const { BACKEND_URL } = await import("@/utils/api");
+            const res = await fetch(`${BACKEND_URL}/api/v1/auth/me`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setPermissions(data.permissions || []);
+                if (data.role) setRole(data.role);
+                if (data.first_name || data.last_name) {
+                    setUser(`${data.first_name} ${data.last_name}`.trim());
+                }
+            }
+        } catch (e) {
+            console.error("Error fetching user context", e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const login = (token: string, userRole: string) => {
         Cookies.set("auth_", token, { expires: 1, secure: false }); // secure: true in prod
         setAccessToken(token);
         setRole(userRole);
+        fetchMe(token);
         try {
             const decoded: any = jwtDecode(token);
             if (decoded.sub) {
@@ -111,18 +137,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const logout = () => {
+        const isEnterprise = window.location.pathname.startsWith('/enterprise');
         Cookies.remove("auth_");
         setAccessToken(null);
         setRole(null);
         setUser(null);
         setUserId(null);
         setDepartmentId(null);
-
         setDepartmentName(null);
         setDivisionId(null);
         setDivisionName(null);
         setBatch(null);
-        router.push("/login");
+        
+        if (isEnterprise) {
+            router.push("/enterprise/login");
+        } else {
+            router.push("/login");
+        }
+    };
+
+    const canAccess = (requiredPermission?: string) => {
+        if (role === "SUPER_ADMIN") return true;
+        if (!requiredPermission) return true;
+        return permissions.includes(requiredPermission);
     };
 
     return (
@@ -137,6 +174,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             divisionId,
             divisionName,
             batch,
+            permissions,
+            canAccess,
             login,
             logout,
             isLoading

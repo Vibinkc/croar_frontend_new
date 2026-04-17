@@ -188,13 +188,13 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
                     <div className="mb-6">
                         <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Load Template</label>
                         <select
-                            className="w-full p-3 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-indigo-100 outline-none"
+                            className="w-full p-3 border border-slate-200 rounded-xl text-slate-900 bg-white font-medium focus:ring-2 focus:ring-indigo-100 outline-none"
                             value={selectedTemplateId}
                             onChange={(e) => handleTemplateSelect(e.target.value)}
                         >
-                            <option value="">-- Custom Email --</option>
+                            <option value="" className="text-slate-900 bg-white">-- Custom Email --</option>
                             {templates.map(t => (
-                                <option key={t.id} value={t.id}>{t.name}</option>
+                                <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>
                             ))}
                         </select>
                     </div>

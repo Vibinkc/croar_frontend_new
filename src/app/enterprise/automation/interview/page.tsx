@@ -94,7 +94,7 @@ const EMPTY_FORM: FormState = {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function InterviewAutomationPage() {
-  const { token } = useAuth();
+  const { token, canAccess } = useAuth();
 
   const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
@@ -473,13 +473,15 @@ export default function InterviewAutomationPage() {
             ))}
           </select>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors shadow-md shadow-[#7C3AED]/20"
-        >
-          <span className="material-symbols-rounded text-base">add</span>
-          New Automation
-        </button>
+        {canAccess("automation:moderate") && (
+          <button
+            onClick={openCreate}
+            className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors shadow-md shadow-[#7C3AED]/20"
+          >
+            <span className="material-symbols-rounded text-base">add</span>
+            New Automation
+          </button>
+        )}
       </div>
 
       {/* List */}
@@ -558,27 +560,31 @@ export default function InterviewAutomationPage() {
                 {/* Toggle */}
                 <button
                   onClick={() => handleToggle(a)}
-                  disabled={togglingId === a.id}
+                  disabled={togglingId === a.id || !canAccess("automation:moderate")}
                   title={a.is_enabled ? "Disable" : "Enable"}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${togglingId === a.id || !canAccess("automation:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                   <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
                 </button>
-                {/* Edit */}
-                <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
-                  <span className="material-symbols-rounded text-base">edit</span>
-                </button>
-                {/* Delete */}
-                <button onClick={() => {
-                   setAutomationToDelete(a);
-                   setIsDeleteModalOpen(true);
-                }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
-                  {deletingId === a.id ? (
-                    <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <span className="material-symbols-rounded text-base">delete</span>
-                  )}
-                </button>
+                {canAccess("automation:moderate") && (
+                  <>
+                    {/* Edit */}
+                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
+                      <span className="material-symbols-rounded text-base">edit</span>
+                    </button>
+                    {/* Delete */}
+                    <button onClick={() => {
+                       setAutomationToDelete(a);
+                       setIsDeleteModalOpen(true);
+                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
+                      {deletingId === a.id ? (
+                        <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <span className="material-symbols-rounded text-base">delete</span>
+                      )}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}

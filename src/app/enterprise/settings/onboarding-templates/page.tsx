@@ -9,15 +9,15 @@ import {
     Plus, 
     Trash2, 
     Edit3, 
-    Architecture, 
-    FileText, 
-    Settings2, 
-    History, 
-    Layers,
-    ArrowRight,
     Search,
     ChevronRight,
-    Cpu
+    Cpu,
+    RefreshCcw,
+    Layers,
+    History,
+    ArrowRight,
+    ClipboardList,
+    Layout
 } from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
@@ -47,7 +47,7 @@ interface OnboardingTemplate {
 export default function OnboardingTemplatesPage() {
     const [templates, setTemplates] = useState<OnboardingTemplate[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [templateToDelete, setTemplateToDelete] = useState<{ id: string; name: string } | null>(null);
 
@@ -92,7 +92,7 @@ export default function OnboardingTemplatesPage() {
     if (isLoading) {
         return (
             <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 border-b-4 border-slate-800 shadow-2xl">
+                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 shadow-2xl">
                     <div className="flex items-center gap-6">
                         <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
                         <div className="space-y-2">
@@ -111,49 +111,45 @@ export default function OnboardingTemplatesPage() {
     }
 
     return (
-        <div className="p-4 sm:p-6 lg:p-12 max-w-7xl mx-auto space-y-12 pb-32 animate-in fade-in duration-700 relative">
-            {/* Tactical Command Header */}
-            <motion.header 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-900 rounded-[2.5rem] p-8 md:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl border-b-4 border-slate-800"
-            >
-                <div className="relative z-10 flex items-center gap-8">
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl shadow-inner text-indigo-400 font-black italic">
-                        <Cpu className="w-6 h-6 text-indigo-400" />
+        <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+                <div className="flex items-center gap-3 px-2">
+                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
+                        <span className="material-symbols-rounded">rule</span>
                     </div>
                     <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-3">
-                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                            <span className="text-[8px] font-black uppercase tracking-[0.1em] text-indigo-400">Flow Architect Matrix</span>
-                        </div>
-                        <h1 className="text-3xl font-black tracking-tighter leading-none italic uppercase">Onboarding Builder</h1>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-3 opacity-60">Dynamic Protocol Synthesis</p>
+                        <h1 className="text-lg font-black text-slate-900 tracking-tight">Onboarding Templates</h1>
+                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Design integration sequences</p>
                     </div>
                 </div>
 
-                <div className="relative z-10">
-                    <Link 
-                        href="/enterprise/settings/onboarding-templates/create"
-                        className="px-8 h-14 bg-white text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-400 hover:text-white transition-all active:scale-95 shadow-xl shadow-slate-900/50 flex items-center gap-3"
+                <div className="flex items-center gap-3">
+                    {canAccess("onboarding:moderate") && (
+                        <Link 
+                            href="/enterprise/settings/onboarding-templates/create"
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                        >
+                            <span className="material-symbols-rounded text-base">add</span>
+                            New Template
+                        </Link>
+                    )}
+                    <button 
+                        onClick={fetchTemplates}
+                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 hover:border-violet-100 transition-all flex items-center justify-center shadow-sm"
                     >
-                        <Plus className="w-5 h-5 text-indigo-400 group-hover:text-white" />
-                        Create Protocol
-                    </Link>
+                        <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    </button>
                 </div>
-
-                {/* Tactical background elements */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] -mr-64 -mt-64" />
-            </motion.header>
+            </div>
 
             {/* Template List */}
             {templates.length === 0 ? (
                 <div className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-slate-200">
                     <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                        <Layers className="w-10 h-10" />
+                        <ClipboardList className="w-10 h-10" />
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic">No Dynamics Found</h3>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2 max-w-[240px] mx-auto leading-relaxed">Synthesize your first onboarding sequence to standardize the cultural handshake.</p>
+                    <h3 className="text-xl font-bold text-slate-900 tracking-tight">No Templates Found</h3>
+                    <p className="text-sm text-slate-400 font-medium mt-2 max-w-[280px] mx-auto leading-relaxed">Synthesize your first onboarding sequence to standardize the cultural handshake.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -161,67 +157,68 @@ export default function OnboardingTemplatesPage() {
                         <motion.div 
                             layout
                             key={t.id}
-                            className="group bg-white rounded-[2.5rem] border border-slate-100 p-1.5 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 relative overflow-hidden flex flex-col"
+                            className="group bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden flex flex-col cursor-pointer"
                         >
-                            <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            
-                            <div className="p-8 pb-4 space-y-6 flex-1">
+                            <div className="p-6 pb-2 space-y-6 flex-1">
                                 <div className="flex justify-between items-start">
-                                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all shadow-inner">
-                                        <Layers className="w-6 h-6 text-indigo-400" />
+                                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
+                                        <Layers className="w-6 h-6 stroke-[1.5]" />
                                     </div>
-                                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
-                                        <Link 
-                                            href={`/enterprise/settings/onboarding-templates/${t.id}/edit`}
-                                            className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all"
-                                        >
-                                            <Edit3 className="w-5 h-5" />
-                                        </Link>
-                                        <button 
-                                            onClick={() => {
-                                                setTemplateToDelete({ id: t.id, name: t.name });
-                                                setIsDeleteModalOpen(true);
-                                            }} 
-                                            className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all"
-                                        >
-                                            <Trash2 className="w-5 h-5" />
-                                        </button>
-                                    </div>
+                                    {canAccess("onboarding:moderate") && (
+                                        <div className="flex gap-2">
+                                            <Link 
+                                                href={`/enterprise/settings/onboarding-templates/${t.id}/edit`}
+                                                className="p-2 bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all rounded-lg"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <Edit3 className="w-4 h-4" />
+                                            </Link>
+                                            <button 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setTemplateToDelete({ id: t.id, name: t.name });
+                                                    setIsDeleteModalOpen(true);
+                                                }} 
+                                                className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-lg"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-1">
-                                    <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-none italic uppercase group-hover:text-indigo-600 transition-colors truncate">{t.name}</h3>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate opacity-60 italic">Sequential Protocol Architect</p>
+                                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{t.name}</h3>
+                                    <p className="text-sm text-slate-400 font-medium whitespace-nowrap overflow-hidden text-ellipsis">Onboarding flow architect</p>
                                 </div>
 
-                                <p className="text-[11px] font-bold text-slate-500 line-clamp-2 leading-relaxed uppercase opacity-80 h-10 italic">
-                                    {t.description || "Synthesizing dynamic organizational integration protocols."}
+                                <p className="text-sm text-slate-400 line-clamp-2 leading-relaxed h-10 font-medium">
+                                    {t.description || "Standard organizational integration workflow."}
                                 </p>
                                 
-                                <div className="bg-slate-50/50 rounded-2xl p-4 space-y-4 border border-slate-50 group-hover:bg-white group-hover:border-slate-100 transition-all">
+                                <div className="bg-slate-50/50 rounded-2xl p-4 border border-slate-100/50 group-hover:bg-indigo-50/30 group-hover:border-indigo-100/50 transition-all">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-sm border border-slate-100 group-hover:bg-indigo-50 transition-colors">
-                                                <Layers className="w-3.5 h-3.5 text-indigo-500" />
-                                            </div>
-                                            <span className="text-[9px] font-black text-slate-800 uppercase tracking-widest italic truncate max-w-[120px]">{(t.form_config?.sections || []).length} Functional Nodes</span>
+                                            <p className="text-[10px] font-bold text-slate-800 uppercase tracking-wider">
+                                                {(t.form_config?.sections || []).length} Sections Defined
+                                            </p>
                                         </div>
-                                        <ChevronRight className="w-3 h-3 text-slate-300" />
                                     </div>
                                 </div>
                             </div>
                             
-                            <div className="px-8 py-5 flex items-center justify-between bg-slate-50/50 border-t border-slate-50 rounded-b-[2.5rem]">
-                                <div className="flex items-center gap-2 opacity-40">
-                                    <History className="w-4 h-4" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest truncate">{new Date(t.created_at).toLocaleDateString()}</span>
+                            <div className="px-6 py-4 flex items-center justify-between bg-slate-50/50 border-t border-slate-200/50 rounded-b-3xl mt-auto">
+                                <div className="flex items-center gap-2 text-slate-300">
+                                    <History className="w-3.5 h-3.5" />
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">{new Date(t.created_at).toLocaleDateString()}</span>
                                 </div>
                                 <Link 
                                     href={`/enterprise/settings/onboarding-templates/${t.id}/edit`}
-                                    className="text-[9px] font-black text-slate-400 group-hover:text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-1.5 transition-all italic underline underline-offset-4"
+                                    className="text-slate-300 group-hover:text-indigo-600 transition-colors flex items-center gap-1.5"
+                                    onClick={(e) => e.stopPropagation()}
                                 >
-                                    Modify Matrix
-                                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">Configure</span>
+                                    <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </div>
                         </motion.div>
@@ -233,15 +230,12 @@ export default function OnboardingTemplatesPage() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Decommission Protocol?"
-                message={`Are you sure you want to permanently wipe the blueprint "${templateToDelete?.name}"? All associated onboarding scripts will lose this dynamic reference.`}
-                confirmLabel="Yes, Decommission"
-                cancelLabel="No"
+                title="Delete Template?"
+                message={`Are you sure you want to delete "${templateToDelete?.name}"? This will remove all associated onboarding logic.`}
+                confirmLabel="Delete Template"
+                cancelLabel="Cancel"
                 isDestructive={true}
             />
         </div>
     );
 }
-
-// Fixed missing icon mapping
-import { Layers as LayersIcon } from "lucide-react";

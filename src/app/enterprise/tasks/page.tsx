@@ -6,6 +6,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import ProjectKanban from "@/components/enterprise/ProjectKanban";
 import { apiClient } from "@/utils/api";
+import TaskCard from "@/components/enterprise/TaskCard";
 
 interface Member {
     id: string;
@@ -138,18 +139,18 @@ export default function GlobalTasksPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight">Project Tasks</h1>
-                    <p className="text-slate-500 text-[11px] font-medium">Manage and track assignments across all enterprise projects</p>
+                    <h1 className="text-lg font-black text-slate-900 tracking-tight">Project Tasks</h1>
+                    <p className="text-slate-500 text-[10px] font-medium">Manage and track assignments across all projects</p>
                 </div>
 
-                <div className="flex items-center gap-3 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
-                    <span className="material-symbols-rounded text-slate-400 ml-2">filter_list</span>
+                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-100 shadow-sm">
+                    <span className="material-symbols-rounded text-slate-400 ml-1.5 text-lg">filter_list</span>
                     <select
-                        className="bg-transparent border-none text-[10px] font-black text-slate-900 uppercase tracking-widest focus:outline-none focus:ring-0 cursor-pointer min-w-[180px]"
+                        className="bg-transparent border-none text-[9px] font-black text-slate-900 uppercase tracking-widest focus:outline-none focus:ring-0 cursor-pointer min-w-[160px]"
                         value={selectedProjectId}
                         onChange={(e) => setSelectedProjectId(e.target.value)}
                     >
-                        <option value="all">All Projects (Grid View)</option>
+                        <option value="all">All Projects (Grid)</option>
                         {projects.map(p => (
                             <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
@@ -160,19 +161,19 @@ export default function GlobalTasksPage() {
             {/* Content Area */}
             {isLoading ? (
                 <div className="flex justify-center py-20">
-                    <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-10 h-10 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div>
                 </div>
             ) : selectedProjectId !== "all" && selectedProjectData ? (
                 /* Kanban View */
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-100">
-                                <span className="material-symbols-rounded">account_tree</span>
-                            </div>
+                        <div className="w-10 h-10 rounded-xl bg-[#7C3AED] text-white flex items-center justify-center shadow-lg shadow-indigo-100">
+                            <span className="material-symbols-rounded">account_tree</span>
+                        </div>
                             <div>
-                                <h2 className="text-xl font-black text-slate-900 leading-none">{selectedProjectData.name} Board</h2>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Interactive Kanban Workspace</p>
+                                <h2 className="text-lg font-black text-slate-900 leading-none">{selectedProjectData.name} Board</h2>
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Interactive Kanban Workspace</p>
                             </div>
                         </div>
                         <button 
@@ -195,13 +196,13 @@ export default function GlobalTasksPage() {
             ) : (
                 /* Consolidated Grid View */
                 <div className="space-y-6">
-                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-wrap gap-4 items-center">
-                        <div className="flex-1 min-w-[300px] relative">
-                            <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-wrap gap-4 items-center">
+                        <div className="flex-1 min-w-[280px] relative">
+                            <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
                             <input
                                 type="text"
                                 placeholder="Search tasks, descriptions or project names..."
-                                className="w-full pl-9 pr-4 py-2 bg-slate-50 border-none rounded-xl text-[11px] font-bold focus:outline-none focus:ring-0 transition-all border border-transparent focus:border-slate-200"
+                                className="w-full pl-9 pr-4 py-2 bg-slate-50 border-none rounded-lg text-[10px] font-bold focus:outline-none focus:ring-0 transition-all border border-transparent focus:border-slate-200"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -209,57 +210,13 @@ export default function GlobalTasksPage() {
                     </div>
 
                     {filteredGridTasks.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                             {filteredGridTasks.map((task) => (
-                                <div key={task.id} className="group bg-white rounded-[32px] border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Link href={`/enterprise/projects/${task.project_id}`}>
-                                            <span className="material-symbols-rounded p-2 bg-indigo-50 text-indigo-600 rounded-full cursor-pointer hover:bg-indigo-100 transition-colors">open_in_new</span>
-                                        </Link>
-                                    </div>
-                                    
-                                        <div className="flex flex-col h-full space-y-4">
-                                            <div className="space-y-1.5 pt-1">
-                                                <div className="flex items-center justify-between mb-1">
-                                                    <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 flex items-center gap-1">
-                                                        <span className="material-symbols-rounded text-[12px]">folder</span>
-                                                        {task.project?.name || "Unlinked Project"}
-                                                    </span>
-                                                    <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border ${getStatusColor(task.column)} shadow-sm`}>
-                                                        {task.column}
-                                                    </span>
-                                                </div>
-                                                <h3 className="text-lg font-black text-slate-800 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{task.title}</h3>
-                                            </div>
-
-                                        <p className="text-slate-500 text-xs font-medium line-clamp-2 italic text-ellipsis overflow-hidden">
-                                            "{task.description || "No description provided."}"
-                                        </p>
-
-                                        <div className="pt-4 border-t border-slate-50 flex items-center justify-between mt-auto">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-sm">
-                                                    {task.assignee ? task.assignee.first_name.charAt(0) : "?"}
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-black text-slate-700 leading-none">
-                                                        {task.assignee ? `${task.assignee.first_name} ${task.assignee.last_name}` : "Unassigned"}
-                                                    </span>
-                                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Assignee</span>
-                                                </div>
-                                            </div>
-
-                                            {task.due_date && (
-                                                <div className="flex flex-col items-end">
-                                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 text-rose-400">Due Date</span>
-                                                    <span className="text-[10px] font-bold text-slate-700">
-                                                        {format(new Date(task.due_date), "MMM d, yyyy")}
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+                                <TaskCard 
+                                    key={task.id}
+                                    task={task}
+                                    getStatusColor={getStatusColor}
+                                />
                             ))}
                         </div>
                     ) : (

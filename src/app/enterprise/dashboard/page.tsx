@@ -15,7 +15,7 @@ interface Stats {
 }
 
 export default function EnterpriseDashboard() {
-    const { user, token, role } = useAuth();
+    const { user, token, role, canAccess, isLoading: isAuthLoading } = useAuth();
     const [greeting, setGreeting] = useState("");
     const [stats, setStats] = useState<Stats>({
         active_jobs: 0,
@@ -64,7 +64,8 @@ export default function EnterpriseDashboard() {
             path: "/enterprise/jobs",
             badge: "Hiring Velocity",
             color: "purple",
-            features: ["AI Assisted JD", "Node Publishing", "Fiscal Tracking"]
+            features: ["AI Assisted JD", "Node Publishing", "Fiscal Tracking"],
+            permission: "jobs:read"
         },
         {
             title: "Candidate Pipeline",
@@ -73,7 +74,8 @@ export default function EnterpriseDashboard() {
             path: "/enterprise/candidates/kanban",
             badge: "AI Screening",
             color: "indigo",
-            features: ["Smart Sync", "Cross Check", "Batch Ops"]
+            features: ["Smart Sync", "Cross Check", "Batch Ops"],
+            permission: "candidates:read"
         },
         {
             title: "360 Assessments",
@@ -82,7 +84,8 @@ export default function EnterpriseDashboard() {
             path: "/enterprise/assessments-360",
             badge: "Talent Insight",
             color: "emerald",
-            features: ["Multi-Rater", "Blind Review", "Peer Matrix"]
+            features: ["Multi-Rater", "Blind Review", "Peer Matrix"],
+            permission: "assessments:read"
         },
         {
             title: "HR Surveys",
@@ -91,7 +94,8 @@ export default function EnterpriseDashboard() {
             path: "/enterprise/surveys",
             badge: "Cultural Health",
             color: "rose",
-            features: ["Pulse Check", "DEI Analytics", "Global Poll"]
+            features: ["Pulse Check", "DEI Analytics", "Global Poll"],
+            permission: "surveys:read"
         }
     ];
 
@@ -124,14 +128,18 @@ export default function EnterpriseDashboard() {
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                        <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-white text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-400 hover:text-white transition-all shadow-xl active:scale-95 flex items-center gap-2">
-                            <span className="material-symbols-rounded text-lg">add_box</span>
-                            Post New Job
-                        </Link>
-                        <Link href="/enterprise/candidates/kanban" className="px-6 py-3 bg-white/10 border border-white/10 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2">
-                            <span className="material-symbols-rounded text-lg">grid_goldenratio</span>
-                            Manage Pipeline
-                        </Link>
+                        {canAccess("jobs:create") && (
+                            <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-white text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-400 hover:text-white transition-all shadow-xl active:scale-95 flex items-center gap-2">
+                                <span className="material-symbols-rounded text-lg">add_box</span>
+                                Post New Job
+                            </Link>
+                        )}
+                        {canAccess("candidates:read") && (
+                            <Link href="/enterprise/candidates/kanban" className="px-6 py-3 bg-white/10 border border-white/10 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2">
+                                <span className="material-symbols-rounded text-lg">grid_goldenratio</span>
+                                Manage Pipeline
+                            </Link>
+                        )}
                     </div>
                 </div>
 
@@ -170,7 +178,7 @@ export default function EnterpriseDashboard() {
             <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
                 {/* Core Modules List */}
                 <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {modules.map((module) => (
+                    {modules.filter(m => canAccess(m.permission)).map((module) => (
                         <Link href={module.path} key={module.title} className="group">
                             <div className={`relative ${getColorClasses(module.color).bg} border ${getColorClasses(module.color).border} p-5 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden flex flex-col justify-between`}>
                                 <div>

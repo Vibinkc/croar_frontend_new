@@ -19,7 +19,11 @@ import {
     ChevronRight,
     ArrowRight,
     Search,
-    BookOpen
+    BookOpen,
+    RefreshCcw,
+    Settings2,
+    Calendar,
+    PenTool
 } from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
@@ -42,7 +46,7 @@ interface EmailTemplate {
 }
 
 export default function AssessmentTemplatesPage() {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const [templates, setTemplates] = useState<AssessmentTemplate[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -230,7 +234,7 @@ export default function AssessmentTemplatesPage() {
     if (isLoading) {
         return (
             <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 border-b-4 border-slate-800 shadow-2xl shadow-indigo-100/10">
+                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 shadow-2xl">
                     <div className="flex items-center gap-6">
                         <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
                         <div className="space-y-2">
@@ -249,49 +253,44 @@ export default function AssessmentTemplatesPage() {
     }
 
     return (
-        <div className="p-4 sm:p-6 lg:p-12 max-w-7xl mx-auto space-y-12 pb-32 animate-in fade-in duration-700 relative">
-            {/* Tactical Command Header */}
-            <motion.header 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-900 rounded-[2.5rem] p-8 md:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl border-b-4 border-slate-800"
-            >
-                <div className="relative z-10 flex items-center gap-8">
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl shadow-inner text-indigo-400">
-                        <Brain className="w-6 h-6" />
+        <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+                <div className="flex items-center gap-3 px-2">
+                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
+                        <span className="material-symbols-rounded">quiz</span>
                     </div>
                     <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-3">
-                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                            <span className="text-[8px] font-black uppercase tracking-[0.1em] text-indigo-400">Cognitive Assessment Matrix</span>
-                        </div>
-                        <h1 className="text-3xl font-black tracking-tighter leading-none italic uppercase">Assessment Templates</h1>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-3 opacity-60">Standardized Skill Verification Protocols</p>
+                        <h1 className="text-lg font-black text-slate-900 tracking-tight">Assessment Templates</h1>
+                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Standardize technical and skill evaluations</p>
                     </div>
                 </div>
 
-                <div className="relative z-10">
+                <div className="flex items-center gap-3">
+                    {canAccess("assessments:moderate") && (
+                        <button 
+                            onClick={() => handleOpenModal()}
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                        >
+                            <span className="material-symbols-rounded text-base">add</span>
+                            New Template
+                        </button>
+                    )}
                     <button 
-                        onClick={() => handleOpenModal()}
-                        className="px-8 h-14 bg-white text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-400 hover:text-white transition-all active:scale-95 shadow-xl shadow-slate-900/50 flex items-center gap-3"
+                        onClick={fetchTemplates}
+                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 hover:border-violet-100 transition-all flex items-center justify-center shadow-sm"
                     >
-                        <Plus className="w-5 h-5" />
-                        Deploy Matrix
+                        <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
+            </div>
 
-                {/* Tactical background elements */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] -mr-64 -mt-64" />
-            </motion.header>
-
-            {/* List */}
             {templates.length === 0 ? (
                 <div className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-slate-200">
                     <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                        <Brain className="w-10 h-10" />
+                        <ListChecks className="w-10 h-10" />
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic">No Matrices Found</h3>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2 max-w-[240px] mx-auto leading-relaxed">Initialize your first skill verification blueprint to begin cognitive mapping.</p>
+                    <h3 className="text-xl font-bold text-slate-900 tracking-tight">No Templates Found</h3>
+                    <p className="text-sm text-slate-400 font-medium mt-2 max-w-[280px] mx-auto leading-relaxed">Create your first skill assessment template to begin testing candidates.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -299,55 +298,59 @@ export default function AssessmentTemplatesPage() {
                         <motion.div
                             layout
                             key={template.id}
-                            className="group bg-white rounded-[2.5rem] border border-slate-100 p-1.5 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 relative overflow-hidden"
+                            className="group bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
                             onClick={() => handleOpenModal(template)}
                         >
-                            <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            
-                            <div className="p-8 pb-4 space-y-6">
+                            <div className="p-6 pb-2 space-y-6 text-center md:text-left">
                                 <div className="flex justify-between items-start">
-                                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all shadow-inner">
-                                        {template.type === 'CODING' ? <Code className="w-6 h-6" /> : (template.type === 'BOTH' ? <Brain className="w-6 h-6" /> : <ListChecks className="w-6 h-6" />)}
+                                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner border border-slate-50 group-hover:border-indigo-600">
+                                        {template.type === 'CODING' ? <Code className="w-6 h-6 stroke-[1.5]" /> : (template.type === 'BOTH' ? <Brain className="w-6 h-6 stroke-[1.5]" /> : <ListChecks className="w-6 h-6 stroke-[1.5]" />)}
                                     </div>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setTemplateToDelete({ id: template.id, name: template.name });
-                                            setIsDeleteModalOpen(true);
-                                        }}
-                                        className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
-                                    >
-                                        <Trash2 className="w-5 h-5" />
-                                    </button>
+                                    {canAccess("assessments:delete") && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setTemplateToDelete({ id: template.id, name: template.name });
+                                                setIsDeleteModalOpen(true);
+                                            }}
+                                            className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-lg opacity-0 group-hover:opacity-100"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    )}
                                 </div>
 
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-[8px] font-black text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-widest">{template.type}</span>
-                                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest italic">{template.topic}</span>
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-center md:justify-between">
+                                        <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">{template.type}</span>
+                                        <span className="hidden md:inline text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate max-w-[100px]">{template.topic}</span>
                                     </div>
-                                    <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-none italic uppercase group-hover:text-indigo-600 transition-colors truncate">{template.name}</h3>
+                                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{template.name}</h3>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-slate-50">
-                                    <div className="bg-slate-50/80 p-3 rounded-2xl border border-slate-100/50 group-hover:bg-white transition-colors">
-                                        <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Load Nodes</div>
-                                        <div className="text-xs font-black text-slate-700 italic">{template.generated_questions?.length || template.question_count} Pkts</div>
+                                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-50">
+                                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 group-hover:bg-white transition-colors">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Questions</p>
+                                        <p className="text-xs font-bold text-slate-700">{template.generated_questions?.length || template.question_count} items</p>
                                     </div>
-                                    <div className="bg-slate-50/80 p-3 rounded-2xl border border-slate-100/50 group-hover:bg-white transition-colors">
-                                        <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Time Lock</div>
-                                        <div className="text-xs font-black text-slate-700 italic">{template.test_duration}m Limit</div>
+                                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 group-hover:bg-white transition-colors">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Duration</p>
+                                        <p className="text-xs font-bold text-slate-700">{template.test_duration} mins</p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div className="px-8 py-5 flex items-center justify-between bg-slate-50/50 border-t border-slate-50 rounded-b-[2.5rem]">
-                                <div className="flex items-center gap-2 opacity-40">
-                                    <Clock className="w-4 h-4" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest truncate">{template.created_at ? new Date(template.created_at).toLocaleDateString() : 'N/A'}</span>
+                            <div className="px-6 py-4 flex items-center justify-between bg-slate-50/50 border-t border-slate-200/50 rounded-b-3xl mt-auto">
+                                <div className="flex items-center gap-2 text-slate-300">
+                                    <Calendar className="w-3.5 h-3.5" />
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">{template.created_at ? new Date(template.created_at).toLocaleDateString() : 'N/A'}</span>
                                 </div>
-                                <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all">
-                                    <Edit3 className="w-4 h-4" />
+                                <div className="text-slate-300 group-hover:text-indigo-600 transition-colors">
+                                    {canAccess("assessments:moderate") ? (
+                                        <Edit3 className="w-4 h-4" />
+                                    ) : (
+                                        <ArrowRight className="w-4 h-4" />
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
@@ -355,30 +358,30 @@ export default function AssessmentTemplatesPage() {
                 </div>
             )}
 
-            {/* Blueprint Drawer */}
+            {/* Template Drawer */}
             <AnimatePresence>
                 {isModalOpen && (
                     <div className="fixed inset-0 z-[200] flex justify-end overflow-hidden">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setIsModalOpen(false)} />
-                        <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="relative w-full max-w-4xl bg-white shadow-2xl h-full flex flex-col pointer-events-auto border-l border-slate-100">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-slate-900/10 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
+                        <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="relative w-full max-w-2xl bg-white shadow-3xl h-full flex flex-col pointer-events-auto overflow-hidden">
                             
                             {/* Drawer Header */}
-                            <div className="flex items-center justify-between px-10 py-8 border-b border-slate-50 shrink-0">
+                            <div className="flex items-center justify-between px-8 py-6 border-b border-slate-50 shrink-0">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center shadow-2xl rotate-3">
-                                        <Zap className="w-8 h-8 text-indigo-400" />
+                                    <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl">
+                                        <Settings2 className="w-8 h-8" />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-black text-slate-800 tracking-tighter italic uppercase leading-none">{editingTemplate ? "Refine Matrix" : "Initialize Matrix"}</h2>
-                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-2">Cognitive Verification Protocol</p>
+                                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-none">{editingTemplate ? "Edit Template" : "New Template"}</h2>
+                                        <p className="text-sm text-slate-400 font-medium mt-2">Assessment design and skill configuration</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <div className="flex bg-slate-100 p-1 rounded-2xl shrink-0">
-                                        <button onClick={() => setActiveTab('config')} className={`px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'config' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>1. Config</button>
-                                        <button onClick={() => setActiveTab('questions')} className={`px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'questions' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>2. Nodes</button>
+                                        <button onClick={() => setActiveTab('config')} className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === 'config' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>1. Details</button>
+                                        <button onClick={() => setActiveTab('questions')} className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === 'questions' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>2. Questions</button>
                                     </div>
-                                    <button onClick={() => setIsModalOpen(false)} className="w-12 h-12 rounded-2xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
+                                    <button onClick={() => setIsModalOpen(false)} className="w-12 h-12 rounded-xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
                                         <X className="w-6 h-6" />
                                     </button>
                                 </div>
@@ -388,86 +391,91 @@ export default function AssessmentTemplatesPage() {
                             <div className="flex-1 overflow-y-auto px-10 py-10 no-scrollbar bg-slate-50/20">
                                 {activeTab === 'config' ? (
                                     <form id="matrix-form" onSubmit={e => { e.preventDefault(); handleSave(); }} className="max-w-xl mx-auto space-y-12">
-                                        <div className="space-y-4">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Matrix Identity Label</label>
+                                        <div className="space-y-2 group">
+                                            <label className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Template Name</label>
                                             <input
                                                 type="text"
                                                 value={name}
                                                 onChange={e => setName(e.target.value)}
-                                                className="w-full bg-white border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-100 transition-all shadow-inner italic"
-                                                placeholder="E.G. FRONTEND_CORE_ALPHA"
+                                                className="w-full h-14 bg-white border border-slate-100 rounded-2xl px-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 transition-all shadow-inner"
+                                                placeholder="e.g. Senior Backend Node.js Skills"
                                                 required
+                                                readOnly={!canAccess("assessments:moderate")}
                                             />
                                         </div>
 
-                                        <div className="bg-slate-900 rounded-[2.5rem] p-8 border border-white/5 relative overflow-hidden group">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-50" />
-                                            <div className="relative z-10 space-y-8">
+                                        <div className="bg-slate-900 rounded-3xl p-8 text-white relative shadow-xl shadow-indigo-100/5">
+                                            <div className="relative z-10 space-y-10">
                                                 <div className="flex items-center gap-3">
-                                                    <Settings2 className="w-4 h-4 text-indigo-400" />
-                                                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Operational Parameters</span>
+                                                    <Zap className="w-5 h-5 text-indigo-400" />
+                                                    <span className="text-xs font-bold uppercase tracking-widest text-indigo-200">Test Configuration</span>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-8">
                                                     <div className="space-y-3">
-                                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Archetype</label>
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Type</label>
                                                         <select
                                                             value={type}
                                                             onChange={e => setType(e.target.value as any)}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-[10px] font-black text-white uppercase tracking-widest outline-none focus:bg-white/10 transition-all"
+                                                            className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:bg-white/10 transition-all"
+                                                            disabled={!canAccess("assessments:moderate")}
                                                         >
-                                                            <option value="APTITUDE" className="bg-slate-900 text-white">Aptitude HUD</option>
-                                                            <option value="CODING" className="bg-slate-900 text-white">Coding Terminal</option>
-                                                            <option value="BOTH" className="bg-slate-900 text-white">Full Hybrid</option>
+                                                            <option value="APTITUDE" className="bg-slate-900">Aptitude Test</option>
+                                                            <option value="CODING" className="bg-slate-900">Coding Challenge</option>
+                                                            <option value="BOTH" className="bg-slate-900">Hybrid Assessment</option>
                                                         </select>
                                                     </div>
                                                     <div className="space-y-3">
-                                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Research Topic</label>
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Topic / Skills</label>
                                                         <input
                                                             type="text"
                                                             value={topic}
                                                             onChange={e => setTopic(e.target.value)}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-[10px] font-black text-white outline-none focus:bg-white/10 transition-all uppercase placeholder:text-white/20"
-                                                            placeholder="E.G. REACT_NATIVE"
+                                                            className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:bg-white/10 transition-all"
+                                                            placeholder="e.g. React, Python"
                                                             required
+                                                            readOnly={!canAccess("assessments:moderate")}
                                                         />
                                                     </div>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-8">
                                                     <div className="space-y-3">
-                                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Node Count</label>
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Question Count</label>
                                                         <input
                                                             type="number"
                                                             value={questionCount}
                                                             onChange={e => setQuestionCount(parseInt(e.target.value))}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-[10px] font-black text-white outline-none focus:bg-white/10 transition-all tabular-nums"
+                                                            className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:bg-white/10 transition-all"
                                                             required
+                                                            readOnly={!canAccess("assessments:moderate")}
                                                         />
                                                     </div>
                                                     <div className="space-y-3">
-                                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Time Lock (MIN)</label>
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Duration (Mins)</label>
                                                         <input
                                                             type="number"
                                                             value={duration}
                                                             onChange={e => setDuration(parseInt(e.target.value))}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-[10px] font-black text-white outline-none focus:bg-white/10 transition-all tabular-nums"
+                                                            className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:bg-white/10 transition-all"
                                                             required
+                                                            readOnly={!canAccess("assessments:moderate")}
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="space-y-4">
+                                        <div className="space-y-2 group">
                                             <div className="flex justify-between items-center px-1">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Transmission Protocol</label>
-                                                <span className="text-[8px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded">Linked Template</span>
+                                                <label className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors">Invitation Email Template</label>
+                                                <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Communication</span>
                                             </div>
                                             <select
                                                 value={selectedEmailTemplateId}
                                                 onChange={e => setSelectedEmailTemplateId(e.target.value)}
-                                                className="w-full bg-white border border-slate-100 rounded-2xl px-6 py-4 text-[10px] font-black text-slate-800 uppercase tracking-widest outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-100 transition-all shadow-inner"
+                                                className="w-full h-14 bg-white border border-slate-100 rounded-2xl px-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 transition-all shadow-inner cursor-pointer"
+                                                disabled={!canAccess("assessments:moderate")}
                                             >
-                                                <option value="">Select Transport Protocol...</option>
+                                                <option value="">Select email template...</option>
                                                 {emailTemplates.map(t => (
                                                     <option key={t.id} value={t.id}>{t.name}</option>
                                                 ))}
@@ -475,56 +483,64 @@ export default function AssessmentTemplatesPage() {
                                         </div>
                                     </form>
                                 ) : (
-                                    <div className="space-y-10 max-w-3xl mx-auto pb-20">
-                                        <div className="flex items-center justify-between">
+                                    <div className="space-y-10 max-w-xl mx-auto pb-20">
+                                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                                             <div>
-                                                <h3 className="text-sm font-black text-slate-900 uppercase tracking-tighter italic leading-none mb-1">Knowledge Node Repository</h3>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Architecting Behavioral Artifacts</p>
+                                                <h3 className="text-lg font-bold text-slate-900 leading-tight">Assessment Questions</h3>
+                                                <p className="text-xs text-slate-400 font-medium mt-1">Configure individual questions or generate with AI</p>
                                             </div>
                                             <div className="flex gap-3">
-                                                <button 
-                                                    onClick={handleGenerateQuestions}
-                                                    disabled={isGenerating || !topic}
-                                                    className="h-10 px-6 bg-slate-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-3 hover:bg-indigo-600 transition-all disabled:opacity-20 shadow-xl"
-                                                >
-                                                    {isGenerating ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Sparkles className="w-4 h-4 text-indigo-400" />}
-                                                    Neural Generation
-                                                </button>
-                                                <button 
-                                                    onClick={handleAddQuestion}
-                                                    className="h-10 px-6 bg-white border border-slate-100 text-slate-900 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-3 hover:bg-slate-50 transition-all shadow-sm"
-                                                >
-                                                    <Plus className="w-4 h-4" />
-                                                    Add Node
-                                                </button>
+                                                {canAccess("assessments:moderate") && (
+                                                    <button 
+                                                        onClick={handleGenerateQuestions}
+                                                        disabled={isGenerating || !topic}
+                                                        className="h-10 px-6 bg-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-3 hover:bg-slate-900 transition-all disabled:opacity-20 shadow-xl"
+                                                    >
+                                                        {isGenerating ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-indigo-400" />}
+                                                        Generate with AI
+                                                    </button>
+                                                )}
+                                                {canAccess("assessments:moderate") && (
+                                                    <button 
+                                                        onClick={handleAddQuestion}
+                                                        className="h-10 px-6 bg-white border border-slate-100 text-slate-900 rounded-xl text-xs font-bold flex items-center gap-3 hover:bg-slate-50 transition-all shadow-sm"
+                                                    >
+                                                        <Plus className="w-4 h-4" />
+                                                        Add Manual
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
 
-                                        <div className="space-y-6">
+                                        <div className="space-y-8">
                                             {generatedQuestions.map((q, idx) => (
                                                 <motion.div 
                                                     layout
                                                     key={q.id} 
-                                                    className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm hover:shadow-xl transition-all relative group"
+                                                    className="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5 transition-all relative group"
                                                 >
-                                                    <div className="absolute -top-4 -left-4 w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black italic shadow-2xl border-2 border-white">#{idx + 1}</div>
+                                                    <div className="absolute -top-4 -left-4 w-12 h-12 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center font-bold text-sm shadow-xl border-2 border-white group-hover:bg-indigo-600 group-hover:text-white transition-all">{idx + 1}</div>
                                                     
-                                                    <button 
-                                                        onClick={() => handleDeleteQuestion(q.id)}
-                                                        className="absolute top-6 right-6 w-10 h-10 rounded-xl bg-rose-50 text-rose-500 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-rose-500 hover:text-white shadow-sm"
-                                                    >
-                                                        <Trash2 className="w-5 h-5" />
-                                                    </button>
+                                                    {canAccess("assessments:moderate") && (
+                                                        <button 
+                                                            onClick={() => handleDeleteQuestion(q.id)}
+                                                            className="absolute top-6 right-6 p-2 bg-rose-50 text-rose-500 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 hover:text-white"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    )}
 
-                                                    <div className="space-y-6 pt-4">
+                                                    <div className="space-y-8 pt-4">
                                                         {q.type === 'APTITUDE' ? (
                                                             <>
                                                                 <div className="space-y-2">
-                                                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Neural Load (Question Text)</label>
+                                                                    <label className="text-xs font-bold text-slate-500 ml-1 italic group-focus-within:text-indigo-600 transition-colors">Question Text</label>
                                                                     <textarea 
                                                                         value={q.question} 
                                                                         onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                                                                        className="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-indigo-50 transition-all h-24 resize-none shadow-inner uppercase italic"
+                                                                        className="w-full h-28 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-medium text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all resize-none shadow-inner"
+                                                                        readOnly={!canAccess("assessments:moderate")}
+                                                                        placeholder="State the question clearly..."
                                                                     />
                                                                 </div>
                                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -537,13 +553,16 @@ export default function AssessmentTemplatesPage() {
                                                                                     newOpts[oi] = e.target.value;
                                                                                     handleUpdateQuestion(q.id, "options", newOpts);
                                                                                 }}
-                                                                                className={`w-full bg-slate-50 border-2 rounded-2xl pl-16 pr-6 py-4 text-[10px] font-black uppercase tracking-tight transition-all tabular-nums ${q.correct_answer === opt ? "border-indigo-500 bg-indigo-50/30 text-indigo-700" : "border-transparent text-slate-500 focus:bg-white"}`}
+                                                                                className={`w-full h-12 bg-slate-50 border-2 rounded-xl pl-12 pr-4 text-xs font-bold transition-all ${q.correct_answer === opt ? "border-indigo-600 bg-indigo-50/20 text-indigo-700" : "border-transparent text-slate-600 focus:bg-white"}`}
+                                                                                readOnly={!canAccess("assessments:moderate")}
+                                                                                placeholder={`Option ${oi + 1}`}
                                                                             />
                                                                             <button 
                                                                                 onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
-                                                                                className={`absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all shadow-sm ${q.correct_answer === opt ? "bg-indigo-600 text-white" : "bg-white text-slate-300 hover:bg-slate-900 hover:text-white"}`}
+                                                                                disabled={!canAccess("assessments:moderate")}
+                                                                                className={`absolute left-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-indigo-600 text-white" : "bg-white text-slate-300 hover:text-indigo-600 border border-slate-100"}`}
                                                                             >
-                                                                                <span className="material-symbols-rounded text-base italic">{q.correct_answer === opt ? "verified" : (oi === 0 ? "A" : oi === 1 ? "B" : oi === 2 ? "C" : "D")}</span>
+                                                                                <span className="text-[10px] font-bold">{oi === 0 ? "A" : oi === 1 ? "B" : oi === 2 ? "C" : "D"}</span>
                                                                             </button>
                                                                         </div>
                                                                     ))}
@@ -551,22 +570,27 @@ export default function AssessmentTemplatesPage() {
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <div className="space-y-2">
-                                                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Terminal Identity (Title)</label>
-                                                                    <input 
-                                                                        type="text"
-                                                                        value={q.title} 
-                                                                        onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
-                                                                        className="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-950 outline-none focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner uppercase italic"
-                                                                    />
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Neural Logic Specs (Description)</label>
-                                                                    <textarea 
-                                                                        value={q.description || q.problem_statement} 
-                                                                        onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
-                                                                        className="w-full bg-slate-50 border-none rounded-[2rem] px-8 py-8 text-sm font-bold text-slate-700 outline-none focus:ring-4 focus:ring-indigo-50 transition-all h-48 shadow-inner tabular-nums leading-relaxed italic uppercase"
-                                                                    />
+                                                                <div className="space-y-4">
+                                                                    <div className="space-y-2">
+                                                                        <label className="text-xs font-bold text-slate-500 ml-1">Challenge Title</label>
+                                                                        <input 
+                                                                            type="text"
+                                                                            value={q.title} 
+                                                                            onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
+                                                                            className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-sm font-bold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all shadow-inner"
+                                                                            placeholder="e.g. Implement Reverse Linked List"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2">
+                                                                        <label className="text-xs font-bold text-slate-500 ml-1">Problem Specification</label>
+                                                                        <textarea 
+                                                                            value={q.description || q.problem_statement} 
+                                                                            onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
+                                                                            className="w-full h-64 bg-slate-50 border border-slate-100 rounded-[2rem] px-8 py-6 text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner leading-relaxed"
+                                                                            readOnly={!canAccess("assessments:moderate")}
+                                                                            placeholder="Describe the challenge parameters, inputs, and expected outputs..."
+                                                                        />
+                                                                    </div>
                                                                 </div>
                                                             </>
                                                         )}
@@ -574,10 +598,10 @@ export default function AssessmentTemplatesPage() {
                                                 </motion.div>
                                             ))}
                                             {generatedQuestions.length === 0 && (
-                                                <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-[3rem] border border-dashed border-slate-200 opacity-40">
-                                                    <Search className="w-16 h-16 text-slate-200 mb-6" />
-                                                    <h4 className="text-lg font-black text-slate-900 uppercase tracking-tighter italic">Repository Empty</h4>
-                                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest max-w-[240px] mt-2 leading-relaxed">Initiate neural generation or manually add behavioral nodes to this matrix.</p>
+                                                <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-[3rem] border border-dashed border-slate-200">
+                                                    <Search className="w-16 h-16 text-slate-100 mb-6" />
+                                                    <h4 className="text-lg font-bold text-slate-900 leading-tight">No Questions Defined</h4>
+                                                    <p className="text-sm text-slate-400 font-medium max-w-[260px] mt-2 leading-relaxed">Start adding questions manually or use AI to generate them based on your topic.</p>
                                                 </div>
                                             )}
                                         </div>
@@ -585,19 +609,21 @@ export default function AssessmentTemplatesPage() {
                                 )}
                             </div>
 
-                            {/* Drawer Footer */}
-                            <div className="p-10 border-t border-slate-50 bg-slate-50/30 flex items-center justify-between gap-6 shrink-0">
-                                <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none max-w-[200px]">By deploying, you synchronize this skill matrix across the organizational network.</p>
-                                <button 
-                                    onClick={handleSave}
-                                    form="matrix-form"
-                                    type="submit"
-                                    className="px-12 h-14 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-indigo-600 transition-all active:scale-95 shadow-2xl flex items-center gap-4"
-                                >
-                                    <Save className="w-5 h-5 text-indigo-400" />
-                                    Finalize Deployment
-                                </button>
-                            </div>
+                             {/* Drawer Footer */}
+                            {canAccess("assessments:moderate") && (
+                                <div className="p-8 border-t border-slate-50 flex items-center justify-between gap-6 shrink-0">
+                                    <p className="text-xs font-semibold text-slate-400 leading-relaxed max-w-[240px]">This assessment template will be available for all recruitment workflows and job postings.</p>
+                                    <button 
+                                        onClick={handleSave}
+                                        form="matrix-form"
+                                        type="submit"
+                                        className="px-12 h-14 bg-slate-900 text-white rounded-2xl font-bold text-sm tracking-wide hover:bg-indigo-600 transition-all active:scale-[0.98] shadow-2xl flex items-center gap-4"
+                                    >
+                                        <Save className="w-5 h-5" />
+                                        Save Template
+                                    </button>
+                                </div>
+                            )}
                         </motion.div>
                     </div>
                 )}
@@ -607,14 +633,12 @@ export default function AssessmentTemplatesPage() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Decommission Matrix?"
-                message={`Are you sure you want to permanently wipe the blueprint "${templateToDelete?.name}"? All associated recruitment nodes will lose this cognitive reference.`}
-                confirmLabel="Yes, Decommission"
-                cancelLabel="No"
+                title="Delete Template?"
+                message={`Are you sure you want to delete "${templateToDelete?.name}"? This will remove all associated assessment logic.`}
+                confirmLabel="Delete Template"
+                cancelLabel="Cancel"
                 isDestructive={true}
             />
         </div>
     );
 }
-
-import { Settings2 } from "lucide-react";

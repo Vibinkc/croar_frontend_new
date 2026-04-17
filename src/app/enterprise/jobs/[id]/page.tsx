@@ -79,7 +79,7 @@ export default function JobDetailPage() {
     const params = useParams();
     const router = useRouter();
     const { id } = params;
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
 
     const [job, setJob] = useState<Job | null>(null);
     const [applications, setApplications] = useState<Application[]>([]);
@@ -224,17 +224,19 @@ export default function JobDetailPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="flex rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
-                        <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 border-r border-slate-200 flex items-center gap-1.5 transition-all">
-                            Publish <span className="material-symbols-rounded text-sm">expand_more</span>
-                        </button>
-                        <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 border-r border-slate-200 flex items-center gap-1.5 transition-all">
-                            Candidate <span className="material-symbols-rounded text-sm">expand_more</span>
-                        </button>
-                        <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 transition-all">
-                            Pipeline <span className="material-symbols-rounded text-sm">expand_more</span>
-                        </button>
-                    </div>
+                    {canAccess("jobs:update") && (
+                        <div className="flex rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+                            <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 border-r border-slate-200 flex items-center gap-1.5 transition-all">
+                                Publish <span className="material-symbols-rounded text-sm">expand_more</span>
+                            </button>
+                            <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 border-r border-slate-200 flex items-center gap-1.5 transition-all">
+                                Candidate <span className="material-symbols-rounded text-sm">expand_more</span>
+                            </button>
+                            <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 transition-all">
+                                Pipeline <span className="material-symbols-rounded text-sm">expand_more</span>
+                            </button>
+                        </div>
+                    )}
                     <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all">
                         <span className="material-symbols-rounded text-xl">share</span>
                     </button>
@@ -311,8 +313,12 @@ export default function JobDetailPage() {
                     </div>
 
                     <div className="flex justify-end">
-                        <label className="flex items-center gap-2 text-xs font-bold text-slate-400 cursor-pointer">
-                            <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+                        <label className={`flex items-center gap-2 text-xs font-bold text-slate-400 ${canAccess("jobs:update") ? "cursor-pointer" : "cursor-default opacity-50"}`}>
+                            <input 
+                                type="checkbox" 
+                                className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" 
+                                disabled={!canAccess("jobs:update")}
+                            />
                             Do not publish
                         </label>
                     </div>
@@ -657,15 +663,19 @@ export default function JobDetailPage() {
 
                 {/* Footer Actions */}
                 <div className="pt-8 flex justify-center items-center gap-3">
-                    <button className="px-6 py-2 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-600 text-[11px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all active:scale-95 shadow-sm">
-                        Clone
-                    </button>
-                    <Link 
-                        href={`/enterprise/jobs/${id}/edit`}
-                        className="px-6 py-2 rounded-lg bg-indigo-600 text-white text-[11px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
-                    >
-                        Edit
-                    </Link>
+                    {canAccess("jobs:update") && (
+                        <>
+                            <button className="px-6 py-2 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-600 text-[11px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all active:scale-95 shadow-sm">
+                                Clone
+                            </button>
+                            <Link 
+                                href={`/enterprise/jobs/${id}/edit`}
+                                className="px-6 py-2 rounded-lg bg-indigo-600 text-white text-[11px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
+                            >
+                                Edit
+                            </Link>
+                        </>
+                    )}
                     <button 
                         onClick={() => router.back()}
                         className="px-6 py-2 rounded-lg border border-slate-200 bg-white text-slate-600 text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 shadow-sm"

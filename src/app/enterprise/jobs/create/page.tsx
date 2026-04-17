@@ -33,8 +33,9 @@ import {
     FileText,
     AtSign,
     ToggleRight,
-    Type,
-    Link as LinkIcon
+    Type, 
+    Link as LinkIcon,
+    Mail
 } from "lucide-react";
 
 interface ApplicationField {
@@ -50,18 +51,19 @@ interface WorkflowStage {
     name: string;
     type: string;
     icon: string;
+    email_template_id?: string;
 }
 
 const DEFAULT_APPLICATION_FIELDS: ApplicationField[] = [
-    { id: '1', label: 'Full Name', type: 'text', icon: 'User', is_required: true },
-    { id: '2', label: 'Email Address', type: 'email', icon: 'Mail', is_required: true },
-    { id: '3', label: 'Phone Number', type: 'text', icon: 'Phone', is_required: false },
-    { id: '4', label: 'Resume / CV', type: 'file', icon: 'FileText', is_required: true },
-    { id: '5', label: 'Portfolio URL', type: 'text', icon: 'Link', is_required: false }
+    { id: '1', label: 'Full Name', type: 'text', icon: 'person', is_required: true },
+    { id: '2', label: 'Email Address', type: 'email', icon: 'mail', is_required: true },
+    { id: '3', label: 'Phone Number', type: 'text', icon: 'call', is_required: false },
+    { id: '4', label: 'Resume / CV', type: 'file', icon: 'description', is_required: true },
+    { id: '5', label: 'Portfolio URL', type: 'text', icon: 'link', is_required: false }
 ];
 
 const DEFAULT_WORKFLOW_STAGES: WorkflowStage[] = [
-    { id: '1', name: 'Initial Screening', type: 'Screening', icon: 'Search' }
+    { id: '1', name: 'Initial Screening', type: 'Screening', icon: 'search' }
 ];
 
 export default function CreateJobPage() {
@@ -73,12 +75,28 @@ export default function CreateJobPage() {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [createdJobId, setCreatedJobId] = useState("");
     const [companies, setCompanies] = useState<any[]>([]);
+    const [emailTemplates, setEmailTemplates] = useState<any[]>([]);
 
     useEffect(() => {
         if (token) {
             fetchCompanies();
+            fetchEmailTemplates();
         }
     }, [token]);
+
+    const fetchEmailTemplates = async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setEmailTemplates(data);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     const fetchCompanies = async () => {
         try {
@@ -240,8 +258,8 @@ export default function CreateJobPage() {
                                         {companies.length > 0 && (
                                             <div className="space-y-1.5">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sector Entity</label>
-                                                <select className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-white font-bold text-xs uppercase tracking-tight outline-none focus:border-indigo-500 transition-all" value={formData.company_id} onChange={e => setFormData({ ...formData, company_id: e.target.value })}>
-                                                    {companies.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
+                                                <select className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-white font-bold text-xs uppercase tracking-tight outline-none focus:border-indigo-500 transition-all text-slate-900" value={formData.company_id} onChange={e => setFormData({ ...formData, company_id: e.target.value })}>
+                                                    {companies.map(c => (<option key={c.id} value={c.id} className="text-slate-900 bg-white">{c.name}</option>))}
                                                 </select>
                                             </div>
                                         )}
@@ -249,14 +267,14 @@ export default function CreateJobPage() {
                                         <div className="grid grid-cols-2 gap-3">
                                             <div className="space-y-1.5">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Type</label>
-                                                <select className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-white font-bold text-xs uppercase tracking-tight outline-none" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
-                                                    <option>Full Time</option><option>Part Time</option><option>Contract</option>
+                                                <select className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-white font-bold text-xs uppercase tracking-tight outline-none text-slate-900" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
+                                                    <option className="text-slate-900 bg-white">Full Time</option><option className="text-slate-900 bg-white">Part Time</option><option className="text-slate-900 bg-white">Contract</option>
                                                 </select>
                                             </div>
                                             <div className="space-y-1.5">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Mode</label>
-                                                <select className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-white font-bold text-xs uppercase tracking-tight outline-none" value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
-                                                    <option>On-Site</option><option>Remote</option><option>Hybrid</option>
+                                                <select className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-white font-bold text-xs uppercase tracking-tight outline-none text-slate-900" value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
+                                                    <option className="text-slate-900 bg-white">On-Site</option><option className="text-slate-900 bg-white">Remote</option><option className="text-slate-900 bg-white">Hybrid</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -386,9 +404,37 @@ export default function CreateJobPage() {
                                             <div className="flex-1 space-y-2">
                                                 <input type="text" className="w-full bg-transparent border-none outline-none text-[13px] font-black text-slate-800 p-0 focus:text-indigo-600 transition-colors uppercase italic" value={node.name} onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, name: e.target.value } : s) }))} />
                                                 <div className="flex items-center gap-4">
-                                                    <select className="bg-slate-50 border-none outline-none text-[9px] font-black text-slate-400 uppercase px-2.5 py-1 rounded-md cursor-pointer hover:bg-slate-100 transition-all" value={node.type} onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, type: e.target.value } : s) }))}>
+                                                    <select className="bg-slate-50 border-none outline-none text-[9px] font-black text-slate-400 uppercase px-2.5 py-1 rounded-md cursor-pointer hover:bg-slate-100 transition-all font-mono" value={node.type} onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, type: e.target.value } : s) }))}>
                                                         {STAGE_TYPES.map(t => (<option key={t.name} value={t.name}>{t.name}</option>))}
                                                     </select>
+                                                    
+                                                    <div className="h-4 w-[1px] bg-slate-100" />
+                                                    
+                                                    <div className="flex items-center gap-2">
+                                                        <Mail className="w-3 h-3 text-slate-300" />
+                                                        <select 
+                                                            className="bg-slate-50 border-none outline-none text-[8px] font-black text-indigo-400 uppercase px-2.5 py-1 rounded-md cursor-pointer hover:bg-indigo-50 transition-all max-w-[120px] truncate"
+                                                            value={node.email_template_id || ""}
+                                                            onChange={(e) => setFormData(prev => ({ 
+                                                                ...prev, 
+                                                                workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, email_template_id: e.target.value } : s) 
+                                                            }))}
+                                                        >
+                                                            <option value="">No Automated Mail</option>
+                                                            {emailTemplates
+                                                                .filter(tpl => {
+                                                                    const stageType = node.type.toLowerCase();
+                                                                    if (stageType.includes('aptitude') || stageType.includes('coding') || stageType.includes('assessment')) {
+                                                                        return tpl.category === 'ASSESSMENT' || tpl.category === 'GENERAL';
+                                                                    }
+                                                                    return tpl.category === 'GENERAL' || !tpl.category;
+                                                                })
+                                                                .map(tpl => (
+                                                                    <option key={tpl.id} value={tpl.id} className="text-slate-900 bg-white">{tpl.name}</option>
+                                                                ))
+                                                            }
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <button onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-lg hover:bg-rose-50 text-slate-200 hover:text-rose-500 transition-all flex items-center justify-center active:scale-95"><X className="w-4 h-4" /></button>

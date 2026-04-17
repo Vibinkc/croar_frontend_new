@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { apiClient } from "@/utils/api";
+import { useAuth } from "@/context/AuthContext";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 interface Member {
@@ -30,6 +31,7 @@ interface ProjectKanbanProps {
 }
 
 export default function ProjectKanban({ projectId, columns, tasks, members, onRefresh }: ProjectKanbanProps) {
+    const { canAccess } = useAuth();
     const [isAddingTask, setIsAddingTask] = useState<{ isOpen: boolean; column: string }>({ isOpen: false, column: "" });
     const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
     const [newTaskData, setNewTaskData] = useState({
@@ -42,6 +44,10 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
     const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
     const handleDragStart = (e: React.DragEvent, taskId: string) => {
+        if (!canAccess("tasks:moderate")) {
+            e.preventDefault();
+            return;
+        }
         setDraggedTaskId(taskId);
         e.dataTransfer.effectAllowed = "move";
         // Optional: add a drag image or custom data if needed
@@ -129,12 +135,14 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 {tasks.filter(t => t.column === col).length}
                             </span>
                         </div>
-                        <button
-                            onClick={() => setIsAddingTask({ isOpen: true, column: col })}
-                            className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#7C3AED] hover:border-[#7C3AED] transition-all flex items-center justify-center font-black"
-                        >
-                            <span className="material-symbols-rounded text-lg">add</span>
-                        </button>
+                        {canAccess("tasks:moderate") && (
+                            <button
+                                onClick={() => setIsAddingTask({ isOpen: true, column: col })}
+                                className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#7C3AED] hover:border-[#7C3AED] transition-all flex items-center justify-center font-black"
+                            >
+                                <span className="material-symbols-rounded text-lg">add</span>
+                            </button>
+                        )}
                     </div>
 
                     {/* Task Cards */}
@@ -151,15 +159,17 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 >
                                     <div className="flex items-start justify-between mb-2">
                                         <h4 className="text-xs font-bold text-slate-800 leading-snug">{task.title}</h4>
-                                        <button 
-                                            onClick={() => {
-                                                setTaskToDelete(task.id);
-                                                setIsDeleteModalOpen(true);
-                                            }}
-                                            className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition-all"
-                                        >
-                                            <span className="material-symbols-rounded text-sm">delete</span>
-                                        </button>
+                                        {canAccess("tasks:delete") && (
+                                            <button 
+                                                onClick={() => {
+                                                    setTaskToDelete(task.id);
+                                                    setIsDeleteModalOpen(true);
+                                                }}
+                                                className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition-all"
+                                            >
+                                                <span className="material-symbols-rounded text-sm">delete</span>
+                                            </button>
+                                        )}
                                     </div>
                                     <p className="text-[10px] text-slate-500 line-clamp-2 mb-3 leading-relaxed">{task.description}</p>
                                     
@@ -188,17 +198,19 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     </div>
 
                                     {/* Quick Move Logic (Fallback for Drag/Drop) */}
-                                    <div className="mt-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all overflow-x-auto no-scrollbar pt-1">
-                                        {columns.filter(c => c !== col).map(c => (
-                                            <button
-                                                key={c}
-                                                onClick={() => handleMoveTask(task.id, c)}
-                                                className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded text-[8px] font-black text-slate-400 hover:text-[#7C3AED] hover:border-[#7C3AED] hover:bg-white transition-all whitespace-nowrap"
-                                            >
-                                                To {c}
-                                            </button>
-                                        ))}
-                                    </div>
+                                    {canAccess("tasks:moderate") && (
+                                        <div className="mt-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all overflow-x-auto no-scrollbar pt-1">
+                                            {columns.filter(c => c !== col).map(c => (
+                                                <button
+                                                    key={c}
+                                                    onClick={() => handleMoveTask(task.id, c)}
+                                                    className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded text-[8px] font-black text-slate-400 hover:text-[#7C3AED] hover:border-[#7C3AED] hover:bg-white transition-all whitespace-nowrap"
+                                                >
+                                                    To {c}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             ))
                         }

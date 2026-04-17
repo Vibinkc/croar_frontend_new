@@ -114,6 +114,28 @@ export default function PublicJobPage() {
         );
     }
 
+    const getIcon = (iconName: string) => {
+        if (!iconName) return 'edit';
+        const lower = iconName.toLowerCase();
+        const map: Record<string, string> = {
+            'user': 'person',
+            'mail': 'mail',
+            'alternate_email': 'alternate_email',
+            'phone': 'call',
+            'call': 'call',
+            'filetext': 'description',
+            'description': 'description',
+            'link': 'link',
+            'bolt': 'bolt',
+            'check': 'check',
+            'person': 'person',
+            'u': 'person',
+            'm': 'mail',
+            'p': 'call'
+        };
+        return map[lower] || lower;
+    };
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] font-sans">
             {/* Top Navigation / Brand */}
@@ -303,7 +325,7 @@ export default function PublicJobPage() {
                                                 <div key={field.id} className="p-5 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all">
                                                     <div className="flex items-center gap-4">
                                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isChecked ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-500'}`}>
-                                                            <span className="material-symbols-rounded text-xl">{field.icon || 'check_circle'}</span>
+                                                            <span className="material-icons-outlined text-xl">{getIcon(field.icon) || 'check_circle'}</span>
                                                         </div>
                                                         <div className="flex flex-col">
                                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -329,7 +351,7 @@ export default function PublicJobPage() {
                                                     {field.label} {field.is_required && <span className="text-rose-500">*</span>}
                                                 </label>
                                                 <div className="relative">
-                                                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">{field.icon || 'edit'}</span>
+                                                    <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg pointer-events-none">{getIcon(field.icon)}</span>
                                                     <input
                                                         type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : 'text'}
                                                         step="any"

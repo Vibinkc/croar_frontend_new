@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 interface Question {
   id: string;
@@ -26,6 +27,7 @@ export default function TemplateBuilder({
   token,
   backendUrl,
 }: TemplateBuilderProps) {
+  const { canAccess } = useAuth();
   const [title, setTitle] = useState(initialData?.title || "");
   const [topic, setTopic] = useState(initialData?.topic || "");
   const [duration, setDuration] = useState(initialData?.duration || 30);
@@ -142,7 +144,7 @@ export default function TemplateBuilder({
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 20 }}
-        className="relative w-full max-w-5xl h-[90vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
+        className="relative w-full max-w-4xl h-[90vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
       >
         {/* Sidebar */}
         <div className="w-full md:w-80 bg-slate-50 border-r border-slate-100 p-6 overflow-y-auto shrink-0">
@@ -167,6 +169,7 @@ export default function TemplateBuilder({
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
                 placeholder="e.g. Senior Frontend Dev"
+                readOnly={!canAccess("interviews:moderate")}
               />
             </div>
 
@@ -180,6 +183,7 @@ export default function TemplateBuilder({
                 onChange={(e) => setTopic(e.target.value)}
                 className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
                 placeholder="e.g. React & TypeScript"
+                readOnly={!canAccess("interviews:moderate")}
               />
             </div>
 
@@ -206,6 +210,7 @@ export default function TemplateBuilder({
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
                   className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
+                  disabled={!canAccess("interviews:moderate")}
                 >
                   <option value="Beginner">Beginner</option>
                   <option value="Intermediate">Intermediate</option>
@@ -222,7 +227,8 @@ export default function TemplateBuilder({
               </div>
               <button
                 onClick={() => setRequireVideo(!requireVideo)}
-                className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${requireVideo ? "bg-[#7C3AED]" : "bg-slate-200"}`}
+                disabled={!canAccess("interviews:moderate")}
+                className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${requireVideo ? "bg-[#7C3AED]" : "bg-slate-200"} ${!canAccess("interviews:moderate") ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${requireVideo ? "translate-x-4" : "translate-x-0"}`} />
               </button>
@@ -231,7 +237,7 @@ export default function TemplateBuilder({
             <div className="pt-4">
               <button
                 onClick={handleGenerate}
-                disabled={isGenerating || !topic}
+                disabled={isGenerating || !topic || !canAccess("interviews:moderate")}
                 className="w-full py-4 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-200"
               >
                 {isGenerating ? (
@@ -261,13 +267,15 @@ export default function TemplateBuilder({
               <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Interview Questions</h3>
               <p className="text-[10px] text-slate-400 font-medium mt-1">Review and customize the generated questions</p>
             </div>
-            <button
-              onClick={addQuestion}
-              className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED]/10 text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
-            >
-              <span className="material-symbols-rounded text-sm">add</span>
-              Add Question
-            </button>
+            {canAccess("interviews:moderate") && (
+              <button
+                onClick={addQuestion}
+                className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED]/10 text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+              >
+                <span className="material-symbols-rounded text-sm">add</span>
+                Add Question
+              </button>
+            )}
           </div>
 
           <div className="flex-1 overflow-y-auto p-8 space-y-4 custom-scrollbar">
@@ -292,14 +300,16 @@ export default function TemplateBuilder({
                   transition={{ delay: idx * 0.05 }}
                   className="group bg-white border border-slate-100 rounded-3xl p-6 transition-all hover:border-[#7C3AED]/20 hover:shadow-xl hover:shadow-[#7C3AED]/5 relative"
                 >
-                  <div className="absolute top-6 right-6 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
-                      onClick={() => removeQuestion(q.id)}
-                      className="w-8 h-8 rounded-xl bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center"
-                    >
-                      <span className="material-symbols-rounded text-base">delete</span>
-                    </button>
-                  </div>
+                  {canAccess("interviews:moderate") && (
+                    <div className="absolute top-6 right-6 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        onClick={() => removeQuestion(q.id)}
+                        className="w-8 h-8 rounded-xl bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center"
+                      >
+                        <span className="material-symbols-rounded text-base">delete</span>
+                      </button>
+                    </div>
+                  )}
 
                   <div className="flex gap-4">
                     <div className="w-8 h-8 shrink-0 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100">
@@ -312,6 +322,7 @@ export default function TemplateBuilder({
                         rows={2}
                         className="w-full text-sm font-bold text-slate-800 placeholder-slate-300 border-none focus:ring-0 resize-none p-0 bg-transparent"
                         placeholder="Type question here..."
+                        readOnly={!canAccess("interviews:moderate")}
                       />
                       
                       <div className="flex flex-wrap items-center gap-4">
@@ -321,6 +332,7 @@ export default function TemplateBuilder({
                              value={q.type}
                              onChange={(e) => updateQuestion(q.id, { type: e.target.value })}
                              className="text-[10px] font-bold text-[#7C3AED] bg-[#7C3AED]/5 border-none focus:ring-0 rounded-lg px-2 py-1"
+                             disabled={!canAccess("interviews:moderate")}
                            >
                              <option value="TECHNICAL">TECHNICAL</option>
                              <option value="BEHAVIORAL">BEHAVIORAL</option>
@@ -333,6 +345,7 @@ export default function TemplateBuilder({
                              value={q.difficulty}
                              onChange={(e) => updateQuestion(q.id, { difficulty: e.target.value })}
                              className="text-[10px] font-bold text-slate-600 bg-slate-50 border-none focus:ring-0 rounded-lg px-2 py-1"
+                             disabled={!canAccess("interviews:moderate")}
                            >
                              <option value="Beginner">Beginner</option>
                              <option value="Intermediate">Intermediate</option>
@@ -355,26 +368,31 @@ export default function TemplateBuilder({
                                   updateQuestion(q.id, { expected_answer_points: newPoints });
                                 }}
                                 className="text-[10px] font-bold text-slate-600 bg-transparent border-none focus:ring-0 p-0 w-32"
+                                readOnly={!canAccess("interviews:moderate")}
                               />
-                              <button 
-                                onClick={() => {
-                                  const newPoints = q.expected_answer_points.filter((_, i) => i !== pIdx);
-                                  updateQuestion(q.id, { expected_answer_points: newPoints });
-                                }}
-                                className="text-slate-300 hover:text-red-400 transition-colors"
-                              >
-                                <span className="material-symbols-rounded text-xs">close</span>
-                              </button>
+                                {canAccess("interviews:moderate") && (
+                                  <button 
+                                    onClick={() => {
+                                      const newPoints = q.expected_answer_points.filter((_, i) => i !== pIdx);
+                                      updateQuestion(q.id, { expected_answer_points: newPoints });
+                                    }}
+                                    className="text-slate-300 hover:text-red-400 transition-colors"
+                                  >
+                                    <span className="material-symbols-rounded text-xs">close</span>
+                                  </button>
+                                )}
                             </div>
                           ))}
-                          <button 
-                            onClick={() => {
-                               updateQuestion(q.id, { expected_answer_points: [...q.expected_answer_points, "New point..."] });
-                            }}
-                            className="px-3 py-1.5 border border-dashed border-slate-200 rounded-xl text-[10px] font-bold text-slate-400 hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all"
-                          >
-                            + Add Point
-                          </button>
+                          {canAccess("interviews:moderate") && (
+                            <button 
+                              onClick={() => {
+                                 updateQuestion(q.id, { expected_answer_points: [...q.expected_answer_points, "New point..."] });
+                              }}
+                              className="px-3 py-1.5 border border-dashed border-slate-200 rounded-xl text-[10px] font-bold text-slate-400 hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all"
+                            >
+                              + Add Point
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -385,18 +403,20 @@ export default function TemplateBuilder({
           </div>
 
           <div className="px-8 py-6 border-t border-slate-100 bg-slate-50/30 flex justify-end shrink-0">
-            <button
-              onClick={handleSave}
-              disabled={isSaving || !title || !topic || questions.length === 0 || questions.some(q => !q.question || q.question.trim() === "")}
-              className="flex items-center gap-2 px-8 py-4 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-slate-200 text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-[#7C3AED]/20"
-            >
-              {isSaving ? (
-                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <span className="material-symbols-rounded text-base">save</span>
-              )}
-              {initialData ? "Update Template" : "Save Template"}
-            </button>
+            {canAccess("interviews:moderate") && (
+              <button
+                onClick={handleSave}
+                disabled={isSaving || !title || !topic || questions.length === 0 || questions.some(q => !q.question || q.question.trim() === "")}
+                className="flex items-center gap-2 px-8 py-4 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-slate-200 text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-[#7C3AED]/20"
+              >
+                {isSaving ? (
+                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <span className="material-symbols-rounded text-base">save</span>
+                )}
+                {initialData ? "Update Template" : "Save Template"}
+              </button>
+            )}
           </div>
         </div>
       </motion.div>
