@@ -90,7 +90,7 @@ export default function AutomationNodeModal({
   const fetchMeta = useCallback(async () => {
     if (!token) return;
     try {
-      const eRes = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, { headers: authHeaders });
+      const eRes = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates/`, { headers: authHeaders });
       if (eRes.ok) setEmailTemplates(await eRes.json());
 
       if (type === "onboarding") {
@@ -284,7 +284,7 @@ export default function AutomationNodeModal({
 
       if (type === "mail") {
         if (!form.template_id) throw new Error("Template is required.");
-        endpoint = editingId ? `/api/v1/enterprise/automation/mail/${editingId}` : "/api/v1/enterprise/automation/mail";
+        endpoint = editingId ? `/api/v1/enterprise/automation/mail/${editingId}` : "/api/v1/enterprise/automation/mail/";
         payload = { 
           ...payload, 
           criteria: form.criteria, 

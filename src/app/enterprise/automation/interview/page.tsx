@@ -143,7 +143,7 @@ export default function InterviewAutomationPage() {
       try {
         const [jRes, tRes] = await Promise.all([
           fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/`, { headers: authHeaders }),
-          fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, { headers: authHeaders }),
+          fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates/`, { headers: authHeaders }),
         ]);
         const jData = jRes.ok ? await jRes.json() : [];
         const tData = tRes.ok ? await tRes.json() : [];
@@ -163,7 +163,7 @@ export default function InterviewAutomationPage() {
     setLoading(true);
     try {
       const qs = jobId ? `?job_id=${jobId}` : "";
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/interview-automation${qs}`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/interview-automation/${qs}`, {
         headers: authHeaders,
       });
       if (res.ok) {

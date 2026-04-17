@@ -97,7 +97,7 @@ export default function AutomationCanvasPage() {
     setLoading(true);
     try {
       const endpoints = [
-        { type: "mail", url: `${BACKEND_URL}/api/v1/enterprise/automation/mail?job_id=${jobId}` },
+        { type: "mail", url: `${BACKEND_URL}/api/v1/enterprise/automation/mail/?job_id=${jobId}` },
         { type: "assessment", url: `${BACKEND_URL}/api/v1/enterprise/assessment/?job_id=${jobId}` },
         { type: "interview", url: `${BACKEND_URL}/api/v1/enterprise/interview-automation/?job_id=${jobId}` },
         { type: "onboarding", url: `${BACKEND_URL}/api/v1/enterprise/onboarding-automation/?job_id=${jobId}` },
