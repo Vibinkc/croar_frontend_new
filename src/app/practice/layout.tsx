@@ -166,7 +166,7 @@ function LayoutContent({
             {/* Sidebar */}
             <aside className={`
                 fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-transform duration-300 ease-in-out h-full
-                md:sticky md:top-0 md:translate-x-0 md:w-60 md:h-screen
+                md:sticky md:top-0 md:translate-x-0 md:w-72 md:h-screen
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 {/* Logo */}
@@ -250,7 +250,7 @@ function LayoutContent({
                         </button>
 
                         <h1 className="text-sm font-bold tracking-tight truncate max-w-[200px] sm:max-w-none">
-                            {navGroups.flatMap(g => g.items).find(i => isActive(i.path) && (i.path === pathname || i.path === '/practice' && pathname === '/practice'))?.name || "Mission Control"}
+                            {navGroups.flatMap(g => g.items).find(i => isActive(i.path) && (i.path === pathname || i.path === '/practice' && pathname === '/practice'))?.name || "Dashboard Overview"}
                         </h1>
                     </div>
 

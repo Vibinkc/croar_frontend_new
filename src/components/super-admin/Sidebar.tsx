@@ -35,7 +35,7 @@ export default function SuperAdminSidebar() {
     };
 
     return (
-        <aside className="w-52 bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 shrink-0 transition-all duration-300">
+        <aside className="w-64 bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 shrink-0 transition-all duration-300">
             <div className="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col">
                 {/* Logo Section */}
                 <div className="p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50">

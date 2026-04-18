@@ -71,7 +71,7 @@ export default function AdminLayout({
                 {/* Sidebar */}
                 <div className={`
                     fixed inset-y-0 left-0 z-50 w-64 bg-slate-50 border-r border-slate-200 text-slate-800 flex flex-col h-full transition-transform duration-300 ease-in-out
-                    md:relative md:translate-x-0 md:w-60
+                    md:relative md:translate-x-0 md:w-72
                     ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
                 `}>
                     <div className="p-4 shrink-0 border-b border-slate-200 flex items-center justify-between gap-3">
