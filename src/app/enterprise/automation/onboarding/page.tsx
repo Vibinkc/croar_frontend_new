@@ -292,7 +292,7 @@ export default function OnboardingAutomationPage() {
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-semibold transition-all duration-300 ${
+          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
             toast.type === "success" ? "bg-[#7C3AED] text-white" : "bg-red-500 text-white"
           }`}
         >
@@ -307,7 +307,7 @@ export default function OnboardingAutomationPage() {
       <div className="mb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
+            <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
               <span className="material-symbols-rounded text-[#7C3AED] text-2xl">person_add</span>
             </div>
             <div>
@@ -322,7 +322,7 @@ export default function OnboardingAutomationPage() {
              {canAccess("automation:moderate") && (
                 <button
                   onClick={openCreate}
-                  className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-xl text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
+                  className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
                 >
                   <span className="material-symbols-rounded text-lg">add</span>
                   NEW AUTOMATION
@@ -339,9 +339,9 @@ export default function OnboardingAutomationPage() {
             { label: "Avg. Velocity", value: "2.4 Days", icon: "monitoring", color: "amber" },
             { label: "Success Rate", value: "98.2%", icon: "check_circle", color: "purple" }
           ].map((stat, i) => (
-            <div key={i} className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
+            <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
               <div className="flex items-start justify-between mb-4">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${
                   stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
                   stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
                   stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
@@ -366,7 +366,7 @@ export default function OnboardingAutomationPage() {
                 placeholder="Search by rules, jobs, or templates..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-11 bg-white border border-slate-200 rounded-xl pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
+                className="w-full h-11 bg-white border border-slate-200 rounded-lg pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
               />
            </div>
 
@@ -384,7 +384,7 @@ export default function OnboardingAutomationPage() {
                 <select
                   value={selectedJobId}
                   onChange={(e) => setSelectedJobId(e.target.value)}
-                  className="w-full h-11 border border-slate-200 rounded-xl pl-10 pr-10 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
+                  className="w-full h-11 border border-slate-200 rounded-lg pl-10 pr-10 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
                 >
                   <option value="">All Job Requirements</option>
                   {jobs.map((j) => (
@@ -403,7 +403,7 @@ export default function OnboardingAutomationPage() {
         </div>
       ) : filteredAutomations.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-lg bg-[#7C3AED]/5 flex items-center justify-center mb-4">
             <span className="material-symbols-rounded text-[#7C3AED] text-4xl">person_add</span>
           </div>
           <p className="text-slate-700 font-bold text-lg">{searchQuery ? 'No matching rules' : 'No onboarding automations'}</p>
@@ -413,7 +413,7 @@ export default function OnboardingAutomationPage() {
           {!searchQuery && (
             <button
               onClick={openCreate}
-              className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors"
+              className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-lg text-sm font-bold hover:bg-[#6d28d9] transition-colors"
             >
               <span className="material-symbols-rounded text-base">add</span>
               Create Automation
@@ -425,12 +425,12 @@ export default function OnboardingAutomationPage() {
           {filteredAutomations.map((a) => (
             <div
               key={a.id}
-              className={`bg-white border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
+              className={`bg-white border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
                 a.is_enabled ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
               }`}
             >
               <div className="flex items-start gap-3 flex-1 min-w-0">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${a.is_enabled ? "bg-[#7C3AED]/10" : "bg-slate-100"}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${a.is_enabled ? "bg-[#7C3AED]/10" : "bg-slate-100"}`}>
                   <span className={`material-symbols-rounded text-xl ${a.is_enabled ? "text-[#7C3AED]" : "text-slate-400"}`}>rocket_launch</span>
                 </div>
                 <div className="min-w-0">
@@ -458,7 +458,7 @@ export default function OnboardingAutomationPage() {
                       {getJobTitle(a.job_requirement_id)}
                     </span>
                     {a.auto_move && (
-                      <span className="flex items-center gap-1.5 text-[11px] text-[#7C3AED] font-black bg-[#7C3AED]/5 px-2.5 py-1 rounded-xl border border-[#7C3AED]/10">
+                      <span className="flex items-center gap-1.5 text-[11px] text-[#7C3AED] font-black bg-[#7C3AED]/5 px-2.5 py-1 rounded-lg border border-[#7C3AED]/10">
                         <span className="material-symbols-rounded text-[14px]">keyboard_double_arrow_right</span>
                         AUTO-MOVE
                       </span>
@@ -477,13 +477,13 @@ export default function OnboardingAutomationPage() {
                 </button>
                 {canAccess("automation:moderate") && (
                   <>
-                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
+                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
                       <span className="material-symbols-rounded text-base">edit</span>
                     </button>
                     <button onClick={() => {
                        setAutomationToDelete(a);
                        setIsDeleteModalOpen(true);
-                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
+                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
                       {deletingId === a.id ? (
                         <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
                       ) : (
@@ -518,7 +518,7 @@ export default function OnboardingAutomationPage() {
             >
               <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-[#7C3AED]/10 flex items-center justify-center">
                     <span className="material-symbols-rounded text-[#7C3AED] text-xl">person_add</span>
                   </div>
                   <div>
@@ -528,7 +528,7 @@ export default function OnboardingAutomationPage() {
                     <p className="text-[10px] font-bold text-slate-400   mt-0.5">Onboarding Config</p>
                   </div>
                 </div>
-                <button onClick={closeModal} className="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
+                <button onClick={closeModal} className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
                   <span className="material-symbols-rounded text-xl">close</span>
                 </button>
               </div>
@@ -543,7 +543,7 @@ export default function OnboardingAutomationPage() {
                     value={form.job_requirement_id}
                     onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 0, stage_name: "" }))}
                     disabled={!!editingId}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] disabled:bg-slate-50 disabled:text-slate-400 transition-all"
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] disabled:bg-slate-50 disabled:text-slate-400 transition-all"
                   >
                     <option value="">Select job…</option>
                     {jobs.map((j) => (
@@ -569,7 +569,7 @@ export default function OnboardingAutomationPage() {
                         setForm(f => ({ ...f, stage_index: idx, stage_name: round?.name || "" }));
                       }}
                       value={form.stage_index}
-                      className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
+                      className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
                     >
                       <option value={0}>Pick stage…</option>
                       {jobRounds.map((r, i) => (
@@ -585,14 +585,14 @@ export default function OnboardingAutomationPage() {
                         min={1}
                         value={form.stage_index}
                         onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
-                        className="col-span-2 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
+                        className="col-span-2 border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
                         placeholder="Idx"
                       />
                       <input
                         type="text"
                         value={form.stage_name}
                         onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
-                        className="col-span-3 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#4f46e5]/10 focus:border-[#4f46e5] transition-all"
+                        className="col-span-3 border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#4f46e5]/10 focus:border-[#4f46e5] transition-all"
                         placeholder="Stage Name"
                       />
                     </div>
@@ -607,7 +607,7 @@ export default function OnboardingAutomationPage() {
                   <select
                     value={form.template_id}
                     onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
                   >
                     <option value="">Select template…</option>
                     {onboardingTemplates.map((t) => (
@@ -624,7 +624,7 @@ export default function OnboardingAutomationPage() {
                   <select
                     value={form.email_template_id}
                     onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
                   >
                     <option value="">No email (Manual send)</option>
                     {emailTemplates.map((t) => (
@@ -634,7 +634,7 @@ export default function OnboardingAutomationPage() {
                 </div>
 
                 {/* Status */}
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100">
                   <div>
                     <p className="text-xs font-bold text-slate-700">Enable Automation</p>
                     <p className="text-[10px] text-slate-400">Trigger onboarding when criteria is met</p>
@@ -648,7 +648,7 @@ export default function OnboardingAutomationPage() {
                 </div>
                 
                 {/* Auto-Move Toggle */}
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100">
                   <div>
                     <p className="text-xs font-bold text-slate-700">Auto-Move Candidate</p>
                     <p className="text-[10px] text-slate-400">Automatically advance candidate after trigger</p>
@@ -666,7 +666,7 @@ export default function OnboardingAutomationPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full h-12 bg-[#7C3AED] hover:bg-[#6d28d9] text-white rounded-xl font-black text-xs   transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#7C3AED]/20 active:scale-[0.98]"
+                  className="w-full h-12 bg-[#7C3AED] hover:bg-[#6d28d9] text-white rounded-lg font-black text-xs   transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#7C3AED]/20 active:scale-[0.98]"
                 >
                    {saving && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
                   {editingId ? "SAVE CHANGES" : "CREATE AUTOMATION"}

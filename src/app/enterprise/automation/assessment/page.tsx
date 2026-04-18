@@ -592,7 +592,7 @@ export default function AssessmentAutomationPage() {
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-semibold transition-all duration-300 ${
+          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
             toast.type === "success" ? "bg-[#7C3AED] text-white" : "bg-red-500 text-white"
           }`}
         >
@@ -607,7 +607,7 @@ export default function AssessmentAutomationPage() {
       <div className="mb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
+            <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
               <span className="material-symbols-rounded text-[#7C3AED] text-2xl">psychology</span>
             </div>
             <div>
@@ -622,7 +622,7 @@ export default function AssessmentAutomationPage() {
              {canAccess("automation:moderate") && (
                 <button
                   onClick={openCreate}
-                  className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-xl text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
+                  className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
                 >
                   <span className="material-symbols-rounded text-lg">add</span>
                   NEW AUTOMATION
@@ -639,9 +639,9 @@ export default function AssessmentAutomationPage() {
             { label: "Avg. AI Fit", value: "84.2%", icon: "monitoring", color: "amber" },
             { label: "Gen Active", value: "Live", icon: "auto_awesome", color: "purple" }
           ].map((stat, i) => (
-            <div key={i} className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
+            <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
               <div className="flex items-start justify-between mb-4">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${
                   stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
                   stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
                   stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
@@ -666,7 +666,7 @@ export default function AssessmentAutomationPage() {
                 placeholder="Search by topic, round name, or criteria..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-11 bg-white border border-slate-200 rounded-xl pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
+                className="w-full h-11 bg-white border border-slate-200 rounded-lg pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
               />
            </div>
 
@@ -684,7 +684,7 @@ export default function AssessmentAutomationPage() {
                 <select
                   value={selectedJobId}
                   onChange={(e) => setSelectedJobId(e.target.value)}
-                  className="w-full h-11 border border-slate-200 rounded-xl pl-10 pr-10 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
+                  className="w-full h-11 border border-slate-200 rounded-lg pl-10 pr-10 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
                 >
                   <option value="">All Job Requirements</option>
                   {jobs.map((j) => (
@@ -704,7 +704,7 @@ export default function AssessmentAutomationPage() {
         </div>
       ) : filteredAutomations.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-lg bg-[#7C3AED]/5 flex items-center justify-center mb-4">
             <span className="material-symbols-rounded text-[#7C3AED] text-4xl">psychology</span>
           </div>
           <p className="text-slate-700 font-bold text-lg">{searchQuery ? 'No matching assessments' : 'No assessment automations yet'}</p>
@@ -717,12 +717,12 @@ export default function AssessmentAutomationPage() {
           {filteredAutomations.map((a) => (
             <div
               key={a.id}
-              className={`bg-white border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
+              className={`bg-white border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
                 a.is_enabled ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
               }`}
             >
               <div className="flex items-start gap-3 flex-1 min-w-0">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${a.is_enabled ? "bg-[#7C3AED]/10" : "bg-slate-100"}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${a.is_enabled ? "bg-[#7C3AED]/10" : "bg-slate-100"}`}>
                   <span className={`material-symbols-rounded text-xl ${a.is_enabled ? "text-[#7C3AED]" : "text-slate-400"}`}>assignment_turned_in</span>
                 </div>
                 <div className="min-w-0">
@@ -772,7 +772,7 @@ export default function AssessmentAutomationPage() {
                   <button
                     onClick={() => handleGenerateQuestions(a.id)}
                     disabled={generatingId === a.id}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7C3AED]/10 text-[#7C3AED] rounded-xl text-[10px] font-black   hover:bg-[#7C3AED] hover:text-white transition-all disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7C3AED]/10 text-[#7C3AED] rounded-lg text-[10px] font-black   hover:bg-[#7C3AED] hover:text-white transition-all disabled:opacity-50"
                     title="Generate/Refresh AI Questions"
                   >
                     {generatingId === a.id ? (
@@ -789,7 +789,7 @@ export default function AssessmentAutomationPage() {
                       setPreviewingAutomation(a);
                       setOriginalQuestions(a.generated_questions);
                     }}
-                    className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-emerald-50 text-emerald-500 transition-all"
+                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-emerald-50 text-emerald-500 transition-all"
                     title="Preview Questions"
                   >
                     <span className="material-symbols-rounded text-base">visibility</span>
@@ -804,13 +804,13 @@ export default function AssessmentAutomationPage() {
                 </button>
                 {canAccess("automation:moderate") && (
                   <>
-                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED]">
+                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED]">
                       <span className="material-symbols-rounded text-base">edit</span>
                     </button>
                     <button onClick={() => {
                        setAutomationToDelete(a);
                        setIsDeleteModalOpen(true);
-                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-red-50 text-slate-400 hover:text-red-500">
+                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500">
                       {deletingId === a.id ? (
                         <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
                       ) : (
@@ -835,7 +835,7 @@ export default function AssessmentAutomationPage() {
           <div className="relative w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col animate-slide-in-right">
             <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-white shrink-0">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-[#7C3AED]/10 flex items-center justify-center">
                   <span className="material-symbols-rounded text-[#7C3AED] text-2xl">psychology</span>
                 </div>
                 <div>
@@ -847,7 +847,7 @@ export default function AssessmentAutomationPage() {
               </div>
               <button 
                 onClick={closeModal} 
-                className="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all"
+                className="w-10 h-10 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all"
               >
                 <span className="material-symbols-rounded text-xl">close</span>
               </button>
@@ -877,7 +877,7 @@ export default function AssessmentAutomationPage() {
                         <select
                           value={form.job_requirement_id}
                           onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value }))}
-                          className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
+                          className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
                         >
                           <option value="">Select a job...</option>
                           {jobs.map((j) => (
@@ -892,7 +892,7 @@ export default function AssessmentAutomationPage() {
                           <select 
                             onChange={handleRoundSelect} 
                             defaultValue={editingId ? `${form.stage_index}|${form.stage_name || ''}` : ""}
-                            className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
+                            className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
                           >
                             <option value="">Pick a round...</option>
                             {jobRounds.map((r, i) => (
@@ -901,14 +901,14 @@ export default function AssessmentAutomationPage() {
                           </select>
                         ) : (
                           <div className="grid grid-cols-2 gap-3">
-                            <input type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder="Index" className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold" />
-                            <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder="Name" className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold" />
+                            <input type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder="Index" className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold" />
+                            <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder="Name" className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold" />
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="bg-[#7C3AED]/5 rounded-xl p-5 space-y-4 border border-[#7C3AED]/10 mb-4">
+                    <div className="bg-[#7C3AED]/5 rounded-lg p-5 space-y-4 border border-[#7C3AED]/10 mb-4">
                       <div>
                         <label className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Use Assessment Template (Optional)</label>
                         <select
@@ -930,7 +930,7 @@ export default function AssessmentAutomationPage() {
                                }
                             }
                           }}
-                          className="w-full bg-white border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm transition-all cursor-pointer"
+                          className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm transition-all cursor-pointer"
                         >
                           <option value="">-- Custom Assessment Configuration --</option>
                           {assessmentTemplates.map(t => (
@@ -941,14 +941,14 @@ export default function AssessmentAutomationPage() {
                       </div>
                     </div>
 
-                    <div className="bg-[#7C3AED]/5 rounded-xl p-5 space-y-4 border border-[#7C3AED]/10">
+                    <div className="bg-[#7C3AED]/5 rounded-lg p-5 space-y-4 border border-[#7C3AED]/10">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Type <span className="text-red-400">*</span></label>
                           <select
                             value={form.type}
                             onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as AssessmentType }))}
-                            className="w-full bg-white border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
+                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
                           >
                             {Object.values(AssessmentType).map((p) => (
                               <option key={p} value={p}>{p}</option>
@@ -961,7 +961,7 @@ export default function AssessmentAutomationPage() {
                             type="text"
                             value={form.topic}
                             onChange={(e) => setForm((f) => ({ ...f, topic: e.target.value }))}
-                            className="w-full bg-white border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
+                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
                             placeholder="e.g. SQL, Python..."
                           />
                         </div>
@@ -976,7 +976,7 @@ export default function AssessmentAutomationPage() {
                             max={50}
                             value={form.question_count}
                             onChange={(e) => setForm((f) => ({ ...f, question_count: Number(e.target.value) }))}
-                            className="w-full bg-white border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
+                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
                           />
                         </div>
                         <div>
@@ -986,7 +986,7 @@ export default function AssessmentAutomationPage() {
                             min={5}
                             value={form.test_duration}
                             onChange={(e) => setForm((f) => ({ ...f, test_duration: Number(e.target.value) }))}
-                            className="w-full bg-white border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
+                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
                           />
                         </div>
                       </div>
@@ -999,7 +999,7 @@ export default function AssessmentAutomationPage() {
                           rows={2} 
                           value={form.criteria} 
                           onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} 
-                          className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 resize-none h-20" 
+                          className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 resize-none h-20" 
                           placeholder="e.g. 'Match score > 80' or 'Background includes React'..." 
                         />
                       </div>
@@ -1009,7 +1009,7 @@ export default function AssessmentAutomationPage() {
                         <select
                           value={form.email_template_id}
                           onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
-                          className={`w-full bg-slate-50 border rounded-xl px-4 py-3 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/20 appearance-none cursor-pointer ${!form.email_template_id ? 'border-amber-200' : 'border-none'}`}
+                          className={`w-full bg-slate-50 border rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/20 appearance-none cursor-pointer ${!form.email_template_id ? 'border-amber-200' : 'border-none'}`}
                         >
                           <option value="">Select Email Template...</option>
                           {emailTemplates.map((t) => (
@@ -1020,9 +1020,9 @@ export default function AssessmentAutomationPage() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
-                      <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl transition-all hover:border-slate-200">
+                      <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-lg transition-all hover:border-slate-200">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-xl bg-white shadow-sm flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center">
                             <span className={`material-symbols-rounded text-lg ${form.is_enabled ? "text-[#7C3AED]" : "text-slate-400"}`}>
                               {form.is_enabled ? "check_circle" : "pause_circle"}
                             </span>
@@ -1039,9 +1039,9 @@ export default function AssessmentAutomationPage() {
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl transition-all hover:border-slate-200">
+                      <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-lg transition-all hover:border-slate-200">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-xl bg-white shadow-sm flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center">
                             <span className={`material-symbols-rounded text-lg ${form.auto_move ? "text-[#7C3AED]" : "text-slate-400"}`}>
                               double_arrow
                             </span>
@@ -1065,10 +1065,10 @@ export default function AssessmentAutomationPage() {
                           <span className="material-symbols-rounded text-slate-400 text-lg">schedule</span>
                           <span className="text-sm font-black text-slate-700   text-[10px]">Scheduling</span>
                         </div>
-                        <div className="flex bg-slate-100 p-1 rounded-xl">
+                        <div className="flex bg-slate-100 p-1 rounded-lg">
                           <button
                             onClick={() => setForm(f => ({ ...f, is_immediate: true }))}
-                            className={`px-3 py-1 rounded-xl text-[10px] font-black   transition-all ${
+                            className={`px-3 py-1 rounded-lg text-[10px] font-black   transition-all ${
                               form.is_immediate ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-400 hover:text-slate-600"
                             }`}
                           >
@@ -1076,7 +1076,7 @@ export default function AssessmentAutomationPage() {
                           </button>
                           <button
                             onClick={() => setForm(f => ({ ...f, is_immediate: false }))}
-                            className={`px-3 py-1 rounded-xl text-[10px] font-black   transition-all ${
+                            className={`px-3 py-1 rounded-lg text-[10px] font-black   transition-all ${
                               !form.is_immediate ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-400 hover:text-slate-600"
                             }`}
                           >
@@ -1086,13 +1086,13 @@ export default function AssessmentAutomationPage() {
                       </div>
 
                       {!form.is_immediate && (
-                        <div className="bg-amber-50 rounded-xl p-4 border border-amber-100 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="bg-amber-50 rounded-lg p-4 border border-amber-100 animate-in fade-in slide-in-from-top-2 duration-300">
                           <label className="block text-[10px] font-black text-amber-600   mb-1.5 ml-1">Send At (Date & Time)</label>
                           <input
                             type="datetime-local"
                             value={form.send_at}
                             onChange={(e) => setForm(f => ({ ...f, send_at: e.target.value }))}
-                            className="w-full bg-white border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-amber-200 shadow-sm"
+                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-amber-200 shadow-sm"
                           />
                           <p className="mt-2 text-[10px] text-amber-500 font-medium leading-relaxed">
                             The assessment invitation will be queued and sent at the specified time if the criteria are met.
@@ -1104,7 +1104,7 @@ export default function AssessmentAutomationPage() {
                         <button
                           onClick={handleGeneratePreview}
                           disabled={saving || !form.job_requirement_id || !form.topic}
-                          className="w-full py-4 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black   hover:bg-[#6d28d9] shadow-xl shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-3 border border-[#7C3AED]/20 disabled:opacity-50"
+                          className="w-full py-4 bg-[#7C3AED] text-white rounded-lg text-[10px] font-black   hover:bg-[#6d28d9] shadow-xl shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-3 border border-[#7C3AED]/20 disabled:opacity-50"
                         >
                           {saving ? (
                             <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -1126,7 +1126,7 @@ export default function AssessmentAutomationPage() {
                        </div>
                        <button 
                          onClick={handleAddQuestion}
-                         className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black   text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
+                         className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-[10px] font-black   text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
                        >
                          <span className="material-symbols-rounded text-sm">add</span>
                          Add Question
@@ -1136,12 +1136,12 @@ export default function AssessmentAutomationPage() {
                     {form.generated_questions && form.generated_questions.length > 0 ? (
                       <div className="space-y-6">
                         {form.generated_questions.map((q: any, idx: number) => (
-                          <div key={q.id} className="bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-all relative group">
-                            <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#7C3AED] text-white rounded-xl flex items-center justify-center font-black  shadow-lg">#{idx + 1}</div>
+                          <div key={q.id} className="bg-white border border-slate-100 rounded-lg p-6 shadow-sm hover:shadow-md transition-all relative group">
+                            <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#7C3AED] text-white rounded-lg flex items-center justify-center font-black  shadow-lg">#{idx + 1}</div>
                             
                             <button 
                               onClick={() => handleDeleteQuestion(q.id)}
-                              className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-red-50 text-red-500 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white"
+                              className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-red-50 text-red-500 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white"
                             >
                               <span className="material-symbols-rounded text-base">delete</span>
                             </button>
@@ -1154,7 +1154,7 @@ export default function AssessmentAutomationPage() {
                                     <textarea 
                                       value={q.question} 
                                       onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                                      className="w-full bg-slate-50 border-none rounded-xl px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-20 resize-none"
+                                      className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-20 resize-none"
                                     />
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1167,11 +1167,11 @@ export default function AssessmentAutomationPage() {
                                             newOpts[oi] = e.target.value;
                                             handleUpdateQuestion(q.id, "options", newOpts);
                                           }}
-                                          className={`w-full bg-slate-50 border-2 rounded-xl pl-12 pr-4 py-3 text-xs font-bold transition-all ${q.correct_answer === opt ? "border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]" : "border-transparent text-slate-600"}`}
+                                          className={`w-full bg-slate-50 border-2 rounded-lg pl-12 pr-4 py-3 text-xs font-bold transition-all ${q.correct_answer === opt ? "border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]" : "border-transparent text-slate-600"}`}
                                         />
                                         <button 
                                           onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
-                                          className={`absolute left-3 top-3 w-6 h-6 rounded-xl flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
+                                          className={`absolute left-3 top-3 w-6 h-6 rounded-lg flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
                                         >
                                           <span className="material-symbols-rounded text-sm">{q.correct_answer === opt ? "check" : "circle"}</span>
                                         </button>
@@ -1187,7 +1187,7 @@ export default function AssessmentAutomationPage() {
                                       type="text"
                                       value={q.title} 
                                       onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
-                                      className="w-full bg-slate-50 border-none rounded-xl px-5 py-3 text-sm font-black text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all"
+                                      className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-black text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all"
                                     />
                                   </div>
                                   <div>
@@ -1195,7 +1195,7 @@ export default function AssessmentAutomationPage() {
                                     <textarea 
                                       value={q.description} 
                                       onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
-                                      className="w-full bg-slate-50 border-none rounded-xl px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
+                                      className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
                                     />
                                   </div>
                                   <div>
@@ -1203,7 +1203,7 @@ export default function AssessmentAutomationPage() {
                                     <textarea 
                                       value={q.problem_statement} 
                                       onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
-                                      className="w-full bg-slate-50 border-none rounded-xl px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
+                                      className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
                                     />
                                   </div>
                                 </>
@@ -1214,7 +1214,7 @@ export default function AssessmentAutomationPage() {
                       </div>
                     ) : (
                       <div className="h-full flex flex-col items-center justify-center p-12 text-center opacity-60">
-                        <div className="w-20 h-20 rounded-xl bg-white flex items-center justify-center mb-6 shadow-sm">
+                        <div className="w-20 h-20 rounded-lg bg-white flex items-center justify-center mb-6 shadow-sm">
                           <span className="material-symbols-rounded text-slate-300 text-4xl">visibility_off</span>
                         </div>
                         <h3 className="text-sm font-black text-slate-400  ">No Preview Yet</h3>
@@ -1231,7 +1231,7 @@ export default function AssessmentAutomationPage() {
               <div className="flex items-center gap-3">
                 <button 
                   onClick={closeModal} 
-                  className="flex-1 px-4 py-3 rounded-xl text-sm font-black   text-slate-400 hover:bg-slate-50 transition-all border border-slate-100"
+                  className="flex-1 px-4 py-3 rounded-lg text-sm font-black   text-slate-400 hover:bg-slate-50 transition-all border border-slate-100"
                 >
                   Cancel
                 </button>
@@ -1239,7 +1239,7 @@ export default function AssessmentAutomationPage() {
                   <button
                     onClick={handleUpdate}
                     disabled={saving || !hasFormChanged}
-                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-xl text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-lg text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                   >
                     {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">save</span>}
                     Save Changes
@@ -1248,7 +1248,7 @@ export default function AssessmentAutomationPage() {
                   <button
                     onClick={handleFinalCreate}
                     disabled={saving}
-                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-xl text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
+                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-lg text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
                   >
                     {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">rocket_launch</span>}
                     Confirm & Create
@@ -1257,7 +1257,7 @@ export default function AssessmentAutomationPage() {
                   <button
                     onClick={handleGeneratePreview}
                     disabled={saving || !form.job_requirement_id || !form.topic || !form.email_template_id}
-                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-xl text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
+                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-lg text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
                   >
                     {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">auto_awesome</span>}
                     Generate Draft with AI
@@ -1272,10 +1272,10 @@ export default function AssessmentAutomationPage() {
       {previewingAutomation && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setPreviewingAutomation(null)} />
-          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
+          <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-white shrink-0">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-[#7C3AED]/10 flex items-center justify-center">
                   <span className="material-symbols-rounded text-[#7C3AED] text-2xl">visibility</span>
                 </div>
                 <div>
@@ -1283,19 +1283,19 @@ export default function AssessmentAutomationPage() {
                   <p className="text-[10px] font-bold text-slate-400  ">{previewingAutomation.topic} • {previewingAutomation.type}</p>
                 </div>
               </div>
-              <button onClick={() => { setPreviewingAutomation(null); setOriginalQuestions(null); }} className="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all">
+              <button onClick={() => { setPreviewingAutomation(null); setOriginalQuestions(null); }} className="w-10 h-10 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all">
                 <span className="material-symbols-rounded text-xl">close</span>
               </button>
             </div>
 
             <div className="p-8 space-y-8 overflow-y-auto pr-4 custom-scrollbar flex-1 bg-slate-50/30">
               {(previewingAutomation.generated_questions || []).map((q: any, idx: number) => (
-                <div key={q.id} className="bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-all relative group">
-                  <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#7C3AED] text-white rounded-xl flex items-center justify-center font-black  shadow-lg">#{idx + 1}</div>
+                <div key={q.id} className="bg-white border border-slate-100 rounded-lg p-6 shadow-sm hover:shadow-md transition-all relative group">
+                  <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#7C3AED] text-white rounded-lg flex items-center justify-center font-black  shadow-lg">#{idx + 1}</div>
                   
                   <button 
                     onClick={() => handleDeleteQuestion(q.id)}
-                    className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-red-50 text-red-500 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white"
+                    className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-red-50 text-red-500 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white"
                   >
                     <span className="material-symbols-rounded text-base">delete</span>
                   </button>
@@ -1308,7 +1308,7 @@ export default function AssessmentAutomationPage() {
                           <textarea 
                             value={q.question} 
                             onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                            className="w-full bg-slate-50 border-none rounded-xl px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-20 resize-none"
+                            className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-20 resize-none"
                           />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1321,11 +1321,11 @@ export default function AssessmentAutomationPage() {
                                   newOpts[oi] = e.target.value;
                                   handleUpdateQuestion(q.id, "options", newOpts);
                                 }}
-                                className={`w-full bg-slate-50 border-2 rounded-xl pl-12 pr-4 py-3 text-xs font-bold transition-all ${q.correct_answer === opt ? "border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]" : "border-transparent text-slate-600"}`}
+                                className={`w-full bg-slate-50 border-2 rounded-lg pl-12 pr-4 py-3 text-xs font-bold transition-all ${q.correct_answer === opt ? "border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]" : "border-transparent text-slate-600"}`}
                               />
                               <button 
                                 onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
-                                className={`absolute left-3 top-3 w-6 h-6 rounded-xl flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
+                                className={`absolute left-3 top-3 w-6 h-6 rounded-lg flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
                               >
                                 <span className="material-symbols-rounded text-sm">{q.correct_answer === opt ? "check" : "circle"}</span>
                               </button>
@@ -1341,7 +1341,7 @@ export default function AssessmentAutomationPage() {
                             type="text"
                             value={q.title} 
                             onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
-                            className="w-full bg-slate-50 border-none rounded-xl px-5 py-3 text-sm font-black text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all"
+                            className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-black text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all"
                           />
                         </div>
                         <div>
@@ -1349,7 +1349,7 @@ export default function AssessmentAutomationPage() {
                           <textarea 
                             value={q.problem_statement} 
                             onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
-                            className="w-full bg-slate-50 border-none rounded-xl px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-40 resize-none"
+                            className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-40 resize-none"
                           />
                         </div>
                       </>
@@ -1360,7 +1360,7 @@ export default function AssessmentAutomationPage() {
 
               <button 
                 onClick={handleAddQuestion}
-                className="w-full py-4 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 font-bold hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 border-2 border-dashed border-slate-200 rounded-lg text-slate-400 font-bold hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 transition-all flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-rounded">add_circle</span>
                 Add Manual Question
@@ -1378,14 +1378,14 @@ export default function AssessmentAutomationPage() {
                     setIsPreviewingNew(false);
                     setOriginalQuestions(null);
                   }} 
-                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-100 transition-all"
+                  className="px-6 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:bg-slate-100 transition-all"
                 >
                   Discard
                 </button>
                 <button 
                    onClick={isPreviewingNew ? handleFinalCreate : handleSaveQuestions}
                    disabled={saving || (!isPreviewingNew && !hasQuestionsChanged)}
-                   className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl text-sm font-black   hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 flex items-center gap-2 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                   className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-lg text-sm font-black   hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 flex items-center gap-2 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                 >
                   {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">{isPreviewingNew ? "rocket_launch" : "cloud_done"}</span>}
                   {isPreviewingNew ? "Confirm & Create Automation" : "Save Question Set"}
