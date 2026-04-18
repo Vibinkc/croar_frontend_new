@@ -81,13 +81,13 @@ export default function CodeQuestion({
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
                             <span className={`material-icons-outlined text-[16px] ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>code</span>
-                            <span className={`text-[11px] font-black tracking-widest uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Editor</span>
+                            <span className={`text-[11px] font-black   ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Editor</span>
                         </div>
                         <div className={`w-px h-4 ${isDark ? 'bg-[#2d2e32]' : 'bg-slate-200'}`} />
 
                         {readOnly ? (
                             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${isDark ? 'bg-[#2d2e32] border-[#3f4147] text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-600'}`}>
-                                <span className="text-[10px] font-black uppercase tracking-wider">{LANGUAGE_CONFIG[language]?.name || language}</span>
+                                <span className="text-[10px] font-black  ">{LANGUAGE_CONFIG[language]?.name || language}</span>
                             </div>
                         ) : (
                             <div className="relative">
@@ -98,7 +98,7 @@ export default function CodeQuestion({
                                         : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-200 hover:text-indigo-600'
                                         }`}
                                 >
-                                    <span className="text-[10px] font-black uppercase tracking-wider">{LANGUAGE_CONFIG[language]?.name || language}</span>
+                                    <span className="text-[10px] font-black  ">{LANGUAGE_CONFIG[language]?.name || language}</span>
                                     <span className="material-icons-outlined text-[14px]">expand_more</span>
                                 </button>
                                 {showLanguageDropdown && (
@@ -112,7 +112,7 @@ export default function CodeQuestion({
                                                         if (onLanguageChange) onLanguageChange(lang);
                                                         setShowLanguageDropdown(false);
                                                     }}
-                                                    className={`w-full text-left px-4 py-3 text-[11px] font-bold uppercase tracking-wider transition-colors ${language === lang
+                                                    className={`w-full text-left px-4 py-3 text-[11px] font-bold   transition-colors ${language === lang
                                                         ? isDark ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-700'
                                                         : isDark ? 'text-slate-400 hover:bg-[#2d2e32] hover:text-white' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                                                         }`}
@@ -173,7 +173,7 @@ export default function CodeQuestion({
                 <div className="flex border-b border-[#2d2e32]/50 px-4">
                     <button
                         onClick={() => setActiveTab('test_cases')}
-                        className={`px-4 py-3 text-[10px] font-black uppercase tracking-widest border-b-2 transition-all ${activeTab === 'test_cases'
+                        className={`px-4 py-3 text-[10px] font-black   border-b-2 transition-all ${activeTab === 'test_cases'
                             ? isDark ? 'border-indigo-500 text-white' : 'border-indigo-600 text-indigo-600'
                             : 'border-transparent text-slate-500 hover:text-slate-400'
                             }`}
@@ -184,7 +184,7 @@ export default function CodeQuestion({
                     {(!readOnly && onRunCustomTest) && (
                         <button
                             onClick={() => setActiveTab('custom_input')}
-                            className={`px-4 py-3 text-[10px] font-black uppercase tracking-widest border-b-2 transition-all ${activeTab === 'custom_input'
+                            className={`px-4 py-3 text-[10px] font-black   border-b-2 transition-all ${activeTab === 'custom_input'
                                 ? isDark ? 'border-indigo-500 text-white' : 'border-indigo-600 text-indigo-600'
                                 : 'border-transparent text-slate-500 hover:text-slate-400'
                                 }`}
@@ -211,8 +211,8 @@ export default function CodeQuestion({
                                                     : isDark ? 'bg-rose-500/10 border-rose-500/20' : 'bg-rose-50 border-rose-100'
                                                     }`}>
                                                     <div className="flex items-center justify-between mb-2">
-                                                        <span className={`text-[10px] font-black uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Test Case {i + 1}</span>
-                                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider ${tc.passed
+                                                        <span className={`text-[10px] font-black   ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Test Case {i + 1}</span>
+                                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded   ${tc.passed
                                                             ? isDark ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
                                                             : isDark ? 'bg-rose-500/20 text-rose-400' : 'bg-rose-100 text-rose-700'
                                                             }`}>
@@ -233,7 +233,7 @@ export default function CodeQuestion({
                                         )}
                                         {feedback.suggestions && (
                                             <div className={`mt-4 p-4 rounded-xl text-sm leading-relaxed border ${isDark ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300' : 'bg-indigo-50 border-indigo-100 text-indigo-800'}`}>
-                                                <div className="flex items-center gap-2 mb-2 font-bold uppercase tracking-wider text-[10px] opacity-70">
+                                                <div className="flex items-center gap-2 mb-2 font-bold   text-[10px] opacity-70">
                                                     <span className="material-icons-outlined text-sm">lightbulb</span>
                                                     Suggestions
                                                 </div>
@@ -290,7 +290,7 @@ export default function CodeQuestion({
                                                                     e.stopPropagation();
                                                                     onRunTest(index);
                                                                 }}
-                                                                className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 ${isDark
+                                                                className={`px-3 py-1 rounded-lg text-[10px] font-black   transition-all active:scale-95 ${isDark
                                                                     ? 'bg-indigo-600 text-white hover:bg-indigo-500'
                                                                     : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
                                                                     }`}
@@ -308,7 +308,7 @@ export default function CodeQuestion({
                                                 <div className={`transition-all duration-300 ease-in-out border-t overflow-hidden ${isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'} ${isDark ? 'border-[#2d2e32] bg-[#111214]' : 'border-slate-100 bg-slate-50/50'}`}>
                                                     <div className="p-4 space-y-4 font-mono text-[11px]">
                                                         <div>
-                                                            <span className={`uppercase text-[9px] font-black tracking-widest block mb-1.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Input</span>
+                                                            <span className={` text-[9px] font-black  block mb-1.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Input</span>
                                                             <div className={`p-3 rounded-lg border ${isDark ? 'bg-[#1e1f23] border-[#2d2e32] text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>
                                                                 {testCase.input}
                                                             </div>
@@ -316,15 +316,15 @@ export default function CodeQuestion({
                                                         {result && !result.passed && (
                                                             <>
                                                                 <div>
-                                                                    <span className={`uppercase text-[9px] font-black tracking-widest block mb-1.5 text-rose-500`}>Expected Output</span>
+                                                                    <span className={` text-[9px] font-black  block mb-1.5 text-rose-500`}>Expected Output</span>
                                                                     <div className={`p-3 rounded-lg border ${isDark ? 'bg-rose-500/5 border-rose-500/20 text-rose-400' : 'bg-rose-50 border-rose-100 text-rose-700'}`}>
                                                                         {result.expected}
                                                                     </div>
                                                                 </div>
                                                                 <div>
-                                                                    <span className={`uppercase text-[9px] font-black tracking-widest block mb-1.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Actual Output</span>
+                                                                    <span className={` text-[9px] font-black  block mb-1.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Actual Output</span>
                                                                     <div className={`p-3 rounded-lg border whitespace-pre-wrap ${isDark ? 'bg-[#1e1f23] border-[#2d2e32] text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>
-                                                                        {result.actual || <span className="text-slate-500 italic">No output</span>}
+                                                                        {result.actual || <span className="text-slate-500 ">No output</span>}
                                                                     </div>
                                                                 </div>
                                                             </>
@@ -344,7 +344,7 @@ export default function CodeQuestion({
                         {activeTab === 'custom_input' && !readOnly && (
                             <div className="space-y-4 h-full flex flex-col">
                                 <div className="space-y-2">
-                                    <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Input Data</label>
+                                    <label className={`text-[10px] font-black   ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Input Data</label>
                                     <textarea
                                         value={customInput}
                                         onChange={(e) => onCustomInputChange && onCustomInputChange(e.target.value)}
@@ -360,7 +360,7 @@ export default function CodeQuestion({
                                     <button
                                         onClick={onRunCustomTest}
                                         disabled={!customInput || executingCustomTest}
-                                        className={`px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isDark
+                                        className={`px-5 py-2.5 rounded-xl text-[11px] font-black   transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isDark
                                             ? 'bg-indigo-600 text-white hover:bg-indigo-500'
                                             : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200'
                                             }`}
@@ -371,7 +371,7 @@ export default function CodeQuestion({
 
                                 {customTestResult && (
                                     <div className={`flex-1 rounded-xl border overflow-hidden flex flex-col ${isDark ? 'bg-[#1e1f23] border-[#2d2e32]' : 'bg-white border-slate-200'}`}>
-                                        <div className={`px-4 py-2 border-b text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${customTestResult.status === 'error'
+                                        <div className={`px-4 py-2 border-b text-[10px] font-black   flex items-center gap-2 ${customTestResult.status === 'error'
                                             ? isDark ? 'bg-rose-500/10 border-rose-500/20 text-rose-400' : 'bg-rose-50 border-rose-100 text-rose-600'
                                             : isDark ? 'bg-[#25272c] border-[#2d2e32] text-slate-400' : 'bg-slate-50 border-slate-100 text-slate-500'
                                             }`}>

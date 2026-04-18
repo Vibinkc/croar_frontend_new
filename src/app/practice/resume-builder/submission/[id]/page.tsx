@@ -103,7 +103,7 @@ export default function ResumeViewer() {
                     if (isPersonal) {
                         return (
                             <div key={section.title} className="mb-8 border-b-2 border-slate-800 pb-6 text-center">
-                                <h1 className="text-4xl font-black text-slate-900 mb-2 uppercase tracking-tight">
+                                <h1 className="text-4xl font-black text-slate-900 mb-2  tracking-tight">
                                     {sectionData.name || sectionData.full_name || sectionData.first_name + " " + sectionData.last_name || "Name"}
                                 </h1>
                                 <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-600 font-medium">
@@ -118,7 +118,7 @@ export default function ResumeViewer() {
 
                     return (
                         <div key={section.title} className="mb-6">
-                            <h2 className="text-lg font-bold text-slate-900 uppercase tracking-wider mb-3 border-b border-slate-900 pb-1">
+                            <h2 className="text-lg font-bold text-slate-900   mb-3 border-b border-slate-900 pb-1">
                                 {section.label || section.title}
                             </h2>
 
@@ -135,7 +135,7 @@ export default function ResumeViewer() {
                                                 </span>
                                             </div>
                                             {(item.company || item.university) && (item.company !== item.title && item.university !== item.title) && (
-                                                <p className="text-sm text-slate-600 font-semibold mb-1 italic">
+                                                <p className="text-sm text-slate-600 font-semibold mb-1 ">
                                                     {item.company || item.university} {item.location ? `· ${item.location}` : ''}
                                                 </p>
                                             )}

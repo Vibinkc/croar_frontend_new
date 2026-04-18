@@ -148,14 +148,14 @@ const PipelinePuzzle: React.FC<PipelinePuzzleProps> = ({ level, onComplete }) =>
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="inline-block px-4 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[9px] font-black uppercase tracking-[0.3em] mb-4"
+                    className="inline-block px-4 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[9px] font-black  tracking-[0.3em] mb-4"
                 >
                     Bio-Link Calibration
                 </motion.div>
-                <h1 className="text-4xl font-black text-white uppercase tracking-tighter mb-2 italic">
+                <h1 className="text-4xl font-black text-white  tracking-tighter mb-2 ">
                     Neural <span className="text-teal-400">Flow</span>
                 </h1>
-                <p className="text-slate-400 text-[11px] max-w-sm mx-auto font-bold uppercase tracking-widest opacity-60">
+                <p className="text-slate-400 text-[11px] max-w-sm mx-auto font-bold   opacity-60">
                     {level.text}
                 </p>
             </div>
@@ -244,13 +244,13 @@ const PipelinePuzzle: React.FC<PipelinePuzzleProps> = ({ level, onComplete }) =>
             {/* HUD Footer */}
             <div className="relative z-10 pb-12 flex gap-12 items-center">
                 <div className="text-center">
-                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mb-1 block">Entropy_Moves</span>
-                    <span className="text-2xl font-black text-white tracking-widest leading-none">{moves}</span>
+                    <span className="text-[9px] font-black text-slate-500  tracking-[0.3em] mb-1 block">Entropy_Moves</span>
+                    <span className="text-2xl font-black text-white  leading-none">{moves}</span>
                 </div>
                 <div className="w-px h-8 bg-white/10" />
                 <div className="text-center">
-                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mb-1 block">Link_Stability</span>
-                    <span className={`text-2xl font-black uppercase tracking-widest leading-none ${isWon ? 'text-teal-400 animate-pulse' : 'text-slate-300'}`}>
+                    <span className="text-[9px] font-black text-slate-500  tracking-[0.3em] mb-1 block">Link_Stability</span>
+                    <span className={`text-2xl font-black   leading-none ${isWon ? 'text-teal-400 animate-pulse' : 'text-slate-300'}`}>
                         {isWon ? '100%' : 'CALC'}
                     </span>
                 </div>
@@ -270,10 +270,10 @@ const PipelinePuzzle: React.FC<PipelinePuzzleProps> = ({ level, onComplete }) =>
                             animate={{ scale: 1, opacity: 1 }}
                             className="text-center"
                         >
-                            <h2 className="text-6xl font-black text-white uppercase tracking-tighter italic mb-2">
+                            <h2 className="text-6xl font-black text-white  tracking-tighter  mb-2">
                                 Link <span className="text-teal-400">Locked</span>
                             </h2>
-                            <p className="text-[10px] text-teal-400/60 font-black uppercase tracking-[0.5em]">
+                            <p className="text-[10px] text-teal-400/60 font-black  tracking-[0.5em]">
                                 Synchronizing Neural Pathway...
                             </p>
                         </motion.div>

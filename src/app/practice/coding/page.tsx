@@ -114,7 +114,7 @@ export default function CodingProblemsPage() {
         <div className="min-h-screen bg-white flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
                 <div className="w-12 h-12 border-4 border-slate-100 border-t-slate-600 rounded-full animate-spin"></div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Syncing Challenges...</p>
+                <p className="text-[10px] font-black   text-slate-400">Syncing Challenges...</p>
             </div>
         </div>
     );
@@ -127,8 +127,8 @@ export default function CodingProblemsPage() {
                 <div className="relative z-10 p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="space-y-4">
                         <div className="space-y-1">
-                            <span className="inline-block px-2 py-0.5 bg-white/10 border border-white/10 rounded text-[9px] font-black uppercase tracking-widest text-indigo-300">System Kernel v2.4</span>
-                            <h2 className="text-3xl font-black text-white uppercase tracking-tight">Algorithmic Vaults</h2>
+                            <span className="inline-block px-2 py-0.5 bg-white/10 border border-white/10 rounded text-[9px] font-black   text-indigo-300">System Kernel v2.4</span>
+                            <h2 className="text-3xl font-black text-white  tracking-tight">Algorithmic Vaults</h2>
                         </div>
                         <p className="text-slate-400 text-xs max-w-md font-medium leading-relaxed">
                             Access categorized coding protocols. Complete algorithmic challenges to optimize your neural ranking.
@@ -140,10 +140,10 @@ export default function CodingProblemsPage() {
                             <span className="material-icons-outlined text-3xl">data_object</span>
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Vault Status</p>
+                            <p className="text-[10px] font-black text-slate-500   mb-1.5">Vault Status</p>
                             <div className="flex items-baseline gap-1.5">
                                 <span className="text-3xl font-black text-white">{availableTopics.length}</span>
-                                <span className="text-[10px] font-bold text-slate-500 uppercase">Sectors</span>
+                                <span className="text-[10px] font-bold text-slate-500 ">Sectors</span>
                             </div>
                         </div>
                     </div>
@@ -163,8 +163,8 @@ export default function CodingProblemsPage() {
                             <span className="material-icons-outlined text-lg">arrow_back</span>
                         </button>
                         <div>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Active Sector</p>
-                            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-3">
+                            <p className="text-[10px] font-black text-slate-400   mb-0.5">Active Sector</p>
+                            <h2 className="text-xl font-black text-slate-900  tracking-tight flex items-center gap-3">
                                 <span className="material-icons-outlined text-2xl text-indigo-500">{getTopicIcon(selectedTopic)}</span>
                                 {selectedTopic}
                             </h2>
@@ -182,13 +182,13 @@ export default function CodingProblemsPage() {
                                         <div className={`w-10 h-10 rounded-xl ${problem.is_completed ? 'bg-slate-100 text-slate-400' : `${colors.iconBg} ${colors.iconText}`} flex items-center justify-center transition-transform group-hover:scale-105`}>
                                             <span className="material-icons-outlined text-xl">{problem.is_completed ? 'check_circle' : 'code'}</span>
                                         </div>
-                                        <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase border ${getDifficultyColor(problem.difficulty)}`}>
+                                        <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black   border ${getDifficultyColor(problem.difficulty)}`}>
                                             {problem.difficulty}
                                         </span>
                                     </div>
 
                                     <div className="space-y-2 flex-grow mb-5">
-                                        <h3 className={`text-sm font-black text-slate-900 uppercase tracking-tight line-clamp-2 transition-colors ${problem.is_completed ? '' : `group-hover:${colors.iconText}`}`}>
+                                        <h3 className={`text-sm font-black text-slate-900  tracking-tight line-clamp-2 transition-colors ${problem.is_completed ? '' : `group-hover:${colors.iconText}`}`}>
                                             {problem.content.title || problem.content.question?.split('\n')[0].replace(/#+\s*/, '') || "Coding Challenge"}
                                         </h3>
                                         <p className="text-[10px] leading-relaxed font-medium text-slate-500 line-clamp-2">
@@ -198,7 +198,7 @@ export default function CodingProblemsPage() {
 
                                     <div className="mt-auto pt-4 border-t border-slate-200/50">
                                         <Link href={`/practice/coding/${problem.id}`}>
-                                            <button className={`w-full ${problem.is_completed ? 'bg-slate-50 text-slate-400' : colors.button} font-black text-[9px] tracking-[0.2em] uppercase py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
+                                            <button className={`w-full ${problem.is_completed ? 'bg-slate-50 text-slate-400' : colors.button} font-black text-[9px] tracking-[0.2em]  py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
                                                 {problem.is_completed ? 'Review_Protocol' : 'Initialize'}
                                                 <span className="material-symbols-rounded text-sm">{problem.is_completed ? 'history' : 'arrow_forward'}</span>
                                             </button>
@@ -218,8 +218,8 @@ export default function CodingProblemsPage() {
                         <div className="col-span-full py-20 text-center space-y-4 border-2 border-dashed border-slate-100 rounded-3xl bg-slate-50/50">
                             <span className="material-icons-outlined text-4xl text-slate-300">dataset_linked</span>
                             <div>
-                                <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest">No Vaults Detected</h4>
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">System awaiting protocol injection</p>
+                                <h4 className="text-sm font-black text-slate-400  ">No Vaults Detected</h4>
+                                <p className="text-[10px] text-slate-400 font-bold   mt-1">System awaiting protocol injection</p>
                             </div>
                         </div>
                     ) : (
@@ -243,8 +243,8 @@ export default function CodingProblemsPage() {
                                         </div>
 
                                         <div>
-                                            <h3 className={`text-lg font-black text-slate-900 uppercase tracking-tight mb-2 group-hover:${colors.iconText} transition-colors`}>{topic}</h3>
-                                            <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                            <h3 className={`text-lg font-black text-slate-900  tracking-tight mb-2 group-hover:${colors.iconText} transition-colors`}>{topic}</h3>
+                                            <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500  ">
                                                 <span>{stats.total} Challenges</span>
                                                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                                                 <span className={stats.progress === 100 ? 'text-emerald-500' : ''}>{stats.progress}% Complete</span>

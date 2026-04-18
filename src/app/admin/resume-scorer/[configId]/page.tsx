@@ -48,7 +48,7 @@ function ResumeScoreList({ configId }: { configId: string }) {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Results</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Results</p>
         </div>
     );
 
@@ -56,8 +56,8 @@ function ResumeScoreList({ configId }: { configId: string }) {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2">Resume Scan Results</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Configuration ID: {configId}</p>
+                    <h1 className="text-xl font-black text-slate-900  tracking-tighter mb-2">Resume Scan Results</h1>
+                    <p className="text-[10px] font-bold text-slate-400  ">Configuration ID: {configId}</p>
                 </div>
             </div>
 
@@ -66,11 +66,11 @@ function ResumeScoreList({ configId }: { configId: string }) {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-slate-100 bg-slate-50/50">
-                                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Student</th>
-                                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Score</th>
-                                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Feedback</th>
-                                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Action</th>
+                                <th className="p-4 text-[10px] font-black text-slate-400  ">Student</th>
+                                <th className="p-4 text-[10px] font-black text-slate-400  ">Date</th>
+                                <th className="p-4 text-[10px] font-black text-slate-400  ">Score</th>
+                                <th className="p-4 text-[10px] font-black text-slate-400  ">AI Feedback</th>
+                                <th className="p-4 text-[10px] font-black text-slate-400   text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -82,7 +82,7 @@ function ResumeScoreList({ configId }: { configId: string }) {
                                                 {score.user ? score.user.first_name[0] : "?"}
                                             </div>
                                             <div>
-                                                <p className="text-[11px] font-black text-slate-900 uppercase tracking-wide">
+                                                <p className="text-[11px] font-black text-slate-900  tracking-wide">
                                                     {score.user ? `${score.user.first_name} ${score.user.last_name}` : "Unknown Student"}
                                                 </p>
                                                 <p className="text-[10px] font-medium text-slate-400">{score.user?.email}</p>
@@ -106,7 +106,7 @@ function ResumeScoreList({ configId }: { configId: string }) {
                                         </p>
                                     </td>
                                     <td className="p-4 text-right">
-                                        <button className="text-[10px] font-black text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] uppercase tracking-widest transition-colors">
+                                        <button className="text-[10px] font-black text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]   transition-colors">
                                             View Full Report
                                         </button>
                                     </td>
@@ -116,7 +116,7 @@ function ResumeScoreList({ configId }: { configId: string }) {
                                 <tr>
                                     <td colSpan={5} className="p-12 text-center text-slate-300">
                                         <span className="material-icons-outlined text-4xl mb-4 block opacity-30">inbox</span>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em]">No_Submissions_Found</p>
+                                        <p className="text-[10px] font-black  tracking-[0.2em]">No_Submissions_Found</p>
                                     </td>
                                 </tr>
                             )}

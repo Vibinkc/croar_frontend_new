@@ -106,12 +106,12 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
         <div className="h-screen bg-slate-900 flex items-center justify-center">
             <div className="text-center space-y-4">
                 <div className="w-12 h-12 border-4 border-slate-700 border-t-slate-500 rounded-full animate-spin mx-auto"></div>
-                <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase">Booting_Neural_Workspace</p>
+                <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 ">Booting_Neural_Workspace</p>
             </div>
         </div>
     );
 
-    if (!problem) return <div className="p-20 text-center uppercase font-black text-slate-400">Task_Not_Found</div>;
+    if (!problem) return <div className="p-20 text-center  font-black text-slate-400">Task_Not_Found</div>;
 
     return (
         <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
@@ -120,30 +120,30 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
                 <div className="flex items-center gap-6">
                     <button
                         onClick={() => window.history.back()}
-                        className="group flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-all text-[10px] font-black tracking-[0.2em] uppercase"
+                        className="group flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-all text-[10px] font-black tracking-[0.2em] "
                     >
                         <span className="material-icons-outlined text-sm">close</span>
                         Abort_Module
                     </button>
                     <div className="h-5 w-[1px] bg-slate-200"></div>
                     <div className="flex flex-col">
-                        <span className="text-[7px] font-black text-slate-500 tracking-[0.3em] uppercase mb-0.5">Subjective_Analysis_v2.0</span>
-                        <h1 className="text-sm font-black text-slate-900 tracking-tight uppercase line-clamp-1">{title}</h1>
+                        <span className="text-[7px] font-black text-slate-500 tracking-[0.3em]  mb-0.5">Subjective_Analysis_v2.0</span>
+                        <h1 className="text-sm font-black text-slate-900 tracking-tight  line-clamp-1">{title}</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <div className="flex flex-col items-end">
-                        <span className="text-[7px] font-black text-slate-400 tracking-widest uppercase mb-1">Session_Status</span>
+                        <span className="text-[7px] font-black text-slate-400   mb-1">Session_Status</span>
                         <div className="flex items-center gap-1.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></div>
-                            <span className="text-[9px] font-black text-slate-900 uppercase">Active_Link</span>
+                            <span className="text-[9px] font-black text-slate-900 ">Active_Link</span>
                         </div>
                     </div>
                     <button
                         onClick={handleSubmit}
                         disabled={analyzing || wordCount < minWords}
-                        className={`px-8 py-3 rounded-xl font-black text-[10px] tracking-[0.2em] uppercase transition-all duration-300 active:scale-95 flex items-center gap-2 shadow-xl
+                        className={`px-8 py-3 rounded-xl font-black text-[10px] tracking-[0.2em]  transition-all duration-300 active:scale-95 flex items-center gap-2 shadow-xl
                         ${analyzing || wordCount < minWords
                                 ? 'bg-slate-100 text-slate-400 scale-95 shadow-none cursor-not-allowed'
                                 : 'bg-slate-900 text-white hover:bg-slate-800 hover:-translate-y-0.5 shadow-slate-200 hover:shadow-slate-100'}`}
@@ -171,15 +171,15 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
                     <div className="p-8 space-y-8 overflow-y-auto h-full scrollbar-none">
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <div className="px-2 py-0.5 rounded-md bg-slate-50 text-[7px] font-black text-slate-500 uppercase tracking-widest border border-slate-100">Task_Descriptor</div>
+                                <div className="px-2 py-0.5 rounded-md bg-slate-50 text-[7px] font-black text-slate-500   border border-slate-100">Task_Descriptor</div>
                             </div>
                             <div className="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden group border border-slate-800 shadow-2xl">
                                 <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none transition-transform group-hover:scale-110">
                                     <span className="material-icons-outlined text-6xl">campaign</span>
                                 </div>
                                 <div className="relative z-10 space-y-4">
-                                    <span className="text-[7px] font-black text-slate-400 tracking-[0.4em] uppercase block">Mission_Briefing</span>
-                                    <p className="text-xs font-medium leading-relaxed italic text-slate-300">
+                                    <span className="text-[7px] font-black text-slate-400 tracking-[0.4em]  block">Mission_Briefing</span>
+                                    <p className="text-xs font-medium leading-relaxed  text-slate-300">
                                         "{problem.content.question}"
                                     </p>
                                 </div>
@@ -188,17 +188,17 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest block mb-1">Target_Length</span>
+                                <span className="text-[7px] font-black text-slate-400   block mb-1">Target_Length</span>
                                 <span className="text-[10px] font-bold text-slate-900">{minWords} - {maxWords} Words</span>
                             </div>
                             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest block mb-1">Priority_Scan</span>
+                                <span className="text-[7px] font-black text-slate-400   block mb-1">Priority_Scan</span>
                                 <span className="text-[10px] font-bold text-slate-900">{problem.difficulty}</span>
                             </div>
                         </div>
 
                         <div className="space-y-4 pt-4">
-                            <h3 className="text-[8px] font-black tracking-[0.2em] uppercase text-slate-400">Evaluation_Matrix</h3>
+                            <h3 className="text-[8px] font-black tracking-[0.2em]  text-slate-400">Evaluation_Matrix</h3>
                             <ul className="space-y-3">
                                 {[
                                     { label: "Grammar & Vocab", id: "grammar" },
@@ -210,7 +210,7 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
                                         <div className="w-5 h-5 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
                                             <span className="material-icons-outlined text-[12px]">done_all</span>
                                         </div>
-                                        <span className="text-[9px] font-black uppercase tracking-wider">{item.label}</span>
+                                        <span className="text-[9px] font-black  ">{item.label}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -227,7 +227,7 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
                         <textarea
                             value={response}
                             onChange={(e) => setResponse(e.target.value)}
-                            className="flex-1 w-full p-12 pt-20 text-sm font-medium text-slate-700 leading-relaxed focus:outline-none resize-none placeholder:text-slate-200 placeholder:italic placeholder:font-black"
+                            className="flex-1 w-full p-12 pt-20 text-sm font-medium text-slate-700 leading-relaxed focus:outline-none resize-none placeholder:text-slate-200 placeholder: placeholder:font-black"
                             placeholder="INITIALIZE INPUT PROTOCOL... START TYPING YOUR RESPONSE HERE."
                         />
 
@@ -240,13 +240,13 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
                                         style={{ width: `${progressPercent}%` }}
                                     ></div>
                                 </div>
-                                <span className={`text-[9px] font-black tracking-widest uppercase whitespace-nowrap ${wordCount < minWords ? 'text-slate-400' : 'text-slate-600'}`}>
+                                <span className={`text-[9px] font-black   whitespace-nowrap ${wordCount < minWords ? 'text-slate-400' : 'text-slate-600'}`}>
                                     {wordCount} / {maxWords} WORDS {wordCount < minWords && `(Min ${minWords} Req)`}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-400">
                                 <span className="material-icons-outlined text-sm">auto_awesome</span>
-                                <span className="text-[8px] font-black uppercase tracking-widest">Real-Time_Word_Pulse</span>
+                                <span className="text-[8px] font-black  ">Real-Time_Word_Pulse</span>
                             </div>
                         </div>
                     </div>

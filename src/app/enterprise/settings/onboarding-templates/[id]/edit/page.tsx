@@ -46,12 +46,12 @@ export default function EditOnboardingTemplatePage() {
     if (!template) {
         return (
             <div className="flex flex-col items-center justify-center h-screen text-center p-10 bg-[#FDFDFF]">
-                <div className="w-24 h-24 bg-white rounded-[32px] flex items-center justify-center shadow-xl shadow-slate-200 mb-6">
+                <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-xl shadow-slate-200 mb-6">
                     <span className="material-icons-outlined text-5xl text-rose-500">error_outline</span>
                 </div>
                 <div>
                     <h4 className="text-xl font-black text-slate-900">Template Not Found</h4>
-                    <Link href="/enterprise/settings/onboarding-templates" className="text-indigo-600 hover:underline mt-4 inline-block font-black text-xs uppercase tracking-widest">Back to Templates</Link>
+                    <Link href="/enterprise/settings/onboarding-templates" className="text-indigo-600 hover:underline mt-4 inline-block font-black text-xs  ">Back to Templates</Link>
                 </div>
             </div>
         );
@@ -63,7 +63,7 @@ export default function EditOnboardingTemplatePage() {
             <div className="flex items-center gap-6 mb-10">
                 <Link 
                     href="/enterprise/settings/onboarding-templates"
-                    className="w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
+                    className="w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-xl text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
                 >
                     <span className="material-icons-outlined">arrow_back</span>
                 </Link>

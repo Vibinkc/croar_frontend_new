@@ -124,7 +124,7 @@ export default function StudentDashboard() {
             <section className="bg-[var(--color-primary)] rounded-[1.5rem] p-6 md:p-8 text-white flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
                 <div className="relative z-10 flex-1 space-y-4">
                     <div>
-                        <h2 className="text-2xl md:text-3xl font-black tracking-tighter leading-tight mb-2 uppercase">
+                        <h2 className="text-2xl md:text-3xl font-black tracking-tighter leading-tight mb-2 ">
                             {greeting},<br />ELITE PLAYER.
                         </h2>
                         <p className="text-slate-100 text-xs max-w-sm font-medium opacity-90">
@@ -141,7 +141,7 @@ export default function StudentDashboard() {
                             <div className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse"></div>
                         </div>
                         <div>
-                            <span className="text-[8px] font-black text-violet-100 uppercase tracking-[0.2em] block mb-0.5">Assessments_Completed</span>
+                            <span className="text-[8px] font-black text-violet-100  tracking-[0.2em] block mb-0.5">Assessments_Completed</span>
                             <span className="text-2xl font-black tracking-tighter text-white">{stats?.total_assessments || 0}</span>
                         </div>
                     </div>
@@ -152,7 +152,7 @@ export default function StudentDashboard() {
                             <div className="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
                         </div>
                         <div>
-                            <span className="text-[8px] font-black text-cyan-100 uppercase tracking-[0.2em] block mb-0.5">Agility_Score_Avg</span>
+                            <span className="text-[8px] font-black text-cyan-100  tracking-[0.2em] block mb-0.5">Agility_Score_Avg</span>
                             <span className="text-2xl font-black tracking-tighter text-white">{stats?.average_score || 0}%</span>
                         </div>
                     </div>
@@ -163,7 +163,7 @@ export default function StudentDashboard() {
                             <div className="w-1.5 h-1.5 rounded-full bg-pink-400"></div>
                         </div>
                         <div>
-                            <span className="text-[8px] font-black text-pink-100 uppercase tracking-[0.2em] block mb-0.5">Questions_Completed</span>
+                            <span className="text-[8px] font-black text-pink-100  tracking-[0.2em] block mb-0.5">Questions_Completed</span>
                             <span className="text-2xl font-black tracking-tighter text-white">{stats?.total_practice_questions || 0}</span>
                         </div>
                     </div>
@@ -176,8 +176,8 @@ export default function StudentDashboard() {
             {/* Analytics Telemetry */}
             <section className="space-y-4 pt-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-black uppercase tracking-widest text-slate-400">Tactical Analytics</h2>
-                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live_Telemetry_Feed</span>
+                    <h2 className="text-sm font-black   text-slate-400">Tactical Analytics</h2>
+                    <span className="text-[10px] font-black text-slate-300  ">Live_Telemetry_Feed</span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -194,13 +194,13 @@ export default function StudentDashboard() {
                                         <div className={`w-10 h-10 rounded-2xl ${getColorClasses(module.color).bg} ${getColorClasses(module.color).text} flex items-center justify-center transition-transform group-hover:scale-110`}>
                                             <span className="material-icons-outlined text-xl">{module.icon}</span>
                                         </div>
-                                        <span className={`px-2 py-[3px] rounded-lg text-[7px] font-black tracking-widest uppercase ${getColorClasses(module.color).bg} ${getColorClasses(module.color).text}`}>
+                                        <span className={`px-2 py-[3px] rounded-lg text-[7px] font-black   ${getColorClasses(module.color).bg} ${getColorClasses(module.color).text}`}>
                                             {module.badge}
                                         </span>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight group-hover:text-slate-500 transition-colors">
+                                        <h3 className="text-sm font-black text-slate-900 dark:text-white  tracking-tight group-hover:text-slate-500 transition-colors">
                                             {module.title}
                                         </h3>
                                         <p className="text-[10px] text-slate-400 font-medium leading-relaxed line-clamp-2">
@@ -214,7 +214,7 @@ export default function StudentDashboard() {
                                             {module.features.map((feature: string, idx: number) => (
                                                 <span
                                                     key={idx}
-                                                    className="px-2 py-0.5 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-md text-[8px] font-bold uppercase tracking-wide"
+                                                    className="px-2 py-0.5 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-md text-[8px] font-bold  tracking-wide"
                                                 >
                                                     {feature}
                                                 </span>
@@ -225,7 +225,7 @@ export default function StudentDashboard() {
                                     {!['/practice/communication', '/practice/coding', '/practice/interviews', '/practice/discussion', '/practice/resume-scorer', '/practice/resume-builder'].includes(module.path) && (
                                         <div className="mt-4">
                                             <div className="flex justify-between items-end mb-1">
-                                                <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest">Progress</span>
+                                                <span className="text-[7px] font-black text-slate-300  ">Progress</span>
                                                 <span className={`text-[9px] font-black ${getColorClasses(module.color).text}`}>{Math.round(module.progress)}%</span>
                                             </div>
                                             <div className="h-1 w-full bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -245,7 +245,7 @@ export default function StudentDashboard() {
 
                     {/* Radar Proficiency */}
                     <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-[2rem] shadow-sm flex flex-col items-center">
-                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-6 self-start">Proficiency_Distribution</span>
+                        <span className="text-[8px] font-black text-slate-400   mb-6 self-start">Proficiency_Distribution</span>
                         <div className="relative w-48 h-48">
                             <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
                                 {/* Base Grids */}
@@ -281,21 +281,21 @@ export default function StudentDashboard() {
                                 })()}
                             </svg>
                             {/* Labels */}
-                            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[7px] font-black text-slate-500 uppercase">Aptitude</span>
-                            <span className="absolute -bottom-2 -right-4 text-[7px] font-black text-slate-500 uppercase">Coding</span>
-                            <span className="absolute -bottom-2 -left-4 text-[7px] font-black text-slate-500 uppercase">Comm.</span>
+                            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[7px] font-black text-slate-500 ">Aptitude</span>
+                            <span className="absolute -bottom-2 -right-4 text-[7px] font-black text-slate-500 ">Coding</span>
+                            <span className="absolute -bottom-2 -left-4 text-[7px] font-black text-slate-500 ">Comm.</span>
                         </div>
 
                         <div className="mt-8 w-full">
                             <div className="flex items-center gap-2 mb-2">
                                 <span className="material-icons-outlined text-[10px] text-slate-500">terminal</span>
-                                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">System_Analysis</span>
+                                <span className="text-[8px] font-black text-slate-400  ">System_Analysis</span>
                             </div>
                             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 dark:bg-slate-800/50 dark:border-slate-800 relative overflow-hidden group">
                                 <div className="absolute top-0 left-0 w-1 h-full bg-slate-200 dark:bg-slate-700 group-hover:bg-slate-500 transition-colors"></div>
                                 <p className="text-[10px] font-medium text-slate-500 leading-relaxed">
                                     Profile telemetry indicates consistent growth. Maintain current training velocity to optimize the proficiency triad.
-                                    <span className="block mt-2 text-slate-400 italic">
+                                    <span className="block mt-2 text-slate-400 ">
                                         // Recommendation: prioritize under-indexed vectors for balanced skill acquisition.
                                     </span>
                                 </p>

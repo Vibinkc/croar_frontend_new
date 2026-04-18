@@ -89,8 +89,8 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                     {/* Left Panel: Session & Media Check */}
                     <div className="lg:col-span-5 p-10 bg-slate-900 text-white space-y-8 flex flex-col justify-between">
                         <div>
-                            <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest">Pre-Session Lobby</span>
-                            <h1 className="text-4xl font-black mt-4 uppercase tracking-tighter leading-tight">Live Group Discussion</h1>
+                            <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black  ">Pre-Session Lobby</span>
+                            <h1 className="text-4xl font-black mt-4  tracking-tighter leading-tight">Live Group Discussion</h1>
 
                             <div className="mt-8 bg-black/20 rounded-3xl overflow-hidden aspect-video relative border border-white/10">
                                 <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover mirror" />
@@ -98,12 +98,12 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                                     <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
                                         <div className="text-center">
                                             <span className="material-icons text-4xl mb-2">videocam_off</span>
-                                            <p className="text-xs font-black uppercase tracking-widest">Allow Camera Access</p>
+                                            <p className="text-xs font-black  ">Allow Camera Access</p>
                                         </div>
                                     </div>
                                 )}
                                 <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
-                                    <div className="px-3 py-1 bg-white/20 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1">
+                                    <div className="px-3 py-1 bg-white/20 rounded-full text-[8px] font-black   flex items-center gap-1">
                                         <div className="w-1 h-1 bg-white rounded-full animate-pulse" />
                                         Media Ready
                                     </div>
@@ -113,7 +113,7 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
 
                         <div className="space-y-6">
                             <div className="bg-white/10 rounded-2xl p-6 border border-white/10">
-                                <p className="text-xs font-black uppercase tracking-widest text-slate-400">Session Starts In</p>
+                                <p className="text-xs font-black   text-slate-400">Session Starts In</p>
                                 <p className="text-5xl font-black tabular-nums mt-1">{formatTime(timeLeft)}</p>
                             </div>
 
@@ -137,7 +137,7 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                     <div className="lg:col-span-7 p-10 flex flex-col justify-between">
                         <div>
                             <div className="flex items-center justify-between mb-8">
-                                <h3 className="text-2xl font-black uppercase tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">Participants Joined</h3>
+                                <h3 className="text-2xl font-black  tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">Participants Joined</h3>
                                 <span className="text-sm font-black text-slate-900 bg-slate-100 px-4 py-2 rounded-xl border border-slate-200">
                                     {participants.length} / 10
                                 </span>
@@ -150,8 +150,8 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                                             {p.name?.charAt(0) || 'S'}
                                         </div>
                                         <div>
-                                            <p className="text-sm font-black text-slate-800 uppercase leading-none">{p.name || `Student ${idx + 1}`}</p>
-                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Status: Ready</p>
+                                            <p className="text-sm font-black text-slate-800  leading-none">{p.name || `Student ${idx + 1}`}</p>
+                                            <p className="text-[10px] text-slate-400 font-bold   mt-1">Status: Ready</p>
                                         </div>
                                     </div>
                                 ))}
@@ -162,7 +162,7 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                                             <span className="material-icons text-sm">person_add</span>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Waiting for student...</p>
+                                            <p className="text-[10px] font-black text-slate-400  ">Waiting for student...</p>
                                         </div>
                                     </div>
                                 ))}
@@ -175,12 +175,12 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                                     enterFullScreen();
                                     router.push(`/practice/discussion/${id}/room`);
                                 }}
-                                className="w-full h-16 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-black transition-all flex items-center justify-center gap-3 group"
+                                className="w-full h-16 bg-slate-900 text-white rounded-2xl font-black   shadow-xl shadow-slate-200 hover:bg-black transition-all flex items-center justify-center gap-3 group"
                             >
                                 Enter Discussion Room
                                 <span className="material-icons group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </button>
-                            <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Session will transition when the moderator gives the signal</p>
+                            <p className="text-center text-[10px] font-black text-slate-400  ">Session will transition when the moderator gives the signal</p>
                         </div>
                     </div>
                 </div>

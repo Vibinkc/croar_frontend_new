@@ -146,7 +146,7 @@ export default function AutomationCanvasPage() {
           data: { 
             label: (
               <div className="flex flex-col items-center p-2">
-                <span className="text-[10px] uppercase font-bold text-[#7C3AED]">Round {rIdx + 1}</span>
+                <span className="text-[10px]  font-bold text-[#7C3AED]">Round {rIdx + 1}</span>
                 <span className="font-bold text-slate-800">{round.name}</span>
               </div>
             ) 
@@ -204,12 +204,12 @@ export default function AutomationCanvasPage() {
                   <div className="flex items-center justify-between w-full mb-1">
                     <div className="flex items-center gap-1.5">
                       <span className="material-symbols-rounded text-base" style={{ color }}>{icon}</span>
-                      <span className="text-[9px] uppercase font-black tracking-wider" style={{ color }}>
+                      <span className="text-[9px]  font-black " style={{ color }}>
                         {auto.action_type}
                       </span>
                     </div>
                     {!auto.is_enabled && (
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-tight bg-slate-100 px-1 rounded">Disabled</span>
+                      <span className="text-[8px] font-bold text-slate-400  tracking-tight bg-slate-100 px-1 rounded">Disabled</span>
                     )}
                   </div>
                   
@@ -305,7 +305,7 @@ export default function AutomationCanvasPage() {
   return (
     <div className="w-full h-full flex flex-col bg-[#FDFDFF]">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-slate-100 flex-shrink-0 bg-white shadow-sm z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="px-6 py-5 border-b border-slate-100 flex-shrink-0 bg-white shadow-sm z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0">
             <span className="material-symbols-rounded text-[#7C3AED] text-xl">account_tree</span>
@@ -322,18 +322,18 @@ export default function AutomationCanvasPage() {
           <button 
             onClick={() => selectedJobId && fetchAutomations(selectedJobId)}
             disabled={loading || !selectedJobId}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all font-bold text-[11px] bg-white shadow-sm disabled:opacity-50"
+            className="flex items-center gap-2 px-5 h-11 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all font-black text-xs bg-white shadow-sm disabled:opacity-50 active:scale-95"
           >
-            <span className={`material-symbols-rounded text-base ${loading ? 'animate-spin' : ''}`}>refresh</span>
+            <span className={`material-symbols-rounded text-lg ${loading ? 'animate-spin' : ''}`}>refresh</span>
             SYNC
           </button>
 
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-rounded text-slate-400 text-base">work</span>
+          <div className="flex items-center gap-2 relative">
+            <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">work</span>
             <select
               value={selectedJobId}
               onChange={(e) => setSelectedJobId(e.target.value)}
-              className="w-56 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/30 focus:border-[#7C3AED] shadow-sm"
+              className="w-64 h-11 border border-slate-200 rounded-xl pl-10 pr-4 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
             >
               <option value="">Select a Job to view flow...</option>
               {jobs.map((j) => (
@@ -348,7 +348,7 @@ export default function AutomationCanvasPage() {
       <div className="flex-1 w-full bg-slate-50/50 relative">
         {!selectedJobId ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
               <span className="material-symbols-rounded text-[#7C3AED] text-4xl">account_tree</span>
             </div>
             <p className="text-slate-700 font-bold text-lg">No job selected</p>
@@ -385,20 +385,20 @@ export default function AutomationCanvasPage() {
             {/* Floating Actions */}
             {canAccess("automation:moderate") && (
               <div className="absolute top-6 right-6 z-10 flex flex-col items-end gap-2 pointer-events-none">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-white/80 px-2 py-1 rounded backdrop-blur-sm pointer-events-auto shadow-sm">
-                  Add Action Node
+                <span className="text-[10px] font-black text-slate-500   bg-white/80 px-2 py-1 rounded backdrop-blur-sm pointer-events-auto shadow-sm">
+                  Add Action
                 </span>
                 <div className="flex bg-white shadow-xl border border-slate-100 rounded-xl p-1 gap-1 pointer-events-auto">
-                  <button onClick={() => openCreateModal("mail")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-indigo-50 text-indigo-500 transition-colors" title="Add Mail Automation">
+                  <button onClick={() => openCreateModal("mail")} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-indigo-50 text-indigo-500 transition-colors" title="Add Mail Automation">
                     <span className="material-symbols-rounded text-[20px]">mark_email_unread</span>
                   </button>
-                  <button onClick={() => openCreateModal("assessment")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-amber-50 text-amber-500 transition-colors" title="Add Assessment Automation">
+                  <button onClick={() => openCreateModal("assessment")} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-amber-50 text-amber-500 transition-colors" title="Add Assessment Automation">
                     <span className="material-symbols-rounded text-[20px]">psychology</span>
                   </button>
-                  <button onClick={() => openCreateModal("interview")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-emerald-50 text-emerald-500 transition-colors" title="Add Interview Automation">
+                  <button onClick={() => openCreateModal("interview")} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-emerald-50 text-emerald-500 transition-colors" title="Add Interview Automation">
                     <span className="material-symbols-rounded text-[20px]">event_available</span>
                   </button>
-                  <button onClick={() => openCreateModal("onboarding")} className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-purple-50 text-purple-500 transition-colors" title="Add Onboarding Automation">
+                  <button onClick={() => openCreateModal("onboarding")} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-purple-50 text-purple-500 transition-colors" title="Add Onboarding Automation">
                     <span className="material-symbols-rounded text-[20px]">person_add</span>
                   </button>
                 </div>

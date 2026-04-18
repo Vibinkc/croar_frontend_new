@@ -179,7 +179,7 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20">
             <div className="w-10 h-10 border-4 border-slate-100 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Analytics</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Analytics</p>
         </div>
     );
 
@@ -204,19 +204,19 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
                                             }`}>
                                             #{index + 1}
                                         </div>
-                                        <span className={`text-[10px] font-black uppercase tracking-widest ${index === 0 ? 'text-indigo-200' : 'text-slate-400'
+                                        <span className={`text-[10px] font-black   ${index === 0 ? 'text-indigo-200' : 'text-slate-400'
                                             }`}>
                                             {index === 0 ? 'Top Performer' : 'High Performance'}
                                         </span>
                                     </div>
-                                    <h4 className="text-xl font-black uppercase tracking-tight mb-1 truncate">{dept.name}</h4>
-                                    <p className={`text-[10px] font-bold uppercase tracking-widest mb-6 ${index === 0 ? 'text-indigo-200' : 'text-slate-400'
+                                    <h4 className="text-xl font-black  tracking-tight mb-1 truncate">{dept.name}</h4>
+                                    <p className={`text-[10px] font-bold   mb-6 ${index === 0 ? 'text-indigo-200' : 'text-slate-400'
                                         }`}>
                                         {dept.count} Students • {selectedBatch ? `Batch ${selectedBatch}` : 'Global Avg'}
                                     </p>
                                     <div className="flex items-end gap-2">
                                         <span className="text-4xl font-black">{dept.avg}%</span>
-                                        <span className={`text-[10px] font-bold uppercase tracking-widest mb-2 ${index === 0 ? 'text-indigo-200' : 'text-slate-400'
+                                        <span className={`text-[10px] font-bold   mb-2 ${index === 0 ? 'text-indigo-200' : 'text-slate-400'
                                             }`}>Overall Score</span>
                                     </div>
                                 </div>
@@ -226,28 +226,28 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
 
                     <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
                         <div className="px-8 py-6 border-b border-slate-50">
-                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Institutional Overview</h3>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                            <h3 className="text-sm font-black   text-slate-900">Institutional Overview</h3>
+                            <p className="text-[10px] font-bold text-slate-400   mt-1">
                                 Comparing HOD performance across all departments {selectedBatch && `for Batch ${selectedBatch}`}
                             </p>
                         </div>
                         <table className="min-w-full divide-y divide-slate-50">
                             <thead className="bg-slate-50/50">
                                 <tr>
-                                    <th className="px-8 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Department</th>
-                                    <th className="px-8 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Batches</th>
-                                    <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Students</th>
-                                    <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Avg Score</th>
-                                    <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Assessments</th>
-                                    <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Job Sims</th>
-                                    <th className="px-8 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Progress</th>
+                                    <th className="px-8 py-4 text-left text-[10px] font-black text-slate-400  ">Department</th>
+                                    <th className="px-8 py-4 text-left text-[10px] font-black text-slate-400  ">Active Batches</th>
+                                    <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Students</th>
+                                    <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Avg Score</th>
+                                    <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Assessments</th>
+                                    <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Job Sims</th>
+                                    <th className="px-8 py-4 text-right text-[10px] font-black text-slate-400  ">Progress</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {stats.departmentBreakdown.map((dept) => (
                                     <tr key={dept.name} className="hover:bg-slate-50/50 transition-colors">
                                         <td className="px-8 py-4">
-                                            <div className="text-xs font-black text-slate-900 uppercase tracking-tight">{dept.name}</div>
+                                            <div className="text-xs font-black text-slate-900  tracking-tight">{dept.name}</div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <div className="flex flex-wrap gap-1">
@@ -288,7 +288,7 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
             )}
             {/* Batch Performance Chart */}
             <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-8">Batch Performance Score Average</h3>
+                <h3 className="text-xs font-black   text-slate-400 mb-8">Batch Performance Score Average</h3>
                 <div className="w-full h-64">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={stats.performance}>
@@ -308,8 +308,8 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
             {/* Detailed Cards Section */}
             <div className="bg-slate-900 rounded-[3rem] p-10 shadow-2xl text-white">
                 <div className="mb-10">
-                    <h3 className="text-2xl font-black uppercase tracking-tight">Departmental Breakdown</h3>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Analytical insights across academic batches</p>
+                    <h3 className="text-2xl font-black  tracking-tight">Departmental Breakdown</h3>
+                    <p className="text-xs font-bold text-slate-400   mt-2">Analytical insights across academic batches</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -317,8 +317,8 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
                         <div key={batch.name} className="bg-white/5 border border-white/10 rounded-[2rem] p-8 transition-all hover:bg-white/[0.08] hover:scale-[1.02]">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <span className="text-xl font-black text-white uppercase tracking-tight block">{batch.name}</span>
-                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Target Batch</span>
+                                    <span className="text-xl font-black text-white  tracking-tight block">{batch.name}</span>
+                                    <span className="text-[10px] text-slate-500 font-bold  ">Target Batch</span>
                                 </div>
                                 <div className="bg-indigo-500 text-white text-xs font-black px-3 py-1.5 rounded-xl shadow-lg shadow-indigo-500/20">
                                     {batch.avg}% OVERALL
@@ -327,7 +327,7 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
 
                             <div className="space-y-6">
                                 <div>
-                                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    <div className="flex justify-between text-[10px] font-black   text-slate-400 mb-2">
                                         <span className="flex items-center gap-2">
                                             <div className="w-2 h-2 rounded-full bg-violet-400" />
                                             Assessments
@@ -340,7 +340,7 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
                                 </div>
 
                                 <div>
-                                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    <div className="flex justify-between text-[10px] font-black   text-slate-400 mb-2">
                                         <span className="flex items-center gap-2">
                                             <div className="w-2 h-2 rounded-full bg-pink-400" />
                                             Job Simulations
@@ -353,7 +353,7 @@ function DepartmentContent({ divisionId, departmentId }: { divisionId: number | 
                                 </div>
 
                                 <div>
-                                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    <div className="flex justify-between text-[10px] font-black   text-slate-400 mb-2">
                                         <span className="flex items-center gap-2">
                                             <div className="w-2 h-2 rounded-full bg-teal-400" />
                                             Practice Modules

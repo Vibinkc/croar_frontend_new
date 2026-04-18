@@ -122,14 +122,14 @@ function TeamManagementContent() {
 
     return (
         <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
                 <div className="flex items-center gap-3 px-2">
                     <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
                         <span className="material-symbols-rounded">groups</span>
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">Team Management</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Manage organization personnel and access</p>
+                        <p className="text-slate-500 text-[10px] font-medium   ">Manage organization personnel and access</p>
                     </div>
                 </div>
 
@@ -137,14 +137,14 @@ function TeamManagementContent() {
                     <div className="flex bg-slate-50 border border-slate-100 rounded-xl p-1">
                         <button 
                             onClick={() => setActiveTab("members")}
-                            className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${activeTab === "members" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+                            className={`px-4 py-1.5 rounded-xl text-[10px] font-bold transition-all ${activeTab === "members" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
                         >
                             Members
                         </button>
                         {canAccess("team:moderate") && (
                             <button 
                                 onClick={() => setActiveTab("roles")}
-                                className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${activeTab === "roles" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+                                className={`px-4 py-1.5 rounded-xl text-[10px] font-bold transition-all ${activeTab === "roles" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
                             >
                                 Roles
                             </button>
@@ -178,10 +178,10 @@ function TeamManagementContent() {
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ delay: i * 0.05 }}
                                         key={member.id} 
-                                        className="bg-white p-5 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all group flex flex-col justify-between min-h-[160px]"
+                                        className="bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all group flex flex-col justify-between min-h-[160px]"
                                     >
                                         <div className="flex items-center gap-4 mb-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center font-bold text-xl group-hover:bg-indigo-600 group-hover:text-white transition-all border border-slate-100 group-hover:border-indigo-600 shadow-inner shrink-0">
+                                            <div className="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center font-bold text-xl group-hover:bg-indigo-600 group-hover:text-white transition-all border border-slate-100 group-hover:border-indigo-600 shadow-inner shrink-0">
                                                 <UserCircle className="w-6 h-6 stroke-[1.5]" />
                                             </div>
                                             <div className="overflow-hidden">
@@ -194,12 +194,12 @@ function TeamManagementContent() {
 
                                         <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-50 mt-auto">
                                             {member.roles?.map((r: any) => (
-                                                <span key={r.id} className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-indigo-100/30">
+                                                <span key={r.id} className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-bold   border border-indigo-100/30">
                                                     {r.name}
                                                 </span>
                                             ))}
                                             {(!member.roles || member.roles.length === 0) && (
-                                                <span className="px-3 py-1 bg-slate-50 text-slate-400 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-slate-100">
+                                                <span className="px-3 py-1 bg-slate-50 text-slate-400 rounded-xl text-[10px] font-bold   border border-slate-100">
                                                     Unassigned
                                                 </span>
                                             )}
@@ -213,10 +213,10 @@ function TeamManagementContent() {
                     {/* Add Member Form */}
                     {canAccess("team:moderate") && (
                         <div className="lg:col-span-5">
-                            <div className="bg-white p-8 md:p-10 rounded-3xl border border-slate-200/60 shadow-2xl shadow-slate-200/50 sticky top-8">
+                            <div className="bg-white p-8 md:p-10 rounded-xl border border-slate-200/60 shadow-2xl shadow-slate-200/50 sticky top-8">
                                 <div className="space-y-2 mb-10">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                                             <UserPlus className="w-5 h-5" />
                                         </div>
                                         <h3 className="text-xl font-bold text-slate-900">Invite Member</h3>
@@ -284,7 +284,7 @@ function TeamManagementContent() {
                                                             setSelectedRoleIds([...selectedRoleIds, role.id]);
                                                         }
                                                     }}
-                                                    className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border ${selectedRoleIds.includes(role.id) ? "bg-slate-900 border-slate-900 text-white shadow-lg" : "bg-white border-slate-200 text-slate-400 hover:border-slate-400"}`}
+                                                    className={`px-4 py-2 rounded-xl text-[10px] font-bold   transition-all border ${selectedRoleIds.includes(role.id) ? "bg-slate-900 border-slate-900 text-white shadow-lg" : "bg-white border-slate-200 text-slate-400 hover:border-slate-400"}`}
                                                 >
                                                     {role.name}
                                                 </button>
@@ -316,18 +316,18 @@ function TeamManagementContent() {
 
                         <div className={`grid gap-6 ${canAccess("team:moderate") ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
                             {roles.map(role => (
-                                <div key={role.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                                <div key={role.id} className="bg-white p-8 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col">
                                     <div className="flex justify-between items-start mb-8">
-                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border border-slate-100 ${role.is_system ? 'bg-slate-900 text-white' : 'bg-indigo-50 text-indigo-600'}`}>
+                                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-inner border border-slate-100 ${role.is_system ? 'bg-slate-900 text-white' : 'bg-indigo-50 text-indigo-600'}`}>
                                             <Shield className="w-7 h-7 stroke-[1.5]" />
                                         </div>
                                         {role.is_system ? (
-                                            <span className="p-2 bg-slate-100 text-slate-400 rounded-lg">
+                                            <span className="p-2 bg-slate-100 text-slate-400 rounded-xl">
                                                 <Lock className="w-4 h-4" />
                                             </span>
                                         ) : (
                                             canAccess("team:moderate") && (
-                                                <button className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-lg">
+                                                <button className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl">
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             )
@@ -339,7 +339,7 @@ function TeamManagementContent() {
                                     
                                     <div className="flex flex-wrap gap-2 pt-6 border-t border-slate-50 mt-auto">
                                         {role.permissions?.slice(0, 3).map((p: any) => (
-                                            <span key={p.id} className="px-2.5 py-1 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-slate-100">
+                                            <span key={p.id} className="px-2.5 py-1 bg-slate-50 text-slate-500 rounded-xl text-[10px] font-bold   border border-slate-100">
                                                 {p.module}
                                             </span>
                                         ))}
@@ -355,10 +355,10 @@ function TeamManagementContent() {
                     {/* Create Role Form */}
                     {canAccess("team:moderate") && (
                         <div className="lg:col-span-5">
-                            <div className="bg-white p-8 md:p-10 rounded-3xl border border-slate-200/60 shadow-2xl shadow-slate-200/50 sticky top-8">
+                            <div className="bg-white p-8 md:p-10 rounded-xl border border-slate-200/60 shadow-2xl shadow-slate-200/50 sticky top-8">
                                 <div className="space-y-2 mb-10">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                                             <ShieldPlus className="w-5 h-5" />
                                         </div>
                                         <h3 className="text-xl font-bold text-slate-900">Create Custom Role</h3>
@@ -386,7 +386,7 @@ function TeamManagementContent() {
                                     
                                     <div className="space-y-4">
                                         <label className="text-xs font-bold text-slate-900">Select Permissions</label>
-                                        <div className="bg-slate-50 rounded-2xl border border-slate-100 p-4 max-h-[300px] overflow-y-auto custom-scrollbar space-y-2">
+                                        <div className="bg-slate-50 rounded-xl border border-slate-100 p-4 max-h-[300px] overflow-y-auto custom-scrollbar space-y-2">
                                             {permissions.map(perm => (
                                                 <button 
                                                     key={perm.id}
@@ -402,9 +402,9 @@ function TeamManagementContent() {
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className={`w-2 h-2 rounded-full ${selectedPermissionIds.includes(perm.id) ? "bg-indigo-400" : "bg-slate-200"}`} />
-                                                        <span className="uppercase tracking-wider">{perm.module}</span>
+                                                        <span className=" ">{perm.module}</span>
                                                     </div>
-                                                    <span className="opacity-40 uppercase">{perm.action}</span>
+                                                    <span className="opacity-40 ">{perm.action}</span>
                                                 </button>
                                             ))}
                                         </div>

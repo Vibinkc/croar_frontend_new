@@ -293,7 +293,7 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-6">
                         <div className="space-y-1">
-                            <span className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] block">Mission_Progress</span>
+                            <span className="text-[9px] font-black text-indigo-400  tracking-[0.2em] block">Mission_Progress</span>
                             <div className="flex gap-1 h-1 w-48 bg-white/5 rounded-full overflow-hidden border border-white/10">
                                 {questions.map((_, idx) => (
                                     <div
@@ -309,7 +309,7 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
 
                     <div className="flex items-center gap-6">
                         <div className="text-right">
-                            <span className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] block mb-0.5">Score</span>
+                            <span className="text-[9px] font-black text-indigo-400  tracking-[0.2em] block mb-0.5">Score</span>
                             <motion.div
                                 key={score}
                                 initial={{ scale: 1.2, color: '#22d3ee' }}
@@ -372,7 +372,7 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
                                 {renderPattern(currentQuestion.target, "#fff")}
 
                                 <div className="absolute top-3 left-1/2 -translate-x-1/2">
-                                    <span className="text-[7px] font-black text-cyan-400 uppercase tracking-[0.3em] whitespace-nowrap">Target</span>
+                                    <span className="text-[7px] font-black text-cyan-400  tracking-[0.3em] whitespace-nowrap">Target</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -384,7 +384,7 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
                                     initial={{ y: 0, opacity: 0, scale: 0.5 }}
                                     animate={{ y: -100, opacity: 1, scale: 1.5 }}
                                     exit={{ opacity: 0, scale: 1 }}
-                                    className="absolute -top-16 left-1/2 -translate-x-1/2 text-cyan-400 font-black text-5xl italic tracking-tighter drop-shadow-[0_0_20px_rgba(34,211,238,0.8)] z-50"
+                                    className="absolute -top-16 left-1/2 -translate-x-1/2 text-cyan-400 font-black text-5xl  tracking-tighter drop-shadow-[0_0_20px_rgba(34,211,238,0.8)] z-50"
                                 >
                                     PERFECT!
                                 </motion.div>
@@ -460,7 +460,7 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
                 {/* Footer UI */}
                 <div className="mt-8 flex justify-center">
                     <div className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full backdrop-blur-md">
-                        <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] animate-pulse">
+                        <p className="text-[8px] font-black text-slate-500  tracking-[0.3em] animate-pulse">
                             System_Active
                         </p>
                     </div>

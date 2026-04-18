@@ -23,7 +23,7 @@ export default function EvaluatorProductPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-slate-600 bg-slate-800/50 px-3 py-1 rounded-full text-slate-300 text-xs font-bold uppercase tracking-widest backdrop-blur-md"
+                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-slate-600 bg-slate-800/50 px-3 py-1 rounded-full text-slate-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-indigo-400">edit_note</span>
                             Automated Grading Assistant
@@ -34,7 +34,7 @@ export default function EvaluatorProductPage() {
                             transition={{ delay: 0.3 }}
                             className="text-white text-5xl md:text-7xl font-black leading-tight tracking-tight"
                         >
-                            Write Like <br /><span className="italic text-indigo-400">You Mean It.</span>
+                            Write Like <br /><span className=" text-indigo-400">You Mean It.</span>
                         </motion.h1>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
@@ -62,7 +62,7 @@ export default function EvaluatorProductPage() {
             <section className="px-4 py-16" id="features">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-2 text-center md:text-left">
-                        <span className="text-indigo-600 font-bold uppercase tracking-widest text-sm">Beyond Spellcheck</span>
+                        <span className="text-indigo-600 font-bold   text-sm">Beyond Spellcheck</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Rhetorical Intelligence</h2>
                         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">Standard tools catch typos. Evaluator catches weak arguments.</p>
                     </div>
@@ -131,12 +131,12 @@ export default function EvaluatorProductPage() {
 
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             <div className="bg-slate-50 p-6 border border-slate-200 text-center rounded-xl">
-                                <div className="text-slate-400 font-bold text-xs uppercase mb-2">Standard Tool</div>
+                                <div className="text-slate-400 font-bold text-xs  mb-2">Standard Tool</div>
                                 <div className="text-red-500 font-bold text-4xl mb-1">12</div>
                                 <div className="text-slate-500 text-sm">Corrections Found</div>
                             </div>
                             <div className="bg-indigo-900 text-white p-6 border border-indigo-900 text-center rounded-xl shadow-xl scale-105">
-                                <div className="text-indigo-200 font-bold text-xs uppercase mb-2">Talixo AI</div>
+                                <div className="text-indigo-200 font-bold text-xs  mb-2">Talixo AI</div>
                                 <div className="text-green-400 font-bold text-4xl mb-1">45</div>
                                 <div className="text-slate-300 text-sm">Deep Insights</div>
                             </div>
@@ -279,7 +279,7 @@ export default function EvaluatorProductPage() {
             <footer className="px-4 py-20 mt-8 border-t border-slate-200 bg-white text-center">
                 <div className="max-w-3xl mx-auto">
                     <h2 className="text-4xl font-black text-slate-900 mb-6">"The first draft of anything is s**t."</h2>
-                    <p className="text-slate-500 text-lg mb-8 italic">- Ernest Hemingway (and us)</p>
+                    <p className="text-slate-500 text-lg mb-8 ">- Ernest Hemingway (and us)</p>
                     <button onClick={() => router.push("/practice/evaluator")} className="bg-indigo-600 text-white font-bold py-5 px-12 rounded-full text-xl hover:scale-105 transition-transform shadow-xl">
                         Start Editing
                     </button>

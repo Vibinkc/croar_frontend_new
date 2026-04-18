@@ -75,9 +75,9 @@ export default function AssessmentCandidatesPage() {
     };
 
     const getGradingBadge = (percentage: number) => {
-        if (percentage >= 80) return <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-200 text-slate-800 text-[10px] font-black uppercase tracking-widest border border-slate-300">Expert</span>;
-        if (percentage >= 50) return <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest border border-slate-200">Intermediate</span>;
-        return <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-widest border border-slate-100">Beginner</span>;
+        if (percentage >= 80) return <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-200 text-slate-800 text-[10px] font-black   border border-slate-300">Expert</span>;
+        if (percentage >= 50) return <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-black   border border-slate-200">Intermediate</span>;
+        return <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-50 text-slate-500 text-[10px] font-black   border border-slate-100">Beginner</span>;
     };
 
     const getRatingStars = (percentage: number) => {
@@ -156,7 +156,7 @@ export default function AssessmentCandidatesPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center gap-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+            <div className="flex items-center gap-3 text-xs font-bold text-slate-400   mb-4">
                 <Link href="/admin/assessments" className="hover:text-slate-900 transition-colors">Assessments</Link>
                 <span className="material-icons-outlined text-sm">chevron_right</span>
                 <span className="text-slate-900">{assessment?.title || "Candidates"}</span>
@@ -166,10 +166,10 @@ export default function AssessmentCandidatesPage() {
                 <div>
                     <h1 className="text-2xl font-black text-slate-900 tracking-tight">{assessment?.title}</h1>
                     <div className="flex items-center gap-4 mt-2">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest border border-slate-200">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-black   border border-slate-200">
                             {filteredCandidates.length} Candidates
                         </span>
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-[10px] font-black uppercase tracking-widest border border-slate-200">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-[10px] font-black   border border-slate-200">
                             {assessment?.time_limit_minutes} MINS
                         </span>
                     </div>
@@ -177,7 +177,7 @@ export default function AssessmentCandidatesPage() {
                 <div className="flex gap-2">
                     <button
                         onClick={handleExport}
-                        className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors shadow-sm flex items-center gap-2"
+                        className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-xs font-bold   hover:bg-slate-50 transition-colors shadow-sm flex items-center gap-2"
                     >
                         <span className="material-icons-outlined text-lg">download</span>
                         Export CSV
@@ -223,11 +223,11 @@ export default function AssessmentCandidatesPage() {
                 <table className="min-w-full divide-y divide-slate-100">
                     <thead className="bg-slate-50/50">
                         <tr>
-                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Candidate</th>
-                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Score</th>
-                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Grading</th>
-                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Rating</th>
-                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Candidate</th>
+                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Score</th>
+                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Grading</th>
+                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Rating</th>
+                            <th scope="col" className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Status</th>
                             <th scope="col" className="relative px-6 py-4"><span className="sr-only">Actions</span></th>
                         </tr>
                     </thead>

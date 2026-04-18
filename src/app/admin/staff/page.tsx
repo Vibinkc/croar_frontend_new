@@ -72,7 +72,7 @@ function StaffList({ divisionId, departmentId }: { divisionId: number | null, de
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Syncing_Directory</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Syncing_Directory</p>
         </div>
     );
 
@@ -85,7 +85,7 @@ function StaffList({ divisionId, departmentId }: { divisionId: number | null, de
                         className="group bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-xl shadow-indigo-100"
                     >
                         <span className="material-icons-outlined text-base group-hover:rotate-90 transition-transform">add</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-[10px] font-black  ">
                             {role === "ADMIN" ? "Add HOD" : "Add Staff"}
                         </span>
                     </Link>
@@ -96,12 +96,12 @@ function StaffList({ divisionId, departmentId }: { divisionId: number | null, de
                 <table className="min-w-full divide-y divide-slate-50">
                     <thead className="bg-slate-50/50">
                         <tr>
-                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Ecosystem Member</th>
-                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Member ID</th>
-                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Batch</th>
-                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Role_Signature</th>
-                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Email_Address</th>
-                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400  ">Ecosystem Member</th>
+                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400  ">Member ID</th>
+                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400  ">Batch</th>
+                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400  ">Role_Signature</th>
+                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400  ">Email_Address</th>
+                            <th className="px-6 py-3.5 text-left text-[9px] font-black text-slate-400  ">Status</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-slate-50">
@@ -113,18 +113,18 @@ function StaffList({ divisionId, departmentId }: { divisionId: number | null, de
                                             {s.first_name[0]}{s.last_name[0]}
                                         </div>
                                         <div className="ml-4">
-                                            <div className="text-xs font-black text-slate-900 uppercase tracking-tight">{s.first_name} {s.last_name}</div>
+                                            <div className="text-xs font-black text-slate-900  tracking-tight">{s.first_name} {s.last_name}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-3.5 whitespace-nowrap">
-                                    <div className="text-[10px] font-black text-slate-900 uppercase tracking-tight">{s.member_id || 'N/A'}</div>
+                                    <div className="text-[10px] font-black text-slate-900  tracking-tight">{s.member_id || 'N/A'}</div>
                                 </td>
                                 <td className="px-6 py-3.5 whitespace-nowrap">
-                                    <div className="text-[10px] font-black text-slate-900 uppercase tracking-tight">{s.batch || 'N/A'}</div>
+                                    <div className="text-[10px] font-black text-slate-900  tracking-tight">{s.batch || 'N/A'}</div>
                                 </td>
                                 <td className="px-6 py-3.5 whitespace-nowrap">
-                                    <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${s.role === 'SUB_ADMIN' ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-lg shadow-indigo-100' : 'bg-slate-50 text-slate-400 border-slate-100'}`}>
+                                    <span className={`text-[9px] font-black   px-2.5 py-1 rounded-full border ${s.role === 'SUB_ADMIN' ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-lg shadow-indigo-100' : 'bg-slate-50 text-slate-400 border-slate-100'}`}>
                                         {s.role === 'SUB_ADMIN' ? 'HOD' : 'Staff'}
                                     </span>
                                 </td>
@@ -132,7 +132,7 @@ function StaffList({ divisionId, departmentId }: { divisionId: number | null, de
                                     <div className="text-[10px] font-black text-slate-400 font-mono">{s.email}</div>
                                 </td>
                                 <td className="px-6 py-3.5 whitespace-nowrap">
-                                    <span className={`px-2.5 py-1 text-[9px] font-black uppercase tracking-widest rounded-full border ${s.is_active ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-50 text-slate-300 border-slate-100'}`}>
+                                    <span className={`px-2.5 py-1 text-[9px] font-black   rounded-full border ${s.is_active ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-50 text-slate-300 border-slate-100'}`}>
                                         {s.is_active ? 'Active' : 'Inactive'}
                                     </span>
                                 </td>
@@ -143,7 +143,7 @@ function StaffList({ divisionId, departmentId }: { divisionId: number | null, de
                                 <td colSpan={5} className="px-8 py-20 text-center">
                                     <div className="flex flex-col items-center justify-center text-slate-300">
                                         <span className="material-icons-outlined text-5xl mb-4 opacity-30">person_off</span>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em]">No_Staff_Found</p>
+                                        <p className="text-[10px] font-black  tracking-[0.2em]">No_Staff_Found</p>
                                     </div>
                                 </td>
                             </tr>

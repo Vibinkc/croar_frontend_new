@@ -6,6 +6,35 @@ import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import JobEditor from "@/components/enterprise/JobEditor";
+import { 
+    ArrowLeft, 
+    ArrowRight, 
+    CircleCheck, 
+    Building2, 
+    MapPin, 
+    Rocket, 
+    Sparkles, 
+    RefreshCcw, 
+    CirclePlus, 
+    Network, 
+    ClipboardList, 
+    Settings,
+    X,
+    LayoutDashboard,
+    Eye,
+    Users,
+    Brain,
+    Calculator,
+    ShieldCheck,
+    ChevronUp,
+    ChevronDown,
+    ListPlus,
+    Pin,
+    FileText,
+    AtSign,
+    Mail,
+    Search
+} from "lucide-react";
 
 interface ApplicationField {
     id: string;
@@ -20,21 +49,19 @@ interface WorkflowStage {
     name: string;
     type: string;
     icon: string;
+    email_template_id?: string;
 }
 
 const DEFAULT_APPLICATION_FIELDS: ApplicationField[] = [
     { id: '1', label: 'Full Name', type: 'text', icon: 'person', is_required: true },
-    { id: '2', label: 'Email Address', type: 'email', icon: 'alternate_email', is_required: true },
+    { id: '2', label: 'Email Address', type: 'email', icon: 'mail', is_required: true },
     { id: '3', label: 'Phone Number', type: 'text', icon: 'call', is_required: false },
     { id: '4', label: 'Resume / CV', type: 'file', icon: 'description', is_required: true },
     { id: '5', label: 'Portfolio URL', type: 'text', icon: 'link', is_required: false }
 ];
 
 const DEFAULT_WORKFLOW_STAGES: WorkflowStage[] = [
-    { id: '1', name: 'AI Screening', type: 'Assessment', icon: 'psychology' },
-    { id: '2', name: 'Initial Interview', type: 'Interview', icon: 'groups' },
-    { id: '3', name: 'Technical Test', type: 'Assignment', icon: 'code_blocks' },
-    { id: '4', name: 'Final Interview', type: 'Interview', icon: 'verified' }
+    { id: '1', name: 'Initial Screening', type: 'Screening', icon: 'search' }
 ];
 
 export default function EditJobPage() {
@@ -65,21 +92,55 @@ export default function EditJobPage() {
         required_skills: "",
         auto_fit_analysis: false,
         status_id: 2,
+        company_id: "",
         application_fields: DEFAULT_APPLICATION_FIELDS,
         workflow_stages: DEFAULT_WORKFLOW_STAGES,
     });
 
+    const [companies, setCompanies] = useState<any[]>([]);
+    const [emailTemplates, setEmailTemplates] = useState<any[]>([]);
+
     const steps = [
-        { id: 1, name: "Job Details", icon: "assignment" },
-        { id: 2, name: "Application Form", icon: "settings_outline" },
-        { id: 3, name: "Hiring Process", icon: "account_tree" }
+        { id: 1, name: "Job Details", icon: "ClipboardList" },
+        { id: 2, name: "Application", icon: "Settings" },
+        { id: 3, name: "Workflow", icon: "Network" }
     ];
 
     useEffect(() => {
         if (token && jobId) {
             fetchJobDetails();
+            fetchCompanies();
+            fetchEmailTemplates();
         }
     }, [token, jobId]);
+
+    const fetchEmailTemplates = async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setEmailTemplates(data);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const fetchCompanies = async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/company/`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setCompanies(data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const fetchJobDetails = async () => {
         setIsLoading(true);
@@ -107,6 +168,7 @@ export default function EditJobPage() {
                     required_skills: data.required_skills?.join(", ") || "",
                     auto_fit_analysis: data.auto_fit_analysis || false,
                     status_id: data.status_id || 2,
+                    company_id: data.company_id || "",
                     application_fields: (data.application_fields && data.application_fields.length > 0) ? data.application_fields : DEFAULT_APPLICATION_FIELDS,
                     workflow_stages: (data.workflow_stages && data.workflow_stages.length > 0) ? data.workflow_stages : DEFAULT_WORKFLOW_STAGES
                 });
@@ -137,6 +199,7 @@ export default function EditJobPage() {
                 required_skills: formData.required_skills.split(",").map(s => s.trim()).filter(s => s),
                 auto_fit_analysis: formData.auto_fit_analysis,
                 status_id: formData.status_id,
+                company_id: formData.company_id,
                 application_fields: formData.application_fields,
                 workflow_stages: formData.workflow_stages
             };
@@ -205,6 +268,20 @@ export default function EditJobPage() {
         }
     };
 
+    const isExperienceInvalid = parseInt(formData.experience_max) < parseInt(formData.experience_min);
+    const isSalaryInvalid = formData.salary_min && formData.salary_max && parseFloat(formData.salary_max) < parseFloat(formData.salary_min);
+
+    const STAGE_TYPES = [
+        { name: 'Screening', icon: 'Search' },
+        { name: 'Aptitude', icon: 'Brain' },
+        { name: 'Coding', icon: 'Code' },
+        { name: 'Technical Interview', icon: 'Zap' },
+        { name: 'HR Interview', icon: 'Users' },
+        { name: 'Final Selection', icon: 'ShieldCheck' }
+    ];
+
+    const canGoNext = () => currentStep === 1 ? (formData.title && !isExperienceInvalid && !isSalaryInvalid) : true;
+
 
 
 
@@ -212,176 +289,207 @@ export default function EditJobPage() {
         return (
             <div className="h-screen w-full flex items-center justify-center bg-[#FDFDFF]">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-[#7C3AED]/20 border-t-[#7C3AED] rounded-full animate-spin"></div>
-                    <span className="text-xs font-bold text-slate-400 tracking-widest uppercase">Fetching Mission Data...</span>
+                    <div className="w-12 h-12 border-4 border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin"></div>
+                    <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Loading Details...</span>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="h-full min-h-screen bg-[#FDFDFF] flex flex-col p-6 animate-in fade-in duration-700 overflow-hidden">
-            {/* Header Control Bar */}
-            <div className="flex items-center justify-between mb-8 px-2 shrink-0">
-                <div className="flex items-center gap-6">
-                    <button onClick={() => router.back()} className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50/50 transition-all shadow-sm">
-                        <span className="material-symbols-rounded text-2xl">arrow_back</span>
+        <div className="h-full min-h-screen bg-[#FDFDFF] flex flex-col p-4 animate-in fade-in duration-700 overflow-hidden relative">
+            {/* Ultra-Compact Header */}
+            <div className="flex items-center justify-between mb-6 px-1 shrink-0">
+                <div className="flex items-center gap-4">
+                    <button onClick={() => router.back()} className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all shadow-sm active:scale-95">
+                        <ArrowLeft className="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Edit Job Requisition</h1>
-                        <p className="text-sm text-slate-400 font-medium mt-1">Refine your mission parameters and requirements</p>
+                        <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none  ">Edit Job</h1>
+                        <p className="text-[9px] text-slate-400 font-bold  tracking-[0.2em] mt-1.5 opacity-60">Job Details</p>
                     </div>
                 </div>
 
-                <div className="hidden lg:flex items-center bg-slate-100/40 p-1.5 rounded-2xl border border-slate-200/50 backdrop-blur-sm">
+                <div className="hidden lg:flex items-center bg-slate-100/40 p-1 rounded-xl border border-slate-200/50 backdrop-blur-sm">
                     {steps.map((step) => (
                         <button
                             key={step.id}
-                            onClick={() => setCurrentStep(step.id)}
-                            className={`flex items-center gap-3 px-6 py-2.5 rounded-xl transition-all ${currentStep === step.id ? "bg-white text-[#7C3AED] shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600"}`}
+                            disabled={step.id > currentStep && !canGoNext()}
+                            onClick={() => canGoNext() && setCurrentStep(step.id)}
+                            className={`flex items-center gap-2 px-4 py-1.5 rounded-xl transition-all ${currentStep === step.id ? "bg-white text-indigo-600 shadow-sm border border-slate-100" : "text-slate-600 hover:text-slate-800"}`}
                         >
-                            <span className={`text-xs font-bold w-5 h-5 flex items-center justify-center rounded-lg border ${currentStep === step.id ? "border-[#7C3AED]/20 bg-[#7C3AED]/5" : "border-slate-200 bg-white"}`}>{step.id}</span>
-                            <span className="text-xs font-bold uppercase tracking-wider">{step.name}</span>
+                            <span className={`text-[8px] font-black w-4 h-4 flex items-center justify-center rounded-xl border ${currentStep === step.id ? "border-indigo-200 bg-indigo-50 text-indigo-600" : "border-slate-300 bg-slate-200 text-slate-600"}`}>{step.id}</span>
+                            <span className="text-[9px] font-black  ">{step.name}</span>
                         </button>
                     ))}
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <button
-                        className="px-8 py-3.5 rounded-2xl bg-[#7C3AED] text-white text-sm font-bold shadow-lg shadow-indigo-500/20 hover:bg-[#6D28D9] transition-all active:scale-95 flex items-center gap-2 group"
-                        onClick={() => currentStep < 3 ? setCurrentStep(currentStep + 1) : handleSubmit()}
-                    >
-                        {isSubmitting ? "Syncing..." : currentStep === 3 ? "Save Changes" : "Next Step"}
-                        <span className="material-symbols-rounded text-xl group-hover:translate-x-1 transition-transform">
-                            {currentStep === 3 ? 'save' : 'arrow_forward'}
-                        </span>
-                    </button>
-                </div>
+                <button
+                    disabled={!canGoNext()}
+                    className="h-11 px-6 rounded-xl bg-indigo-600 text-white text-[10px] font-black   shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-2 group disabled:opacity-40"
+                    onClick={() => currentStep < 3 ? setCurrentStep(currentStep + 1) : handleSubmit()}
+                >
+                    {isSubmitting ? "Saving..." : currentStep === 3 ? "Save Changes" : "Next Step"}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
             </div>
 
-            <div className="flex-1 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col relative">
+            <div className="flex-1 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col relative">
                 <AnimatePresence mode="wait">
                     {currentStep === 1 && (
-                        <motion.div
-                            key="step1"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            className="flex-1 grid grid-cols-12 overflow-hidden h-full"
-                        >
-                            {/* Left Sidebar: Settings */}
-                            <div className="col-span-4 border-r border-slate-50 p-10 bg-slate-50/20 overflow-y-auto no-scrollbar">
-                                <div className="space-y-8">
-                                    <div className="space-y-5">
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 px-1">Job Title *</label>
-                                            <input
-                                                type="text"
-                                                className="w-full px-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-slate-800 text-sm focus:border-[#7C3AED] focus:ring-4 focus:ring-[#7C3AED]/5 outline-none transition-all"
-                                                value={formData.title}
-                                                onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                            />
+                        <motion.div key="step1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex-1 bg-slate-50/50 overflow-y-auto p-4 md:p-8 no-scrollbar relative">
+                            <div className="mx-auto max-w-[1400px] h-full grid grid-cols-1 xl:grid-cols-12 gap-6 w-full">
+                                {/* Left Form Column */}
+                                <div className="xl:col-span-4 space-y-6 flex flex-col">
+                                    {/* Core Details Card */}
+                                    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                                        <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                                            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                                <ClipboardList className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm font-bold text-slate-800">Job Profile</h3>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Core listing details</p>
+                                            </div>
                                         </div>
+                                        
+                                        <div className="space-y-4 pt-1">
+                                            <div className="space-y-1.5 relative">
+                                                <label className="text-[11px] font-bold text-slate-500 ml-1">Job Title <span className="text-rose-500">*</span></label>
+                                                <input type="text" placeholder="e.g. Senior Frontend Engineer" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
+                                            </div>
 
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 px-1">Type</label>
-                                                <select className="w-full px-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none cursor-pointer" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
-                                                    <option>Full Time</option><option>Part Time</option><option>Contract</option>
-                                                </select>
+                                            {companies.length > 0 && (
+                                                <div className="space-y-1.5 relative">
+                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Company</label>
+                                                    <select className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.company_id} onChange={e => setFormData({ ...formData, company_id: e.target.value })}>
+                                                        {companies.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
+                                                    </select>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Work Mode Card */}
+                                    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5 relative overflow-hidden group">
+                                        <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                                            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                                                <MapPin className="w-5 h-5" />
                                             </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 px-1">Work Mode</label>
-                                                <select className="w-full px-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none cursor-pointer" value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
-                                                    <option>On-Site</option><option>Remote</option><option>Hybrid</option>
-                                                </select>
+                                            <div>
+                                                <h3 className="text-sm font-bold text-slate-800">Work Arrangement</h3>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Work mode & location</p>
                                             </div>
                                         </div>
+                                        
+                                        <div className="space-y-4 pt-1">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Type</label>
+                                                    <select className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
+                                                        <option>Full Time</option><option>Part Time</option><option>Contract</option>
+                                                    </select>
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Mode</label>
+                                                    <select className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
+                                                        <option>On-Site</option><option>Remote</option><option>Hybrid</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-1.5 relative">
+                                                <label className="text-[11px] font-bold text-slate-500 ml-1">Location</label>
+                                                <input type="text" placeholder="e.g. San Francisco, CA" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Requirements Card */}
+                                    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5 relative overflow-hidden group">
+                                        <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                                            <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
+                                                <Calculator className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm font-bold text-slate-800">Requirements</h3>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Experience & compensation</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="space-y-4 pt-1">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Min Exp (Yrs)</label>
+                                                    <input type="number" min="0" className={`w-full px-4 py-3 rounded-xl border ${isExperienceInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none`} value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Max Exp (Yrs)</label>
+                                                    <input type="number" min="0" className={`w-full px-4 py-3 rounded-xl border ${isExperienceInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none`} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Min Salary (LPA)</label>
+                                                    <input type="number" min="0" placeholder="5" className={`w-full px-4 py-3 rounded-xl border ${isSalaryInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300`} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Max Salary (LPA)</label>
+                                                    <input type="number" min="0" placeholder="15" className={`w-full px-4 py-3 rounded-xl border ${isSalaryInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300`} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Right Description Area */}
+                                <div className="xl:col-span-8 flex flex-col h-full bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                                    <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white z-10 shrink-0">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                                                <FileText className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm font-bold text-slate-800">Job Description & Skills</h3>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Outline the responsibilities and tech stack</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <select
+                                                value={formData.status_id}
+                                                onChange={(e) => setFormData({ ...formData, status_id: parseInt(e.target.value) })}
+                                                className={`px-4 py-2.5 rounded-xl border text-[10px] font-black outline-none cursor-pointer transition-all appearance-none text-center shadow-sm hover:shadow-md ${formData.status_id === 2
+                                                        ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                                        : formData.status_id === 3
+                                                            ? "bg-rose-50 text-rose-500 border-rose-100"
+                                                            : "bg-slate-50 text-slate-500 border-slate-100"
+                                                    }`}
+                                            >
+                                                <option value={1}>DRAFT</option>
+                                                <option value={2}>ACTIVE</option>
+                                                <option value={3}>CLOSED</option>
+                                            </select>
+                                            <button onClick={generateAIDescription} disabled={isGeneratingAI} className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[11px] font-bold shadow-md shadow-indigo-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0 disabled:shadow-none">
+                                                {isGeneratingAI ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                                                {isGeneratingAI ? 'Generating...' : 'Auto Draft with AI'}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1 flex flex-col border-b border-slate-200 overflow-y-auto">
+                                        <JobEditor content={formData.description} onChange={(content) => setFormData({ ...formData, description: content })} placeholder="Detail the role, responsibilities, and ideal candidate profile here..." />
+                                    </div>
+
+                                    <div className="p-6 bg-slate-50 shrink-0">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 px-1">Location</label>
+                                            <label className="text-[11px] font-bold text-slate-500 ml-1">Required Tech Stack <span className="font-medium opacity-60">(Comma Separated)</span></label>
                                             <div className="relative">
-                                                <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 text-xl">location_on</span>
-                                                <input type="text" className="w-full pl-12 pr-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 px-1">Experience (Min)</label>
-                                                <input type="number" className="w-full px-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none focus:border-[#7C3AED] transition-all" value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 px-1">Experience (Max)</label>
-                                                <input type="number" className="w-full px-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none focus:border-[#7C3AED] transition-all" value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 px-1">Min Salary (LPA)</label>
-                                                <div className="relative">
-                                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-xs">₹</span>
-                                                    <input type="number" placeholder="e.g. 5" className="w-full pl-8 pr-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none focus:border-[#7C3AED] transition-all" value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
+                                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                                                    <AtSign className="w-4 h-4" />
                                                 </div>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 px-1">Max Salary (LPA)</label>
-                                                <div className="relative">
-                                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-xs">₹</span>
-                                                    <input type="number" placeholder="e.g. 15" className="w-full pl-8 pr-5 py-4 rounded-2xl border border-slate-100 bg-white font-semibold text-sm outline-none focus:border-[#7C3AED] transition-all" value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
-                                                </div>
+                                                <input type="text" className="w-full pl-11 pr-5 py-3 rounded-xl border border-slate-200/80 outline-none font-semibold text-slate-800 text-sm bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm placeholder:text-slate-300" placeholder="e.g. React, Node.js, Python, AWS" value={formData.required_skills} onChange={e => setFormData({ ...formData, required_skills: e.target.value })} />
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Right Side: Markdown Content */}
-                            <div className="col-span-8 p-12 flex flex-col gap-6 h-full overflow-hidden">
-                                <div className="flex justify-between items-center shrink-0 px-2">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-slate-800 tracking-tight">Job Description</h3>
-                                        <p className="text-sm text-slate-400 font-medium">Define mission roles and core requirements</p>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <select
-                                            value={formData.status_id}
-                                            onChange={(e) => setFormData({ ...formData, status_id: parseInt(e.target.value) })}
-                                            className={`px-4 py-3 rounded-2xl border text-xs font-bold outline-none cursor-pointer transition-all appearance-none text-center shadow-sm hover:shadow-md ${formData.status_id === 2
-                                                    ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                                                    : formData.status_id === 3
-                                                        ? "bg-rose-50 text-rose-500 border-rose-100"
-                                                        : "bg-slate-50 text-slate-500 border-slate-100"
-                                                }`}
-                                        >
-                                            <option value={1}>DRAFT</option>
-                                            <option value={2}>ACTIVE</option>
-                                            <option value={3}>CLOSED</option>
-                                        </select>
-                                        <button
-                                            onClick={generateAIDescription}
-                                            disabled={isGeneratingAI}
-                                            className="px-6 py-3 rounded-2xl bg-indigo-50 text-[#7C3AED] text-xs font-bold hover:bg-indigo-100 transition-all flex items-center gap-2 border border-indigo-100 shadow-sm disabled:opacity-50"
-                                        >
-                                            <span className={`material-symbols-rounded text-lg ${isGeneratingAI ? 'animate-spin' : ''}`}>
-                                                {isGeneratingAI ? 'sync' : 'auto_awesome'}
-                                            </span>
-                                            {isGeneratingAI ? 'Drafting...' : 'AI Smart Draft'}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="flex-1 flex flex-col border border-slate-100 rounded-[2.5rem] bg-white shadow-sm overflow-hidden transition-all">
-                                    <JobEditor
-                                        content={formData.description}
-                                        onChange={(content) => setFormData({ ...formData, description: content })}
-                                        placeholder="Edit your job description..."
-                                    />
-                                </div>
-
-                                <div className="space-y-3 px-2 shrink-0">
-                                    <label className="text-xs font-bold text-slate-500">Required Skills</label>
-                                    <div className="relative">
-                                        <span className="material-symbols-rounded absolute left-5 top-1/2 -translate-y-1/2 text-slate-300">rocket_launch</span>
-                                        <input type="text" className="w-full pl-14 pr-6 py-4.5 rounded-2xl border border-slate-100 outline-none font-semibold text-sm bg-slate-50/30 focus:bg-white transition-all" value={formData.required_skills} onChange={e => setFormData({ ...formData, required_skills: e.target.value })} />
                                     </div>
                                 </div>
                             </div>
@@ -389,72 +497,68 @@ export default function EditJobPage() {
                     )}
 
                     {currentStep === 2 && (
-                        <motion.div
-                            key="step2"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            className="flex-1 grid grid-cols-12 overflow-hidden h-full"
-                        >
-                            <div className="col-span-4 border-r border-slate-50 p-12 bg-slate-50/20">
-                                <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-4">Application Form</h1>
-                                <p className="text-sm text-slate-400 font-medium leading-relaxed mb-10">Customize the information you need from candidates. Choose field types and set requirements.</p>
+                        <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex-1 grid grid-cols-12 overflow-hidden h-full">
+                            <div className="col-span-4 border-r border-slate-100 p-8 bg-slate-50/30 overflow-y-auto no-scrollbar flex flex-col gap-6">
+                                {/* Header */}
+                                <div>
+                                    <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none mb-2">Application Form</h1>
+                                    <p className="text-[11px] text-slate-400 font-medium leading-relaxed">Design the form candidates will fill out when applying for this role.</p>
+                                </div>
+
+                                {/* Add Question Button */}
                                 <button onClick={() => {
-                                    const newField: ApplicationField = {
-                                        id: Date.now().toString(),
-                                        label: 'New Question',
-                                        type: 'text',
-                                        icon: 'help_outline',
-                                        is_required: false
-                                    };
+                                    const newField: ApplicationField = { id: Date.now().toString(), label: 'New Question', type: 'text', icon: 'Type', is_required: false };
                                     setFormData(prev => ({ ...prev, application_fields: [...prev.application_fields, newField] }));
-                                }} className="w-full py-4.5 rounded-2xl bg-[#7C3AED] text-white text-sm font-bold shadow-lg shadow-indigo-500/20 hover:bg-[#6D28D9] transition-all flex items-center justify-center gap-2">
-                                    <span className="material-symbols-rounded text-xl">add_circle</span>
-                                    Add New Question
+                                }} className="w-full py-3.5 rounded-xl bg-indigo-600 text-white text-[11px] font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 active:scale-95">
+                                    <CirclePlus className="w-4 h-4" />
+                                    Add Question
                                 </button>
+
+                                {/* Form Stats */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-white rounded-xl border border-slate-200 p-4 text-center shadow-sm">
+                                        <div className="text-2xl font-black text-indigo-600">{formData.application_fields.length}</div>
+                                        <div className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wide">Total Fields</div>
+                                    </div>
+                                    <div className="bg-white rounded-xl border border-slate-200 p-4 text-center shadow-sm">
+                                        <div className="text-2xl font-black text-emerald-600">{formData.application_fields.filter(f => f.is_required).length}</div>
+                                        <div className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wide">Required</div>
+                                    </div>
+                                </div>
+
+                                {/* Field Types Guide */}
+                                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
+                                    <p className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Field Types</p>
+                                    {[
+                                        { type: 'Text', color: 'bg-blue-50 text-blue-600', desc: 'Short or long text answers' },
+                                        { type: 'Email', color: 'bg-purple-50 text-purple-600', desc: 'Validated email address' },
+                                        { type: 'Number', color: 'bg-orange-50 text-orange-600', desc: 'Numeric value input' },
+                                        { type: 'File', color: 'bg-teal-50 text-teal-600', desc: 'Document or resume upload' },
+                                        { type: 'Boolean', color: 'bg-rose-50 text-rose-600', desc: 'Yes / No toggle' },
+                                    ].map(item => (
+                                        <div key={item.type} className="flex items-center gap-3">
+                                            <span className={`text-[9px] font-black px-2 py-1 rounded-lg ${item.color} shrink-0 w-14 text-center`}>{item.type}</span>
+                                            <span className="text-[11px] text-slate-400 font-medium">{item.desc}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="col-span-8 p-12 overflow-y-auto no-scrollbar">
-                                <div className="flex flex-col gap-4 max-w-4xl mx-auto">
+                            <div className="col-span-8 p-8 overflow-y-auto no-scrollbar">
+                                <div className="flex flex-col gap-3 max-w-3xl mx-auto pb-10">
                                     {formData.application_fields.map((field) => (
-                                        <div key={field.id} className="p-5 bg-white rounded-[2rem] border border-slate-100 shadow-sm flex items-center justify-between group hover:border-[#7C3AED]/30 transition-all">
-                                            <div className="flex items-center gap-5 flex-1">
-                                                <div className="w-11 h-11 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-[#7C3AED] group-hover:bg-indigo-50/50 transition-all"><span className="material-symbols-rounded text-xl">{field.icon}</span></div>
-                                                <div className="flex-1 grid grid-cols-2 gap-6 items-center">
-                                                    <input
-                                                        type="text"
-                                                        className="bg-transparent border-none outline-none text-[15px] font-bold text-slate-800 p-0 focus:text-[#7C3AED] transition-colors"
-                                                        value={field.label}
-                                                        onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, label: e.target.value } : f) }))}
-                                                    />
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="text-[11px] font-bold text-slate-300 uppercase tracking-widest shrink-0">Type</span>
-                                                        <select
-                                                            className="bg-slate-50 border-none outline-none text-[11px] font-bold text-slate-500 uppercase px-3 py-1.5 rounded-lg cursor-pointer hover:bg-slate-100 transition-all"
-                                                            value={field.type}
-                                                            onChange={(e) => {
-                                                                const type = e.target.value as any;
-                                                                const icons: Record<string, string> = { text: 'text_fields', number: 'pin', boolean: 'toggle_on', file: 'description', email: 'alternate_email' };
-                                                                setFormData(prev => ({
-                                                                    ...prev,
-                                                                    application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, type, icon: icons[type] || 'help_outline' } : f)
-                                                                }))
-                                                            }}
-                                                        >
-                                                            <option value="text">Text</option>
-                                                            <option value="email">Email</option>
-                                                            <option value="number">Number</option>
-                                                            <option value="boolean">Yes/No</option>
-                                                            <option value="file">File</option>
-                                                        </select>
-                                                    </div>
+                                        <div key={field.id} className="p-3.5 bg-white rounded-xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-indigo-500/30 transition-all">
+                                            <div className="flex items-center gap-4 flex-1">
+                                                <div className="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-all shadow-inner"><Pin className="w-4 h-4" /></div>
+                                                <div className="flex-1 grid grid-cols-2 gap-4 items-center">
+                                                    <input type="text" className="bg-transparent border-none outline-none text-[13px] font-black text-slate-800 p-0 focus:text-indigo-600 transition-colors  " value={field.label} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, label: e.target.value } : f) }))} />
+                                                    <select className="bg-slate-50 border-none outline-none text-[9px] font-black text-slate-400  px-3 py-1.5 rounded-xl cursor-pointer hover:bg-slate-100 transition-all w-32" value={field.type} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, type: e.target.value as any } : f) }))}>
+                                                        <option value="text">Text</option><option value="email">Email</option><option value="number">Number</option><option value="boolean">Boolean</option><option value="file">File</option>
+                                                    </select>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-6 ml-10">
-                                                <div className="flex items-center gap-3">
-                                                    <span className={`text-[10px] font-bold uppercase tracking-widest ${field.is_required ? 'text-emerald-500' : 'text-slate-300'}`}>{field.is_required ? 'Required' : 'Optional'}</span>
-                                                    <button onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, is_required: !f.is_required } : f) }))} className={`w-11 h-6 rounded-full flex items-center px-1 transition-all ${field.is_required ? 'bg-emerald-500 shadow-md shadow-emerald-500/10' : 'bg-slate-200'}`}><div className={`w-4 h-4 bg-white rounded-full transition-all ${field.is_required ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
-                                                </div>
-                                                <button onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-9 h-9 rounded-lg hover:bg-rose-50 text-slate-200 hover:text-rose-500 transition-all flex items-center justify-center"><span className="material-symbols-rounded text-xl">close</span></button>
+                                            <div className="flex items-center gap-4 ml-6">
+                                                <button onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, is_required: !f.is_required } : f) }))} className={`px-2.5 py-1 rounded-xl text-[8px] font-black   border transition-all ${field.is_required ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-300 border-slate-100'}`}>{field.is_required ? 'Required' : 'Optional'}</button>
+                                                <button onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-8 h-8 rounded-xl hover:bg-rose-50 text-slate-200 hover:text-rose-500 transition-all flex items-center justify-center active:scale-90"><X className="w-4 h-4" /></button>
                                             </div>
                                         </div>
                                     ))}
@@ -464,60 +568,74 @@ export default function EditJobPage() {
                     )}
 
                     {currentStep === 3 && (
-                        <motion.div
-                            key="step3"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            className="flex-1 grid grid-cols-12 overflow-hidden h-full"
-                        >
-                            <div className="col-span-4 border-r border-slate-50 p-12 bg-slate-50/20">
-                                <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-4">Hiring Process</h1>
-                                <p className="text-sm text-slate-400 font-medium leading-relaxed mb-10">Define the stages of your evaluation lifecycle. Sequence rounds for an optimal applicant journey.</p>
+                        <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex-1 grid grid-cols-12 overflow-hidden h-full">
+                            <div className="col-span-4 border-r border-slate-100 p-8 bg-slate-50/30 overflow-y-auto no-scrollbar flex flex-col gap-6">
+                                {/* Header */}
+                                <div>
+                                    <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none mb-2">Hiring Process</h1>
+                                    <p className="text-[11px] text-slate-400 font-medium leading-relaxed">Define the stages candidates go through from application to final selection.</p>
+                                </div>
+
+                                {/* Add Stage Button */}
                                 <button onClick={() => {
-                                    const newStage: WorkflowStage = {
-                                        id: Date.now().toString(),
-                                        name: 'New Interview Node',
-                                        type: 'Interview',
-                                        icon: 'groups'
-                                    };
+                                    const maxId = Math.max(0, ...formData.workflow_stages.map(s => parseInt(s.id) || 0));
+                                    const newStage: WorkflowStage = { id: (maxId + 1).toString(), name: `Stage ${maxId + 1}`, type: 'Technical Interview', icon: 'Zap' };
                                     setFormData(prev => ({ ...prev, workflow_stages: [...prev.workflow_stages, newStage] }));
-                                }} className="w-full py-4.5 rounded-2xl bg-slate-900 text-white text-sm font-bold shadow-xl shadow-slate-200 hover:bg-black transition-all flex items-center justify-center gap-2">
-                                    <span className="material-symbols-rounded text-xl">add_task</span>
-                                    Add Hiring Round
+                                }} className="w-full py-3.5 rounded-xl bg-indigo-600 text-white text-[11px] font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 active:scale-95">
+                                    <ListPlus className="w-4 h-4" />
+                                    Add Stage
                                 </button>
+
+                                {/* Stage Stats */}
+                                <div className="bg-white rounded-xl border border-slate-200 p-4 text-center shadow-sm">
+                                    <div className="text-2xl font-black text-indigo-600">{formData.workflow_stages.length}</div>
+                                    <div className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wide">Total Stages</div>
+                                </div>
+
+                                {/* Stage Types Guide */}
+                                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
+                                    <p className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Stage Types</p>
+                                    {[
+                                        { type: 'Screening', color: 'bg-blue-50 text-blue-600', desc: 'Initial candidate filtering' },
+                                        { type: 'Aptitude', color: 'bg-purple-50 text-purple-600', desc: 'Cognitive & reasoning tests' },
+                                        { type: 'Coding', color: 'bg-orange-50 text-orange-600', desc: 'Technical coding assessment' },
+                                        { type: 'Tech Interview', color: 'bg-teal-50 text-teal-600', desc: 'Deep technical evaluation' },
+                                        { type: 'HR Interview', color: 'bg-rose-50 text-rose-600', desc: 'Culture & fit discussion' },
+                                        { type: 'Final Selection', color: 'bg-emerald-50 text-emerald-600', desc: 'Final hiring decision' },
+                                    ].map(item => (
+                                        <div key={item.type} className="flex items-center gap-3">
+                                            <span className={`text-[9px] font-black px-2 py-1 rounded-lg ${item.color} shrink-0 w-20 text-center`}>{item.type}</span>
+                                            <span className="text-[11px] text-slate-400 font-medium">{item.desc}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="col-span-8 p-12 overflow-y-auto no-scrollbar flex flex-col items-center">
-                                <div className="w-full max-w-2xl space-y-4">
+                            <div className="col-span-8 p-8 overflow-y-auto no-scrollbar flex flex-col items-center">
+                                <div className="w-full max-w-lg space-y-3 pb-10">
                                     {formData.workflow_stages.map((node, idx) => (
-                                        <div key={node.id} className="group relative flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-[#7C3AED] hover:shadow-lg transition-all">
-                                            <div className="flex flex-col gap-1 items-center opacity-0 group-hover:opacity-100 transition-opacity absolute -left-10">
+                                        <div key={node.id} className="group relative flex items-center gap-4 bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm border-l-4 border-l-indigo-600 hover:shadow-lg transition-all">
+                                            <div className="flex flex-col gap-1 items-center opacity-0 group-hover:opacity-100 transition-opacity absolute -left-8">
                                                 <button disabled={idx === 0} onClick={() => {
                                                     const newStages = [...formData.workflow_stages];
                                                     [newStages[idx], newStages[idx - 1]] = [newStages[idx - 1], newStages[idx]];
                                                     setFormData(prev => ({ ...prev, workflow_stages: newStages }));
-                                                }} className="w-7 h-7 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-300 hover:text-[#7C3AED] disabled:opacity-20 shadow-sm"><span className="material-symbols-rounded text-base">expand_less</span></button>
+                                                }} className="w-6 h-6 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-300 hover:text-indigo-600 disabled:opacity-10 transition-all"><ChevronUp className="w-4 h-4" /></button>
                                                 <button disabled={idx === formData.workflow_stages.length - 1} onClick={() => {
                                                     const newStages = [...formData.workflow_stages];
                                                     [newStages[idx], newStages[idx + 1]] = [newStages[idx + 1], newStages[idx]];
                                                     setFormData(prev => ({ ...prev, workflow_stages: newStages }));
-                                                }} className="w-7 h-7 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-300 hover:text-[#7C3AED] disabled:opacity-20 shadow-sm"><span className="material-symbols-rounded text-base">expand_more</span></button>
+                                                }} className="w-6 h-6 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-300 hover:text-indigo-600 disabled:opacity-10 transition-all"><ChevronDown className="w-4 h-4" /></button>
                                             </div>
-                                            <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">0{idx + 1}</div>
-                                            <div className="flex-1">
-                                                <input
-                                                    type="text"
-                                                    className="w-full bg-transparent border-none outline-none text-sm font-bold text-slate-800 p-0 focus:text-[#7C3AED] transition-colors"
-                                                    value={node.name}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, name: e.target.value } : s) }))}
-                                                />
-                                                <div className="flex items-center gap-2 mt-0.5 text-slate-400">
-                                                    <span className="text-[9px] font-bold uppercase tracking-widest">{node.type}</span>
-                                                    <span className="w-0.5 h-0.5 rounded-full bg-slate-200"></span>
-                                                    <span className="material-symbols-rounded text-sm">{node.icon}</span>
+                                            <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black  shrink-0 shadow-lg">#0{idx + 1}</div>
+                                            <div className="flex-1 space-y-2">
+                                                <input type="text" className="w-full bg-transparent border-none outline-none text-[13px] font-black text-slate-800 p-0 focus:text-indigo-600 transition-colors  " value={node.name} onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, name: e.target.value } : s) }))} />
+                                                <div className="flex items-center gap-4">
+                                                    <select className="bg-slate-50 border-none outline-none text-[9px] font-black text-slate-400  px-2.5 py-1 rounded-xl cursor-pointer hover:bg-slate-100 transition-all font-mono" value={node.type} onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, type: e.target.value } : s) }))}>
+                                                        {STAGE_TYPES.map(t => (<option key={t.name} value={t.name}>{t.name}</option>))}
+                                                    </select>
                                                 </div>
                                             </div>
-                                            <button onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-lg hover:bg-rose-50 text-slate-200 hover:text-rose-500 transition-all flex items-center justify-center"><span className="material-symbols-rounded text-lg">close</span></button>
+                                            <button onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-xl hover:bg-rose-50 text-slate-200 hover:text-rose-500 transition-all flex items-center justify-center active:scale-95"><X className="w-4 h-4" /></button>
                                         </div>
                                     ))}
                                 </div>
@@ -529,22 +647,20 @@ export default function EditJobPage() {
 
             <AnimatePresence>
                 {showSuccessModal && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-3xl p-8"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            className="bg-white w-full max-w-lg rounded-[3rem] p-16 text-center shadow-2xl relative overflow-hidden"
-                        >
-                            <div className="relative z-10 w-24 h-24 bg-emerald-500 text-white rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-emerald-500/20"><span className="material-symbols-rounded text-5xl">check_circle</span></div>
-                            <h2 className="relative z-10 text-4xl font-bold text-slate-900 tracking-tight mb-4">Job Updated!</h2>
-                            <p className="relative z-10 text-sm text-slate-400 font-medium leading-relaxed mb-12">Synchronization successful. Your mission parameters are active.</p>
-                            <div className="relative z-10 flex flex-col gap-3">
-                                <button onClick={() => router.push("/enterprise/jobs")} className="w-full py-5 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-black transition-all shadow-xl">Back to Inventory</button>
-                                <button onClick={() => setShowSuccessModal(false)} className="w-full py-5 border-2 border-slate-50 rounded-2xl text-slate-500 font-bold text-sm hover:bg-slate-50 transition-all">Continue Editing</button>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-6">
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-md rounded-2xl p-10 text-center shadow-2xl relative overflow-hidden border border-slate-100">
+                            <div className="w-16 h-16 bg-emerald-500 text-white rounded-xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/20"><CircleCheck className="w-10 h-10" /></div>
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-2   leading-none">Job Updated</h2>
+                            <p className="text-[10px] text-slate-400 font-bold   leading-relaxed mb-8 opacity-60">The job details have been updated successfully.</p>
+                            <div className="flex flex-col gap-2">
+                                <button onClick={() => router.push("/enterprise/jobs")} className="w-full py-4 bg-indigo-600 text-white rounded-xl font-black text-[10px]   hover:bg-indigo-700 transition-all shadow-xl flex items-center justify-center gap-2">
+                                    <LayoutDashboard className="w-4 h-4" />
+                                    View Job Board
+                                </button>
+                                <button onClick={() => window.open(`${window.location.origin}/jobs/${jobId}`, '_blank')} className="w-full py-4 border border-slate-100 rounded-xl text-slate-400 font-black text-[10px]   hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                                    <Eye className="w-4 h-4" />
+                                    View Job Application
+                                </button>
                             </div>
                         </motion.div>
                     </motion.div>

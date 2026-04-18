@@ -205,44 +205,37 @@ export default function JobDetailPage() {
                 <div className="flex items-center gap-4">
                     <button 
                         onClick={() => router.back()}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all"
+                        className="w-8 h-8 flex items-center justify-center rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all"
                     >
                         <span className="material-symbols-rounded text-xl">arrow_back</span>
                     </button>
                     <div>
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400   mb-0.5">
                             <Link href="/enterprise/jobs" className="hover:text-indigo-600">Jobs</Link>
                             <span>/</span>
                             <span>{job.id.slice(0, 8)}</span>
                         </div>
                         <h1 className="text-sm font-black text-slate-900 flex items-center gap-2">
                             {job.title}
-                            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-md border border-emerald-100 uppercase tracking-wide">
+                            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-xl border border-emerald-100  tracking-wide">
                                 {getStatusLabel(job.status_id)}
                             </span>
                         </h1>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    {canAccess("jobs:update") && (
-                        <div className="flex rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
-                            <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 border-r border-slate-200 flex items-center gap-1.5 transition-all">
-                                Publish <span className="material-symbols-rounded text-sm">expand_more</span>
-                            </button>
-                            <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 border-r border-slate-200 flex items-center gap-1.5 transition-all">
-                                Candidate <span className="material-symbols-rounded text-sm">expand_more</span>
-                            </button>
-                            <button className="px-4 py-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 transition-all">
-                                Pipeline <span className="material-symbols-rounded text-sm">expand_more</span>
-                            </button>
-                        </div>
-                    )}
-                    <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all">
+                    <button className="w-8 h-8 flex items-center justify-center rounded-xl border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm">
                         <span className="material-symbols-rounded text-xl">share</span>
                     </button>
-                    <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-slate-600 transition-all">
-                        <span className="material-symbols-rounded text-xl">more_vert</span>
-                    </button>
+                    {canAccess("jobs:update") && (
+                        <Link 
+                            href={`/enterprise/jobs/${id}/edit`}
+                            className="px-4 py-1.5 flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 text-white text-[11px] font-black hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
+                        >
+                            <span className="material-symbols-rounded text-[14px]">edit</span>
+                            Edit
+                        </Link>
+                    )}
                 </div>
             </div>
 
@@ -251,7 +244,7 @@ export default function JobDetailPage() {
                 <div className="flex flex-wrap items-end justify-between gap-6 pb-2">
                     <div className="space-y-1">
                         <h2 className="text-3xl font-black text-slate-900 tracking-tight">{job.title}</h2>
-                        <div className="flex items-center gap-2 text-indigo-500 font-bold text-xs uppercase tracking-tight">
+                        <div className="flex items-center gap-2 text-indigo-500 font-bold text-xs  tracking-tight">
                             <span className="material-symbols-rounded text-sm">location_on</span>
                             {job.location}
                         </div>
@@ -271,8 +264,8 @@ export default function JobDetailPage() {
                     ].map((card, i) => (
                         <div key={i} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all group">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-[10px] font-black text-slate-400 tracking-wider transition-colors group-hover:text-slate-600">{card.label}</span>
-                                <div className={`w-8 h-8 rounded-lg ${card.bg} flex items-center justify-center ${card.color}`}>
+                                <span className="text-[10px] font-black text-slate-400  transition-colors group-hover:text-slate-600">{card.label}</span>
+                                <div className={`w-8 h-8 rounded-xl ${card.bg} flex items-center justify-center ${card.color}`}>
                                     <span className="material-symbols-rounded text-lg">{card.icon}</span>
                                 </div>
                             </div>
@@ -312,31 +305,21 @@ export default function JobDetailPage() {
                         ))}
                     </div>
 
-                    <div className="flex justify-end">
-                        <label className={`flex items-center gap-2 text-xs font-bold text-slate-400 ${canAccess("jobs:update") ? "cursor-pointer" : "cursor-default opacity-50"}`}>
-                            <input 
-                                type="checkbox" 
-                                className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" 
-                                disabled={!canAccess("jobs:update")}
-                            />
-                            Do not publish
-                        </label>
-                    </div>
 
                     {/* Active Tab Content (Overview) */}
                     {activeTab === "overview" && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* Pipeline Visualization */}
-                                <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
+                                <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-6 overflow-hidden">
                                      <div className="flex items-center justify-between mb-8">
                                         <div>
-                                            <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Recruitment Pipeline</h3>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Distribution across rounds</p>
+                                            <h3 className="text-sm font-black text-slate-900  tracking-tight">Recruitment Pipeline</h3>
+                                            <p className="text-[10px] font-bold text-slate-400   mt-0.5">Distribution across rounds</p>
                                         </div>
-                                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg">
+                                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-xl">
                                             <span className="w-2 h-2 rounded-full bg-[#7C3AED]"></span>
-                                            <span className="text-[10px] font-black text-slate-600 uppercase tracking-tight">{totalCandidates} TOTAL</span>
+                                            <span className="text-[10px] font-black text-slate-600  tracking-tight">{totalCandidates} TOTAL</span>
                                         </div>
                                     </div>
 
@@ -361,8 +344,8 @@ export default function JobDetailPage() {
                                                     content={({ active, payload }) => {
                                                         if (active && payload && payload.length) {
                                                             return (
-                                                                <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 shadow-xl">
-                                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{payload[0].payload.name}</p>
+                                                                <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-xl">
+                                                                    <p className="text-[10px] font-black text-slate-400   leading-none mb-1">{payload[0].payload.name}</p>
                                                                     <p className="text-xs font-black text-white">{payload[0].value} Candidates</p>
                                                                 </div>
                                                             );
@@ -382,14 +365,14 @@ export default function JobDetailPage() {
 
                                 {/* Summary Sidebar */}
                                 <div className="space-y-6">
-                                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider mb-4">Stage Efficiency</h3>
+                                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                        <h3 className="text-xs font-black text-slate-900   mb-4">Stage Efficiency</h3>
                                         <div className="space-y-4">
                                             {pipelineData.map((stage, i) => (
                                                 <div key={i} className="flex flex-col gap-1.5">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-tight">{stage.name}</span>
-                                                        <span className="text-[10px] font-black text-slate-900 uppercase">{Math.round((stage.count / (totalCandidates || 1)) * 100)}%</span>
+                                                        <span className="text-[10px] font-black text-slate-500  tracking-tight">{stage.name}</span>
+                                                        <span className="text-[10px] font-black text-slate-900 ">{Math.round((stage.count / (totalCandidates || 1)) * 100)}%</span>
                                                     </div>
                                                     <div className="w-full h-1.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
                                                         <div 
@@ -402,11 +385,11 @@ export default function JobDetailPage() {
                                         </div>
                                     </div>
                                     
-                                    <div className="bg-[#7C3AED] rounded-2xl p-6 shadow-lg shadow-indigo-200">
+                                    <div className="bg-[#7C3AED] rounded-xl p-6 shadow-lg shadow-indigo-200">
                                         <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white mb-4">
                                             <span className="material-symbols-rounded text-white">trending_up</span>
                                         </div>
-                                        <h4 className="text-sm font-black text-white uppercase tracking-tight">Quick Insight</h4>
+                                        <h4 className="text-sm font-black text-white  tracking-tight">Quick Insight</h4>
                                         <p className="text-white/80 text-[11px] font-medium leading-relaxed mt-1">
                                             Most candidates are currently in the <strong>{pipelineData.length > 0 ? pipelineData.reduce((prev, current) => (prev.count > current.count) ? prev : current).name : "initial"}</strong> stage. 
                                             Consider reviewing this pipeline to speed up the hiring process.
@@ -419,42 +402,42 @@ export default function JobDetailPage() {
 
                     {/* Active Tab Content (Info) */}
                     {activeTab === "info" && (
-                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <button className="w-full px-6 py-4 flex items-center justify-between bg-slate-50/50 border-b border-slate-100 hover:bg-slate-50 transition-colors group">
-                                <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Job Details</h3>
+                                <h3 className="text-sm font-black text-slate-900  tracking-tight">Job Details</h3>
                                 <span className="material-symbols-rounded text-slate-400 group-hover:text-slate-600">expand_more</span>
                             </button>
                             
                             <div className="p-10">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 gap-x-12">
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Client Job ID</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Client Job ID</p>
                                         <p className="text-xs font-bold text-slate-800">{job.client_job_id || "-"}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Job ID</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Job ID</p>
                                         <p className="text-xs font-bold text-slate-800">EXAIN-{job.id.slice(0, 8).toUpperCase()}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Status</p>
                                         <p className="text-xs font-bold text-slate-800">{getStatusLabel(job.status_id)}</p>
                                     </div>
                                     
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Job Title</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Job Title</p>
                                         <p className="text-xs font-bold text-slate-800">{job.title}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Type</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Customer Type</p>
                                         <p className="text-xs font-bold text-slate-800">{job.customer_type || "Internal"}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Customer</p>
                                         <p className="text-xs font-bold text-slate-800">{job.customer || "Internal"}</p>
                                     </div>
 
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Experience</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Experience</p>
                                         <p className="text-xs font-bold text-slate-800">
                                             {job.experience_min !== undefined && job.experience_max !== undefined 
                                                 ? `${job.experience_min} - ${job.experience_max} Years`
@@ -462,7 +445,7 @@ export default function JobDetailPage() {
                                         </p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Salary Range</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Salary Range</p>
                                         <p className="text-xs font-bold text-slate-800">
                                             {job.salary_min && job.salary_max 
                                                 ? `${job.salary_currency || "INR"} ${job.salary_min.toLocaleString()} - ${job.salary_max.toLocaleString()} / ${job.salary_frequency || "Yearly"}`
@@ -470,20 +453,20 @@ export default function JobDetailPage() {
                                         </p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Work Mode</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Work Mode</p>
                                         <p className="text-xs font-bold text-slate-800">{job.work_mode || "On-site"}</p>
                                     </div>
 
                                     <div className="space-y-1 md:col-span-3">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Required Skills</p>
+                                        <p className="text-[10px] font-black text-slate-400  ">Required Skills</p>
                                         <div className="flex flex-wrap gap-2 mt-2">
                                             {job.required_skills?.map((skill, i) => (
-                                                <span key={i} className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold rounded-md uppercase tracking-tight">
+                                                <span key={i} className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold rounded-xl  tracking-tight">
                                                     {skill.trim()}
                                                 </span>
                                             ))}
                                             {(!job.required_skills || job.required_skills.length === 0) && (
-                                                <span className="text-xs font-bold text-slate-400 italic">No skills specified</span>
+                                                <span className="text-xs font-bold text-slate-400 ">No skills specified</span>
                                             )}
                                         </div>
                                     </div>
@@ -494,31 +477,31 @@ export default function JobDetailPage() {
                     
                     {/* Onboarding Tab Content */}
                     {activeTab === "onboarding_tab" && (
-                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                                <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">Onboarding Candidates</h3>
+                                <h3 className="text-xs font-black text-slate-900  ">Onboarding Candidates</h3>
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
                                         <tr className="bg-slate-50/50">
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Code</th>
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Candidate</th>
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400  ">Code</th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400  ">Candidate</th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400   text-center">Status</th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400   text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100">
                                         {onboardings.map((ob) => (
                                             <tr key={ob.id} className="hover:bg-slate-50/50 transition-colors group cursor-pointer" onClick={() => router.push(`/enterprise/onboarding/${ob.id}`)}>
                                                 <td className="px-6 py-4">
-                                                    <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded uppercase">
+                                                    <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded ">
                                                         {ob.onboarding_code}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-xs uppercase">
+                                                        <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-xs ">
                                                             {ob.application?.candidate?.full_name?.charAt(0)}
                                                         </div>
                                                         <div>
@@ -533,13 +516,13 @@ export default function JobDetailPage() {
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     {ob.status && (
-                                                        <span className={`text-[10px] font-black px-3 py-1 rounded-full border uppercase tracking-tighter ${getOnboardingStatusColor(ob.status.name)}`}>
+                                                        <span className={`text-[10px] font-black px-3 py-1 rounded-full border  tracking-tighter ${getOnboardingStatusColor(ob.status.name)}`}>
                                                             {ob.status.name}
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <button className="h-7 px-3 rounded-lg bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">
+                                                    <button className="h-7 px-3 rounded-xl bg-slate-100 text-slate-500 text-[9px] font-black   hover:bg-slate-200 transition-all">
                                                         Track
                                                     </button>
                                                 </td>
@@ -565,13 +548,13 @@ export default function JobDetailPage() {
 
                     {/* Candidate List Content (for stage tabs) */}
                     {!STATIC_LEADING_TABS.some(t => t.id === activeTab) && (
-                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
                             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                                <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">Candidates</h3>
+                                <h3 className="text-xs font-black text-slate-900  ">Candidates</h3>
                                 <div className="flex items-center gap-2">
                                     <div className="relative">
                                         <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-                                        <input type="text" placeholder="Search..." className="pl-9 pr-4 py-1.5 bg-slate-50 border-none rounded-lg text-xs font-medium focus:ring-1 focus:ring-indigo-500 w-48" />
+                                        <input type="text" placeholder="Search..." className="pl-9 pr-4 py-1.5 bg-slate-50 border-none rounded-xl text-xs font-medium focus:ring-1 focus:ring-indigo-500 w-48" />
                                     </div>
                                 </div>
                             </div>
@@ -579,11 +562,11 @@ export default function JobDetailPage() {
                                 <table className="w-full text-left">
                                     <thead>
                                         <tr className="bg-slate-50/50">
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Candidate</th>
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Match Score</th>
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Applied</th>
-                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest"></th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400  ">Candidate</th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400   text-center">Match Score</th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400  ">Status</th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400  ">Applied</th>
+                                            <th className="px-6 py-3 text-[10px] font-black text-slate-400  "></th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100">
@@ -625,11 +608,11 @@ export default function JobDetailPage() {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-black rounded-md border border-indigo-100 uppercase tracking-wide">
+                                                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-black rounded-xl border border-indigo-100  tracking-wide">
                                                             In Progress
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase">
+                                                    <td className="px-6 py-4 text-[10px] font-bold text-slate-500 ">
                                                         {new Date(app.applied_at).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
@@ -661,28 +644,7 @@ export default function JobDetailPage() {
                     )}
                 </div>
 
-                {/* Footer Actions */}
-                <div className="pt-8 flex justify-center items-center gap-3">
-                    {canAccess("jobs:update") && (
-                        <>
-                            <button className="px-6 py-2 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-600 text-[11px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all active:scale-95 shadow-sm">
-                                Clone
-                            </button>
-                            <Link 
-                                href={`/enterprise/jobs/${id}/edit`}
-                                className="px-6 py-2 rounded-lg bg-indigo-600 text-white text-[11px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
-                            >
-                                Edit
-                            </Link>
-                        </>
-                    )}
-                    <button 
-                        onClick={() => router.back()}
-                        className="px-6 py-2 rounded-lg border border-slate-200 bg-white text-slate-600 text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 shadow-sm"
-                    >
-                        Previous
-                    </button>
-                </div>
+                {/* Footer Actions Removed */}
             </div>
         </div>
     );

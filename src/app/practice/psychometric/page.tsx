@@ -46,7 +46,7 @@ export default function StudentPsychometricListPage() {
             <section className="relative overflow-hidden rounded-[1.5rem] bg-emerald-600 p-6 text-white shadow-lg">
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-3">
-                        <h2 className="text-2xl font-black uppercase tracking-tight">Psychometric Lab</h2>
+                        <h2 className="text-2xl font-black  tracking-tight">Psychometric Lab</h2>
                         <p className="text-slate-100 text-xs max-w-sm font-medium leading-relaxed">
                             Unlock your behavioral DNA. Analyze your personality traits, strengths, and workplace compatibility.
                         </p>
@@ -56,10 +56,10 @@ export default function StudentPsychometricListPage() {
                             <span className="material-icons-outlined text-2xl">psychology_alt</span>
                         </div>
                         <div>
-                            <p className="text-[9px] font-black text-slate-200 uppercase tracking-widest mb-1">Lab_Status</p>
+                            <p className="text-[9px] font-black text-slate-200   mb-1">Lab_Status</p>
                             <div className="flex items-baseline gap-1">
                                 <span className="text-2xl font-black">{tests.length}</span>
-                                <span className="text-[9px] font-bold text-slate-200 uppercase">Tests</span>
+                                <span className="text-[9px] font-bold text-slate-200 ">Tests</span>
                             </div>
                         </div>
                     </div>
@@ -83,36 +83,36 @@ export default function StudentPsychometricListPage() {
                                     </span>
                                 </div>
                                 <div className="flex flex-col items-end gap-1">
-                                    <span className="px-2 py-0.5 rounded text-[8px] font-black tracking-widest uppercase border border-slate-100 bg-slate-50 text-slate-500 shadow-sm">
+                                    <span className="px-2 py-0.5 rounded text-[8px] font-black   border border-slate-100 bg-slate-50 text-slate-500 shadow-sm">
                                         TRAIT_{test.id}
                                     </span>
                                     {test.test_type === 'SPOT_ON' && (
-                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black tracking-widest uppercase shadow-lg shadow-slate-200">
+                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black   shadow-lg shadow-slate-200">
                                             ATTENTION
                                         </span>
                                     )}
                                     {test.test_type === 'NUMERO' && (
-                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black tracking-widest uppercase shadow-lg shadow-slate-200">
+                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black   shadow-lg shadow-slate-200">
                                             NUMERICAL
                                         </span>
                                     )}
                                     {test.test_type === 'LABYRINTH' && (
-                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black tracking-widest uppercase shadow-lg shadow-slate-200">
+                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black   shadow-lg shadow-slate-200">
                                             SPATIAL
                                         </span>
                                     )}
                                     {test.test_type === 'EMOTIONAL_INTELLIGENCE' && (
-                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black tracking-widest uppercase shadow-lg shadow-slate-200">
+                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black   shadow-lg shadow-slate-200">
                                             EMOTIONAL
                                         </span>
                                     )}
                                     {test.test_type === 'PIPELINE' && (
-                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black tracking-widest uppercase shadow-lg shadow-slate-200">
+                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black   shadow-lg shadow-slate-200">
                                             PIPELINE
                                         </span>
                                     )}
                                     {test.test_type === 'FREE_TRANSPORT' && (
-                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black tracking-widest uppercase shadow-lg shadow-slate-200">
+                                        <span className="px-2 py-0.5 rounded bg-slate-800 text-white text-[7px] font-black   shadow-lg shadow-slate-200">
                                             RISK
                                         </span>
                                     )}
@@ -120,10 +120,10 @@ export default function StudentPsychometricListPage() {
                             </div>
 
                             <div className="space-y-2 flex-grow">
-                                <span className={`px-2 py-0.5 rounded-md ${colors.iconBg} text-[7px] font-black uppercase tracking-widest inline-block mb-1`}>
+                                <span className={`px-2 py-0.5 rounded-md ${colors.iconBg} text-[7px] font-black   inline-block mb-1`}>
                                     {test.trait}
                                 </span>
-                                <h3 className={`text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight uppercase group-hover:${colors.iconText} transition-colors`}>{test.title}</h3>
+                                <h3 className={`text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight  group-hover:${colors.iconText} transition-colors`}>{test.title}</h3>
                                 <p className="text-slate-600 dark:text-slate-400 text-[10px] leading-relaxed font-medium line-clamp-2">
                                     {test.description}
                                 </p>
@@ -132,7 +132,7 @@ export default function StudentPsychometricListPage() {
                             {/* Action */}
                             <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/50">
                                 <Link href={`/practice/psychometric/${test.id}`}>
-                                    <button className={`w-full ${colors.button} font-black text-[9px] tracking-widest uppercase py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
+                                    <button className={`w-full ${colors.button} font-black text-[9px]   py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
                                         BEGIN ANALYSIS
                                         <span className="material-symbols-rounded text-base">arrow_forward</span>
                                     </button>
@@ -148,8 +148,8 @@ export default function StudentPsychometricListPage() {
                             <span className="material-icons-outlined text-xl">science</span>
                         </div>
                         <div className="space-y-0.5">
-                            <h4 className="text-[10px] font-black text-slate-300 uppercase tracking-widest group-hover:text-slate-400 transition-colors">Lab Empty</h4>
-                            <p className="text-[8px] text-slate-300 font-black uppercase tracking-widest">No Tests Configured</p>
+                            <h4 className="text-[10px] font-black text-slate-300   group-hover:text-slate-400 transition-colors">Lab Empty</h4>
+                            <p className="text-[8px] text-slate-300 font-black  ">No Tests Configured</p>
                         </div>
                     </div>
                 )}

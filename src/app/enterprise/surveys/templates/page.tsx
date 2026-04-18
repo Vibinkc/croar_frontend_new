@@ -52,16 +52,16 @@ export default function SurveyTemplates() {
                 </button>
             </header>
 
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in zoom-in-95 duration-500">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50 border-b border-slate-200">
-                                <th className="px-8 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Framework Title</th>
-                                <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Category</th>
-                                <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Items</th>
-                                <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Strategic Description</th>
-                                <th className="px-8 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                                <th className="px-8 py-4 text-[11px] font-bold text-slate-500  ">Framework Title</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-slate-500   text-center">Category</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-slate-500   text-center">Items</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-slate-500  ">Strategic Description</th>
+                                <th className="px-8 py-4 text-[11px] font-bold text-slate-500   text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -69,7 +69,7 @@ export default function SurveyTemplates() {
                                 <tr key={tpl.id} className="group hover:bg-slate-50/50 transition-colors">
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-lg bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                                                 <span className="material-symbols-rounded text-lg">architecture</span>
                                             </div>
                                             <div className="min-w-0">
@@ -79,7 +79,7 @@ export default function SurveyTemplates() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 text-center">
-                                        <span className="inline-block bg-indigo-50 text-indigo-600 text-[10px] font-bold px-3 py-1 rounded-md border border-indigo-100 uppercase tracking-wider">
+                                        <span className="inline-block bg-indigo-50 text-indigo-600 text-[10px] font-bold px-3 py-1 rounded-xl border border-indigo-100  ">
                                             {tpl.survey_type.name}
                                         </span>
                                     </td>
@@ -87,7 +87,7 @@ export default function SurveyTemplates() {
                                         <span className="text-sm font-bold text-slate-600">{tpl.questions.length}</span>
                                     </td>
                                     <td className="px-6 py-5 max-w-sm">
-                                        <p className="text-xs text-slate-500 line-clamp-1 italic font-medium leading-relaxed">
+                                        <p className="text-xs text-slate-500 line-clamp-1  font-medium leading-relaxed">
                                             {tpl.description || "General framework designed for comprehensive feedback."}
                                         </p>
                                     </td>
@@ -95,11 +95,11 @@ export default function SurveyTemplates() {
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button 
                                                 onClick={() => router.push(`/enterprise/surveys/templates/edit/${tpl.id}`)}
-                                                className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                                className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
                                             >
                                                 <span className="material-symbols-rounded text-xl">edit_note</span>
                                             </button>
-                                            <button className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all">
+                                            <button className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
                                                 <span className="material-symbols-rounded text-xl">delete_sweep</span>
                                             </button>
                                         </div>
@@ -110,7 +110,7 @@ export default function SurveyTemplates() {
                                     <td colSpan={5} className="py-24 text-center">
                                         <div className="flex flex-col items-center justify-center opacity-40">
                                             <span className="material-symbols-rounded text-5xl mb-4">inventory_2</span>
-                                            <p className="text-sm font-bold uppercase tracking-widest text-slate-400">Library Empty</p>
+                                            <p className="text-sm font-bold   text-slate-400">Library Empty</p>
                                         </div>
                                     </td>
                                 </tr>

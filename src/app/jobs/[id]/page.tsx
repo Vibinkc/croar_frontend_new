@@ -27,7 +27,9 @@ export default function PublicJobPage() {
     const fetchJobDetails = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/public/jobs/${id}`, {
+            // Ensure BACKEND_URL doesn't end with slash if path starts with it
+            const baseUrl = BACKEND_URL.endsWith('/') ? BACKEND_URL.slice(0, -1) : BACKEND_URL;
+            const res = await fetch(`${baseUrl}/api/v1/enterprise/public/jobs/${id}`, {
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -151,7 +153,7 @@ export default function PublicJobPage() {
                         </div>
                         <div className="flex flex-col">
                             <span className="text-sm font-black text-slate-900 leading-tight">Career Portal</span>
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <span className="text-[10px] font-black text-slate-400  ">
                                 {typeof orgName === 'object' ? (orgName as any).name : orgName} 
                             </span>
                         </div>
@@ -170,13 +172,13 @@ export default function PublicJobPage() {
                                 <img src={(orgName as any).logo_url} className="h-8 object-contain mb-2 block" alt="Company Logo" />
                             )}
                             <div className="w-full"></div>
-                            <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-lg">
+                            <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black   rounded-lg">
                                 {job.job_type || "Full Time"}
                             </span>
-                            <span className="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest rounded-lg">
+                            <span className="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-black   rounded-lg">
                                 {job.work_mode || "On-Site"}
                             </span>
-                            <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5">
+                            <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black   rounded-lg flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                 Currently Hiring
                             </span>
@@ -203,7 +205,7 @@ export default function PublicJobPage() {
 
                         <div className="relative z-10 border-t border-slate-50 pt-10 space-y-10">
                             <div>
-                                <h3 className="text-[11px] font-black text-indigo-600 uppercase tracking-[0.2em] mb-4">About the Role</h3>
+                                <h3 className="text-[11px] font-black text-indigo-600  tracking-[0.2em] mb-4">About the Role</h3>
                                 <div className="text-slate-600 font-medium leading-[1.7] max-w-none">
                                     <style jsx global>{`
                                         .prose-custom ul {
@@ -234,10 +236,10 @@ export default function PublicJobPage() {
 
                             {job.required_skills && job.required_skills.length > 0 && (
                                 <div>
-                                    <h3 className="text-[11px] font-black text-indigo-600 uppercase tracking-[0.2em] mb-4">Required Competencies</h3>
+                                    <h3 className="text-[11px] font-black text-indigo-600  tracking-[0.2em] mb-4">Required Competencies</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {job.required_skills.map((skill: string, idx: number) => (
-                                            <span key={idx} className="px-4 py-2 bg-slate-50 text-slate-700 rounded-xl border border-slate-100 font-bold text-xs uppercase tracking-wider">
+                                            <span key={idx} className="px-4 py-2 bg-slate-50 text-slate-700 rounded-xl border border-slate-100 font-bold text-xs  ">
                                                 {skill}
                                             </span>
                                         ))}
@@ -267,7 +269,7 @@ export default function PublicJobPage() {
                             <>
                                 <div className="relative z-10 mb-8">
                                     <h2 className="text-2xl font-black text-white tracking-tight mb-2">Apply Now</h2>
-                                    <p className="text-indigo-300 font-bold text-[10px] uppercase tracking-widest leading-relaxed">
+                                    <p className="text-indigo-300 font-bold text-[10px]   leading-relaxed">
                                         Fast-track your application today
                                     </p>
                                 </div>
@@ -284,7 +286,7 @@ export default function PublicJobPage() {
                                         if (field.type === 'file') {
                                             return (
                                                 <div key={field.id} className="space-y-1">
-                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                                    <label className="text-[10px] font-black text-slate-400   ml-1">
                                                         {field.label} {field.is_required && <span className="text-rose-500">*</span>}
                                                     </label>
                                                     <div className="relative group">
@@ -328,7 +330,7 @@ export default function PublicJobPage() {
                                                             <span className="material-icons-outlined text-xl">{getIcon(field.icon) || 'check_circle'}</span>
                                                         </div>
                                                         <div className="flex flex-col">
-                                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                            <label className="text-[10px] font-black text-slate-400  ">
                                                                 {field.label} {field.is_required && <span className="text-rose-500">*</span>}
                                                             </label>
                                                             <span className={`text-[11px] font-bold ${isChecked ? 'text-emerald-400' : 'text-slate-500'}`}>{isChecked ? 'Selected: Yes' : 'Selected: No'}</span>
@@ -347,7 +349,7 @@ export default function PublicJobPage() {
 
                                         return (
                                             <div key={field.id} className="space-y-1">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                                <label className="text-[10px] font-black text-slate-400   ml-1">
                                                     {field.label} {field.is_required && <span className="text-rose-500">*</span>}
                                                 </label>
                                                 <div className="relative">
@@ -369,7 +371,7 @@ export default function PublicJobPage() {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full bg-indigo-600 text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-900/40 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
+                                        className="w-full bg-indigo-600 text-white py-4 rounded-xl font-black text-xs   hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-900/40 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
                                     >
                                         {isSubmitting ? (
                                             <span className="animate-spin material-icons-outlined text-[18px]">sync</span>
@@ -391,10 +393,10 @@ export default function PublicJobPage() {
 
             <footer className="border-t border-slate-100 py-12 mt-12 bg-white">
                 <div className="max-w-[95%] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
+                    <p className="text-slate-400 text-xs font-bold  ">
                         Powered by <span className="text-indigo-600">Academik.ai</span> Corporate Excellence
                     </p>
-                    <div className="flex items-center gap-6 text-slate-400 text-xs font-bold uppercase tracking-widest">
+                    <div className="flex items-center gap-6 text-slate-400 text-xs font-bold  ">
                         <a href="#" className="hover:text-indigo-600 transition-colors">Privacy</a>
                         <a href="#" className="hover:text-indigo-600 transition-colors">Terms</a>
                         <a href="#" className="hover:text-indigo-600 transition-colors">Contact</a>

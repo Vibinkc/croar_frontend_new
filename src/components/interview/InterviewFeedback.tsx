@@ -72,13 +72,13 @@ const BellCurve = ({ percentile }: { percentile: number }) => {
 
             <div className="w-full h-full flex items-end relative overflow-hidden">
                 <div className="w-1/3 h-full border-r border-dashed border-slate-300 relative group">
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Low</div>
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-bold  tracking-tighter">Low</div>
                 </div>
                 <div className="w-1/3 h-full border-r border-dashed border-slate-300 relative group bg-slate-100">
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Average</div>
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-bold  tracking-tighter">Average</div>
                 </div>
                 <div className="w-1/3 h-full relative group bg-slate-200">
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-bold uppercase tracking-tighter">High</div>
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-bold  tracking-tighter">High</div>
                 </div>
 
                 {/* DOT Moved here to span full width */}
@@ -270,7 +270,7 @@ export default function InterviewFeedback({
     if (isSaving || !feedback) return (
         <div className="fixed inset-0 bg-white flex items-center justify-center flex-col gap-4">
             <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-            <p className="text-slate-500 font-black uppercase tracking-widest text-[10px]">
+            <p className="text-slate-500 font-black   text-[10px]">
                 {isSaving ? "Finalizing & Saving Interview Analysis..." : "Generating accurate analysis..."}
             </p>
         </div>
@@ -287,8 +287,8 @@ export default function InterviewFeedback({
                 >
                     <div className="space-y-3">
                         <div className="space-y-1">
-                            <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Analysis Report</h1>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Candidate_ID: TAL-8293</p>
+                            <h1 className="text-2xl font-black text-slate-900  tracking-tight">Analysis Report</h1>
+                            <p className="text-[10px] font-bold text-slate-400  ">Candidate_ID: TAL-8293</p>
                         </div>
                         <div className="flex flex-wrap gap-4 text-xs text-slate-500">
                             <div className="flex items-center gap-2">
@@ -309,11 +309,11 @@ export default function InterviewFeedback({
                                 <span className="text-slate-400 font-bold mb-1">/10</span>
                             </div>
                             <div className="text-right">
-                                <div className="flex items-center gap-2 font-black text-[11px] uppercase tracking-widest mb-1 text-slate-900">
+                                <div className="flex items-center gap-2 font-black text-[11px]   mb-1 text-slate-900">
                                     <span className="material-symbols-rounded text-sm">stars</span>
                                     {feedback.status}
                                 </div>
-                                <div className="text-[9px] text-slate-400 font-bold uppercase tracking-widest font-mono">{feedback.role}</div>
+                                <div className="text-[9px] text-slate-400 font-bold   font-mono">{feedback.role}</div>
                             </div>
                         </div>
                     </div>
@@ -326,12 +326,12 @@ export default function InterviewFeedback({
                         transition={{ delay: 0.2 }}
                         className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm"
                     >
-                        <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-4 border-b border-slate-100 pb-3">Performance_Insights</h2>
+                        <h2 className="text-sm font-black text-slate-900   mb-4 border-b border-slate-100 pb-3">Performance_Insights</h2>
                         <div className="flex flex-col md:flex-row gap-6 items-center">
                             <div className="w-full md:w-1/2">
                                 <BellCurve percentile={feedback.overallScore * 10} />
                             </div>
-                            <div className="w-full md:w-1/2 text-[11px] font-medium leading-relaxed text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-100 italic">
+                            <div className="w-full md:w-1/2 text-[11px] font-medium leading-relaxed text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-100 ">
                                 <span className="material-symbols-rounded text-slate-400 mr-2 align-bottom text-base">psychology</span>
                                 {feedback.summary}
                             </div>
@@ -345,10 +345,10 @@ export default function InterviewFeedback({
                         className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between"
                     >
                         <div>
-                            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-4">Integrity_Panel</h2>
+                            <h2 className="text-sm font-black text-slate-900   mb-4">Integrity_Panel</h2>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50">
-                                    <span className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Integrity Score</span>
+                                    <span className="text-slate-400 text-[10px] font-black  ">Integrity Score</span>
                                     <span className="font-black text-slate-900">
                                         {feedback.integrityScore}%
                                     </span>
@@ -366,7 +366,7 @@ export default function InterviewFeedback({
                                 exitFullScreen();
                                 router.push('/practice/interviews');
                             }}
-                            className="w-full mt-6 bg-slate-900 text-white py-3 rounded-xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-black transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                            className="w-full mt-6 bg-slate-900 text-white py-3 rounded-xl font-black  tracking-[0.2em] text-[10px] hover:bg-black transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
                         >
                             Finalize_Session
                         </button>
@@ -374,7 +374,7 @@ export default function InterviewFeedback({
                 </div>
 
                 <div className="space-y-4">
-                    <h2 className="text-lg font-black text-slate-900 uppercase tracking-tight ml-2">Competency Breakdown</h2>
+                    <h2 className="text-lg font-black text-slate-900  tracking-tight ml-2">Competency Breakdown</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {feedback.skills.map((skill, idx) => (
@@ -391,8 +391,8 @@ export default function InterviewFeedback({
                                     </div>
                                     <DonutChart score={skill.score} max={10} color="stroke-slate-900" />
                                 </div>
-                                <h3 className="font-black text-[11px] text-slate-900 uppercase tracking-tight mb-1">{skill.name}</h3>
-                                <p className="text-[10px] text-slate-400 font-medium line-clamp-3 leading-relaxed italic">
+                                <h3 className="font-black text-[11px] text-slate-900  tracking-tight mb-1">{skill.name}</h3>
+                                <p className="text-[10px] text-slate-400 font-medium line-clamp-3 leading-relaxed ">
                                     {skill.feedback}
                                 </p>
                             </motion.div>

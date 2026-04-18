@@ -69,7 +69,7 @@ function EvaluatorList({ divisionId, departmentId }: { divisionId: number | null
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Evaluator_Matrix</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Evaluator_Matrix</p>
         </div>
     );
 
@@ -78,8 +78,8 @@ function EvaluatorList({ divisionId, departmentId }: { divisionId: number | null
             {/* Header Section matching Aptitude style */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Evaluator Control Grid</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight ">Evaluator Control Grid</h1>
+                    <p className="text-[10px] font-bold text-slate-400   mt-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
                         Neural Scoring & Human-Centric Review
                     </p>
@@ -87,7 +87,7 @@ function EvaluatorList({ divisionId, departmentId }: { divisionId: number | null
                 <div className="flex gap-4">
                     <Link
                         href={`/admin/evaluator/create${departmentId ? `?department_id=${departmentId}` : ""}`}
-                        className="px-6 py-3.5 bg-[var(--color-primary)] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-primary-dark)] shadow-xl shadow-indigo-100 hover:shadow-indigo-200 transition-all flex items-center gap-3 group active:scale-95"
+                        className="px-6 py-3.5 bg-[var(--color-primary)] text-white rounded-2xl text-[10px] font-black  tracking-[0.2em] hover:bg-[var(--color-primary-dark)] shadow-xl shadow-indigo-100 hover:shadow-indigo-200 transition-all flex items-center gap-3 group active:scale-95"
                     >
                         <span className="material-icons-outlined text-sm group-hover:rotate-90 transition-transform duration-500 font-bold">add</span>
                         New Protocol
@@ -106,14 +106,14 @@ function EvaluatorList({ divisionId, departmentId }: { divisionId: number | null
                             <div className="h-10 w-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all duration-300">
                                 <span className="material-icons-outlined text-lg">history_edu</span>
                             </div>
-                            <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-slate-50 text-slate-400 border border-slate-100 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all`}>
+                            <span className={`px-2 py-0.5 rounded-full text-[8px] font-black   bg-slate-50 text-slate-400 border border-slate-100 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all`}>
                                 {q.difficulty}
                             </span>
                         </div>
 
                         <div className="flex-1 mb-4 relative z-10">
-                            <h3 className="text-xs font-black text-slate-900 uppercase tracking-tight mb-1.5 line-clamp-1">{q.topic}</h3>
-                            <p className="text-[9px] font-medium text-slate-400 line-clamp-3 leading-relaxed bg-slate-50/50 p-2.5 rounded-lg border border-dashed border-slate-100 italic">
+                            <h3 className="text-xs font-black text-slate-900  tracking-tight mb-1.5 line-clamp-1">{q.topic}</h3>
+                            <p className="text-[9px] font-medium text-slate-400 line-clamp-3 leading-relaxed bg-slate-50/50 p-2.5 rounded-lg border border-dashed border-slate-100 ">
                                 "{q.content.question}"
                             </p>
                         </div>
@@ -121,14 +121,14 @@ function EvaluatorList({ divisionId, departmentId }: { divisionId: number | null
                         <div className="flex items-center gap-2 mt-auto pt-4 border-t border-slate-50 relative z-10">
                             <Link
                                 href={`/admin/evaluator/${q.id}`}
-                                className="flex-1 bg-slate-50 hover:bg-[var(--color-primary)] hover:text-white text-slate-400 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95"
+                                className="flex-1 bg-slate-50 hover:bg-[var(--color-primary)] hover:text-white text-slate-400 py-2 rounded-lg text-[8px] font-black   flex items-center justify-center gap-1.5 transition-all active:scale-95"
                             >
                                 <span className="material-icons-outlined text-xs">analytics</span>
                                 Results
                             </Link>
                             <Link
                                 href={`/admin/evaluator/edit/${q.id}`}
-                                className="flex-1 bg-slate-50 hover:bg-[var(--color-primary)] hover:text-white text-slate-400 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95"
+                                className="flex-1 bg-slate-50 hover:bg-[var(--color-primary)] hover:text-white text-slate-400 py-2 rounded-lg text-[8px] font-black   flex items-center justify-center gap-1.5 transition-all active:scale-95"
                             >
                                 <span className="material-icons-outlined text-xs">edit_note</span>
                                 Configure
@@ -148,7 +148,7 @@ function EvaluatorList({ divisionId, departmentId }: { divisionId: number | null
                     <div className="w-12 h-12 rounded-xl bg-slate-50 group-hover:bg-[var(--color-primary)] group-hover:text-white flex items-center justify-center mb-3 transition-all duration-300 transform group-hover:scale-110 shadow-sm">
                         <span className="material-icons-outlined text-2xl group-hover:rotate-90 transition-all duration-500">add</span>
                     </div>
-                    <span className="text-[9px] font-black uppercase tracking-[0.2em]">Deploy_New_Matrix</span>
+                    <span className="text-[9px] font-black  tracking-[0.2em]">Deploy_New_Matrix</span>
                 </Link>
             </div>
         </div>

@@ -108,7 +108,7 @@ export default function StudentReportsPage() {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Syncing_Telemetry</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Syncing_Telemetry</p>
         </div>
     );
 
@@ -131,7 +131,7 @@ export default function StudentReportsPage() {
                             {loadingReport ? (
                                 <div className="p-20 text-center">
                                     <div className="animate-spin w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full mx-auto mb-4"></div>
-                                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Retrieving Secure Report...</p>
+                                    <p className="text-sm font-bold text-slate-400  ">Retrieving Secure Report...</p>
                                 </div>
                             ) : reportData ? (
                                 <>
@@ -158,13 +158,13 @@ export default function StudentReportsPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-2">My Intelligence Dashboard</h2>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase">Activity Monitoring & Performance Analysis</h1>
+                    <h2 className="text-[10px] font-black  tracking-[0.4em] text-slate-400 mb-2">My Intelligence Dashboard</h2>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight ">Activity Monitoring & Performance Analysis</h1>
                     <p className="text-sm font-medium text-slate-500 mt-1">Personal log and live performance telemetry feed.</p>
                 </div>
                 <button
                     onClick={handleExportReport}
-                    className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-700 transition-all shadow-xl shadow-slate-200"
+                    className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-xs   hover:bg-slate-700 transition-all shadow-xl shadow-slate-200"
                 >
                     Export Report
                 </button>
@@ -175,7 +175,7 @@ export default function StudentReportsPage() {
                 {/* Rankings */}
                 {stats?.rankings?.map((rank: any, i: number) => (
                     <div key={i} className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm transition-all hover:shadow-md flex-shrink-0 min-w-[200px]">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 block mb-1">{rank.label}</span>
+                        <span className="text-[8px] font-black   text-slate-400 block mb-1">{rank.label}</span>
                         <div className="flex items-baseline gap-1">
                             <span className="text-lg font-black text-slate-900">#{rank.rank}</span>
                             <span className="text-[9px] text-slate-400 font-bold">/ {rank.total}</span>
@@ -194,7 +194,7 @@ export default function StudentReportsPage() {
                 {/* Left Column: Practice Stats */}
                 <div className="space-y-6">
                     <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-8">
-                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                        <h3 className="text-xs font-black text-slate-900   mb-6 flex items-center gap-2">
                             <span className="material-icons-outlined text-slate-400">fitness_center</span>
                             Practice Progress
                         </h3>
@@ -202,7 +202,7 @@ export default function StudentReportsPage() {
                             {practice_stats.map((stat: any, i: number) => (
                                 <div key={i} className="group">
                                     <div className="flex justify-between text-xs font-bold text-slate-700 mb-2">
-                                        <span className="uppercase tracking-tight">{stat.topic} <span className="text-slate-400 font-medium">({stat.module_type})</span></span>
+                                        <span className=" tracking-tight">{stat.topic} <span className="text-slate-400 font-medium">({stat.module_type})</span></span>
                                         <span className="text-slate-900">{Math.round(stat.progress_percentage)}%</span>
                                     </div>
                                     <div className="h-1.5 bg-slate-50 rounded-full overflow-hidden">
@@ -211,20 +211,20 @@ export default function StudentReportsPage() {
                                             style={{ width: `${stat.progress_percentage}%` }}
                                         />
                                     </div>
-                                    <div className="flex justify-between text-[9px] text-slate-400 mt-2 font-bold uppercase tracking-widest">
+                                    <div className="flex justify-between text-[9px] text-slate-400 mt-2 font-bold  ">
                                         <span>{stat.completed_questions} / {stat.total_questions} Solved</span>
                                         <span className="text-emerald-500">{stat.correct_answers} Correct</span>
                                     </div>
                                 </div>
                             ))}
-                            {practice_stats.length === 0 && <p className="text-xs text-slate-400 italic">No practice telemetry detected.</p>}
+                            {practice_stats.length === 0 && <p className="text-xs text-slate-400 ">No practice telemetry detected.</p>}
                         </div>
                     </div>
 
                     {/* Performance Benchmarking Mini Chart */}
                     {stats?.comparisons && (
                         <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200">
-                            <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                            <h3 className="text-xs font-black text-slate-900   mb-6 flex items-center gap-2">
                                 <span className="material-icons-outlined text-slate-400">compare_arrows</span>
                                 Peer Benchmarking
                             </h3>
@@ -241,11 +241,11 @@ export default function StudentReportsPage() {
                             </div>
                             <div className="flex justify-between mt-4">
                                 <div className="text-center flex-1">
-                                    <div className="text-[8px] font-black text-slate-400 uppercase">You</div>
+                                    <div className="text-[8px] font-black text-slate-400 ">You</div>
                                     <div className="text-xs font-black">{stats.comparisons[0]?.user}%</div>
                                 </div>
                                 <div className="text-center flex-1">
-                                    <div className="text-[8px] font-black text-slate-400 uppercase">Batch</div>
+                                    <div className="text-[8px] font-black text-slate-400 ">Batch</div>
                                     <div className="text-xs font-black">{stats.comparisons[0]?.batch_avg}%</div>
                                 </div>
                             </div>
@@ -256,7 +256,7 @@ export default function StudentReportsPage() {
                 {/* Right Column: Activity Timeline */}
                 <div className="lg:col-span-2">
                     <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-8">
-                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-8 flex items-center gap-2">
+                        <h3 className="text-xs font-black text-slate-900   mb-8 flex items-center gap-2">
                             <span className="material-icons-outlined text-slate-400">timeline</span>
                             Activity Timeline Feed
                         </h3>
@@ -272,13 +272,13 @@ export default function StudentReportsPage() {
                                         <div className={`${typeColors.bg} rounded-2xl p-6 border ${typeColors.border} hover:bg-white hover:border-slate-200 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1`}>
                                             <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
                                                 <div>
-                                                    <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">{item.title}</h4>
-                                                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-100 inline-block mt-2">
+                                                    <h4 className="text-sm font-black text-slate-900  tracking-tight">{item.title}</h4>
+                                                    <span className="text-[9px] font-black  tracking-[0.2em] text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-100 inline-block mt-2">
                                                         {item.type.replace('_', ' ')}
                                                     </span>
                                                 </div>
                                                 <div className="text-left sm:text-right shrink-0">
-                                                    <div className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                                    <div className="text-xs font-black text-slate-400  ">
                                                         {item.date ? format(new Date(item.date), "MMM d, yyyy") : "N/A"}
                                                     </div>
                                                     <div className="text-[10px] font-bold text-slate-300">
@@ -297,7 +297,7 @@ export default function StudentReportsPage() {
                                             {['JOB_SIMULATION', 'PSYCHOMETRIC', 'SUBJECTIVE', 'INTERVIEW', 'ASSESSMENT'].includes(item.type) && (
                                                 <button
                                                     onClick={() => handleViewReport(item)}
-                                                    className="mt-6 w-full bg-white hover:bg-slate-900 hover:text-white text-slate-600 py-3.5 rounded-xl border border-slate-200 transition-all flex items-center justify-center gap-2 group font-black text-[10px] uppercase tracking-[0.2em] hover:shadow-lg"
+                                                    className="mt-6 w-full bg-white hover:bg-slate-900 hover:text-white text-slate-600 py-3.5 rounded-xl border border-slate-200 transition-all flex items-center justify-center gap-2 group font-black text-[10px]  tracking-[0.2em] hover:shadow-lg"
                                                 >
                                                     View Intelligence Report
                                                     <span className="material-icons-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -331,7 +331,7 @@ function StatCard({ label, value, icon, theme = 'primary' }: any) {
                 <span className="material-icons-outlined text-lg">{icon}</span>
             </div>
             <div>
-                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{label}</div>
+                <div className="text-[9px] font-black text-slate-400   mb-0.5">{label}</div>
                 <div className="text-lg font-black text-slate-900 tracking-tight">{value}</div>
             </div>
         </div>
@@ -365,16 +365,16 @@ function renderDetails(item: any) {
     const d = details || {};
 
     if (item.type === 'JOB_SIMULATION') {
-        return <div className="text-[10px] font-black text-slate-400 uppercase">Operational Rounds: <span className="text-slate-900">{d.rounds}</span></div>;
+        return <div className="text-[10px] font-black text-slate-400 ">Operational Rounds: <span className="text-slate-900">{d.rounds}</span></div>;
     }
     if (item.type === 'INTERVIEW') {
-        return <div className="text-[10px] font-black text-slate-400 uppercase capitalize">{d.type?.toLowerCase() || 'Video'} Mode Active</div>;
+        return <div className="text-[10px] font-black text-slate-400  capitalize">{d.type?.toLowerCase() || 'Video'} Mode Active</div>;
     }
     if (item.type === 'ASSESSMENT') {
-        return <div className="text-[10px] font-black text-slate-400 uppercase">{d.total_questions} Logical Units Analyzed</div>;
+        return <div className="text-[10px] font-black text-slate-400 ">{d.total_questions} Logical Units Analyzed</div>;
     }
     if (item.type === 'PSYCHOMETRIC') {
-        return <div className="text-[10px] font-black text-slate-400 uppercase">Primary Trait: <span className="text-slate-900">{d.trait}</span></div>;
+        return <div className="text-[10px] font-black text-slate-400 ">Primary Trait: <span className="text-slate-900">{d.trait}</span></div>;
     }
-    return <div className="text-[10px] font-black text-slate-400 uppercase">Historical Telemetry Recorded</div>;
+    return <div className="text-[10px] font-black text-slate-400 ">Historical Telemetry Recorded</div>;
 }

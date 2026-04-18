@@ -343,9 +343,9 @@ export default function AIPracticePage() {
                         <div className="space-y-3">
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
                                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
-                                <span className="text-[10px] font-black text-indigo-300 uppercase tracking-widest">AI Kernel v3.0</span>
+                                <span className="text-[10px] font-black text-indigo-300  ">AI Kernel v3.0</span>
                             </div>
-                            <h2 className="text-4xl font-black text-white uppercase tracking-tight leading-[1.1]">
+                            <h2 className="text-4xl font-black text-white  tracking-tight leading-[1.1]">
                                 Adaptive Neural <br /> Protocols
                             </h2>
                         </div>
@@ -361,10 +361,10 @@ export default function AIPracticePage() {
                                 <span className="material-icons-outlined text-2xl">psychology</span>
                             </div>
                             <div>
-                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Network Status</p>
+                                <p className="text-[9px] font-black text-slate-500   mb-1.5">Network Status</p>
                                 <div className="flex items-baseline gap-1.5">
                                     <span className="text-3xl font-black text-white">{loadingHistory ? "..." : history.length}</span>
-                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sessions</span>
+                                    <span className="text-[10px] font-bold text-slate-500  ">Sessions</span>
                                 </div>
                             </div>
                         </div>
@@ -373,7 +373,7 @@ export default function AIPracticePage() {
                         {viewMode === "LIST" && (
                             <button
                                 onClick={() => setViewMode("CREATE")}
-                                className="h-16 px-8 bg-white text-slate-900 rounded-[1.25rem] font-black text-[11px] uppercase tracking-widest hover:bg-slate-100 transition-all shadow-xl hover:-translate-y-1 active:scale-95 flex items-center gap-3"
+                                className="h-16 px-8 bg-white text-slate-900 rounded-[1.25rem] font-black text-[11px]   hover:bg-slate-100 transition-all shadow-xl hover:-translate-y-1 active:scale-95 flex items-center gap-3"
                             >
                                 <span className="material-icons-outlined text-xl">add_circle</span>
                                 Initialize Session
@@ -396,8 +396,8 @@ export default function AIPracticePage() {
                             <span className="material-icons-outlined text-lg">arrow_back</span>
                         </button>
                         <div>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Protocol Initialization</p>
-                            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-3">
+                            <p className="text-[10px] font-black text-slate-400   mb-0.5">Protocol Initialization</p>
+                            <h2 className="text-xl font-black text-slate-900  tracking-tight flex items-center gap-3">
                                 New Training Session
                             </h2>
                         </div>
@@ -411,7 +411,7 @@ export default function AIPracticePage() {
                                 <span className="material-icons-outlined text-4xl text-indigo-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">smart_toy</span>
                             </div>
                             <div className="text-center space-y-2">
-                                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Generating Protocol</h3>
+                                <h3 className="text-xl font-black text-slate-900  tracking-tight">Generating Protocol</h3>
                                 <p className="text-xs font-medium text-slate-500 max-w-xs mx-auto">
                                     Our AI is analyzing your domains and constructing a custom assessment matrix. This may take a moment.
                                 </p>
@@ -430,7 +430,7 @@ export default function AIPracticePage() {
                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors ${sourceType === "RESUME" ? "bg-indigo-600 text-white" : "bg-slate-50 text-slate-400 group-hover:bg-slate-100"}`}>
                                         <span className="material-icons-outlined text-2xl">description</span>
                                     </div>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.1em]">My Resume</span>
+                                    <span className="text-[10px] font-black  tracking-[0.1em]">My Resume</span>
                                     {sourceType === "RESUME" && (
                                         <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-indigo-500"></div>
                                     )}
@@ -445,7 +445,7 @@ export default function AIPracticePage() {
                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors ${sourceType === "JD" ? "bg-indigo-600 text-white" : "bg-slate-50 text-slate-400 group-hover:bg-slate-100"}`}>
                                         <span className="material-icons-outlined text-2xl">work</span>
                                     </div>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.1em]">Target JD</span>
+                                    <span className="text-[10px] font-black  tracking-[0.1em]">Target JD</span>
                                     {sourceType === "JD" && (
                                         <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-indigo-500"></div>
                                     )}
@@ -457,8 +457,8 @@ export default function AIPracticePage() {
                                     <span className="material-icons-outlined text-3xl">cloud_upload</span>
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Upload {sourceType === "RESUME" ? "Resume" : "JD"}</h3>
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">PDF or DOCX (MAX 5MB)</p>
+                                    <h3 className="text-sm font-black text-slate-900  tracking-tight">Upload {sourceType === "RESUME" ? "Resume" : "JD"}</h3>
+                                    <p className="text-[10px] text-slate-400 font-bold   mt-1">PDF or DOCX (MAX 5MB)</p>
                                 </div>
                                 <input
                                     type="file"
@@ -470,13 +470,13 @@ export default function AIPracticePage() {
                                 <div className="flex flex-col items-center gap-3">
                                     <label
                                         htmlFor="file-upload"
-                                        className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-slate-800 cursor-pointer transition-all shadow-lg shadow-slate-900/10"
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white text-[10px] font-black   rounded-xl hover:bg-slate-800 cursor-pointer transition-all shadow-lg shadow-slate-900/10"
                                     >
                                         <span className="material-icons-outlined text-sm">{file ? "sync" : "attach_file"}</span>
                                         {file ? "Replace File" : "Choose File"}
                                     </label>
                                     {file && (
-                                        <div className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 animate-in fade-in zoom-in-95">
+                                        <div className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black   flex items-center gap-2 animate-in fade-in zoom-in-95">
                                             <span className="material-icons-outlined text-sm">check_circle</span>
                                             {file.name}
                                         </div>
@@ -487,7 +487,7 @@ export default function AIPracticePage() {
                             <button
                                 onClick={handleAnalyze}
                                 disabled={!file || analyzing}
-                                className="w-full py-4 bg-slate-900 text-white font-black text-sm uppercase tracking-widest rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl flex items-center justify-center gap-3"
+                                className="w-full py-4 bg-slate-900 text-white font-black text-sm   rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl flex items-center justify-center gap-3"
                             >
                                 {analyzing ? (
                                     <>
@@ -507,8 +507,8 @@ export default function AIPracticePage() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             <div className="lg:col-span-2 space-y-6">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">Detected Domains</h3>
-                                    <div className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-slate-900 text-white border border-slate-800">
+                                    <h3 className="text-lg font-black text-slate-900  tracking-tight">Detected Domains</h3>
+                                    <div className="px-3 py-1 rounded-lg text-[10px] font-black   bg-slate-900 text-white border border-slate-800">
                                         100% Balanced
                                     </div>
                                 </div>
@@ -545,7 +545,7 @@ export default function AIPracticePage() {
                                                         <div className={`w-9 h-9 rounded-xl flex-shrink-0 ${iconColor} flex items-center justify-center shadow-sm`}>
                                                             <span className="material-icons-outlined text-xl">layers</span>
                                                         </div>
-                                                        <h4 className="font-black text-[10px] text-slate-900 uppercase tracking-tight truncate">{domain.name}</h4>
+                                                        <h4 className="font-black text-[10px] text-slate-900  tracking-tight truncate">{domain.name}</h4>
                                                     </div>
                                                     <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg flex-shrink-0">{domain.weightage}%</span>
                                                 </div>
@@ -567,20 +567,20 @@ export default function AIPracticePage() {
                             <div className="space-y-6">
                                 <div className="bg-white border-2 border-slate-100 rounded-[2rem] p-6 space-y-6 sticky top-8 shadow-xl shadow-slate-200/50">
                                     <div>
-                                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                                        <h3 className="text-xs font-black text-slate-900  tracking-[0.2em] mb-6 flex items-center gap-2">
                                             <span className="w-2 h-4 bg-indigo-600 rounded-full"></span>
                                             Configuration
                                         </h3>
 
                                         <div className="space-y-6">
                                             <div>
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">Complexity Level</label>
+                                                <label className="text-[10px] font-bold text-slate-400   mb-3 block">Complexity Level</label>
                                                 <div className="flex gap-2 p-1.5 bg-slate-50 rounded-xl border border-slate-100">
                                                     {(["EASY", "MEDIUM", "HARD"] as const).map((d) => (
                                                         <button
                                                             key={d}
                                                             onClick={() => setDifficulty(d)}
-                                                            className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${difficulty === d
+                                                            className={`flex-1 py-2 rounded-lg text-[9px] font-black   transition-all ${difficulty === d
                                                                 ? "bg-white text-slate-900 shadow-sm border border-slate-200"
                                                                 : "text-slate-400 hover:text-slate-600"
                                                                 }`}
@@ -593,7 +593,7 @@ export default function AIPracticePage() {
 
                                             <div>
                                                 <div className="flex justify-between items-baseline mb-3">
-                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                                                    <label className="text-[10px] font-bold text-slate-400   block">
                                                         Neural Load
                                                     </label>
                                                     <span className="text-sm font-black text-indigo-600">{totalQuestions} Qs</span>
@@ -608,7 +608,7 @@ export default function AIPracticePage() {
                                                     className={`w-full h-1.5 rounded-lg appearance-none cursor-pointer transition-all ${totalQuestions === 0 ? "bg-slate-100 accent-slate-300" : "bg-slate-100 accent-indigo-600"
                                                         }`}
                                                 />
-                                                <div className="flex justify-between text-[8px] text-slate-400 font-bold mt-2 font-mono uppercase tracking-tighter">
+                                                <div className="flex justify-between text-[8px] text-slate-400 font-bold mt-2 font-mono  tracking-tighter">
                                                     <span>{totalQuestions === 0 ? "CODING_ONLY" : "ZERO"}</span>
                                                     <span>FIFTY_MAX</span>
                                                 </div>
@@ -625,17 +625,17 @@ export default function AIPracticePage() {
                                                                 <div className="p-2 bg-indigo-500/20 rounded-lg text-indigo-400">
                                                                     <span className="material-icons-outlined text-sm">terminal</span>
                                                                 </div>
-                                                                <h4 className="text-[9px] font-black text-white uppercase tracking-[0.2em]">Coding Module</h4>
+                                                                <h4 className="text-[9px] font-black text-white  tracking-[0.2em]">Coding Module</h4>
                                                             </div>
                                                             <div className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-1">
                                                                 <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-                                                                <span className="text-[7px] font-black text-emerald-400 uppercase">Active</span>
+                                                                <span className="text-[7px] font-black text-emerald-400 ">Active</span>
                                                             </div>
                                                         </div>
 
                                                         <div>
                                                             <div className="flex justify-between items-baseline mb-2.5">
-                                                                <label className="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em]">Intensity</label>
+                                                                <label className="text-[8px] font-bold text-slate-400  tracking-[0.2em]">Intensity</label>
                                                                 <span className="text-[10px] font-black text-indigo-400">{codingQuestions} TASKS</span>
                                                             </div>
                                                             <input
@@ -664,17 +664,17 @@ export default function AIPracticePage() {
                                                                 <div className="p-2 bg-rose-500/20 rounded-lg text-rose-400">
                                                                     <span className="material-icons-outlined text-sm">videocam</span>
                                                                 </div>
-                                                                <h4 className="text-[9px] font-black text-white uppercase tracking-[0.2em]">AI Mock Interview</h4>
+                                                                <h4 className="text-[9px] font-black text-white  tracking-[0.2em]">AI Mock Interview</h4>
                                                             </div>
                                                             <div className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-1">
                                                                 <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-                                                                <span className="text-[7px] font-black text-emerald-400 uppercase">Active</span>
+                                                                <span className="text-[7px] font-black text-emerald-400 ">Active</span>
                                                             </div>
                                                         </div>
 
                                                         <div>
                                                             <div className="flex justify-between items-baseline mb-2.5">
-                                                                <label className="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em]">Intensity</label>
+                                                                <label className="text-[8px] font-bold text-slate-400  tracking-[0.2em]">Intensity</label>
                                                                 <span className="text-[10px] font-black text-rose-400">{subjectiveQuestions} MODULES</span>
                                                             </div>
                                                             <input
@@ -699,7 +699,7 @@ export default function AIPracticePage() {
                                     <div className="space-y-3 pt-4 border-t border-slate-50">
                                         <button
                                             onClick={handleGenerate}
-                                            className="w-full py-4 bg-indigo-600 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-xl hover:bg-indigo-700 transition-all shadow-[0_15px_30px_-10px_rgba(79,70,229,0.3)] flex items-center justify-center gap-2 active:scale-[0.98]"
+                                            className="w-full py-4 bg-indigo-600 text-white font-black text-[10px]  tracking-[0.2em] rounded-xl hover:bg-indigo-700 transition-all shadow-[0_15px_30px_-10px_rgba(79,70,229,0.3)] flex items-center justify-center gap-2 active:scale-[0.98]"
                                         >
                                             Initiate Generation
                                             <span className="material-icons-outlined text-sm">bolt</span>
@@ -707,7 +707,7 @@ export default function AIPracticePage() {
 
                                         <button
                                             onClick={handleNormalize}
-                                            className="w-full py-3 bg-slate-50 text-slate-500 font-black text-[9px] uppercase tracking-widest rounded-xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
+                                            className="w-full py-3 bg-slate-50 text-slate-500 font-black text-[9px]   rounded-xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
                                         >
                                             Recalibrate Balance
                                             <span className="material-icons-outlined text-sm">refresh</span>
@@ -728,7 +728,7 @@ export default function AIPracticePage() {
                         <div className="space-y-6">
                             <div className="flex items-center gap-4">
                                 <div className="h-px bg-indigo-100 flex-grow"></div>
-                                <h3 className="text-sm font-black text-indigo-400 uppercase tracking-widest">Pending Protocols</h3>
+                                <h3 className="text-sm font-black text-indigo-400  ">Pending Protocols</h3>
                                 <div className="h-px bg-indigo-100 flex-grow"></div>
                             </div>
 
@@ -748,7 +748,7 @@ export default function AIPracticePage() {
                                                     <span className="material-icons-outlined">pending_actions</span>
                                                 </div>
                                                 <div className="flex flex-col items-end">
-                                                    <span className="text-[7px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-1.5 opacity-60">Status: Suspended</span>
+                                                    <span className="text-[7px] font-black text-indigo-400  tracking-[0.2em] mb-1.5 opacity-60">Status: Suspended</span>
                                                     <div className="w-10 h-10 rounded-full border-2 border-slate-50 flex items-center justify-center text-indigo-600 bg-white shadow-sm group-hover:border-indigo-600 group-hover:text-white group-hover:bg-indigo-600 transition-all duration-300">
                                                         <span className="material-icons-outlined text-lg">play_arrow</span>
                                                     </div>
@@ -756,24 +756,24 @@ export default function AIPracticePage() {
                                             </div>
 
                                             <div className="space-y-4">
-                                                <h4 className="text-xl font-black text-slate-900 transition-colors uppercase tracking-tight line-clamp-2 leading-tight group-hover:text-indigo-900">
+                                                <h4 className="text-xl font-black text-slate-900 transition-colors  tracking-tight line-clamp-2 leading-tight group-hover:text-indigo-900">
                                                     {p.source_type === "RESUME" ? "Analysis: CV" : "Analysis: Job"}
                                                 </h4>
 
                                                 <div className="flex flex-wrap gap-1.5">
                                                     {Object.keys(p.detected_domains).slice(0, 3).map((d, i) => (
-                                                        <span key={i} className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-md text-[7px] font-black text-slate-400 uppercase tracking-widest">
+                                                        <span key={i} className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-md text-[7px] font-black text-slate-400  ">
                                                             {d}
                                                         </span>
                                                     ))}
                                                     {Object.keys(p.detected_domains).length > 3 && (
-                                                        <span className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-md text-[7px] font-black text-slate-400 uppercase tracking-widest">
+                                                        <span className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-md text-[7px] font-black text-slate-400  ">
                                                             +{Object.keys(p.detected_domains).length - 3}
                                                         </span>
                                                     )}
                                                 </div>
 
-                                                <div className="flex items-center gap-3 text-[9px] font-black text-slate-400 uppercase tracking-widest pt-5 border-t border-slate-50 group-hover:border-indigo-50 transition-colors">
+                                                <div className="flex items-center gap-3 text-[9px] font-black text-slate-400   pt-5 border-t border-slate-50 group-hover:border-indigo-50 transition-colors">
                                                     <span className="flex items-center gap-1.5">
                                                         <span className="material-icons-outlined text-[12px]">calendar_today</span>
                                                         {new Date(p.created_at).toLocaleDateString()}
@@ -790,7 +790,7 @@ export default function AIPracticePage() {
 
                     <div className="flex items-center gap-4">
                         <div className="h-px bg-slate-200 flex-grow"></div>
-                        <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">Recorded Sessions</h3>
+                        <h3 className="text-sm font-black text-slate-400  ">Recorded Sessions</h3>
                         <div className="h-px bg-slate-200 flex-grow"></div>
                     </div>
 
@@ -802,12 +802,12 @@ export default function AIPracticePage() {
                         <div className="col-span-full py-20 text-center space-y-4 border-2 border-dashed border-slate-100 rounded-3xl bg-slate-50/50">
                             <span className="material-icons-outlined text-4xl text-slate-300">smart_toy</span>
                             <div>
-                                <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest">No Protocols Active</h4>
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Initialize a new adaptive training session to begin.</p>
+                                <h4 className="text-sm font-black text-slate-400  ">No Protocols Active</h4>
+                                <p className="text-[10px] text-slate-400 font-bold   mt-1">Initialize a new adaptive training session to begin.</p>
                             </div>
                         </div>
                     ) : history.length === 0 && protocols.length > 0 ? (
-                        <div className="py-12 text-center text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                        <div className="py-12 text-center text-slate-400 text-[10px] font-black  ">
                             No completed sessions yet. Resume a pending protocol above.
                         </div>
                     ) : (
@@ -832,11 +832,11 @@ export default function AIPracticePage() {
                                         </div>
 
                                         <div className="space-y-4">
-                                            <h4 className="text-xl font-black text-slate-900 group-hover:text-indigo-900 transition-colors uppercase tracking-tight line-clamp-2 leading-tight">
+                                            <h4 className="text-xl font-black text-slate-900 group-hover:text-indigo-900 transition-colors  tracking-tight line-clamp-2 leading-tight">
                                                 {a.title}
                                             </h4>
 
-                                            <div className="flex items-center gap-3 text-[9px] font-black text-slate-400 uppercase tracking-widest pt-5 border-t border-slate-50 group-hover:border-indigo-50 transition-colors">
+                                            <div className="flex items-center gap-3 text-[9px] font-black text-slate-400   pt-5 border-t border-slate-50 group-hover:border-indigo-50 transition-colors">
                                                 <span className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-indigo-400 transition-colors"></span>
                                                     {a.question_count} Units

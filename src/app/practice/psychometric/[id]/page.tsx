@@ -106,24 +106,24 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
                     </div>
 
                     <div className="space-y-2">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] block">Initializing_Protocol</span>
-                        <h1 className="text-4xl font-black text-white uppercase tracking-tighter">{test.title}</h1>
+                        <span className="text-[10px] font-black text-slate-400  tracking-[0.4em] block">Initializing_Protocol</span>
+                        <h1 className="text-4xl font-black text-white  tracking-tighter">{test.title}</h1>
                         <p className="text-slate-400 font-medium leading-relaxed max-w-sm mx-auto">{test.description}</p>
                     </div>
 
                     <div className="bg-white/5 rounded-3xl p-8 text-left border border-white/5 space-y-4">
-                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Briefing_Details</h3>
+                        <h3 className="text-[10px] font-black text-slate-400  tracking-[0.4em] mb-4">Briefing_Details</h3>
                         <ul className="space-y-4">
                             <li className="flex gap-4 items-center">
                                 <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[10px] font-black text-slate-400 border border-white/10">01</div>
-                                <p className="text-xs font-bold text-slate-300 uppercase tracking-wide">
+                                <p className="text-xs font-bold text-slate-300  tracking-wide">
                                     {test.test_type === 'SPOT_ON' ? 'Identify exact pattern matches under pressure' :
                                         test.test_type === 'PIPELINE' ? 'Connect the conduits to restore power' : 'Analyze behavioral statements honestly'}
                                 </p>
                             </li>
                             <li className="flex gap-4 items-center">
                                 <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[10px] font-black text-slate-400 border border-white/10">02</div>
-                                <p className="text-xs font-bold text-slate-300 uppercase tracking-wide">
+                                <p className="text-xs font-bold text-slate-300  tracking-wide">
                                     {test.test_type === 'SPOT_ON' ? 'Synchronization speed determines your visual attention score' : 'Calibration results will be saved to your behavioral profile'}
                                 </p>
                             </li>
@@ -132,7 +132,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
 
                     <button
                         onClick={() => setIsStarted(true)}
-                        className="w-full py-6 bg-slate-100 text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:bg-white transition-all flex items-center justify-center gap-4 group active:scale-95"
+                        className="w-full py-6 bg-slate-100 text-slate-900 rounded-2xl text-[10px] font-black  tracking-[0.4em] shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:bg-white transition-all flex items-center justify-center gap-4 group active:scale-95"
                     >
                         Execute_Analysis
                         <span className="material-icons-outlined group-hover:translate-x-2 transition-transform">bolt</span>
@@ -215,8 +215,8 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
             {/* Header */}
             <div className="flex justify-between items-end pt-8">
                 <div>
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 block">Active Assessment</span>
-                    <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{test.title}</h1>
+                    <span className="text-[10px] font-black text-slate-500   mb-1 block">Active Assessment</span>
+                    <h1 className="text-2xl font-black text-slate-900  tracking-tight">{test.title}</h1>
                 </div>
                 <div className="text-right">
                     <span className="text-xs font-bold text-slate-400 block mb-1">Progress</span>
@@ -235,7 +235,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
                         </p>
 
                         <div className="flex justify-between items-center gap-4">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest hidden sm:block">Disagree</span>
+                            <span className="text-[9px] font-black text-slate-400   hidden sm:block">Disagree</span>
 
                             <div className="flex-1 flex justify-between items-center max-w-lg mx-auto">
                                 {[1, 2, 3, 4, 5].map((val) => (
@@ -251,7 +251,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
                                     >
                                         <span className="text-sm font-black">{val}</span>
                                         {responses[q.id] === val && (
-                                            <span className="absolute -bottom-6 text-[8px] font-black text-slate-600 uppercase tracking-widest whitespace-nowrap">
+                                            <span className="absolute -bottom-6 text-[8px] font-black text-slate-600   whitespace-nowrap">
                                                 Selected
                                             </span>
                                         )}
@@ -259,7 +259,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
                                 ))}
                             </div>
 
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest hidden sm:block">Agree</span>
+                            <span className="text-[9px] font-black text-slate-400   hidden sm:block">Agree</span>
                         </div>
                     </div>
                 ))}
@@ -270,7 +270,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
                 <button
                     onClick={() => handleSubmit()}
                     disabled={Object.keys(responses).length < (test.questions?.length || 0) || submitting}
-                    className="px-12 py-4 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-[0.2em] hover:bg-slate-700 transition-all shadow-xl shadow-slate-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                    className="px-12 py-4 bg-slate-900 text-white rounded-xl text-xs font-black  tracking-[0.2em] hover:bg-slate-700 transition-all shadow-xl shadow-slate-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
                     {submitting ? "Analyzing..." : "Complete Assessment"}
                 </button>

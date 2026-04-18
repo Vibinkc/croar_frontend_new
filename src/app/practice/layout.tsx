@@ -180,7 +180,7 @@ function LayoutContent({
                             className="h-7 w-auto object-contain"
                             unoptimized
                         />
-                        <span className="bg-slate-100 text-[8px] font-black px-1.5 py-0.5 rounded text-slate-500 tracking-widest mt-0.5 border border-slate-200">BETA</span>
+                        <span className="bg-slate-100 text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-500 mt-0.5 border border-slate-200">BETA</span>
                     </Link>
                     {/* Mobile Close Button */}
                     <button
@@ -195,11 +195,11 @@ function LayoutContent({
                 <nav className="flex-1 px-3 space-y-4 overflow-y-auto scrollbar-none pb-6">
                     {navGroups.map((group, groupIdx) => (
                         <div key={groupIdx}>
-                            <h3 className="px-3 mb-1.5 text-[8px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 hidden md:block">
+                            <h3 className="px-3 mb-1.5 text-[11px] font-bold text-slate-400 dark:text-slate-500 hidden md:block">
                                 {group.title}
                             </h3>
                             {/* Mobile Section Title */}
-                            <h3 className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 md:hidden mt-2">
+                            <h3 className="px-3 mb-1.5 text-[10px] font-bold   text-slate-400 dark:text-slate-500 md:hidden mt-2">
                                 {group.title}
                             </h3>
 
@@ -249,7 +249,7 @@ function LayoutContent({
                             <span className="material-icons-outlined text-2xl">menu</span>
                         </button>
 
-                        <h1 className="text-xs font-black uppercase tracking-tight truncate max-w-[200px] sm:max-w-none">
+                        <h1 className="text-sm font-bold tracking-tight truncate max-w-[200px] sm:max-w-none">
                             {navGroups.flatMap(g => g.items).find(i => isActive(i.path) && (i.path === pathname || i.path === '/practice' && pathname === '/practice'))?.name || "Mission Control"}
                         </h1>
                     </div>
@@ -258,7 +258,7 @@ function LayoutContent({
                         <Link href="/practice/profile" className="flex items-center gap-3 pl-2 md:pl-6 border-l-0 md:border-l border-slate-200 dark:border-slate-800 h-8 hover:opacity-80 transition-opacity cursor-pointer">
                             <div className="text-right hidden sm:block">
                                 <p className="text-[10px] font-bold text-slate-700 dark:text-slate-200 leading-tight">{user || "Student Account"}</p>
-                                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-tight">{role}</p>
+                                <p className="text-[9px] font-semibold text-slate-400 leading-tight">{role ? role.charAt(0) + role.slice(1).toLowerCase() : ""}</p>
                             </div>
                             <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-slate-200 dark:shadow-none">
                                 {user ? user.charAt(0).toUpperCase() : "SA"}

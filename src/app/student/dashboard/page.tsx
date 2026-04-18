@@ -30,7 +30,7 @@ export default function StudentDashboard() {
                 <div className="flex items-center gap-4">
                     <img src="/Academik_logo.png" alt="Logo" className="h-8" />
                     <div className="h-6 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
-                    <span className="text-sm font-bold text-slate-400 tracking-widest uppercase">Student Portal</span>
+                    <span className="text-sm font-bold text-slate-400  ">Student Portal</span>
                 </div>
                 <div className="flex items-center gap-4">
                     <button
@@ -62,7 +62,7 @@ export default function StudentDashboard() {
                     ].map(card => (
                         <div key={card.title} className="bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] shadow-sm border border-slate-100 dark:border-slate-800 flex justify-between items-center">
                             <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{card.title}</p>
+                                <p className="text-xs font-bold text-slate-400   mb-1">{card.title}</p>
                                 <p className="text-3xl font-black text-slate-900 dark:text-white">{card.value}</p>
                             </div>
                             <div className={`w-12 h-12 bg-${card.color}-50 dark:bg-${card.color}-900/20 rounded-2xl flex items-center justify-center text-${card.color}-500`}>
@@ -104,7 +104,7 @@ export default function StudentDashboard() {
                                         <p className="font-bold text-slate-900 dark:text-white">{task.title}</p>
                                         <p className="text-xs text-slate-400">{task.date}</p>
                                     </div>
-                                    <button className="text-xs font-bold text-indigo-500 hover:bg-indigo-50 px-3 py-2 rounded-lg transition-all uppercase tracking-widest leading-none">View</button>
+                                    <button className="text-xs font-bold text-indigo-500 hover:bg-indigo-50 px-3 py-2 rounded-lg transition-all   leading-none">View</button>
                                 </div>
                             ))}
                         </div>

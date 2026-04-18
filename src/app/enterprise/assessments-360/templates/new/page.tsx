@@ -173,13 +173,13 @@ export default function CreateX360Template() {
 
             <main className="max-w-6xl mx-auto p-8 lg:p-12 space-y-12 animate-in fade-in duration-700">
                 {/* Meta Config */}
-                <section className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 space-y-10 relative overflow-hidden">
+                <section className="bg-white p-10 rounded-2xl border border-slate-100 shadow-2xl shadow-slate-200/50 space-y-10 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
                     <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">Framework Designation</label>
+                            <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Framework Designation</label>
                             <input 
-                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
+                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
                                 value={formData.name}
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                                 required
@@ -187,9 +187,9 @@ export default function CreateX360Template() {
                             />
                         </div>
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">Strategic Objective</label>
+                            <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Strategic Objective</label>
                             <input 
-                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
+                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
                                 value={formData.description}
                                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                                 placeholder="Define the core purpose of this assessment..."
@@ -202,23 +202,23 @@ export default function CreateX360Template() {
                 <section className="space-y-10">
                     <div className="flex justify-between items-center px-2">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl">
+                            <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-xl">
                                 <span className="material-symbols-rounded">account_tree</span>
                             </div>
                             <div>
                                 <h3 className="text-xl font-black text-slate-900 tracking-tight">Competency Architecture</h3>
-                                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-0.5">Select questions by category for a balanced assessment</p>
+                                <p className="text-slate-500 text-[10px] font-bold   mt-0.5">Select questions by category for a balanced assessment</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="flex flex-col items-end">
-                                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest leading-none mb-1">Total Selected</span>
+                                <span className="text-[10px] font-black text-indigo-600   leading-none mb-1">Total Selected</span>
                                 <span className="text-2xl font-black text-slate-900 leading-none">{formData.question_ids.length}</span>
                             </div>
                             <button 
                                 type="button"
                                 onClick={() => setIsAiWizardOpen(true)}
-                                className="h-14 bg-indigo-600 text-white text-[11px] font-black uppercase tracking-[0.15em] flex items-center gap-3 hover:bg-slate-900 px-8 rounded-[2rem] transition-all shadow-xl shadow-indigo-100 group"
+                                className="h-14 bg-indigo-600 text-white text-[11px] font-black  tracking-[0.15em] flex items-center gap-3 hover:bg-slate-900 px-8 rounded-xl transition-all shadow-xl shadow-indigo-100 group"
                             >
                                 <span className="material-symbols-rounded text-xl group-hover:rotate-12 transition-transform">psychology</span>
                                 Strategy Wizard
@@ -240,11 +240,11 @@ export default function CreateX360Template() {
                                             </div>
                                             <div>
                                                 <h4 className="text-lg font-black text-slate-800 tracking-tight">{cat.replace(/_/g, ' ')}</h4>
-                                                <p className="text-slate-400 text-[9px] font-bold uppercase tracking-[0.2em]">{catQuestions.length} Total Options</p>
+                                                <p className="text-slate-400 text-[9px] font-bold  tracking-[0.2em]">{catQuestions.length} Total Options</p>
                                             </div>
                                         </div>
                                         {selectedInCat > 0 && (
-                                            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest animate-in fade-in slide-in-from-right-2">
+                                            <span className="text-[10px] font-black text-indigo-600   animate-in fade-in slide-in-from-right-2">
                                                 {selectedInCat} Competencies Chosen
                                             </span>
                                         )}
@@ -255,7 +255,7 @@ export default function CreateX360Template() {
                                             <div 
                                                 key={q.id} 
                                                 onClick={() => toggleQuestion(q.id)}
-                                                className={`p-6 rounded-3xl cursor-pointer transition-all flex flex-col gap-4 border-2 relative group animate-in slide-in-from-bottom-2 duration-500 overflow-hidden ${
+                                                className={`p-6 rounded-xl cursor-pointer transition-all flex flex-col gap-4 border-2 relative group animate-in slide-in-from-bottom-2 duration-500 overflow-hidden ${
                                                     formData.question_ids.includes(q.id) 
                                                     ? 'border-indigo-600 bg-white shadow-2xl shadow-indigo-100' 
                                                     : 'border-white bg-white shadow-sm hover:border-slate-200 hover:shadow-xl'
@@ -272,7 +272,7 @@ export default function CreateX360Template() {
                                                     </p>
                                                 </div>
                                                 <div className="flex justify-between items-center pt-2 border-t border-slate-50 mt-auto">
-                                                    <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">{q.type}</span>
+                                                    <span className="text-[9px] font-black  text-slate-400 ">{q.type}</span>
                                                     <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${formData.question_ids.includes(q.id) ? 'bg-indigo-50 border-indigo-200 text-indigo-600' : 'bg-slate-50 border-slate-100 text-transparent group-hover:border-slate-300'}`}>
                                                         <span className="material-symbols-rounded text-base font-black">check</span>
                                                     </div>
@@ -288,14 +288,14 @@ export default function CreateX360Template() {
 
                 <div className="pt-20 flex flex-col items-center border-t border-slate-200 pb-32">
                     <div className="flex flex-col items-center mb-10 text-center max-w-sm">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Framework Readiness</p>
+                        <p className="text-[10px] font-black text-slate-400  tracking-[0.3em] mb-4">Framework Readiness</p>
                         <h4 className="text-2xl font-black text-slate-900 mb-2">{formData.question_ids.length} Questions Selected</h4>
                         <p className="text-slate-500 text-xs font-medium">Review your competency mix above before deploying to your organization.</p>
                     </div>
                     <button 
                         onClick={handleSave}
                         disabled={submitting || formData.question_ids.length === 0}
-                        className="h-20 px-24 bg-indigo-600 text-white rounded-[2.5rem] font-black text-sm uppercase tracking-[0.25em] shadow-[0_20px_50px_rgba(79,70,229,0.3)] hover:bg-slate-900 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30 disabled:shadow-none flex items-center justify-center gap-4"
+                        className="h-20 px-24 bg-indigo-600 text-white rounded-2xl font-black text-sm  tracking-[0.25em] shadow-[0_20px_50px_rgba(79,70,229,0.3)] hover:bg-slate-900 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30 disabled:shadow-none flex items-center justify-center gap-4"
                     >
                         {submitting ? (
                             <>
@@ -315,7 +315,7 @@ export default function CreateX360Template() {
             {/* AI Wizard Modal */}
             {isAiWizardOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in duration-200">
+                    <div className="bg-white rounded-xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in duration-200">
                         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                             <div className="flex items-center gap-3">
                                 <span className="material-symbols-rounded text-indigo-600">psychology</span>
@@ -327,7 +327,7 @@ export default function CreateX360Template() {
                         </div>
                         <div className="p-8 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Industry for Context</label>
+                                <label className="text-[10px] font-bold text-slate-400   px-1">Industry for Context</label>
                                 <input 
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 transition-all h-[52px]"
                                     value={industryNature}
@@ -335,12 +335,12 @@ export default function CreateX360Template() {
                                     placeholder="e.g. Fintech, Manufacturing..."
                                     autoFocus
                                 />
-                                <p className="text-[10px] text-slate-400 font-medium px-1 italic">Generated items will be calibrated for this segment.</p>
+                                <p className="text-[10px] text-slate-400 font-medium px-1 ">Generated items will be calibrated for this segment.</p>
                             </div>
                             <button 
                                 onClick={generateWithAi}
                                 disabled={generatingAi || !industryNature}
-                                className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all disabled:opacity-30 shadow-md"
+                                className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-xs   flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all disabled:opacity-30 shadow-md"
                             >
                                 {generatingAi ? (
                                     <>

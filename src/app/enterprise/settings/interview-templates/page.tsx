@@ -91,18 +91,18 @@ function InterviewTemplatesContent() {
     if (isLoading && templates.length === 0) {
         return (
             <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 shadow-2xl">
+                <div className="h-32 bg-slate-900 rounded-2xl relative overflow-hidden flex items-center px-10 shadow-2xl">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="w-16 h-16 bg-white/5 rounded-xl animate-pulse" />
                         <div className="space-y-2">
-                            <div className="w-48 h-6 bg-white/10 rounded-lg animate-pulse" />
-                            <div className="w-32 h-3 bg-white/5 rounded-lg animate-pulse" />
+                            <div className="w-48 h-6 bg-white/10 rounded-xl animate-pulse" />
+                            <div className="w-32 h-3 bg-white/5 rounded-xl animate-pulse" />
                         </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="bg-white h-64 rounded-[2.5rem] border border-slate-100 animate-pulse shadow-sm" />
+                        <div key={i} className="bg-white h-64 rounded-2xl border border-slate-100 animate-pulse shadow-sm" />
                     ))}
                 </div>
             </div>
@@ -111,14 +111,14 @@ function InterviewTemplatesContent() {
 
     return (
         <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
                 <div className="flex items-center gap-3 px-2">
                     <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
                         <span className="material-symbols-rounded">psychology</span>
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">Interview Templates</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Design AI behavioral screening</p>
+                        <p className="text-slate-500 text-[10px] font-medium   ">Design AI behavioral screening</p>
                     </div>
                 </div>
 
@@ -129,7 +129,7 @@ function InterviewTemplatesContent() {
                                 setEditingTemplate(null);
                                 setShowBuilder(true);
                             }}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
                             New Template
@@ -145,8 +145,8 @@ function InterviewTemplatesContent() {
             </div>
 
             {templates.length === 0 ? (
-                <div className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-slate-200">
-                    <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <div className="text-center py-32 bg-white rounded-2xl border border-dashed border-slate-200">
+                    <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-xl flex items-center justify-center mx-auto mb-6">
                         <MessagesSquare className="w-10 h-10" />
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 tracking-tight">No Templates Found</h3>
@@ -158,7 +158,7 @@ function InterviewTemplatesContent() {
                         <motion.div
                             layout
                             key={template.id}
-                            className="group bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                            className="group bg-white rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
                             onClick={() => {
                                 if (canAccess("interviews:moderate")) {
                                     setEditingTemplate(template);
@@ -178,7 +178,7 @@ function InterviewTemplatesContent() {
                                                 setTemplateToDelete({ id: template.id, name: template.title });
                                                 setIsDeleteModalOpen(true);
                                             }}
-                                            className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-lg opacity-0 group-hover:opacity-100"
+                                            className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl opacity-0 group-hover:opacity-100"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -187,19 +187,19 @@ function InterviewTemplatesContent() {
                                 
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">{template.topic}</span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{template.difficulty}</span>
+                                        <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full  ">{template.topic}</span>
+                                        <span className="text-[10px] font-bold text-slate-400  ">{template.difficulty}</span>
                                     </div>
                                     <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{template.title}</h3>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-200/50">
-                                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100/50 group-hover:bg-white group-hover:border-slate-200 transition-all">
-                                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Duration</p>
+                                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-100/50 group-hover:bg-white group-hover:border-slate-200 transition-all">
+                                      <p className="text-[9px] font-bold text-slate-400   mb-1">Duration</p>
                                       <p className="text-xs font-bold text-slate-700">{template.duration} mins</p>
                                    </div>
-                                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100/50 group-hover:bg-white group-hover:border-slate-200 transition-all">
-                                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Interface</p>
+                                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-100/50 group-hover:bg-white group-hover:border-slate-200 transition-all">
+                                      <p className="text-[9px] font-bold text-slate-400   mb-1">Interface</p>
                                       <p className="text-xs font-bold text-slate-700 truncate">{template.require_video ? "Video" : "Audio Only"}</p>
                                    </div>
                                 </div>
@@ -208,14 +208,14 @@ function InterviewTemplatesContent() {
                             <div className="px-6 py-4 flex items-center justify-between bg-slate-50/50 border-t border-slate-200/50 rounded-b-3xl mt-auto">
                                 <div className="flex items-center gap-2 text-slate-300">
                                     <Calendar className="w-3.5 h-3.5" />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider">{new Date(template.created_at).toLocaleDateString()}</span>
+                                    <span className="text-[10px] font-bold  ">{new Date(template.created_at).toLocaleDateString()}</span>
                                 </div>
                                 <div className="text-slate-300 group-hover:text-indigo-600 transition-colors">
                                     {canAccess("interviews:moderate") ? (
                                         <Edit3 className="hidden" /> 
                                     ) : null}
                                     <div className="flex items-center gap-1.5">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest">Edit</span>
+                                        <span className="text-[10px] font-bold  ">Edit</span>
                                         <ArrowRight className="w-4 h-4" />
                                     </div>
                                 </div>
@@ -265,11 +265,11 @@ export default function InterviewTemplatesPage() {
         <Suspense fallback={
             <div className="flex items-center justify-center h-screen bg-slate-50">
                 <div className="flex flex-col items-center gap-6">
-                    <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center animate-pulse shadow-xl">
+                    <div className="w-16 h-16 bg-slate-900 rounded-xl flex items-center justify-center animate-pulse shadow-xl">
                         <MessagesSquare className="w-8 h-8 text-indigo-400 animate-spin" />
                     </div>
                     <div className="text-center">
-                        <p className="text-xs font-bold uppercase tracking-widest text-slate-900">Loading Interview Templates</p>
+                        <p className="text-xs font-bold   text-slate-900">Loading Interview Templates</p>
                     </div>
                 </div>
             </div>

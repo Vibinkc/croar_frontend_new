@@ -115,8 +115,8 @@ export default function DailyPracticePage() {
             <div className="bg-slate-50/50 shadow-lg rounded-[2rem] overflow-hidden border-t-4 border-slate-900">
                 <div className="p-6">
                     <div className="flex justify-between mb-4">
-                        <span className="text-xs font-bold uppercase tracking-wider text-gray-400">{currentQ.topic}</span>
-                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${currentQ.difficulty === 'EASY' ? 'bg-slate-50 text-slate-600 border-slate-200' : 'bg-slate-900 text-white border-slate-900 shadow-sm'}`}>{currentQ.difficulty}</span>
+                        <span className="text-xs font-bold   text-gray-400">{currentQ.topic}</span>
+                        <span className={`text-[10px] font-black   px-3 py-1 rounded-full border ${currentQ.difficulty === 'EASY' ? 'bg-slate-50 text-slate-600 border-slate-200' : 'bg-slate-900 text-white border-slate-900 shadow-sm'}`}>{currentQ.difficulty}</span>
                     </div>
 
                     <h2 className="text-xl font-medium text-gray-900 mb-6">{currentQ.content.question}</h2>
@@ -159,14 +159,14 @@ export default function DailyPracticePage() {
                             <button
                                 onClick={handleSubmit}
                                 disabled={!selectedOption}
-                                className={`px-8 py-3 rounded-xl font-black uppercase tracking-widest text-[11px] text-white transition-all shadow-md ${selectedOption ? 'bg-slate-900 hover:bg-black' : 'bg-slate-200 cursor-not-allowed'}`}
+                                className={`px-8 py-3 rounded-xl font-black   text-[11px] text-white transition-all shadow-md ${selectedOption ? 'bg-slate-900 hover:bg-black' : 'bg-slate-200 cursor-not-allowed'}`}
                             >
                                 Submit
                             </button>
                         ) : (
                             <button
                                 onClick={handleNext}
-                                className="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-[11px] transition-all shadow-md"
+                                className="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-xl font-black   text-[11px] transition-all shadow-md"
                             >
                                 {currentIndex === questions.length - 1 ? "Finish" : "Next"}
                             </button>

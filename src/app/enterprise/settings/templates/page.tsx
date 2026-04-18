@@ -214,18 +214,18 @@ export default function EmailTemplatesPage() {
     if (isLoading) {
         return (
             <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 shadow-2xl">
+                <div className="h-32 bg-slate-900 rounded-2xl relative overflow-hidden flex items-center px-10 shadow-2xl">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="w-16 h-16 bg-white/5 rounded-xl animate-pulse" />
                         <div className="space-y-2">
-                            <div className="w-48 h-6 bg-white/10 rounded-lg animate-pulse" />
-                            <div className="w-32 h-3 bg-white/5 rounded-lg animate-pulse" />
+                            <div className="w-48 h-6 bg-white/10 rounded-xl animate-pulse" />
+                            <div className="w-32 h-3 bg-white/5 rounded-xl animate-pulse" />
                         </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="bg-white h-64 rounded-[2.5rem] border border-slate-100 animate-pulse shadow-sm" />
+                        <div key={i} className="bg-white h-64 rounded-2xl border border-slate-100 animate-pulse shadow-sm" />
                     ))}
                 </div>
             </div>
@@ -234,14 +234,14 @@ export default function EmailTemplatesPage() {
 
     return (
         <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
                 <div className="flex items-center gap-3 px-2">
                     <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
                         <span className="material-symbols-rounded">mail</span>
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">Email Templates</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Standardize organizational outreach</p>
+                        <p className="text-slate-500 text-[10px] font-medium   ">Standardize organizational outreach</p>
                     </div>
                 </div>
 
@@ -249,7 +249,7 @@ export default function EmailTemplatesPage() {
                     {canAccess("communications:moderate") && (
                         <button 
                             onClick={() => handleOpenModal()}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
                             New Template
@@ -265,8 +265,8 @@ export default function EmailTemplatesPage() {
             </div>
 
             {templates.length === 0 ? (
-                <div className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-slate-200">
-                    <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <div className="text-center py-32 bg-white rounded-2xl border border-dashed border-slate-200">
+                    <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-xl flex items-center justify-center mx-auto mb-6">
                         <Mail className="w-10 h-10" />
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 tracking-tight">No Templates Found</h3>
@@ -278,7 +278,7 @@ export default function EmailTemplatesPage() {
                         <motion.div
                             layout
                             key={template.id}
-                            className="group bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                            className="group bg-white rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
                             onClick={() => handleOpenModal(template)}
                         >
                             <div className="p-6 pb-2 space-y-6">
@@ -293,7 +293,7 @@ export default function EmailTemplatesPage() {
                                                 setTemplateToDelete({ id: template.id, name: template.name });
                                                 setIsDeleteModalOpen(true);
                                             }}
-                                            className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-lg opacity-0 group-hover:opacity-100"
+                                            className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl opacity-0 group-hover:opacity-100"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -302,7 +302,7 @@ export default function EmailTemplatesPage() {
 
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${
+                                        <span className={`text-[10px] font-bold   px-3 py-1 rounded-full ${
                                             template.category === 'ASSESSMENT' ? 'bg-purple-100 text-purple-600' :
                                             template.category === 'INTERVIEW' ? 'bg-indigo-100 text-indigo-600' :
                                             template.category === 'ONBOARDING' ? 'bg-emerald-100 text-emerald-600' :
@@ -315,7 +315,7 @@ export default function EmailTemplatesPage() {
                                     <p className="text-xs text-slate-400 font-medium truncate">Subject: {template.subject}</p>
                                 </div>
 
-                                <div className="text-sm text-slate-400 line-clamp-3 h-14 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50 overflow-hidden font-medium leading-relaxed group-hover:bg-white group-hover:border-slate-200 transition-all">
+                                <div className="text-sm text-slate-400 line-clamp-3 h-14 bg-slate-50/50 p-4 rounded-xl border border-slate-100/50 overflow-hidden font-medium leading-relaxed group-hover:bg-white group-hover:border-slate-200 transition-all">
                                     {template.body.replace(/<[^>]*>?/gm, '')}
                                 </div>
                             </div>
@@ -323,7 +323,7 @@ export default function EmailTemplatesPage() {
                             <div className="px-6 py-4 flex items-center justify-between bg-slate-50/50 border-t border-slate-200/50 rounded-b-3xl mt-auto">
                                 <div className="flex items-center gap-2 text-slate-300">
                                     <History className="w-3.5 h-3.5" />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider">{formatDate(template.updated_at || template.created_at)}</span>
+                                    <span className="text-[10px] font-bold  ">{formatDate(template.updated_at || template.created_at)}</span>
                                 </div>
                                 <div className="text-slate-300 group-hover:text-indigo-600 transition-colors">
                                     {canAccess("communications:moderate") ? (
@@ -348,7 +348,7 @@ export default function EmailTemplatesPage() {
                             {/* Drawer Header */}
                             <div className="flex items-center justify-between px-10 py-8 border-b border-slate-50 shrink-0">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl">
+                                    <div className="w-14 h-14 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xl">
                                         <Layout className="w-8 h-8 text-indigo-400" />
                                     </div>
                                     <div>
@@ -365,7 +365,7 @@ export default function EmailTemplatesPage() {
                             <div className="flex-1 overflow-y-auto px-10 py-10 space-y-12 no-scrollbar">
                                 
                                 {!isAiMode && canAccess("communications:moderate") && (
-                                    <div className="bg-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-100">
+                                    <div className="bg-indigo-600 rounded-xl p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-100">
                                         <div className="relative z-10 flex items-center justify-between gap-6">
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-3">
@@ -391,7 +391,7 @@ export default function EmailTemplatesPage() {
                                             <textarea
                                                 value={aiPurpose}
                                                 onChange={e => setAiPurpose(e.target.value)}
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-6 text-sm font-medium text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner h-40 leading-relaxed"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-6 text-sm font-medium text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner h-40 leading-relaxed"
                                                 placeholder="e.g. Reject candidate for backend role but offer future talent pool inclusion..."
                                             />
                                         </div>
@@ -458,7 +458,7 @@ export default function EmailTemplatesPage() {
                                                         <div className="flex items-center gap-3">
                                                             <div className="relative group/insert">
                                                                 <select 
-                                                                    className="appearance-none bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-1.5 pr-8 text-[10px] font-bold text-indigo-600 uppercase tracking-wider outline-none cursor-pointer hover:bg-white transition-all shadow-sm"
+                                                                    className="appearance-none bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-1.5 pr-8 text-[10px] font-bold text-indigo-600   outline-none cursor-pointer hover:bg-white transition-all shadow-sm"
                                                                     onChange={(e) => {
                                                                         if (!e.target.value) return;
                                                                         const val = `{{${e.target.value}}}`;
@@ -517,7 +517,7 @@ export default function EmailTemplatesPage() {
                                                     id="base-editor"
                                                     value={body}
                                                     onChange={e => setBody(e.target.value)}
-                                                    className="w-full h-[400px] bg-slate-50 border border-slate-100 rounded-3xl px-8 py-8 text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner leading-relaxed"
+                                                    className="w-full h-[400px] bg-slate-50 border border-slate-100 rounded-xl px-8 py-8 text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner leading-relaxed"
                                                     placeholder="Write your email content here. Use {{variable_name}} for dynamic data."
                                                     required
                                                     readOnly={!canAccess("communications:moderate")}
@@ -534,7 +534,7 @@ export default function EmailTemplatesPage() {
                                     <button 
                                         form="template-form"
                                         type="submit"
-                                        className="px-10 h-14 bg-slate-900 text-white rounded-2xl font-bold text-sm tracking-wide hover:bg-indigo-600 transition-all active:scale-[0.98] shadow-2xl flex items-center gap-3"
+                                        className="px-10 h-14 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-indigo-600 transition-all active:scale-[0.98] shadow-2xl flex items-center gap-3"
                                     >
                                         <Save className="w-4 h-4" />
                                         Save Template

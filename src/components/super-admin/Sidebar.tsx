@@ -10,7 +10,7 @@ export default function SuperAdminSidebar() {
 
     const navGroups = [
         {
-            title: "PLATFORM MGMT",
+            title: "Platform Mgmt",
             items: [
                 { label: "Overview", icon: "grid_view", path: "/super-admin" },
                 { label: "Tenants Inventory", icon: "corporate_fare", path: "/super-admin/colleges/list" },
@@ -18,7 +18,7 @@ export default function SuperAdminSidebar() {
             ]
         },
         {
-            title: "SYSTEM CONFIG",
+            title: "System Config",
             items: [
                 { label: "Global Roles", icon: "security", path: "/super-admin/roles" },
                 { label: "Organizations", icon: "business", path: "/super-admin/organizations" },
@@ -40,7 +40,7 @@ export default function SuperAdminSidebar() {
                 {/* Logo Section */}
                 <div className="p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50">
                     <Link href="/super-admin" className="flex items-center gap-2 tracking-tighter">
-                        <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent italic">CROAR.AI</span>
+                        <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent">Croar.ai</span>
                     </Link>
                 </div>
 
@@ -48,7 +48,7 @@ export default function SuperAdminSidebar() {
                 <nav className="space-y-4 px-1">
                     {navGroups.map((group) => (
                         <div key={group.title}>
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 px-3">{group.title}</p>
+                            <p className="text-[11px] font-bold text-slate-400 mb-2 px-3">{group.title}</p>
                             <div className="space-y-0.5">
                                 {group.items.map((item) => (
                                     <Link key={item.path} href={item.path} className={navLinkClass(item.path)}>
@@ -70,7 +70,7 @@ export default function SuperAdminSidebar() {
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-[10px] font-bold text-slate-700 truncate">{user || "root@croar.ai"}</p>
-                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{role || 'SUPER_ADMIN'}</p>
+                        <p className="text-[10px] font-medium text-slate-400">{role ? role.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) : 'Super Admin'}</p>
                     </div>
                 </div>
 

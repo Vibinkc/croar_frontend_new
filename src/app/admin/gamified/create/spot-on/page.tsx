@@ -69,8 +69,8 @@ export default function CreateSpotOnPage() {
                     <span className="material-icons-outlined">arrow_back</span>
                 </button>
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Initialize Spot On</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Gamified Visual Assessment</p>
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight ">Initialize Spot On</h1>
+                    <p className="text-[10px] font-bold text-slate-400   mt-1">Gamified Visual Assessment</p>
                 </div>
             </div>
 
@@ -79,7 +79,7 @@ export default function CreateSpotOnPage() {
                 <div className="lg:col-span-1 space-y-6">
                     <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-100 p-8 space-y-6">
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Protocol Title</label>
+                            <label className="block text-[10px] font-black text-slate-400   mb-2">Protocol Title</label>
                             <input
                                 type="text"
                                 value={title}
@@ -89,7 +89,7 @@ export default function CreateSpotOnPage() {
                         </div>
 
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Number of Puzzles</label>
+                            <label className="block text-[10px] font-black text-slate-400   mb-2">Number of Puzzles</label>
                             <input
                                 type="number"
                                 value={questionCount}
@@ -104,7 +104,7 @@ export default function CreateSpotOnPage() {
                             <div className="flex items-start gap-3">
                                 <span className="material-icons-outlined text-slate-600 mt-1">auto_awesome</span>
                                 <div>
-                                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-wide mb-1">AI Puzzle Design</h3>
+                                    <h3 className="text-xs font-black text-slate-900  tracking-wide mb-1">AI Puzzle Design</h3>
                                     <p className="text-[10px] text-slate-600 font-medium leading-relaxed">
                                         Generates intricate geometric pattern matching puzzles instantly.
                                     </p>
@@ -115,7 +115,7 @@ export default function CreateSpotOnPage() {
                         <button
                             onClick={handleGenerate}
                             disabled={generating}
-                            className="w-full py-4 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-[0.2em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 hover:shadow-slate-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                            className="w-full py-4 bg-slate-900 text-white rounded-xl text-xs font-black  tracking-[0.2em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 hover:shadow-slate-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                         >
                             {generating ? "Calculating..." : "Generate AI Puzzles"}
                         </button>
@@ -150,7 +150,7 @@ export default function CreateSpotOnPage() {
                                 <button
                                     onClick={handleSave}
                                     disabled={saving}
-                                    className="px-12 py-4 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-[0.2em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
+                                    className="px-12 py-4 bg-slate-900 text-white rounded-xl text-xs font-black  tracking-[0.2em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
                                 >
                                     {saving ? "Deploying..." : "Finalize Assessment"}
                                 </button>
@@ -163,8 +163,8 @@ export default function CreateSpotOnPage() {
                                     <span className="material-icons-outlined text-4xl">travel_explore</span>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest">No Puzzles Generated</p>
-                                    <p className="text-[9px] font-bold text-slate-400 uppercase mt-1">Configure and generate to begin review</p>
+                                    <p className="text-[10px] font-black  ">No Puzzles Generated</p>
+                                    <p className="text-[9px] font-bold text-slate-400  mt-1">Configure and generate to begin review</p>
                                 </div>
                             </div>
                         </div>

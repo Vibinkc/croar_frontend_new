@@ -106,7 +106,7 @@ export default function Numero({ questions, onComplete }: NumeroProps) {
 
                     <button
                         onClick={handleStart}
-                        className="px-12 py-5 bg-white text-[#A4437B] rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-black/20"
+                        className="px-12 py-5 bg-white text-[#A4437B] rounded-full text-lg font-black   hover:scale-105 transition-all shadow-xl shadow-black/20"
                     >
                         Start Game
                     </button>
@@ -125,7 +125,7 @@ export default function Numero({ questions, onComplete }: NumeroProps) {
                 </button>
 
                 <div className="px-6 py-2 bg-black/20 backdrop-blur-md rounded-full border border-white/10">
-                    <span className="text-sm font-bold tracking-widest opacity-90">
+                    <span className="text-sm font-bold  opacity-90">
                         {String(currentIndex + 1).padStart(2, '0')}/{String(questions.length).padStart(2, '0')}
                     </span>
                 </div>
@@ -159,7 +159,7 @@ export default function Numero({ questions, onComplete }: NumeroProps) {
                         {/* Question "Card" */}
                         <div className="relative aspect-square md:aspect-video w-full bg-white/20 backdrop-blur-md rounded-[2.5rem] flex flex-col items-center justify-center border-2 border-white/30 shadow-2xl shadow-black/10 p-8 overflow-hidden">
                             <div className="text-center space-y-2">
-                                <span className="text-xs font-black uppercase tracking-[0.2em] text-white/60">Problem</span>
+                                <span className="text-xs font-black  tracking-[0.2em] text-white/60">Problem</span>
                                 <div className="text-5xl md:text-6xl font-black text-white drop-shadow-lg leading-tight break-words word-break">
                                     {currentQuestion.text}
                                 </div>

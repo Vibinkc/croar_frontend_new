@@ -36,7 +36,7 @@ export default function CodingProductPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-green-400/30 bg-green-500/10 px-3 py-1 rounded-full text-green-300 text-xs font-bold uppercase tracking-widest backdrop-blur-md"
+                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-green-400/30 bg-green-500/10 px-3 py-1 rounded-full text-green-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-green-400">code</span>
                             Cloud IDE v3.0
@@ -75,7 +75,7 @@ export default function CodingProductPage() {
             <section className="px-4 py-16" id="features">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-2 text-center md:text-left">
-                        <span className="text-green-600 font-bold uppercase tracking-widest text-sm">Dev Ecosystem</span>
+                        <span className="text-green-600 font-bold   text-sm">Dev Ecosystem</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">More Than Text</h2>
                         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">We give you a fully virtualized environment, not just a text box.</p>
                     </div>
@@ -144,11 +144,11 @@ export default function CodingProductPage() {
                         <div className="flex gap-4 mb-4">
                             <div className="p-4 bg-slate-800 rounded-xl border border-slate-700">
                                 <div className="text-2xl font-black text-green-400">50+</div>
-                                <div className="text-xs text-slate-400 font-bold uppercase">Languages</div>
+                                <div className="text-xs text-slate-400 font-bold ">Languages</div>
                             </div>
                             <div className="p-4 bg-slate-800 rounded-xl border border-slate-700">
                                 <div className="text-2xl font-black text-blue-400">0.4s</div>
-                                <div className="text-xs text-slate-400 font-bold uppercase">Compile Time</div>
+                                <div className="text-xs text-slate-400 font-bold ">Compile Time</div>
                             </div>
                         </div>
                     </motion.div>
@@ -256,7 +256,7 @@ export default function CodingProductPage() {
                 <div className="max-w-7xl mx-auto px-4 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
                         <div>
-                            <div className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold   mb-6">
                                 New Feature
                             </div>
                             <h2 className="text-4xl font-black text-slate-900 mb-6">System Design Whiteboard.</h2>
@@ -321,7 +321,7 @@ export default function CodingProductPage() {
                     <button onClick={() => router.push("/practice/coding")} className="bg-green-600 text-white font-bold py-5 px-12 rounded-full text-xl hover:scale-105 transition-transform shadow-xl shadow-green-600/30">
                         Start Coding Challenge
                     </button>
-                    <p className="mt-6 text-xs text-green-300 font-mono uppercase tracking-widest font-bold">No Local Setup Required • Browser Based</p>
+                    <p className="mt-6 text-xs text-green-300 font-mono   font-bold">No Local Setup Required • Browser Based</p>
                 </div>
             </footer>
         </main>

@@ -17,7 +17,7 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h5 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-6">Skill Practice</h5>
+                        <h5 className="text-sm font-extrabold text-slate-900 dark:text-white   mb-6">Skill Practice</h5>
                         <ul className="space-y-4 text-sm font-medium text-slate-600 dark:text-slate-400">
                             <li><Link href="/products/aptitude" className="hover:text-indigo-600 transition-colors">Aptitude</Link></li>
                             <li><Link href="/products/communication" className="hover:text-indigo-600 transition-colors">Communication</Link></li>
@@ -26,7 +26,7 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h5 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-6">Real World Sim</h5>
+                        <h5 className="text-sm font-extrabold text-slate-900 dark:text-white   mb-6">Real World Sim</h5>
                         <ul className="space-y-4 text-sm font-medium text-slate-600 dark:text-slate-400">
                             <li><Link href="/products/job-simulator" className="hover:text-indigo-600 transition-colors">Job Simulator</Link></li>
                             <li><Link href="/products/discussion" className="hover:text-indigo-600 transition-colors">Group Discussion</Link></li>
@@ -34,7 +34,7 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h5 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-6">Smart Assessments</h5>
+                        <h5 className="text-sm font-extrabold text-slate-900 dark:text-white   mb-6">Smart Assessments</h5>
                         <ul className="space-y-4 text-sm font-medium text-slate-600 dark:text-slate-400">
                             <li><Link href="/products/interviews" className="hover:text-indigo-600 transition-colors">AI Interviews</Link></li>
                             <li><Link href="/products/video-interviews" className="hover:text-indigo-600 transition-colors">Video Interviews</Link></li>
@@ -45,7 +45,7 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h5 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-6">Company</h5>
+                        <h5 className="text-sm font-extrabold text-slate-900 dark:text-white   mb-6">Company</h5>
                         <ul className="space-y-4 text-sm font-medium text-slate-600 dark:text-slate-400">
                             <li><Link href="/" className="hover:text-indigo-600 transition-colors">Home</Link></li>
                             <li><Link href="/about" className="hover:text-indigo-600 transition-colors">About Us</Link></li>

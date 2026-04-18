@@ -29,7 +29,7 @@ export default function MegaMenu({ categories, isOpen, onClose }: MegaMenuProps)
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
                     {categories.map((category, idx) => (
                         <div key={idx} className="space-y-6">
-                            <h3 className="text-[#0070f3] text-sm font-black uppercase tracking-widest pb-2 border-b-2 border-[#0070f3] inline-block">
+                            <h3 className="text-[#0070f3] text-sm font-black   pb-2 border-b-2 border-[#0070f3] inline-block">
                                 {category.title}
                             </h3>
                             <div className="space-y-6">

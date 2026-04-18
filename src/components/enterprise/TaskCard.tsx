@@ -21,17 +21,17 @@ export default function TaskCard({ task, getStatusColor }: TaskCardProps) {
             <div className="flex flex-col h-full space-y-3">
                 <div className="space-y-1">
                     <div className="flex items-center justify-between mb-0.5">
-                        <span className="text-[8px] font-black text-[#7C3AED] uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 flex items-center gap-1">
+                        <span className="text-[8px] font-black text-[#7C3AED]   bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 flex items-center gap-1">
                             {task.project?.name || "Unlinked"}
                         </span>
-                        <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider border ${getStatusColor(task.column)} shadow-sm`}>
+                        <span className={`px-2 py-0.5 rounded-md text-[8px] font-black   border ${getStatusColor(task.column)} shadow-sm`}>
                             {task.column}
                         </span>
                     </div>
-                    <h3 className="text-sm font-black text-slate-800 leading-tight group-hover:text-[#7C3AED] transition-colors uppercase tracking-tight truncate">{task.title}</h3>
+                    <h3 className="text-sm font-black text-slate-800 leading-tight group-hover:text-[#7C3AED] transition-colors  tracking-tight truncate">{task.title}</h3>
                 </div>
 
-                <p className="text-slate-500 text-[10px] font-medium line-clamp-2 italic leading-relaxed opacity-70">
+                <p className="text-slate-500 text-[10px] font-medium line-clamp-2  leading-relaxed opacity-70">
                     {task.description || "No description provided."}
                 </p>
 
@@ -44,13 +44,13 @@ export default function TaskCard({ task, getStatusColor }: TaskCardProps) {
                             <span className="text-[9px] font-black text-slate-700 leading-none">
                                 {task.assignee ? `${task.assignee.first_name} ${task.assignee.last_name}` : "Unassigned"}
                             </span>
-                            <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Assignee</span>
+                            <span className="text-[7px] font-black text-slate-400   mt-0.5">Assignee</span>
                         </div>
                     </div>
 
                     {task.due_date && (
                         <div className="flex flex-col items-end">
-                            <span className="text-[7px] font-black text-rose-400 uppercase tracking-widest leading-none mb-0.5">Due_Date</span>
+                            <span className="text-[7px] font-black text-rose-400   leading-none mb-0.5">Due_Date</span>
                             <span className="text-[9px] font-bold text-slate-700 tabular-nums">
                                 {format(new Date(task.due_date), "MMM d, yy")}
                             </span>

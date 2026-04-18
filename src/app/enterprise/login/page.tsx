@@ -75,7 +75,7 @@ function EnterpriseLoginContent() {
                 </div>
 
                 <div className="relative z-10 max-w-lg text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mx-auto mb-8 flex items-center justify-center shadow-2xl shadow-indigo-500/30">
+                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl mx-auto mb-8 flex items-center justify-center shadow-2xl shadow-indigo-500/30">
                         <span className="material-icons-outlined text-4xl text-white">business_center</span>
                     </div>
                     <h1 className="text-4xl font-bold text-white mb-6">Enterprise Portal</h1>
@@ -87,7 +87,7 @@ function EnterpriseLoginContent() {
 
             {/* Right Side - Login Form */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-                <div className="max-w-md w-full bg-white dark:bg-slate-900 p-10 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800">
+                <div className="max-w-md w-full bg-white dark:bg-slate-900 p-10 rounded-xl shadow-xl border border-slate-100 dark:border-slate-800">
                     <div className="text-center mb-10">
                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Welcome Back</h2>
                         <p className="text-slate-500 dark:text-slate-400 text-sm">Sign in to your Recruiter account</p>
@@ -96,7 +96,7 @@ function EnterpriseLoginContent() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Email Input */}
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2" htmlFor="email">
+                            <label className="block text-xs font-bold text-slate-500   mb-2" htmlFor="email">
                                 Email Address
                             </label>
                             <div className="relative">
@@ -115,7 +115,7 @@ function EnterpriseLoginContent() {
 
                         {/* Password Input */}
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2" htmlFor="password">
+                            <label className="block text-xs font-bold text-slate-500   mb-2" htmlFor="password">
                                 Password
                             </label>
                             <div className="relative">

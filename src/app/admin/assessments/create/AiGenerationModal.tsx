@@ -99,7 +99,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
                             <span className="material-icons-outlined text-white text-xl">auto_awesome</span>
                         </div>
                         <div>
-                            <h2 className="text-lg font-black text-gray-900 uppercase tracking-tight">Generate with AI</h2>
+                            <h2 className="text-lg font-black text-gray-900  tracking-tight">Generate with AI</h2>
                             <p className="text-xs text-gray-500 font-medium">Define your requirements and let AI build the assessment</p>
                         </div>
                     </div>
@@ -116,7 +116,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
                     {/* Main Topic */}
                     <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">
+                        <label className="block text-[10px] font-black text-gray-400  tracking-[0.2em] mb-2">
                             Assessment Topic / Role
                         </label>
                         <input
@@ -132,7 +132,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
                     {/* Sections Configuration */}
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                            <label className="block text-[10px] font-black text-gray-400  tracking-[0.2em]">
                                 Sections & Structure
                             </label>
                             <button
@@ -160,7 +160,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
                                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                                     {/* Section Title */}
                                     <div className="md:col-span-8">
-                                        <label className="block text-[9px] font-bold text-gray-400 uppercase mb-1">Section Title</label>
+                                        <label className="block text-[9px] font-bold text-gray-400  mb-1">Section Title</label>
                                         <input
                                             type="text"
                                             value={section.title}
@@ -171,7 +171,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
                                     </div>
 
                                     <div className="md:col-span-4">
-                                        <label className="block text-[9px] font-bold text-gray-400 uppercase mb-1">Type</label>
+                                        <label className="block text-[9px] font-bold text-gray-400  mb-1">Type</label>
                                         <div className="relative">
                                             <select
                                                 value={section.type || "APTITUDE"}
@@ -192,7 +192,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
                                     {/* Difficulty Distribution */}
                                     <div className="md:col-span-8 grid grid-cols-3 gap-2">
                                         <div>
-                                            <label className="block text-[9px] font-bold text-emerald-500 uppercase mb-1">Easy</label>
+                                            <label className="block text-[9px] font-bold text-emerald-500  mb-1">Easy</label>
                                             <input
                                                 type="number"
                                                 min="0"
@@ -202,7 +202,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[9px] font-bold text-amber-500 uppercase mb-1">Medium</label>
+                                            <label className="block text-[9px] font-bold text-amber-500  mb-1">Medium</label>
                                             <input
                                                 type="number"
                                                 min="0"
@@ -212,7 +212,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[9px] font-bold text-red-500 uppercase mb-1">Hard</label>
+                                            <label className="block text-[9px] font-bold text-red-500  mb-1">Hard</label>
                                             <input
                                                 type="number"
                                                 min="0"
@@ -225,7 +225,7 @@ export default function AiGenerationModal({ isOpen, onClose, onGenerate }: AiGen
 
                                     {/* Time Limit */}
                                     <div className="md:col-span-4">
-                                        <label className="block text-[9px] font-bold text-gray-400 uppercase mb-1">Time (Mins)</label>
+                                        <label className="block text-[9px] font-bold text-gray-400  mb-1">Time (Mins)</label>
                                         <div className="relative">
                                             <span className="absolute left-2.5 top-1/2 -translate-y-1/2 material-icons-outlined text-gray-400 text-sm">schedule</span>
                                             <input

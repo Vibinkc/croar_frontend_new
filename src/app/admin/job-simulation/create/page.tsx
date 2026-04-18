@@ -173,22 +173,22 @@ export default function CreateJobSimulationPage() {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
-                            <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">Job Simulator Engine v2.0</span>
+                            <span className="text-[9px] font-black text-indigo-500  ">Job Simulator Engine v2.0</span>
                         </div>
-                        <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none">Design Process</h1>
+                        <h1 className="text-xl font-black text-slate-900 tracking-tight  leading-none">Design Process</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <div className="hidden md:flex flex-col items-end text-right">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Status</span>
+                        <span className="text-[9px] font-black text-slate-400  ">Status</span>
                         <span className="text-[10px] font-bold text-slate-700">{rounds.length > 0 ? 'Ready to Deploy' : 'Planning Phase'}</span>
                     </div>
                     {rounds.length > 0 && (
                         <button
                             onClick={handleSave}
                             disabled={saving}
-                            className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 hover:shadow-slate-300 disabled:opacity-50 active:scale-95 flex items-center gap-2"
+                            className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black  tracking-[0.2em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 hover:shadow-slate-300 disabled:opacity-50 active:scale-95 flex items-center gap-2"
                         >
                             {saving ? (
                                 <>
@@ -212,12 +212,12 @@ export default function CreateJobSimulationPage() {
                     <div className="bg-white rounded-[2rem] border border-slate-100 shadow-2xl shadow-slate-200/50 p-6 space-y-6 sticky top-6">
                         <div className="flex items-center gap-3 pb-2 border-b border-slate-100">
                             <div className="w-6 h-6 rounded-lg bg-slate-900 text-white flex items-center justify-center font-black text-xs">1</div>
-                            <h2 className="text-xs font-black text-slate-900 uppercase tracking-tight">Configuration</h2>
+                            <h2 className="text-xs font-black text-slate-900  tracking-tight">Configuration</h2>
                         </div>
 
                         <div className="space-y-5">
                             <div className="group">
-                                <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 group-focus-within:text-indigo-500 transition-colors">Target Professional Role</label>
+                                <label className="block text-[9px] font-black text-slate-400   mb-1.5 group-focus-within:text-indigo-500 transition-colors">Target Professional Role</label>
                                 <div className="relative">
                                     <input
                                         type="text"
@@ -230,7 +230,7 @@ export default function CreateJobSimulationPage() {
                             </div>
 
                             <div className="group">
-                                <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 group-focus-within:text-indigo-500 transition-colors">Interview Depth (Rounds)</label>
+                                <label className="block text-[9px] font-black text-slate-400   mb-1.5 group-focus-within:text-indigo-500 transition-colors">Interview Depth (Rounds)</label>
                                 <div className="grid grid-cols-5 gap-1.5">
                                     {[1, 2, 3, 4, 5].map((num) => (
                                         <button
@@ -253,10 +253,10 @@ export default function CreateJobSimulationPage() {
                             {/* Custom Rounds Selection */}
                             <div className="space-y-3 pt-3 border-t border-slate-100">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Custom Rounds (Optional)</label>
+                                    <label className="text-[9px] font-black text-slate-400  ">Custom Rounds (Optional)</label>
                                     <button
                                         onClick={() => setCustomRounds([...customRounds, ""])}
-                                        className="text-[9px] font-black text-indigo-500 uppercase tracking-widest hover:text-indigo-700 transition-all flex items-center gap-1"
+                                        className="text-[9px] font-black text-indigo-500   hover:text-indigo-700 transition-all flex items-center gap-1"
                                     >
                                         <span className="material-icons-outlined text-xs">add</span> Add
                                     </button>
@@ -286,7 +286,7 @@ export default function CreateJobSimulationPage() {
                                     ))}
                                     {customRounds.length === 0 && (
                                         <div className="py-6 text-center bg-slate-50/50 rounded-xl border border-dashed border-slate-100">
-                                            <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">No custom rounds defined</p>
+                                            <p className="text-[8px] font-bold text-slate-300  ">No custom rounds defined</p>
                                         </div>
                                     )}
                                 </div>
@@ -296,7 +296,7 @@ export default function CreateJobSimulationPage() {
                                 <button
                                     onClick={handleGenerate}
                                     disabled={generating || !role}
-                                    className="w-full group relative h-12 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-200 hover:shadow-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden active:scale-95"
+                                    className="w-full group relative h-12 bg-indigo-600 text-white rounded-xl text-[10px] font-black  tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-200 hover:shadow-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden active:scale-95"
                                 >
                                     <div className="relative z-10 flex items-center justify-center gap-2">
                                         <span className="material-icons-outlined text-base">psychology</span>
@@ -304,7 +304,7 @@ export default function CreateJobSimulationPage() {
                                     </div>
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                                 </button>
-                                <p className="text-center text-[8px] text-slate-400 font-bold uppercase tracking-widest mt-3 leading-relaxed">
+                                <p className="text-center text-[8px] text-slate-400 font-bold   mt-3 leading-relaxed">
                                     Powered by Advanced AI for <br />Role-Specific Simulation Modeling
                                 </p>
                             </div>
@@ -322,7 +322,7 @@ export default function CreateJobSimulationPage() {
                                     <button
                                         key={idx}
                                         onClick={() => setActiveRoundTab(idx)}
-                                        className={`px-5 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${activeRoundTab === idx
+                                        className={`px-5 py-3 rounded-xl text-[9px] font-black   transition-all whitespace-nowrap flex items-center gap-2 ${activeRoundTab === idx
                                             ? "bg-white text-indigo-600 shadow-sm border border-slate-100"
                                             : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
                                             }`}
@@ -340,13 +340,13 @@ export default function CreateJobSimulationPage() {
                                 <div className="max-w-4xl mx-auto space-y-6">
                                     <div className="flex justify-between items-end border-b border-slate-100 pb-4">
                                         <div>
-                                            <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest block mb-0.5">Round {rounds[activeRoundTab].round_number} Focus</span>
-                                            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">
+                                            <span className="text-[9px] font-black text-indigo-500   block mb-0.5">Round {rounds[activeRoundTab].round_number} Focus</span>
+                                            <h3 className="text-xl font-black text-slate-900  tracking-tight">
                                                 {rounds[activeRoundTab].round_title}
                                             </h3>
                                         </div>
                                         <div className="flex flex-col items-end">
-                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Items in Round</span>
+                                            <span className="text-[8px] font-black text-slate-400   mb-1">Items in Round</span>
                                             <div className="px-3 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[10px] font-black text-slate-900 tracking-tighter">
                                                 {rounds[activeRoundTab].questions.length < 10 ? `0${rounds[activeRoundTab].questions.length}` : rounds[activeRoundTab].questions.length} / 12
                                             </div>
@@ -361,7 +361,7 @@ export default function CreateJobSimulationPage() {
                                                         <div className="w-6 h-6 rounded-lg bg-white border border-slate-100 flex items-center justify-center font-black text-[9px] text-slate-400">
                                                             {qIdx + 1}
                                                         </div>
-                                                        <span className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 rounded-lg border ${q.type === 'mcq' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                                        <span className={`text-[8px] font-black  tracking-[0.2em] px-2 py-1 rounded-lg border ${q.type === 'mcq' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                                             q.type === 'code' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                                                                 'bg-indigo-50 text-indigo-600 border-indigo-100'
                                                             }`}>
@@ -407,9 +407,9 @@ export default function CreateJobSimulationPage() {
                                                             </div>
                                                             <p className="text-slate-500">// Integrated IDE Environment</p>
                                                             <p className="text-indigo-400 mt-1">function <span className="text-amber-400">solve</span>(input) &#123;</p>
-                                                            <p className="pl-4 text-slate-600 italic">/* candidate implementation */</p>
+                                                            <p className="pl-4 text-slate-600 ">/* candidate implementation */</p>
                                                             <p className="text-indigo-400">&#125;</p>
-                                                            <div className="absolute top-3 right-3 text-[8px] font-black uppercase text-slate-700 tracking-widest">Sandbox Only</div>
+                                                            <div className="absolute top-3 right-3 text-[8px] font-black  text-slate-700 ">Sandbox Only</div>
                                                         </div>
                                                     </div>
                                                 )}
@@ -425,14 +425,14 @@ export default function CreateJobSimulationPage() {
                                                     <span className="material-icons-outlined text-lg">auto_awesome</span>
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-tight">AI Content Injector</h4>
-                                                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Populate Round with Fresh Material</p>
+                                                    <h4 className="text-[11px] font-black text-slate-900  tracking-tight">AI Content Injector</h4>
+                                                    <p className="text-[9px] font-bold text-slate-500  ">Populate Round with Fresh Material</p>
                                                 </div>
                                             </div>
 
                                             <div className="flex flex-col md:flex-row gap-4 items-end">
                                                 <div className="w-full md:w-28">
-                                                    <label className="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-1.5 block">Quantity</label>
+                                                    <label className="text-[8px] text-slate-400 font-bold   mb-1.5 block">Quantity</label>
                                                     <input
                                                         type="number"
                                                         min={1}
@@ -443,12 +443,12 @@ export default function CreateJobSimulationPage() {
                                                     />
                                                 </div>
                                                 <div className="flex-1 w-full">
-                                                    <label className="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-1.5 block">Complexity Matrix</label>
+                                                    <label className="text-[8px] text-slate-400 font-bold   mb-1.5 block">Complexity Matrix</label>
                                                     <div className="flex gap-3 p-2 bg-white rounded-xl border border-slate-200">
                                                         {["Easy", "Medium", "Hard"].map(d => (
                                                             <label key={d} className="flex items-center gap-1.5 cursor-pointer group/diff">
                                                                 <input type="checkbox" defaultChecked={d === "Medium"} value={d} className="w-3.5 h-3.5 accent-indigo-600 rounded cursor-pointer" id={`gen-diff-${activeRoundTab}-${d}`} />
-                                                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">{d}</span>
+                                                                <span className="text-[9px] font-black text-slate-500   group-hover:text-indigo-600 transition-colors">{d}</span>
                                                             </label>
                                                         ))}
                                                     </div>
@@ -456,7 +456,7 @@ export default function CreateJobSimulationPage() {
                                                 <button
                                                     onClick={() => handleAddAiQuestions(activeRoundTab)}
                                                     disabled={generatingQuestions[activeRoundTab]}
-                                                    className="w-full md:w-auto px-6 h-10 bg-indigo-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-2xl shadow-indigo-200 transition-all flex items-center justify-center gap-2 active:scale-95"
+                                                    className="w-full md:w-auto px-6 h-10 bg-indigo-600 text-white rounded-xl text-[9px] font-black   hover:bg-indigo-700 shadow-2xl shadow-indigo-200 transition-all flex items-center justify-center gap-2 active:scale-95"
                                                 >
                                                     {generatingQuestions[activeRoundTab] ? (
                                                         <>
@@ -475,7 +475,7 @@ export default function CreateJobSimulationPage() {
 
                                         <button
                                             onClick={() => addQuestion(activeRoundTab)}
-                                            className="w-full h-12 border-2 border-dashed border-slate-200 rounded-[1.25rem] text-slate-400 font-black uppercase text-[9px] tracking-[0.2em] hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 active:scale-[0.99] group/manual"
+                                            className="w-full h-12 border-2 border-dashed border-slate-200 rounded-[1.25rem] text-slate-400 font-black  text-[9px] tracking-[0.2em] hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 active:scale-[0.99] group/manual"
                                         >
                                             <span className="material-icons-outlined text-lg group-hover:rotate-90 transition-transform duration-300">add</span>
                                             Insert Manual Field
@@ -497,25 +497,25 @@ export default function CreateJobSimulationPage() {
                                     </div>
                                 </div>
                                 <div className="space-y-3">
-                                    <h3 className="text-xl font-black uppercase tracking-tight text-slate-400 group-hover:text-slate-600 transition-colors">Simulation Canvas</h3>
-                                    <p className="text-[10px] text-slate-400 font-bold max-w-sm mx-auto uppercase tracking-widest leading-relaxed opacity-60">
+                                    <h3 className="text-xl font-black  tracking-tight text-slate-400 group-hover:text-slate-600 transition-colors">Simulation Canvas</h3>
+                                    <p className="text-[10px] text-slate-400 font-bold max-w-sm mx-auto   leading-relaxed opacity-60">
                                         Configure your target professional role and round count on the left to initialize the simulation architect.
                                     </p>
                                 </div>
                                 <div className="flex items-center justify-center gap-6 pt-2">
                                     <div className="flex flex-col items-center gap-1.5">
                                         <div className="w-2.5 h-2.5 rounded-full bg-slate-100 border border-slate-200"></div>
-                                        <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest">Structure</span>
+                                        <span className="text-[7px] font-black text-slate-300  ">Structure</span>
                                     </div>
                                     <div className="w-8 h-[1px] bg-slate-100"></div>
                                     <div className="flex flex-col items-center gap-1.5">
                                         <div className="w-2.5 h-2.5 rounded-full bg-slate-100 border border-slate-200"></div>
-                                        <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest">Dynamics</span>
+                                        <span className="text-[7px] font-black text-slate-300  ">Dynamics</span>
                                     </div>
                                     <div className="w-8 h-[1px] bg-slate-100"></div>
                                     <div className="flex flex-col items-center gap-1.5">
                                         <div className="w-2.5 h-2.5 rounded-full bg-slate-100 border border-slate-200"></div>
-                                        <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest">Logic</span>
+                                        <span className="text-[7px] font-black text-slate-300  ">Logic</span>
                                     </div>
                                 </div>
                             </div>

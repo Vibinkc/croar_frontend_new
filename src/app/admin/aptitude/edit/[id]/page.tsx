@@ -146,11 +146,11 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
 
     return (
         <div className="bg-white shadow-sm sm:rounded-3xl p-5 border border-slate-100">
-            <h2 className="text-lg font-black mb-5 text-gray-800 uppercase tracking-tight">Edit Question</h2>
+            <h2 className="text-lg font-black mb-5 text-gray-800  tracking-tight">Edit Question</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Type</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1.5">Type</label>
                         <select
                             value={type}
                             onChange={(e) => setType(e.target.value)}
@@ -165,7 +165,7 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
 
                 <div className="grid grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Topic</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1.5">Topic</label>
                         <select
                             value={topic}
                             onChange={(e) => setTopic(e.target.value)}
@@ -188,7 +188,7 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
                         )}
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Difficulty</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1.5">Difficulty</label>
                         <select
                             value={difficulty}
                             onChange={(e) => setDifficulty(e.target.value)}
@@ -202,7 +202,7 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">
+                    <label className="block text-[10px] font-black text-gray-400   mb-1.5">
                         {type === "CODING" ? "Problem Description" : "Question Text"}
                     </label>
                     <textarea
@@ -216,7 +216,7 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
 
                 {type === "CODING" ? (
                     <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Initial Code (Python)</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1.5">Initial Code (Python)</label>
                         <textarea
                             value={initialCode}
                             onChange={(e) => setInitialCode(e.target.value)}
@@ -229,26 +229,26 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
                     <>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Option A</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1.5">Option A</label>
                                 <input type="text" value={optionA} onChange={(e) => setOptionA(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-xl text-xs font-medium text-black focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Option B</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1.5">Option B</label>
                                 <input type="text" value={optionB} onChange={(e) => setOptionB(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-xl text-xs font-medium text-black focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Option C</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1.5">Option C</label>
                                 <input type="text" value={optionC} onChange={(e) => setOptionC(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-xl text-xs font-medium text-black focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Option D</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1.5">Option D</label>
                                 <input type="text" value={optionD} onChange={(e) => setOptionD(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-xl text-xs font-medium text-black focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]" />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Correct Option</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1.5">Correct Option</label>
                                 <select
                                     value={correctOption}
                                     onChange={(e) => setCorrectOption(e.target.value)}
@@ -261,7 +261,7 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Explanation</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1.5">Explanation</label>
                                 <input type="text" value={explanation} onChange={(e) => setExplanation(e.target.value)} className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-xl text-xs font-medium text-black focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]" />
                             </div>
                         </div>
@@ -269,13 +269,13 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
                 )}
 
                 <div className="flex justify-end gap-3">
-                    <button type="submit" className="inline-flex justify-center py-2.5 px-5 border border-transparent shadow-sm text-[10px] font-black uppercase tracking-widest rounded-xl text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] focus:outline-none transition-all">
+                    <button type="submit" className="inline-flex justify-center py-2.5 px-5 border border-transparent shadow-sm text-[10px] font-black   rounded-xl text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] focus:outline-none transition-all">
                         Update Question
                     </button>
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="inline-flex justify-center py-2.5 px-5 border border-slate-200 shadow-sm text-[10px] font-black uppercase tracking-widest rounded-xl text-slate-600 bg-white hover:bg-slate-50"
+                        className="inline-flex justify-center py-2.5 px-5 border border-slate-200 shadow-sm text-[10px] font-black   rounded-xl text-slate-600 bg-white hover:bg-slate-50"
                     >
                         Cancel
                     </button>

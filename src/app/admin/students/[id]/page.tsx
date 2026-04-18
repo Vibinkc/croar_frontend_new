@@ -142,7 +142,7 @@ export default function StudentDetail() {
                             {loadingReport ? (
                                 <div className="p-20 text-center">
                                     <div className="animate-spin w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full mx-auto mb-4"></div>
-                                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Retrieving Secure Report...</p>
+                                    <p className="text-sm font-bold text-slate-400  ">Retrieving Secure Report...</p>
                                 </div>
                             ) : reportData ? (
                                 <>
@@ -224,7 +224,7 @@ export default function StudentDetail() {
                 <div className="flex gap-3">
                     <button
                         onClick={handleExportReport}
-                        className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 transition-colors"
+                        className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs   hover:bg-slate-50 transition-colors"
                     >
                         Export Report
                     </button>
@@ -243,7 +243,7 @@ export default function StudentDetail() {
                 {/* Left Column: Practice Stats */}
                 <div className="space-y-4">
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <h3 className="text-xs font-black text-slate-900   mb-3 flex items-center gap-2">
                             <span className="material-icons-outlined text-slate-500 text-sm">fitness_center</span>
                             Practice Progress
                         </h3>
@@ -266,7 +266,7 @@ export default function StudentDetail() {
                                     </div>
                                 </div>
                             ))}
-                            {practice_stats.length === 0 && <p className="text-xs text-slate-400 italic">No practice data recorded.</p>}
+                            {practice_stats.length === 0 && <p className="text-xs text-slate-400 ">No practice data recorded.</p>}
                         </div>
                     </div>
                 </div>
@@ -274,7 +274,7 @@ export default function StudentDetail() {
                 {/* Right Column: Activity Timeline */}
                 <div className="lg:col-span-2">
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <h3 className="text-xs font-black text-slate-900   mb-4 flex items-center gap-2">
                             <span className="material-icons-outlined text-slate-500 text-sm">timeline</span>
                             Activity Timeline
                         </h3>
@@ -291,7 +291,7 @@ export default function StudentDetail() {
                                             <div className="flex justify-between items-start mb-2">
                                                 <div>
                                                     <h4 className="text-sm font-bold text-slate-900">{item.title}</h4>
-                                                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 bg-white px-2 py-0.5 rounded border border-slate-200 inline-block mt-1">
+                                                    <span className="text-[10px] font-black   text-slate-400 bg-white px-2 py-0.5 rounded border border-slate-200 inline-block mt-1">
                                                         {item.type.replace('_', ' ')}
                                                     </span>
                                                 </div>
@@ -326,7 +326,7 @@ export default function StudentDetail() {
                                 );
                             })}
                             {timeline.length === 0 && (
-                                <div className="pl-12 py-8 text-sm text-slate-400 italic">
+                                <div className="pl-12 py-8 text-sm text-slate-400 ">
                                     No activity recorded for this operative yet.
                                 </div>
                             )}
@@ -354,7 +354,7 @@ function StatCard({ label, value, icon, theme = 'primary' }: any) {
                 <span className="material-icons-outlined text-lg">{icon}</span>
             </div>
             <div>
-                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{label}</div>
+                <div className="text-[9px] font-bold text-slate-400  ">{label}</div>
                 <div className="text-base font-black text-slate-900">{value}</div>
             </div>
         </div>

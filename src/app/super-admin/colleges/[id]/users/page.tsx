@@ -85,13 +85,13 @@ export default function CollegeUserManagement() {
                             <span className="material-icons-outlined text-slate-500">arrow_back</span>
                         </button>
                         <div>
-                            <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-900">User Management</h1>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Connect ID: {id}</p>
+                            <h1 className="text-2xl font-black  tracking-tighter text-slate-900">User Management</h1>
+                            <p className="text-xs font-bold text-slate-400  ">Connect ID: {id}</p>
                         </div>
                     </div>
                     <button
                         onClick={() => setShowModal(true)}
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+                        className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black   hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
                     >
                         Add User
                     </button>
@@ -104,10 +104,10 @@ export default function CollegeUserManagement() {
                         <table className="w-full text-left">
                             <thead className="bg-slate-50 dark:bg-slate-800/50">
                                 <tr>
-                                    <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Name</th>
-                                    <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Email</th>
-                                    <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Role</th>
-                                    <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Actions</th>
+                                    <th className="p-6 text-[10px] font-black   text-slate-400">Name</th>
+                                    <th className="p-6 text-[10px] font-black   text-slate-400">Email</th>
+                                    <th className="p-6 text-[10px] font-black   text-slate-400">Role</th>
+                                    <th className="p-6 text-[10px] font-black   text-slate-400">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -118,7 +118,7 @@ export default function CollegeUserManagement() {
                                         </td>
                                         <td className="p-6 text-sm font-medium text-slate-500">{u.email}</td>
                                         <td className="p-6">
-                                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${u.role === 'ADMIN' ? 'bg-purple-50 text-purple-600' :
+                                            <span className={`px-3 py-1 rounded-full text-[10px] font-black   ${u.role === 'ADMIN' ? 'bg-purple-50 text-purple-600' :
                                                 u.role === 'SUPER_ADMIN' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
                                                 }`}>
                                                 {u.role}
@@ -134,7 +134,7 @@ export default function CollegeUserManagement() {
                             </tbody>
                         </table>
                         {users.length === 0 && (
-                            <div className="p-12 text-center text-slate-400 font-medium text-sm italic">No users found for this college.</div>
+                            <div className="p-12 text-center text-slate-400 font-medium text-sm ">No users found for this college.</div>
                         )}
                     </div>
                 )}
@@ -144,7 +144,7 @@ export default function CollegeUserManagement() {
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
                     <div className="w-full max-w-md bg-white rounded-3xl p-8 animate-in zoom-in-95">
-                        <h3 className="text-xl font-black uppercase tracking-tight mb-6">Create User</h3>
+                        <h3 className="text-xl font-black  tracking-tight mb-6">Create User</h3>
                         <form onSubmit={handleCreateUser} className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <input placeholder="First Name" className="p-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-indigo-500" value={newUser.first_name} onChange={e => setNewUser({ ...newUser, first_name: e.target.value })} required />
@@ -158,8 +158,8 @@ export default function CollegeUserManagement() {
                                 <option value="FACULTY">Faculty</option>
                             </select>
                             <div className="flex gap-4 pt-4">
-                                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-black uppercase tracking-widest text-[10px]">Cancel</button>
-                                <button type="submit" className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase tracking-widest text-[10px]">Create</button>
+                                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-black   text-[10px]">Cancel</button>
+                                <button type="submit" className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black   text-[10px]">Create</button>
                             </div>
                         </form>
                     </div>

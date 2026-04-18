@@ -120,7 +120,7 @@ export default function Features() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <span className="text-indigo-600 dark:text-indigo-400 font-black uppercase tracking-[0.2em] text-[10px] mb-4 block">The Academik Ecosystem</span>
+                        <span className="text-indigo-600 dark:text-indigo-400 font-black  tracking-[0.2em] text-[10px] mb-4 block">The Academik Ecosystem</span>
                         <h2 className="text-4xl md:text-5xl font-black mb-4 text-slate-900 dark:text-white tracking-tight">
                             Everything You Need to <br />
                             <span className="ai-text-gradient">Crack the Interview</span>
@@ -152,7 +152,7 @@ export default function Features() {
                                     <div className={`w-12 h-12 rounded-xl bg-indigo-50/50 dark:bg-indigo-900/20 flex items-center justify-center mb-6 ring-1 ring-inset ring-indigo-500/10 group-hover:scale-110 transition-transform duration-500`}>
                                         <span className={`material-icons-outlined ${feature.iconColor} text-2xl`}>{feature.icon}</span>
                                     </div>
-                                    <h3 className="text-xl font-black mb-3 tracking-tight text-indigo-600 dark:text-indigo-400 transition-colors uppercase">
+                                    <h3 className="text-xl font-black mb-3 tracking-tight text-indigo-600 dark:text-indigo-400 transition-colors ">
                                         {feature.title}
                                     </h3>
                                     <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
@@ -161,7 +161,7 @@ export default function Features() {
                                 </div>
 
                                 <div className="relative z-10 flex items-center justify-between pt-6 mt-auto">
-                                    <div className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 transition-colors">Explore Feature</div>
+                                    <div className="text-[10px] font-black   text-indigo-600 dark:text-indigo-400 transition-colors">Explore Feature</div>
                                     <div className="w-8 h-8 rounded-full border border-indigo-600 bg-indigo-600 text-white flex items-center justify-center transition-all duration-300">
                                         <span className="material-icons-outlined text-sm">arrow_outward</span>
                                     </div>

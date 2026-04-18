@@ -201,20 +201,19 @@ const MailboxPage = () => {
     ) : [];
 
     return (
-        <div className="flex h-[calc(100vh-100px)] bg-slate-50 rounded-2xl overflow-hidden border border-slate-200">
+        <div className="flex h-full bg-white overflow-hidden border-t border-slate-100 shadow-sm animate-in fade-in duration-500">
             {/* Mailbox Sidebar */}
             <div className="w-64 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
                 {canAccess("communications:create") && (
-                    <Button
-                        variant="default"
-                        className="w-full mb-6 bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100"
+                    <button
+                        className="w-full h-11 mb-6 bg-[#7C3AED] text-white rounded-xl font-black text-xs hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all flex items-center justify-center gap-2 active:scale-95"
                         onClick={() => {
                             setComposeData({ to: '', subject: '', body: '' });
                             setIsComposeOpen(true);
                         }}
                     >
-                        <Send className="w-4 h-4 mr-2" /> Compose
-                    </Button>
+                        <Send className="w-4 h-4" /> Compose Message
+                    </button>
                 )}
 
                 <SidebarItem
@@ -371,7 +370,7 @@ const MailboxPage = () => {
                                 />
 
                                 {/* AI Agent Sidebar Section */}
-                                <div className="mt-12 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 shadow-sm relative overflow-hidden group">
+                                <div className="mt-12 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                                         <Brain className="w-24 h-24" />
                                     </div>
@@ -381,13 +380,13 @@ const MailboxPage = () => {
                                                 <Brain className="w-3 h-3 mr-1" /> AI Agent Analysis
                                             </Badge>
                                         </div>
-                                        <p className="text-sm text-slate-700 mb-4 italic">
+                                        <p className="text-sm text-slate-700 mb-4 ">
                                             "The AI has analyzed this message. You can generate a smart reply based on candidates requirements and the job context."
                                         </p>
 
                                         {smartReply && (
                                             <div className="mb-4 p-4 bg-white/50 rounded-xl border border-indigo-100 text-sm text-slate-700 animate-in slide-in-from-top-2">
-                                                <div className="font-bold text-xs text-indigo-600 mb-2 uppercase tracking-wider">Suggested Reply:</div>
+                                                <div className="font-bold text-xs text-indigo-600 mb-2  ">Suggested Reply:</div>
                                                 {smartReply}
                                             </div>
                                         )}
@@ -396,7 +395,7 @@ const MailboxPage = () => {
                                             {canAccess("communications:moderate") && (
                                                 <Button
                                                     size="sm"
-                                                    className="bg-indigo-600 shadow-lg shadow-indigo-100"
+                                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] font-black text-xs shadow-lg shadow-indigo-100"
                                                     onClick={handleSmartReply}
                                                     disabled={isGenerating}
                                                 >
@@ -450,7 +449,7 @@ const MailboxPage = () => {
             {/* Compose Modal */}
             {isComposeOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col">
+                    <div className="bg-white w-full max-w-2xl rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col">
                         <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                             <h3 className="font-bold text-slate-800 flex items-center gap-2">
                                 <Mail className="w-4 h-4 text-indigo-600" /> New Message
@@ -465,7 +464,7 @@ const MailboxPage = () => {
 
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Recipient Email</label>
+                                <label className="block text-[10px] font-black text-slate-400   mb-1.5">Recipient Email</label>
                                 <Input
                                     placeholder="e.g. candidate@example.com"
                                     value={composeData.to}
@@ -475,7 +474,7 @@ const MailboxPage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Subject</label>
+                                <label className="block text-[10px] font-black text-slate-400   mb-1.5">Subject</label>
                                 <Input
                                     placeholder="Enter subject..."
                                     value={composeData.subject}
@@ -485,7 +484,7 @@ const MailboxPage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Message Content</label>
+                                <label className="block text-[10px] font-black text-slate-400   mb-1.5">Message Content</label>
                                 <textarea
                                     className="w-full h-64 p-4 rounded-xl border border-slate-100 bg-slate-50/50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all resize-none"
                                     placeholder="Type your message here..."
@@ -498,7 +497,7 @@ const MailboxPage = () => {
                         <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
                             <Button variant="ghost" onClick={() => setIsComposeOpen(false)}>Cancel</Button>
                             <Button
-                                className="bg-indigo-600 px-8"
+                                className="bg-[#7C3AED] hover:bg-[#6D28D9] px-8 font-black text-xs"
                                 onClick={handleSendEmail}
                                 disabled={isSending || !composeData.to || !composeData.subject || !composeData.body}
                             >
@@ -524,14 +523,16 @@ interface SidebarItemProps {
 const SidebarItem = ({ icon, label, active, onClick, count }: SidebarItemProps) => (
     <button
         onClick={onClick}
-        className={`flex items-center justify-between w-full p-2.5 rounded-xl transition-all ${active ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'}`}
+        className={`flex items-center justify-between w-full h-11 px-4 rounded-xl transition-all ${active ? 'bg-indigo-50 text-[#7C3AED] font-black' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 font-bold'}`}
     >
         <div className="flex items-center gap-3">
-            {icon}
-            <span className="text-sm">{label}</span>
+            <div className={`transition-colors ${active ? 'text-[#7C3AED]' : 'text-slate-400'}`}>
+                {icon}
+            </div>
+            <span className="text-xs">{label}</span>
         </div>
         {count ? (
-            <span className="bg-indigo-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px]">
+            <span className="bg-[#7C3AED] text-white text-[9px] font-black px-1.5 py-0.5 rounded-lg min-w-[20px] shadow-sm shadow-indigo-200">
                 {count}
             </span>
         ) : null}

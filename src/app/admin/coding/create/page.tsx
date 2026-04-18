@@ -466,15 +466,15 @@ export default function CreateCodingQuestionPage() {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Knowledge Engine v2.0</span>
+                            <span className="text-[10px] font-black text-indigo-500  ">Knowledge Engine v2.0</span>
                         </div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase leading-none">Init Protocol</h1>
+                        <h1 className="text-2xl font-black text-slate-900 tracking-tight  leading-none">Init Protocol</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <div className="hidden md:flex flex-col items-end text-right">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Sector</span>
+                        <span className="text-[10px] font-black text-slate-400  ">Active Sector</span>
                         <span className="text-xs font-bold text-slate-700">{activeTab === "MANUAL" ? "Manual Synthesis" : activeTab === "BULK" ? "Data Ingestion" : "Neural Generation"}</span>
                     </div>
                 </div>
@@ -493,7 +493,7 @@ export default function CreateCodingQuestionPage() {
                                 params.set("tab", tab);
                                 router.replace(`/admin/coding/create?${params.toString()}`);
                             }}
-                            className={`pb-4 px-2 font-black text-[10px] uppercase tracking-widest outline-none transition-colors border-b-2 ${activeTab === tab
+                            className={`pb-4 px-2 font-black text-[10px]   outline-none transition-colors border-b-2 ${activeTab === tab
                                 ? "border-slate-900 text-slate-900"
                                 : "border-transparent text-gray-400 hover:text-gray-600"
                                 }`}
@@ -507,7 +507,7 @@ export default function CreateCodingQuestionPage() {
                     <form onSubmit={(e) => handleManualSubmit(e)} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Topic Classification</label>
+                                <label className="block text-[10px] font-black text-slate-400  ">Topic Classification</label>
                                 <div className="flex flex-col gap-3">
                                     <select
                                         value={topic}
@@ -532,14 +532,14 @@ export default function CreateCodingQuestionPage() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Complexity Level</label>
+                                <label className="block text-[10px] font-black text-slate-400  ">Complexity Level</label>
                                 <div className="grid grid-cols-3 gap-3 h-14">
                                     {["EASY", "MEDIUM", "HARD"].map((level) => (
                                         <button
                                             key={level}
                                             type="button"
                                             onClick={() => setDifficulty(level)}
-                                            className={`rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border py-2 ${difficulty === level
+                                            className={`rounded-lg text-[9px] font-black   transition-all border py-2 ${difficulty === level
                                                 ? "bg-slate-900 text-white border-slate-900 shadow-lg scale-105"
                                                 : "bg-slate-50 text-slate-400 border-slate-100 hover:bg-slate-100"
                                                 }`}
@@ -552,7 +552,7 @@ export default function CreateCodingQuestionPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Problem Description</label>
+                            <label className="block text-[10px] font-black text-slate-400  ">Problem Description</label>
                             <textarea
                                 value={questionText}
                                 onChange={(e) => setQuestionText(e.target.value)}
@@ -563,7 +563,7 @@ export default function CreateCodingQuestionPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Initial Code (Python)</label>
+                            <label className="block text-[10px] font-black text-slate-400  ">Initial Code (Python)</label>
                             <textarea
                                 value={initialCode}
                                 onChange={(e) => setInitialCode(e.target.value)}
@@ -575,13 +575,13 @@ export default function CreateCodingQuestionPage() {
                         <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                             <div className="flex justify-between items-center mb-6">
                                 <div>
-                                    <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Test Cases</h4>
-                                    <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Define input/output pairs</p>
+                                    <h4 className="text-[10px] font-black text-slate-900  ">Test Cases</h4>
+                                    <p className="text-[10px] text-slate-400   mt-1">Define input/output pairs</p>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={() => setManualTestCases([...manualTestCases, { input: "", output: "" }])}
-                                    className="px-3 py-2 bg-white border border-slate-200 text-[10px] font-black text-slate-600 rounded-xl hover:bg-slate-50 transition-all shadow-sm uppercase tracking-widest"
+                                    className="px-3 py-2 bg-white border border-slate-200 text-[10px] font-black text-slate-600 rounded-xl hover:bg-slate-50 transition-all shadow-sm  "
                                 >
                                     + Add Scenario
                                 </button>
@@ -590,7 +590,7 @@ export default function CreateCodingQuestionPage() {
                                 {manualTestCases.map((tc, idx) => (
                                     <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-white p-3 rounded-xl border border-slate-100 relative group shadow-sm transition-all hover:shadow-md">
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Input Data</label>
+                                            <label className="text-[9px] font-black text-slate-300  ">Input Data</label>
                                             <textarea
                                                 value={tc.input}
                                                 onChange={(e) => {
@@ -603,7 +603,7 @@ export default function CreateCodingQuestionPage() {
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Expected Output</label>
+                                            <label className="text-[9px] font-black text-slate-300  ">Expected Output</label>
                                             <textarea
                                                 value={tc.output}
                                                 onChange={(e) => {
@@ -633,20 +633,20 @@ export default function CreateCodingQuestionPage() {
                             <button
                                 type="button"
                                 onClick={(e) => handleManualSubmit(e, true)}
-                                className="px-8 py-3.5 bg-white text-slate-600 border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm"
+                                className="px-8 py-3.5 bg-white text-slate-600 border border-slate-100 rounded-2xl text-[10px] font-black   hover:bg-slate-50 transition-all shadow-sm"
                             >
                                 Save & Inject Another
                             </button>
                             <button
                                 type="button"
                                 onClick={handleManualPreview}
-                                className="px-8 py-3.5 bg-indigo-50 text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all"
+                                className="px-8 py-3.5 bg-indigo-50 text-indigo-600 rounded-2xl text-[10px] font-black   hover:bg-indigo-100 transition-all"
                             >
                                 Preview & Add to Staging
                             </button>
                             <button
                                 type="submit"
-                                className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
+                                className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black   hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
                             >
                                 Force Deploy Protocol
                             </button>
@@ -667,12 +667,12 @@ export default function CreateCodingQuestionPage() {
                                 <div className="w-20 h-20 bg-white rounded-3xl shadow-sm border border-slate-100 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                                     <span className="material-icons-outlined text-3xl text-slate-400 group-hover:text-indigo-500">cloud_upload</span>
                                 </div>
-                                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-2">Initialize Data Ingestion</h3>
+                                <h3 className="text-sm font-black text-slate-900   mb-2">Initialize Data Ingestion</h3>
                                 <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mb-6">Drag and drop your dataset here or click to browse files</p>
                                 {file && (
                                     <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-indigo-100 shadow-sm animate-in zoom-in duration-300">
                                         <span className="material-icons-outlined text-sm text-indigo-500">description</span>
-                                        <span className="text-[10px] font-black text-indigo-900 uppercase tracking-widest">{file.name}</span>
+                                        <span className="text-[10px] font-black text-indigo-900  ">{file.name}</span>
                                         <button onClick={(e) => { e.stopPropagation(); setFile(null); }} className="text-slate-300 hover:text-rose-500">
                                             <span className="material-icons-outlined text-xs">close</span>
                                         </button>
@@ -683,7 +683,7 @@ export default function CreateCodingQuestionPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100">
-                                <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Protocol Schema</h4>
+                                <h4 className="text-[10px] font-black text-slate-900   mb-6">Protocol Schema</h4>
                                 <div className="space-y-3">
                                     {[
                                         { label: "type", val: "CODING", desc: "Constant protocol type" },
@@ -695,7 +695,7 @@ export default function CreateCodingQuestionPage() {
                                         <div key={field.label} className="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
                                             <div>
                                                 <span className="text-[10px] font-black text-slate-700 bg-slate-50 px-2 py-1 rounded-md mr-3">{field.label}</span>
-                                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{field.desc}</span>
+                                                <span className="text-[9px] font-black text-slate-300  ">{field.desc}</span>
                                             </div>
                                             <span className="text-[9px] font-bold text-slate-400 font-mono">{field.val}</span>
                                         </div>
@@ -705,7 +705,7 @@ export default function CreateCodingQuestionPage() {
 
                             <div className="bg-amber-50/50 rounded-[2rem] p-8 border border-amber-100 flex flex-col justify-center text-center">
                                 <span className="material-icons-outlined text-4xl text-amber-500 mb-4">lightbulb</span>
-                                <h4 className="text-[10px] font-black text-amber-900 uppercase tracking-widest mb-2">Ingestion Pro-Tip</h4>
+                                <h4 className="text-[10px] font-black text-amber-900   mb-2">Ingestion Pro-Tip</h4>
                                 <p className="text-[10px] text-amber-900/60 font-bold leading-relaxed">
                                     Ensure all headers match exactly. The system will auto-validate each entry and place them in the staging area for your final review.
                                 </p>
@@ -716,7 +716,7 @@ export default function CreateCodingQuestionPage() {
                             <button
                                 onClick={handleBulkUpload}
                                 disabled={uploading || !file}
-                                className="px-12 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
+                                className="px-12 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black   hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
                             >
                                 {uploading ? "Ingesting Protocols..." : "Begin Neural Ingestion"}
                             </button>
@@ -729,7 +729,7 @@ export default function CreateCodingQuestionPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                             <div className="space-y-8">
                                 <div className="space-y-2">
-                                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Neural Complexity Synthesis</label>
+                                    <label className="block text-[10px] font-black text-slate-400  ">Neural Complexity Synthesis</label>
                                     <div className="grid grid-cols-3 gap-3">
                                         {["EASY", "MEDIUM", "HARD"].map((level) => (
                                             <button
@@ -750,7 +750,7 @@ export default function CreateCodingQuestionPage() {
                                                 <span className="material-icons-outlined text-xl">
                                                     {level === 'EASY' ? 'psychology_alt' : level === 'MEDIUM' ? 'psychology' : 'neurology'}
                                                 </span>
-                                                <span className="text-[10px] font-black uppercase tracking-widest">{level}</span>
+                                                <span className="text-[10px] font-black  ">{level}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -758,7 +758,7 @@ export default function CreateCodingQuestionPage() {
 
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Module Quantity</label>
+                                        <label className="block text-[10px] font-black text-slate-400  ">Module Quantity</label>
                                         <input
                                             type="number"
                                             min={1}
@@ -769,7 +769,7 @@ export default function CreateCodingQuestionPage() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Topic Classification</label>
+                                        <label className="block text-[10px] font-black text-slate-400  ">Topic Classification</label>
                                         <select
                                             value={topic}
                                             onChange={(e) => setTopic(e.target.value)}
@@ -804,7 +804,7 @@ export default function CreateCodingQuestionPage() {
                                             <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center">
                                                 <span className="material-icons-outlined text-indigo-200 text-xl">memory</span>
                                             </div>
-                                            <h4 className="text-xs font-black uppercase tracking-[0.2em] text-indigo-100">Neural Engine Intelligence</h4>
+                                            <h4 className="text-xs font-black  tracking-[0.2em] text-indigo-100">Neural Engine Intelligence</h4>
                                         </div>
                                         <p className="text-sm font-bold text-indigo-50/70 leading-relaxed mb-8">
                                             Our AI architecture will synthesize high-fidelity coding problems specialized for the selected sector.
@@ -813,7 +813,7 @@ export default function CreateCodingQuestionPage() {
                                             {["Procedural Generation", "Unit Test Synthesis", "Difficulty Leveling"].map((feat) => (
                                                 <div key={feat} className="flex items-center gap-3">
                                                     <span className="material-icons-outlined text-indigo-400 text-sm">check_circle</span>
-                                                    <span className="text-[10px] font-black uppercase tracking-widest text-indigo-100/60">{feat}</span>
+                                                    <span className="text-[10px] font-black   text-indigo-100/60">{feat}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -826,7 +826,7 @@ export default function CreateCodingQuestionPage() {
                             <button
                                 type="submit"
                                 disabled={generating || aiDifficulties.length === 0}
-                                className="px-12 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
+                                className="px-12 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black   hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
                             >
                                 {generating ? "Synthesizing Modules..." : "Execute Neural Synthesis"}
                             </button>
@@ -842,9 +842,9 @@ export default function CreateCodingQuestionPage() {
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.8)]"></div>
-                                <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Awaiting Verification</h3>
+                                <h3 className="text-[10px] font-black text-indigo-400  ">Awaiting Verification</h3>
                             </div>
-                            <h2 className="text-xl font-black text-white uppercase tracking-tight leading-none">Module Staging Area</h2>
+                            <h2 className="text-xl font-black text-white  tracking-tight leading-none">Module Staging Area</h2>
                         </div>
 
                         <div className="flex items-center gap-6">
@@ -856,7 +856,7 @@ export default function CreateCodingQuestionPage() {
                                     checked={selectedDrafts.length === draftQuestions.length && draftQuestions.length > 0}
                                     onChange={(e) => handleSelectAll(e.target.checked)}
                                 />
-                                <label htmlFor="select-all" className="ml-3 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer select-none">Select All Protocol Units</label>
+                                <label htmlFor="select-all" className="ml-3 text-[10px] font-black text-slate-400   cursor-pointer select-none">Select All Protocol Units</label>
                             </div>
 
                             {selectedDrafts.length > 0 && (
@@ -864,14 +864,14 @@ export default function CreateCodingQuestionPage() {
                                     <button
                                         onClick={handleBulkDiscard}
                                         disabled={isSavingBulk}
-                                        className="h-full px-4 bg-rose-500/10 text-rose-500 border border-rose-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all"
+                                        className="h-full px-4 bg-rose-500/10 text-rose-500 border border-rose-500/20 rounded-xl text-[10px] font-black   hover:bg-rose-500 hover:text-white transition-all"
                                     >
                                         Purge Selected
                                     </button>
                                     <button
                                         onClick={handleBulkSave}
                                         disabled={isSavingBulk}
-                                        className="h-full px-6 bg-indigo-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2"
+                                        className="h-full px-6 bg-indigo-500 text-white rounded-xl text-[10px] font-black   hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2"
                                     >
                                         {isSavingBulk ? (
                                             <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -900,15 +900,15 @@ export default function CreateCodingQuestionPage() {
                                     <div className="flex-1 space-y-8">
                                         <div className="flex justify-between items-start">
                                             <div className="flex flex-wrap gap-3">
-                                                <span className="px-3 py-1 bg-slate-100 rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-500">
+                                                <span className="px-3 py-1 bg-slate-100 rounded-lg text-[9px] font-black   text-slate-500">
                                                     CODING
                                                 </span>
-                                                <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${draft.difficulty === 'HARD' ? 'bg-rose-50 text-rose-500' :
+                                                <span className={`px-3 py-1 rounded-lg text-[9px] font-black   ${draft.difficulty === 'HARD' ? 'bg-rose-50 text-rose-500' :
                                                     draft.difficulty === 'MEDIUM' ? 'bg-amber-50 text-amber-500' : 'bg-emerald-50 text-emerald-500'
                                                     }`}>
                                                     {draft.difficulty}
                                                 </span>
-                                                <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-indigo-100">
+                                                <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[9px] font-black   border border-indigo-100">
                                                     {draft.topic}
                                                 </span>
                                             </div>
@@ -932,7 +932,7 @@ export default function CreateCodingQuestionPage() {
 
                                         <div className="space-y-6">
                                             <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Problem Description</label>
+                                                <label className="text-[9px] font-black text-slate-300  ">Problem Description</label>
                                                 <textarea
                                                     value={draft.content.question}
                                                     onChange={(e) => handleUpdateDraft(draft.tempId, "content", e.target.value, "question")}
@@ -941,7 +941,7 @@ export default function CreateCodingQuestionPage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Initial Code (Python)</label>
+                                                <label className="text-[9px] font-black text-slate-300  ">Initial Code (Python)</label>
                                                 <textarea
                                                     value={typeof draft.content.initial_code === 'string' ? draft.content.initial_code : draft.content.initial_code?.python || ""}
                                                     onChange={(e) => handleUpdateCode(draft.tempId, e.target.value)}
@@ -950,12 +950,12 @@ export default function CreateCodingQuestionPage() {
                                             </div>
 
                                             <div className="space-y-4">
-                                                <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest block">Test Case Scenarios</label>
+                                                <label className="text-[9px] font-black text-slate-300   block">Test Case Scenarios</label>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     {(draft.content.test_cases || []).map((tc: any, tcIdx: number) => (
                                                         <div key={tcIdx} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col gap-3 relative group/tc">
                                                             <div className="space-y-1">
-                                                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Input</span>
+                                                                <span className="text-[8px] font-black text-slate-300  ">Input</span>
                                                                 <input
                                                                     type="text"
                                                                     value={tc.input}
@@ -964,7 +964,7 @@ export default function CreateCodingQuestionPage() {
                                                                 />
                                                             </div>
                                                             <div className="space-y-1">
-                                                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Output</span>
+                                                                <span className="text-[8px] font-black text-slate-300  ">Output</span>
                                                                 <input
                                                                     type="text"
                                                                     value={tc.output}
@@ -979,7 +979,7 @@ export default function CreateCodingQuestionPage() {
 
                                             <div className="space-y-4">
                                                 <div className="flex justify-between items-center">
-                                                    <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest block">Constraints</label>
+                                                    <label className="text-[9px] font-black text-slate-300   block">Constraints</label>
                                                     <button type="button" onClick={() => handleAddConstraint(draft.tempId)} className="text-[9px] font-bold text-indigo-500 hover:text-indigo-600 transition-colors">+ Add Constraint</button>
                                                 </div>
                                                 <div className="space-y-2">
@@ -1000,7 +1000,7 @@ export default function CreateCodingQuestionPage() {
 
                                             <div className="space-y-4">
                                                 <div className="flex justify-between items-center">
-                                                    <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest block">Examples</label>
+                                                    <label className="text-[9px] font-black text-slate-300   block">Examples</label>
                                                     <button type="button" onClick={() => handleAddExample(draft.tempId)} className="text-[9px] font-bold text-indigo-500 hover:text-indigo-600 transition-colors">+ Add Example</button>
                                                 </div>
                                                 <div className="space-y-4">
@@ -1010,16 +1010,16 @@ export default function CreateCodingQuestionPage() {
                                                             <div className="space-y-3">
                                                                 <div className="grid grid-cols-2 gap-3">
                                                                     <div>
-                                                                        <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest block mb-1">Input</label>
+                                                                        <label className="text-[8px] font-black text-slate-300   block mb-1">Input</label>
                                                                         <input type="text" value={ex.input} onChange={(e) => handleUpdateExamples(draft.tempId, exIdx, 'input', e.target.value)} className="w-full bg-white border-none rounded-lg px-3 py-1.5 text-xs font-mono font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500/5" />
                                                                     </div>
                                                                     <div>
-                                                                        <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest block mb-1">Output</label>
+                                                                        <label className="text-[8px] font-black text-slate-300   block mb-1">Output</label>
                                                                         <input type="text" value={ex.output} onChange={(e) => handleUpdateExamples(draft.tempId, exIdx, 'output', e.target.value)} className="w-full bg-white border-none rounded-lg px-3 py-1.5 text-xs font-mono font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500/5" />
                                                                     </div>
                                                                 </div>
                                                                 <div>
-                                                                    <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest block mb-1">Explanation</label>
+                                                                    <label className="text-[8px] font-black text-slate-300   block mb-1">Explanation</label>
                                                                     <input type="text" value={ex.explanation} onChange={(e) => handleUpdateExamples(draft.tempId, exIdx, 'explanation', e.target.value)} className="w-full bg-white border-none rounded-lg px-3 py-1.5 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500/5" />
                                                                 </div>
                                                             </div>
@@ -1029,7 +1029,7 @@ export default function CreateCodingQuestionPage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Time Limit (seconds)</label>
+                                                <label className="text-[9px] font-black text-slate-300  ">Time Limit (seconds)</label>
                                                 <input
                                                     type="number"
                                                     value={draft.content.time_limit || 2}
@@ -1039,14 +1039,14 @@ export default function CreateCodingQuestionPage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-2">Allowed Protocol Languages</label>
+                                                <label className="text-[9px] font-black text-slate-300   mb-2">Allowed Protocol Languages</label>
                                                 <div className="flex flex-wrap gap-4 items-center">
                                                     {["python", "java", "cpp", "javascript"].map((lang: string) => (
                                                         <label key={lang} className="flex items-center gap-3 cursor-pointer group">
                                                             <div className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all ${draft.content.allowed_languages?.includes(lang) ? 'bg-slate-900 border-slate-900 text-white shadow-lg' : 'bg-white border-slate-100 text-slate-300 group-hover:border-slate-300'}`}>
                                                                 {draft.content.allowed_languages?.includes(lang) && <span className="material-icons text-sm">check</span>}
                                                             </div>
-                                                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover:text-slate-900 transition-colors">{lang}</span>
+                                                            <span className="text-[10px] font-black text-slate-500   group-hover:text-slate-900 transition-colors">{lang}</span>
                                                             <input
                                                                 type="checkbox"
                                                                 className="hidden"

@@ -95,7 +95,7 @@ export default function JobSimProductPage() {
                                     <span className="material-symbols-rounded text-sm">check</span>
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Live Status</p>
+                                    <p className="text-xs font-bold   text-slate-500">Live Status</p>
                                     <p className="text-sm font-bold text-slate-900">Assessment in Progress</p>
                                 </div>
                             </div>
@@ -113,7 +113,7 @@ export default function JobSimProductPage() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                         >
-                            <span className="text-[#686bed] font-bold tracking-widest uppercase text-sm">The Experience</span>
+                            <span className="text-[#686bed] font-bold   text-sm">The Experience</span>
                             <h2 className="text-3xl lg:text-4xl font-bold mt-4 mb-6 text-slate-900">Experience Real Workplace Scenarios</h2>
                             <p className="text-slate-600 leading-relaxed mb-8 text-lg">
                                 Our Job Simulator doesn't just ask questions—it drops candidates into the heart of the action. From managing conflicting deadlines to resolving client crises, witness how they handle the pressure.
@@ -289,11 +289,11 @@ export default function JobSimProductPage() {
                         <div className="flex gap-16">
                             <div>
                                 <div className="text-4xl font-bold text-[#686bed] mb-1">0%</div>
-                                <div className="text-xs uppercase tracking-widest text-slate-500 font-bold">Latency</div>
+                                <div className="text-xs   text-slate-500 font-bold">Latency</div>
                             </div>
                             <div>
                                 <div className="text-4xl font-bold text-[#686bed] mb-1">4K</div>
-                                <div className="text-xs uppercase tracking-widest text-slate-500 font-bold">Visual Depth</div>
+                                <div className="text-xs   text-slate-500 font-bold">Visual Depth</div>
                             </div>
                         </div>
                     </div>

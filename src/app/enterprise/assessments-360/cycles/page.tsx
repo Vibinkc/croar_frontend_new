@@ -52,25 +52,25 @@ export default function X360CyclesList() {
                         </button>
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">Assessment Cycles</h1>
                     </div>
-                    <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] flex items-center gap-2">
+                    <p className="text-slate-400 font-black   text-[10px] flex items-center gap-2">
                         <span className="material-symbols-rounded text-sm text-indigo-500">sync</span>
                         Manage performance reviews and comprehensive feedback
                     </p>
                 </div>
-                <Link href="/enterprise/assessments-360/new" className="px-8 py-3 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-xl shadow-slate-100">
+                <Link href="/enterprise/assessments-360/new" className="px-8 py-3 bg-slate-900 text-white rounded-xl font-black text-xs   hover:bg-indigo-600 transition-all shadow-xl shadow-slate-100">
                     New Cycle
                 </Link>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-2xl shadow-slate-200/20 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-100 shadow-2xl shadow-slate-200/20 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50">
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Cycle Name</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Timeline</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Status</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400   border-b border-slate-50">Cycle Name</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400   border-b border-slate-50">Timeline</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400   border-b border-slate-50">Status</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400   border-b border-slate-50 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -83,7 +83,7 @@ export default function X360CyclesList() {
                                             </div>
                                             <div>
                                                 <p className="font-black text-slate-900 leading-none mb-1">{cycle.name}</p>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight italic">360° Assessment</p>
+                                                <p className="text-[10px] font-bold text-slate-400  tracking-tight ">360° Assessment</p>
                                             </div>
                                         </div>
                                     </td>
@@ -98,7 +98,7 @@ export default function X360CyclesList() {
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
-                                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest inline-flex items-center gap-2 ${
+                                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black   inline-flex items-center gap-2 ${
                                             cycle.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 
                                             cycle.status === 'DRAFT' ? 'bg-amber-50 text-amber-600 border border-amber-100' : 
                                             'bg-slate-50 text-slate-500 border border-slate-100'
@@ -113,7 +113,7 @@ export default function X360CyclesList() {
                                     <td className="px-8 py-6 text-right">
                                         <button 
                                             onClick={() => router.push(`/enterprise/assessments-360/cycles/${cycle.id}`)}
-                                            className="px-6 py-2.5 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm flex items-center gap-2 ml-auto"
+                                            className="px-6 py-2.5 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[10px]   hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm flex items-center gap-2 ml-auto"
                                         >
                                             Track Progress
                                             <span className="material-symbols-rounded text-sm">trending_up</span>
@@ -124,10 +124,10 @@ export default function X360CyclesList() {
                                 <tr>
                                     <td colSpan={4} className="py-20 text-center">
                                         <div className="flex flex-col items-center gap-4">
-                                            <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200">
+                                            <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center text-slate-200">
                                                 <span className="material-symbols-rounded text-4xl">folder_off</span>
                                             </div>
-                                            <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">No active cycles found in repository</p>
+                                            <p className="text-slate-400 font-bold   text-[10px]">No active cycles found in repository</p>
                                         </div>
                                     </td>
                                 </tr>

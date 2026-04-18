@@ -99,12 +99,12 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
 
 
 
-                                <h1 className="text-2xl font-black uppercase tracking-tighter mb-2 text-white">
+                                <h1 className="text-2xl font-black  tracking-tighter mb-2 text-white">
                                     Assessment Completed
                                 </h1>
 
                                 <div className="space-y-1 mb-8">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Overall Performance</p>
+                                    <p className="text-[10px] font-black text-slate-400  tracking-[0.2em]">Overall Performance</p>
                                     <div className={`text-5xl font-black ${isPass ? 'text-emerald-400' : 'text-rose-400'} tracking-tighter`}>
                                         {Math.round(result.percentage)}%
                                     </div>
@@ -113,18 +113,18 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 gap-4 mb-8 p-4 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
                                     <div className="text-center">
-                                        <span className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Correct</span>
+                                        <span className="block text-[9px] font-black text-slate-400   mb-1">Correct</span>
                                         <span className="text-xl font-black text-white">{result.score}</span>
                                     </div>
                                     <div className="text-center border-l border-white/10">
-                                        <span className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Questions</span>
+                                        <span className="block text-[9px] font-black text-slate-400   mb-1">Questions</span>
                                         <span className="text-xl font-black text-white">{result.total_questions}</span>
                                     </div>
                                 </div>
 
                                 <button
                                     onClick={() => router.push("/practice/ai-practice")}
-                                    className="w-full py-4 bg-white text-slate-900 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-lg hover:scale-105 active:scale-95"
+                                    className="w-full py-4 bg-white text-slate-900 rounded-2xl text-[11px] font-black  tracking-[0.2em] transition-all duration-300 shadow-lg hover:scale-105 active:scale-95"
                                 >
                                     Return to Command Center
                                 </button>
@@ -137,9 +137,9 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
                                         <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-indigo-50 text-indigo-600">
                                             <span className="material-icons-outlined text-xl">psychology</span>
                                         </div>
-                                        <h3 className="text-[11px] font-black uppercase tracking-widest text-slate-900">AI Logic Summary</h3>
+                                        <h3 className="text-[11px] font-black   text-slate-900">AI Logic Summary</h3>
                                     </div>
-                                    <p className="text-[13px] leading-relaxed font-bold italic text-slate-600">
+                                    <p className="text-[13px] leading-relaxed font-bold  text-slate-600">
                                         &quot;{test.title} session analyzed. User demonstrated {isPass ? 'strong' : 'developing'} command of {test.category} protocols with a final efficiency rating of {Math.round(result.percentage)}%.&quot;
                                     </p>
                                 </div>
@@ -149,7 +149,7 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
                                     <div className="pt-4 border-t border-slate-100">
                                         <div className="flex items-center justify-between gap-4">
                                             <div>
-                                                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-900 mb-1">AI Interview Ready</h4>
+                                                <h4 className="text-[10px] font-black   text-slate-900 mb-1">AI Interview Ready</h4>
                                                 <p className="text-[10px] text-slate-500 font-medium">Continue your session with a video interview.</p>
                                             </div>
                                             <Link href={`/practice/interviews/${data.interview_id}`}>
@@ -168,7 +168,7 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
                     {/* RIGHT COLUMN: Detailed Review */}
                     <div className="lg:col-span-8 space-y-6">
                         <div className="flex items-center gap-4 px-4 mb-2">
-                            <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
+                            <h2 className="text-[11px] font-black  tracking-[0.3em] text-slate-400">
                                 Protocol_Detailed_Analysis
                             </h2>
                             <div className="h-px flex-grow bg-slate-100"></div>
@@ -188,14 +188,14 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-3 mb-3">
-                                                <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${q.type?.toLowerCase() === 'mcq' ? 'bg-blue-50 text-blue-600' :
+                                                <span className={`px-2 py-0.5 rounded text-[9px] font-black   ${q.type?.toLowerCase() === 'mcq' ? 'bg-blue-50 text-blue-600' :
                                                     q.type?.toLowerCase() === 'code' || q.type?.toLowerCase() === 'coding' ? 'bg-purple-50 text-purple-600' :
                                                         'bg-emerald-50 text-emerald-600'
                                                     }`}>
                                                     {q.type}
                                                 </span>
                                                 <div className="w-1 h-1 rounded-full bg-slate-200"></div>
-                                                <span className={`text-[9px] font-black uppercase tracking-widest ${q.is_correct ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                                <span className={`text-[9px] font-black   ${q.is_correct ? 'text-emerald-500' : 'text-rose-500'}`}>
                                                     {q.is_correct ? 'VERIFIED_SUCCESS' : 'VERIFICATION_FAILED'}
                                                 </span>
                                             </div>
@@ -205,7 +205,7 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
                                         </div>
                                     </div>
 
-                                    <div className={`px-4 py-2 rounded-xl text-[10px] font-black border tracking-widest uppercase transition-all ${q.is_correct
+                                    <div className={`px-4 py-2 rounded-xl text-[10px] font-black border   transition-all ${q.is_correct
                                         ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
                                         : 'bg-rose-50 text-rose-700 border-rose-100'
                                         }`}>
@@ -214,7 +214,7 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
                                 </div>
 
                                 <div className="space-y-6">
-                                    <h4 className="text-[9px] font-black uppercase tracking-[0.2em] mb-4 text-slate-400">
+                                    <h4 className="text-[9px] font-black  tracking-[0.2em] mb-4 text-slate-400">
                                         Response_Artifact_Feedback
                                     </h4>
 
@@ -249,7 +249,7 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
                                             placeholder="No response provided."
                                         />
                                     ) : (
-                                        <div className="text-slate-400 italic text-sm">Unknown question type.</div>
+                                        <div className="text-slate-400  text-sm">Unknown question type.</div>
                                     )}
                                 </div>
                             </div>

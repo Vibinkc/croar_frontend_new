@@ -87,7 +87,7 @@ export default function StudentRegisterPage() {
                     <div className="mb-8">
                         <Link href="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors mb-8">
                             <span className="material-icons-outlined text-sm">arrow_back</span>
-                            <span className="text-xs font-bold uppercase tracking-widest">Back to Home</span>
+                            <span className="text-xs font-bold  ">Back to Home</span>
                         </Link>
                         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Create Account</h1>
                         <p className="text-slate-500 dark:text-slate-400">Join the next generation of students.</p>
@@ -96,7 +96,7 @@ export default function StudentRegisterPage() {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-4">
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Full Name</label>
+                                <label className="text-xs font-bold text-slate-500  ">Full Name</label>
                                 <input
                                     className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:border-indigo-600 outline-none transition-all"
                                     placeholder="Enter your full name"
@@ -106,7 +106,7 @@ export default function StudentRegisterPage() {
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email Address</label>
+                                <label className="text-xs font-bold text-slate-500  ">Email Address</label>
                                 <input
                                     className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:border-indigo-600 outline-none transition-all"
                                     type="email"
@@ -118,7 +118,7 @@ export default function StudentRegisterPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password</label>
+                                    <label className="text-xs font-bold text-slate-500  ">Password</label>
                                     <input
                                         className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:border-indigo-600 outline-none transition-all"
                                         type="password"
@@ -129,7 +129,7 @@ export default function StudentRegisterPage() {
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Confirm</label>
+                                    <label className="text-xs font-bold text-slate-500  ">Confirm</label>
                                     <input
                                         className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:border-indigo-600 outline-none transition-all"
                                         type="password"

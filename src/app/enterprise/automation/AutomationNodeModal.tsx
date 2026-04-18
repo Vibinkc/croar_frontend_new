@@ -416,16 +416,16 @@ export default function AutomationNodeModal({
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0 bg-white">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm" style={{ backgroundColor: headerMeta.bg, color: headerMeta.color }}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: headerMeta.bg, color: headerMeta.color }}>
                   <span className="material-symbols-rounded text-xl">{headerMeta.icon}</span>
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-slate-800 leading-tight">{editingId ? "Edit Node" : "Create Node"}</h2>
-                  <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: headerMeta.color }}>{headerMeta.title}</p>
+                  <h2 className="text-lg font-black text-slate-800 leading-tight">{editingId ? "Edit Action" : "Create Action"}</h2>
+                  <p className="text-[10px] font-bold   mt-0.5" style={{ color: headerMeta.color }}>{headerMeta.title}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={onClose} className="w-9 h-9 rounded-2xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
+                <button onClick={onClose} className="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
                   <span className="material-symbols-rounded text-xl">close</span>
                 </button>
               </div>
@@ -436,13 +436,13 @@ export default function AutomationNodeModal({
               <div className="flex border-b border-slate-100 shrink-0 bg-white px-6">
                 <button
                   onClick={() => setActiveTab("config")}
-                  className={`px-6 py-3 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === "config" ? "border-[#7C3AED] text-[#7C3AED]" : "border-transparent text-slate-400 hover:text-slate-600"}`}
+                  className={`px-6 py-3 text-[10px] font-black   transition-all border-b-2 ${activeTab === "config" ? "border-[#7C3AED] text-[#7C3AED]" : "border-transparent text-slate-400 hover:text-slate-600"}`}
                 >
                   1. Configuration
                 </button>
                 <button
                   onClick={() => setActiveTab("sub")}
-                  className={`px-6 py-3 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === "sub" ? "border-[#7C3AED] text-[#7C3AED]" : "border-transparent text-slate-400 hover:text-slate-600"}`}
+                  className={`px-6 py-3 text-[10px] font-black   transition-all border-b-2 ${activeTab === "sub" ? "border-[#7C3AED] text-[#7C3AED]" : "border-transparent text-slate-400 hover:text-slate-600"}`}
                 >
                   2. {type === "assessment" ? `Questions (${form.generated_questions?.length || 0})` : `Time Slots (${form.time_slots?.length || 0})`}
                 </button>
@@ -465,13 +465,13 @@ export default function AutomationNodeModal({
                     <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
                       <div className="flex flex-col items-center gap-2">
                         <div className="w-8 h-8 border-4 border-slate-200 border-t-[#7C3AED] rounded-full animate-spin" />
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Loading data...</p>
+                        <p className="text-[10px] font-black text-slate-400  ">Loading data...</p>
                       </div>
                     </div>
                   )}
                   {/* Job Info */}
                   <div className="opacity-70">
-                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Target Job</label>
+                    <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Target Job</label>
                     <div className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold text-slate-600">
                       {selectedJob?.title || "No Job Selected"}
                     </div>
@@ -479,7 +479,7 @@ export default function AutomationNodeModal({
 
                   {/* Round Selection */}
                   <div>
-                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Connect to Round <span className="text-red-400">*</span></label>
+                    <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Connect to Round <span className="text-red-400">*</span></label>
                     {jobRounds.length > 0 ? (
                       <select 
                         value={roundValue} 
@@ -500,7 +500,7 @@ export default function AutomationNodeModal({
                   {/* Trigger Criteria */}
                   {type !== "onboarding" && (
                     <div>
-                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Trigger Condition {type === "mail" && <span className="text-red-400">*</span>}</label>
+                      <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Trigger Condition {type === "mail" && <span className="text-red-400">*</span>}</label>
                       <textarea 
                         value={form.criteria || ""} 
                         onChange={(e) => setForm((f: any) => ({ ...f, criteria: e.target.value }))} 
@@ -518,7 +518,7 @@ export default function AutomationNodeModal({
                     {/* MAIL Action */}
                     {type === "mail" && (
                       <div>
-                        <label className="block text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1.5 ml-1">Email Template <span className="text-red-400">*</span></label>
+                        <label className="block text-[10px] font-black text-indigo-500   mb-1.5 ml-1">Email Template <span className="text-red-400">*</span></label>
                         <select value={form.template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white shadow-sm">
                           <option value="" className="text-slate-900 bg-white">Select template…</option>
                           {emailTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
@@ -530,7 +530,7 @@ export default function AutomationNodeModal({
                     {type === "assessment" && (
                       <>
                         <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 shadow-sm">
-                          <label className="block text-[10px] font-black text-amber-600 uppercase tracking-widest mb-2 ml-1">Use Template (Optional)</label>
+                          <label className="block text-[10px] font-black text-amber-600   mb-2 ml-1">Use Template (Optional)</label>
                           <select 
                             value={form.template_id || ""}
                             onChange={(e) => {
@@ -555,7 +555,7 @@ export default function AutomationNodeModal({
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Type</label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Type</label>
                             <select value={form.assessment_type || ""} onChange={(e) => setForm((f: any) => ({ ...f, assessment_type: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 bg-white">
                               <option value="APTITUDE" className="text-slate-900 bg-white">Aptitude</option>
                               <option value="CODING" className="text-slate-900 bg-white">Coding</option>
@@ -563,24 +563,24 @@ export default function AutomationNodeModal({
                             </select>
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Topic <span className="text-red-400">*</span></label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Topic <span className="text-red-400">*</span></label>
                             <input type="text" value={form.topic || ""} onChange={(e) => setForm((f: any) => ({ ...f, topic: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700" placeholder="e.g. Python, SQL" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Questions</label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Questions</label>
                             <input type="number" value={form.question_count || ""} onChange={(e) => setForm((f: any) => ({ ...f, question_count: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Duration (Min)</label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Duration (Min)</label>
                             <input type="number" value={form.test_duration || ""} onChange={(e) => setForm((f: any) => ({ ...f, test_duration: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm" />
                           </div>
                         </div>
 
                         <div>
-                          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Invite Email Template</label>
+                          <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Invite Email Template</label>
                           <select value={form.email_template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
                             <option value="" className="text-slate-900 bg-white">Default Invite Email</option>
                             {emailTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
@@ -591,7 +591,7 @@ export default function AutomationNodeModal({
                           <button
                             onClick={handleGeneratePreview}
                             disabled={loading}
-                            className="w-full py-3 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#7C3AED]/20 disabled:opacity-50"
+                            className="w-full py-3 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#7C3AED]/20 disabled:opacity-50"
                           >
                              {loading ? (
                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -609,7 +609,7 @@ export default function AutomationNodeModal({
                       <>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5 ml-1">Interview Type</label>
+                            <label className="block text-[10px] font-black text-emerald-600   mb-1.5 ml-1">Interview Type</label>
                             <select value={form.interview_type || ""} onChange={(e) => setForm((f: any) => ({ ...f, interview_type: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
                               <option value="GMEET" className="text-slate-900 bg-white">Google Meet</option>
                               <option value="AI" className="text-slate-900 bg-white">AI Interview</option>
@@ -618,10 +618,10 @@ export default function AutomationNodeModal({
                           {form.interview_type === "AI" && (
                             <div>
                                <div className="flex items-center justify-between mb-1.5 ml-1">
-                                 <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest">AI Template</label>
+                                 <label className="block text-[10px] font-black text-emerald-600  ">AI Template</label>
                                  <button 
                                    onClick={() => window.open('/enterprise/settings/interview-templates', '_blank')}
-                                   className="text-[10px] font-bold text-[#7C3AED] hover:underline uppercase"
+                                   className="text-[10px] font-bold text-[#7C3AED] hover:underline "
                                  >
                                    + Create New
                                  </button>
@@ -636,26 +636,26 @@ export default function AutomationNodeModal({
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Available From <span className="text-red-400">*</span></label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Available From <span className="text-red-400">*</span></label>
                             <input type="date" value={form.start_date || ""} min={new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: any) => ({ ...f, start_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Available To <span className="text-red-400">*</span></label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Available To <span className="text-red-400">*</span></label>
                             <input type="date" value={form.end_date || ""} min={form.start_date || new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: any) => ({ ...f, end_date: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-4 gap-4">
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Start Time <span className="text-red-400">*</span></label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Start Time <span className="text-red-400">*</span></label>
                             <input type="time" value={form.start_time || ""} onChange={(e) => setForm((f: any) => ({ ...f, start_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">End Time <span className="text-red-400">*</span></label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">End Time <span className="text-red-400">*</span></label>
                             <input type="time" value={form.end_time || ""} onChange={(e) => setForm((f: any) => ({ ...f, end_time: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Duration <span className="text-red-400">*</span></label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Duration <span className="text-red-400">*</span></label>
                             <select value={form.duration || ""} onChange={(e) => setForm((f: any) => ({ ...f, duration: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-2 py-3 text-sm font-bold text-slate-900 bg-white focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]">
                               <option value="15" className="text-slate-900 bg-white">15m</option>
                               <option value="30" className="text-slate-900 bg-white">30m</option>
@@ -664,14 +664,14 @@ export default function AutomationNodeModal({
                             </select>
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Daily Limit <span className="text-red-400">*</span></label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Daily Limit <span className="text-red-400">*</span></label>
                             <input type="number" min={1} value={form.daily_limit || ""} onChange={(e) => setForm((f: any) => ({ ...f, daily_limit: Number(e.target.value) }))} className="w-full border border-slate-200 rounded-xl px-3 py-3 text-sm focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Interviewer Email</label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Interviewer Email</label>
                             <input 
                               type="email" 
                               value={form.interviewer_email || ""} 
@@ -681,7 +681,7 @@ export default function AutomationNodeModal({
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Invite Template</label>
+                            <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Invite Template</label>
                             <select value={form.email_template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
                               <option value="" className="text-slate-900 bg-white">Default Invite</option>
                               {emailTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
@@ -691,7 +691,7 @@ export default function AutomationNodeModal({
                         <div className="pt-2">
                            <button
                              onClick={handleGenerateTimeSlots}
-                             className="w-full py-3 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#7C3AED]/20"
+                             className="w-full py-3 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#7C3AED]/20"
                            >
                               <span className="material-symbols-rounded text-lg">schedule</span>
                               Next: Configure Time Slots
@@ -704,14 +704,14 @@ export default function AutomationNodeModal({
                     {type === "onboarding" && (
                       <>
                         <div>
-                          <label className="block text-[10px] font-black text-purple-600 uppercase tracking-widest mb-1.5 ml-1">Onboarding Template <span className="text-red-400">*</span></label>
+                          <label className="block text-[10px] font-black text-purple-600   mb-1.5 ml-1">Onboarding Template <span className="text-red-400">*</span></label>
                           <select value={form.template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
                             <option value="" className="text-slate-900 bg-white">Select template…</option>
                             {onboardingTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[10px] font-black text-purple-600 uppercase tracking-widest mb-1.5 ml-1">Intro Email Template</label>
+                          <label className="block text-[10px] font-black text-purple-600   mb-1.5 ml-1">Intro Email Template</label>
                           <select value={form.email_template_id || ""} onChange={(e) => setForm((f: any) => ({ ...f, email_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
                             <option value="" className="text-slate-900 bg-white">No Intro Email</option>
                             {emailTemplates.map((t: any) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
@@ -723,12 +723,12 @@ export default function AutomationNodeModal({
 
                   {/* AUTOMATION SETTINGS (Common) */}
                   <div className="pt-8 border-t border-slate-100 flex flex-col gap-4">
-                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Automation Logic</span>
+                    <span className="block text-[10px] font-black text-slate-400   mb-2 ml-1">Automation Logic</span>
                     
-                    <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                    <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl">
                         <div>
                           <p className="text-sm font-bold text-slate-800">Enabled Status</p>
-                          <p className="text-[10px] text-slate-400">Node will actively trigger automations</p>
+                          <p className="text-[10px] text-slate-400">This action will trigger automations</p>
                         </div>
                         <button onClick={() => setForm((f: any) => ({ ...f, is_enabled: !f.is_enabled }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"}`}>
                           <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${form.is_enabled ? "translate-x-5" : ""}`} />
@@ -736,7 +736,7 @@ export default function AutomationNodeModal({
                     </div>
 
                     {(type === "mail" || type === "assessment" || type === "interview" || type === "onboarding") && (
-                      <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                      <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl">
                           <div>
                             <p className="text-sm font-bold text-slate-800">Auto-Move Candidate</p>
                             <p className="text-[10px] text-slate-400">Automatically advance candidate after trigger</p>
@@ -749,7 +749,7 @@ export default function AutomationNodeModal({
 
                     {(type === "mail" || type === "assessment") && (
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                        <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl">
                             <div>
                               <p className="text-sm font-bold text-slate-800">Schedule Mode</p>
                               <p className="text-[10px] text-slate-400">{form.is_immediate ? "Immediate execution" : "Scheduled execution"}</p>
@@ -761,7 +761,7 @@ export default function AutomationNodeModal({
 
                         {!form.is_immediate && (
                           <div className="px-1 animate-in slide-in-from-top-2 duration-300">
-                              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Send Date & Time</label>
+                              <label className="block text-[10px] font-black text-slate-500   mb-1.5 ml-1">Send Date & Time</label>
                               <input type="datetime-local" value={form.send_at || ""} onChange={(e) => setForm((f: any) => ({ ...f, send_at: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium" />
                           </div>
                         )}
@@ -774,7 +774,7 @@ export default function AutomationNodeModal({
                    {type === "assessment" && (
                      <div className="space-y-4">
                         <div className="flex items-center justify-between mb-2">
-                           <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest">Question Bank</h3>
+                           <h3 className="text-xs font-black text-slate-800  ">Question Bank</h3>
                            <button 
                               onClick={() => {
                                 const newQ = form.assessment_type === 'CODING' ? {
@@ -793,33 +793,33 @@ export default function AutomationNodeModal({
                                 };
                                 setForm((f: any) => ({ ...f, generated_questions: [...(f.generated_questions || []), newQ] }));
                               }}
-                              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
+                              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black   text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
                             >
                               <span className="material-symbols-rounded text-sm">add</span>
                               Add Question
                             </button>
                         </div>
                         {(!form.generated_questions || form.generated_questions.length === 0) ? (
-                          <div className="py-12 flex flex-col items-center justify-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                          <div className="py-12 flex flex-col items-center justify-center bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
                              <span className="material-symbols-rounded text-slate-300 text-4xl mb-2">auto_awesome</span>
                              <p className="text-xs font-bold text-slate-400">No questions generated yet.</p>
-                             <button onClick={() => setActiveTab("config")} className="mt-2 text-[10px] text-[#7C3AED] font-black uppercase hover:underline">Go to Config to Generate</button>
+                             <button onClick={() => setActiveTab("config")} className="mt-2 text-[10px] text-[#7C3AED] font-black  hover:underline">Go to Config to Generate</button>
                           </div>
                         ) : (
                           <div className="space-y-6">
                              {form.generated_questions.map((q: any, i: number) => (
-                               <div key={q.id || i} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative group">
-                                  <div className="absolute -top-2 -left-2 w-7 h-7 bg-[#7C3AED] text-white rounded-lg flex items-center justify-center font-black italic shadow-md text-xs">#{i + 1}</div>
+                               <div key={q.id || i} className="bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-all relative group">
+                                  <div className="absolute -top-2 -left-2 w-7 h-7 bg-[#7C3AED] text-white rounded-xl flex items-center justify-center font-black  shadow-md text-xs">#{i + 1}</div>
                                   
                                   <div className="flex justify-between gap-2 mb-4">
-                                     <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest ml-6">
+                                     <span className="text-[10px] font-black text-slate-300   ml-6">
                                        {q.type || form.assessment_type} Task
                                      </span>
                                      <button 
                                        onClick={() => {
                                          setForm((f: any) => ({ ...f, generated_questions: f.generated_questions.filter((_: any, idx: number) => idx !== i) }));
                                        }}
-                                       className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                       className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
                                      >
                                         <span className="material-symbols-rounded text-base">delete</span>
                                      </button>
@@ -829,7 +829,7 @@ export default function AutomationNodeModal({
                                     {(q.type === 'APTITUDE' || (!q.type && form.assessment_type === 'APTITUDE')) ? (
                                       <>
                                         <div>
-                                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Question Text</label>
+                                          <label className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Question Text</label>
                                           <textarea 
                                             value={q.question} 
                                             onChange={(e) => {
@@ -860,7 +860,7 @@ export default function AutomationNodeModal({
                                                   newQs[i].correct_answer = opt;
                                                   setForm((f: any) => ({ ...f, generated_questions: newQs }));
                                                 }}
-                                                className={`absolute left-2.5 top-2.5 w-5 h-5 rounded-md flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
+                                                className={`absolute left-2.5 top-2.5 w-5 h-5 rounded-xl flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
                                               >
                                                 <span className="material-symbols-rounded text-xs">{q.correct_answer === opt ? "check" : "circle"}</span>
                                               </button>
@@ -871,7 +871,7 @@ export default function AutomationNodeModal({
                                     ) : (
                                       <>
                                         <div>
-                                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Problem Title</label>
+                                          <label className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Title</label>
                                           <input 
                                             type="text"
                                             value={q.title || ''} 
@@ -885,7 +885,7 @@ export default function AutomationNodeModal({
                                           />
                                         </div>
                                         <div>
-                                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Problem Statement</label>
+                                          <label className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Statement</label>
                                           <textarea 
                                             value={q.problem_statement || ''} 
                                             onChange={(e) => {
@@ -910,7 +910,7 @@ export default function AutomationNodeModal({
                    {type === "interview" && (
                      <div className="space-y-4">
                         <div className="flex items-center justify-between mb-2">
-                           <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest">Time Slots</h3>
+                           <h3 className="text-xs font-black text-slate-800  ">Time Slots</h3>
                            <button 
                              onClick={() => {
                                const limit = Number(form.daily_limit) || 0;
@@ -921,16 +921,16 @@ export default function AutomationNodeModal({
                                setForm((f: any) => ({ ...f, time_slots: [...(f.time_slots || []), "09:00"] }));
                              }}
                              disabled={Number(form.daily_limit) > 0 && form.time_slots?.length >= Number(form.daily_limit)}
-                             className="text-[10px] font-bold text-[#7C3AED] hover:underline uppercase disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:no-underline"
+                             className="text-[10px] font-bold text-[#7C3AED] hover:underline  disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:no-underline"
                            >
                              + Add Slot
                            </button>
                         </div>
                         {(!form.time_slots || form.time_slots.length === 0) ? (
-                          <div className="py-12 flex flex-col items-center justify-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                          <div className="py-12 flex flex-col items-center justify-center bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
                              <span className="material-symbols-rounded text-slate-300 text-4xl mb-2">schedule</span>
                              <p className="text-xs font-bold text-slate-400">No time slots generated.</p>
-                             <button onClick={handleGenerateTimeSlots} className="mt-2 text-[10px] text-[#7C3AED] font-black uppercase hover:underline">Auto-Generate Slots</button>
+                             <button onClick={handleGenerateTimeSlots} className="mt-2 text-[10px] text-[#7C3AED] font-black  hover:underline">Auto-Generate Slots</button>
                           </div>
                         ) : (
                           <div className="grid grid-cols-3 gap-3">
@@ -961,7 +961,7 @@ export default function AutomationNodeModal({
                         <div className="pt-4 mt-4 border-t border-slate-100">
                            <button 
                              onClick={handleGenerateTimeSlots}
-                             className="w-full py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-md"
+                             className="w-full py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all shadow-md"
                            >
                               Refresh / Regenerate Slots
                            </button>

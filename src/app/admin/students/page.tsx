@@ -74,7 +74,7 @@ function UserList({ divisionId, departmentId }: { divisionId: number | null, dep
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-slate-100 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Syncing_Database</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Syncing_Database</p>
         </div>
     );
 
@@ -95,7 +95,7 @@ function UserList({ divisionId, departmentId }: { divisionId: number | null, dep
                         link.click();
                         document.body.removeChild(link);
                     }}
-                    className="bg-white border border-slate-200 text-slate-400 px-6 py-3 rounded-2xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 hover:text-[var(--color-primary)] transition-all shadow-sm"
+                    className="bg-white border border-slate-200 text-slate-400 px-6 py-3 rounded-2xl flex items-center gap-2 text-[10px] font-black   hover:bg-slate-50 hover:text-[var(--color-primary)] transition-all shadow-sm"
                 >
                     <span className="material-icons-outlined text-lg">download</span>
                     Export CSV
@@ -105,7 +105,7 @@ function UserList({ divisionId, departmentId }: { divisionId: number | null, dep
                     className="group bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-xl shadow-indigo-100"
                 >
                     <span className="material-icons-outlined text-lg group-hover:rotate-90 transition-transform">add</span>
-                    <span className="text-[10px] font-black uppercase tracking-widest">Add Operative</span>
+                    <span className="text-[10px] font-black  ">Add Operative</span>
                 </Link>
             </div>
 
@@ -113,19 +113,19 @@ function UserList({ divisionId, departmentId }: { divisionId: number | null, dep
                 <table className="min-w-full divide-y divide-slate-50">
                     <thead className="bg-slate-50/50">
                         <tr>
-                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400  ">
                                 Operative
                             </th>
-                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400  ">
                                 Member_ID
                             </th>
-                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400  ">
                                 Batch
                             </th>
-                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400  ">
                                 Email_Address
                             </th>
-                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <th scope="col" className="px-3 py-2 text-left text-[10px] font-black text-slate-400  ">
                                 Status
                             </th>
                             <th scope="col" className="relative px-3 py-2">
@@ -142,23 +142,23 @@ function UserList({ divisionId, departmentId }: { divisionId: number | null, dep
                                             {user.first_name[0]}{user.last_name[0]}
                                         </div>
                                         <div className="ml-3">
-                                            <div className="text-sm font-black text-slate-900 uppercase tracking-tight">{user.first_name} {user.last_name}</div>
+                                            <div className="text-sm font-black text-slate-900  tracking-tight">{user.first_name} {user.last_name}</div>
 
-                                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{user.role}</div>
+                                            <div className="text-[10px] font-black text-slate-400   mt-0.5">{user.role}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
-                                    <div className="text-[11px] font-black text-slate-900 uppercase tracking-tight">{user.member_id || 'N/A'}</div>
+                                    <div className="text-[11px] font-black text-slate-900  tracking-tight">{user.member_id || 'N/A'}</div>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
-                                    <div className="text-[11px] font-black text-slate-900 uppercase tracking-tight">{user.batch || 'N/A'}</div>
+                                    <div className="text-[11px] font-black text-slate-900  tracking-tight">{user.batch || 'N/A'}</div>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
                                     <div className="text-[11px] font-black text-slate-400 font-mono">{user.email}</div>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
-                                    <span style={{ fontSize: '9px' }} className={`px-3 py-1.5 inline-flex font-black uppercase tracking-widest rounded-full border ${user.is_active
+                                    <span style={{ fontSize: '9px' }} className={`px-3 py-1.5 inline-flex font-black   rounded-full border ${user.is_active
                                         ? 'bg-slate-100 text-slate-700 border-slate-200'
                                         : 'bg-slate-50 text-slate-300 border-slate-100'
                                         }`}>
@@ -185,7 +185,7 @@ function UserList({ divisionId, departmentId }: { divisionId: number | null, dep
                                 <td colSpan={5} className="px-6 py-12 text-center">
                                     <div className="flex flex-col items-center justify-center text-slate-300">
                                         <span className="material-icons-outlined text-5xl mb-4 opacity-30">database_off</span>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em]">No_Operatives_Found</p>
+                                        <p className="text-[10px] font-black  tracking-[0.2em]">No_Operatives_Found</p>
                                     </div>
                                 </td>
                             </tr>

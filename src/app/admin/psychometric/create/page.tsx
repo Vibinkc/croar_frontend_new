@@ -191,17 +191,17 @@ export default function CreatePsychometricPage() {
                     </button>
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Knowledge Engine v2.0</span>
+                            <span className="text-[9px] font-black text-slate-400  ">Knowledge Engine v2.0</span>
                             <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                            <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">Psychometric_Construct</span>
+                            <span className="text-[9px] font-black text-indigo-500  ">Psychometric_Construct</span>
                         </div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase leading-none">Initialize Protocol</h1>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight  leading-none">Initialize Protocol</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">System_Ready</span>
+                    <span className="text-[10px] font-black text-slate-900  ">System_Ready</span>
                 </div>
             </div>
 
@@ -210,7 +210,7 @@ export default function CreatePsychometricPage() {
                 <div className="lg:col-span-4 space-y-6">
                     <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.04)] overflow-hidden">
                         <div className="p-8 border-b border-slate-50 bg-slate-50/30">
-                            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-3">
+                            <h2 className="text-sm font-black text-slate-900   flex items-center gap-3">
                                 <span className="material-icons-outlined text-indigo-500">tune</span>
                                 Protocol Configuration
                             </h2>
@@ -219,7 +219,7 @@ export default function CreatePsychometricPage() {
                         <div className="p-8 space-y-8">
                             {/* Test Type Selection */}
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-1">Assessment Type</label>
+                                <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-4 ml-1">Assessment Type</label>
                                 <div className="grid grid-cols-2 gap-3">
                                     {[
                                         { id: 'SURVEY', label: 'Survey', icon: 'poll' },
@@ -252,7 +252,7 @@ export default function CreatePsychometricPage() {
                                                 <span className={`material-icons-outlined text-xl ${testType === type.id ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-600'}`}>
                                                     {type.icon}
                                                 </span>
-                                                <span className="text-[10px] font-black uppercase tracking-widest">{type.label}</span>
+                                                <span className="text-[10px] font-black  ">{type.label}</span>
                                             </div>
                                         </button>
                                     ))}
@@ -261,7 +261,7 @@ export default function CreatePsychometricPage() {
 
                             {/* Creation Mode Selection */}
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-1">Creation Method</label>
+                                <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-4 ml-1">Creation Method</label>
                                 <div className="flex gap-2 p-1.5 bg-slate-50 border border-slate-100 rounded-2xl">
                                     {[
                                         { id: 'AI', label: 'AI Architect' },
@@ -277,7 +277,7 @@ export default function CreatePsychometricPage() {
                                                     setGeneratedDescription("");
                                                 }
                                             }}
-                                            className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${creationMode === mode.id
+                                            className={`flex-1 py-3 rounded-xl text-[10px] font-black   transition-all ${creationMode === mode.id
                                                 ? 'bg-white text-slate-900 shadow-lg shadow-slate-100 ring-1 ring-black/5'
                                                 : 'text-slate-400 hover:text-slate-600'
                                                 }`}
@@ -292,7 +292,7 @@ export default function CreatePsychometricPage() {
                                 <div className="space-y-6 animate-in slide-in-from-left-4 duration-500">
                                     {testType === 'SURVEY' && (
                                         <div>
-                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Target Trait / Topic</label>
+                                            <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2 ml-1">Target Trait / Topic</label>
                                             <input
                                                 type="text"
                                                 value={trait}
@@ -305,7 +305,7 @@ export default function CreatePsychometricPage() {
 
                                     {testType !== 'PIPELINE' && (
                                         <div>
-                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">
+                                            <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2 ml-1">
                                                 {testType === 'LABYRINTH' ? 'Level Count' : testType === 'FREE_TRANSPORT' ? 'Ship Count' : 'Question Count'}
                                             </label>
                                             <input
@@ -325,7 +325,7 @@ export default function CreatePsychometricPage() {
                                                 <span className="material-icons-outlined text-sm">auto_awesome</span>
                                             </div>
                                             <div>
-                                                <h3 className="text-[10px] font-black text-indigo-900 uppercase tracking-widest mb-1">AI Construction</h3>
+                                                <h3 className="text-[10px] font-black text-indigo-900   mb-1">AI Construction</h3>
                                                 <p className="text-[10px] text-indigo-700/70 font-medium leading-relaxed">
                                                     {testType === 'SURVEY'
                                                         ? `Generates weighted indicators for ${trait || "..."}.`
@@ -344,7 +344,7 @@ export default function CreatePsychometricPage() {
                                     <button
                                         onClick={handleGenerate}
                                         disabled={generating || (testType === 'SURVEY' && !trait)}
-                                        className="w-full py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl shadow-slate-200 hover:shadow-slate-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-95"
+                                        className="w-full py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black  tracking-[0.2em] hover:bg-black transition-all shadow-xl shadow-slate-200 hover:shadow-slate-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-95"
                                     >
                                         <span className={`material-icons-outlined text-lg ${generating ? 'animate-spin' : ''}`}>
                                             {generating ? 'sync' : 'bolt'}
@@ -359,7 +359,7 @@ export default function CreatePsychometricPage() {
                                     {testType === 'FREE_TRANSPORT' && (
                                         <div className="space-y-4 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
                                             <div>
-                                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Fleet Size</label>
+                                                <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2 ml-1">Fleet Size</label>
                                                 <input
                                                     type="number"
                                                     value={shipCount}
@@ -370,7 +370,7 @@ export default function CreatePsychometricPage() {
 
                                             <button
                                                 onClick={handleGenerate}
-                                                className="w-full py-4 bg-white text-slate-900 border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-slate-50 transition-all shadow-sm"
+                                                className="w-full py-4 bg-white text-slate-900 border border-slate-200 rounded-xl text-[10px] font-black  tracking-[0.2em] hover:bg-slate-50 transition-all shadow-sm"
                                             >
                                                 Generate Fleet
                                             </button>
@@ -378,7 +378,7 @@ export default function CreatePsychometricPage() {
                                     )}
 
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Protocol Title</label>
+                                        <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2 ml-1">Protocol Title</label>
                                         <input
                                             type="text"
                                             value={generatedTitle}
@@ -440,7 +440,7 @@ export default function CreatePsychometricPage() {
                                                 setQuestions([...questions, { text: "", weight: 1.0 }]);
                                             }
                                         }}
-                                        className="w-full py-4 bg-white text-slate-900 border-2 border-dashed border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-3"
+                                        className="w-full py-4 bg-white text-slate-900 border-2 border-dashed border-slate-200 rounded-2xl text-[10px] font-black  tracking-[0.2em] hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-3"
                                     >
                                         <span className="material-icons-outlined text-lg">add_circle_outline</span>
                                         Add Node
@@ -456,14 +456,14 @@ export default function CreatePsychometricPage() {
                     {questions.length > 0 ? (
                         <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.04)] overflow-hidden flex flex-col min-h-[600px]">
                             <div className="p-8 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center sticky top-0 z-10 backdrop-blur-xl">
-                                <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-3">
+                                <h2 className="text-sm font-black text-slate-900   flex items-center gap-3">
                                     <span className="material-icons-outlined text-indigo-500">wysiwyg</span>
                                     {creationMode === 'AI' ? 'Construct Verification' : 'Protocol Assembler'}
                                 </h2>
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setQuestions([])}
-                                        className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                                        className="px-4 py-2 text-[10px] font-black   text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
                                     >
                                         Clear All
                                     </button>
@@ -513,7 +513,7 @@ export default function CreatePsychometricPage() {
                                                                     className="hidden"
                                                                 />
                                                                 <span className="w-2 h-2 rounded-full bg-current" />
-                                                                <span className="text-[10px] font-black uppercase tracking-widest">Positive Validator</span>
+                                                                <span className="text-[10px] font-black  ">Positive Validator</span>
                                                             </label>
                                                             <label className={`flex items-center gap-3 px-4 py-2 rounded-xl border border-slate-100 cursor-pointer transition-all ${q.weight === -1.0 ? 'bg-rose-50 border-rose-100 text-rose-700' : 'bg-slate-50 text-slate-400'}`}>
                                                                 <input
@@ -524,7 +524,7 @@ export default function CreatePsychometricPage() {
                                                                     className="hidden"
                                                                 />
                                                                 <span className="w-2 h-2 rounded-full bg-current" />
-                                                                <span className="text-[10px] font-black uppercase tracking-widest">Negative Validator</span>
+                                                                <span className="text-[10px] font-black  ">Negative Validator</span>
                                                             </label>
                                                         </div>
                                                     </>
@@ -534,7 +534,7 @@ export default function CreatePsychometricPage() {
                                                     <div className="space-y-8">
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                                             <div className="space-y-3">
-                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reference Image</span>
+                                                                <span className="text-[10px] font-black text-slate-400  ">Reference Image</span>
                                                                 {q.target?.imageUrl ? (
                                                                     <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100 group/img">
                                                                         <img src={q.target.imageUrl} className="w-full h-full object-contain" alt="Target" />
@@ -550,7 +550,7 @@ export default function CreatePsychometricPage() {
                                                                         <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-300 flex items-center justify-center mb-2 group-hover/upload:bg-indigo-50 group-hover/upload:text-indigo-500 transition-colors">
                                                                             <span className="material-icons-outlined">add_photo_alternate</span>
                                                                         </div>
-                                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover/upload:text-indigo-500">Upload Target</span>
+                                                                        <span className="text-[10px] font-black text-slate-400   group-hover/upload:text-indigo-500">Upload Target</span>
                                                                         <input type="file" className="hidden" accept="image/*" onChange={(e) => {
                                                                             if (e.target.files?.[0]) handleImageUpload(e.target.files[0], idx, 'target');
                                                                         }} />
@@ -558,7 +558,7 @@ export default function CreatePsychometricPage() {
                                                                 )}
                                                             </div>
                                                             <div className="space-y-3">
-                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Response Options</span>
+                                                                <span className="text-[10px] font-black text-slate-400  ">Response Options</span>
                                                                 <div className="grid grid-cols-2 gap-3">
                                                                     {(q.options || [{}, {}, {}, {}]).map((opt: any, optIdx: number) => (
                                                                         <div key={optIdx} className={`relative aspect-square rounded-xl border-2 transition-all overflow-hidden ${q.correct_index === optIdx ? 'border-indigo-500 ring-2 ring-indigo-500/20' : 'border-slate-100 hover:border-slate-200'}`}>
@@ -582,7 +582,7 @@ export default function CreatePsychometricPage() {
                                                                             )}
                                                                             <button
                                                                                 onClick={() => handleQuestionChange(idx, "correct_index", optIdx)}
-                                                                                className={`absolute bottom-0 inset-x-0 py-1 text-[8px] font-black uppercase tracking-widest text-center ${q.correct_index === optIdx ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
+                                                                                className={`absolute bottom-0 inset-x-0 py-1 text-[8px] font-black   text-center ${q.correct_index === optIdx ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
                                                                             >
                                                                                 {q.correct_index === optIdx ? 'Correct Answer' : 'Mark Correct'}
                                                                             </button>
@@ -597,7 +597,7 @@ export default function CreatePsychometricPage() {
                                                 {testType === 'FREE_TRANSPORT' && (
                                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
                                                         <div className="space-y-2">
-                                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Vessel ID</label>
+                                                            <label className="text-[10px] font-black text-slate-400   ml-1">Vessel ID</label>
                                                             <input
                                                                 type="text"
                                                                 value={q.text || ""}
@@ -606,7 +606,7 @@ export default function CreatePsychometricPage() {
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Class</label>
+                                                            <label className="text-[10px] font-black text-slate-400   ml-1">Class</label>
                                                             <select
                                                                 value={q.file_type || 'BROWN'}
                                                                 onChange={(e) => handleQuestionChange(idx, "file_type", e.target.value)}
@@ -618,7 +618,7 @@ export default function CreatePsychometricPage() {
                                                             </select>
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Load (Hidden)</label>
+                                                            <label className="text-[10px] font-black text-slate-400   ml-1">Load (Hidden)</label>
                                                             <input
                                                                 type="number"
                                                                 value={q.capacity}
@@ -641,7 +641,7 @@ export default function CreatePsychometricPage() {
                                                             />
                                                         </div>
                                                         <div className="flex items-center justify-center gap-4">
-                                                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Expected Solution:</div>
+                                                            <div className="text-[10px] font-black text-slate-400  ">Expected Solution:</div>
                                                             <input
                                                                 type="number"
                                                                 value={q.options?.[0]?.value || ''}
@@ -669,7 +669,7 @@ export default function CreatePsychometricPage() {
                                                         <div className="flex justify-center gap-8">
                                                             {['Reflectors', 'Splitters'].map((item) => (
                                                                 <div key={item} className="bg-slate-50 px-6 py-3 rounded-xl border border-slate-100 flex items-center gap-4">
-                                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item}</span>
+                                                                    <span className="text-[10px] font-black text-slate-400  ">{item}</span>
                                                                     <input
                                                                         type="number"
                                                                         min={0}
@@ -746,7 +746,7 @@ export default function CreatePsychometricPage() {
                                                                 ) : (
                                                                     <label className="aspect-square rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-300 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-400 cursor-pointer transition-all">
                                                                         <span className="material-icons-outlined text-2xl mb-1">face</span>
-                                                                        <span className="text-[9px] font-black uppercase tracking-widest">Upload Face</span>
+                                                                        <span className="text-[9px] font-black  ">Upload Face</span>
                                                                         <input type="file" className="hidden" accept="image/*" onChange={(e) => {
                                                                             if (e.target.files?.[0]) handleImageUpload(e.target.files[0], idx, 'target');
                                                                         }} />
@@ -762,7 +762,7 @@ export default function CreatePsychometricPage() {
                                                                 />
                                                                 <div className="grid grid-cols-2 gap-4">
                                                                     <div>
-                                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Emotion</span>
+                                                                        <span className="text-[9px] font-black text-slate-400   ml-1 mb-1 block">Emotion</span>
                                                                         <input
                                                                             type="text"
                                                                             value={q.target?.emotion || ''}
@@ -775,7 +775,7 @@ export default function CreatePsychometricPage() {
                                                                         />
                                                                     </div>
                                                                     <div>
-                                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Visual Cue</span>
+                                                                        <span className="text-[9px] font-black text-slate-400   ml-1 mb-1 block">Visual Cue</span>
                                                                         <input
                                                                             type="text"
                                                                             value={q.target?.visual_cue || ''}
@@ -814,7 +814,7 @@ export default function CreatePsychometricPage() {
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                        <div className="mt-4 text-[10px] uppercase tracking-widest text-slate-500">Pipeline Diagnostic Grid</div>
+                                                        <div className="mt-4 text-[10px]   text-slate-500">Pipeline Diagnostic Grid</div>
                                                     </div>
                                                 )}
                                             </div>
@@ -830,14 +830,14 @@ export default function CreatePsychometricPage() {
                                 <div className="flex items-center gap-4">
                                     <button
                                         onClick={() => router.push('/admin/psychometric')}
-                                        className="px-6 py-3 text-slate-400 hover:text-slate-600 text-xs font-black uppercase tracking-widest transition-all"
+                                        className="px-6 py-3 text-slate-400 hover:text-slate-600 text-xs font-black   transition-all"
                                     >
                                         Discard
                                     </button>
                                     <button
                                         onClick={handleSave}
                                         disabled={saving}
-                                        className="group relative px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-[0.2em] overflow-hidden transition-all hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/20 active:scale-95 disabled:opacity-50 disabled:scale-100"
+                                        className="group relative px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black  tracking-[0.2em] overflow-hidden transition-all hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/20 active:scale-95 disabled:opacity-50 disabled:scale-100"
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 bg-[length:200%_auto] animate-gradient transition-opacity duration-500" />
                                         <span className="relative flex items-center gap-2">
@@ -865,8 +865,8 @@ export default function CreatePsychometricPage() {
                                     {creationMode === 'AI' ? 'auto_awesome' : 'dashboard_customize'}
                                 </span>
                             </div>
-                            <h3 className="relative z-10 text-lg font-black text-slate-900 uppercase tracking-tight mb-2">Protocol Buffer Empty</h3>
-                            <p className="relative z-10 text-xs font-bold text-slate-400 uppercase tracking-widest max-w-xs text-center leading-relaxed">
+                            <h3 className="relative z-10 text-lg font-black text-slate-900  tracking-tight mb-2">Protocol Buffer Empty</h3>
+                            <p className="relative z-10 text-xs font-bold text-slate-400   max-w-xs text-center leading-relaxed">
                                 {creationMode === 'AI'
                                     ? 'Initialize the Neural Architect to generate assessment nodes.'
                                     : 'Add calculation nodes or scenarios manually to begin.'}

@@ -70,7 +70,7 @@ export default function X360CycleProgress() {
                         </button>
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">Cycle Progress Tracker</h1>
                     </div>
-                    <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] flex items-center gap-2">
+                    <p className="text-slate-400 font-black   text-[10px] flex items-center gap-2">
                         <span className="material-symbols-rounded text-sm text-indigo-500">monitoring</span>
                         Detailed Breakdown by Employee
                     </p>
@@ -83,7 +83,7 @@ export default function X360CycleProgress() {
                     return (
                         <div 
                             key={ratee.ratee_id} 
-                            className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/10 hover:shadow-2xl hover:shadow-slate-200/20 transition-all group animate-in slide-in-from-bottom-4 duration-700"
+                            className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-100/10 hover:shadow-2xl hover:shadow-slate-200/20 transition-all group animate-in slide-in-from-bottom-4 duration-700"
                             style={{ animationDelay: `${idx * 100}ms` }}
                         >
                             <div className="flex flex-col lg:flex-row lg:items-center gap-8">
@@ -95,7 +95,7 @@ export default function X360CycleProgress() {
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-black text-slate-900 tracking-tight">{ratee.ratee_name}</h3>
-                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Project Ratee</p>
+                                            <p className="text-[9px] font-black text-slate-400   leading-none">Project Ratee</p>
                                         </div>
                                     </div>
                                 </div>
@@ -111,7 +111,7 @@ export default function X360CycleProgress() {
                                             }`}>
                                                 <span className="material-symbols-rounded text-base leading-none shrink-0">{getRelationIcon(b.rater_relation)}</span>
                                                 <div className="text-left min-w-0">
-                                                    <p className="text-[6px] font-black uppercase tracking-widest leading-none mb-0.5 truncate">{b.rater_relation}</p>
+                                                    <p className="text-[6px] font-black   leading-none mb-0.5 truncate">{b.rater_relation}</p>
                                                     <p className="text-[9px] font-black leading-none truncate">{b.status === 'COMPLETED' ? 'Done' : 'Pending'}</p>
                                                 </div>
                                                 {b.status === 'COMPLETED' && (
@@ -127,12 +127,12 @@ export default function X360CycleProgress() {
                                     <div className="flex justify-between items-end">
                                         <div className="flex items-center gap-4">
                                             <div className="space-y-0.5">
-                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Status</p>
+                                                <p className="text-[9px] font-black text-slate-400   leading-none">Status</p>
                                                 <p className="text-xl font-black text-slate-900 leading-none">{pct}% Complete</p>
                                             </div>
                                             {ratee.ai_score !== null && ratee.ai_score !== undefined && (
-                                                <div className="bg-indigo-600 px-4 py-2 rounded-2xl text-white shadow-lg shadow-indigo-100 animate-in zoom-in duration-500">
-                                                    <p className="text-[8px] font-black uppercase tracking-widest leading-none mb-1 opacity-80">AI Perf Score</p>
+                                                <div className="bg-indigo-600 px-4 py-2 rounded-xl text-white shadow-lg shadow-indigo-100 animate-in zoom-in duration-500">
+                                                    <p className="text-[8px] font-black   leading-none mb-1 opacity-80">AI Perf Score</p>
                                                     <p className="text-lg font-black leading-none">{ratee.ai_score} <span className="text-[10px] opacity-60">/ 10</span></p>
                                                 </div>
                                             )}
@@ -149,7 +149,7 @@ export default function X360CycleProgress() {
                                     {pct === 100 && (
                                         <button 
                                             onClick={() => router.push(`/enterprise/assessments-360/reports/${ratee.ratee_id}/${cycleId}`)}
-                                            className="w-full py-3 bg-slate-900 text-white rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-emerald-600 transition-all flex items-center justify-center gap-2"
+                                            className="w-full py-3 bg-slate-900 text-white rounded-xl font-black text-[9px]   hover:bg-emerald-600 transition-all flex items-center justify-center gap-2"
                                         >
                                             Full Insight Report
                                             <span className="material-symbols-rounded text-base">analytics</span>
@@ -160,9 +160,9 @@ export default function X360CycleProgress() {
                         </div>
                     );
                 }) : (
-                    <div className="py-20 text-center bg-white rounded-3xl border border-dashed border-slate-200">
+                    <div className="py-20 text-center bg-white rounded-xl border border-dashed border-slate-200">
                         <span className="material-symbols-rounded text-4xl text-slate-200 mb-4">group_off</span>
-                        <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">No project ratees found for this cycle</p>
+                        <p className="text-slate-400 font-bold   text-[10px]">No project ratees found for this cycle</p>
                     </div>
                 )}
             </div>

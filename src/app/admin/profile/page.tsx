@@ -76,7 +76,7 @@ export default function AdminProfilePage() {
         <div className="flex items-center justify-center min-h-[60vh]">
             <div className="text-center">
                 <div className="w-16 h-16 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Synchronizing Intelligence...</p>
+                <p className="text-slate-400 font-bold   text-xs">Synchronizing Intelligence...</p>
             </div>
         </div>
     );
@@ -122,8 +122,8 @@ export default function AdminProfilePage() {
 
                     <div className="text-center md:text-left">
                         <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
-                            <h1 className="text-3xl font-black tracking-tight uppercase">{user || "Administrator"}</h1>
-                            <span className="bg-indigo-500/20 text-indigo-300 text-[10px] font-black px-3 py-1 rounded-full border border-indigo-500/30 uppercase tracking-widest">
+                            <h1 className="text-3xl font-black tracking-tight ">{user || "Administrator"}</h1>
+                            <span className="bg-indigo-500/20 text-indigo-300 text-[10px] font-black px-3 py-1 rounded-full border border-indigo-500/30  ">
                                 {getRoleTitle()}
                             </span>
                         </div>
@@ -131,14 +131,14 @@ export default function AdminProfilePage() {
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                             <div>
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">System Tier</p>
-                                <p className="text-xs font-bold text-white uppercase">{role}</p>
+                                <p className="text-[10px] font-black text-slate-500  tracking-[0.2em] mb-1">System Tier</p>
+                                <p className="text-xs font-bold text-white ">{role}</p>
                             </div>
                             <div>
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Status</p>
+                                <p className="text-[10px] font-black text-slate-500  tracking-[0.2em] mb-1">Status</p>
                                 <div className="flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                                    <p className="text-xs font-bold text-white uppercase">Active</p>
+                                    <p className="text-xs font-bold text-white ">Active</p>
                                 </div>
                             </div>
                         </div>
@@ -158,7 +158,7 @@ export default function AdminProfilePage() {
                         <div className={`w-12 h-12 rounded-2xl ${item.bg} flex items-center justify-center ${item.color} mb-4`}>
                             <span className="material-symbols-rounded text-2xl">{item.icon}</span>
                         </div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{item.label}</p>
+                        <p className="text-[10px] font-black text-slate-400   mb-1">{item.label}</p>
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">{item.val || 0}</h3>
                     </div>
                 ))}
@@ -169,8 +169,8 @@ export default function AdminProfilePage() {
                 {/* Staff Contribution Chart */}
                 <div className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 p-8 shadow-sm transition-all hover:shadow-lg">
                     <div className="mb-6">
-                        <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight italic">{isHOD ? "Departmental Staff Output" : "Personal Impact Log"}</h3>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{isHOD ? "Aggregated Staff Contributions" : "Your Admin Contribs (Questions, GDs, Reviews)"}</p>
+                        <h3 className="text-sm font-black text-slate-900 dark:text-white  tracking-tight ">{isHOD ? "Departmental Staff Output" : "Personal Impact Log"}</h3>
+                        <p className="text-[10px] font-bold text-slate-400   mt-0.5">{isHOD ? "Aggregated Staff Contributions" : "Your Admin Contribs (Questions, GDs, Reviews)"}</p>
                     </div>
                     <div className="h-[250px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
@@ -194,8 +194,8 @@ export default function AdminProfilePage() {
                 {/* Performance Trend Chart */}
                 <div className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 p-8 shadow-sm transition-all hover:shadow-lg">
                     <div className="mb-6">
-                        <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight italic">{isHOD ? "Departmental Performance Pulse" : "Batch Performance Pulse"}</h3>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{isHOD ? "Team & Student Accuracy Trends" : "Average Assessment Accuracy Trends"}</p>
+                        <h3 className="text-sm font-black text-slate-900 dark:text-white  tracking-tight ">{isHOD ? "Departmental Performance Pulse" : "Batch Performance Pulse"}</h3>
+                        <p className="text-[10px] font-bold text-slate-400   mt-0.5">{isHOD ? "Team & Student Accuracy Trends" : "Average Assessment Accuracy Trends"}</p>
                     </div>
                     <div className="h-[250px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
@@ -215,17 +215,17 @@ export default function AdminProfilePage() {
             <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
                     <div>
-                        <h2 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{isHOD ? "Departmental Engagement Intelligence" : "Student Practice Intelligence"}</h2>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{isHOD ? "Aggregated Staff & Student Activity" : "Aggregated Daily Activity (Last 365 Days)"}</p>
+                        <h2 className="text-sm font-black text-slate-900 dark:text-white  tracking-tight">{isHOD ? "Departmental Engagement Intelligence" : "Student Practice Intelligence"}</h2>
+                        <p className="text-[10px] font-bold text-slate-400   mt-0.5">{isHOD ? "Aggregated Staff & Student Activity" : "Aggregated Daily Activity (Last 365 Days)"}</p>
                     </div>
                     <div className="flex items-center gap-6">
                         <div className="text-right">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Signals</p>
+                            <p className="text-[10px] font-black text-slate-400   mb-0.5">Total Signals</p>
                             <p className="text-xl font-black text-indigo-600 tracking-tighter">{totalSignals}</p>
                         </div>
                         <div className="h-10 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
                         <div className="text-right">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">System Load</p>
+                            <p className="text-[10px] font-black text-slate-400   mb-0.5">System Load</p>
                             <p className="text-xl font-black text-emerald-600 tracking-tighter">Optimized</p>
                         </div>
                     </div>
@@ -253,7 +253,7 @@ export default function AdminProfilePage() {
                     })}
                 </div>
 
-                <div className="mt-4 flex justify-between items-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <div className="mt-4 flex justify-between items-center text-[10px] font-black text-slate-400  ">
                     <div className="flex w-full justify-between items-center pr-12 md:pr-24 lg:pr-32">
                         {Array.from({ length: 12 }).map((_, i) => {
                             const date = new Date();
@@ -285,20 +285,20 @@ export default function AdminProfilePage() {
                         <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
                             <span className="material-symbols-rounded text-2xl">shield_person</span>
                         </div>
-                        <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Access Control</h3>
+                        <h3 className="text-sm font-black text-slate-900 dark:text-white  tracking-tight">Access Control</h3>
                     </div>
                     <div className="space-y-4">
                         <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 transition-hover hover:border-purple-500/30">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Current Jurisdiction</h4>
-                            <p className="text-xs font-bold text-slate-900 dark:text-white uppercase">
+                            <h4 className="text-[10px] font-black text-slate-400   mb-1">Current Jurisdiction</h4>
+                            <p className="text-xs font-bold text-slate-900 dark:text-white ">
                                 {selectedDivisionId ? `Division ${selectedDivisionId}` : 'ALL DIVISIONS'}
                                 {selectedDepartmentId ? ` » Dept ${selectedDepartmentId}` : ''}
                                 {selectedBatch ? ` » ${selectedBatch}` : ''}
                             </p>
                         </div>
                         <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Security Level</h4>
-                            <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Maximum Clearance Level ({role})</p>
+                            <h4 className="text-[10px] font-black text-slate-400   mb-1">Security Level</h4>
+                            <p className="text-xs font-bold text-emerald-500  ">Maximum Clearance Level ({role})</p>
                         </div>
                     </div>
                 </div>
@@ -308,20 +308,20 @@ export default function AdminProfilePage() {
                         <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
                             <span className="material-symbols-rounded text-2xl">verified</span>
                         </div>
-                        <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">System Integrity</h3>
+                        <h3 className="text-sm font-black text-slate-900 dark:text-white  tracking-tight">System Integrity</h3>
                     </div>
                     <div className="space-y-4">
                         <div className="flex justify-between items-center p-3 border-b border-slate-100 dark:border-slate-800">
-                            <span className="text-[10px] font-bold text-slate-500 uppercase">Database Sync</span>
-                            <span className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter italic">LATEST</span>
+                            <span className="text-[10px] font-bold text-slate-500 ">Database Sync</span>
+                            <span className="text-[10px] font-black text-emerald-500  tracking-tighter ">LATEST</span>
                         </div>
                         <div className="flex justify-between items-center p-3 border-b border-slate-100 dark:border-slate-800">
-                            <span className="text-[10px] font-bold text-slate-500 uppercase">Audit Logging</span>
-                            <span className="text-[10px] font-black text-blue-500 uppercase tracking-tighter">ENABLED</span>
+                            <span className="text-[10px] font-bold text-slate-500 ">Audit Logging</span>
+                            <span className="text-[10px] font-black text-blue-500  tracking-tighter">ENABLED</span>
                         </div>
                         <div className="flex justify-between items-center p-3 border-b border-slate-100 dark:border-slate-800">
-                            <span className="text-[10px] font-bold text-slate-500 uppercase">Multi-Tenant Isolation</span>
-                            <span className="text-[10px] font-black text-purple-500 uppercase tracking-tighter">SECURED</span>
+                            <span className="text-[10px] font-bold text-slate-500 ">Multi-Tenant Isolation</span>
+                            <span className="text-[10px] font-black text-purple-500  tracking-tighter">SECURED</span>
                         </div>
                     </div>
                 </div>
@@ -329,8 +329,8 @@ export default function AdminProfilePage() {
                 {/* Proficiency Radar */}
                 <div className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 p-8 shadow-sm md:col-span-2">
                     <div className="mb-6 text-center">
-                        <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{isHOD ? "Institutional Skill Balance" : "Student Skill Equilibrium"}</h3>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{isHOD ? "Departmental Proficiency Mapping" : "Average Performance across Categories"}</p>
+                        <h3 className="text-sm font-black text-slate-900 dark:text-white  tracking-tight">{isHOD ? "Institutional Skill Balance" : "Student Skill Equilibrium"}</h3>
+                        <p className="text-[10px] font-bold text-slate-400   mt-0.5">{isHOD ? "Departmental Proficiency Mapping" : "Average Performance across Categories"}</p>
                     </div>
                     <div className="h-[300px] w-full">
                         <ResponsiveContainer width="100%" height="100%">

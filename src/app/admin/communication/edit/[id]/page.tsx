@@ -66,7 +66,7 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                     <div className="w-8 h-8 bg-indigo-50 rounded-full animate-pulse"></div>
                 </div>
             </div>
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mt-8 animate-pulse">Loading_Configuration</p>
+            <p className="text-[10px] font-black  tracking-[0.4em] text-slate-400 mt-8 animate-pulse">Loading_Configuration</p>
         </div>
     );
 
@@ -84,17 +84,17 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                     </button>
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Knowledge Engine v2.0</span>
+                            <span className="text-[9px] font-black text-slate-400  ">Knowledge Engine v2.0</span>
                             <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                            <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">Protocol_Calibration</span>
+                            <span className="text-[9px] font-black text-orange-500  ">Protocol_Calibration</span>
                         </div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase leading-none">Edit Scenario</h1>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight  leading-none">Edit Scenario</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm">
                     <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
-                    <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Calibration_Active</span>
+                    <span className="text-[10px] font-black text-slate-900  ">Calibration_Active</span>
                 </div>
             </div>
 
@@ -102,7 +102,7 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                 <div className="lg:col-span-8">
                     <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.04)] overflow-hidden">
                         <div className="p-10 border-b border-slate-50 bg-slate-50/30">
-                            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-3">
+                            <h2 className="text-sm font-black text-slate-900   flex items-center gap-3">
                                 <span className="material-icons-outlined text-orange-500">tune</span>
                                 Calibration Settings
                             </h2>
@@ -111,7 +111,7 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                         <form onSubmit={handleSubmit} className="p-10 space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Protocol Title</label>
+                                    <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-1">Protocol Title</label>
                                     <input
                                         type="text"
                                         value={title}
@@ -122,7 +122,7 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Complexity Level</label>
+                                    <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-1">Complexity Level</label>
                                     <select
                                         value={difficulty}
                                         onChange={(e) => setDifficulty(e.target.value)}
@@ -136,7 +136,7 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                             </div>
 
                             <div className="space-y-3">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Prompt / Reality Matrix</label>
+                                <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-1">Prompt / Reality Matrix</label>
                                 <textarea
                                     value={prompt}
                                     onChange={(e) => setPrompt(e.target.value)}
@@ -149,14 +149,14 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                                 <button
                                     type="button"
                                     onClick={() => router.back()}
-                                    className="px-8 py-4 border border-slate-200 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-slate-50 transition-all active:scale-95"
+                                    className="px-8 py-4 border border-slate-200 text-slate-400 text-[10px] font-black  tracking-[0.2em] rounded-2xl hover:bg-slate-50 transition-all active:scale-95"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="px-10 py-4 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-black transition-all shadow-xl shadow-slate-100 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-10 py-4 bg-slate-900 text-white text-[10px] font-black  tracking-[0.2em] rounded-2xl hover:bg-black transition-all shadow-xl shadow-slate-100 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {saving ? "Calibrating..." : "Save Calibration"}
                                 </button>
@@ -169,7 +169,7 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                     {/* Guidance Card */}
                     <div className="bg-orange-500 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-orange-100 relative overflow-hidden group">
                         <div className="absolute -right-12 -bottom-12 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
-                        <h3 className="text-lg font-black uppercase tracking-tight mb-6 relative z-10">Protocol maintenance</h3>
+                        <h3 className="text-lg font-black  tracking-tight mb-6 relative z-10">Protocol maintenance</h3>
                         <div className="space-y-6 relative z-10">
                             {[
                                 { icon: 'update', text: 'Regularly update prompts' },
@@ -180,7 +180,7 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
                                     <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
                                         <span className="material-icons-outlined text-lg">{item.icon}</span>
                                     </div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest">{item.text}</span>
+                                    <span className="text-[10px] font-black  ">{item.text}</span>
                                 </div>
                             ))}
                         </div>
@@ -188,19 +188,19 @@ export default function EditScenarioPage({ params }: { params: Promise<{ id: str
 
                     {/* Diagnostic Card */}
                     <div className="bg-white rounded-[2.5rem] border border-slate-100 p-10 shadow-sm">
-                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Protocol Diagnostics</h3>
+                        <h3 className="text-[10px] font-black text-slate-400   mb-6">Protocol Diagnostics</h3>
                         <div className="space-y-4">
                             <div className="flex justify-between items-center py-3 border-b border-slate-50">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Protocol ID</span>
-                                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">SIM_{id as string}</span>
+                                <span className="text-[10px] font-bold text-slate-400  ">Protocol ID</span>
+                                <span className="text-[10px] font-black text-slate-900  ">SIM_{id as string}</span>
                             </div>
                             <div className="flex justify-between items-center py-3 border-b border-slate-50">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Last Modified</span>
-                                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Just Now</span>
+                                <span className="text-[10px] font-bold text-slate-400  ">Last Modified</span>
+                                <span className="text-[10px] font-black text-slate-900  ">Just Now</span>
                             </div>
                             <div className="flex justify-between items-center py-3">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</span>
-                                <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">ACTIVE</span>
+                                <span className="text-[10px] font-bold text-slate-400  ">Status</span>
+                                <span className="text-[10px] font-black text-emerald-500  ">ACTIVE</span>
                             </div>
                         </div>
                     </div>

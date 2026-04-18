@@ -41,7 +41,7 @@ export default function StudentDiscussionListPage() {
         <div className="min-h-screen bg-slate-50 flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
                 <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div>
-                <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Loading_Discussion_Nodes</span>
+                <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 ">Loading_Discussion_Nodes</span>
             </div>
         </div>
     );
@@ -52,7 +52,7 @@ export default function StudentDiscussionListPage() {
             <section className="relative overflow-hidden rounded-[1.5rem] bg-teal-600 p-6 text-white shadow-lg">
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-3">
-                        <h2 className="text-2xl font-black uppercase tracking-tight">Discussion Hub</h2>
+                        <h2 className="text-2xl font-black  tracking-tight">Discussion Hub</h2>
                         <p className="text-slate-100 text-xs max-w-sm font-medium leading-relaxed">
                             Engage in high-fidelity collaborative voice simulations. AI Moderator active for real-time analysis.
                         </p>
@@ -61,12 +61,12 @@ export default function StudentDiscussionListPage() {
                             return nextDiscussion ? (
                                 <button
                                     onClick={() => router.push(`/practice/discussion/${nextDiscussion.id}/waiting`)}
-                                    className="px-4 py-2 bg-white text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-slate-50 transition-colors"
+                                    className="px-4 py-2 bg-white text-slate-900 text-[10px] font-black   rounded-lg hover:bg-slate-50 transition-colors"
                                 >
                                     JOIN LOBBY
                                 </button>
                             ) : (
-                                <button className="px-4 py-2 bg-white/20 text-white backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors">
+                                <button className="px-4 py-2 bg-white/20 text-white backdrop-blur-md border border-white/20 text-[10px] font-black   rounded-lg transition-colors">
                                     No Active Sessions
                                 </button>
                             );
@@ -77,10 +77,10 @@ export default function StudentDiscussionListPage() {
                             <span className="material-icons-outlined text-2xl">groups</span>
                         </div>
                         <div>
-                            <p className="text-[9px] font-black text-slate-200 uppercase tracking-widest mb-1">Active_Rooms</p>
+                            <p className="text-[9px] font-black text-slate-200   mb-1">Active_Rooms</p>
                             <div className="flex items-baseline gap-1">
                                 <span className="text-2xl font-black">{discussions.length}</span>
-                                <span className="text-[9px] font-bold text-slate-200 uppercase">Live</span>
+                                <span className="text-[9px] font-bold text-slate-200 ">Live</span>
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@ export default function StudentDiscussionListPage() {
                                 <span className="material-icons-outlined text-lg">forum</span>
                             </div>
                             <div className="flex flex-col items-end gap-1">
-                                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[7px] font-black tracking-widest text-slate-500 uppercase border border-slate-200">
+                                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[7px] font-black  text-slate-500  border border-slate-200">
                                     LIVE_SESSION
                                 </span>
                             </div>
@@ -110,25 +110,25 @@ export default function StudentDiscussionListPage() {
                         {/* Card Body */}
                         <div className="space-y-3 flex-grow">
                             <div>
-                                <h3 className="text-base font-black tracking-tight leading-tight uppercase transition-colors text-slate-900 group-hover:text-slate-500">
+                                <h3 className="text-base font-black tracking-tight leading-tight  transition-colors text-slate-900 group-hover:text-slate-500">
                                     {gd.topic}
                                 </h3>
                                 <div className="flex items-center gap-3 mt-1.5">
                                     <div className="flex items-center gap-1">
                                         <span className="material-icons-outlined text-[10px] text-slate-400">schedule</span>
-                                        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-tighter">
+                                        <span className="text-[8px] font-bold text-slate-500  tracking-tighter">
                                             {format(new Date(gd.scheduled_at), "MMM d, HH:mm")}
                                         </span>
                                     </div>
                                     <div className="w-0.5 h-0.5 rounded-full bg-slate-300"></div>
                                     <div className="flex items-center gap-1">
                                         <span className="material-icons-outlined text-[10px] text-slate-400">group</span>
-                                        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-tighter">10 MAX</span>
+                                        <span className="text-[8px] font-bold text-slate-500  tracking-tighter">10 MAX</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <p className="text-[10px] text-slate-400 leading-relaxed font-medium line-clamp-3 italic">
+                            <p className="text-[10px] text-slate-400 leading-relaxed font-medium line-clamp-3 ">
                                 {gd.description || "Join this expert-moderated session to discuss logic, technical trade-offs, and communication strategies."}
                             </p>
                         </div>
@@ -137,7 +137,7 @@ export default function StudentDiscussionListPage() {
                         <div className="mt-4 pt-4 border-t border-slate-50">
                             <button
                                 onClick={() => router.push(`/practice/discussion/${gd.id}/waiting`)}
-                                className="w-full bg-slate-50 hover:bg-slate-900 text-slate-600 hover:text-white font-black text-[9px] tracking-[0.2em] uppercase py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 border border-slate-100"
+                                className="w-full bg-slate-50 hover:bg-slate-900 text-slate-600 hover:text-white font-black text-[9px] tracking-[0.2em]  py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 border border-slate-100"
                             >
                                 JOIN_PROTOCOL
                                 <span className="material-symbols-rounded text-base">arrow_forward</span>
@@ -153,7 +153,7 @@ export default function StudentDiscussionListPage() {
                         <span className="material-icons-outlined text-3xl text-slate-300">event_busy</span>
                     </div>
                     <div className="space-y-2">
-                        <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Signal_Lost</h2>
+                        <h2 className="text-xl font-black text-slate-900  tracking-tight">Signal_Lost</h2>
                         <p className="text-xs text-slate-400 font-medium tracking-wide">No active group discussion channels detected.</p>
                     </div>
                 </div>

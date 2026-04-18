@@ -36,8 +36,8 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
                             <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <span className="material-icons-outlined text-2xl text-white">verified</span>
                             </div>
-                            <h1 className="text-xl font-black uppercase tracking-tight mb-1">Assessment Completed</h1>
-                            <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mb-6">
+                            <h1 className="text-xl font-black  tracking-tight mb-1">Assessment Completed</h1>
+                            <p className="text-slate-400 font-bold   text-[10px] mb-6">
                                 Overall Performance: {attempt?.overall_score ?? 0}%
                             </p>
 
@@ -47,7 +47,7 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
                                 {attempt?.round_scores && Object.entries(attempt.round_scores).map(([num, data]: [string, any]) => (
                                     <div key={num} className="bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-sm">
                                         <div className="flex justify-between items-center mb-1">
-                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Round {num}</span>
+                                            <span className="text-[9px] font-black text-slate-400  ">Round {num}</span>
                                             <span className="text-xs font-black text-white">{data.score ?? 0}%</span>
                                         </div>
                                         <h3 className="text-xs font-bold text-white truncate mb-1.5">{data.title}</h3>
@@ -61,7 +61,7 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
                             {!isModal && (
                                 <button
                                     onClick={() => router.push("/practice/job-simulation")}
-                                    className="w-full py-3 bg-white text-slate-900 rounded-xl text-xs font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-lg"
+                                    className="w-full py-3 bg-white text-slate-900 rounded-xl text-xs font-black  tracking-[0.2em] hover:scale-105 transition-all shadow-lg"
                                 >
                                     Return to Jobs
                                 </button>
@@ -70,11 +70,11 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
 
                         {attempt?.feedback?.summary && (
                             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                                <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <h3 className="text-[10px] font-black text-slate-900   mb-2 flex items-center gap-2">
                                     <span className="material-icons-outlined text-slate-400 text-xs">psychology</span>
                                     AI Analysis
                                 </h3>
-                                <p className="text-xs text-slate-600 leading-relaxed font-medium italic">
+                                <p className="text-xs text-slate-600 leading-relaxed font-medium ">
                                     &quot;{attempt.feedback.summary}&quot;
                                 </p>
                             </div>
@@ -100,7 +100,7 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
                                                     {idx + 1}
                                                 </span>
                                                 <div>
-                                                    <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest mb-2 ${q.type?.toLowerCase() === 'mcq' || q.type?.toLowerCase() === 'aptitude' ? 'bg-blue-50 text-blue-600' :
+                                                    <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-black   mb-2 ${q.type?.toLowerCase() === 'mcq' || q.type?.toLowerCase() === 'aptitude' ? 'bg-blue-50 text-blue-600' :
                                                         q.type?.toLowerCase() === 'code' ? 'bg-purple-50 text-purple-600' :
                                                             'bg-emerald-50 text-emerald-600'
                                                         }`}>
@@ -120,7 +120,7 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
                                         </div>
 
                                         <div className="mb-2">
-                                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Your Answer & Feedback</h4>
+                                            <h4 className="text-[10px] font-black text-slate-400   mb-4">Your Answer & Feedback</h4>
 
                                             {q.type?.toLowerCase() === 'mcq' || q.type?.toLowerCase() === 'aptitude' ? (
                                                 <McqQuestion

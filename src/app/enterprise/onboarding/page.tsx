@@ -113,18 +113,18 @@ export default function OnboardingDashboard() {
     if (isLoading) {
         return (
             <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 shadow-2xl">
+                <div className="h-32 bg-slate-900 rounded-2xl relative overflow-hidden flex items-center px-10 shadow-2xl">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="w-16 h-16 bg-white/5 rounded-xl animate-pulse" />
                         <div className="space-y-2">
-                            <div className="w-48 h-6 bg-white/10 rounded-lg animate-pulse" />
-                            <div className="w-32 h-3 bg-white/5 rounded-lg animate-pulse" />
+                            <div className="w-48 h-6 bg-white/10 rounded-xl animate-pulse" />
+                            <div className="w-32 h-3 bg-white/5 rounded-xl animate-pulse" />
                         </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="bg-white h-80 rounded-[2.5rem] border border-slate-100 animate-pulse shadow-sm" />
+                        <div key={i} className="bg-white h-80 rounded-2xl border border-slate-100 animate-pulse shadow-sm" />
                     ))}
                 </div>
             </div>
@@ -133,14 +133,14 @@ export default function OnboardingDashboard() {
 
     return (
         <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
                 <div className="flex items-center gap-3 px-2">
                     <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
                         <span className="material-symbols-rounded">person_add</span>
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">Onboarding Hub</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Talent integration and workflows</p>
+                        <p className="text-slate-500 text-[10px] font-medium   ">Talent integration and workflows</p>
                     </div>
                 </div>
 
@@ -149,7 +149,7 @@ export default function OnboardingDashboard() {
                         <select 
                             value={selectedJobId}
                             onChange={(e) => setSelectedJobId(e.target.value)}
-                            className="bg-transparent border-none py-1.5 px-3 text-[10px] font-bold text-slate-600 uppercase tracking-widest outline-none cursor-pointer appearance-none min-w-[120px]"
+                            className="bg-transparent border-none py-1.5 px-3 text-[10px] font-bold text-slate-600   outline-none cursor-pointer appearance-none min-w-[120px]"
                         >
                             <option value="all">All Pipelines</option>
                             {jobs.map(job => (
@@ -185,7 +185,7 @@ export default function OnboardingDashboard() {
                         <motion.div 
                             layout
                             key={ob.id}
-                            className="group bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                            className="group bg-white rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
                             onClick={() => router.push(`/enterprise/onboarding/${ob.id}`)}
                         >
                             <div className="p-6 pb-2 space-y-6">
@@ -194,11 +194,11 @@ export default function OnboardingDashboard() {
                                         <User className="w-6 h-6 stroke-[1.5]" />
                                     </div>
                                     <div className="flex flex-col items-end gap-2 text-right">
-                                        <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2.5 py-1 rounded-lg uppercase tracking-wider">
+                                        <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2.5 py-1 rounded-xl  ">
                                             {ob.onboarding_code}
                                         </span>
                                         {ob.status && (
-                                            <span className={`text-[9px] font-bold px-3 py-1 rounded-full border uppercase tracking-wider ${getStatusColor(ob.status.name)}`}>
+                                            <span className={`text-[9px] font-bold px-3 py-1 rounded-full border   ${getStatusColor(ob.status.name)}`}>
                                                 {ob.status.name}
                                             </span>
                                         )}
@@ -214,7 +214,7 @@ export default function OnboardingDashboard() {
                                     </p>
                                 </div>
 
-                                <div className="bg-slate-50/50 rounded-2xl p-4 space-y-4 border border-slate-100/50 group-hover:bg-indigo-50/30 group-hover:border-indigo-100/50 transition-all">
+                                <div className="bg-slate-50/50 rounded-xl p-4 space-y-4 border border-slate-100/50 group-hover:bg-indigo-50/30 group-hover:border-indigo-100/50 transition-all">
                                     <div className="flex items-center gap-4">
                                         <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-sm border border-slate-100">
                                             <Briefcase className="w-4 h-4 text-indigo-500" />
@@ -223,7 +223,7 @@ export default function OnboardingDashboard() {
                                             <p className="text-xs font-bold text-slate-800 leading-none truncate max-w-[140px]">
                                                 {ob.job_title || "Unspecified Role"}
                                             </p>
-                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Hired Role</p>
+                                            <p className="text-[9px] font-bold text-slate-400   mt-1">Hired Role</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">
@@ -234,7 +234,7 @@ export default function OnboardingDashboard() {
                                             <p className="text-xs font-bold text-slate-800 leading-none">
                                                 {format(new Date(ob.initiation_date), "MMM dd, yyyy")}
                                             </p>
-                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Start Date</p>
+                                            <p className="text-[9px] font-bold text-slate-400   mt-1">Start Date</p>
                                         </div>
                                     </div>
                                 </div>
@@ -243,10 +243,10 @@ export default function OnboardingDashboard() {
                             <div className="px-6 py-4 flex items-center justify-between bg-slate-50/50 border-t border-slate-100/50 rounded-b-3xl">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <Activity className="w-4 h-4" />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider">Active Cycle</span>
+                                    <span className="text-[10px] font-bold  ">Active Cycle</span>
                                 </div>
                                 <div className="text-indigo-400 group-hover:text-indigo-600 transition-colors flex items-center gap-1.5 translate-x-1 group-hover:translate-x-0">
-                                    <span className="text-[10px] font-bold uppercase tracking-widest">Details</span>
+                                    <span className="text-[10px] font-bold  ">Details</span>
                                     <ArrowRight className="w-4 h-4 text-indigo-500" />
                                 </div>
                             </div>
@@ -256,8 +256,8 @@ export default function OnboardingDashboard() {
             </div>
             
             {filteredOnboardings.length === 0 && (
-                <div className="py-32 flex flex-col items-center justify-center text-center bg-white rounded-[3rem] border border-dashed border-slate-200">
-                    <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-3xl flex items-center justify-center mb-6">
+                <div className="py-32 flex flex-col items-center justify-center text-center bg-white rounded-2xl border border-dashed border-slate-200">
+                    <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-xl flex items-center justify-center mb-6">
                         <ClipboardList className="w-10 h-10" />
                     </div>
                     <h4 className="text-xl font-bold text-slate-900">No Onboarding Records</h4>

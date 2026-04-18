@@ -66,7 +66,7 @@ export default function CertificationPage() {
                         </h3>
 
                         <div className="flex items-center gap-2 mt-auto pt-3 border-t border-slate-50">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 px-2 py-1 rounded">
+                            <span className="text-[10px] font-bold text-slate-400   bg-slate-50 px-2 py-1 rounded">
                                 Certification
                             </span>
                         </div>

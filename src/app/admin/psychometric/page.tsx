@@ -76,8 +76,8 @@ function PsychometricList({ divisionId, departmentId }: { divisionId: number | n
             {/* Action Hub */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
                 <div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none mb-2">Psychometric Vaults</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight  leading-none mb-2">Psychometric Vaults</h1>
+                    <p className="text-[10px] font-bold text-slate-400  tracking-[0.2em] flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
                         Active Personality Constructs & Assessments
                     </p>
@@ -85,7 +85,7 @@ function PsychometricList({ divisionId, departmentId }: { divisionId: number | n
                 <div className="flex flex-wrap gap-3">
                     <Link
                         href={`/admin/psychometric/create${departmentId ? `?department_id=${departmentId}` : ""}`}
-                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
+                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black  tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
                     >
                         <span className="material-icons-outlined text-sm font-bold">add</span>
                         Initialize Protocol
@@ -104,7 +104,7 @@ function PsychometricList({ divisionId, departmentId }: { divisionId: number | n
                     <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-xl shadow-slate-100">
                         <span className="material-icons-outlined text-4xl text-slate-300">psychology_alt</span>
                     </div>
-                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-2">No Protocols Online</h3>
+                    <h3 className="text-sm font-black text-slate-900   mb-2">No Protocols Online</h3>
                     <p className="text-xs font-medium text-slate-400 max-w-md text-center">Initialize a new psychometric protocol to begin student evaluation.</p>
                 </div>
             ) : (
@@ -120,16 +120,16 @@ function PsychometricList({ divisionId, departmentId }: { divisionId: number | n
                                     </span>
                                 </div>
                                 <div className="flex flex-col items-end gap-1.5">
-                                    <span className="px-2.5 py-1 bg-white rounded-lg border border-slate-100 text-[8px] font-black text-slate-400 uppercase tracking-widest shadow-sm">
+                                    <span className="px-2.5 py-1 bg-white rounded-lg border border-slate-100 text-[8px] font-black text-slate-400   shadow-sm">
                                         {new Date(test.created_at).toLocaleDateString()}
                                     </span>
-                                    <span className="px-2.5 py-1 bg-indigo-50 rounded-lg text-[8px] font-black text-indigo-500 uppercase tracking-widest">
+                                    <span className="px-2.5 py-1 bg-indigo-50 rounded-lg text-[8px] font-black text-indigo-500  ">
                                         {test.trait}
                                     </span>
                                 </div>
                             </div>
 
-                            <h3 className="relative z-10 text-lg font-black text-slate-900 uppercase tracking-tight mb-2 group-hover:text-indigo-600 transition-colors">
+                            <h3 className="relative z-10 text-lg font-black text-slate-900  tracking-tight mb-2 group-hover:text-indigo-600 transition-colors">
                                 {test.title}
                             </h3>
 
@@ -140,7 +140,7 @@ function PsychometricList({ divisionId, departmentId }: { divisionId: number | n
                             <div className="relative z-10 mt-auto pt-5 border-t border-slate-100 flex items-center gap-3">
                                 <Link
                                     href={`/admin/psychometric/edit/${test.id}`}
-                                    className="flex-1 py-2.5 rounded-xl bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-2 group/btn"
+                                    className="flex-1 py-2.5 rounded-xl bg-slate-900 text-white text-[9px] font-black   hover:bg-black transition-all flex items-center justify-center gap-2 group/btn"
                                 >
                                     <span>Calibrate Protocol</span>
                                     <span className="material-icons-outlined text-xs group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>

@@ -73,7 +73,7 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Syncing_Knowledge_Bank</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Syncing_Knowledge_Bank</p>
         </div>
     );
 
@@ -97,8 +97,8 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
                             <span className="material-icons-outlined">arrow_back</span>
                         </button>
                         <div>
-                            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">{selectedTopic}</h1>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
+                            <h1 className="text-2xl font-black text-slate-900 tracking-tight ">{selectedTopic}</h1>
+                            <p className="text-[10px] font-bold text-slate-400   mt-2 flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
                                 {topicQuestions.length} Protocols Loaded in this Sector
                             </p>
@@ -111,13 +111,13 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
                         <div key={q.id} className="group bg-white p-4 rounded-xl border border-slate-50 hover:border-slate-200 hover:shadow-lg hover:shadow-slate-100 transition-all duration-300 flex items-center justify-between">
                             <div className="flex-1 pr-10">
                                 <div className="flex items-center gap-3 mb-3">
-                                    <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border ${q.difficulty === 'HARD' ? 'bg-rose-50 text-rose-500 border-rose-100' :
+                                    <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black   border ${q.difficulty === 'HARD' ? 'bg-rose-50 text-rose-500 border-rose-100' :
                                         q.difficulty === 'MEDIUM' ? 'bg-amber-50 text-amber-500 border-amber-100' :
                                             'bg-emerald-50 text-emerald-500 border-emerald-100'
                                         }`}>
                                         {q.difficulty}
                                     </span>
-                                    <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Protocol ID: #{q.id}</span>
+                                    <span className="text-[8px] font-black text-slate-300  ">Protocol ID: #{q.id}</span>
                                 </div>
                                 <p className="text-sm font-bold text-slate-600 leading-relaxed group-hover:text-slate-900 transition-colors">
                                     {q.content.question || (q.content as any).description || "No preview available"}
@@ -151,8 +151,8 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
             {/* Header Section matching Job Sim style */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Knowledge Protocols</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight ">Knowledge Protocols</h1>
+                    <p className="text-[10px] font-bold text-slate-400   mt-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
                         Central Repository / Aptitude Bank
                     </p>
@@ -160,21 +160,21 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
                 <div className="flex gap-4">
                     <Link
                         href={`/admin/aptitude/create?tab=MANUAL${departmentId ? `&department_id=${departmentId}` : ""}`}
-                        className="px-6 py-3.5 bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all flex items-center gap-3 active:scale-95 shadow-sm"
+                        className="px-6 py-3.5 bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl text-[10px] font-black   hover:bg-slate-100 transition-all flex items-center gap-3 active:scale-95 shadow-sm"
                     >
                         <span className="material-icons-outlined text-sm font-bold">add</span>
                         Manual Creation
                     </Link>
                     <Link
                         href={`/admin/aptitude/create?tab=BULK${departmentId ? `&department_id=${departmentId}` : ""}`}
-                        className="px-6 py-3.5 bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all flex items-center gap-3 active:scale-95 shadow-sm"
+                        className="px-6 py-3.5 bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl text-[10px] font-black   hover:bg-slate-100 transition-all flex items-center gap-3 active:scale-95 shadow-sm"
                     >
                         <span className="material-icons-outlined text-sm font-bold">cloud_upload</span>
                         Bulk Upload
                     </Link>
                     <Link
                         href={`/admin/aptitude/create?tab=AI${departmentId ? `&department_id=${departmentId}` : ""}`}
-                        className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black shadow-2xl shadow-slate-200 hover:shadow-slate-300 transition-all flex items-center gap-3 group active:scale-95"
+                        className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black  tracking-[0.2em] hover:bg-black shadow-2xl shadow-slate-200 hover:shadow-slate-300 transition-all flex items-center gap-3 group active:scale-95"
                     >
                         <span className="material-icons-outlined text-sm group-hover:rotate-180 transition-transform duration-500 font-bold">auto_awesome</span>
                         AI Generator
@@ -190,16 +190,16 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
                                 <span className="material-icons-outlined text-2xl">category</span>
                             </div>
                             <div className="flex flex-col items-end gap-2">
-                                <span className="px-3 py-1 rounded-xl bg-slate-900 text-[10px] font-black text-white uppercase tracking-[0.1em] border border-slate-800">
+                                <span className="px-3 py-1 rounded-xl bg-slate-900 text-[10px] font-black text-white  tracking-[0.1em] border border-slate-800">
                                     {topicQuestions.length} Protocols
                                 </span>
-                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Aptitude DB</span>
+                                <span className="text-[8px] font-black text-slate-300  ">Aptitude DB</span>
                             </div>
                         </div>
 
                         <div className="mb-6">
-                            <h3 className="text-lg font-black text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight truncate pr-4">{topic}</h3>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Topic Assessment Batch</p>
+                            <h3 className="text-lg font-black text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors  tracking-tight truncate pr-4">{topic}</h3>
+                            <p className="text-[10px] font-black text-slate-400   leading-none">Topic Assessment Batch</p>
                         </div>
 
                         <div className="space-y-4 mb-8">
@@ -214,7 +214,7 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
                                     </div>
                                 ))}
                                 {topicQuestions.length > 4 && (
-                                    <div className="text-[9px] font-black text-slate-400 py-1.5 px-3 bg-slate-50/50 rounded-xl border border-dashed border-slate-200 uppercase">
+                                    <div className="text-[9px] font-black text-slate-400 py-1.5 px-3 bg-slate-50/50 rounded-xl border border-dashed border-slate-200 ">
                                         + {topicQuestions.length - 4} MORE
                                     </div>
                                 )}
@@ -224,7 +224,7 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
                         <div className="flex items-center gap-3 pt-6 border-t border-slate-50 mt-auto">
                             <button
                                 onClick={() => setSelectedTopic(topic)}
-                                className="flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 hover:bg-slate-900 hover:text-white text-[10px] font-black uppercase tracking-widest text-center transition-all shadow-sm"
+                                className="flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 hover:bg-slate-900 hover:text-white text-[10px] font-black   text-center transition-all shadow-sm"
                             >
                                 Manage Topic
                             </button>
@@ -246,8 +246,8 @@ function AptitudeList({ divisionId, departmentId }: { divisionId: number | null,
                         <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                             <span className="material-icons-outlined text-4xl text-slate-200">grid_view</span>
                         </div>
-                        <p className="text-slate-400 font-black uppercase text-[12px] tracking-[0.3em]">Knowledge_Bank_Depleted</p>
-                        <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest mt-2">Initialize your first protocol to begin</p>
+                        <p className="text-slate-400 font-black  text-[12px] tracking-[0.3em]">Knowledge_Bank_Depleted</p>
+                        <p className="text-[10px] text-slate-300 font-bold   mt-2">Initialize your first protocol to begin</p>
                     </div>
                 )}
             </div>

@@ -173,14 +173,14 @@ export default function OnboardingDetailsPage() {
                             <button 
                                 onClick={() => setIsRejectModalOpen(true)}
                                 disabled={isProcessing}
-                                className="px-5 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all disabled:opacity-50"
+                                className="px-5 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 text-xs font-black   hover:bg-slate-50 transition-all disabled:opacity-50"
                             >
                                 Reject / Request Correction
                             </button>
                             <button 
                                 onClick={handleApproveHire}
                                 disabled={isProcessing}
-                                className="px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-[#7C3AED]/20 transition-all disabled:opacity-50"
+                                className="px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black   shadow-lg shadow-[#7C3AED]/20 transition-all disabled:opacity-50"
                             >
                                 {isProcessing ? "Processing..." : "Approve & Hire"}
                             </button>
@@ -189,7 +189,7 @@ export default function OnboardingDetailsPage() {
                     {canAccess("employees:create") && onboarding.status?.name === 'Completed' && (
                         <button 
                             onClick={() => router.push(`/enterprise/employees/add?candidateId=${onboarding.application?.candidate_id}`)}
-                            className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-200 transition-all flex items-center gap-2"
+                            className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black   shadow-lg shadow-emerald-200 transition-all flex items-center gap-2"
                         >
                             <span className="material-symbols-rounded text-sm">badge</span>
                             Convert to Employee
@@ -200,12 +200,12 @@ export default function OnboardingDetailsPage() {
 
             <div className="max-w-5xl mx-auto p-8 space-y-6">
                 {/* Profile Header Card */}
-                <div className="bg-white rounded-[24px] p-8 shadow-sm border border-slate-100 relative overflow-hidden group">
+                <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl -mr-32 -mt-32"></div>
                     
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="flex items-center gap-5">
-                            <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-indigo-200">
+                            <div className="w-14 h-14 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-indigo-200">
                                 {onboarding.application?.candidate?.full_name?.[0]?.toUpperCase() || "C"}
                             </div>
                             <div>
@@ -213,7 +213,7 @@ export default function OnboardingDetailsPage() {
                                     {onboarding.application?.candidate?.full_name} <span className="text-slate-300 font-medium ml-1.5">({onboarding.onboarding_code})</span>
                                 </h2>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black   ${
                                         onboarding.status?.name === 'Completed' ? 'bg-emerald-100 text-emerald-600' :
                                         onboarding.status?.name === 'Action Required' || onboarding.status?.name === 'Rejected' ? 'bg-rose-100 text-rose-600' :
                                         'bg-blue-100 text-blue-600'
@@ -224,7 +224,7 @@ export default function OnboardingDetailsPage() {
                             </div>
                         </div>
                         <div className="flex flex-col items-end gap-1 text-right">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Initiated On</span>
+                            <span className="text-[9px] font-black text-slate-400  tracking-[0.2em]">Initiated On</span>
                             <span className="text-xs font-black text-slate-700">{format(new Date(onboarding.initiation_date), "MMMM dd, yyyy")}</span>
                         </div>
                     </div>
@@ -235,7 +235,7 @@ export default function OnboardingDetailsPage() {
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`pb-4 text-xs font-black uppercase tracking-[0.1em] transition-all relative ${activeTab === tab ? "text-[#7C3AED]" : "text-slate-400 hover:text-slate-600"}`}
+                                className={`pb-4 text-xs font-black  tracking-[0.1em] transition-all relative ${activeTab === tab ? "text-[#7C3AED]" : "text-slate-400 hover:text-slate-600"}`}
                             >
                                 {tab}
                                 {activeTab === tab && (
@@ -255,7 +255,7 @@ export default function OnboardingDetailsPage() {
                         <div className="space-y-4">
                             {templateSections.length > 0 ? (
                                 templateSections.map((section: any) => (
-                                    <div key={section.id} className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden group">
+                                    <div key={section.id} className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden group">
                                         <button 
                                             onClick={() => toggleSection(section.title)}
                                             className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-all"
@@ -277,11 +277,11 @@ export default function OnboardingDetailsPage() {
                                                         {section.fields?.map((field: any) => (
                                                             <div key={field.name} className="space-y-1 relative group/field">
                                                                 <div className="flex items-center justify-between">
-                                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{field.label}</p>
+                                                                    <p className="text-[10px] font-black text-slate-400  ">{field.label}</p>
                                                                     {canAccess("onboarding:moderate") && onboarding.status?.name !== 'Completed' && (
                                                                         <button 
                                                                             onClick={() => toggleFieldRejection(field.name)}
-                                                                            className={`w-6 h-6 flex items-center justify-center rounded-lg transition-all opacity-0 group-hover/field:opacity-100 ${
+                                                                            className={`w-6 h-6 flex items-center justify-center rounded-xl transition-all opacity-0 group-hover/field:opacity-100 ${
                                                                                 rejectedFieldNames.has(field.name) 
                                                                                     ? "bg-rose-500 text-white opacity-100" 
                                                                                     : "bg-slate-50 text-slate-400 hover:bg-rose-100 hover:text-rose-600"
@@ -297,7 +297,7 @@ export default function OnboardingDetailsPage() {
                                                                         const val = onboarding.form_data?.[section.id]?.[field.name] || 
                                                                                     onboarding.form_data?.[field.name];
                                                                         
-                                                                        if (!val) return <span className="text-slate-200 italic font-medium">Not provided</span>;
+                                                                        if (!val) return <span className="text-slate-200  font-medium">Not provided</span>;
                                                                         
                                                                         if (field.type === 'file') {
                                                                             return (
@@ -323,9 +323,9 @@ export default function OnboardingDetailsPage() {
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+                                <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-200">
                                     <span className="material-symbols-rounded text-4xl text-slate-200 mb-4">description</span>
-                                    <p className="text-slate-400 text-xs font-black uppercase tracking-widest">No Profile Data Available</p>
+                                    <p className="text-slate-400 text-xs font-black  ">No Profile Data Available</p>
                                 </div>
                             )}
                         </div>
@@ -334,14 +334,14 @@ export default function OnboardingDetailsPage() {
                     {activeTab === "Documents" && (
                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {onboarding.documents?.map((doc: any) => (
-                                <div key={doc.id} className="bg-white border border-slate-100 rounded-[28px] p-6 flex items-center justify-between hover:border-[#7C3AED]/30 hover:shadow-xl hover:shadow-[#7C3AED]/5 transition-all group">
+                                <div key={doc.id} className="bg-white border border-slate-100 rounded-2xl p-6 flex items-center justify-between hover:border-[#7C3AED]/30 hover:shadow-xl hover:shadow-[#7C3AED]/5 transition-all group">
                                     <div className="flex items-center gap-4 text-left">
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${doc.status === "Received" ? "bg-emerald-50 text-emerald-600" : "bg-slate-50 text-slate-400"}`}>
+                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${doc.status === "Received" ? "bg-emerald-50 text-emerald-600" : "bg-slate-50 text-slate-400"}`}>
                                             <span className="material-symbols-rounded">{doc.status === "Received" ? "check_circle" : "file_present"}</span>
                                         </div>
                                         <div>
                                             <h4 className="text-sm font-black text-slate-800">{doc.name}</h4>
-                                            <p className={`text-[10px] font-black uppercase tracking-widest ${doc.status === "Received" ? "text-emerald-500" : "text-slate-400"}`}>{doc.status}</p>
+                                            <p className={`text-[10px] font-black   ${doc.status === "Received" ? "text-emerald-500" : "text-slate-400"}`}>{doc.status}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -375,17 +375,17 @@ export default function OnboardingDetailsPage() {
                     )}
 
                     {activeTab === "Activity Log" && (
-                        <div className="bg-white border border-slate-100 rounded-[40px] p-10 shadow-sm relative overflow-hidden">
+                        <div className="bg-white border border-slate-100 rounded-2xl p-10 shadow-sm relative overflow-hidden">
                             <div className="space-y-8 relative before:absolute before:left-5 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
                                 {onboarding.activities?.map((act: any) => (
                                     <div key={act.id} className="relative pl-12 group/act">
-                                        <div className="absolute left-0 top-1.5 w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 z-10 transition-colors group-hover/act:border-[#7C3AED] group-hover/act:text-[#7C3AED]">
+                                        <div className="absolute left-0 top-1.5 w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 z-10 transition-colors group-hover/act:border-[#7C3AED] group-hover/act:text-[#7C3AED]">
                                             <span className="material-symbols-rounded text-base">history</span>
                                         </div>
                                         <div>
                                             <h4 className="text-sm font-black text-slate-800">{act.action}</h4>
                                             <p className="text-xs font-medium text-slate-400 mt-1">{act.description || `Action performed by ${act.performed_by}`}</p>
-                                            <p className="text-[10px] font-black text-[#7C3AED] bg-[#7C3AED]/5 inline-block px-2 py-1 rounded-lg uppercase tracking-widest mt-3">
+                                            <p className="text-[10px] font-black text-[#7C3AED] bg-[#7C3AED]/5 inline-block px-2 py-1 rounded-xl   mt-3">
                                                 {act.timestamp ? format(new Date(act.timestamp), "MMM dd, HH:mm") : "N/A"}
                                             </p>
                                         </div>
@@ -412,7 +412,7 @@ export default function OnboardingDetailsPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-white rounded-[32px] w-full max-w-lg overflow-hidden shadow-2xl relative z-10"
+                            className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative z-10"
                         >
                             <div className="p-8">
                                 <div className="flex items-center justify-between mb-6">
@@ -427,15 +427,15 @@ export default function OnboardingDetailsPage() {
 
                                 <div className="space-y-6">
                                     {(rejectedDocIds.size > 0 || rejectedFieldNames.size > 0) && (
-                                        <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl max-h-48 overflow-y-auto">
+                                        <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl max-h-48 overflow-y-auto">
                                             {rejectedDocIds.size > 0 && (
                                                 <div className="mb-4">
-                                                    <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-2">Documents Rejection ({rejectedDocIds.size})</p>
+                                                    <p className="text-[10px] font-black text-rose-600   mb-2">Documents Rejection ({rejectedDocIds.size})</p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {Array.from(rejectedDocIds).map(id => {
                                                             const doc = onboarding.documents.find((d: any) => d.id === id);
                                                             return (
-                                                                <span key={id} className="px-3 py-1 bg-white border border-rose-200 text-rose-600 text-[10px] font-bold rounded-lg flex items-center gap-2">
+                                                                <span key={id} className="px-3 py-1 bg-white border border-rose-200 text-rose-600 text-[10px] font-bold rounded-xl flex items-center gap-2">
                                                                     {doc?.name}
                                                                     <button onClick={() => toggleDocRejection(id)} className="material-symbols-rounded text-xs hover:text-rose-800">close</button>
                                                                 </span>
@@ -447,10 +447,10 @@ export default function OnboardingDetailsPage() {
 
                                             {rejectedFieldNames.size > 0 && (
                                                 <div>
-                                                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-2">Form Fields Rejection ({rejectedFieldNames.size})</p>
+                                                    <p className="text-[10px] font-black text-indigo-600   mb-2">Form Fields Rejection ({rejectedFieldNames.size})</p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {Array.from(rejectedFieldNames).map(name => (
-                                                            <span key={name} className="px-3 py-1 bg-white border border-indigo-200 text-indigo-600 text-[10px] font-bold rounded-lg flex items-center gap-2">
+                                                            <span key={name} className="px-3 py-1 bg-white border border-indigo-200 text-indigo-600 text-[10px] font-bold rounded-xl flex items-center gap-2">
                                                                 {name.replace(/_/g, ' ').toUpperCase()}
                                                                 <button onClick={() => toggleFieldRejection(name)} className="material-symbols-rounded text-xs hover:text-indigo-800">close</button>
                                                             </span>
@@ -462,12 +462,12 @@ export default function OnboardingDetailsPage() {
                                     )}
 
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Feedback / Reason for Correction</label>
+                                        <label className="text-[10px] font-black text-slate-400   block mb-2">Feedback / Reason for Correction</label>
                                         <textarea 
                                             value={rejectReason}
                                             onChange={(e) => setRejectReason(e.target.value)}
                                             placeholder="Explain what needs to be changed or why specific documents were rejected..."
-                                            className="w-full h-32 p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] outline-none transition-all resize-none"
+                                            className="w-full h-32 p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] outline-none transition-all resize-none"
                                         />
                                     </div>
                                 </div>
@@ -475,14 +475,14 @@ export default function OnboardingDetailsPage() {
                                 <div className="flex gap-4 mt-8">
                                     <button 
                                         onClick={() => setIsRejectModalOpen(false)}
-                                        className="flex-1 py-4 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-2xl text-xs font-black uppercase tracking-widest transition-all"
+                                        className="flex-1 py-4 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl text-xs font-black   transition-all"
                                     >
                                         Cancel
                                     </button>
                                     <button 
                                         onClick={handleConfirmResubmit}
                                         disabled={isProcessing || !rejectReason.trim()}
-                                        className="flex-1 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-200 transition-all disabled:opacity-50"
+                                        className="flex-1 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-black   shadow-lg shadow-rose-200 transition-all disabled:opacity-50"
                                     >
                                         {isProcessing ? "Sending..." : "Send Request"}
                                     </button>

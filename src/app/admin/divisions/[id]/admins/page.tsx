@@ -128,7 +128,7 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-xl font-black text-slate-900 tracking-tight">DIVISION ADMINS</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Manage Credentials for this Division</p>
+                    <p className="text-[10px] font-bold text-slate-400   mt-1">Manage Credentials for this Division</p>
                 </div>
                 <div className="flex gap-3">
                     <input
@@ -144,14 +144,14 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
                         className="bg-white border border-slate-200 text-slate-400 px-4 py-2.5 rounded-xl flex items-center gap-2 hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm disabled:opacity-50"
                     >
                         <span className="material-icons-outlined text-base">upload_file</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest">{uploading ? "Uploading..." : "Bulk Upload"}</span>
+                        <span className="text-[10px] font-black  ">{uploading ? "Uploading..." : "Bulk Upload"}</span>
                     </button>
                     <button
                         onClick={() => setShowCreateModal(true)}
                         className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md"
                     >
                         <span className="material-icons-outlined text-base">add</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest">Create Admin</span>
+                        <span className="text-[10px] font-black  ">Create Admin</span>
                     </button>
                 </div>
             </div>
@@ -163,7 +163,7 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
                             <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-lg shadow-slate-200">
                                 {admin.first_name[0]}
                             </div>
-                            <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${admin.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                            <span className={`px-2 py-0.5 rounded-md text-[9px] font-black   ${admin.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
                                 {admin.is_active ? 'Active' : 'Inactive'}
                             </span>
                         </div>
@@ -171,11 +171,11 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
                             <h3 className="text-base font-black text-slate-900 tracking-tight">{admin.first_name} {admin.last_name}</h3>
                             <p className="text-xs font-bold text-slate-400">{admin.email}</p>
                             {admin.member_id && (
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">ID: {admin.member_id}</p>
+                                <p className="text-[9px] font-black text-slate-400   mt-1">ID: {admin.member_id}</p>
                             )}
 
                             <div className="mt-3 pt-3 border-t border-slate-50 flex gap-2">
-                                <button className="flex-1 py-1.5 bg-slate-50 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-slate-100 transition-colors">
+                                <button className="flex-1 py-1.5 bg-slate-50 text-slate-600 rounded-lg text-[10px] font-bold   hover:bg-slate-100 transition-colors">
                                     Reset Password
                                 </button>
                             </div>
@@ -187,11 +187,11 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
             {showCreateModal && (
                 <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
-                        <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-6">Create Division Admin</h2>
+                        <h2 className="text-2xl font-black text-slate-900  tracking-tight mb-6">Create Division Admin</h2>
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">First Name</label>
+                                    <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">First Name</label>
                                     <input
                                         type="text"
                                         value={firstName}
@@ -200,7 +200,7 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Last Name</label>
+                                    <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Last Name</label>
                                     <input
                                         type="text"
                                         value={lastName}
@@ -211,7 +211,7 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Email Address</label>
+                                <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Email Address</label>
                                 <input
                                     type="email"
                                     value={email}
@@ -221,7 +221,7 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Registration ID / Staff ID</label>
+                                <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Registration ID / Staff ID</label>
                                 <input
                                     type="text"
                                     value={memberId}
@@ -232,7 +232,7 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Password</label>
+                                <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Password</label>
                                 <input
                                     type="password"
                                     value={password}
@@ -244,13 +244,13 @@ export default function DivisionAdminsPage({ params }: { params: Promise<{ id: s
                             <div className="flex gap-4 pt-4">
                                 <button
                                     onClick={() => setShowCreateModal(false)}
-                                    className="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-xs font-black uppercase tracking-widest text-slate-400 hover:bg-slate-50 transition-all font-bold"
+                                    className="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-xs font-black   text-slate-400 hover:bg-slate-50 transition-all font-bold"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleCreateAdmin}
-                                    className="flex-1 px-4 py-3 rounded-xl bg-slate-900 text-white text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg"
+                                    className="flex-1 px-4 py-3 rounded-xl bg-slate-900 text-white text-xs font-black   hover:bg-slate-800 transition-all shadow-lg"
                                 >
                                     Create Admin
                                 </button>

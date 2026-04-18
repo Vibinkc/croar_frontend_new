@@ -82,7 +82,7 @@ export default function AptitudePage() {
             <section className="relative overflow-hidden rounded-[1.5rem] bg-amber-600 p-6 text-white shadow-lg">
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-3">
-                        <h2 className="text-2xl font-black uppercase tracking-tight">Skill Mastery</h2>
+                        <h2 className="text-2xl font-black  tracking-tight">Skill Mastery</h2>
                         <p className="text-slate-100 text-xs max-w-sm font-medium leading-relaxed">
                             Maintain your streak. Every mission completed brings you closer to the next Rank.
                         </p>
@@ -91,12 +91,12 @@ export default function AptitudePage() {
                             const nextTopic = availableTopics.find(t => getProgress(t) < 100);
                             return nextTopic ? (
                                 <Link href={`/practice/aptitude/${nextTopic.toLowerCase()}`}>
-                                    <button className="px-4 py-2 bg-white text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-slate-50 transition-colors">
+                                    <button className="px-4 py-2 bg-white text-slate-900 text-[10px] font-black   rounded-lg hover:bg-slate-50 transition-colors">
                                         RESUME {nextTopic}
                                     </button>
                                 </Link>
                             ) : (
-                                <button className="px-4 py-2 bg-white/20 text-white backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors">
+                                <button className="px-4 py-2 bg-white/20 text-white backdrop-blur-md border border-white/20 text-[10px] font-black   rounded-lg transition-colors">
                                     All Missions Clear 🎉
                                 </button>
                             );
@@ -123,8 +123,8 @@ export default function AptitudePage() {
                             </div>
                         </div>
                         <div>
-                            <p className="text-[8px] font-black text-slate-200 uppercase tracking-widest">Total XP</p>
-                            <p className="text-sm font-black uppercase tracking-tight">
+                            <p className="text-[8px] font-black text-slate-200  ">Total XP</p>
+                            <p className="text-sm font-black  tracking-tight">
                                 {(() => {
                                     const avg = progressData.length > 0
                                         ? Math.round(progressData.reduce((acc, p) => acc + p.progress_percentage, 0) / progressData.length)
@@ -144,7 +144,7 @@ export default function AptitudePage() {
             {/* Topics Grid */}
             <section>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Available Missions</h3>
+                    <h3 className="text-sm font-black   text-slate-400">Available Missions</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {availableTopics.map((topicName) => {
@@ -162,29 +162,29 @@ export default function AptitudePage() {
                                         <span className="material-icons-outlined text-2xl">auto_stories</span>
                                     </div>
                                     <div className="text-right">
-                                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Topic</span>
+                                        <span className="text-[8px] font-black text-slate-300  ">Topic</span>
                                     </div>
                                 </div>
-                                <h4 className="text-base font-black tracking-tight mb-1 uppercase">{topicName}</h4>
+                                <h4 className="text-base font-black tracking-tight mb-1 ">{topicName}</h4>
                                 <p className="text-slate-600 dark:text-slate-400 text-[10px] mb-4 flex-grow leading-snug line-clamp-2">
                                     {description}
                                 </p>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-end">
-                                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Progress</span>
+                                        <span className="text-[8px] font-black text-slate-300  ">Progress</span>
                                         <span className={`text-[10px] font-black ${colors.text}`}>{progress}%</span>
                                     </div>
                                     <div className="h-1 bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden">
                                         <div className={`h-full ${colors.progress} rounded-full transition-all duration-500`} style={{ width: `${progress}%` }}></div>
                                     </div>
                                     {isCompleted ? (
-                                        <button className="w-full py-2 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all flex items-center justify-center gap-1.5">
+                                        <button className="w-full py-2 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 text-[9px] font-black   rounded-lg transition-all flex items-center justify-center gap-1.5">
                                             <span className="material-icons-outlined text-sm">check_circle</span>
                                             COMPLETE
                                         </button>
                                     ) : (
                                         <Link href={`/practice/aptitude/${topicName.toLowerCase()}`}>
-                                            <button className={`w-full py-2 px-4 ${colors.bg} ${colors.text} text-[9px] font-black uppercase tracking-widest rounded-lg transition-all hover:opacity-80`}>
+                                            <button className={`w-full py-2 px-4 ${colors.bg} ${colors.text} text-[9px] font-black   rounded-lg transition-all hover:opacity-80`}>
                                                 INITIATE
                                             </button>
                                         </Link>
@@ -199,7 +199,7 @@ export default function AptitudePage() {
                         <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-200 mb-2">
                             <span className="material-icons-outlined text-2xl">add</span>
                         </div>
-                        <p className="font-black text-slate-300 uppercase tracking-widest text-[8px]">New Nodes Incoming</p>
+                        <p className="font-black text-slate-300   text-[8px]">New Nodes Incoming</p>
                     </div>
                 </div>
             </section>

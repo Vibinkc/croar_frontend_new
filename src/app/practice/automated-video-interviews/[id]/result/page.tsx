@@ -51,7 +51,7 @@ export default function AnalysisResultPage() {
             <AIGenerationOverlay isOpen={isLoading} title="Analyzing Biometrics & Content" />
             {!result && !isLoading ? (
                 <div className="flex flex-col items-center justify-center p-20">
-                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Error loading results.</p>
+                    <p className="text-slate-500 font-bold   text-xs">Error loading results.</p>
                 </div>
             ) : result && (
                 <InterviewResult result={result} />

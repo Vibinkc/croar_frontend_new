@@ -208,7 +208,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
             <AIGenerationOverlay isOpen={generating} title="Synchronizing Neural Link" />
             {!lockType && (
                 <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-tight">Add Custom Question</h3>
+                    <h3 className="text-lg font-bold text-gray-900  tracking-tight">Add Custom Question</h3>
                     <button
                         onClick={onCancel}
                         className="text-gray-400 hover:text-gray-600"
@@ -222,7 +222,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {!lockType && (
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Category</label>
+                            <label className="block text-[10px] font-black text-gray-400   mb-1">Category</label>
                             <select
                                 value={type}
                                 onChange={(e) => setType(e.target.value)}
@@ -238,7 +238,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         </div>
                     )}
                     <div className={lockType ? "col-span-2" : ""}>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{type === "SUBJECTIVE" ? "Domain / Topic" : "Topic"}</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1">{type === "SUBJECTIVE" ? "Domain / Topic" : "Topic"}</label>
                         <input
                             type="text"
                             list="topic-suggestions"
@@ -257,7 +257,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                 type="button"
                                 onClick={handleGenerateAI}
                                 disabled={generating || !topic}
-                                className="mt-2 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:text-slate-700 flex items-center gap-1 disabled:opacity-50"
+                                className="mt-2 text-[10px] font-black   text-slate-600 hover:text-slate-700 flex items-center gap-1 disabled:opacity-50"
                             >
                                 <span className="material-icons-outlined text-sm">auto_awesome</span>
                                 Generate with AI
@@ -270,7 +270,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         </datalist>
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Difficulty</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1">Difficulty</label>
                         <select
                             value={difficulty}
                             onChange={(e) => setDifficulty(e.target.value)}
@@ -284,7 +284,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                    <label className="block text-[10px] font-black text-gray-400   mb-1">
                         {type === "CODING" ? "Problem Description" : type === "COMMUNICATION" ? "Scenario Prompt" : type === "SUBJECTIVE" ? "Scenario / Task Instructions" : "Question Text"}
                     </label>
                     <textarea
@@ -300,11 +300,11 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 {type === "SUBJECTIVE" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in duration-700">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Min Word Limit</label>
+                            <label className="block text-[10px] font-black text-gray-400   mb-1">Min Word Limit</label>
                             <input name="min_words" type="number" defaultValue={0} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Max Word Limit</label>
+                            <label className="block text-[10px] font-black text-gray-400   mb-1">Max Word Limit</label>
                             <input name="max_words" type="number" defaultValue={500} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                         </div>
                     </div>
@@ -314,25 +314,25 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Option A</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1">Option A</label>
                                 <input type="text" value={optionA} onChange={(e) => setOptionA(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Option B</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1">Option B</label>
                                 <input type="text" value={optionB} onChange={(e) => setOptionB(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Option C</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1">Option C</label>
                                 <input type="text" value={optionC} onChange={(e) => setOptionC(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Option D</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1">Option D</label>
                                 <input type="text" value={optionD} onChange={(e) => setOptionD(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Correct Answer</label>
+                                <label className="block text-[10px] font-black text-gray-400   mb-1">Correct Answer</label>
                                 <select value={correctOption} onChange={(e) => setCorrectOption(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-bold text-gray-900">
                                     <option value="A">Option A</option>
                                     <option value="B">Option B</option>
@@ -347,7 +347,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 {type === "CODING" && (
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Initial Code (Python)</label>
+                            <label className="block text-[10px] font-black text-gray-400   mb-1">Initial Code (Python)</label>
                             <textarea
                                 value={initialCode}
                                 onChange={(e) => setInitialCode(e.target.value)}
@@ -358,11 +358,11 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         </div>
                         <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                             <div className="flex justify-between items-center mb-3">
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Test Cases</label>
+                                <label className="block text-[10px] font-black text-gray-400  ">Test Cases</label>
                                 <button
                                     type="button"
                                     onClick={() => setTestCases([...testCases, { input: "", output: "" }])}
-                                    className="text-[10px] font-black uppercase tracking-widest text-slate-800 hover:text-slate-600"
+                                    className="text-[10px] font-black   text-slate-800 hover:text-slate-600"
                                 >
                                     + Add Test Case
                                 </button>
@@ -371,7 +371,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                 {testCases.map((tc, idx) => (
                                     <div key={idx} className="flex gap-2 items-start bg-white p-3 rounded-lg border border-gray-100 relative group">
                                         <div className="flex-1">
-                                            <span className="text-[8px] font-black text-gray-400 uppercase block mb-1">Input</span>
+                                            <span className="text-[8px] font-black text-gray-400  block mb-1">Input</span>
                                             <textarea
                                                 value={tc.input}
                                                 onChange={(e) => {
@@ -384,7 +384,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                             />
                                         </div>
                                         <div className="flex-1">
-                                            <span className="text-[8px] font-black text-gray-400 uppercase block mb-1">Output</span>
+                                            <span className="text-[8px] font-black text-gray-400  block mb-1">Output</span>
                                             <textarea
                                                 value={tc.output}
                                                 onChange={(e) => {
@@ -406,7 +406,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                     </div>
                                 ))}
                                 {testCases.length === 0 && (
-                                    <p className="text-[10px] text-gray-400 italic text-center py-2">No test cases added yet.</p>
+                                    <p className="text-[10px] text-gray-400  text-center py-2">No test cases added yet.</p>
                                 )}
                             </div>
                         </div>
@@ -415,7 +415,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
 
                 {(type === "APTITUDE" || type === "PERSONALITY" || type === "BEHAVIORAL" || type === "SUBJECTIVE") && (
                     <div className={type === "SUBJECTIVE" && !explanation ? "hidden" : "animate-in slide-in-from-top-4 duration-700 delay-100"}>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{type === "SUBJECTIVE" ? "Target Answer (Sample Response for AI Reference)" : "Explanation"}</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1">{type === "SUBJECTIVE" ? "Target Answer (Sample Response for AI Reference)" : "Explanation"}</label>
                         <textarea
                             value={explanation}
                             onChange={(e) => setExplanation(e.target.value)}
@@ -430,7 +430,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="px-6 py-3 border border-slate-200 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-slate-50 transition-all"
+                        className="px-6 py-3 border border-slate-200 text-slate-400 text-[10px] font-black  tracking-[0.2em] rounded-xl hover:bg-slate-50 transition-all"
                     >
                         Cancel
                     </button>
@@ -438,7 +438,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         type="button"
                         onClick={handleSubmit as any}
                         disabled={loading}
-                        className="px-8 py-3 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-slate-800 transition-all shadow-xl shadow-slate-100 disabled:opacity-50 active:scale-95"
+                        className="px-8 py-3 bg-slate-900 text-white text-[10px] font-black  tracking-[0.2em] rounded-xl hover:bg-slate-800 transition-all shadow-xl shadow-slate-100 disabled:opacity-50 active:scale-95"
                     >
                         {loading ? 'Processing...' : 'Save Configuration'}
                     </button>

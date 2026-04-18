@@ -273,7 +273,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
         <div className="min-h-screen flex items-center justify-center bg-slate-50">
             <div className="text-center space-y-4">
                 <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto"></div>
-                <p className="text-xs font-black text-indigo-600 uppercase tracking-widest animate-pulse">Initializing Hiring Protocol...</p>
+                <p className="text-xs font-black text-indigo-600   animate-pulse">Initializing Hiring Protocol...</p>
             </div>
         </div>
     );
@@ -399,7 +399,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
                             {isDark ? 'light_mode' : 'dark_mode'}
                         </span>
                         <div className="overflow-hidden max-w-0 opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-500 ease-in-out whitespace-nowrap">
-                            <span className="text-[11px] font-black tracking-widest uppercase">
+                            <span className="text-[11px] font-black  ">
                                 {isDark ? 'Light' : 'Dark'}
                             </span>
                         </div>
@@ -453,7 +453,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
                                             <div className="space-y-6">
                                                 {(currentQuestion.examples || currentQuestion.test_cases?.slice(0, 2)).map((ex: any, i: number) => (
                                                     <div key={i} className="space-y-3">
-                                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
+                                                        <span className="text-[10px] font-black  tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
                                                         <div className={`rounded-xl border p-4 font-mono text-[12px] space-y-2 ${isDark ? 'bg-[#1e1f23]/30 border-[#2d2e32]' : 'bg-slate-50 border-slate-100'}`}>
                                                             <div className="flex gap-4">
                                                                 <span className="text-[#8e9297] w-12 shrink-0">Input:</span>
@@ -464,7 +464,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
                                                                 <span className={isDark ? 'text-indigo-400' : 'text-indigo-600'}>{ex.expected || ex.output}</span>
                                                             </div>
                                                             {ex.explanation && (
-                                                                <div className="flex gap-4 border-t border-[#8e9297]/10 pt-2 mt-2 italic">
+                                                                <div className="flex gap-4 border-t border-[#8e9297]/10 pt-2 mt-2 ">
                                                                     <span className="text-[#8e9297] w-12 shrink-0">Note:</span>
                                                                     <span className="text-[#8e9297]">{ex.explanation}</span>
                                                                 </div>
@@ -477,7 +477,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
 
                                         {currentQuestion.constraints && (
                                             <div className="space-y-3 pt-4">
-                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8e9297]">Constraints</span>
+                                                <span className="text-[10px] font-black  tracking-[0.2em] text-[#8e9297]">Constraints</span>
                                                 <ul className="space-y-2">
                                                     {currentQuestion.constraints.map((c: string, i: number) => (
                                                         <li key={i} className="flex items-start gap-3 text-[13px]">
@@ -508,11 +508,11 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
                                     <div className={`p-3 flex items-center justify-between flex-shrink-0 border-b ${isDark ? 'border-[#2d2e32]/30' : 'border-black/10'}`}>
                                         <div className="flex items-center gap-2">
                                             <span className="material-icons-outlined text-[16px]">terminal</span>
-                                            <span className="text-[10px] font-black uppercase tracking-[0.15em]">Console output</span>
+                                            <span className="text-[10px] font-black  tracking-[0.15em]">Console output</span>
                                         </div>
                                         <button
                                             onClick={() => setShowConsole(false)}
-                                            className="px-2 py-1 rounded hover:bg-white/5 transition-colors text-[9px] font-black uppercase tracking-widest text-[#8e9297] hover:text-white"
+                                            className="px-2 py-1 rounded hover:bg-white/5 transition-colors text-[9px] font-black   text-[#8e9297] hover:text-white"
                                         >
                                             Close
                                         </button>
@@ -521,7 +521,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
                                         {consoleOutput.length === 0 ? (
                                             <div className="flex gap-3">
                                                 <span className="text-emerald-500 opacity-60">➜</span>
-                                                <span className="text-white/40 italic"># waiting for execution...</span>
+                                                <span className="text-white/40 "># waiting for execution...</span>
                                             </div>
                                         ) : (
                                             consoleOutput.map((line, idx) => (
@@ -537,7 +537,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
                                         {Object.values(executingTests).some(v => v) && (
                                             <div className="flex gap-2 items-center text-indigo-400 animate-pulse mt-4 ml-4">
                                                 <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
-                                                <span className="italic">AI Verification engine running...</span>
+                                                <span className="">AI Verification engine running...</span>
                                             </div>
                                         )}
                                     </div>

@@ -38,7 +38,7 @@ function DiscussionScoreVisualizer({ sessionId }: { sessionId: string }) {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_GD_Rankings</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_GD_Rankings</p>
         </div>
     );
 
@@ -46,8 +46,8 @@ function DiscussionScoreVisualizer({ sessionId }: { sessionId: string }) {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">Group Discussion Leaderboard</h1>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Session ID: {sessionId}</p>
+                    <h1 className="text-2xl font-black text-slate-900  tracking-tighter mb-2">Group Discussion Leaderboard</h1>
+                    <p className="text-xs font-bold text-slate-400  ">Session ID: {sessionId}</p>
                 </div>
             </div>
 
@@ -65,17 +65,17 @@ function DiscussionScoreVisualizer({ sessionId }: { sessionId: string }) {
                                 }`}>
                                 #{res.ranking}
                             </div>
-                            <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 font-bold text-[10px] uppercase">
+                            <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 font-bold text-[10px] ">
                                 {res.user_name ? res.user_name.split(" ").map((n: any) => n[0]).join("") : "?"}
                             </div>
                         </div>
 
                         <div className="mb-5 relative z-10">
-                            <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-1">{res.user_name}</h3>
+                            <h3 className="text-sm font-black text-slate-900  tracking-tight mb-1">{res.user_name}</h3>
                             <p className="text-[9px] font-medium text-slate-400 mb-3">{res.user_email}</p>
 
                             <div className="bg-slate-50 rounded-xl p-3 border border-dashed border-slate-100">
-                                <p className="text-[10px] font-medium text-slate-600 leading-relaxed italic">
+                                <p className="text-[10px] font-medium text-slate-600 leading-relaxed ">
                                     "{res.summary}"
                                 </p>
                             </div>
@@ -83,7 +83,7 @@ function DiscussionScoreVisualizer({ sessionId }: { sessionId: string }) {
 
                         <div className="space-y-3 relative z-10">
                             <div>
-                                <h4 className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-1.5 flex items-center gap-1">
+                                <h4 className="text-[9px] font-black text-emerald-500   mb-1.5 flex items-center gap-1">
                                     <span className="material-icons-outlined text-[10px]">thumb_up</span> Strengths
                                 </h4>
                                 <ul className="space-y-1">
@@ -93,7 +93,7 @@ function DiscussionScoreVisualizer({ sessionId }: { sessionId: string }) {
                                 </ul>
                             </div>
                             <div>
-                                <h4 className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-1.5 flex items-center gap-1">
+                                <h4 className="text-[9px] font-black text-rose-500   mb-1.5 flex items-center gap-1">
                                     <span className="material-icons-outlined text-[10px]">thumb_down</span> Areas for Growth
                                 </h4>
                                 <ul className="space-y-1">
@@ -109,7 +109,7 @@ function DiscussionScoreVisualizer({ sessionId }: { sessionId: string }) {
                 {results.length === 0 && (
                     <div className="col-span-full flex flex-col items-center justify-center p-12 text-slate-300 border-2 border-dashed border-slate-100 rounded-3xl">
                         <span className="material-icons-outlined text-4xl mb-3 opacity-30">pending_actions</span>
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em]">No_Results_Available_Yet</p>
+                        <p className="text-[9px] font-black  tracking-[0.2em]">No_Results_Available_Yet</p>
                     </div>
                 )}
             </div>

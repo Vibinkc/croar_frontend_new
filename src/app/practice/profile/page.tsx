@@ -182,17 +182,17 @@ export default function ProfilePage() {
                             </div>
 
                             <div>
-                                <h1 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                                <h1 className="text-xl font-black text-slate-900 dark:text-white  tracking-tight">
                                     {me ? `${me.first_name} ${me.last_name}` : "Student Profile"}
                                 </h1>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                                <p className="text-xs font-bold text-slate-400   mt-1">
                                     {me?.username || "student_user"}
                                 </p>
                             </div>
 
                             <div className="w-full flex justify-center gap-3 py-2 border-y border-slate-50 dark:border-slate-800">
                                 <div className="text-center">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Rank</p>
+                                    <p className="text-[10px] font-black text-slate-400  ">Rank</p>
                                     <p className="text-sm font-black text-slate-900 dark:text-white">#{batchRank.rank}</p>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="mt-8">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Performance Stats</h3>
+                            <h3 className="text-[10px] font-black text-slate-400   mb-4">Performance Stats</h3>
                             <div className="space-y-4 text-xs">
                                 <div className="flex justify-between items-center group cursor-pointer">
                                     <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="mt-8">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Proficiency Categories</h3>
+                            <h3 className="text-[10px] font-black text-slate-400   mb-4">Proficiency Categories</h3>
                             <div className="space-y-3">
                                 {stats?.proficiency?.map((item: any, i: number) => (
                                     <div key={i} className="flex justify-between text-[11px] font-bold">
@@ -257,7 +257,7 @@ export default function ProfilePage() {
                     {/* Top Stats Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Assessment Score</p>
+                            <p className="text-[10px] font-black text-slate-400   mb-2">Assessment Score</p>
                             <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4">{Math.round(stats?.average_score) || 0}%</h2>
                             <div className="h-24 w-full">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -277,21 +277,21 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Batch Ranking</p>
+                            <p className="text-[10px] font-black text-slate-400   mb-2">Batch Ranking</p>
                             <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">{batchRank.rank}</h2>
                             <p className="text-xs font-bold text-slate-400 tracking-tight">Top {Math.round(batchRank.percentile)}% in your Batch</p>
-                            <p className="text-[10px] font-bold text-slate-400 mt-2 italic leading-tight">
+                            <p className="text-[10px] font-bold text-slate-400 mt-2  leading-tight">
                                 Overall percentile based on comprehensive test performance across your Batch.
                             </p>
                             <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800">
-                                <p className="text-[10px] font-black text-emerald-500 uppercase">↑ {Math.round(batchRank.percentile / 4)} spots this week</p>
+                                <p className="text-[10px] font-black text-emerald-500 ">↑ {Math.round(batchRank.percentile / 4)} spots this week</p>
                             </div>
                         </div>
 
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Badges</p>
+                                    <p className="text-[10px] font-black text-slate-400   mb-1">Badges</p>
                                     <h2 className="text-3xl font-black text-slate-900 dark:text-white">{earnedBadges.filter(b => !b.id.endsWith('0')).length}</h2>
                                 </div>
                                 <span className="material-symbols-rounded text-slate-300 text-4xl">military_tech</span>
@@ -305,12 +305,12 @@ export default function ProfilePage() {
                                     ))}
                                 </div>
                                 <div className="pt-4 border-t border-slate-50 dark:border-slate-800 space-y-3">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Next Milestones</p>
+                                    <p className="text-[10px] font-black text-slate-400   mb-1">Next Milestones</p>
                                     {earnedBadges.filter(b => b.next).map((badge) => {
                                         const progress = (badge.next.current / badge.next.target) * 100;
                                         return (
                                             <div key={`next-${badge.id}`} className="space-y-1">
-                                                <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-slate-500">
+                                                <div className="flex justify-between text-[8px] font-black   text-slate-500">
                                                     <span>{badge.group}</span>
                                                     <span>{badge.next.current} / {badge.next.target}</span>
                                                 </div>
@@ -333,7 +333,7 @@ export default function ProfilePage() {
                     {/* Problem Solving Circular Stats */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Solved Problems</h3>
+                            <h3 className="text-xs font-black text-slate-400   mb-6">Solved Problems</h3>
                             <div className="flex items-center gap-12">
                                 <div className="relative flex-shrink-0">
                                     <svg className="w-32 h-32 transform -rotate-90">
@@ -342,12 +342,12 @@ export default function ProfilePage() {
                                     </svg>
                                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                                         <span className="text-2xl font-black text-slate-900 dark:text-white leading-none">{solvedCount}</span>
-                                        <span className="text-[8px] font-black text-slate-400 uppercase mt-1 tracking-tighter">Solved</span>
+                                        <span className="text-[8px] font-black text-slate-400  mt-1 tracking-tighter">Solved</span>
                                     </div>
                                 </div>
                                 <div className="flex-1 space-y-4">
                                     <div>
-                                        <div className="flex justify-between text-[10px] font-black uppercase mb-1.5">
+                                        <div className="flex justify-between text-[10px] font-black  mb-1.5">
                                             <span className="text-emerald-500">Easy</span>
                                             <span className="text-slate-900 dark:text-white">{easyCount} / 450</span>
                                         </div>
@@ -356,7 +356,7 @@ export default function ProfilePage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <div className="flex justify-between text-[10px] font-black uppercase mb-1.5">
+                                        <div className="flex justify-between text-[10px] font-black  mb-1.5">
                                             <span className="text-amber-500">Medium</span>
                                             <span className="text-slate-900 dark:text-white">{medCount} / 800</span>
                                         </div>
@@ -365,7 +365,7 @@ export default function ProfilePage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <div className="flex justify-between text-[10px] font-black uppercase mb-1.5">
+                                        <div className="flex justify-between text-[10px] font-black  mb-1.5">
                                             <span className="text-rose-500">Hard</span>
                                             <span className="text-slate-900 dark:text-white">{hardCount} / 300</span>
                                         </div>
@@ -379,14 +379,14 @@ export default function ProfilePage() {
 
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Skill Radar</h3>
-                                <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Last 30 Days</span>
+                                <h3 className="text-xs font-black text-slate-400  ">Skill Radar</h3>
+                                <span className="text-[10px] font-bold text-blue-500  ">Last 30 Days</span>
                             </div>
                             {/* Simple Skill Progress Bars */}
                             <div className="space-y-5">
                                 {stats?.proficiency?.map((item: any, i: number) => (
                                     <div key={i}>
-                                        <div className="flex justify-between text-[11px] font-bold mb-2 uppercase tracking-wide">
+                                        <div className="flex justify-between text-[11px] font-bold mb-2  tracking-wide">
                                             <span className="text-slate-600 dark:text-slate-300">{item.type}</span>
                                             <span className="text-slate-900 dark:text-white">{item.score}%</span>
                                         </div>
@@ -407,7 +407,7 @@ export default function ProfilePage() {
                     {/* Verified Certifications Section */}
                     {certificates.length > 0 && (
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Verified Certifications</h3>
+                            <h3 className="text-xs font-black text-slate-400   mb-6">Verified Certifications</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {certificates.map((cert) => (
                                     <div key={cert.id} className={`relative group p-5 rounded-2xl border transition-all duration-300 ${cert.level > 0
@@ -425,25 +425,25 @@ export default function ProfilePage() {
                                                 </span>
                                             </div>
                                             <div className="flex-1">
-                                                <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase leading-tight">
+                                                <h4 className="text-sm font-black text-slate-900 dark:text-white  leading-tight">
                                                     {cert.category}
                                                 </h4>
-                                                <p className={`text-[10px] font-black uppercase mt-1 tracking-widest ${cert.level > 0 ? 'text-emerald-500' : 'text-slate-400'
+                                                <p className={`text-[10px] font-black  mt-1  ${cert.level > 0 ? 'text-emerald-500' : 'text-slate-400'
                                                     }`}>
                                                     {cert.level > 0 ? `${cert.levelName} Certified` : 'Targeting Level 1'}
                                                 </p>
                                                 <div className="mt-3 flex flex-col gap-1">
-                                                    <p className="text-[9px] font-bold text-slate-400 uppercase">
+                                                    <p className="text-[9px] font-bold text-slate-400 ">
                                                         {cert.level > 0 ? `ID: ${cert.idStr}` : 'Progressing...'}
                                                     </p>
-                                                    {cert.issueDate && <p className="text-[9px] font-bold text-slate-400 uppercase">Issued: {cert.issueDate}</p>}
+                                                    {cert.issueDate && <p className="text-[9px] font-bold text-slate-400 ">Issued: {cert.issueDate}</p>}
                                                 </div>
                                             </div>
                                         </div>
 
                                         {cert.nextMilestone > 0 && (
                                             <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                                <div className="flex justify-between text-[8px] font-black uppercase text-slate-500 mb-1.5">
+                                                <div className="flex justify-between text-[8px] font-black  text-slate-500 mb-1.5">
                                                     <span>Progression to Level {cert.level + 1}</span>
                                                     <span>{cert.count} / {cert.nextMilestone}</span>
                                                 </div>
@@ -459,7 +459,7 @@ export default function ProfilePage() {
                                         <button
                                             onClick={() => setSelectedCert(cert)}
                                             disabled={cert.level === 0}
-                                            className={`mt-4 w-full py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${cert.level > 0
+                                            className={`mt-4 w-full py-2 rounded-lg text-[9px] font-black   transition-all ${cert.level > 0
                                                 ? 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:text-emerald-500'
                                                 : 'bg-slate-50 dark:bg-slate-800 text-slate-300 cursor-not-allowed border border-transparent'
                                                 }`}
@@ -475,8 +475,8 @@ export default function ProfilePage() {
                     {/* Activity Heatmap */}
                     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">{totalSubmissions} submissions in the last year</h3>
-                            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase">
+                            <h3 className="text-xs font-black text-slate-400  ">{totalSubmissions} submissions in the last year</h3>
+                            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 ">
                                 <span>Total active days: {activeDays}</span>
                                 <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
                                 <span>Current streak: {currentStreak}</span>
@@ -502,7 +502,7 @@ export default function ProfilePage() {
                                 );
                             })}
                         </div>
-                        <div className="mt-2 flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                        <div className="mt-2 flex justify-between items-center text-[9px] font-bold text-slate-400  ">
                             <div className="flex w-full justify-between items-center pr-32">
                                 {Array.from({ length: 12 }).map((_, i) => {
                                     const date = new Date();
@@ -539,8 +539,8 @@ export default function ProfilePage() {
                                 <span className="material-symbols-rounded text-2xl">stars</span>
                             </div>
                             <div>
-                                <h2 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Achievement Showcase</h2>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Your Wall of Fame</p>
+                                <h2 className="text-sm font-black text-slate-900 dark:text-white  tracking-tight">Achievement Showcase</h2>
+                                <p className="text-[10px] font-bold text-slate-400   mt-0.5">Your Wall of Fame</p>
                             </div>
                         </div>
 
@@ -558,10 +558,10 @@ export default function ProfilePage() {
                                         }`}>
                                         <span className="material-symbols-rounded text-2xl">workspace_premium</span>
                                     </div>
-                                    <p className="text-[9px] font-black text-slate-900 dark:text-white uppercase text-center leading-tight">
+                                    <p className="text-[9px] font-black text-slate-900 dark:text-white  text-center leading-tight">
                                         {cert.category}
                                     </p>
-                                    <p className="text-[7px] font-black text-amber-600 uppercase mt-1 tracking-tighter">Level {cert.level}</p>
+                                    <p className="text-[7px] font-black text-amber-600  mt-1 tracking-tighter">Level {cert.level}</p>
                                 </div>
                             ))}
 
@@ -574,10 +574,10 @@ export default function ProfilePage() {
                                     <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${badge.bg} ${badge.color} mb-3 shadow-sm`}>
                                         <span className="material-symbols-rounded text-2xl">{badge.icon}</span>
                                     </div>
-                                    <p className="text-[9px] font-black text-slate-900 dark:text-white uppercase text-center leading-tight">
+                                    <p className="text-[9px] font-black text-slate-900 dark:text-white  text-center leading-tight">
                                         {badge.name}
                                     </p>
-                                    <p className="text-[7px] font-black text-slate-400 uppercase mt-1 tracking-tighter">{badge.group}</p>
+                                    <p className="text-[7px] font-black text-slate-400  mt-1 tracking-tighter">{badge.group}</p>
                                 </div>
                             ))}
                         </div>
@@ -636,18 +636,18 @@ export default function ProfilePage() {
                                                 className="h-12 w-auto object-contain"
                                             />
                                         </div>
-                                        <h3 className="text-[10px] font-black tracking-[0.5em] uppercase" style={{ color: colors.text }}>Academik Performance Engine</h3>
+                                        <h3 className="text-[10px] font-black tracking-[0.5em] " style={{ color: colors.text }}>Academik Performance Engine</h3>
                                     </div>
 
                                     {/* Certificate Title */}
                                     <div className="text-center mb-10 z-10">
-                                        <h1 className="text-4xl md:text-5xl font-serif italic text-slate-900 mb-2">Certificate of Achievement</h1>
-                                        <p className="text-[10px] font-black tracking-widest uppercase mt-4" style={{ color: colors.text }}>This prestigious award is officially presented to</p>
+                                        <h1 className="text-4xl md:text-5xl font-serif  text-slate-900 mb-2">Certificate of Achievement</h1>
+                                        <p className="text-[10px] font-black   mt-4" style={{ color: colors.text }}>This prestigious award is officially presented to</p>
                                     </div>
 
                                     {/* Recipient Name */}
                                     <div className="text-center mb-10 z-10 w-full max-w-xl border-b-2 border-slate-200 pb-4">
-                                        <span className="text-4xl md:text-5xl font-black text-slate-900 uppercase tracking-tighter">
+                                        <span className="text-4xl md:text-5xl font-black text-slate-900  tracking-tighter">
                                             {me?.first_name} {me?.last_name}
                                         </span>
                                     </div>
@@ -656,11 +656,11 @@ export default function ProfilePage() {
                                     <div className="text-center mb-12 z-10 max-w-2xl px-4">
                                         <p className="text-lg text-slate-700 leading-relaxed font-serif">
                                             In recognition of demonstrating exceptional mastery and professional proficiency as a <br />
-                                            <span className={`font-bold text-slate-900 tracking-wide uppercase px-3 py-1 rounded border flex-inline items-center gap-2 ${colors.highlight} ${colors.borderHighlight}`}>
+                                            <span className={`font-bold text-slate-900 tracking-wide  px-3 py-1 rounded border flex-inline items-center gap-2 ${colors.highlight} ${colors.borderHighlight}`}>
                                                 Level {selectedCert.level}: {selectedCert.category} {selectedCert.levelName === "Master" ? "Specialist" : selectedCert.levelName}
                                             </span>
                                         </p>
-                                        <p className="text-sm text-slate-500 mt-6 italic">
+                                        <p className="text-sm text-slate-500 mt-6 ">
                                             Validated through the Academik Performance Engine comprehensive assessment suite.
                                         </p>
                                     </div>
@@ -668,9 +668,9 @@ export default function ProfilePage() {
                                     {/* Footer Elements */}
                                     <div className="flex flex-row w-full items-end justify-between gap-12 mt-8 z-10 px-8">
                                         <div className="text-left">
-                                            <p className="text-[9px] font-black uppercase text-slate-400 mb-0.5">Verification ID</p>
-                                            <p className="text-[10px] font-black text-slate-900 tracking-widest">{selectedCert.idStr}</p>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Issued: {selectedCert.issueDate}</p>
+                                            <p className="text-[9px] font-black  text-slate-400 mb-0.5">Verification ID</p>
+                                            <p className="text-[10px] font-black text-slate-900 ">{selectedCert.idStr}</p>
+                                            <p className="text-[10px] font-bold text-slate-400  mt-1">Issued: {selectedCert.issueDate}</p>
                                         </div>
 
                                         <div className="flex flex-col items-center">
@@ -679,7 +679,7 @@ export default function ProfilePage() {
                                                 <span className="material-symbols-rounded text-5xl" style={{ color: colors.border }}>workspace_premium</span>
                                                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent opacity-30 rounded-full"></div>
                                             </div>
-                                            <p className="mt-4 text-[10px] font-black uppercase tracking-widest" style={{ color: colors.border }}>Official Seal</p>
+                                            <p className="mt-4 text-[10px] font-black  " style={{ color: colors.border }}>Official Seal</p>
                                         </div>
                                     </div>
 
@@ -687,7 +687,7 @@ export default function ProfilePage() {
                                     <div className="absolute bottom-6 right-6 z-20 print:hidden">
                                         <button
                                             onClick={() => window.print()}
-                                            className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+                                            className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-full text-[10px] font-black   hover:bg-slate-800 transition-all shadow-lg active:scale-95"
                                         >
                                             <span className="material-symbols-rounded text-lg">download</span>
                                             Download (PDF)

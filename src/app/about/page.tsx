@@ -28,7 +28,7 @@ export default function AboutPage() {
                 <section className="py-24 px-6 lg:px-40 bg-white">
                     <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 items-center">
                         <div>
-                            <span className="text-[#6366F1] font-bold tracking-widest uppercase text-sm">Our Purpose</span>
+                            <span className="text-[#6366F1] font-bold   text-sm">Our Purpose</span>
                             <h2 className="text-4xl md:text-5xl font-black mt-4 mb-8 leading-tight">The 'Why' Behind the Platform</h2>
                             <p className="text-lg text-slate-600 leading-relaxed mb-6">
                                 We believe that talent is universal, but opportunity is not. Our platform was born from a desire to bridge this gap, using advanced integrative AI to remove the filters of bias and pedigree.

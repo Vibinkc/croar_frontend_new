@@ -20,7 +20,7 @@ export default function Cta() {
                     viewport={{ once: true }}
                     className="space-y-8"
                 >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-indigo-400 text-xs font-black uppercase tracking-[0.2em]">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-indigo-400 text-xs font-black  tracking-[0.2em]">
                         <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
@@ -38,10 +38,10 @@ export default function Cta() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-                        <Link href="/contact" className="px-10 py-5 bg-indigo-600 text-white rounded-2xl text-lg font-black uppercase tracking-widest hover:bg-indigo-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] hover:-translate-y-1 transition-all w-full sm:w-auto text-center">
+                        <Link href="/contact" className="px-10 py-5 bg-indigo-600 text-white rounded-2xl text-lg font-black   hover:bg-indigo-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] hover:-translate-y-1 transition-all w-full sm:w-auto text-center">
                             Contact Us
                         </Link>
-                        <Link href="/about" className="px-10 py-5 bg-white/5 text-white border border-white/10 rounded-2xl text-lg font-black uppercase tracking-widest hover:bg-white/10 transition-all w-full sm:w-auto text-center">
+                        <Link href="/about" className="px-10 py-5 bg-white/5 text-white border border-white/10 rounded-2xl text-lg font-black   hover:bg-white/10 transition-all w-full sm:w-auto text-center">
                             Meet the Team
                         </Link>
                     </div>

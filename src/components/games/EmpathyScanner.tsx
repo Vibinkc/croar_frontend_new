@@ -69,10 +69,10 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                             <span className="material-icons-outlined text-5xl text-indigo-400 -rotate-12">psychology</span>
                         </div>
                         <div className="space-y-2">
-                            <h1 className="text-5xl font-black tracking-tighter uppercase italic text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-500">
+                            <h1 className="text-5xl font-black tracking-tighter   text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-500">
                                 Emotional IQ
                             </h1>
-                            <p className="text-indigo-300/60 font-medium tracking-[0.2em] uppercase text-xs">Tactical Intelligence Protocol</p>
+                            <p className="text-indigo-300/60 font-medium tracking-[0.2em]  text-xs">Tactical Intelligence Protocol</p>
                         </div>
                         <p className="text-slate-400 text-sm leading-relaxed">
                             Communications Officer: Analyze pilot holographic transmissions and identify micro-expressions to determine their true emotional state under pressure.
@@ -81,7 +81,7 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
 
                     <button
                         onClick={() => setGameStarted(true)}
-                        className="group relative px-12 py-5 bg-indigo-600 rounded-2xl text-lg font-black uppercase tracking-widest overflow-hidden transition-all hover:bg-slate-500 hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(79,70,229,0.3)]"
+                        className="group relative px-12 py-5 bg-indigo-600 rounded-2xl text-lg font-black   overflow-hidden transition-all hover:bg-slate-500 hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(79,70,229,0.3)]"
                     >
                         <span className="relative z-10">Initialize Scan</span>
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
@@ -96,13 +96,13 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
             <div className="flex flex-col items-center justify-center h-full bg-[#0F172A] text-white p-8 text-center">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                     <div className="text-6xl mb-4">🛸</div>
-                    <h2 className="text-4xl font-black uppercase italic tracking-tighter">Mission Complete</h2>
+                    <h2 className="text-4xl font-black   tracking-tighter">Mission Complete</h2>
                     <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-3xl p-8 backdrop-blur-xl">
-                        <p className="text-slate-400 uppercase tracking-widest text-xs font-bold mb-2">Protocol Effectiveness</p>
+                        <p className="text-slate-400   text-xs font-bold mb-2">Protocol Effectiveness</p>
                         <div className="text-7xl font-black text-indigo-400 tracking-tighter">
                             {Math.round((score / data.length) * 100)}%
                         </div>
-                        <p className="text-indigo-300/60 mt-4 font-medium italic">"Empathy is the ultimate tactical advantage."</p>
+                        <p className="text-indigo-300/60 mt-4 font-medium ">"Empathy is the ultimate tactical advantage."</p>
                     </div>
                 </motion.div>
             </div>
@@ -116,18 +116,18 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                         <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Live Link</span>
+                        <span className="text-[10px] font-black   text-emerald-500">Live Link</span>
                     </div>
                     <div className="h-4 w-[1px] bg-slate-800" />
-                    <span className="text-xs font-bold text-slate-400 italic">Pilot Log #{currentQuestion.id}</span>
+                    <span className="text-xs font-bold text-slate-400 ">Pilot Log #{currentQuestion.id}</span>
                 </div>
                 <div className="flex items-center gap-6">
                     <div className="text-right">
-                        <p className="text-[10px] uppercase font-black text-slate-500 tracking-widest leading-none">Scans Remaining</p>
+                        <p className="text-[10px]  font-black text-slate-500  leading-none">Scans Remaining</p>
                         <p className="text-xs font-bold text-indigo-400">{data.length - currentIndex}</p>
                     </div>
                     <div className="text-right">
-                        <p className="text-[10px] uppercase font-black text-slate-500 tracking-widest leading-none">Accuracy</p>
+                        <p className="text-[10px]  font-black text-slate-500  leading-none">Accuracy</p>
                         <p className="text-xs font-bold text-indigo-400">{currentIndex === 0 ? 100 : Math.round((score / currentIndex) * 100)}%</p>
                     </div>
                 </div>
@@ -164,7 +164,7 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                                         </motion.span>
                                     )}
                                     <div className="relative z-10 mt-auto">
-                                        <p className="text-xs font-mono text-indigo-400/50 uppercase tracking-[0.3em]">Holographic Link Active</p>
+                                        <p className="text-xs font-mono text-indigo-400/50  tracking-[0.3em]">Holographic Link Active</p>
                                         {/* Visual cue hidden from student to force image analysis */}
                                         {/* <p className="text-[10px] font-mono text-slate-500 mt-2">{currentQuestion.target.visual_cue}</p> */}
                                     </div>
@@ -181,7 +181,7 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                                     transition={{ duration: 2.5, ease: "linear" }}
                                     className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent z-10 shadow-[0_0_15px_rgba(34,211,238,0.8)]"
                                 >
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 bg-cyan-500 text-[8px] font-black text-black rounded uppercase tracking-tighter">
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 bg-cyan-500 text-[8px] font-black text-black rounded  tracking-tighter">
                                         Analyzing Micro-Expressions
                                     </div>
                                 </motion.div>
@@ -203,15 +203,15 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                 <div className="w-full md:w-[400px] flex flex-col gap-8 flex-shrink-0 relative z-20">
                     <div className="space-y-4">
                         <div className="inline-block px-3 py-1 bg-indigo-500/20 rounded-full border border-indigo-500/30">
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-300">Situation Log</p>
+                            <p className="text-[10px] font-black  tracking-[0.2em] text-indigo-300">Situation Log</p>
                         </div>
-                        <h2 className="text-xl font-bold italic leading-relaxed text-slate-100">
+                        <h2 className="text-xl font-bold  leading-relaxed text-slate-100">
                             "{currentQuestion.text}"
                         </h2>
                     </div>
 
                     <div className="space-y-3">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Determine Emotional Profile</p>
+                        <p className="text-[10px] font-black   text-slate-500">Determine Emotional Profile</p>
                         <div className="grid grid-cols-1 gap-3">
                             {currentQuestion.options.map((opt, i) => {
                                 const isSelected = selectedOption === i;
@@ -234,7 +234,7 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                                         `}
                                     >
                                         <div className="flex items-center justify-between">
-                                            <span className="font-black uppercase tracking-widest text-sm">{opt.option}</span>
+                                            <span className="font-black   text-sm">{opt.option}</span>
                                             {isCorrect && <span className="material-icons-outlined text-emerald-400">check_circle</span>}
                                             {isWrong && <span className="material-icons-outlined text-rose-400">cancel</span>}
                                         </div>
@@ -247,7 +247,7 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                         </div>
                     </div>
 
-                    <p className="text-[10px] text-slate-500 font-medium italic">
+                    <p className="text-[10px] text-slate-500 font-medium ">
                         Scanning for facial cues... {isScanning ? 'Active' : 'Complete'}
                     </p>
                 </div>

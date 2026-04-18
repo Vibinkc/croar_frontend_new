@@ -203,12 +203,12 @@ function SuperAdminCollegesContent() {
         <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8 text-center sm:text-left">
             {/* Page Title */}
             <div className="flex items-center justify-between mb-8">
-                <h1 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                <h1 className="text-[10px] font-black text-slate-400  tracking-[0.2em]">
                     {selectedCollege ? `Manage Tenant` : "Tenant Provisioning Console"}
                 </h1>
                 <Link href="/super-admin/colleges/list" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors">
                     <span className="material-symbols-rounded text-lg">list_alt</span>
-                    <span className="text-[9px] font-black uppercase tracking-widest">View Inventory</span>
+                    <span className="text-[9px] font-black  ">View Inventory</span>
                 </Link>
             </div>
 
@@ -236,7 +236,7 @@ function SuperAdminCollegesContent() {
                             <span className="material-icons-outlined text-xl">{selectedCollege ? 'settings_applications' : 'add_business'}</span>
                         </div>
                         <div>
-                            <h2 className="text-lg font-black uppercase tracking-tight text-slate-900">{selectedCollege ? 'Configuration' : 'Initialize New Tenant'}</h2>
+                            <h2 className="text-lg font-black  tracking-tight text-slate-900">{selectedCollege ? 'Configuration' : 'Initialize New Tenant'}</h2>
                             <p className="text-[10px] text-slate-400 font-medium mt-0.5">
                                 {selectedCollege ? `Update settings for ${selectedCollege.slug}` : 'Deploy a new dedicated environment to the cluster.'}
                             </p>
@@ -246,7 +246,7 @@ function SuperAdminCollegesContent() {
                         <form onSubmit={handleCreateOrUpdate} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Organization Name</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Organization Name</label>
                                     <input
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="e.g. Stanford University"
@@ -254,7 +254,7 @@ function SuperAdminCollegesContent() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Url Slug</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Url Slug</label>
                                     <input
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="e.g. stanford"
@@ -264,7 +264,7 @@ function SuperAdminCollegesContent() {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Database Instance Name</label>
+                                <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Database Instance Name</label>
                                 <input
                                     className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300 font-mono"
                                     placeholder="e.g. talixo_stanford"
@@ -275,7 +275,7 @@ function SuperAdminCollegesContent() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Admin Email</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Email</label>
                                     <input
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="admin@college.com"
@@ -284,7 +284,7 @@ function SuperAdminCollegesContent() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Admin Password {selectedCollege && '(Leave blank to keep)'}</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Password {selectedCollege && '(Leave blank to keep)'}</label>
                                     <input
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="••••••••"
@@ -295,7 +295,7 @@ function SuperAdminCollegesContent() {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Admin Profile Image</label>
+                                <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Profile Image</label>
                                 <div className="flex gap-2">
                                     <input
                                         className="flex-1 bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
@@ -315,7 +315,7 @@ function SuperAdminCollegesContent() {
 
                     <button
                         disabled={isLoading}
-                        className={`w-full mt-2 text-white p-4 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl flex items-center justify-center gap-3 group ${selectedCollege ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-900 hover:bg-slate-800 shadow-slate-200'}`}
+                        className={`w-full mt-2 text-white p-4 rounded-xl text-[10px] font-black   hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl flex items-center justify-center gap-3 group ${selectedCollege ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-900 hover:bg-slate-800 shadow-slate-200'}`}
                     >
                         {isLoading ? 'Processing...' : (selectedCollege ? 'Save Changes' : 'Initialize Deployment')}
                         <span className="material-icons-rounded text-sm group-hover:translate-x-1 transition-transform">{selectedCollege ? 'save' : 'rocket_launch'}</span>
@@ -333,7 +333,7 @@ export default function SuperAdminColleges() {
             <div className="flex items-center justify-center h-screen bg-slate-50">
                 <div className="text-center">
                     <div className="w-16 h-16 border-4 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Loading Console...</p>
+                    <p className="text-slate-500 font-bold   text-xs">Loading Console...</p>
                 </div>
             </div>
         }>

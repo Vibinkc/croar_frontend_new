@@ -127,7 +127,7 @@ export default function DepartmentSelector() {
                             {hasMore && !showAll && (
                                 <button
                                     onClick={() => setShowAll(true)}
-                                    className="w-full text-left px-4 py-2.5 text-xs font-black uppercase tracking-widest text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2.5 text-xs font-black   text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
                                 >
                                     <span className="material-icons-outlined text-sm">expand_more</span>
                                     More ({departments.length - INITIAL_DISPLAY_COUNT} more)
@@ -138,7 +138,7 @@ export default function DepartmentSelector() {
                             {showAll && hasMore && (
                                 <button
                                     onClick={() => setShowAll(false)}
-                                    className="w-full text-left px-4 py-2.5 text-xs font-black uppercase tracking-widest text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2.5 text-xs font-black   text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
                                 >
                                     <span className="material-icons-outlined text-sm">expand_less</span>
                                     Show Less

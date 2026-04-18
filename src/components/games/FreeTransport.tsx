@@ -104,7 +104,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
                         </div>
                     </div>
 
-                    <h1 className="text-4xl font-black text-slate-900 mb-2 uppercase tracking-tight">Risk Protocol</h1>
+                    <h1 className="text-4xl font-black text-slate-900 mb-2  tracking-tight">Risk Protocol</h1>
                     <p className="text-slate-500 font-medium mb-10">Optimize cargo logistics under uncertainty.</p>
 
                     <div className="grid grid-cols-1 gap-6 mb-12 text-left">
@@ -113,7 +113,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
                                 ⚖️
                             </div>
                             <div>
-                                <h3 className="font-black text-indigo-900 text-sm uppercase tracking-widest mb-1">Hidden Capacities</h3>
+                                <h3 className="font-black text-indigo-900 text-sm   mb-1">Hidden Capacities</h3>
                                 <p className="text-xs text-indigo-800 font-medium">Each ship has a secret cargo limit.</p>
                                 <p className="text-[10px] text-indigo-600 mt-1">Ranges vary from <span className="font-bold">4 to 12 tons</span>. Use your intuition!</p>
                             </div>
@@ -124,7 +124,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
 
                     <button
                         onClick={handleStart}
-                        className="w-full py-5 bg-indigo-600 text-white rounded-2xl text-sm font-black uppercase tracking-[0.3em] hover:bg-indigo-700 hover:scale-[1.02] transition-all shadow-xl shadow-indigo-200"
+                        className="w-full py-5 bg-indigo-600 text-white rounded-2xl text-sm font-black  tracking-[0.3em] hover:bg-indigo-700 hover:scale-[1.02] transition-all shadow-xl shadow-indigo-200"
                     >
                         Initialize Simulation
                     </button>
@@ -136,14 +136,14 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
                     {/* Stats HUD */}
                     <div className="absolute top-8 left-8 z-50 flex gap-4">
                         <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-xl border-2 border-indigo-100">
-                            <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Score</p>
+                            <p className="text-[10px] font-black text-indigo-400   mb-1">Score</p>
                             <p className="text-3xl font-black text-indigo-900">{totalScore}</p>
                         </div>
                     </div>
 
                     <div className="absolute top-8 right-8 z-50 bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-xl border-2 border-indigo-100">
                         <div className="text-right">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Fleet Status</p>
+                            <p className="text-[10px] font-black text-slate-400   mb-1">Fleet Status</p>
                             <p className="text-2xl font-black text-slate-700">{currentIndex + 1} <span className="text-lg text-slate-300">/ {questions.length}</span></p>
                         </div>
                     </div>
@@ -160,7 +160,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
                                         initial={{ opacity: 0, scale: 0.5 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0 }}
-                                        className="px-6 py-2 bg-rose-500 text-white rounded-xl font-black uppercase tracking-widest shadow-xl shadow-rose-200"
+                                        className="px-6 py-2 bg-rose-500 text-white rounded-xl font-black   shadow-xl shadow-rose-200"
                                     >
                                         Overload! Ship Lost!
                                     </motion.div>
@@ -170,7 +170,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
                                         initial={{ opacity: 0, scale: 0.5 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0 }}
-                                        className="px-6 py-2 bg-emerald-500 text-white rounded-xl font-black uppercase tracking-widest shadow-xl shadow-emerald-200"
+                                        className="px-6 py-2 bg-emerald-500 text-white rounded-xl font-black   shadow-xl shadow-emerald-200"
                                     >
                                         Safe Voyage! Cargo Delivered.
                                     </motion.div>
@@ -231,7 +231,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
 
                             <div className="w-full">
                                 <div className="flex justify-between items-end mb-4">
-                                    <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Cargo Load</span>
+                                    <span className="text-xs font-black text-slate-500  ">Cargo Load</span>
                                     <span className="text-4xl font-black text-slate-800">{currentLoad} <span className="text-lg text-slate-400 font-bold">tons</span></span>
                                 </div>
 
@@ -256,7 +256,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
                             <button
                                 onClick={handleDeliver}
                                 disabled={gameState !== 'LOADING' || currentLoad === 0}
-                                className="w-full py-4 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-[0.2em] hover:bg-indigo-500 hover:-translate-y-1 active:translate-y-0 transition-all shadow-xl shadow-indigo-200 disabled:opacity-50 disabled:transform-none disabled:shadow-none flex items-center justify-center gap-3"
+                                className="w-full py-4 bg-indigo-600 text-white rounded-xl text-sm font-black  tracking-[0.2em] hover:bg-indigo-500 hover:-translate-y-1 active:translate-y-0 transition-all shadow-xl shadow-indigo-200 disabled:opacity-50 disabled:transform-none disabled:shadow-none flex items-center justify-center gap-3"
                             >
                                 <span className="material-icons-outlined text-xl">anchor</span>
                                 Approve for Departure

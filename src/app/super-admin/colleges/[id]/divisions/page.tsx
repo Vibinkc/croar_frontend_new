@@ -59,10 +59,10 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
             <div className="max-w-4xl mx-auto space-y-8">
                 <header className="flex justify-between items-center border-b border-slate-200 pb-8">
                     <div>
-                        <h1 className="text-3xl font-black uppercase tracking-tight">
+                        <h1 className="text-3xl font-black  tracking-tight">
                             {college?.name || 'Loading...'} <span className="text-blue-600">Divisions</span>
                         </h1>
-                        <Link href="/super-admin/colleges/list" className="text-slate-400 text-xs font-bold uppercase tracking-widest hover:text-slate-900 transition-colors">
+                        <Link href="/super-admin/colleges/list" className="text-slate-400 text-xs font-bold   hover:text-slate-900 transition-colors">
                             &larr; Back to List
                         </Link>
                     </div>
@@ -71,10 +71,10 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <aside className="md:col-span-1">
                         <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-blue-500/5">
-                            <h2 className="text-xs font-black uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Add Division</h2>
+                            <h2 className="text-xs font-black   mb-6 border-b border-slate-50 pb-4">Add Division</h2>
                             <form onSubmit={handleAddDivision} className="space-y-4">
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Name</label>
+                                    <label className="text-[10px] font-black text-slate-400  ">Name</label>
                                     <input
                                         className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none"
                                         placeholder="e.g. Arts & Science"
@@ -82,7 +82,7 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Slug</label>
+                                    <label className="text-[10px] font-black text-slate-400  ">Slug</label>
                                     <input
                                         className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none"
                                         placeholder="e.g. arts-science"
@@ -91,7 +91,7 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
                                 </div>
                                 <button
                                     disabled={isLoading}
-                                    className="w-full bg-slate-900 text-white p-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg"
+                                    className="w-full bg-slate-900 text-white p-4 rounded-2xl text-xs font-black   shadow-lg"
                                 >
                                     {isLoading ? 'Adding...' : 'Add Division'}
                                 </button>
@@ -104,15 +104,15 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
                             <table className="min-w-full divide-y divide-slate-100">
                                 <thead className="bg-slate-50/50">
                                     <tr>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Division Name</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Slug</th>
+                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Division Name</th>
+                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Slug</th>
                                         <th className="px-6 py-4"></th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-slate-100">
                                     {divisions.map((d) => (
                                         <tr key={d.id} className="hover:bg-slate-50 transition-colors">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900 uppercase tracking-tight">{d.name}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900  tracking-tight">{d.name}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-[10px] font-mono text-slate-400">{d.slug}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right">
                                                 {/* Add delete/edit if needed */}
@@ -121,7 +121,7 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
                                     ))}
                                     {divisions.length === 0 && (
                                         <tr>
-                                            <td colSpan={3} className="px-6 py-8 text-center text-slate-400 text-xs font-bold uppercase tracking-widest">No divisions found.</td>
+                                            <td colSpan={3} className="px-6 py-8 text-center text-slate-400 text-xs font-bold  ">No divisions found.</td>
                                         </tr>
                                     )}
                                 </tbody>

@@ -23,7 +23,7 @@ export default function InterviewsProductPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-indigo-400/30 bg-indigo-500/10 px-3 py-1 rounded-full text-indigo-300 text-xs font-bold uppercase tracking-widest backdrop-blur-md"
+                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-indigo-400/30 bg-indigo-500/10 px-3 py-1 rounded-full text-indigo-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
                             AI Powered Simulation
@@ -65,7 +65,7 @@ export default function InterviewsProductPage() {
             <section className="px-4 py-16" id="features">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-2 text-center md:text-left">
-                        <span className="text-indigo-600 font-bold uppercase tracking-widest text-sm">Contextual Intelligence</span>
+                        <span className="text-indigo-600 font-bold   text-sm">Contextual Intelligence</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Inside the AI Mind</h2>
                         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">Our AI doesn't just read from a list. It builds a mental model of your profile and adapts the difficulty.</p>
                     </div>
@@ -200,19 +200,19 @@ export default function InterviewsProductPage() {
                     <motion.div whileHover={{ y: -5 }} className="p-8 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-xl transition-all group">
                         <span className="material-symbols-rounded text-blue-600 text-5xl mb-6 bg-blue-50 p-3 rounded-xl">person_pin</span>
                         <h3 className="font-bold text-xl text-slate-900 mb-2">The Recruiter</h3>
-                        <p className="text-blue-700 text-xs font-bold uppercase tracking-widest mb-4">HR Screening</p>
+                        <p className="text-blue-700 text-xs font-bold   mb-4">HR Screening</p>
                         <p className="text-slate-600 text-sm leading-relaxed">Focuses on culture fit, salary expectations, and behavioral history.</p>
                     </motion.div>
                     <motion.div whileHover={{ y: -5 }} className="p-8 bg-white rounded-xl border border-indigo-200 shadow-md hover:shadow-xl transition-all group ring-2 ring-indigo-50">
                         <span className="material-symbols-rounded text-indigo-600 text-5xl mb-6 bg-indigo-50 p-3 rounded-xl">code</span>
                         <h3 className="font-bold text-xl text-slate-900 mb-2">The Tech Lead</h3>
-                        <p className="text-indigo-700 text-xs font-bold uppercase tracking-widest mb-4">Technical Deep Dive</p>
+                        <p className="text-indigo-700 text-xs font-bold   mb-4">Technical Deep Dive</p>
                         <p className="text-slate-600 text-sm leading-relaxed">Expects specific technical details, system design diagrams, and code snippets.</p>
                     </motion.div>
                     <motion.div whileHover={{ y: -5 }} className="p-8 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-xl transition-all group">
                         <span className="material-symbols-rounded text-slate-600 text-5xl mb-6 bg-slate-100 p-3 rounded-xl">diamond</span>
                         <h3 className="font-bold text-xl text-slate-900 mb-2">The Executive</h3>
-                        <p className="text-slate-700 text-xs font-bold uppercase tracking-widest mb-4">Bar Raiser</p>
+                        <p className="text-slate-700 text-xs font-bold   mb-4">Bar Raiser</p>
                         <p className="text-slate-600 text-sm leading-relaxed">Asks high-level strategic questions. Cares about business impact and ROI.</p>
                     </motion.div>
                 </div>
@@ -246,7 +246,7 @@ export default function InterviewsProductPage() {
                                 <div className="bg-yellow-500 h-full w-[60%]"></div>
                             </div>
                         </div>
-                        <p className="text-sm italic text-slate-400 text-center">"Your technical explanation was solid, but you missed an opportunity to highlight business impact."</p>
+                        <p className="text-sm  text-slate-400 text-center">"Your technical explanation was solid, but you missed an opportunity to highlight business impact."</p>
                     </motion.div>
                     <motion.div
                         initial={{ opacity: 0, x: 30 }}

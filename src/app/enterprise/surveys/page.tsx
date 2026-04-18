@@ -39,14 +39,14 @@ export default function SurveyDashboard() {
 
     return (
         <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pt-2 animate-in fade-in duration-700">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
                 <div className="flex items-center gap-3 px-2">
                     <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
                         <span className="material-symbols-rounded">poll</span>
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">HR Surveys</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Measure engagement and culture</p>
+                        <p className="text-slate-500 text-[10px] font-medium   ">Measure engagement and culture</p>
                     </div>
                 </div>
                 <div className="flex gap-4">
@@ -54,14 +54,14 @@ export default function SurveyDashboard() {
                         <>
                             <Link 
                                 href="/enterprise/surveys/templates" 
-                                className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
+                                className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px]   flex items-center gap-2"
                             >
                                 <span className="material-symbols-rounded text-base">description</span>
                                 Templates
                             </Link>
                             <Link 
                                 href="/enterprise/surveys/new" 
-                                className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                                className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                             >
                                 <span className="material-symbols-rounded text-base">add</span>
                                 Launch Survey
@@ -72,54 +72,54 @@ export default function SurveyDashboard() {
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-[#7C3AED] transition-all duration-500">
+                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-[#7C3AED] transition-all duration-500">
                     <div className="w-10 h-10 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#7C3AED] group-hover:text-white transition-all duration-500">
                         <span className="material-symbols-rounded text-xl">rocket_launch</span>
                     </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Active Campaigns</p>
+                    <p className="text-slate-400 text-[9px] font-black   leading-none mb-1.5">Active Campaigns</p>
                     <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{instances.filter(i => i.status === 'ACTIVE').length}</p>
                 </div>
                 
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-orange-500 transition-all duration-500">
+                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-orange-500 transition-all duration-500">
                     <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
                         <span className="material-symbols-rounded text-xl">hourglass_empty</span>
                     </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">In Progress</p>
+                    <p className="text-slate-400 text-[9px] font-black   leading-none mb-1.5">In Progress</p>
                     <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{instances.filter(i => i.status === 'DRAFT').length}</p>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-emerald-500 transition-all duration-500">
+                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-emerald-500 transition-all duration-500">
                     <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
                         <span className="material-symbols-rounded text-xl">check_circle</span>
                     </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Total Completed</p>
+                    <p className="text-slate-400 text-[9px] font-black   leading-none mb-1.5">Total Completed</p>
                     <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{instances.filter(i => i.status === 'CLOSED').length}</p>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-blue-500 transition-all duration-500">
+                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-blue-500 transition-all duration-500">
                     <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
                         <span className="material-symbols-rounded text-xl">poll</span>
                     </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Frameworks</p>
+                    <p className="text-slate-400 text-[9px] font-black   leading-none mb-1.5">Frameworks</p>
                     <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{templates.length}</p>
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden">
                 <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
                     <div className="flex items-center gap-2">
                         <span className="material-symbols-rounded text-[#7C3AED] text-lg">history</span>
-                        <h2 className="font-black text-slate-900 text-[11px] uppercase tracking-tight">Recent Survey Campaigns</h2>
+                        <h2 className="font-black text-slate-900 text-[11px]  tracking-tight">Recent Survey Campaigns</h2>
                     </div>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/20">
-                                <th className="px-6 py-3 text-[8px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Campaign Details</th>
-                                <th className="px-6 py-3 text-[8px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Timeline</th>
-                                <th className="px-6 py-3 text-[8px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Status</th>
-                                <th className="px-6 py-3 text-[8px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
+                                <th className="px-6 py-3 text-[8px] font-black text-slate-400   border-b border-slate-50">Campaign Details</th>
+                                <th className="px-6 py-3 text-[8px] font-black text-slate-400   border-b border-slate-50">Timeline</th>
+                                <th className="px-6 py-3 text-[8px] font-black text-slate-400   border-b border-slate-50">Status</th>
+                                <th className="px-6 py-3 text-[8px] font-black text-slate-400   border-b border-slate-50 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -127,12 +127,12 @@ export default function SurveyDashboard() {
                                 <tr key={instance.id} className="group hover:bg-slate-50/50 transition-all cursor-pointer" onClick={() => router.push(`/enterprise/surveys/instances/${instance.id}`)}>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 bg-violet-50 text-[#7C3AED] rounded-lg flex items-center justify-center group-hover:bg-[#7C3AED] group-hover:text-white transition-all">
+                                            <div className="w-8 h-8 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center group-hover:bg-[#7C3AED] group-hover:text-white transition-all">
                                                 <span className="material-symbols-rounded text-base">description</span>
                                             </div>
                                             <div>
                                                 <p className="font-black text-slate-900 leading-tight mb-0.5 text-xs truncate max-w-[200px]">{instance.name}</p>
-                                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight italic">Target: {instance.target_group}</p>
+                                                <p className="text-[9px] font-bold text-slate-400  tracking-tight ">Target: {instance.target_group}</p>
                                             </div>
                                         </div>
                                     </td>
@@ -153,7 +153,7 @@ export default function SurveyDashboard() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest inline-flex items-center gap-1.5 ${
+                                        <span className={`px-3 py-1 rounded-full text-[8px] font-black   inline-flex items-center gap-1.5 ${
                                             instance.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 
                                             instance.status === 'CLOSED' ? 'bg-slate-50 text-slate-500 border border-slate-100' : 
                                             'bg-amber-50 text-amber-600 border border-amber-100'
@@ -174,13 +174,13 @@ export default function SurveyDashboard() {
                                                             .then(() => alert("Reminder sent successfully!"))
                                                             .catch(() => alert("Failed to send reminder."));
                                                     }}
-                                                    className="px-3 py-1.5 bg-violet-50 text-[#7C3AED] rounded-lg font-black text-[8px] uppercase tracking-widest hover:bg-[#7C3AED] hover:text-white transition-all border border-violet-100 flex items-center gap-1.5"
+                                                    className="px-3 py-1.5 bg-violet-50 text-[#7C3AED] rounded-xl font-black text-[8px]   hover:bg-[#7C3AED] hover:text-white transition-all border border-violet-100 flex items-center gap-1.5"
                                                 >
                                                     Remind
                                                     <span className="material-symbols-rounded text-[10px]">send</span>
                                                 </button>
                                             )}
-                                            <button className="px-4 py-1.5 bg-white border border-slate-100 text-slate-900 rounded-lg font-black text-[8px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center gap-1.5">
+                                            <button className="px-4 py-1.5 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[8px]   hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center gap-1.5">
                                                 View
                                                 <span className="material-symbols-rounded text-[10px]">analytics</span>
                                             </button>
@@ -190,7 +190,7 @@ export default function SurveyDashboard() {
                             )) : (
                                 <tr>
                                     <td colSpan={4} className="py-20 text-center">
-                                        <p className="text-slate-300 font-black uppercase tracking-widest text-[10px]">No active survey campaigns found</p>
+                                        <p className="text-slate-300 font-black   text-[10px]">No active survey campaigns found</p>
                                     </td>
                                 </tr>
                             )}

@@ -82,15 +82,15 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                     <span className="material-icons-outlined text-2xl">manage_accounts</span>
                 </div>
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Sync Operative Profile</h2>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Matrix ID: USR_{id.padStart(4, '0')}</p>
+                    <h2 className="text-2xl font-black text-slate-900  tracking-tight">Sync Operative Profile</h2>
+                    <p className="text-[10px] font-black text-slate-400  tracking-[0.2em]">Matrix ID: USR_{id.padStart(4, '0')}</p>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">First Name</label>
+                        <label className="block text-[10px] font-black text-slate-400   mb-1.5">First Name</label>
                         <input
                             type="text"
                             value={firstName}
@@ -100,7 +100,7 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Last Name</label>
+                        <label className="block text-[10px] font-black text-slate-400   mb-1.5">Last Name</label>
                         <input
                             type="text"
                             value={lastName}
@@ -112,7 +112,7 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Email Address</label>
+                    <label className="block text-[10px] font-black text-slate-400   mb-1.5">Email Address</label>
                     <input
                         type="email"
                         value={email}
@@ -121,11 +121,11 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                         disabled
                         className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-500 cursor-not-allowed opacity-60"
                     />
-                    <p className="text-[9px] font-bold text-slate-400 mt-1.5 uppercase tracking-wider">Email cannot be modified after account creation</p>
+                    <p className="text-[9px] font-bold text-slate-400 mt-1.5  ">Email cannot be modified after account creation</p>
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Access Role</label>
+                    <label className="block text-[10px] font-black text-slate-400   mb-1.5">Access Role</label>
                     <select
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
@@ -137,7 +137,7 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Member ID / Registration ID</label>
+                    <label className="block text-[10px] font-black text-slate-400   mb-1.5">Member ID / Registration ID</label>
                     <input
                         type="text"
                         value={memberId}
@@ -148,7 +148,7 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Batch / Year</label>
+                    <label className="block text-[10px] font-black text-slate-400   mb-1.5">Batch / Year</label>
                     <input
                         type="text"
                         value={batch}
@@ -158,12 +158,12 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                         className={`w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-slate-500 outline-none transition-all ${creatorBatch ? 'bg-slate-100 cursor-not-allowed text-slate-500 opacity-60' : ''}`}
                     />
                     {creatorBatch && (
-                        <p className="mt-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider italic">Locked to your assigned batch</p>
+                        <p className="mt-1 text-[9px] font-bold text-slate-400   ">Locked to your assigned batch</p>
                     )}
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Update Password (Leave blank to keep current)</label>
+                    <label className="block text-[10px] font-black text-slate-400   mb-1.5">Update Password (Leave blank to keep current)</label>
                     <input
                         type="password"
                         value={password}
@@ -177,14 +177,14 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="px-6 py-3 bg-slate-50 text-slate-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-100 transition-all"
+                        className="px-6 py-3 bg-slate-50 text-slate-400 rounded-xl text-xs font-black   hover:bg-slate-100 transition-all"
                     >
                         Abort
                     </button>
                     <button
                         type="submit"
                         disabled={saving}
-                        className="px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-700 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
+                        className="px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black   hover:bg-slate-700 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
                     >
                         {saving ? "Deploying..." : "Sync Changes"}
                     </button>

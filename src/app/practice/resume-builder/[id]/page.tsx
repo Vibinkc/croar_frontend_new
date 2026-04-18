@@ -175,7 +175,7 @@ export default function ResumeBuilderForm() {
                         </div>
                         <div>
                             <h2 className="text-xl font-black text-slate-900 tracking-tight">AI Resume Auto-Fill</h2>
-                            <p className="text-sm text-slate-500 font-bold uppercase tracking-wider">Save time, let AI fill the fields</p>
+                            <p className="text-sm text-slate-500 font-bold  ">Save time, let AI fill the fields</p>
                         </div>
                     </div>
                 </div>
@@ -190,7 +190,7 @@ export default function ResumeBuilderForm() {
                         </div>
                         <div className="text-left">
                             <h3 className="text-base font-black text-slate-900">Upload Doc</h3>
-                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">PDF, Word or Text</p>
+                            <p className="text-[10px] text-slate-400 font-black  ">PDF, Word or Text</p>
                         </div>
                     </button>
                     <button
@@ -202,7 +202,7 @@ export default function ResumeBuilderForm() {
                         </div>
                         <div className="text-left">
                             <h3 className="text-base font-black text-slate-900">Paste Text</h3>
-                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Fastest processing</p>
+                            <p className="text-[10px] text-slate-400 font-black  ">Fastest processing</p>
                         </div>
                     </button>
                 </div>
@@ -233,7 +233,7 @@ export default function ResumeBuilderForm() {
 
                 {(parsingSource !== "none") && (
                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-orange-100">
-                        <p className="text-xs text-orange-600 font-bold italic">AI will automatically identify and map your experience to the template fields.</p>
+                        <p className="text-xs text-orange-600 font-bold ">AI will automatically identify and map your experience to the template fields.</p>
                         <button
                             disabled={isParsing}
                             onClick={handleAutoFill}
@@ -242,12 +242,12 @@ export default function ResumeBuilderForm() {
                             {isParsing ? (
                                 <>
                                     <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                    <span className="uppercase tracking-widest text-xs">Processing...</span>
+                                    <span className="  text-xs">Processing...</span>
                                 </>
                             ) : (
                                 <>
                                     <span className="material-icons-outlined">bolt</span>
-                                    <span className="uppercase tracking-widest text-xs">Start Auto-Fill</span>
+                                    <span className="  text-xs">Start Auto-Fill</span>
                                 </>
                             )}
                         </button>
@@ -259,7 +259,7 @@ export default function ResumeBuilderForm() {
                 {sections.map((section: any) => (
                     <div key={section.title} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                         <div className="flex justify-between items-center mb-6 border-b border-slate-50 pb-4">
-                            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-tight">{section.label || section.title}</h2>
+                            <h2 className="text-lg font-bold text-slate-800  tracking-tight">{section.label || section.title}</h2>
                             {section.type === 'list' && (
                                 <button
                                     onClick={() => addListItem(section.title)}
@@ -307,7 +307,7 @@ export default function ResumeBuilderForm() {
                                     </div>
                                 ))}
                                 {(formData[section.title] || []).length === 0 && (
-                                    <p className="text-center text-xs text-slate-400 py-4 italic">No items added yet.</p>
+                                    <p className="text-center text-xs text-slate-400 py-4 ">No items added yet.</p>
                                 )}
                             </div>
                         ) : (

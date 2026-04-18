@@ -77,10 +77,10 @@ function OrganizationsContent() {
         <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
             {/* Page Title */}
             <div className="flex items-center justify-between mb-8">
-                <h1 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Platform Organizations</h1>
+                <h1 className="text-xs font-black text-slate-400  tracking-[0.2em]">Platform Organizations</h1>
                 <button 
                     onClick={() => setIsCreating(!isCreating)}
-                    className="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg"
+                    className="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black   hover:bg-slate-800 transition-all shadow-lg"
                 >
                     {isCreating ? "View Inventory" : "Register Organization"}
                 </button>
@@ -94,7 +94,7 @@ function OrganizationsContent() {
                                     <span className="material-icons-outlined text-2xl">corporate_fare</span>
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-black uppercase tracking-tight text-slate-900">New Organization</h2>
+                                    <h2 className="text-xl font-black  tracking-tight text-slate-900">New Organization</h2>
                                     <p className="text-xs text-slate-400 font-medium mt-1">Spin up a new dedicated environment and admin account.</p>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@ function OrganizationsContent() {
                             <form onSubmit={handleCreateOrganization} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block text-left">Company Name</label>
+                                        <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Company Name</label>
                                         <input
                                             className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                             placeholder="Acme Corp"
@@ -110,7 +110,7 @@ function OrganizationsContent() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block text-left">Contact Email</label>
+                                        <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Contact Email</label>
                                         <input
                                             className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                             placeholder="contact@acme.com"
@@ -121,7 +121,7 @@ function OrganizationsContent() {
                                 </div>
                                 
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block text-left">Website</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Website</label>
                                     <input
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                         placeholder="https://acme.corp"
@@ -131,10 +131,10 @@ function OrganizationsContent() {
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-100">
-                                    <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] mb-4">Organization Admin Account</h3>
+                                    <h3 className="text-[10px] font-black text-slate-900  tracking-[0.2em] mb-4">Organization Admin Account</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block text-left">Admin Email</label>
+                                            <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Admin Email</label>
                                             <input
                                                 className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                                 placeholder="admin@acme.com"
@@ -143,7 +143,7 @@ function OrganizationsContent() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block text-left">Temp Password</label>
+                                            <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Temp Password</label>
                                             <input
                                                 className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                                 placeholder="••••••••"
@@ -156,7 +156,7 @@ function OrganizationsContent() {
 
                                 <button
                                     disabled={isLoading}
-                                    className="w-full text-white p-4 rounded-xl text-xs font-black uppercase tracking-widest bg-slate-900 hover:bg-slate-800 shadow-xl transition-all"
+                                    className="w-full text-white p-4 rounded-xl text-xs font-black   bg-slate-900 hover:bg-slate-800 shadow-xl transition-all"
                                 >
                                     {isLoading ? "Creating..." : "Create Organization"}
                                 </button>
@@ -172,7 +172,7 @@ function OrganizationsContent() {
                                         <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white">
                                             <span className="material-icons-outlined">corporate_fare</span>
                                         </div>
-                                        <div className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${org.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                                        <div className={`px-2 py-1 rounded text-[10px] font-black   ${org.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
                                             {org.is_active ? 'Active' : 'Suspended'}
                                         </div>
                                     </div>
@@ -186,7 +186,7 @@ function OrganizationsContent() {
                                             ))}
                                             <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[8px] font-bold text-slate-400">+5</div>
                                         </div>
-                                        <button className="text-indigo-600 text-xs font-black uppercase tracking-widest hover:underline">
+                                        <button className="text-indigo-600 text-xs font-black   hover:underline">
                                             Manage Node
                                         </button>
                                     </div>

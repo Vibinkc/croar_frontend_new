@@ -113,15 +113,15 @@ export default function InstitutionReportsPage() {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20">
             <div className="w-10 h-10 border-4 border-slate-100 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Institutional_Analytics</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Institutional_Analytics</p>
         </div>
     );
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-20">
             <div className="flex flex-col gap-1 mb-8">
-                <h2 className="text-2xl font-bold text-slate-900 uppercase tracking-tight">Institution Reports</h2>
-                <p className="text-sm text-slate-500 italic">
+                <h2 className="text-2xl font-bold text-slate-900  tracking-tight">Institution Reports</h2>
+                <p className="text-sm text-slate-500 ">
                     High-level comparison across all institutions {selectedBatch ? `for Batch ${selectedBatch}` : '(Global Overview)'}
                 </p>
             </div>
@@ -142,18 +142,18 @@ export default function InstitutionReportsPage() {
                                     }`}>
                                     #{index + 1}
                                 </div>
-                                <span className={`text-[10px] font-black uppercase tracking-widest ${index === 0 ? 'text-slate-400' : 'text-slate-400'
+                                <span className={`text-[10px] font-black   ${index === 0 ? 'text-slate-400' : 'text-slate-400'
                                     }`}>
                                     {index === 0 ? 'Top Performing College' : 'Elite Institution'}
                                 </span>
                             </div>
-                            <h4 className="text-xl font-black uppercase tracking-tight mb-1 truncate">{inst.name}</h4>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-6">
+                            <h4 className="text-xl font-black  tracking-tight mb-1 truncate">{inst.name}</h4>
+                            <p className="text-[10px] font-bold   text-slate-500 mb-6">
                                 {inst.deptCount} Departments • {inst.count} Students
                             </p>
                             <div className="flex items-end gap-2">
                                 <span className="text-4xl font-black">{inst.avg}%</span>
-                                <span className="text-[10px] font-bold uppercase tracking-widest mb-2 opacity-50">Global Score</span>
+                                <span className="text-[10px] font-bold   mb-2 opacity-50">Global Score</span>
                             </div>
                         </div>
                     </div>
@@ -163,26 +163,26 @@ export default function InstitutionReportsPage() {
             {/* Detailed Table */}
             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
                 <div className="px-8 py-6 border-b border-slate-50">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Institutional Comparison Matrix</h3>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Cross-college performance analytics</p>
+                    <h3 className="text-sm font-black   text-slate-900">Institutional Comparison Matrix</h3>
+                    <p className="text-[10px] font-bold text-slate-400   mt-1">Cross-college performance analytics</p>
                 </div>
                 <table className="min-w-full divide-y divide-slate-50">
                     <thead className="bg-slate-50/50">
                         <tr>
-                            <th className="px-8 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Institution</th>
-                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Departments</th>
-                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Students</th>
-                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Avg Score</th>
-                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Assessments</th>
-                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Job Sims</th>
-                            <th className="px-8 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Rank Index</th>
+                            <th className="px-8 py-4 text-left text-[10px] font-black text-slate-400  ">Institution</th>
+                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Departments</th>
+                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Students</th>
+                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Avg Score</th>
+                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Assessments</th>
+                            <th className="px-8 py-4 text-center text-[10px] font-black text-slate-400  ">Job Sims</th>
+                            <th className="px-8 py-4 text-right text-[10px] font-black text-slate-400  ">Rank Index</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {stats.institutionalBreakdown.map((inst, idx) => (
                             <tr key={inst.name} className="hover:bg-slate-50/50 transition-colors">
                                 <td className="px-8 py-4">
-                                    <div className="text-xs font-black text-slate-900 uppercase tracking-tight">{inst.name}</div>
+                                    <div className="text-xs font-black text-slate-900  tracking-tight">{inst.name}</div>
                                 </td>
                                 <td className="px-8 py-4 text-center">
                                     <div className="text-[11px] font-bold text-slate-500">{inst.deptCount} Units</div>

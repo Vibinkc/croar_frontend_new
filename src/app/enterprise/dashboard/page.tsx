@@ -29,9 +29,9 @@ export default function EnterpriseDashboard() {
 
     useEffect(() => {
         const hour = new Date().getHours();
-        if (hour < 12) setGreeting("OPERATIONAL_START");
-        else if (hour < 18) setGreeting("MID_DAY_SYNC");
-        else setGreeting("EVENING_LOG");
+        if (hour < 12) setGreeting("Good Morning");
+        else if (hour < 18) setGreeting("Good Afternoon");
+        else setGreeting("Good Evening");
 
         if (token) {
             fetchStats();
@@ -58,43 +58,43 @@ export default function EnterpriseDashboard() {
 
     const modules = [
         {
-            title: "Job Requisitions",
-            description: "Deploy precision job tracking and manage active talent requisitions.",
+            title: "Manage Jobs",
+            description: "Create and track job openings for your team.",
             icon: "business_center",
             path: "/enterprise/jobs",
-            badge: "Hiring Velocity",
+            badge: "Active",
             color: "purple",
-            features: ["AI Assisted JD", "Node Publishing", "Fiscal Tracking"],
+            features: ["AI Job Description", "Job Boards", "Hiring Budget"],
             permission: "jobs:read"
         },
         {
-            title: "Candidate Pipeline",
-            description: "Automated screening algorithms via proprietary fit-scoring heuristics.",
+            title: "Candidates",
+            description: "View and manage all candidates in your hiring process.",
             icon: "psychology",
             path: "/enterprise/candidates/kanban",
             badge: "AI Screening",
             color: "indigo",
-            features: ["Smart Sync", "Cross Check", "Batch Ops"],
+            features: ["Auto-Sync", "Background Check", "Group Actions"],
             permission: "candidates:read"
         },
         {
-            title: "360 Assessments",
-            description: "Critically evaluate multi-rater feedback and organizational review metrics.",
+            title: "360 Feedback",
+            description: "Manage performance reviews and multi-rater feedback.",
             icon: "360",
             path: "/enterprise/assessments-360",
-            badge: "Talent Insight",
+            badge: "Performance",
             color: "emerald",
-            features: ["Multi-Rater", "Blind Review", "Peer Matrix"],
+            features: ["Reports", "Reviews", "Comparisons"],
             permission: "assessments:read"
         },
         {
-            title: "HR Surveys",
-            description: "Deploy engagement and DEI pulse checks across your entire organization.",
+            title: "Surveys",
+            description: "Send engagement surveys and culture pulse checks.",
             icon: "poll",
             path: "/enterprise/surveys",
-            badge: "Cultural Health",
+            badge: "Insights",
             color: "rose",
-            features: ["Pulse Check", "DEI Analytics", "Global Poll"],
+            features: ["Engagement", "Culture", "Analytics"],
             permission: "surveys:read"
         }
     ];
@@ -112,30 +112,30 @@ export default function EnterpriseDashboard() {
     return (
         <div className="p-4 space-y-4 animate-in fade-in duration-500 overflow-hidden">
             {/* Tactical Command Header */}
-            <section className="bg-slate-900 rounded-[2rem] p-6 md:p-8 text-white flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl">
+            <section className="bg-slate-900 rounded-2xl p-6 md:p-8 text-white flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl">
                 <div className="relative z-10 flex-1 space-y-6">
                     <div>
-                        <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black tracking-widest uppercase mb-4">
+                        <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black   mb-4">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            Recruitment Control Center v2.4
+                            Dashboard
                         </div>
-                        <h2 className="text-2xl md:text-4xl font-black tracking-tighter leading-none mb-3 uppercase">
+                        <h2 className="text-2xl md:text-4xl font-black tracking-tighter leading-none mb-3 ">
                             {greeting}, <span className="text-indigo-400">{isLoading ? 'COMMANDER' : stats.agent_name}</span>.
                         </h2>
-                        <p className="text-slate-400 text-[11px] max-w-sm font-bold uppercase tracking-widest leading-relaxed opacity-70">
-                            Neural analysis detected <span className="text-white bg-indigo-500/50 px-1 rounded">{isLoading ? '---' : stats.high_value_matches}</span> high-value matches in the screening queue. Recommend immediate verification.
+                        <p className="text-slate-400 text-[11px] max-w-sm font-bold   leading-relaxed opacity-70">
+                            AI found <span className="text-white bg-indigo-500/50 px-1 rounded">{isLoading ? '---' : stats.high_value_matches}</span> recommended candidates for you. Take a look at them now.
                         </p>
                     </div>
 
                     <div className="flex flex-wrap gap-3">
                         {canAccess("jobs:create") && (
-                            <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-white text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-400 hover:text-white transition-all shadow-xl active:scale-95 flex items-center gap-2">
+                            <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-white text-slate-900 rounded-xl text-[10px] font-black   hover:bg-indigo-400 hover:text-white transition-all shadow-xl active:scale-95 flex items-center gap-2">
                                 <span className="material-symbols-rounded text-lg">add_box</span>
                                 Post New Job
                             </Link>
                         )}
                         {canAccess("candidates:read") && (
-                            <Link href="/enterprise/candidates/kanban" className="px-6 py-3 bg-white/10 border border-white/10 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2">
+                            <Link href="/enterprise/candidates/kanban" className="px-6 py-3 bg-white/10 border border-white/10 text-white rounded-xl text-[10px] font-black   hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2">
                                 <span className="material-symbols-rounded text-lg">grid_goldenratio</span>
                                 Manage Pipeline
                             </Link>
@@ -151,18 +151,18 @@ export default function EnterpriseDashboard() {
                         { label: "Total Applications", value: stats.total_applications, icon: "conversion_path", color: "text-rose-400", bg: "bg-rose-500/10" },
                         { label: "Scheduled Interviews", value: stats.interviews_scheduled, icon: "videocam", color: "text-amber-400", bg: "bg-amber-500/10" },
                     ].map((stat) => (
-                        <div key={stat.label} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[1.5rem] p-4 min-w-[140px] flex flex-col gap-2 group hover:bg-white/10 transition-all border-b-4 border-b-transparent hover:border-b-white/20">
+                        <div key={stat.label} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 min-w-[140px] flex flex-col gap-2 group hover:bg-white/10 transition-all border-b-4 border-b-transparent hover:border-b-white/20">
                             <div className="flex items-center justify-between">
                                 <span className={`material-symbols-rounded text-xl ${stat.color}`}>{stat.icon}</span>
                                 <div className="flex flex-col items-end">
-                                    <span className="text-[7px] font-black text-white/30 uppercase tracking-[0.2em]">Live Feed</span>
+                                    <span className="text-[7px] font-black text-white/30  tracking-[0.2em]">Live Feed</span>
                                     <div className="w-4 h-1 bg-white/10 rounded-full overflow-hidden mt-1">
                                         <div className="h-full bg-emerald-400 w-2/3 animate-[shimmer_2s_infinite]"></div>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <span className="text-[9px] font-black text-white/40 uppercase tracking-widest block mb-1">{stat.label}</span>
+                                <span className="text-[9px] font-black text-white/40   block mb-1">{stat.label}</span>
                                 <span className="text-2xl font-black tracking-tighter leading-none">
                                     {isLoading ? '---' : stat.value}
                                 </span>
@@ -180,22 +180,22 @@ export default function EnterpriseDashboard() {
                 <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-5">
                     {modules.filter(m => canAccess(m.permission)).map((module) => (
                         <Link href={module.path} key={module.title} className="group">
-                            <div className={`relative ${getColorClasses(module.color).bg} border ${getColorClasses(module.color).border} p-5 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden flex flex-col justify-between`}>
+                            <div className={`relative ${getColorClasses(module.color).bg} border ${getColorClasses(module.color).border} p-5 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden flex flex-col justify-between`}>
                                 <div>
                                     <div className="flex justify-between items-start mb-6">
-                                        <div className={`w-10 h-10 rounded-2xl bg-white border border-slate-50 ${getColorClasses(module.color).text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 shadow-sm`}>
+                                        <div className={`w-10 h-10 rounded-xl bg-white border border-slate-50 ${getColorClasses(module.color).text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 shadow-sm`}>
                                             <span className="material-symbols-rounded text-xl">{module.icon}</span>
                                         </div>
-                                        <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black tracking-widest uppercase bg-white/50 border border-slate-50 text-slate-400 group-hover:bg-white group-hover:text-[#7C3AED] transition-all`}>
+                                        <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black   bg-white/50 border border-slate-50 text-slate-400 group-hover:bg-white group-hover:text-[#7C3AED] transition-all`}>
                                             {module.badge}
                                         </span>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-tighter group-hover:text-[#7C3AED] transition-colors">
+                                        <h3 className="text-sm font-black text-slate-900  tracking-tighter group-hover:text-[#7C3AED] transition-colors">
                                             {module.title}
                                         </h3>
-                                        <p className="text-[11px] text-slate-500 font-bold leading-relaxed uppercase opacity-70 mb-6">
+                                        <p className="text-[11px] text-slate-500 font-bold leading-relaxed  opacity-70 mb-6">
                                             {module.description}
                                         </p>
                                     </div>
@@ -203,7 +203,7 @@ export default function EnterpriseDashboard() {
 
                                 <div className="flex flex-wrap gap-1.5 pt-4 border-t border-slate-100/50 mt-4">
                                     {module.features.map((feature, idx) => (
-                                        <span key={idx} className="px-2.5 py-1 bg-white border border-slate-50 text-slate-400 rounded-lg text-[8px] font-black uppercase tracking-tight group-hover:border-indigo-100/50 transition-all">
+                                        <span key={idx} className="px-2.5 py-1 bg-white border border-slate-50 text-slate-400 rounded-lg text-[8px] font-black  tracking-tight group-hover:border-indigo-100/50 transition-all">
                                             {feature}
                                         </span>
                                     ))}
@@ -221,7 +221,7 @@ export default function EnterpriseDashboard() {
                 <div className="lg:col-span-4 space-y-5">
                     <div className="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm h-full flex flex-col">
                         <div className="flex items-center justify-between mb-6">
-                            <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Efficiency_Matrix</span>
+                            <span className="text-[10px] font-black text-slate-900  ">Hiring Performance</span>
                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse border-4 border-emerald-50"></div>
                         </div>
 
@@ -246,18 +246,18 @@ export default function EnterpriseDashboard() {
                                     <circle cx="20" cy="50" r="2" className="fill-rose-400" />
                                 </svg>
 
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 text-[8px] font-black text-slate-400 uppercase tracking-widest">Velocity</div>
-                                <div className="absolute top-1/2 right-0 translate-x-10 -translate-y-1/2 text-[8px] font-black text-slate-400 uppercase tracking-widest">Accuracy</div>
-                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-6 text-[8px] font-black text-slate-400 uppercase tracking-widest">Volume</div>
-                                <div className="absolute top-1/2 left-0 -translate-x-10 -translate-y-1/2 text-[8px] font-black text-slate-400 uppercase tracking-widest">Precision</div>
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 text-[8px] font-black text-slate-400  ">Velocity</div>
+                                <div className="absolute top-1/2 right-0 translate-x-10 -translate-y-1/2 text-[8px] font-black text-slate-400  ">Accuracy</div>
+                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-6 text-[8px] font-black text-slate-400  ">Volume</div>
+                                <div className="absolute top-1/2 left-0 -translate-x-10 -translate-y-1/2 text-[8px] font-black text-slate-400  ">Precision</div>
                             </div>
                         </div>
 
                         <div className="mt-6">
-                            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 relative group overflow-hidden">
+                            <div className="p-5 rounded-xl bg-slate-50 border border-slate-100 relative group overflow-hidden">
                                 <div className="absolute top-0 left-0 w-1 h-full bg-[#7C3AED]"></div>
-                                <p className="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-tight">
-                                    System suggests <span className="text-[#7C3AED]">Optimization_Beta</span>. Candidate throughput is 14% higher than average.
+                                <p className="text-[10px] font-bold text-slate-500 leading-relaxed  tracking-tight">
+                                    AI Suggestion: Hiring speed is <span className="text-[#7C3AED]">14% faster</span> than last month.
                                 </p>
                             </div>
                         </div>

@@ -197,7 +197,7 @@ export default function VideoInterviewRoom() {
         <div className="min-h-screen bg-slate-900 text-white p-6 flex flex-col items-center justify-center">
             {currentStep === "INSTRUCTION" && (
                 <div className="max-w-2xl text-center space-y-8">
-                    <h1 className="text-3xl font-black uppercase tracking-tight">System Check</h1>
+                    <h1 className="text-3xl font-black  tracking-tight">System Check</h1>
                     <p className="text-slate-400">
                         You are about to start an automated video interview based on <strong>{interview.title}</strong>.
                         <br />
@@ -218,7 +218,7 @@ export default function VideoInterviewRoom() {
                         </button>
                         <button
                             onClick={() => setCurrentStep("RECORDING")}
-                            className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black uppercase tracking-widest transition-all"
+                            className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black   transition-all"
                         >
                             Initialize Sequence
                         </button>
@@ -231,7 +231,7 @@ export default function VideoInterviewRoom() {
                     {/* Left: Question */}
                     <div className="flex flex-col justify-center space-y-6">
                         <div>
-                            <span className="text-slate-400 text-xs font-black uppercase tracking-widest">
+                            <span className="text-slate-400 text-xs font-black  ">
                                 Question {currentQuestionIndex + 1} of {questions.length}
                             </span>
                             <h2 className="text-2xl font-bold mt-2 leading-relaxed">
@@ -239,8 +239,8 @@ export default function VideoInterviewRoom() {
                             </h2>
                         </div>
                         <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 min-h-[100px]">
-                            <p className="text-xs text-slate-500 uppercase font-bold mb-2">Live Transcript</p>
-                            <p className="text-slate-300 italic">{transcript || "Listening..."}</p>
+                            <p className="text-xs text-slate-500  font-bold mb-2">Live Transcript</p>
+                            <p className="text-slate-300 ">{transcript || "Listening..."}</p>
                         </div>
                     </div>
 
@@ -251,7 +251,7 @@ export default function VideoInterviewRoom() {
                             {isRecording && (
                                 <div className="absolute top-4 right-4 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full animate-pulse border border-slate-700">
                                     <div className="w-2 h-2 bg-white rounded-full"></div>
-                                    <span className="text-[10px] font-black uppercase text-white">REC</span>
+                                    <span className="text-[10px] font-black  text-white">REC</span>
                                 </div>
                             )}
                         </div>
@@ -259,7 +259,7 @@ export default function VideoInterviewRoom() {
                         {!isRecording && !transcript && (
                             <button
                                 onClick={startRecording}
-                                className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black   transition-all flex items-center justify-center gap-2"
                             >
                                 <span className="material-icons">fiber_manual_record</span>
                                 Start Answer
@@ -269,7 +269,7 @@ export default function VideoInterviewRoom() {
                         {isRecording && (
                             <button
                                 onClick={stopRecording}
-                                className="w-full py-4 bg-slate-700 hover:bg-slate-600 rounded-xl font-black uppercase tracking-widest transition-all border border-slate-600"
+                                className="w-full py-4 bg-slate-700 hover:bg-slate-600 rounded-xl font-black   transition-all border border-slate-600"
                             >
                                 Stop Recording
                             </button>
@@ -278,7 +278,7 @@ export default function VideoInterviewRoom() {
                         {!isRecording && transcript && (
                             <button
                                 onClick={handleNext}
-                                className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black   transition-all flex items-center justify-center gap-2"
                             >
                                 Confirm & Next
                                 <span className="material-icons">arrow_forward</span>
@@ -287,7 +287,7 @@ export default function VideoInterviewRoom() {
                         {!isRecording && transcript && (
                             <button
                                 onClick={startRecording}
-                                className="text-xs text-slate-500 hover:text-white uppercase tracking-wider font-bold text-center"
+                                className="text-xs text-slate-500 hover:text-white   font-bold text-center"
                             >
                                 Re-record
                             </button>
@@ -301,11 +301,11 @@ export default function VideoInterviewRoom() {
                     <div className="w-20 h-20 bg-slate-800 text-slate-300 rounded-full flex items-center justify-center mx-auto">
                         <span className="material-icons text-4xl">check</span>
                     </div>
-                    <h2 className="text-2xl font-black uppercase">All Responses Captured</h2>
+                    <h2 className="text-2xl font-black ">All Responses Captured</h2>
                     <p className="text-slate-400">System is ready to analyze your video and audio data.</p>
                     <button
                         onClick={handleSubmit}
-                        className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black uppercase tracking-widest transition-all"
+                        className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black   transition-all"
                     >
                         Generate Analysis Report
                     </button>
