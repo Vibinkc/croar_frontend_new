@@ -28,7 +28,7 @@ export default function SuperAdminSidebar() {
 
     const navLinkClass = (path: string) => {
         const isActive = pathname === path || (path !== "/super-admin" && pathname.startsWith(path));
-        return `group flex items-center gap-3 px-3 py-1.5 rounded-xl transition-all duration-200 ${isActive
+        return `group flex items-center gap-3 px-3 py-1.5 rounded-lg transition-all duration-200 ${isActive
             ? "bg-[#7C3AED]/10 text-[#7C3AED]"
             : "text-slate-500 hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]"
             }`;
@@ -76,7 +76,7 @@ export default function SuperAdminSidebar() {
 
                 <button
                     onClick={logout}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-xl transition-all duration-200 group"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all duration-200 group"
                 >
                     <span className="material-symbols-rounded text-slate-500 text-[20px]">logout</span>
                     <span className="text-[10px] font-bold">Logout</span>
