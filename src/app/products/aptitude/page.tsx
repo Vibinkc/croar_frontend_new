@@ -23,7 +23,7 @@ export default function AptitudeProductPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-blue-400/30 bg-blue-500/10 px-3 py-1 rounded-full text-blue-300 text-xs font-bold uppercase tracking-widest backdrop-blur-md"
+                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-blue-400/30 bg-blue-500/10 px-3 py-1 rounded-full text-blue-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-blue-400">calculate</span>
                             Cognitive Engine v2.0
@@ -62,7 +62,7 @@ export default function AptitudeProductPage() {
             <section className="px-4 py-16" id="features">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-2 text-center md:text-left">
-                        <span className="text-blue-600 font-bold uppercase tracking-widest text-sm">Precision Engineering</span>
+                        <span className="text-blue-600 font-bold   text-sm">Precision Engineering</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Deconstruct Your Performance</h2>
                         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">We analyze your problem-solving down to the millisecond.</p>
                     </div>
@@ -126,7 +126,7 @@ export default function AptitudeProductPage() {
                         viewport={{ once: true }}
                         className="flex flex-col gap-6"
                     >
-                        <div className="inline-block px-3 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-bold uppercase tracking-wider w-fit">
+                        <div className="inline-block px-3 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-bold   w-fit">
                             The Traditional Flaw
                         </div>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Static textbooks cannot adapt.</h2>
@@ -154,7 +154,7 @@ export default function AptitudeProductPage() {
                         <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-2xl max-w-sm w-full relative">
                             <div className="flex justify-between items-center mb-6">
                                 <div>
-                                    <div className="text-xs font-bold text-slate-400 uppercase">Current Session</div>
+                                    <div className="text-xs font-bold text-slate-400 ">Current Session</div>
                                     <div className="text-xl font-black text-slate-900">Quantitative Analysis</div>
                                 </div>
                                 <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 animate-pulse">
@@ -228,7 +228,7 @@ export default function AptitudeProductPage() {
                     <button onClick={() => router.push("/practice/aptitude")} className="bg-blue-600 text-white font-bold py-5 px-12 rounded-full text-xl hover:scale-105 transition-transform shadow-xl">
                         Start Diagnostic Test
                     </button>
-                    <p className="mt-6 text-xs text-blue-300 font-mono uppercase tracking-widest font-bold">No Credit Card Required • Instant Results</p>
+                    <p className="mt-6 text-xs text-blue-300 font-mono   font-bold">No Credit Card Required • Instant Results</p>
                 </div>
             </footer>
         </main>

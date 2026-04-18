@@ -148,8 +148,8 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                     <span className="material-icons-outlined text-lg">arrow_back</span>
                 </button>
                 <div>
-                    <h1 className="text-lg font-black text-slate-900 tracking-tight uppercase">Edit Job Simulation</h1>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Modify Process Structure</p>
+                    <h1 className="text-lg font-black text-slate-900 tracking-tight ">Edit Job Simulation</h1>
+                    <p className="text-[9px] font-bold text-slate-400  ">Modify Process Structure</p>
                 </div>
             </div>
 
@@ -158,7 +158,7 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                 <div className="lg:col-span-4 space-y-4">
                     <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-100 p-5 space-y-4">
                         <div>
-                            <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Title</label>
+                            <label className="block text-[9px] font-black text-slate-400   mb-1.5">Title</label>
                             <input
                                 type="text"
                                 value={title}
@@ -168,7 +168,7 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                         </div>
 
                         <div>
-                            <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Description</label>
+                            <label className="block text-[9px] font-black text-slate-400   mb-1.5">Description</label>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -181,7 +181,7 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                         <button
                             onClick={handleSave}
                             disabled={saving}
-                            className="w-full h-11 bg-[var(--color-primary)] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-primary-dark)] transition-all shadow-xl shadow-indigo-100 hover:shadow-indigo-200 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
+                            className="w-full h-11 bg-[var(--color-primary)] text-white rounded-xl text-[10px] font-black  tracking-[0.2em] hover:bg-[var(--color-primary-dark)] transition-all shadow-xl shadow-indigo-100 hover:shadow-indigo-200 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
                         >
                             {saving ? "Updating..." : "Save Changes"}
                         </button>
@@ -197,7 +197,7 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                                 <button
                                     key={idx}
                                     onClick={() => setActiveRoundTab(idx)}
-                                    className={`px-6 py-4 text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border-b-2 ${activeRoundTab === idx
+                                    className={`px-6 py-4 text-[10px] font-black   transition-all whitespace-nowrap border-b-2 ${activeRoundTab === idx
                                         ? "border-[var(--color-primary)] text-[var(--color-primary)] bg-indigo-50/30"
                                         : "border-transparent text-slate-400 hover:text-slate-600 hover:bg-slate-50"
                                         }`}
@@ -216,7 +216,7 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                                         <h3 className="text-base font-black text-slate-900">
                                             {rounds[activeRoundTab].round_title} Questions
                                         </h3>
-                                        <span className="px-2.5 py-1 bg-slate-100 rounded-full text-[9px] font-bold text-slate-500 uppercase tracking-widest">
+                                        <span className="px-2.5 py-1 bg-slate-100 rounded-full text-[9px] font-bold text-slate-500  ">
                                             {rounds[activeRoundTab].questions?.length || 0} Items
                                         </span>
                                     </div>
@@ -224,7 +224,7 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                                     {rounds[activeRoundTab].questions?.map((q: any, qIdx: number) => (
                                         <div key={qIdx} className="group relative pl-4 border-l-4 border-slate-200 hover:border-slate-500 transition-colors">
                                             <div className="mb-2">
-                                                <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md bg-indigo-50 text-[var(--color-primary)] border border-indigo-100/50`}>
+                                                <span className={`text-[10px] font-black   px-2 py-1 rounded-md bg-indigo-50 text-[var(--color-primary)] border border-indigo-100/50`}>
                                                     {q.type === 'mcq' ? 'Aptitude / MCQ' : q.type === 'code' ? 'Coding Challenge' : 'Text Response'}
                                                 </span>
                                             </div>
@@ -248,14 +248,14 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                                     <div className="space-y-3">
                                         <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col gap-3">
                                             <div className="flex items-center justify-between">
-                                                <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                                                <h4 className="text-[10px] font-black text-slate-800   flex items-center gap-2">
                                                     <span className="material-icons-outlined text-sm">auto_awesome</span>
                                                     AI Generator Helper
                                                 </h4>
                                             </div>
                                             <div className="flex gap-4 items-end">
                                                 <div className="w-20">
-                                                    <label className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1.5 block">Count</label>
+                                                    <label className="text-[9px] text-slate-400 font-bold   mb-1.5 block">Count</label>
                                                     <input
                                                         type="number"
                                                         min={1}
@@ -266,12 +266,12 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                                                     />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <label className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1.5 block">Difficulty Mix</label>
+                                                    <label className="text-[9px] text-slate-400 font-bold   mb-1.5 block">Difficulty Mix</label>
                                                     <div className="flex gap-3">
                                                         {["Easy", "Medium", "Hard"].map(d => (
                                                             <label key={d} className="flex items-center gap-1.5 cursor-pointer">
                                                                 <input type="checkbox" defaultChecked={d === "Medium"} value={d} className="w-3 h-3 accent-slate-800 rounded" id={`gen-diff-${activeRoundTab}-${d}`} />
-                                                                <span className="text-[10px] font-bold text-slate-600 uppercase">{d}</span>
+                                                                <span className="text-[10px] font-bold text-slate-600 ">{d}</span>
                                                             </label>
                                                         ))}
                                                     </div>
@@ -279,7 +279,7 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
                                                 <button
                                                     onClick={() => handleAddAiQuestions(activeRoundTab)}
                                                     disabled={generatingQuestions[activeRoundTab]}
-                                                    className="px-4 h-9 bg-[var(--color-primary)] text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-[var(--color-primary-dark)] shadow-md shadow-indigo-100 transition-all min-w-[100px] flex items-center justify-center gap-2 active:scale-95"
+                                                    className="px-4 h-9 bg-[var(--color-primary)] text-white rounded-lg text-[9px] font-black   hover:bg-[var(--color-primary-dark)] shadow-md shadow-indigo-100 transition-all min-w-[100px] flex items-center justify-center gap-2 active:scale-95"
                                                 >
                                                     Generate
                                                 </button>
@@ -288,7 +288,7 @@ export default function EditJobSimulationPage({ params }: { params: Promise<{ id
 
                                         <button
                                             onClick={() => addQuestion(activeRoundTab)}
-                                            className="w-full py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 font-bold uppercase text-[10px] tracking-widest hover:border-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+                                            className="w-full py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 font-bold  text-[10px]  hover:border-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
                                         >
                                             <span className="material-icons-outlined text-sm">add_circle</span>
                                             Add Manual Question

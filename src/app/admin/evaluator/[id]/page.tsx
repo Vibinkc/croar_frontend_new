@@ -39,7 +39,7 @@ function EvaluatorScoreList({ questionId }: { questionId: string }) {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Evaluations</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Evaluations</p>
         </div>
     );
 
@@ -47,8 +47,8 @@ function EvaluatorScoreList({ questionId }: { questionId: string }) {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">Subjective Evaluation Results</h1>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Question ID: {questionId}</p>
+                    <h1 className="text-2xl font-black text-slate-900  tracking-tighter mb-2">Subjective Evaluation Results</h1>
+                    <p className="text-xs font-bold text-slate-400  ">Question ID: {questionId}</p>
                 </div>
             </div>
 
@@ -57,12 +57,12 @@ function EvaluatorScoreList({ questionId }: { questionId: string }) {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-slate-100 bg-slate-50/50">
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Student</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Score (AI)</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Metrics (G/R)</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Response</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Feedback</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Student</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Date</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Score (AI)</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Metrics (G/R)</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Response</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Feedback</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -74,7 +74,7 @@ function EvaluatorScoreList({ questionId }: { questionId: string }) {
                                                 {att.user_name ? att.user_name[0] : "?"}
                                             </div>
                                             <div>
-                                                <p className="text-xs font-black text-slate-900 uppercase tracking-wide">
+                                                <p className="text-xs font-black text-slate-900  tracking-wide">
                                                     {att.user_name}
                                                 </p>
                                                 <p className="text-[10px] font-medium text-slate-400">{att.user_email}</p>
@@ -99,7 +99,7 @@ function EvaluatorScoreList({ questionId }: { questionId: string }) {
                                         </div>
                                     </td>
                                     <td className="p-6">
-                                        <p className="text-[11px] font-medium text-slate-600 line-clamp-2 max-w-xs leading-relaxed italic">
+                                        <p className="text-[11px] font-medium text-slate-600 line-clamp-2 max-w-xs leading-relaxed ">
                                             "{att.response}"
                                         </p>
                                     </td>
@@ -114,7 +114,7 @@ function EvaluatorScoreList({ questionId }: { questionId: string }) {
                                 <tr>
                                     <td colSpan={6} className="p-12 text-center text-slate-300">
                                         <span className="material-icons-outlined text-4xl mb-4 block opacity-30">quiz</span>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em]">No_Evaluations_Found</p>
+                                        <p className="text-[10px] font-black  tracking-[0.2em]">No_Evaluations_Found</p>
                                     </td>
                                 </tr>
                             )}

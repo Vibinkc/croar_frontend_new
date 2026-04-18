@@ -156,7 +156,7 @@ export default function X360QuestionBank() {
     return (
         <div className="p-4 max-w-[1600px] mx-auto animate-in fade-in duration-500">
             <header className="mb-5 flex items-center gap-3">
-                <button onClick={() => router.push('/enterprise/assessments-360')} className="w-7 h-7 rounded-lg bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-[#7C3AED] transition-all flex items-center justify-center">
+                <button onClick={() => router.push('/enterprise/assessments-360')} className="w-7 h-7 rounded-xl bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-[#7C3AED] transition-all flex items-center justify-center">
                     <span className="material-symbols-rounded text-base">arrow_back</span>
                 </button>
                 <div>
@@ -167,7 +167,7 @@ export default function X360QuestionBank() {
 
             <div className="grid grid-cols-1 gap-6">
                 {/* AI Generator - Now Full Width */}
-                <section className="bg-gradient-to-br from-[#7C3AED] to-indigo-700 p-6 rounded-3xl text-white shadow-2xl shadow-indigo-100 overflow-hidden relative">
+                <section className="bg-gradient-to-br from-[#7C3AED] to-indigo-700 p-6 rounded-xl text-white shadow-2xl shadow-indigo-100 overflow-hidden relative">
                     {/* Decorative Background Elements */}
                     <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-10 -mt-20"></div>
                     <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-400/10 rounded-full blur-2xl -ml-20 -mb-10"></div>
@@ -180,12 +180,12 @@ export default function X360QuestionBank() {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-black leading-none tracking-tight">Scenario Architect</h2>
-                                    <p className="text-violet-100 text-[9px] uppercase font-black tracking-[0.2em] mt-1.5 opacity-80 italic">GPT-4 Organizational AI</p>
+                                    <p className="text-violet-100 text-[9px]  font-black tracking-[0.2em] mt-1.5 opacity-80 ">GPT-4 Organizational AI</p>
                                 </div>
                             </div>
                             <button 
                                 onClick={() => router.push('/enterprise/assessments-360/questions/new')}
-                                className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group"
+                                className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-[9px] font-black   transition-all flex items-center gap-2 group"
                             >
                                 <span className="material-symbols-rounded text-base group-hover:rotate-90 transition-transform">add</span>
                                 Create Manual
@@ -195,14 +195,14 @@ export default function X360QuestionBank() {
                         <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
                             {/* Categories Selection - More Space */}
                             <div>
-                                <label className="block text-[10px] font-black text-violet-100 uppercase tracking-widest mb-4 px-1 opacity-70">Target Competencies & Categories</label>
+                                <label className="block text-[10px] font-black text-violet-100   mb-4 px-1 opacity-70">Target Competencies & Categories</label>
                                 <div className="flex flex-wrap gap-2">
                                     {/* Standard Categories */}
                                     {categories.map(cat => (
                                         <button
                                             key={cat.id}
                                             onClick={() => toggleAiCategory(cat.id)}
-                                            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-[10px] font-bold transition-all border whitespace-nowrap shadow-sm ${
+                                            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-bold transition-all border whitespace-nowrap shadow-sm ${
                                                 aiConfig.categories.includes(cat.id) 
                                                 ? 'bg-white text-[#7C3AED] border-white scale-105 shadow-violet-500/20' 
                                                 : 'bg-white/5 text-violet-50 border-white/10 hover:border-white/30 hover:bg-white/10'
@@ -220,7 +220,7 @@ export default function X360QuestionBank() {
                                             <button
                                             key={cat}
                                             onClick={() => toggleAiCategory(cat)}
-                                            className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-[10px] font-bold transition-all border whitespace-nowrap shadow-sm bg-white text-[#7C3AED] border-white scale-105"
+                                            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-bold transition-all border whitespace-nowrap shadow-sm bg-white text-[#7C3AED] border-white scale-105"
                                         >
                                             <span className="material-symbols-rounded text-base shrink-0 text-amber-500">new_releases</span>
                                             {cat}
@@ -233,7 +233,7 @@ export default function X360QuestionBank() {
                             <div className="xl:col-span-5 flex flex-col justify-between gap-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-[9px] font-black text-violet-100 uppercase tracking-widest mb-2 px-1 opacity-70">Quantity</label>
+                                        <label className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Quantity</label>
                                         <div className="relative">
                                             <input 
                                                 type="number"
@@ -242,11 +242,11 @@ export default function X360QuestionBank() {
                                                 value={aiConfig.count}
                                                 onChange={(e) => setAiConfig({...aiConfig, count: parseInt(e.target.value)})}
                                             />
-                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-violet-200 uppercase">Items</span>
+                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-violet-200 ">Items</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[9px] font-black text-violet-100 uppercase tracking-widest mb-2 px-1 opacity-70">Business Context</label>
+                                        <label className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Business Context</label>
                                         <input 
                                             type="text"
                                             placeholder="e.g. Sales, Health..."
@@ -258,7 +258,7 @@ export default function X360QuestionBank() {
                                 </div>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-[9px] font-black text-violet-100 uppercase tracking-widest mb-2 px-1 opacity-70">Add New Category</label>
+                                        <label className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Add New Category</label>
                                         <div className="flex gap-2">
                                             <input 
                                                 type="text"
@@ -281,7 +281,7 @@ export default function X360QuestionBank() {
                                                         setAiConfig(prev => ({ ...prev, customCategory: "" }));
                                                     }
                                                 }}
-                                                className="w-14 h-[52px] bg-white text-[#7C3AED] rounded-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
+                                                className="w-14 h-[52px] bg-white text-[#7C3AED] rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
                                             >
                                                 <span className="material-symbols-rounded font-black">add</span>
                                             </button>
@@ -290,7 +290,7 @@ export default function X360QuestionBank() {
                                     <button 
                                         onClick={handleAIGenerate}
                                         disabled={isGenerating || aiConfig.categories.length === 0}
-                                        className="w-full py-4 bg-white text-[#7C3AED] rounded-2xl font-black text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-indigo-900/40 disabled:opacity-50 disabled:scale-100 uppercase tracking-[0.2em] flex items-center justify-center gap-3 group"
+                                        className="w-full py-4 bg-white text-[#7C3AED] rounded-xl font-black text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-indigo-900/40 disabled:opacity-50 disabled:scale-100  tracking-[0.2em] flex items-center justify-center gap-3 group"
                                     >
                                         {isGenerating ? (
                                             <>
@@ -314,7 +314,7 @@ export default function X360QuestionBank() {
                     {/* Sidebar */}
                     <aside className="col-span-12 lg:col-span-4 space-y-8 sticky top-8">
                         {/* Manual Form */}
-                        <section className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50">
+                        <section className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-200/50">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center text-[#7C3AED]">
                                     <span className="material-symbols-rounded text-xl">edit_note</span>
@@ -323,9 +323,9 @@ export default function X360QuestionBank() {
                             </div>
                             <form onSubmit={handleAdd} className="space-y-5">
                                 <div>
-                                    <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1 opacity-70">Question Content</label>
+                                    <label className="block text-[9px] font-black text-slate-400   mb-2 px-1 opacity-70">Question Content</label>
                                     <textarea 
-                                        className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#7C3AED] focus:bg-white focus:ring-4 focus:ring-violet-500/10 outline-none min-h-[120px] text-xs text-slate-700 placeholder:text-slate-300 transition-all font-medium leading-relaxed"
+                                        className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white focus:ring-4 focus:ring-violet-500/10 outline-none min-h-[120px] text-xs text-slate-700 placeholder:text-slate-300 transition-all font-medium leading-relaxed"
                                         value={newQuestion.text}
                                         onChange={(e) => setNewQuestion({...newQuestion, text: e.target.value})}
                                         required
@@ -334,10 +334,10 @@ export default function X360QuestionBank() {
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 px-1 opacity-70">Response Type</label>
+                                        <label className="block text-[10px] font-black text-slate-400   mb-2.5 px-1 opacity-70">Response Type</label>
                                         <div className="relative">
                                             <select 
-                                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#7C3AED] focus:bg-white outline-none text-sm font-bold text-slate-600 appearance-none transition-all cursor-pointer"
+                                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white outline-none text-sm font-bold text-slate-600 appearance-none transition-all cursor-pointer"
                                                 value={newQuestion.type}
                                                 onChange={(e) => setNewQuestion({...newQuestion, type: e.target.value})}
                                             >
@@ -348,10 +348,10 @@ export default function X360QuestionBank() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 px-1 opacity-70">Core Category</label>
+                                        <label className="block text-[10px] font-black text-slate-400   mb-2.5 px-1 opacity-70">Core Category</label>
                                         <div className="relative">
                                             <select 
-                                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#7C3AED] focus:bg-white outline-none text-sm font-bold text-slate-600 appearance-none transition-all cursor-pointer"
+                                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white outline-none text-sm font-bold text-slate-600 appearance-none transition-all cursor-pointer"
                                                 value={newQuestion.category}
                                                 onChange={(e) => setNewQuestion({...newQuestion, category: e.target.value})}
                                             >
@@ -363,7 +363,7 @@ export default function X360QuestionBank() {
                                 </div>
                                 <button 
                                     type="submit"
-                                    className="w-full py-4 bg-[#7C3AED] text-white rounded-2xl font-black text-[10px] hover:bg-slate-900 hover:shadow-2xl hover:shadow-violet-200 hover:-translate-y-0.5 transition-all active:translate-y-0 uppercase tracking-[0.2em] mt-2 block shadow-lg"
+                                    className="w-full py-4 bg-[#7C3AED] text-white rounded-xl font-black text-[10px] hover:bg-slate-900 hover:shadow-2xl hover:shadow-violet-200 hover:-translate-y-0.5 transition-all active:translate-y-0  tracking-[0.2em] mt-2 block shadow-lg"
                                 >
                                     Save to Bank
                                 </button>
@@ -375,10 +375,10 @@ export default function X360QuestionBank() {
                     <main className="col-span-12 lg:col-span-8 space-y-8">
                     {/* AI Preview */}
                     {generatedQuestions.length > 0 && (
-                        <section ref={suggestionsRef} className="bg-amber-50/50 rounded-[2.5rem] p-8 border-2 border-amber-200 animate-in fade-in slide-in-from-top-4 duration-500 shadow-2xl shadow-amber-100/50">
-                            <div className="flex justify-between items-center mb-8 bg-white/50 p-6 rounded-3xl border border-amber-100/50">
+                        <section ref={suggestionsRef} className="bg-amber-50/50 rounded-2xl p-8 border-2 border-amber-200 animate-in fade-in slide-in-from-top-4 duration-500 shadow-2xl shadow-amber-100/50">
+                            <div className="flex justify-between items-center mb-8 bg-white/50 p-6 rounded-xl border border-amber-100/50">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600 shadow-inner border border-amber-200/50">
+                                    <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 shadow-inner border border-amber-200/50">
                                         <span className="material-symbols-rounded text-3xl animate-bounce">auto_awesome</span>
                                     </div>
                                     <div>
@@ -389,13 +389,13 @@ export default function X360QuestionBank() {
                                 <div className="flex gap-4">
                                     <button 
                                         onClick={() => setGeneratedQuestions([])}
-                                        className="px-6 py-3 text-amber-700 font-black text-[10px] uppercase tracking-widest hover:bg-amber-100 rounded-2xl transition-all border border-amber-200"
+                                        className="px-6 py-3 text-amber-700 font-black text-[10px]   hover:bg-amber-100 rounded-xl transition-all border border-amber-200"
                                     >
                                         Discard All
                                     </button>
                                     <button 
                                         onClick={saveGenerated}
-                                        className="px-8 py-3 bg-amber-600 text-white font-black text-[10px] rounded-2xl shadow-xl shadow-amber-200 hover:bg-amber-700 transition-all uppercase tracking-[0.2em] flex items-center gap-2"
+                                        className="px-8 py-3 bg-amber-600 text-white font-black text-[10px] rounded-xl shadow-xl shadow-amber-200 hover:bg-amber-700 transition-all  tracking-[0.2em] flex items-center gap-2"
                                     >
                                         <span className="material-symbols-rounded text-lg">library_add</span>
                                         Add to Library ({generatedQuestions.length})
@@ -404,13 +404,13 @@ export default function X360QuestionBank() {
                             </div>
                             <div className="space-y-3">
                                 {generatedQuestions.map((q, i) => (
-                                    <div key={i} className="bg-white p-5 rounded-2xl border border-amber-100 flex items-start gap-4 shadow-sm">
+                                    <div key={i} className="bg-white p-5 rounded-xl border border-amber-100 flex items-start gap-4 shadow-sm">
                                         <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-xs shrink-0">{i+1}</div>
                                         <div className="flex-1">
                                             <p className="text-sm font-medium text-slate-800">{q.text}</p>
                                             <div className="flex gap-2 mt-2">
-                                                <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-slate-50 text-slate-500 rounded-md border border-slate-100">{q.category}</span>
-                                                <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-slate-50 text-slate-500 rounded-md border border-slate-100">{q.type}</span>
+                                                <span className="text-[9px] font-black  px-2 py-0.5 bg-slate-50 text-slate-500 rounded-xl border border-slate-100">{q.category}</span>
+                                                <span className="text-[9px] font-black  px-2 py-0.5 bg-slate-50 text-slate-500 rounded-xl border border-slate-100">{q.type}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -424,13 +424,13 @@ export default function X360QuestionBank() {
                         {/* Manual Create Card - THE "CREA" BUTTON */}
                         <div 
                             onClick={() => router.push('/enterprise/assessments-360/questions/new')}
-                            className="bg-violet-50/30 p-5 rounded-2xl border-2 border-dashed border-violet-200 hover:border-violet-400 hover:bg-violet-50 transition-all cursor-pointer flex flex-col items-center justify-center text-center group"
+                            className="bg-violet-50/30 p-5 rounded-xl border-2 border-dashed border-violet-200 hover:border-violet-400 hover:bg-violet-50 transition-all cursor-pointer flex flex-col items-center justify-center text-center group"
                         >
-                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-[#7C3AED] shadow-xl group-hover:scale-110 transition-transform mb-4 border border-violet-100">
+                            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center text-[#7C3AED] shadow-xl group-hover:scale-110 transition-transform mb-4 border border-violet-100">
                                 <span className="material-symbols-rounded text-2xl">add_circle</span>
                             </div>
                             <h3 className="text-base font-black text-violet-900 tracking-tight mb-1">Create Competency</h3>
-                            <p className="text-violet-400 text-[8px] font-black uppercase tracking-widest">Manual Entry</p>
+                            <p className="text-violet-400 text-[8px] font-black  ">Manual Entry</p>
                         </div>
 
                         {Array.from(new Set([
@@ -456,16 +456,16 @@ export default function X360QuestionBank() {
                                 <div 
                                     key={cat} 
                                     onClick={() => router.push(`/enterprise/assessments-360/questions/${cat.toLowerCase().replace(/_/g, '-')}`)}
-                                    className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-200/20 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1 transition-all cursor-pointer relative overflow-hidden flex flex-col items-center text-center animate-in zoom-in duration-500"
+                                    className="group bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-200/20 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1 transition-all cursor-pointer relative overflow-hidden flex flex-col items-center text-center animate-in zoom-in duration-500"
                                 >
                                     <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-50/50 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-indigo-100 transition-colors"></div>
                                     
-                                    <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform mb-4">
+                                    <div className="w-16 h-16 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform mb-4">
                                         <span className="material-symbols-rounded text-2xl">{icon}</span>
                                     </div>
                                     
                                     <h3 className="text-base font-black text-slate-800 tracking-tight mb-1">{label}</h3>
-                                    <p className="text-slate-400 text-[8px] font-black uppercase tracking-widest mb-4">Competencies</p>
+                                    <p className="text-slate-400 text-[8px] font-black   mb-4">Competencies</p>
                                     
                                     <div className="flex items-center gap-2">
                                         <div className="px-5 py-1.5 bg-slate-50 border border-slate-100 rounded-full text-[10px] font-black text-slate-600 transition-all group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600">
@@ -482,7 +482,7 @@ export default function X360QuestionBank() {
 
                         {/* Blank Slate for Library */}
                         {questions.length === 0 && (
-                            <div className="col-span-full bg-white rounded-[4rem] p-24 text-center border-2 border-dashed border-slate-100 shadow-inner">
+                            <div className="col-span-full bg-white rounded-2xl p-24 text-center border-2 border-dashed border-slate-100 shadow-inner">
                                 <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
                                     <span className="material-symbols-rounded text-slate-300 text-5xl">inventory_2</span>
                                 </div>

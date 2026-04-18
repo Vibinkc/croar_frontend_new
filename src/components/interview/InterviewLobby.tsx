@@ -127,7 +127,7 @@ export default function InterviewLobby({ onJoin, mediaState }: InterviewLobbyPro
                                     <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
                                         <span className="material-symbols-rounded text-3xl text-slate-500 font-bold">videocam_off</span>
                                     </div>
-                                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Camera_Disabled</p>
+                                    <p className="text-slate-500 text-[10px] font-black  ">Camera_Disabled</p>
                                 </div>
                             </div>
                         )}
@@ -173,8 +173,8 @@ export default function InterviewLobby({ onJoin, mediaState }: InterviewLobbyPro
 
                 <div className="space-y-6">
                     <div className="space-y-3">
-                        <h1 className="text-3xl font-black text-white uppercase tracking-tight leading-tight">
-                            Check your <span className="text-slate-400 italic">setup</span> before we begin
+                        <h1 className="text-3xl font-black text-white  tracking-tight leading-tight">
+                            Check your <span className="text-slate-400 ">setup</span> before we begin
                         </h1>
                         <p className="text-slate-500 text-xs font-medium leading-relaxed">
                             Ensure your face is clearly visible and your microphone is picking up your voice clearly.
@@ -182,7 +182,7 @@ export default function InterviewLobby({ onJoin, mediaState }: InterviewLobbyPro
                     </div>
 
                     <div className="bg-slate-900/50 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10 shadow-2xl space-y-4">
-                        <div className={`flex items-center gap-4 text-[10px] font-black uppercase tracking-widest p-4 rounded-2xl transition-all border ${!mediaState.isCameraEnabled ? 'bg-white/5 text-slate-400 border-white/10' :
+                        <div className={`flex items-center gap-4 text-[10px] font-black   p-4 rounded-2xl transition-all border ${!mediaState.isCameraEnabled ? 'bg-white/5 text-slate-400 border-white/10' :
                             !hasMicActivity ? 'bg-white/5 text-slate-400 border-white/10' :
                                 'bg-white text-slate-900 border-white font-black'
                             }`}>
@@ -198,14 +198,14 @@ export default function InterviewLobby({ onJoin, mediaState }: InterviewLobbyPro
                             <button
                                 onClick={onJoin}
                                 disabled={!hasPermissions || !mediaState.isCameraEnabled}
-                                className="w-full py-4 bg-white hover:bg-slate-100 text-slate-900 rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:grayscale active:scale-95 shadow-lg group"
+                                className="w-full py-4 bg-white hover:bg-slate-100 text-slate-900 rounded-2xl font-black  text-[11px] tracking-[0.2em] flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:grayscale active:scale-95 shadow-lg group"
                             >
                                 <span>Join Interview Session</span>
                                 <span className="material-symbols-rounded text-base font-bold group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </button>
 
                             {!hasPermissions && (
-                                <div className="p-3 bg-white/5 text-slate-400 rounded-xl text-center text-[9px] font-black uppercase tracking-widest border border-white/10 animate-pulse">
+                                <div className="p-3 bg-white/5 text-slate-400 rounded-xl text-center text-[9px] font-black   border border-white/10 animate-pulse">
                                     Hardware access required
                                 </div>
                             )}
@@ -217,7 +217,7 @@ export default function InterviewLobby({ onJoin, mediaState }: InterviewLobbyPro
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-6 text-[9px] text-slate-400 font-bold uppercase tracking-widest ml-2">
+                    <div className="flex items-center gap-6 text-[9px] text-slate-400 font-bold   ml-2">
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
                             Stable_Net

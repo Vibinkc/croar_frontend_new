@@ -38,7 +38,7 @@ export default function DivisionsPage() {
         <div className="space-y-6">
             <div className="flex flex-col gap-0.5">
                 <h1 className="text-2xl font-black text-slate-900 tracking-tight">COLLEGE DIVISIONS</h1>
-                <p className="text-[10px] font-bold text-[var(--color-primary)] uppercase tracking-widest">Academic Portfolio Management</p>
+                <p className="text-[10px] font-bold text-[var(--color-primary)]  ">Academic Portfolio Management</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-2">
@@ -53,7 +53,7 @@ export default function DivisionsPage() {
                                 <span className="material-icons-outlined text-xl text-slate-600 group-hover:text-white">account_balance</span>
                             </div>
                             <h3 className="font-bold text-base text-slate-900">{division.name}</h3>
-                            <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mt-0.5">College Division</p>
+                            <p className="text-[10px] text-slate-500  font-black  mt-0.5">College Division</p>
                         </Link>
                     );
                 })}
@@ -62,7 +62,7 @@ export default function DivisionsPage() {
             {divisions.length === 0 && (
                 <div className="py-20 text-center bg-slate-50 rounded-3xl border-2 border-slate-100 border-dashed">
                     <span className="material-icons-outlined text-4xl text-slate-300 mb-4 block">inventory_2</span>
-                    <p className="text-slate-400 font-bold uppercase text-xs tracking-widest">No academic divisions found.</p>
+                    <p className="text-slate-400 font-bold  text-xs ">No academic divisions found.</p>
                 </div>
             )}
         </div>

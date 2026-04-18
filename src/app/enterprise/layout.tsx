@@ -90,22 +90,22 @@ export default function EnterprisePortalLayout({
 
     const navGroups = [
         {
-            title: "HIRING HUB",
+            title: "Hiring Hub",
             items: [
-                { label: "Overview", icon: "grid_view", path: "/enterprise/dashboard", permission: "organization:read" },
-                { label: "Job Management", icon: "business_center", path: "/enterprise/jobs", permission: "jobs:read" },
-                { label: "Applicant Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
-                { label: "Candidate Mailbox", icon: "alternate_email", path: "/enterprise/communication", permission: "communications:read" },
+                { label: "Dashboard", icon: "grid_view", path: "/enterprise/dashboard", permission: "organization:read" },
+                { label: "Jobs", icon: "business_center", path: "/enterprise/jobs", permission: "jobs:read" },
+                { label: "Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
+                { label: "Mail", icon: "alternate_email", path: "/enterprise/communication", permission: "communications:read" },
             ]
         },
         {
-            title: "TALENT SEARCH",
+            title: "Talent Search",
             items: [
                 { label: "Candidate Search", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
             ]
         },
         {
-            title: "AUTOMATION",
+            title: "Automation",
             items: [
                 { label: "Automation Canvas", icon: "account_tree", path: "/enterprise/automation", permission: "automation:read" },
                 { label: "Mail Automation", icon: "mark_email_unread", path: "/enterprise/automation/mail", permission: "communications:moderate" },
@@ -115,7 +115,7 @@ export default function EnterprisePortalLayout({
             ]
         },
         {
-            title: "POST ONBOARDING",
+            title: "Post Onboarding",
             items: [
                 { label: "Employees", icon: "badge", path: "/enterprise/employees", permission: "employees:read" },
                 { label: "Projects", icon: "account_tree", path: "/enterprise/projects", permission: "projects:read" },
@@ -125,18 +125,18 @@ export default function EnterprisePortalLayout({
             ]
         },
         {
-            title: "AI & TRAINING",
+            title: "AI & Training",
             items: [
                 { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios", permission: "ai_training:read" },
             ]
         },
         {
-            title: "GENERAL",
+            title: "General",
             items: [
-                { label: "Organization Profile", icon: "business", path: "/enterprise/settings", permission: "organization:read" },
-                { label: "Team Management", icon: "groups", path: "/enterprise/team", permission: "organization:moderate" },
-                { label: "Roles & Permissions", icon: "security", path: "/enterprise/settings/roles", permission: "organization:moderate" },
-                { label: "Enterprise Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
+                { label: "Settings", icon: "business", path: "/enterprise/settings", permission: "organization:read" },
+                { label: "Team", icon: "groups", path: "/enterprise/team", permission: "organization:moderate" },
+                { label: "Permissions", icon: "security", path: "/enterprise/settings/roles", permission: "organization:moderate" },
+                { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
                 { label: "Email Templates", icon: "mail", path: "/enterprise/settings/templates", permission: "communications:read" },
                 { label: "Assessment Templates", icon: "quiz", path: "/enterprise/settings/assessments", permission: "assessments:read" },
                 { label: "Interview Templates", icon: "psychology", path: "/enterprise/settings/interview-templates", permission: "interviews:read" },
@@ -179,14 +179,14 @@ export default function EnterprisePortalLayout({
             isActive = false;
         }
 
-        return `group flex items-center gap-3 px-3 py-1.5 rounded-xl transition-all duration-200 ${isActive
+        return `group flex items-center gap-3 px-3 py-1.5 rounded-lg transition-all duration-200 ${isActive
             ? "bg-[#7C3AED]/10 text-[#7C3AED]"
             : "text-slate-500 hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]"
             }`;
     };
 
     return (
-        <div className="flex w-full h-screen bg-[#FDFDFF] overflow-hidden font-sans">
+        <div className="flex w-full h-screen bg-[#F8FAFC] overflow-hidden font-sans">
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
                 <div
@@ -204,7 +204,7 @@ export default function EnterprisePortalLayout({
                     {/* Logo Section (Standard Student Portal Logo) */}
                     <div className="p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50">
                         <Link href="/enterprise/dashboard" className="flex items-center gap-2 tracking-tighter">
-                            <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent italic">CROAR.AI</span>
+                            <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent">Croar.ai</span>
                         </Link>
                     </div>
 
@@ -212,7 +212,7 @@ export default function EnterprisePortalLayout({
                     <nav className="space-y-4 px-1">
                         {accessibleNavGroups.map((group) => (
                             <div key={group.title}>
-                                <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 px-3">{group.title}</p>
+                                <p className="text-[11px] font-bold text-slate-400 mb-2 px-3">{group.title}</p>
                                 <div className="space-y-0.5">
                                     {group.items.map((item) => (
                                         <Link key={item.path} href={item.path} className={navLinkClass(item.path)}>
@@ -234,13 +234,13 @@ export default function EnterprisePortalLayout({
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-[10px] font-bold text-slate-700 truncate">{user || "recruiter@techcorp.com"}</p>
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{role || 'RECRUITER'}</p>
+                            <p className="text-[10px] font-medium text-slate-400">{role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Recruiter'}</p>
                         </div>
                     </div>
 
                     <button
                         onClick={logout}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-xl transition-all duration-200 group"
+                        className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all duration-200 group"
                     >
                         <span className="material-symbols-rounded text-slate-500 text-[20px]">logout</span>
                         <span className="text-[10px] font-bold">Logout</span>
@@ -255,16 +255,16 @@ export default function EnterprisePortalLayout({
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
-                            className="w-10 h-10 rounded-lg hover:bg-slate-50 flex items-center justify-center transition-colors"
+                            className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center transition-colors"
                         >
                             <span className="material-icons-outlined text-slate-600">menu</span>
                         </button>
-                        <span className="text-xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent italic tracking-tighter">CROAR.AI</span>
+                        <span className="text-xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent tracking-tighter">Croar.ai</span>
                     </div>
                 </header>
 
                 {/* Content */}
-                <main className="flex-1 w-full overflow-y-auto bg-[#FDFDFF] custom-scrollbar">
+                <main className="flex-1 w-full overflow-y-auto bg-[#F8FAFC] custom-scrollbar">
                     {children}
                 </main>
             </div>

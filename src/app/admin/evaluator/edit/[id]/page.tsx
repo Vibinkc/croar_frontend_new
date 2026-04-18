@@ -31,7 +31,7 @@ export default function EditEvaluatorTaskPage({ params }: { params: Promise<{ id
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20">
             <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading_Protocol_Matrix</p>
+            <p className="text-[10px] font-black   text-slate-400">Loading_Protocol_Matrix</p>
         </div>
     );
 
@@ -45,8 +45,8 @@ export default function EditEvaluatorTaskPage({ params }: { params: Promise<{ id
                     <span className="material-icons-outlined">arrow_back</span>
                 </button>
                 <div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase">Update_Evaluation_Protocol</h1>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Modify Subjective Neural Analysis Module</p>
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight ">Update_Evaluation_Protocol</h1>
+                    <p className="text-[9px] font-bold text-slate-400   mt-1">Modify Subjective Neural Analysis Module</p>
                 </div>
             </div>
 
@@ -54,7 +54,7 @@ export default function EditEvaluatorTaskPage({ params }: { params: Promise<{ id
                 <div className="bg-slate-50 px-6 py-3 border-b border-slate-100 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></div>
-                        <span className="text-[9px] font-black tracking-[0.4em] text-[var(--color-primary)] uppercase">Configuration_Gateway</span>
+                        <span className="text-[9px] font-black tracking-[0.4em] text-[var(--color-primary)] ">Configuration_Gateway</span>
                     </div>
                 </div>
                 <div className="p-6">

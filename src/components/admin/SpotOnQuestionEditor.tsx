@@ -45,14 +45,14 @@ export default function SpotOnQuestionEditor({ target, options, correctIndex, on
     return (
         <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
             <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Question Preview</h3>
-                <span className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-black rounded-lg uppercase">Type: Spot On</span>
+                <h3 className="text-xs font-black text-slate-400  ">Question Preview</h3>
+                <span className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-black rounded-lg ">Type: Spot On</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Target Pattern */}
                 <div className="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Target Pattern</span>
+                    <span className="text-[10px] font-black text-slate-400   mb-4">Target Pattern</span>
                     <div className="w-32 h-32 bg-white rounded-full p-4 shadow-sm border border-slate-200 flex items-center justify-center">
                         {renderPattern(Array.isArray(target) ? target : target?.lines)}
                     </div>
@@ -60,7 +60,7 @@ export default function SpotOnQuestionEditor({ target, options, correctIndex, on
 
                 {/* Options Grid */}
                 <div className="space-y-4">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Options</span>
+                    <span className="text-[10px] font-black text-slate-400  ">Options</span>
                     <div className="grid grid-cols-2 gap-4">
                         {options?.map((opt, idx) => {
                             const lines = Array.isArray(opt) ? opt : opt?.lines;
@@ -80,7 +80,7 @@ export default function SpotOnQuestionEditor({ target, options, correctIndex, on
                                         {idx + 1}
                                     </div>
                                     {idx === correctIndex && (
-                                        <span className="absolute -bottom-2 px-2 py-0.5 bg-gray-500 text-white text-[8px] font-black rounded uppercase">Correct</span>
+                                        <span className="absolute -bottom-2 px-2 py-0.5 bg-gray-500 text-white text-[8px] font-black rounded ">Correct</span>
                                     )}
                                 </div>
                             );

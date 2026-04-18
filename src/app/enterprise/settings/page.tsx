@@ -155,18 +155,18 @@ export default function OrganizationProfilePage() {
     if (isLoading) {
         return (
             <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-3xl relative overflow-hidden flex items-center px-10 shadow-xl shadow-indigo-100/50">
+                <div className="h-32 bg-slate-900 rounded-xl relative overflow-hidden flex items-center px-10 shadow-xl shadow-indigo-100/50">
                     <div className="flex items-center gap-6 text-white/20">
-                        <div className="w-16 h-16 bg-white/10 rounded-2xl animate-pulse" />
+                        <div className="w-16 h-16 bg-white/10 rounded-xl animate-pulse" />
                         <div className="space-y-3">
-                            <div className="w-64 h-8 bg-white/10 rounded-lg animate-pulse" />
-                            <div className="w-40 h-4 bg-white/5 rounded-md animate-pulse" />
+                            <div className="w-64 h-8 bg-white/10 rounded-xl animate-pulse" />
+                            <div className="w-40 h-4 bg-white/5 rounded-xl animate-pulse" />
                         </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                    <div className="md:col-span-4 h-96 bg-white rounded-3xl border border-slate-100 animate-pulse" />
-                    <div className="md:col-span-8 h-96 bg-white rounded-3xl border border-slate-100 animate-pulse" />
+                    <div className="md:col-span-4 h-96 bg-white rounded-xl border border-slate-100 animate-pulse" />
+                    <div className="md:col-span-8 h-96 bg-white rounded-xl border border-slate-100 animate-pulse" />
                 </div>
             </div>
         );
@@ -181,7 +181,7 @@ export default function OrganizationProfilePage() {
                         initial={{ opacity: 0, y: 20 }} 
                         animate={{ opacity: 1, y: 0 }} 
                         exit={{ opacity: 0, y: -20 }} 
-                        className={`fixed bottom-10 right-10 z-[500] px-6 py-4 rounded-2xl shadow-2xl font-semibold text-sm flex items-center gap-3 border border-slate-100 backdrop-blur-md ${toast.type === "success" ? "bg-white text-slate-900" : "bg-rose-50 text-rose-600 border-rose-100"}`}
+                        className={`fixed bottom-10 right-10 z-[500] px-6 py-4 rounded-xl shadow-2xl font-semibold text-sm flex items-center gap-3 border border-slate-100 backdrop-blur-md ${toast.type === "success" ? "bg-white text-slate-900" : "bg-rose-50 text-rose-600 border-rose-100"}`}
                     >
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${toast.type === "success" ? "bg-emerald-50 text-emerald-500" : "bg-rose-100 text-rose-500"}`}>
                             {toast.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
@@ -191,14 +191,14 @@ export default function OrganizationProfilePage() {
                 )}
             </AnimatePresence>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
                 <div className="flex items-center gap-3 px-2">
                     <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
                         <span className="material-symbols-rounded">business</span>
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">Organization Profile</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Manage your global brand presence</p>
+                        <p className="text-slate-500 text-[10px] font-medium   ">Manage your global brand presence</p>
                     </div>
                 </div>
 
@@ -207,7 +207,7 @@ export default function OrganizationProfilePage() {
                         <button
                             onClick={handleSave}
                             disabled={isSaving || !hasChanges}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100 disabled:opacity-30 disabled:cursor-not-allowed"
                         >
                             {isSaving ? (
                                 <RefreshCcw className="w-3 h-3 animate-spin" />
@@ -235,12 +235,12 @@ export default function OrganizationProfilePage() {
                     transition={{ delay: 0.1 }}
                     className="lg:col-span-4 space-y-6"
                 >
-                    <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-500 overflow-hidden relative group">
+                    <div className="bg-white rounded-xl p-8 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-500 overflow-hidden relative group">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                         
                         <div className="text-center space-y-8">
                             <div className="relative w-40 h-40 mx-auto group/logo">
-                                <div className="absolute inset-0 bg-slate-50 rounded-[2.5rem] border border-slate-100 overflow-hidden flex items-center justify-center p-8 shadow-inner transition-transform group-hover/logo:scale-95">
+                                <div className="absolute inset-0 bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden flex items-center justify-center p-8 shadow-inner transition-transform group-hover/logo:scale-95">
                                     {logoUrl ? (
                                         <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                                     ) : (
@@ -250,24 +250,24 @@ export default function OrganizationProfilePage() {
                                 {canAccess("enterprise:moderate") && (
                                     <button 
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="absolute -bottom-2 -right-2 w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-indigo-600 transition-all scale-0 group-hover/logo:scale-100"
+                                        className="absolute -bottom-2 -right-2 w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-2xl hover:bg-indigo-600 transition-all scale-0 group-hover/logo:scale-100"
                                     >
                                         <Camera className="w-5 h-5" />
                                     </button>
                                 )}
                                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoUpload} accept="image/*" />
                                 {isUploading && (
-                                    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-[2.5rem] flex flex-col items-center justify-center gap-2">
+                                    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-2">
                                          <RefreshCcw className="w-6 h-6 text-indigo-600 animate-spin" />
-                                         <span className="text-[10px] font-bold text-slate-500 uppercase">Updating</span>
+                                         <span className="text-[10px] font-bold text-slate-500 ">Updating</span>
                                     </div>
                                 )}
                             </div>
 
                             <div className="space-y-4">
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">{industry || "Brand Identity"}</p>
-                                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-tight uppercase truncate">{name || "Your Company"}</h2>
+                                    <p className="text-[10px] font-bold text-indigo-600  ">{industry || "Brand Identity"}</p>
+                                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-tight  truncate">{name || "Your Company"}</h2>
                                 </div>
                                 <div className="flex items-center justify-center gap-2 text-slate-400">
                                     <MapPin className="w-4 h-4" />
@@ -276,11 +276,11 @@ export default function OrganizationProfilePage() {
                             </div>
 
                             <div className="pt-4 grid grid-cols-2 gap-3">
-                                <div className="px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col items-center gap-1.5">
+                                <div className="px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center gap-1.5">
                                     <Shield className="w-4 h-4 text-emerald-500" />
                                     <span className="text-[10px] font-bold text-slate-500">Verified</span>
                                 </div>
-                                <div className="px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col items-center gap-1.5">
+                                <div className="px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center gap-1.5">
                                     <Zap className="w-4 h-4 text-indigo-500" />
                                     <span className="text-[10px] font-bold text-slate-500">Premium</span>
                                 </div>
@@ -288,9 +288,9 @@ export default function OrganizationProfilePage() {
                         </div>
                     </div>
 
-                    <div className="bg-slate-50/50 border border-slate-100 p-8 rounded-[2rem] space-y-6">
+                    <div className="bg-slate-50/50 border border-slate-100 p-8 rounded-xl space-y-6">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Health Status</h3>
+                            <h3 className="text-xs font-bold text-slate-900  ">Health Status</h3>
                             <Activity className="w-4 h-4 text-indigo-500" />
                         </div>
                         <div className="space-y-5">
@@ -299,7 +299,7 @@ export default function OrganizationProfilePage() {
                                 { label: "Brand Propagation", status: "Syncing" }
                             ].map((item, idx) => (
                                 <div key={idx} className="space-y-2">
-                                    <div className="flex justify-between text-[10px] font-bold uppercase">
+                                    <div className="flex justify-between text-[10px] font-bold ">
                                         <span className="text-slate-500">{item.label}</span>
                                         <span className="text-indigo-600">{item.status}</span>
                                     </div>
@@ -319,7 +319,7 @@ export default function OrganizationProfilePage() {
                     transition={{ delay: 0.2 }}
                     className="lg:col-span-8"
                 >
-                    <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm p-8 lg:p-12 space-y-12">
+                    <div className="bg-white border border-slate-100 rounded-xl shadow-sm p-8 lg:p-12 space-y-12">
                         {/* Section: Basic Information */}
                         <section className="space-y-8">
                             <div className="flex items-center gap-4">
@@ -397,7 +397,7 @@ export default function OrganizationProfilePage() {
                                     </div>
                                 </div>
                                 
-                                <div className="p-6 bg-indigo-50/50 border border-indigo-100 rounded-2xl flex gap-4">
+                                <div className="p-6 bg-indigo-50/50 border border-indigo-100 rounded-xl flex gap-4">
                                     <Shield className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
                                     <p className="text-sm text-indigo-900/70 leading-relaxed font-medium">
                                         Your logo will be used across all candidate-facing materials, including job boards, email templates, and career portals.

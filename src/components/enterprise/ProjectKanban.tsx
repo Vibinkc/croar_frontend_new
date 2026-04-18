@@ -130,7 +130,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                     {/* Column Header */}
                     <div className="p-4 flex items-center justify-between border-b border-slate-100 bg-white/50 rounded-t-2xl">
                         <div className="flex items-center gap-2">
-                            <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-widest">{col}</h3>
+                            <h3 className="text-[11px] font-black text-slate-900  ">{col}</h3>
                             <span className="bg-white px-2 py-0.5 rounded-full border border-slate-200 text-[10px] font-black text-slate-400 shadow-sm">
                                 {tasks.filter(t => t.column === col).length}
                             </span>
@@ -176,21 +176,21 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-50">
                                         {task.assignee ? (
                                             <div className="flex items-center gap-1.5" title={`${task.assignee.first_name} ${task.assignee.last_name}`}>
-                                                <div className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[8px] font-black uppercase">
+                                                <div className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[8px] font-black ">
                                                     {task.assignee.first_name[0]}{task.assignee.last_name[0]}
                                                 </div>
-                                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-tight truncate max-w-[60px]">
+                                                <span className="text-[9px] font-black text-slate-400  tracking-tight truncate max-w-[60px]">
                                                     {task.assignee.first_name}
                                                 </span>
                                             </div>
                                         ) : (
-                                            <div className="flex items-center gap-1 text-[9px] font-black text-slate-300 uppercase tracking-tight">
+                                            <div className="flex items-center gap-1 text-[9px] font-black text-slate-300  tracking-tight">
                                                 <span className="material-symbols-rounded text-[14px]">person_off</span>
                                                 Unassigned
                                             </div>
                                         )}
                                         {task.due_date && (
-                                            <div className="flex items-center gap-1 text-[9px] font-black text-rose-500/70 uppercase tracking-tight">
+                                            <div className="flex items-center gap-1 text-[9px] font-black text-rose-500/70  tracking-tight">
                                                 <span className="material-symbols-rounded text-[14px]">calendar_today</span>
                                                 {new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                                             </div>
@@ -234,7 +234,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 <div className="flex items-center justify-between mb-8">
                                     <div>
                                         <h3 className="text-2xl font-black text-slate-900 tracking-tight">Add New Task</h3>
-                                        <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mt-1 bg-indigo-50 px-2 py-0.5 rounded-full inline-block italic">
+                                        <p className="text-[10px] font-black text-indigo-500   mt-1 bg-indigo-50 px-2 py-0.5 rounded-full inline-block ">
                                             Column: {isAddingTask.column}
                                         </p>
                                     </div>
@@ -248,7 +248,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
 
                                 <form onSubmit={handleAddTask} id="add-task-form" className="space-y-6">
                                     <div className="space-y-1.5 px-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Task Title*</label>
+                                        <label className="text-[10px] font-black text-slate-400   ml-1">Task Title*</label>
                                         <input
                                             required
                                             value={newTaskData.title}
@@ -259,7 +259,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     </div>
 
                                     <div className="space-y-1.5 px-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Assign To</label>
+                                        <label className="text-[10px] font-black text-slate-400   ml-1">Assign To</label>
                                         <div className="relative">
                                             <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">person</span>
                                             <select
@@ -276,7 +276,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     </div>
 
                                     <div className="space-y-1.5 px-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Due Date</label>
+                                        <label className="text-[10px] font-black text-slate-400   ml-1">Due Date</label>
                                         <div className="relative">
                                             <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">calendar_month</span>
                                             <input
@@ -289,12 +289,12 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     </div>
 
                                     <div className="space-y-1.5 px-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                                        <label className="text-[10px] font-black text-slate-400   ml-1">Description</label>
                                         <textarea
                                             rows={5}
                                             value={newTaskData.description}
                                             onChange={(e) => setNewTaskData(prev => ({ ...prev, description: e.target.value }))}
-                                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all shadow-sm resize-none italic"
+                                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all shadow-sm resize-none "
                                             placeholder="Provide any additional details or context for this task..."
                                         />
                                     </div>
@@ -307,7 +307,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                             <button
                                 type="submit"
                                 form="add-task-form"
-                                className="w-full bg-[#7C3AED] text-white py-4 rounded-[20px] font-black text-xs uppercase tracking-[0.2em] hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-md flex items-center justify-center gap-3"
+                                className="w-full bg-[#7C3AED] text-white py-4 rounded-[20px] font-black text-xs  tracking-[0.2em] hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-md flex items-center justify-center gap-3"
                             >
                                 <span className="material-symbols-rounded text-lg">send</span>
                                 Assign & Notify Team

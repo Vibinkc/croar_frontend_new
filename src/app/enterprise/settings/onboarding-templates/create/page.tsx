@@ -11,7 +11,7 @@ export default function CreateOnboardingTemplatePage() {
             <div className="flex items-center gap-6 mb-10">
                 <Link 
                     href="/enterprise/settings/onboarding-templates"
-                    className="w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
+                    className="w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-xl text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
                 >
                     <span className="material-icons-outlined">arrow_back</span>
                 </Link>

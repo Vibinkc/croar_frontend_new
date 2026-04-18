@@ -83,8 +83,8 @@ function InterviewList({ divisionId, departmentId }: { divisionId: number | null
             {/* Premium Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mb-6">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Virtual Recruiters</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight ">Virtual Recruiters</h1>
+                    <p className="text-[10px] font-bold text-slate-400   mt-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
                         AI Evaluation / Active Protocols
                     </p>
@@ -94,7 +94,7 @@ function InterviewList({ divisionId, departmentId }: { divisionId: number | null
                     <button
                         type="button"
                         onClick={() => router.push(`/admin/interviews/create${departmentId ? `?department_id=${departmentId}` : ""}`)}
-                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
+                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black  tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
                     >
                         <span className="material-icons-outlined text-sm font-bold">record_voice_over</span>
                         Init Protocol
@@ -102,7 +102,7 @@ function InterviewList({ divisionId, departmentId }: { divisionId: number | null
                     <button
                         type="button"
                         onClick={() => router.push(`/admin/interviews/create${departmentId ? `?department_id=${departmentId}` : ""}`)}
-                        className="px-6 py-3 bg-slate-900 text-white rounded-lg text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black shadow-lg shadow-slate-200 hover:shadow-indigo-500/20 transition-all flex items-center gap-2 group active:scale-95"
+                        className="px-6 py-3 bg-slate-900 text-white rounded-lg text-[10px] font-black  tracking-[0.2em] hover:bg-black shadow-lg shadow-slate-200 hover:shadow-indigo-500/20 transition-all flex items-center gap-2 group active:scale-95"
                     >
                         <span className="material-icons-outlined text-sm group-hover:rotate-180 transition-transform duration-700 font-bold">auto_awesome</span>
                         AI Recruiter
@@ -122,7 +122,7 @@ function InterviewList({ divisionId, departmentId }: { divisionId: number | null
                                         <div className="truncate flex-1">
                                             <div className="flex items-center text-sm">
                                                 <p className="font-bold text-slate-800 truncate text-sm mr-2">{interview.title}</p>
-                                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${interview.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100'}`}>
+                                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black   border ${interview.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100'}`}>
                                                     {interview.is_active ? "Active" : "Inactive"}
                                                 </span>
                                             </div>

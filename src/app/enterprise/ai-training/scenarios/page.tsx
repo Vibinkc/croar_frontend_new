@@ -118,11 +118,11 @@ export default function ScenarioManagement() {
                     difficulty: data.difficulty
                 });
                 setAiPrompt("");
-                showToast("Neural blueprint generated.");
+                showToast("Scenario generated.");
             }
         } catch (error) {
             console.error("AI Generation Error:", error);
-            showToast("Neural link failed.", "error");
+            showToast("Generation failed.", "error");
         } finally {
             setIsAiGenerating(false);
         }
@@ -149,7 +149,7 @@ export default function ScenarioManagement() {
                 setIsCreating(false);
                 setEditingId(null);
                 fetchScenarios();
-                showToast(editingId ? "Blueprint synchronized." : "Scenario deployed.");
+                showToast(editingId ? "Scenario updated." : "Scenario saved.");
             }
         } catch (error) {
             console.error(error);
@@ -167,7 +167,7 @@ export default function ScenarioManagement() {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
-                showToast("Scenario decommissioned.");
+                showToast("Scenario deleted.");
                 fetchScenarios();
             }
         } catch (error) {
@@ -196,11 +196,11 @@ export default function ScenarioManagement() {
             if (res.ok) {
                 setIsAssigningId(null);
                 setSelectedEmployees([]);
-                showToast("Mission broadcast successful.");
+                showToast("Assignment successful.");
             }
         } catch (error) {
             console.error(error);
-            showToast("Broadcast failure.", "error");
+            showToast("Assignment failed.", "error");
         } finally {
             setAssigning(false);
         }
@@ -215,18 +215,18 @@ export default function ScenarioManagement() {
     if (loading) {
         return (
             <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 border-b-4 border-slate-800 shadow-2xl shadow-indigo-100/10">
+                <div className="h-32 bg-slate-900 rounded-2xl relative overflow-hidden flex items-center px-10 border-b-4 border-slate-800 shadow-2xl shadow-indigo-100/10">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="w-16 h-16 bg-white/5 rounded-xl animate-pulse" />
                         <div className="space-y-2">
-                            <div className="w-48 h-6 bg-white/10 rounded-lg animate-pulse" />
-                            <div className="w-32 h-3 bg-white/5 rounded-lg animate-pulse" />
+                            <div className="w-48 h-6 bg-white/10 rounded-xl animate-pulse" />
+                            <div className="w-32 h-3 bg-white/5 rounded-xl animate-pulse" />
                         </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="bg-white h-64 rounded-[2.5rem] border border-slate-100 animate-pulse shadow-sm" />
+                        <div key={i} className="bg-white h-64 rounded-2xl border border-slate-100 animate-pulse shadow-sm" />
                     ))}
                 </div>
             </div>
@@ -238,14 +238,14 @@ export default function ScenarioManagement() {
             {/* Toast */}
             <AnimatePresence>
                 {toast && (
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className={`fixed top-10 right-10 z-[500] px-6 py-4 rounded-2xl shadow-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 ${toast.type === "success" ? "bg-slate-900 text-white" : "bg-rose-500 text-white"}`}>
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className={`fixed top-10 right-10 z-[500] px-6 py-4 rounded-xl shadow-2xl font-black text-[10px]  tracking-[0.2em] flex items-center gap-3 ${toast.type === "success" ? "bg-slate-900 text-white" : "bg-rose-500 text-white"}`}>
                         <span className="material-symbols-rounded text-lg text-emerald-400">{toast.type === "success" ? "verified" : "error"}</span>
                         {toast.msg}
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
                 <div className="flex items-center gap-3 px-2">
                     <button 
                         onClick={() => router.push('/enterprise/dashboard')} 
@@ -257,15 +257,15 @@ export default function ScenarioManagement() {
                         <span className="material-symbols-rounded">architecture</span>
                     </div>
                     <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight">Scenario Architect</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Strategic Simulation Design</p>
+                        <h1 className="text-lg font-black text-slate-900 tracking-tight">Scenario Configuration</h1>
+                        <p className="text-slate-500 text-[10px] font-medium   ">Training Scenario Design</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button 
                         onClick={() => router.push('/enterprise/ai-training/results')}
-                        className="px-4 py-2 text-slate-500 hover:text-slate-900 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
+                        className="px-4 py-2 text-slate-500 hover:text-slate-900 transition-all font-black text-[9px]   flex items-center gap-2"
                     >
                         <BarChart3 className="w-4 h-4" />
                         Intelligence
@@ -282,7 +282,7 @@ export default function ScenarioManagement() {
                                 });
                                 setIsCreating(true);
                             }}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
                             New Scenario
@@ -303,13 +303,13 @@ export default function ScenarioManagement() {
                     <motion.div 
                         layout
                         key={sc.id} 
-                        className="group bg-white rounded-[2.5rem] border border-slate-100 p-1.5 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 relative overflow-hidden"
+                        className="group bg-white rounded-2xl border border-slate-100 p-1.5 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 relative overflow-hidden"
                     >
                         <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                         
                         <div className="p-8 pb-4 space-y-6">
                             <div className="flex justify-between items-start">
-                                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
+                                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
                                     <Brain className="w-6 h-6" />
                                 </div>
                                 <div className="flex gap-2 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
@@ -338,15 +338,15 @@ export default function ScenarioManagement() {
 
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50/50 border border-indigo-100/50 rounded-md">
+                                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50/50 border border-indigo-100/50 rounded-xl">
                                         <span className="w-1 h-1 rounded-full bg-indigo-400" />
-                                        <span className="text-[7.5px] font-black text-indigo-500 uppercase tracking-widest">{sc.category}</span>
+                                        <span className="text-[7.5px] font-black text-indigo-500  ">{sc.category}</span>
                                     </div>
-                                    <span className="text-[7.5px] font-black text-slate-300 uppercase tracking-widest tabular-nums italic">{sc.difficulty}</span>
+                                    <span className="text-[7.5px] font-black text-slate-300   tabular-nums ">{sc.difficulty}</span>
                                 </div>
-                                <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-none italic uppercase group-hover:text-indigo-600 transition-colors truncate">{sc.title}</h3>
-                                <p className="text-[10px] font-bold text-slate-400 leading-relaxed uppercase tracking-tight line-clamp-2 h-10 opacity-70 italic">
-                                    {sc.description || "Operational parameters not specified for this mission."}
+                                <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-none   group-hover:text-indigo-600 transition-colors truncate">{sc.title}</h3>
+                                <p className="text-[10px] font-bold text-slate-400 leading-relaxed  tracking-tight line-clamp-2 h-10 opacity-70 ">
+                                    {sc.description || "Description not provided for this scenario."}
                                 </p>
                             </div>
                         </div>
@@ -355,10 +355,10 @@ export default function ScenarioManagement() {
                             <div className="px-8 py-5 flex items-center gap-4 bg-slate-50/50 border-t border-slate-50 rounded-b-[2.5rem]">
                                 <button 
                                     onClick={() => setIsAssigningId(sc.id)}
-                                    className="flex-1 h-12 bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 group/btn"
+                                    className="flex-1 h-12 bg-slate-900 hover:bg-indigo-600 text-white rounded-xl text-[9px] font-black  tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 group/btn"
                                 >
                                     <Play className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                                    Deploy Simulation
+                                    Assign Scenario
                                 </button>
                             </div>
                         )}
@@ -376,15 +376,15 @@ export default function ScenarioManagement() {
                             {/* Drawer Header */}
                             <div className="flex items-center justify-between px-10 py-8 border-b border-slate-50 shrink-0">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center shadow-2xl rotate-3">
+                                    <div className="w-14 h-14 rounded-xl bg-slate-900 flex items-center justify-center shadow-2xl rotate-3">
                                         <DraftingCompass className="w-8 h-8 text-indigo-400" />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-black text-slate-800 tracking-tighter italic uppercase leading-none">{editingId ? "Refine Blueprint" : "Initialize Architect"}</h2>
-                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-2">Neural Scenario Design System</p>
+                                        <h2 className="text-2xl font-black text-slate-800 tracking-tighter   leading-none">{editingId ? "Edit Scenario" : "New Scenario"}</h2>
+                                        <p className="text-[10px] font-black text-slate-300   mt-2">Scenario Design System</p>
                                     </div>
                                 </div>
-                                <button onClick={() => { setIsCreating(false); setEditingId(null); }} className="w-12 h-12 rounded-2xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
+                                <button onClick={() => { setIsCreating(false); setEditingId(null); }} className="w-12 h-12 rounded-xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
                                     <X className="w-6 h-6" />
                                 </button>
                             </div>
@@ -394,33 +394,33 @@ export default function ScenarioManagement() {
                                 
                                 {/* Neural Assistant HUD */}
                                 {!editingId && (canAccess("scenarios:moderate") || role === "ADMIN") && (
-                                    <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-white/5 relative overflow-hidden group/hud">
+                                    <div className="bg-slate-950 rounded-2xl p-8 border border-white/5 relative overflow-hidden group/hud">
                                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-50" />
                                         <div className="relative z-10 space-y-6">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
-                                                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Neural Generation Interface</span>
+                                                    <span className="text-[10px] font-black text-indigo-400  tracking-[0.3em]">AI Generation Interface</span>
                                                 </div>
                                             </div>
                                             <div className="flex gap-4">
                                                 <textarea 
-                                                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-sm font-bold text-white outline-none focus:bg-white/10 focus:border-indigo-400/50 transition-all placeholder:text-white/20 min-h-[100px] shadow-inner"
-                                                    placeholder="CONCEPTUAL PROTOCOL: e.g. Negotiating a high-stakes neural supply line under crisis..."
+                                                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-5 text-sm font-bold text-white outline-none focus:bg-white/10 focus:border-indigo-400/50 transition-all placeholder:text-white/20 min-h-[100px] shadow-inner"
+                                                    placeholder="CONCEPT: e.g. Negotiating a high-stakes supply line under crisis..."
                                                     value={aiPrompt}
                                                     onChange={(e) => setAiPrompt(e.target.value)}
                                                 />
                                                 <button 
                                                     onClick={handleAiGenerate}
                                                     disabled={isAiGenerating || !aiPrompt.trim()}
-                                                    className="w-28 bg-white hover:bg-indigo-400 hover:text-white text-slate-950 rounded-2xl font-black text-[9px] uppercase tracking-widest flex flex-col items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-20 shadow-2xl"
+                                                    className="w-28 bg-white hover:bg-indigo-400 hover:text-white text-slate-950 rounded-xl font-black text-[9px]   flex flex-col items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-20 shadow-2xl"
                                                 >
                                                     {isAiGenerating ? (
                                                         <div className="w-6 h-6 border-2 border-slate-950/20 border-t-slate-950 rounded-full animate-spin" />
                                                     ) : (
                                                         <Zap className="w-6 h-6" />
                                                     )}
-                                                    {isAiGenerating ? "Architecting" : "Generate"}
+                                                    {isAiGenerating ? "Generating" : "Generate"}
                                                 </button>
                                             </div>
                                         </div>
@@ -431,19 +431,19 @@ export default function ScenarioManagement() {
                                 <form id="architect-form" onSubmit={handleAction} className="space-y-10">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-3 group">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Scenario Narrative Tag</label>
+                                            <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Scenario Title</label>
                                             <input 
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
-                                                placeholder="E.G. CRISIS_NEGOTIATION_ALPHA"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
+                                                placeholder="e.g. Crisis Negotiation Alpha"
                                                 value={form.title}
                                                 onChange={e => setForm({...form, title: e.target.value})}
                                                 required
                                             />
                                         </div>
                                         <div className="space-y-3 group">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Mission Difficulty Locking</label>
+                                            <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Difficulty Level</label>
                                             <select 
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-[10px] font-black text-slate-800 uppercase tracking-widest outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-[10px] font-black text-slate-800   outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
                                                 value={form.difficulty}
                                                 onChange={e => setForm({...form, difficulty: e.target.value})}
                                             >
@@ -455,18 +455,18 @@ export default function ScenarioManagement() {
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Participant Role & Persona Identification</label>
+                                        <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Participant Role & Persona</label>
                                         <div className="grid grid-cols-2 gap-4">
                                             <input 
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
-                                                placeholder="NAME: JORDAN_X"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
+                                                placeholder="Name: Jordan X"
                                                 value={form.character_name}
                                                 onChange={e => setForm({...form, character_name: e.target.value})}
                                                 required
                                             />
                                             <input 
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
-                                                placeholder="ROLE: SENIOR_OPERATIVE"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
+                                                placeholder="Role: Senior Operative"
                                                 value={form.character_role}
                                                 onChange={e => setForm({...form, character_role: e.target.value})}
                                                 required
@@ -475,10 +475,10 @@ export default function ScenarioManagement() {
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Neural Logic Processing Instructions</label>
+                                        <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">System Prompt Instructions</label>
                                         <textarea 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-[2rem] px-6 py-6 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-slate-900 transition-all min-h-[150px] shadow-inner leading-relaxed"
-                                            placeholder="ESTABLISH CONTEXTUAL PROTOCOLS: Instruct the character to push participant boundaries in specific behavioral vectors..."
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-6 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-slate-900 transition-all min-h-[150px] shadow-inner leading-relaxed"
+                                            placeholder="Provide instructions for the AI character..."
                                             value={form.system_prompt}
                                             onChange={e => setForm({...form, system_prompt: e.target.value})}
                                             required
@@ -486,10 +486,10 @@ export default function ScenarioManagement() {
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Initial Protocol Line</label>
+                                        <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Initial Message</label>
                                         <input 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner italic"
-                                            placeholder="'I don't think we have the neural capacity for this delay...'"
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner "
+                                            placeholder="'I don't think we have the capacity for this delay...'"
                                             value={form.initial_message}
                                             onChange={e => setForm({...form, initial_message: e.target.value})}
                                             required
@@ -501,15 +501,15 @@ export default function ScenarioManagement() {
                              {/* Drawer Footer */}
                              {(canAccess("scenarios:moderate") || role === "ADMIN") && (
                                 <div className="p-10 border-t border-slate-50 bg-slate-50/30 flex items-center justify-between gap-6 shrink-0">
-                                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none max-w-[200px]">By deploying, you synchronize this blueprint across the neural lab.</p>
+                                    <p className="text-[9px] font-black text-slate-300   leading-none max-w-[200px]">Save this scenario to make it available for training.</p>
                                     <button 
                                         form="architect-form"
                                         type="submit"
                                         disabled={submitting}
-                                        className="px-10 h-14 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-indigo-600 transition-all active:scale-95 shadow-2xl flex items-center gap-3"
+                                        className="px-10 h-14 bg-slate-900 text-white rounded-xl font-black text-[10px]  tracking-[0.3em] hover:bg-indigo-600 transition-all active:scale-95 shadow-2xl flex items-center gap-3"
                                     >
                                         {submitting && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
-                                        {submitting ? 'Transmitting' : editingId ? 'Update Node' : 'Deploy Deployment'}
+                                        {submitting ? 'Saving' : editingId ? 'Update Scenario' : 'Save Scenario'}
                                     </button>
                                 </div>
                             )}
@@ -523,9 +523,9 @@ export default function ScenarioManagement() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Decommission Scenario?"
-                message="Are you sure you want to permanently wipe this neural scenario? This action is irreversible and all associated training artifacts will be archived."
-                confirmLabel="Yes, Decommission"
+                title="Delete Scenario?"
+                message="Are you sure you want to permanently delete this scenario? This action is irreversible."
+                confirmLabel="Yes, Delete"
                 cancelLabel="No"
                 isDestructive={true}
             />
@@ -535,11 +535,11 @@ export default function ScenarioManagement() {
                 {isAssigningId && (
                     <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 sm:p-12 overflow-hidden">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setIsAssigningId(null)} />
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-[4rem] w-full max-w-2xl max-h-full overflow-hidden shadow-2xl flex flex-col border border-slate-100">
+                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-2xl w-full max-w-2xl max-h-full overflow-hidden shadow-2xl flex flex-col border border-slate-100">
                              <div className="p-10 border-b border-slate-50 flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase italic">Mission Deployment</h2>
-                                    <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mt-1">Strategic participant selection</p>
+                                    <h2 className="text-2xl font-black text-slate-900 tracking-tight   ">Assign Scenario</h2>
+                                    <p className="text-[10px] font-black text-indigo-500   mt-1">Select participants</p>
                                 </div>
                                 <X className="w-8 h-8 text-slate-300 cursor-pointer hover:text-rose-500 transition-colors" onClick={() => setIsAssigningId(null)} />
                              </div>
@@ -548,26 +548,26 @@ export default function ScenarioManagement() {
                                     <div 
                                         key={emp.id} 
                                         onClick={() => toggleEmployeeSelection(emp.id)}
-                                        className={`group p-5 rounded-[2rem] border transition-all cursor-pointer flex items-center justify-between ${
+                                        className={`group p-5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                                             selectedEmployees.includes(emp.id) 
                                             ? 'bg-slate-900 border-slate-900 text-white shadow-2xl scale-[1.02]' 
                                             : 'bg-white border-slate-100 hover:bg-slate-50'
                                         }`}
                                     >
                                         <div className="flex items-center gap-6">
-                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black ${
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black ${
                                                 selectedEmployees.includes(emp.id) ? 'bg-white/10' : 'bg-slate-50 text-indigo-600'
                                             }`}>
                                                 {emp.first_name?.[0]}{emp.last_name?.[0]}
                                             </div>
                                             <div>
-                                                <p className="text-sm font-black tracking-tighter uppercase italic">{emp.first_name} {emp.last_name}</p>
-                                                <p className={`text-[8px] font-black uppercase tracking-widest mt-1 ${selectedEmployees.includes(emp.id) ? 'text-slate-400' : 'text-slate-300'}`}>
+                                                <p className="text-sm font-black tracking-tighter  ">{emp.first_name} {emp.last_name}</p>
+                                                <p className={`text-[8px] font-black   mt-1 ${selectedEmployees.includes(emp.id) ? 'text-slate-400' : 'text-slate-300'}`}>
                                                     {emp.designation} • {emp.id.slice(0,8)}
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+                                        <div className={`w-6 h-6 rounded-xl border-2 flex items-center justify-center transition-all ${
                                             selectedEmployees.includes(emp.id) ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-slate-200'
                                         }`}>
                                             {selectedEmployees.includes(emp.id) && <Plus className="w-4 h-4 rotate-45" />}
@@ -579,10 +579,10 @@ export default function ScenarioManagement() {
                                 <button 
                                     onClick={handleAssign}
                                     disabled={assigning || selectedEmployees.length === 0}
-                                    className="w-full h-16 bg-slate-900 text-white rounded-[2rem] font-black text-[11px] uppercase tracking-[0.3em] hover:bg-indigo-600 transition-all shadow-2xl disabled:opacity-30 active:scale-95 flex items-center justify-center gap-4"
+                                    className="w-full h-16 bg-slate-900 text-white rounded-xl font-black text-[11px]  tracking-[0.3em] hover:bg-indigo-600 transition-all shadow-2xl disabled:opacity-30 active:scale-95 flex items-center justify-center gap-4"
                                 >
                                     {assigning && <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
-                                    {assigning ? 'Propagating Proto' : 'Broadcast Mission'}
+                                    {assigning ? 'Assigning' : 'Assign Scenario'}
                                 </button>
                              </div>
                         </motion.div>

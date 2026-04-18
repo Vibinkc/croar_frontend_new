@@ -145,7 +145,7 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-slate-100 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Reports</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Reports</p>
         </div>
     );
 
@@ -155,7 +155,7 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Chart 1: Status Distribution */}
                 <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col items-center">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 w-full text-left">Operative Status</h3>
+                    <h3 className="text-xs font-black   text-slate-400 mb-6 w-full text-left">Operative Status</h3>
                     <div className="w-full h-48">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -184,7 +184,7 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
 
                 {/* Chart 2: Batch Performance */}
                 <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">Batch Performance Avg</h3>
+                    <h3 className="text-xs font-black   text-slate-400 mb-6">Batch Performance Avg</h3>
                     <div className="w-full h-48">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={stats.performance}>
@@ -203,7 +203,7 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
 
                 {/* Chart 3: Module Performance Breakdown */}
                 <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">Module Performance Avg</h3>
+                    <h3 className="text-xs font-black   text-slate-400 mb-6">Module Performance Avg</h3>
                     <div className="w-full h-48">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={stats.activity}>
@@ -226,7 +226,7 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
 
                 {/* Chart 4: Top Performers */}
                 <div className="lg:col-span-3 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">Top Performers Leaderboard</h3>
+                    <h3 className="text-xs font-black   text-slate-400 mb-6">Top Performers Leaderboard</h3>
                     <div className="w-full h-48">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={stats.topPerformers} layout="vertical" margin={{ left: 40 }}>
@@ -247,17 +247,17 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
             {/* Student List */}
             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
                 <div className="px-8 py-6 border-b border-slate-50 flex justify-between items-center">
-                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Operative Directory</h3>
+                    <h3 className="text-sm font-black text-slate-900  ">Operative Directory</h3>
                     <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">{users.length} Records</span>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-slate-50">
                         <thead className="bg-slate-50/50">
                             <tr>
-                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Operative</th>
-                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Batch</th>
-                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Performance</th>
-                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</th>
+                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400  ">Operative</th>
+                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400  ">Batch</th>
+                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400  ">Performance</th>
+                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400  ">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50 bg-white">
@@ -269,7 +269,7 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
                                                 {user.first_name[0]}{user.last_name[0]}
                                             </div>
                                             <div>
-                                                <div className="text-xs font-black text-slate-800 uppercase">{user.first_name} {user.last_name}</div>
+                                                <div className="text-xs font-black text-slate-800 ">{user.first_name} {user.last_name}</div>
                                                 <div className="text-[10px] text-slate-400">{user.email}</div>
                                             </div>
                                         </div>
@@ -287,7 +287,7 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
                                     </td>
                                     <td className="px-8 py-5">
                                         <Link href={`/admin/students/${user.id}`}>
-                                            <button className="bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-700 transition-colors shadow-lg shadow-slate-200">
+                                            <button className="bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-black   hover:bg-slate-700 transition-colors shadow-lg shadow-slate-200">
                                                 View Report
                                             </button>
                                         </Link>
@@ -296,7 +296,7 @@ function ReportsContent({ divisionId, departmentId }: { divisionId: number | nul
                             ))}
                             {users.length === 0 && (
                                 <tr>
-                                    <td colSpan={4} className="px-8 py-12 text-center text-slate-400 text-xs italic">
+                                    <td colSpan={4} className="px-8 py-12 text-center text-slate-400 text-xs ">
                                         No operatives found in this selection.
                                     </td>
                                 </tr>

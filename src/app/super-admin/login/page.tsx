@@ -70,10 +70,10 @@ export default function SuperAdminLoginPage() {
                         <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-900 border border-slate-800 rounded-3xl mb-6 shadow-2xl shadow-blue-500/10">
                             <span className="material-icons-outlined text-4xl text-blue-500">terminal</span>
                         </div>
-                        <h1 className="text-4xl font-black tracking-tighter uppercase mb-2">
+                        <h1 className="text-4xl font-black tracking-tighter  mb-2">
                             {FRONTEND_DOMAIN.split('.').slice(0, 2).join('.')}.<span className="text-blue-600">{FRONTEND_DOMAIN.split('.').slice(2).join('.')}</span>
                         </h1>
-                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">Institutional Platform Architecture</p>
+                        <p className="text-slate-500 text-[10px] font-black  tracking-[0.3em]">Institutional Platform Architecture</p>
                     </div>
 
                     {/* Login Card */}
@@ -81,7 +81,7 @@ export default function SuperAdminLoginPage() {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Universal Identity</label>
+                                    <label className="text-[10px] font-black text-slate-500   ml-1">Universal Identity</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <span className="material-icons-outlined text-sm text-slate-500 group-focus-within:text-blue-500 transition-colors">alternate_email</span>
@@ -98,7 +98,7 @@ export default function SuperAdminLoginPage() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Access Protocol</label>
+                                    <label className="text-[10px] font-black text-slate-500   ml-1">Access Protocol</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <span className="material-icons-outlined text-sm text-slate-500 group-focus-within:text-blue-500 transition-colors">lock</span>
@@ -125,7 +125,7 @@ export default function SuperAdminLoginPage() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-black uppercase text-xs tracking-widest rounded-3xl shadow-xl shadow-blue-600/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                className="w-full py-5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-black  text-xs  rounded-3xl shadow-xl shadow-blue-600/20 transition-all active:scale-95 flex items-center justify-center gap-2"
                             >
                                 {isLoading ? (
                                     <>
@@ -144,7 +144,7 @@ export default function SuperAdminLoginPage() {
 
                     {/* Footer */}
                     <div className="mt-12 text-center">
-                        <p className="text-slate-600 text-[10px] font-bold uppercase tracking-widest">
+                        <p className="text-slate-600 text-[10px] font-bold  ">
                             Authorized Access Only. All operations are logged.
                         </p>
                     </div>

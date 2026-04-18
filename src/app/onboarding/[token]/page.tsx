@@ -110,7 +110,7 @@ export default function CandidateOnboardingPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center p-6 text-slate-400 font-bold text-xs uppercase tracking-widest">
+            <div className="min-h-screen bg-white flex items-center justify-center p-6 text-slate-400 font-bold text-xs  ">
                 <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin material-icons-outlined text-indigo-600 text-4xl">sync</div>
                     <span>Loading your profile...</span>
@@ -146,12 +146,12 @@ export default function CandidateOnboardingPage() {
         return (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">Section {step - 1} of {steps.length - 2}</span>
-                    <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                    <span className="text-[10px] font-black text-indigo-600  tracking-[0.2em]">Section {step - 1} of {steps.length - 2}</span>
+                    <h3 className="text-2xl font-black text-slate-900  tracking-tight">
                         {section.title}
                     </h3>
                     {onboarding.rejected_fields?.length > 0 && (
-                        <p className="text-[10px] font-bold text-rose-500 uppercase tracking-wider mt-1 flex items-center gap-1">
+                        <p className="text-[10px] font-bold text-rose-500   mt-1 flex items-center gap-1">
                             <span className="material-icons-outlined text-xs">info</span>
                             Some fields in this section require correction.
                         </p>
@@ -161,7 +161,7 @@ export default function CandidateOnboardingPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                     {section.fields?.map((field: any) => (
                         <div key={field.name} className="flex flex-col gap-1.5">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                            <label className="text-[10px] font-black text-slate-500   ml-1">
                                 {field.label} {field.required && <span className="text-red-500 font-bold">*</span>}
                             </label>
                             
@@ -202,7 +202,7 @@ export default function CandidateOnboardingPage() {
                                                         </div>
                                                         <div className="flex flex-col">
                                                             <span className="text-[11px] font-bold text-emerald-900 leading-none">File Uploaded</span>
-                                                            <span className="text-[9px] font-bold text-emerald-600 uppercase mt-0.5">Verified</span>
+                                                            <span className="text-[9px] font-bold text-emerald-600  mt-0.5">Verified</span>
                                                         </div>
                                                     </div>
                                                     {!isDisabled && (
@@ -224,7 +224,7 @@ export default function CandidateOnboardingPage() {
                                                     />
                                                     <div className={`w-full py-4 ${isRejected ? 'bg-rose-50 border-rose-300' : 'bg-slate-50 border-slate-200'} border-dashed rounded-xl flex flex-col items-center justify-center transition-all ${!isDisabled && 'group-hover:bg-slate-100 group-hover:border-indigo-400 group-hover:ring-4 group-hover:ring-indigo-500/5'}`}>
                                                         <span className={`material-icons-outlined ${isRejected ? 'text-rose-500' : 'text-slate-400'} transition-colors text-lg`}>{isRejected ? 'error' : 'upload'}</span>
-                                                        <p className={`text-[9px] font-black ${isRejected ? 'text-rose-600' : 'text-slate-500'} uppercase tracking-widest mt-1`}>
+                                                        <p className={`text-[9px] font-black ${isRejected ? 'text-rose-600' : 'text-slate-500'}   mt-1`}>
                                                             {isDisabled ? 'Field Locked' : isRejected ? 'Upload corrected file' : 'Click to upload file'}
                                                         </p>
                                                     </div>
@@ -253,14 +253,14 @@ export default function CandidateOnboardingPage() {
                 <div className="pt-8 flex gap-3 border-t border-slate-100">
                     <button 
                         onClick={() => setStep(step - 1)} 
-                        className="px-8 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all"
+                        className="px-8 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-black text-[10px]   transition-all"
                     >
                         Back
                     </button>
                     <button 
                         onClick={submitSection} 
                         disabled={isSubmitting}
-                        className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-indigo-100"
+                        className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-black text-xs   transition-all shadow-lg shadow-indigo-100"
                     >
                         {isSubmitting ? "Processing..." : step === steps.length - 1 ? "Submit Profile" : "Save & Continue"}
                     </button>
@@ -283,10 +283,10 @@ export default function CandidateOnboardingPage() {
                             )}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xs font-black text-slate-900 leading-tight uppercase tracking-tight">
+                            <span className="text-xs font-black text-slate-900 leading-tight  tracking-tight">
                                 {onboarding.company_name || "Our"} Onboarding Portal
                             </span>
-                            <span className="text-[9px] font-black text-indigo-600 uppercase tracking-widest">
+                            <span className="text-[9px] font-black text-indigo-600  ">
                                 {onboarding.company_name || "Our Company"} • Process: {onboarding.onboarding_code}
                             </span>
                         </div>
@@ -310,7 +310,7 @@ export default function CandidateOnboardingPage() {
                                             {step > idx ? "check" : s.icon}
                                         </span>
                                     </div>
-                                    <span className={`text-[9px] font-black uppercase tracking-widest mt-2 transition-colors duration-500 ${step === idx ? "text-indigo-600" : "text-slate-400"}`}>
+                                    <span className={`text-[9px] font-black   mt-2 transition-colors duration-500 ${step === idx ? "text-indigo-600" : "text-slate-400"}`}>
                                         {s.name}
                                     </span>
                                 </div>
@@ -337,12 +337,12 @@ export default function CandidateOnboardingPage() {
                             <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-bounce">
                                 <span className="material-icons-outlined text-4xl font-bold">check_circle</span>
                             </div>
-                            <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight uppercase">Onboarding Submitted</h2>
+                            <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight ">Onboarding Submitted</h2>
                             <p className="text-slate-500 font-medium max-w-sm mx-auto leading-relaxed text-sm">
                                 Thank you for completing your profile. Our recruitment and HR team will review your details and contact you via email for the next steps.
                             </p>
                             <div className="mt-10 pt-8 border-t border-slate-100 flex flex-col items-center">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Process Reference</span>
+                                <span className="text-[10px] font-black text-slate-400   mb-1">Process Reference</span>
                                 <span className="text-sm font-black text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full">{onboarding.onboarding_code}</span>
                             </div>
                         </motion.div>
@@ -360,13 +360,13 @@ export default function CandidateOnboardingPage() {
                                         <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
                                             <span className="material-icons-outlined text-4xl">fingerprint</span>
                                         </div>
-                                        <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight uppercase">Identity Verification</h2>
-                                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Secure Gateway Access</p>
+                                        <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight ">Identity Verification</h2>
+                                        <p className="text-slate-400 text-xs font-bold  ">Secure Gateway Access</p>
                                     </div>
                                     
                                     <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
                                         <div className="flex flex-col gap-1.5">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Candidate Email Address</label>
+                                            <label className="text-[10px] font-black text-slate-500   ml-1">Candidate Email Address</label>
                                             <input 
                                                 type="email"
                                                 className={`w-full bg-white border ${verificationError ? 'border-red-500' : 'border-slate-200'} rounded-xl px-4 py-3 text-slate-700 font-bold text-sm outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all`}
@@ -388,7 +388,7 @@ export default function CandidateOnboardingPage() {
 
                                     <button 
                                         onClick={handleVerify}
-                                        className="w-full py-4 bg-slate-900 hover:bg-black text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-slate-200"
+                                        className="w-full py-4 bg-slate-900 hover:bg-black text-white rounded-xl font-black text-xs   transition-all shadow-xl shadow-slate-200"
                                     >
                                         Verify & Enter Portal
                                     </button>
@@ -401,8 +401,8 @@ export default function CandidateOnboardingPage() {
                                         <span className="material-icons-outlined text-4xl">waving_hand</span>
                                     </div>
                                     <div className="space-y-2 mb-10">
-                                        <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Job Secured</h2>
-                                        <div className="inline-block px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 italic">
+                                        <h2 className="text-4xl font-black text-slate-900 tracking-tighter  leading-none">Job Secured</h2>
+                                        <div className="inline-block px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-black   shadow-lg shadow-indigo-100 ">
                                             {onboarding.job_title}
                                         </div>
                                     </div>
@@ -411,7 +411,7 @@ export default function CandidateOnboardingPage() {
                                     </p>
                                     <button 
                                         onClick={() => setStep(step + 1)}
-                                        className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-2xl shadow-indigo-200"
+                                        className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black text-xs   transition-all shadow-2xl shadow-indigo-200"
                                     >
                                         Initiate Onboarding
                                     </button>

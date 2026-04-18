@@ -110,13 +110,13 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
                         <div className="flex items-center gap-2 mb-2">
                             <Link href="/super-admin/colleges/list" className="text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1">
                                 <span className="material-icons-outlined text-sm">arrow_back</span>
-                                <span className="text-[10px] uppercase tracking-widest">Back to List</span>
+                                <span className="text-[10px]  ">Back to List</span>
                             </Link>
                         </div>
-                        <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">
+                        <h1 className="text-4xl font-black tracking-tighter  leading-none">
                             Admin <span className="text-blue-600">Personnel</span>
                         </h1>
-                        <p className="text-slate-500 text-xs font-bold tracking-widest uppercase opacity-70 mt-1">Manage College Administration Staff</p>
+                        <p className="text-slate-500 text-xs font-bold   opacity-70 mt-1">Manage College Administration Staff</p>
                     </div>
                 </header>
 
@@ -125,21 +125,21 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
                     <aside className="lg:col-span-1">
                         <div className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-blue-500/5 relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-                            <h2 className="text-sm font-black uppercase tracking-widest mb-6 flex items-center gap-2">
+                            <h2 className="text-sm font-black   mb-6 flex items-center gap-2">
                                 <span className="material-icons-outlined text-blue-500">person_add</span>
                                 Add New Admin
                             </h2>
                             <form onSubmit={handleCreate} className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">First Name</label>
+                                        <label className="text-[10px] font-black text-slate-400   ml-1">First Name</label>
                                         <input
                                             className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                             value={firstName} onChange={e => setFirstName(e.target.value)} required
                                         />
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Last Name</label>
+                                        <label className="text-[10px] font-black text-slate-400   ml-1">Last Name</label>
                                         <input
                                             className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                             value={lastName} onChange={e => setLastName(e.target.value)} required
@@ -147,7 +147,7 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email / Username</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1">Email / Username</label>
                                     <input
                                         type="email"
                                         className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -155,7 +155,7 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Secure Password</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1">Secure Password</label>
                                     <input
                                         type="password"
                                         className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -164,7 +164,7 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
                                 </div>
                                 <button
                                     disabled={isCreating}
-                                    className="w-full mt-4 bg-slate-900 dark:bg-blue-600 text-white p-5 rounded-3xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+                                    className="w-full mt-4 bg-slate-900 dark:bg-blue-600 text-white p-5 rounded-3xl text-xs font-black   hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
                                 >
                                     {isCreating ? 'Provisioning...' : 'Add Administrator'}
                                     <span className="material-icons-outlined text-sm">shield</span>
@@ -175,9 +175,9 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
 
                     {/* Admin List */}
                     <main className="lg:col-span-2 space-y-4">
-                        <h2 className="text-sm font-black uppercase tracking-widest text-slate-400">Current Administrative Staff</h2>
+                        <h2 className="text-sm font-black   text-slate-400">Current Administrative Staff</h2>
                         {isLoading ? (
-                            <div className="p-12 text-center text-slate-400 uppercase tracking-[0.3em] font-black animate-pulse">Syncing Staff Records...</div>
+                            <div className="p-12 text-center text-slate-400  tracking-[0.3em] font-black animate-pulse">Syncing Staff Records...</div>
                         ) : admins.length === 0 ? (
                             <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-800 p-12 rounded-[3rem] text-center">
                                 <p className="text-slate-400 text-sm font-medium">No secondary administrators identified for this college.</p>
@@ -190,9 +190,9 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
                                             <span className="material-icons-outlined text-2xl text-slate-400">person</span>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="text-sm font-black uppercase tracking-tight truncate">{admin.first_name} {admin.last_name}</h3>
+                                            <h3 className="text-sm font-black  tracking-tight truncate">{admin.first_name} {admin.last_name}</h3>
                                             <p className="text-[10px] text-slate-400 font-bold truncate">{admin.email}</p>
-                                            <span className="inline-block mt-2 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black uppercase tracking-widest rounded-full">
+                                            <span className="inline-block mt-2 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black   rounded-full">
                                                 Active_{admin.role}
                                             </span>
                                         </div>

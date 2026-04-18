@@ -138,12 +138,12 @@ export default function CommunicationDetail() {
                 <div className="flex items-center justify-between opacity-50 mb-4 shrink-0 px-2">
                     <button
                         onClick={() => window.history.back()}
-                        className="group flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-all text-[9px] font-black tracking-[0.2em] uppercase"
+                        className="group flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-all text-[9px] font-black tracking-[0.2em] "
                     >
                         <span className="material-icons-outlined text-[12px]">arrow_back</span>
                         Leave Studio
                     </button>
-                    <div className="flex items-center gap-1.5 text-[8px] font-black tracking-[0.2em] uppercase text-slate-300">
+                    <div className="flex items-center gap-1.5 text-[8px] font-black tracking-[0.2em]  text-slate-300">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
                         Academik_OS // Node_Alpha
                     </div>
@@ -164,13 +164,13 @@ export default function CommunicationDetail() {
                                     <span className="material-icons-outlined text-xl text-white">{getScenarioIcon(title)}</span>
                                 </div>
                                 <div className="min-w-0">
-                                    <span className="text-[8px] font-black text-slate-400 tracking-[0.3em] uppercase mb-0.5 block">Mission Briefing</span>
+                                    <span className="text-[8px] font-black text-slate-400 tracking-[0.3em]  mb-0.5 block">Mission Briefing</span>
                                     <h1 className="text-base font-black tracking-tight text-slate-900 truncate pr-8">{title}</h1>
                                 </div>
                             </div>
 
                             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar bg-slate-50/80 rounded-2xl p-6">
-                                <p className="text-[12px] text-slate-600 leading-relaxed italic font-medium">
+                                <p className="text-[12px] text-slate-600 leading-relaxed  font-medium">
                                     "{prompt}"
                                 </p>
                             </div>
@@ -195,7 +195,7 @@ export default function CommunicationDetail() {
                             </div>
 
                             <div className="text-center space-y-1">
-                                <span className="text-[9px] font-black tracking-[0.3em] text-slate-400 uppercase">
+                                <span className="text-[9px] font-black tracking-[0.3em] text-slate-400 ">
                                     {isRecording ? 'Capturing Stream' : 'Initiate Recording'}
                                 </span>
                             </div>
@@ -236,8 +236,8 @@ export default function CommunicationDetail() {
 
                                     <div className="text-center space-y-4">
                                         <div className="space-y-1">
-                                            <p className="text-[10px] font-black tracking-[0.6em] text-slate-600 uppercase animate-pulse">Synthesizing Signal</p>
-                                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Applying Neural Filters...</p>
+                                            <p className="text-[10px] font-black tracking-[0.6em] text-slate-600  animate-pulse">Synthesizing Signal</p>
+                                            <p className="text-[8px] font-bold text-slate-400  ">Applying Neural Filters...</p>
                                         </div>
                                         {/* Precision Progress Bar */}
                                         <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden">
@@ -262,7 +262,7 @@ export default function CommunicationDetail() {
                                                         <span className={`material-icons-outlined ${m.color} text-xl`}>{m.icon}</span>
                                                     </div>
                                                     <span className="text-3xl font-black text-slate-900 mb-1 tracking-tighter">{val}</span>
-                                                    <span className="text-[9px] font-black tracking-widest text-slate-400 uppercase">{m.label}</span>
+                                                    <span className="text-[9px] font-black  text-slate-400 ">{m.label}</span>
                                                     {/* Mini progress bar */}
                                                     <div className="w-16 h-1 bg-slate-100 mt-3 rounded-full overflow-hidden">
                                                         <div className={`h-full ${m.bg}`} style={{ width: `${val * 10}%` }}></div>
@@ -282,9 +282,9 @@ export default function CommunicationDetail() {
                                                 <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
                                                     <span className="material-icons-outlined text-sm">record_voice_over</span>
                                                 </div>
-                                                <h3 className="text-[10px] font-black tracking-[0.2em] uppercase text-slate-400">What You Said</h3>
+                                                <h3 className="text-[10px] font-black tracking-[0.2em]  text-slate-400">What You Said</h3>
                                             </div>
-                                            <p className="text-sm leading-relaxed text-slate-600 italic font-medium">
+                                            <p className="text-sm leading-relaxed text-slate-600  font-medium">
                                                 "{feedback.transcription || "No transcription available."}"
                                             </p>
                                         </div>
@@ -298,7 +298,7 @@ export default function CommunicationDetail() {
                                                 <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
                                                     <span className="material-icons-outlined text-sm">psychology</span>
                                                 </div>
-                                                <h3 className="text-[10px] font-black tracking-[0.2em] uppercase text-indigo-400">Analysis & Improvements</h3>
+                                                <h3 className="text-[10px] font-black tracking-[0.2em]  text-indigo-400">Analysis & Improvements</h3>
                                             </div>
                                             <p className="text-sm leading-relaxed text-slate-700 font-medium">
                                                 {feedback.feedback}
@@ -328,7 +328,7 @@ export default function CommunicationDetail() {
 
                                     <button
                                         onClick={submitRecording}
-                                        className="group relative inline-flex items-center justify-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-[10px] tracking-[0.3em] uppercase shadow-lg shadow-slate-300 hover:bg-black hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                                        className="group relative inline-flex items-center justify-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-[10px] tracking-[0.3em]  shadow-lg shadow-slate-300 hover:bg-black hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
                                     >
                                         <span className="relative z-10 flex items-center gap-2">
                                             <span>Analyze Signal</span>
@@ -342,7 +342,7 @@ export default function CommunicationDetail() {
                                             setAudioURL(null);
                                             setAudioBlob(null);
                                         }}
-                                        className="text-[9px] font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors"
+                                        className="text-[9px] font-bold text-slate-400 hover:text-slate-600   transition-colors"
                                     >
                                         Discard & Retry
                                     </button>
@@ -363,7 +363,7 @@ export default function CommunicationDetail() {
                                         ))}
                                     </div>
                                     <div className="text-center space-y-2">
-                                        <p className="text-[9px] font-black tracking-[0.5em] text-slate-300 uppercase animate-pulse">
+                                        <p className="text-[9px] font-black tracking-[0.5em] text-slate-300  animate-pulse">
                                             {isRecording ? 'Decoding Live stream...' : 'Awaiting audio input stream...'}
                                         </p>
                                         <p className="text-[10px] text-slate-400 font-medium max-w-md mx-auto px-4">

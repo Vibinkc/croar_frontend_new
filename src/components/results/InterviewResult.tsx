@@ -15,18 +15,18 @@ export default function InterviewResult({ result, onClose, isModal = false }: In
         <div className={`${isModal ? "" : "max-w-4xl mx-auto"} space-y-8`}>
             <header className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Analysis Report</h1>
+                    <h1 className="text-2xl font-black text-slate-900  tracking-tight">Analysis Report</h1>
                     <p className="text-slate-500 text-sm">Automated evaluation complete.</p>
                 </div>
                 {!isModal ? (
                     <Link href="/practice/automated-video-interviews">
-                        <button className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 font-bold text-xs uppercase tracking-wide">
+                        <button className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 font-bold text-xs  tracking-wide">
                             Exit to Hub
                         </button>
                     </Link>
                 ) : (
                     onClose && (
-                        <button onClick={onClose} className="px-4 py-2 bg-slate-100 rounded-lg hover:bg-slate-200 font-bold text-xs uppercase text-slate-600">
+                        <button onClick={onClose} className="px-4 py-2 bg-slate-100 rounded-lg hover:bg-slate-200 font-bold text-xs  text-slate-600">
                             Close
                         </button>
                     )
@@ -43,11 +43,11 @@ export default function InterviewResult({ result, onClose, isModal = false }: In
                         </svg>
                         <span className="absolute text-3xl font-black text-slate-800">{result.overall_score || 0}</span>
                     </div>
-                    <p className="mt-4 text-xs font-black uppercase text-slate-400 tracking-widest">Overall Score</p>
+                    <p className="mt-4 text-xs font-black  text-slate-400 ">Overall Score</p>
                 </div>
 
                 <div className="md:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <h3 className="text-sm font-black text-slate-800  tracking-wide mb-4 flex items-center gap-2">
                         <span className="material-icons text-slate-500 text-base">psychology</span>
                         Tone Analysis
                     </h3>
@@ -61,7 +61,7 @@ export default function InterviewResult({ result, onClose, isModal = false }: In
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Strengths */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 className="text-sm font-black text-slate-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <h3 className="text-sm font-black text-slate-700  tracking-wide mb-4 flex items-center gap-2">
                         <span className="material-icons text-slate-500 text-base">check_circle</span>
                         Strengths detected
                     </h3>
@@ -71,13 +71,13 @@ export default function InterviewResult({ result, onClose, isModal = false }: In
                                 <span className="w-1.5 h-1.5 bg-slate-400 rounded-full mt-1.5 shrink-0"></span>
                                 {str}
                             </li>
-                        )) || <li className="text-sm text-slate-400 italic">None detected.</li>}
+                        )) || <li className="text-sm text-slate-400 ">None detected.</li>}
                     </ul>
                 </div>
 
                 {/* Weaknesses */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 className="text-sm font-black text-slate-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <h3 className="text-sm font-black text-slate-700  tracking-wide mb-4 flex items-center gap-2">
                         <span className="material-icons text-slate-500 text-base">warning</span>
                         Areas for Improvement
                     </h3>
@@ -87,14 +87,14 @@ export default function InterviewResult({ result, onClose, isModal = false }: In
                                 <span className="w-1.5 h-1.5 bg-slate-400 rounded-full mt-1.5 shrink-0"></span>
                                 {weak}
                             </li>
-                        )) || <li className="text-sm text-slate-400 italic">None detected.</li>}
+                        )) || <li className="text-sm text-slate-400 ">None detected.</li>}
                     </ul>
                 </div>
             </div>
 
             {/* Detailed Feedback */}
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide mb-4">Comprehensive Evaluation</h3>
+                <h3 className="text-sm font-black text-slate-800  tracking-wide mb-4">Comprehensive Evaluation</h3>
                 <div className="prose prose-sm max-w-none text-slate-600">
                     <p>{result.detailed_feedback || "No detailed feedback available."}</p>
                 </div>

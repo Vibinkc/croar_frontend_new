@@ -56,7 +56,7 @@ export default function TopicQuestionsPage({ params }: { params: Promise<{ topic
         <div className={`min-h-screen flex items-center justify-center ${isDark ? 'bg-[#111214]' : 'bg-slate-50'}`}>
             <div className="text-center space-y-4">
                 <div className="w-16 h-16 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto"></div>
-                <p className={`text-xs font-black uppercase tracking-widest animate-pulse ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`}>Loading Module...</p>
+                <p className={`text-xs font-black   animate-pulse ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`}>Loading Module...</p>
             </div>
         </div>
     );
@@ -91,7 +91,7 @@ export default function TopicQuestionsPage({ params }: { params: Promise<{ topic
                             {isDark ? 'light_mode' : 'dark_mode'}
                         </span>
                         <div className="overflow-hidden max-w-0 opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-500 ease-in-out whitespace-nowrap">
-                            <span className="text-[11px] font-black tracking-widest uppercase">
+                            <span className="text-[11px] font-black  ">
                                 {isDark ? 'Light' : 'Dark'}
                             </span>
                         </div>
@@ -111,18 +111,18 @@ export default function TopicQuestionsPage({ params }: { params: Promise<{ topic
                                 <div className="p-2 bg-white/10 rounded-lg backdrop-blur-md">
                                     <span className="material-icons-outlined text-xl text-indigo-300">dataset</span>
                                 </div>
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-300">Data Cluster</span>
+                                <span className="text-[10px] font-black  tracking-[0.2em] text-indigo-300">Data Cluster</span>
                             </div>
-                            <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-white mb-2">{capitalizedTopic}</h1>
+                            <h1 className="text-3xl md:text-4xl font-black  tracking-tight text-white mb-2">{capitalizedTopic}</h1>
                             <div className="flex items-center gap-2 text-slate-400">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                <span className="text-[10px] font-bold uppercase tracking-widest">Active Session</span>
+                                <span className="text-[10px] font-bold  ">Active Session</span>
                             </div>
                         </div>
 
                         <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 min-w-[200px]">
                             <div className="flex justify-between items-end mb-2">
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Progress Resolution</span>
+                                <span className="text-[9px] font-black text-slate-300  ">Progress Resolution</span>
                                 <span className="text-lg font-black text-white">{Math.round((completedCount / (questions.length || 1)) * 100)}%</span>
                             </div>
                             <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -168,20 +168,20 @@ export default function TopicQuestionsPage({ params }: { params: Promise<{ topic
 
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1.5">
-                                                <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider border ${q.difficulty === 'Easy' ? (isDark ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-emerald-50 text-emerald-600 border-emerald-100') :
+                                                <span className={`px-2 py-0.5 rounded-md text-[8px] font-black   border ${q.difficulty === 'Easy' ? (isDark ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-emerald-50 text-emerald-600 border-emerald-100') :
                                                     q.difficulty === 'Medium' ? (isDark ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-amber-50 text-amber-600 border-amber-100') :
                                                         (isDark ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-rose-50 text-rose-600 border-rose-100')
                                                     }`}>
                                                     {q.difficulty}
                                                 </span>
                                                 {q.sub_topic && (
-                                                    <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider border ${isDark ? 'bg-[#1e1f23] text-[#8e9297] border-[#2d2e32]' : 'bg-slate-50 text-slate-500 border border-slate-100'}`}>
+                                                    <span className={`px-2 py-0.5 rounded-md text-[8px] font-black   border ${isDark ? 'bg-[#1e1f23] text-[#8e9297] border-[#2d2e32]' : 'bg-slate-50 text-slate-500 border border-slate-100'}`}>
                                                         {q.sub_topic}
                                                     </span>
                                                 )}
                                             </div>
                                             <h3 className={`text-[15px] font-bold line-clamp-2 transition-colors ${isDark ? 'text-slate-200 group-hover:text-indigo-400' : 'text-slate-700 group-hover:text-indigo-700'}`}>
-                                                {q.question || <span className="opacity-50 italic font-medium">Attempt Question {String(index + 1).padStart(2, '0')}: Click to reveal the problem statement.</span>}
+                                                {q.question || <span className="opacity-50  font-medium">Attempt Question {String(index + 1).padStart(2, '0')}: Click to reveal the problem statement.</span>}
                                             </h3>
                                         </div>
                                     </div>
@@ -205,7 +205,7 @@ export default function TopicQuestionsPage({ params }: { params: Promise<{ topic
                         <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                             <span className="material-icons-outlined text-3xl">inbox</span>
                         </div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No Questions Found</p>
+                        <p className="text-[10px] font-black   text-slate-400">No Questions Found</p>
                     </div>
                 )}
             </div>

@@ -55,7 +55,7 @@ export default function AdminLayout({
     const navLinkClass = (path: string) =>
         `group flex items-center gap-3 px-3 py-1.5 text-[10px] font-bold rounded-xl transition-all duration-200 ${pathname.startsWith(path) ? "bg-[rgba(99,102,241,0.1)] text-[var(--color-primary)]" : "text-slate-500 hover:bg-indigo-50 hover:text-[var(--color-primary)]"}`;
 
-    const navHeadingClass = "px-3 mb-1.5 text-[8px] font-black uppercase tracking-widest text-slate-400";
+    const navHeadingClass = "px-3 mb-1.5 text-[8px] font-black   text-slate-400";
 
     return (
         <DivisionProvider>
@@ -77,7 +77,7 @@ export default function AdminLayout({
                     <div className="p-4 shrink-0 border-b border-slate-200 flex items-center justify-between gap-3">
                         <Link href="/" className="flex items-center gap-2">
                             <img src="/Academik_logo.png" alt="Academik.ai" className="h-7 object-contain" />
-                            <span className="bg-slate-100 text-[8px] font-black px-1.5 py-0.5 rounded text-slate-500 tracking-widest mt-0.5 border border-slate-200">BETA</span>
+                            <span className="bg-slate-100 text-[8px] font-black px-1.5 py-0.5 rounded text-slate-500  mt-0.5 border border-slate-200">BETA</span>
                         </Link>
                         {/* Mobile Close Button */}
                         <button
@@ -161,7 +161,7 @@ export default function AdminLayout({
                         <div className="pt-3 pb-1">
                             <button
                                 onClick={() => setIsCertOpen(!isCertOpen)}
-                                className="w-full flex items-center justify-between px-3 py-1 text-[8px] font-black uppercase tracking-widest text-slate-400 hover:text-[var(--color-primary)] transition-colors group"
+                                className="w-full flex items-center justify-between px-3 py-1 text-[8px] font-black   text-slate-400 hover:text-[var(--color-primary)] transition-colors group"
                             >
                                 <span>Certification Prep</span>
                                 <span className={`material-icons-outlined text-sm transition-transform duration-200 ${isCertOpen ? 'rotate-180' : ''}`}>
@@ -284,7 +284,7 @@ export default function AdminLayout({
                                 <span className="material-icons-outlined text-2xl">menu</span>
                             </button>
 
-                            <h1 className="text-lg md:text-xl font-bold text-gray-800 uppercase tracking-tight truncate max-w-[200px] md:max-w-none">
+                            <h1 className="text-lg md:text-xl font-bold text-gray-800  tracking-tight truncate max-w-[200px] md:max-w-none">
                                 {role === "ADMIN" && !divisionId && "Management Admin"}
                                 {role === "ADMIN" && divisionId && "Institutional Admin"}
                                 {role === "SUB_ADMIN" && "HOD Admin"}
@@ -304,7 +304,7 @@ export default function AdminLayout({
                             <Link href="/admin/profile" className="flex items-center gap-2 md:gap-4 hover:opacity-80 transition-opacity">
                                 <div className="text-right hidden md:block">
                                     <p className="text-sm font-bold text-gray-700 leading-tight">{user || "Administrator"}</p>
-                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-tight">{role}</p>
+                                    <p className="text-[10px] font-black text-slate-500   leading-tight">{role}</p>
                                 </div>
                                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-xs md:text-sm shadow-lg shadow-indigo-100">
                                     {user ? user.charAt(0).toUpperCase() : "A"}

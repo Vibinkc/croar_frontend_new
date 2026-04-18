@@ -81,7 +81,7 @@ export default function LoginPage() {
                         <h2 className="text-5xl font-extrabold text-white leading-tight mb-6">
                             Unlock your potential, one skill at a time.
                         </h2>
-                        <p className="text-white/80 text-lg font-light tracking-wide italic">
+                        <p className="text-white/80 text-lg font-medium">
                             Join the community of learners and professionals.
                         </p>
                     </div>
@@ -114,12 +114,12 @@ export default function LoginPage() {
                                 <div className="flex items-center justify-center lg:justify-start gap-3 mb-10">
                                     <div className="flex items-center gap-3">
                                         <img src="/Academik_logo.png" alt="Academik.ai" className="h-10 object-contain" />
-                                        <span className="bg-slate-100 dark:bg-slate-900 text-[10px] font-black px-2 py-1 rounded-lg text-slate-500 tracking-widest border border-slate-200 dark:border-slate-800">BETA</span>
+                                        <span className="bg-slate-100 dark:bg-slate-900 text-[10px] font-bold px-2 py-1 rounded-lg text-slate-500 border border-slate-200 dark:border-slate-800">BETA</span>
                                     </div>
                                 </div>
                                 <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Welcome Back</h1>
                                 <p className="text-slate-500 dark:text-slate-400">
-                                    Secure access to {currentSlug ? <span className="text-slate-900 font-extrabold uppercase">{currentSlug}</span> : 'your'} portal
+                                    Secure access to {currentSlug ? <span className="text-slate-900 font-extrabold">{currentSlug.charAt(0).toUpperCase() + currentSlug.slice(1)}</span> : 'your'} portal
                                 </p>
                             </div>
 
@@ -181,7 +181,7 @@ export default function LoginPage() {
 
                                 <button
                                     type="submit"
-                                    className="w-full py-5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-extrabold uppercase text-xs tracking-[0.2em] rounded-xl shadow-xl shadow-slate-200 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                    className="w-full py-5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold rounded-xl shadow-xl shadow-slate-200 transition-all active:scale-95 flex items-center justify-center gap-2"
                                 >
                                     Login Portal
                                     <span className="material-icons-outlined text-sm">login</span>
@@ -191,7 +191,7 @@ export default function LoginPage() {
                                     <button
                                         type="button"
                                         onClick={() => router.push("/")}
-                                        className="text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 mx-auto"
+                                        className="text-[12px] font-bold text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center gap-2 mx-auto"
                                     >
                                         <span className="material-icons-outlined text-xs">sync_alt</span>
                                         Switch College Context

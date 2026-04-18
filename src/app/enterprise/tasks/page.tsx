@@ -146,7 +146,7 @@ export default function GlobalTasksPage() {
                 <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-100 shadow-sm">
                     <span className="material-symbols-rounded text-slate-400 ml-1.5 text-lg">filter_list</span>
                     <select
-                        className="bg-transparent border-none text-[9px] font-black text-slate-900 uppercase tracking-widest focus:outline-none focus:ring-0 cursor-pointer min-w-[160px]"
+                        className="bg-transparent border-none text-[9px] font-black text-slate-900   focus:outline-none focus:ring-0 cursor-pointer min-w-[160px]"
                         value={selectedProjectId}
                         onChange={(e) => setSelectedProjectId(e.target.value)}
                     >
@@ -173,12 +173,12 @@ export default function GlobalTasksPage() {
                         </div>
                             <div>
                                 <h2 className="text-lg font-black text-slate-900 leading-none">{selectedProjectData.name} Board</h2>
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Interactive Kanban Workspace</p>
+                                <p className="text-[9px] font-black text-slate-400   mt-1">Interactive Kanban Workspace</p>
                             </div>
                         </div>
                         <button 
                             onClick={() => fetchProjectSpecificData(selectedProjectId)}
-                            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:bg-slate-50 transition-all"
+                            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-xl text-[10px] font-black text-slate-600   hover:bg-slate-50 transition-all"
                         >
                             <span className="material-symbols-rounded text-sm">refresh</span>
                             Sync Board
@@ -202,7 +202,7 @@ export default function GlobalTasksPage() {
                             <input
                                 type="text"
                                 placeholder="Search tasks, descriptions or project names..."
-                                className="w-full pl-9 pr-4 py-2 bg-slate-50 border-none rounded-lg text-[10px] font-bold focus:outline-none focus:ring-0 transition-all border border-transparent focus:border-slate-200"
+                                className="w-full pl-9 pr-4 py-2 bg-slate-50 border-none rounded-xl text-[10px] font-bold focus:outline-none focus:ring-0 transition-all border border-transparent focus:border-slate-200"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -220,7 +220,7 @@ export default function GlobalTasksPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="bg-white rounded-[40px] border border-dashed border-slate-200 p-20 text-center">
+                        <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-20 text-center">
                             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <span className="material-symbols-rounded text-slate-300 text-4xl">folder_off</span>
                             </div>

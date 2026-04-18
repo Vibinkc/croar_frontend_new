@@ -102,8 +102,8 @@ function SimulationPortalContent() {
                         <span className="material-symbols-rounded text-xl">arrow_back</span>
                     </button>
                     <div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1 uppercase">Neural Coaching Lab</h1>
-                        <p className="text-slate-500 font-bold uppercase tracking-widest text-[9px] flex items-center gap-2">
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1 ">Neural Coaching Lab</h1>
+                        <p className="text-slate-500 font-bold   text-[9px] flex items-center gap-2">
                             <span className="material-symbols-rounded text-sm text-indigo-500">neurology</span>
                             Active AI-Driven Practice Laboratory
                         </p>
@@ -116,25 +116,25 @@ function SimulationPortalContent() {
                 <section className="space-y-8">
                     <div className="flex items-center gap-3">
                         <div className="w-2 h-8 bg-indigo-600 rounded-full"></div>
-                        <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">Assigned Protocols</h2>
+                        <h2 className="text-xl font-black text-slate-900 tracking-tight ">Assigned Protocols</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {assignments.map((as) => (
-                            <div key={as.id} className="relative group bg-indigo-600 rounded-[2.5rem] p-8 flex flex-col gap-6 shadow-2xl shadow-indigo-200 transition-all hover:scale-[1.02]">
-                                <div className="absolute top-6 right-8 px-3 py-1 bg-white/20 text-white rounded-lg text-[9px] font-black uppercase tracking-widest backdrop-blur-md">
+                            <div key={as.id} className="relative group bg-indigo-600 rounded-2xl p-8 flex flex-col gap-6 shadow-2xl shadow-indigo-200 transition-all hover:scale-[1.02]">
+                                <div className="absolute top-6 right-8 px-3 py-1 bg-white/20 text-white rounded-xl text-[9px] font-black   backdrop-blur-md">
                                     Priority Assignment
                                 </div>
                                 <div className="w-12 h-12 rounded-xl bg-white/20 text-white font-black flex items-center justify-center">
                                     <span className="material-symbols-rounded text-xl">verified_user</span>
                                 </div>
                                 <div className="flex-1 space-y-2">
-                                    <h3 className="text-xl font-black text-white tracking-tight uppercase leading-tight">{as.scenario.title}</h3>
-                                    <p className="text-indigo-100 text-xs font-medium italic opacity-80 leading-relaxed">{as.scenario.description}</p>
+                                    <h3 className="text-xl font-black text-white tracking-tight  leading-tight">{as.scenario.title}</h3>
+                                    <p className="text-indigo-100 text-xs font-medium  opacity-80 leading-relaxed">{as.scenario.description}</p>
                                 </div>
                                 <div className="pt-4 flex items-center gap-4">
                                      <button 
                                         onClick={() => startSession(as.scenario.id, as.id)}
-                                        className="flex-1 py-4 bg-white text-indigo-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-xl flex items-center justify-center gap-2"
+                                        className="flex-1 py-4 bg-white text-indigo-600 rounded-xl font-black text-[10px]   hover:bg-slate-900 hover:text-white transition-all shadow-xl flex items-center justify-center gap-2"
                                     >
                                         <span className="material-symbols-rounded text-lg">play_arrow</span>
                                         Engage AI
@@ -150,22 +150,22 @@ function SimulationPortalContent() {
             <section className="space-y-8">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-8 bg-slate-900 rounded-full"></div>
-                    <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">Practice Library</h2>
+                    <h2 className="text-xl font-black text-slate-900 tracking-tight ">Practice Library</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {scenarios.map((sc) => (
-                        <div key={sc.id} className="group bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20 p-8 flex flex-col gap-6 transition-all hover:border-indigo-100">
+                        <div key={sc.id} className="group bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/20 p-8 flex flex-col gap-6 transition-all hover:border-indigo-100">
                             <div className="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 font-black flex items-center justify-center border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                                 <span className="material-symbols-rounded text-xl">psychology</span>
                             </div>
                             <div className="flex-1">
-                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-500 mb-2 block">{sc.category}</span>
-                                <h3 className="text-xl font-black text-slate-800 tracking-tight leading-tight uppercase group-hover:text-indigo-600 transition-colors">{sc.title}</h3>
-                                <p className="text-xs text-slate-500 font-medium italic mt-2 opacity-60 leading-relaxed">{sc.description}</p>
+                                <span className="text-[9px] font-black  tracking-[0.2em] text-indigo-500 mb-2 block">{sc.category}</span>
+                                <h3 className="text-xl font-black text-slate-800 tracking-tight leading-tight  group-hover:text-indigo-600 transition-colors">{sc.title}</h3>
+                                <p className="text-xs text-slate-500 font-medium  mt-2 opacity-60 leading-relaxed">{sc.description}</p>
                             </div>
                             <button 
                                 onClick={() => startSession(sc.id)}
-                                className="w-full py-4 bg-slate-50 text-slate-900 border border-slate-100 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-slate-50 text-slate-900 border border-slate-100 rounded-xl font-black text-[10px]   hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
                             >
                                 <span className="material-symbols-rounded text-lg">forum</span>
                                 Practice Chat

@@ -481,9 +481,9 @@ export default function CreateAssessmentPage() {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Protocol Architect v2.0</span>
+                            <span className="text-[10px] font-black text-indigo-500  ">Protocol Architect v2.0</span>
                         </div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase leading-none">Init Assessment</h1>
+                        <h1 className="text-2xl font-black text-slate-900 tracking-tight  leading-none">Init Assessment</h1>
                     </div>
                 </div>
 
@@ -491,7 +491,7 @@ export default function CreateAssessmentPage() {
                     <button
                         type="button"
                         onClick={() => setShowBulkImport(true)}
-                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
+                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black  tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
                     >
                         <span className="material-icons-outlined text-sm font-bold">table_view</span>
                         Bulk Ingestion
@@ -499,7 +499,7 @@ export default function CreateAssessmentPage() {
                     <button
                         type="button"
                         onClick={() => setShowAiModal(true)}
-                        className="px-6 py-3 bg-slate-900 text-white rounded-lg text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black shadow-lg shadow-slate-200 hover:shadow-indigo-500/20 transition-all flex items-center gap-2 group active:scale-95"
+                        className="px-6 py-3 bg-slate-900 text-white rounded-lg text-[10px] font-black  tracking-[0.2em] hover:bg-black shadow-lg shadow-slate-200 hover:shadow-indigo-500/20 transition-all flex items-center gap-2 group active:scale-95"
                     >
                         <span className="material-icons-outlined text-sm group-hover:rotate-180 transition-transform duration-700 font-bold">auto_awesome</span>
                         AI Architect
@@ -518,7 +518,7 @@ export default function CreateAssessmentPage() {
                 <div className="bg-white p-5 rounded-3xl shadow-xl shadow-gray-100 border border-gray-50">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">Assessment Title</label>
+                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">Assessment Title</label>
                             <input
                                 type="text"
                                 value={title}
@@ -530,7 +530,7 @@ export default function CreateAssessmentPage() {
                         </div>
 
                         <div className="md:col-span-2">
-                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">Description</label>
+                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">Description</label>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -542,7 +542,7 @@ export default function CreateAssessmentPage() {
 
                         {/* Start Date & Time */}
                         <div>
-                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">
+                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">
                                 <span className="material-icons-outlined text-sm align-middle mr-1">schedule</span>
                                 Start Date & Time
                             </label>
@@ -558,7 +558,7 @@ export default function CreateAssessmentPage() {
 
                         {/* Calculated End Time */}
                         <div>
-                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">
+                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">
                                 <span className="material-icons-outlined text-sm align-middle mr-1">event_available</span>
                                 Calculated End Time
                             </label>
@@ -587,11 +587,11 @@ export default function CreateAssessmentPage() {
                 {/* SECTIONS MANAGEMENT */}
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                        <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Assessment Sections</h2>
+                        <h2 className="text-sm font-black text-gray-900  ">Assessment Sections</h2>
                         <button
                             type="button"
                             onClick={handleAddSection}
-                            className="bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl hover:bg-slate-800 shadow-lg flex items-center gap-2"
+                            className="bg-slate-900 text-white text-[9px] font-black   px-4 py-2 rounded-xl hover:bg-slate-800 shadow-lg flex items-center gap-2"
                         >
                             <span className="material-icons-outlined text-sm">add</span> Add New Section
                         </button>
@@ -658,7 +658,7 @@ export default function CreateAssessmentPage() {
                                 <div className="p-5 animate-in slide-in-from-top-2 duration-300">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                         <div className="md:col-span-1">
-                                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">Section Type</label>
+                                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">Section Type</label>
                                             <select
                                                 value={section.type}
                                                 onChange={(e) => {
@@ -677,7 +677,7 @@ export default function CreateAssessmentPage() {
                                             </select>
                                         </div>
                                         <div className="md:col-span-1">
-                                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">Time Limit (Min) *</label>
+                                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">Time Limit (Min) *</label>
                                             <input
                                                 type="number"
                                                 value={section.time_limit}
@@ -689,7 +689,7 @@ export default function CreateAssessmentPage() {
                                             />
                                         </div>
                                         <div className="md:col-span-1">
-                                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">Description</label>
+                                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">Description</label>
                                             <input
                                                 type="text"
                                                 value={section.description}
@@ -701,7 +701,7 @@ export default function CreateAssessmentPage() {
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                         <div>
-                                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">Max Questions (0 for All)</label>
+                                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">Max Questions (0 for All)</label>
                                             <input
                                                 type="number"
                                                 value={section.max_questions_to_attempt}
@@ -711,7 +711,7 @@ export default function CreateAssessmentPage() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">Selection Algorithm</label>
+                                            <label className="block text-[9px] font-black text-gray-400  tracking-[0.2em] mb-1.5">Selection Algorithm</label>
                                             <select
                                                 value={section.selection_algorithm || "RANDOM"}
                                                 onChange={(e) => handleUpdateSection(section.id, 'selection_algorithm', e.target.value)}
@@ -727,11 +727,11 @@ export default function CreateAssessmentPage() {
                                     <div className="space-y-3 mb-4">
                                         {section.question_ids.length === 0 ? (
                                             <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-xl">
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">No Questions in this Section</p>
+                                                <p className="text-[10px] font-bold text-gray-400   mb-3">No Questions in this Section</p>
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowQuestionBank(true)}
-                                                    className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 text-[10px] font-black uppercase tracking-widest"
+                                                    className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 text-[10px] font-black  "
                                                 >
                                                     <span className="material-icons-outlined text-sm">library_add</span> Select from Question Bank
                                                 </button>
@@ -749,7 +749,7 @@ export default function CreateAssessmentPage() {
                                                                 <span className="material-icons-outlined text-gray-400 text-sm">chevron_right</span>
                                                             </div>
                                                             <div className="flex items-center gap-3">
-                                                                <div className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest ${theme.bg} ${theme.text} border ${theme.border}`}>
+                                                                <div className={`px-2 py-0.5 rounded text-[10px] font-black   ${theme.bg} ${theme.text} border ${theme.border}`}>
                                                                     {section.type}
                                                                 </div>
                                                                 {section.time_limit > 0 && (
@@ -807,7 +807,7 @@ export default function CreateAssessmentPage() {
                                                                         <div className="grid grid-cols-2 gap-2 mt-2">
                                                                             {Object.entries(q.content.options).map(([key, val]) => (
                                                                                 <div key={key} className={`p-2 rounded border ${key === q.correct_answer?.answer ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'bg-white border-gray-100 text-gray-600'}`}>
-                                                                                    <span className="uppercase mr-1">{key}.</span> {val as string}
+                                                                                    <span className=" mr-1">{key}.</span> {val as string}
                                                                                 </div>
                                                                             ))}
                                                                         </div>
@@ -815,7 +815,7 @@ export default function CreateAssessmentPage() {
 
                                                                     {q.content.initial_code && (
                                                                         <div className="mt-2">
-                                                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Initial Code</p>
+                                                                            <p className="text-[10px] font-black text-gray-400   mb-1">Initial Code</p>
                                                                             <pre className="bg-slate-900 text-slate-50 p-2 rounded-lg font-mono text-[10px] overflow-x-auto">
                                                                                 {typeof q.content.initial_code === 'string' ? q.content.initial_code : JSON.stringify(q.content.initial_code, null, 2)}
                                                                             </pre>
@@ -840,7 +840,7 @@ export default function CreateAssessmentPage() {
                                         <button
                                             type="button"
                                             onClick={() => setShowQuestionBank(true)}
-                                            className="flex-1 py-2.5 border-2 border-dashed border-gray-200 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex justify-center items-center gap-2"
+                                            className="flex-1 py-2.5 border-2 border-dashed border-gray-200 text-gray-400 text-[10px] font-black   rounded-xl hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex justify-center items-center gap-2"
                                         >
                                             <span className="material-icons-outlined text-base">list</span>
                                             Pick Existing Questions
@@ -851,7 +851,7 @@ export default function CreateAssessmentPage() {
                                                 setEditingQuestion(null);
                                                 setShowQuestionForm(true);
                                             }}
-                                            className="flex-1 py-2.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all flex justify-center items-center gap-2 shadow-lg"
+                                            className="flex-1 py-2.5 bg-gray-900 text-white text-[10px] font-black   rounded-xl hover:bg-gray-800 transition-all flex justify-center items-center gap-2 shadow-lg"
                                         >
                                             <span className="material-icons-outlined text-base">create</span>
                                             Create New Question
@@ -867,13 +867,13 @@ export default function CreateAssessmentPage() {
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="px-6 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors"
+                        className="px-6 py-3 text-[10px] font-black text-gray-400   hover:text-gray-600 transition-colors"
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
-                        className="px-8 py-3 bg-[var(--color-primary)] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[var(--color-primary-dark)] shadow-xl shadow-indigo-100 transition-all active:scale-95"
+                        className="px-8 py-3 bg-[var(--color-primary)] text-white text-[10px] font-black  tracking-[0.2em] rounded-xl hover:bg-[var(--color-primary-dark)] shadow-xl shadow-indigo-100 transition-all active:scale-95"
                     >
                         Publish Assessment
                     </button>
@@ -886,7 +886,7 @@ export default function CreateAssessmentPage() {
                     <div className="bg-white w-full max-w-2xl max-h-[80vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
                         <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                             <div>
-                                <h3 className="text-sm font-black text-gray-900 uppercase tracking-tight">Select Questions</h3>
+                                <h3 className="text-sm font-black text-gray-900  tracking-tight">Select Questions</h3>
                                 <p className="text-[10px] text-gray-500 font-medium">Adding to: <span className="text-indigo-600">{sections.find(s => s.id === activeSectionId)?.title}</span></p>
                             </div>
                             <button onClick={() => setShowQuestionBank(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-400 hover:text-gray-900 shadow-sm transition-colors">
@@ -956,7 +956,7 @@ export default function CreateAssessmentPage() {
 
                                     return (
                                         <div key={cat} className="space-y-2">
-                                            <h4 className={`text-[9px] font-black uppercase tracking-[0.3em] border-b pb-1 ${theme.text} opacity-50`}>{cat}</h4>
+                                            <h4 className={`text-[9px] font-black  tracking-[0.3em] border-b pb-1 ${theme.text} opacity-50`}>{cat}</h4>
                                             <div className="grid grid-cols-1 gap-2">
                                                 {catQuestions.map(q => {
                                                     const isSelectedInCurrent = sections.find(s => s.id === activeSectionId)?.question_ids.includes(q.id);
@@ -982,7 +982,7 @@ export default function CreateAssessmentPage() {
                                                                 <div className="flex-1">
                                                                     <p className={`text-xs font-bold leading-snug ${isSelectedInCurrent ? 'text-gray-900' : 'text-gray-600'}`}>{q.content.question}</p>
                                                                 </div>
-                                                                {isSelectedElsewhere && <span className="text-[8px] font-bold text-gray-400 uppercase px-2 py-0.5 bg-gray-100 rounded">Used</span>}
+                                                                {isSelectedElsewhere && <span className="text-[8px] font-bold text-gray-400  px-2 py-0.5 bg-gray-100 rounded">Used</span>}
                                                                 <button
                                                                     type="button"
                                                                     onClick={(e) => {
@@ -1004,14 +1004,14 @@ export default function CreateAssessmentPage() {
                                                                             <div className="grid grid-cols-2 gap-2">
                                                                                 {Object.entries(q.content.options).map(([key, val]) => (
                                                                                     <div key={key} className={`p-1.5 rounded border ${key === q.correct_answer?.answer ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'bg-white border-gray-100 text-gray-600'}`}>
-                                                                                        <span className="uppercase mr-1">{key}.</span> {val as string}
+                                                                                        <span className=" mr-1">{key}.</span> {val as string}
                                                                                     </div>
                                                                                 ))}
                                                                             </div>
                                                                         )}
                                                                         {q.content.initial_code && (
                                                                             <div>
-                                                                                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Initial Code</p>
+                                                                                <p className="text-[9px] font-black text-gray-400   mb-1">Initial Code</p>
                                                                                 <pre className="bg-slate-900 text-slate-50 p-2 rounded font-mono overflow-x-auto">{typeof q.content.initial_code === 'string' ? q.content.initial_code : JSON.stringify(q.content.initial_code, null, 2)}</pre>
                                                                             </div>
                                                                         )}
@@ -1036,7 +1036,7 @@ export default function CreateAssessmentPage() {
                         <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
                             <button
                                 onClick={() => setShowQuestionBank(false)}
-                                className="px-6 py-2 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all"
+                                className="px-6 py-2 bg-indigo-600 text-white text-[10px] font-black   rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all"
                             >
                                 Done
                             </button>
@@ -1077,14 +1077,14 @@ export default function CreateAssessmentPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
                         <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-green-50 to-emerald-50">
-                            <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">📊 Bulk Import Assessment</h2>
+                            <h2 className="text-2xl font-black text-gray-900  tracking-tight">📊 Bulk Import Assessment</h2>
                             <p className="text-xs text-gray-600 mt-1">Create a new assessment from Excel file</p>
                         </div>
 
                         <div className="p-6 overflow-y-auto flex-1 space-y-6">
                             {/* Instructions */}
                             <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-                                <h3 className="text-sm font-black text-blue-900 uppercase tracking-wide mb-3 flex items-center gap-2">
+                                <h3 className="text-sm font-black text-blue-900  tracking-wide mb-3 flex items-center gap-2">
                                     <span>📋</span> Instructions
                                 </h3>
                                 <ol className="text-xs text-blue-800 space-y-2 list-decimal list-inside">
@@ -1100,7 +1100,7 @@ export default function CreateAssessmentPage() {
                             {/* Download Template Button */}
                             <button
                                 onClick={handleDownloadTemplate}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-wide transition-all active:scale-95 shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold text-sm  tracking-wide transition-all active:scale-95 shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
                             >
                                 <span>⬇️</span> Download Excel Template
                             </button>
@@ -1116,7 +1116,7 @@ export default function CreateAssessmentPage() {
                                 />
                                 <label htmlFor="bulk-upload-input-create" className="cursor-pointer block">
                                     <div className="text-6xl mb-3">📤</div>
-                                    <p className="font-black text-gray-900 text-sm uppercase tracking-wide mb-1">
+                                    <p className="font-black text-gray-900 text-sm  tracking-wide mb-1">
                                         Click to Upload Excel File
                                     </p>
                                     <p className="text-xs text-gray-500">
@@ -1135,7 +1135,7 @@ export default function CreateAssessmentPage() {
                             {/* Errors */}
                             {uploadErrors.length > 0 && (
                                 <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
-                                    <h4 className="text-red-900 font-black text-xs uppercase mb-2">⚠️ Errors/Warnings:</h4>
+                                    <h4 className="text-red-900 font-black text-xs  mb-2">⚠️ Errors/Warnings:</h4>
                                     <ul className="text-xs text-red-700 space-y-1 list-disc list-inside max-h-40 overflow-y-auto">
                                         {uploadErrors.map((err, idx) => (
                                             <li key={idx}>{err}</li>
@@ -1146,7 +1146,7 @@ export default function CreateAssessmentPage() {
 
                             {/* Tips */}
                             <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4">
-                                <h4 className="text-amber-900 font-black text-xs uppercase mb-2">💡 Tips:</h4>
+                                <h4 className="text-amber-900 font-black text-xs  mb-2">💡 Tips:</h4>
                                 <ul className="text-xs text-amber-800 space-y-1">
                                     <li>• Section titles are case-sensitive</li>
                                     <li>• Valid types: APTITUDE, CODING, SUBJECTIVE, COMMUNICATION, PERSONALITY, BEHAVIORAL</li>
@@ -1164,7 +1164,7 @@ export default function CreateAssessmentPage() {
                                     setUploadProgress("");
                                     setUploadErrors([]);
                                 }}
-                                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-bold text-sm uppercase tracking-wide transition-all"
+                                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-bold text-sm  tracking-wide transition-all"
                             >
                                 Close
                             </button>

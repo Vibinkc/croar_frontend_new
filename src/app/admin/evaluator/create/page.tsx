@@ -27,15 +27,15 @@ export default function CreateEvaluatorTaskPage() {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Evaluator Engine v1.0</span>
+                            <span className="text-[10px] font-black text-indigo-500  ">Evaluator Engine v1.0</span>
                         </div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase leading-none">Initialize Protocol</h1>
+                        <h1 className="text-2xl font-black text-slate-900 tracking-tight  leading-none">Initialize Protocol</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <div className="hidden md:flex flex-col items-end text-right">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">System Status</span>
+                        <span className="text-[10px] font-black text-slate-400  ">System Status</span>
                         <span className="text-xs font-bold text-slate-700">Neural Configuration Active</span>
                     </div>
                 </div>
@@ -45,7 +45,7 @@ export default function CreateEvaluatorTaskPage() {
                 <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <span className="material-icons-outlined text-slate-400 text-sm">settings_suggest</span>
-                        <span className="text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase">Configuration Gateway</span>
+                        <span className="text-[10px] font-black tracking-[0.2em] text-slate-500 ">Configuration Gateway</span>
                     </div>
                 </div>
                 <div className="p-6">
@@ -65,8 +65,8 @@ export default function CreateEvaluatorTaskPage() {
                         <span className="material-icons-outlined text-xl">psychology</span>
                     </div>
                     <div>
-                        <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest">Logic_Link</p>
-                        <p className="text-[10px] font-bold text-slate-900 uppercase">GPT-4o Analysis</p>
+                        <p className="text-[8px] font-black  text-slate-400 ">Logic_Link</p>
+                        <p className="text-[10px] font-bold text-slate-900 ">GPT-4o Analysis</p>
                     </div>
                 </div>
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 flex items-center gap-4 shadow-sm">
@@ -74,8 +74,8 @@ export default function CreateEvaluatorTaskPage() {
                         <span className="material-icons-outlined text-xl">spellcheck</span>
                     </div>
                     <div>
-                        <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest">Grammar_Check</p>
-                        <p className="text-[10px] font-bold text-slate-900 uppercase">Enabled</p>
+                        <p className="text-[8px] font-black  text-slate-400 ">Grammar_Check</p>
+                        <p className="text-[10px] font-bold text-slate-900 ">Enabled</p>
                     </div>
                 </div>
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 flex items-center gap-4 shadow-sm">
@@ -83,8 +83,8 @@ export default function CreateEvaluatorTaskPage() {
                         <span className="material-icons-outlined text-xl">mood</span>
                     </div>
                     <div>
-                        <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest">Tone_Mapping</p>
-                        <p className="text-[10px] font-bold text-slate-900 uppercase">Multi-Spectral</p>
+                        <p className="text-[8px] font-black  text-slate-400 ">Tone_Mapping</p>
+                        <p className="text-[10px] font-bold text-slate-900 ">Multi-Spectral</p>
                     </div>
                 </div>
             </div>

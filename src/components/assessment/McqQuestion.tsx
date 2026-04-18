@@ -106,7 +106,7 @@ export default function McqQuestion({
 
             {readOnly && feedback && (
                 <div className={`mt-4 p-4 rounded-xl text-sm leading-relaxed border ${isDark ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300' : 'bg-indigo-50 border-indigo-100 text-indigo-800'}`}>
-                    <div className="flex items-center gap-2 mb-2 font-bold uppercase tracking-wider text-[10px] opacity-70">
+                    <div className="flex items-center gap-2 mb-2 font-bold   text-[10px] opacity-70">
                         <span className="material-icons-outlined text-sm">lightbulb</span>
                         Feedback
                     </div>

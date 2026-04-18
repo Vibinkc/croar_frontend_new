@@ -39,7 +39,7 @@ function CommunicationScoreList({ scenarioId }: { scenarioId: string }) {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Results</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Results</p>
         </div>
     );
 
@@ -47,8 +47,8 @@ function CommunicationScoreList({ scenarioId }: { scenarioId: string }) {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">Communication Analysis</h1>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Scenario ID: {scenarioId}</p>
+                    <h1 className="text-2xl font-black text-slate-900  tracking-tighter mb-2">Communication Analysis</h1>
+                    <p className="text-xs font-bold text-slate-400  ">Scenario ID: {scenarioId}</p>
                 </div>
             </div>
 
@@ -57,11 +57,11 @@ function CommunicationScoreList({ scenarioId }: { scenarioId: string }) {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-slate-100 bg-slate-50/50">
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Student</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Score (Arg)</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Breakdown (F/G/C/R)</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Transcription</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Student</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Date</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Score (Arg)</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Breakdown (F/G/C/R)</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Transcription</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -73,7 +73,7 @@ function CommunicationScoreList({ scenarioId }: { scenarioId: string }) {
                                                 {score.user_name ? score.user_name[0] : "?"}
                                             </div>
                                             <div>
-                                                <p className="text-xs font-black text-slate-900 uppercase tracking-wide">
+                                                <p className="text-xs font-black text-slate-900  tracking-wide">
                                                     {score.user_name}
                                                 </p>
                                                 <p className="text-[10px] font-medium text-slate-400">{score.user_email}</p>
@@ -100,7 +100,7 @@ function CommunicationScoreList({ scenarioId }: { scenarioId: string }) {
                                         </div>
                                     </td>
                                     <td className="p-6">
-                                        <p className="text-[11px] font-medium text-slate-600 line-clamp-2 max-w-sm leading-relaxed italic">
+                                        <p className="text-[11px] font-medium text-slate-600 line-clamp-2 max-w-sm leading-relaxed ">
                                             "{score.transcription}"
                                         </p>
                                     </td>
@@ -110,7 +110,7 @@ function CommunicationScoreList({ scenarioId }: { scenarioId: string }) {
                                 <tr>
                                     <td colSpan={5} className="p-12 text-center text-slate-300">
                                         <span className="material-icons-outlined text-4xl mb-4 block opacity-30">record_voice_over</span>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em]">No_Analyzed_Attempts</p>
+                                        <p className="text-[10px] font-black  tracking-[0.2em]">No_Analyzed_Attempts</p>
                                     </td>
                                 </tr>
                             )}

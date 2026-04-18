@@ -127,7 +127,7 @@ export default function Header() {
                                                 <div className="pl-4 space-y-6 border-l-2 border-slate-100 dark:border-slate-800 ml-1">
                                                     {studentFeatures.map((category, idx) => (
                                                         <div key={idx} className="space-y-3">
-                                                            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">{category.title}</h4>
+                                                            <h4 className="text-xs font-bold text-slate-400  ">{category.title}</h4>
                                                             <div className="space-y-3">
                                                                 {category.items.map((subItem, subIdx) => (
                                                                     <Link

@@ -234,18 +234,18 @@ export default function AssessmentTemplatesPage() {
     if (isLoading) {
         return (
             <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-[2.5rem] relative overflow-hidden flex items-center px-10 shadow-2xl">
+                <div className="h-32 bg-slate-900 rounded-2xl relative overflow-hidden flex items-center px-10 shadow-2xl">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="w-16 h-16 bg-white/5 rounded-xl animate-pulse" />
                         <div className="space-y-2">
-                            <div className="w-48 h-6 bg-white/10 rounded-lg animate-pulse" />
-                            <div className="w-32 h-3 bg-white/5 rounded-lg animate-pulse" />
+                            <div className="w-48 h-6 bg-white/10 rounded-xl animate-pulse" />
+                            <div className="w-32 h-3 bg-white/5 rounded-xl animate-pulse" />
                         </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="bg-white h-64 rounded-[2.5rem] border border-slate-100 animate-pulse shadow-sm" />
+                        <div key={i} className="bg-white h-64 rounded-2xl border border-slate-100 animate-pulse shadow-sm" />
                     ))}
                 </div>
             </div>
@@ -254,14 +254,14 @@ export default function AssessmentTemplatesPage() {
 
     return (
         <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
                 <div className="flex items-center gap-3 px-2">
                     <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
                         <span className="material-symbols-rounded">quiz</span>
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">Assessment Templates</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest italic">Standardize technical and skill evaluations</p>
+                        <p className="text-slate-500 text-[10px] font-medium   ">Standardize technical and skill evaluations</p>
                     </div>
                 </div>
 
@@ -269,7 +269,7 @@ export default function AssessmentTemplatesPage() {
                     {canAccess("assessments:moderate") && (
                         <button 
                             onClick={() => handleOpenModal()}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
                             New Template
@@ -285,8 +285,8 @@ export default function AssessmentTemplatesPage() {
             </div>
 
             {templates.length === 0 ? (
-                <div className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-slate-200">
-                    <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <div className="text-center py-32 bg-white rounded-2xl border border-dashed border-slate-200">
+                    <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-xl flex items-center justify-center mx-auto mb-6">
                         <ListChecks className="w-10 h-10" />
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 tracking-tight">No Templates Found</h3>
@@ -298,7 +298,7 @@ export default function AssessmentTemplatesPage() {
                         <motion.div
                             layout
                             key={template.id}
-                            className="group bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                            className="group bg-white rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
                             onClick={() => handleOpenModal(template)}
                         >
                             <div className="p-6 pb-2 space-y-6 text-center md:text-left">
@@ -313,7 +313,7 @@ export default function AssessmentTemplatesPage() {
                                                 setTemplateToDelete({ id: template.id, name: template.name });
                                                 setIsDeleteModalOpen(true);
                                             }}
-                                            className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-lg opacity-0 group-hover:opacity-100"
+                                            className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl opacity-0 group-hover:opacity-100"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -322,19 +322,19 @@ export default function AssessmentTemplatesPage() {
 
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-center md:justify-between">
-                                        <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">{template.type}</span>
-                                        <span className="hidden md:inline text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate max-w-[100px]">{template.topic}</span>
+                                        <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full  ">{template.type}</span>
+                                        <span className="hidden md:inline text-[10px] font-bold text-slate-400   truncate max-w-[100px]">{template.topic}</span>
                                     </div>
                                     <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{template.name}</h3>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-50">
-                                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 group-hover:bg-white transition-colors">
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Questions</p>
+                                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 group-hover:bg-white transition-colors">
+                                        <p className="text-[9px] font-bold text-slate-400   mb-1">Questions</p>
                                         <p className="text-xs font-bold text-slate-700">{template.generated_questions?.length || template.question_count} items</p>
                                     </div>
-                                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 group-hover:bg-white transition-colors">
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Duration</p>
+                                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 group-hover:bg-white transition-colors">
+                                        <p className="text-[9px] font-bold text-slate-400   mb-1">Duration</p>
                                         <p className="text-xs font-bold text-slate-700">{template.test_duration} mins</p>
                                     </div>
                                 </div>
@@ -343,7 +343,7 @@ export default function AssessmentTemplatesPage() {
                             <div className="px-6 py-4 flex items-center justify-between bg-slate-50/50 border-t border-slate-200/50 rounded-b-3xl mt-auto">
                                 <div className="flex items-center gap-2 text-slate-300">
                                     <Calendar className="w-3.5 h-3.5" />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider">{template.created_at ? new Date(template.created_at).toLocaleDateString() : 'N/A'}</span>
+                                    <span className="text-[10px] font-bold  ">{template.created_at ? new Date(template.created_at).toLocaleDateString() : 'N/A'}</span>
                                 </div>
                                 <div className="text-slate-300 group-hover:text-indigo-600 transition-colors">
                                     {canAccess("assessments:moderate") ? (
@@ -368,7 +368,7 @@ export default function AssessmentTemplatesPage() {
                             {/* Drawer Header */}
                             <div className="flex items-center justify-between px-8 py-6 border-b border-slate-50 shrink-0">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl">
+                                    <div className="w-14 h-14 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xl">
                                         <Settings2 className="w-8 h-8" />
                                     </div>
                                     <div>
@@ -377,7 +377,7 @@ export default function AssessmentTemplatesPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <div className="flex bg-slate-100 p-1 rounded-2xl shrink-0">
+                                    <div className="flex bg-slate-100 p-1 rounded-xl shrink-0">
                                         <button onClick={() => setActiveTab('config')} className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === 'config' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>1. Details</button>
                                         <button onClick={() => setActiveTab('questions')} className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === 'questions' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>2. Questions</button>
                                     </div>
@@ -397,22 +397,22 @@ export default function AssessmentTemplatesPage() {
                                                 type="text"
                                                 value={name}
                                                 onChange={e => setName(e.target.value)}
-                                                className="w-full h-14 bg-white border border-slate-100 rounded-2xl px-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 transition-all shadow-inner"
+                                                className="w-full h-14 bg-white border border-slate-100 rounded-xl px-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 transition-all shadow-inner"
                                                 placeholder="e.g. Senior Backend Node.js Skills"
                                                 required
                                                 readOnly={!canAccess("assessments:moderate")}
                                             />
                                         </div>
 
-                                        <div className="bg-slate-900 rounded-3xl p-8 text-white relative shadow-xl shadow-indigo-100/5">
+                                        <div className="bg-slate-900 rounded-xl p-8 text-white relative shadow-xl shadow-indigo-100/5">
                                             <div className="relative z-10 space-y-10">
                                                 <div className="flex items-center gap-3">
                                                     <Zap className="w-5 h-5 text-indigo-400" />
-                                                    <span className="text-xs font-bold uppercase tracking-widest text-indigo-200">Test Configuration</span>
+                                                    <span className="text-xs font-bold   text-indigo-200">Test Configuration</span>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-8">
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Type</label>
+                                                        <label className="text-[10px] font-bold text-slate-500   ml-1">Type</label>
                                                         <select
                                                             value={type}
                                                             onChange={e => setType(e.target.value as any)}
@@ -425,7 +425,7 @@ export default function AssessmentTemplatesPage() {
                                                         </select>
                                                     </div>
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Topic / Skills</label>
+                                                        <label className="text-[10px] font-bold text-slate-500   ml-1">Topic / Skills</label>
                                                         <input
                                                             type="text"
                                                             value={topic}
@@ -439,7 +439,7 @@ export default function AssessmentTemplatesPage() {
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-8">
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Question Count</label>
+                                                        <label className="text-[10px] font-bold text-slate-500   ml-1">Question Count</label>
                                                         <input
                                                             type="number"
                                                             value={questionCount}
@@ -450,7 +450,7 @@ export default function AssessmentTemplatesPage() {
                                                         />
                                                     </div>
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Duration (Mins)</label>
+                                                        <label className="text-[10px] font-bold text-slate-500   ml-1">Duration (Mins)</label>
                                                         <input
                                                             type="number"
                                                             value={duration}
@@ -467,12 +467,12 @@ export default function AssessmentTemplatesPage() {
                                         <div className="space-y-2 group">
                                             <div className="flex justify-between items-center px-1">
                                                 <label className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors">Invitation Email Template</label>
-                                                <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Communication</span>
+                                                <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full  ">Communication</span>
                                             </div>
                                             <select
                                                 value={selectedEmailTemplateId}
                                                 onChange={e => setSelectedEmailTemplateId(e.target.value)}
-                                                className="w-full h-14 bg-white border border-slate-100 rounded-2xl px-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 transition-all shadow-inner cursor-pointer"
+                                                className="w-full h-14 bg-white border border-slate-100 rounded-xl px-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 transition-all shadow-inner cursor-pointer"
                                                 disabled={!canAccess("assessments:moderate")}
                                             >
                                                 <option value="">Select email template...</option>
@@ -517,14 +517,14 @@ export default function AssessmentTemplatesPage() {
                                                 <motion.div 
                                                     layout
                                                     key={q.id} 
-                                                    className="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5 transition-all relative group"
+                                                    className="bg-white border border-slate-200/60 rounded-xl p-8 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5 transition-all relative group"
                                                 >
-                                                    <div className="absolute -top-4 -left-4 w-12 h-12 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center font-bold text-sm shadow-xl border-2 border-white group-hover:bg-indigo-600 group-hover:text-white transition-all">{idx + 1}</div>
+                                                    <div className="absolute -top-4 -left-4 w-12 h-12 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center font-bold text-sm shadow-xl border-2 border-white group-hover:bg-indigo-600 group-hover:text-white transition-all">{idx + 1}</div>
                                                     
                                                     {canAccess("assessments:moderate") && (
                                                         <button 
                                                             onClick={() => handleDeleteQuestion(q.id)}
-                                                            className="absolute top-6 right-6 p-2 bg-rose-50 text-rose-500 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 hover:text-white"
+                                                            className="absolute top-6 right-6 p-2 bg-rose-50 text-rose-500 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 hover:text-white"
                                                         >
                                                             <Trash2 className="w-4 h-4" />
                                                         </button>
@@ -534,11 +534,11 @@ export default function AssessmentTemplatesPage() {
                                                         {q.type === 'APTITUDE' ? (
                                                             <>
                                                                 <div className="space-y-2">
-                                                                    <label className="text-xs font-bold text-slate-500 ml-1 italic group-focus-within:text-indigo-600 transition-colors">Question Text</label>
+                                                                    <label className="text-xs font-bold text-slate-500 ml-1  group-focus-within:text-indigo-600 transition-colors">Question Text</label>
                                                                     <textarea 
                                                                         value={q.question} 
                                                                         onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                                                                        className="w-full h-28 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-medium text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all resize-none shadow-inner"
+                                                                        className="w-full h-28 bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-medium text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all resize-none shadow-inner"
                                                                         readOnly={!canAccess("assessments:moderate")}
                                                                         placeholder="State the question clearly..."
                                                                     />
@@ -560,7 +560,7 @@ export default function AssessmentTemplatesPage() {
                                                                             <button 
                                                                                 onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
                                                                                 disabled={!canAccess("assessments:moderate")}
-                                                                                className={`absolute left-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-indigo-600 text-white" : "bg-white text-slate-300 hover:text-indigo-600 border border-slate-100"}`}
+                                                                                className={`absolute left-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-xl flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-indigo-600 text-white" : "bg-white text-slate-300 hover:text-indigo-600 border border-slate-100"}`}
                                                                             >
                                                                                 <span className="text-[10px] font-bold">{oi === 0 ? "A" : oi === 1 ? "B" : oi === 2 ? "C" : "D"}</span>
                                                                             </button>
@@ -586,7 +586,7 @@ export default function AssessmentTemplatesPage() {
                                                                         <textarea 
                                                                             value={q.description || q.problem_statement} 
                                                                             onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
-                                                                            className="w-full h-64 bg-slate-50 border border-slate-100 rounded-[2rem] px-8 py-6 text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner leading-relaxed"
+                                                                            className="w-full h-64 bg-slate-50 border border-slate-100 rounded-xl px-8 py-6 text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner leading-relaxed"
                                                                             readOnly={!canAccess("assessments:moderate")}
                                                                             placeholder="Describe the challenge parameters, inputs, and expected outputs..."
                                                                         />
@@ -598,7 +598,7 @@ export default function AssessmentTemplatesPage() {
                                                 </motion.div>
                                             ))}
                                             {generatedQuestions.length === 0 && (
-                                                <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-[3rem] border border-dashed border-slate-200">
+                                                <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-2xl border border-dashed border-slate-200">
                                                     <Search className="w-16 h-16 text-slate-100 mb-6" />
                                                     <h4 className="text-lg font-bold text-slate-900 leading-tight">No Questions Defined</h4>
                                                     <p className="text-sm text-slate-400 font-medium max-w-[260px] mt-2 leading-relaxed">Start adding questions manually or use AI to generate them based on your topic.</p>
@@ -617,7 +617,7 @@ export default function AssessmentTemplatesPage() {
                                         onClick={handleSave}
                                         form="matrix-form"
                                         type="submit"
-                                        className="px-12 h-14 bg-slate-900 text-white rounded-2xl font-bold text-sm tracking-wide hover:bg-indigo-600 transition-all active:scale-[0.98] shadow-2xl flex items-center gap-4"
+                                        className="px-12 h-14 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-indigo-600 transition-all active:scale-[0.98] shadow-2xl flex items-center gap-4"
                                     >
                                         <Save className="w-5 h-5" />
                                         Save Template

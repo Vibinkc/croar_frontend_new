@@ -85,7 +85,7 @@ export default function CommunicationPracticePage() {
             <section className="relative overflow-hidden rounded-[1.5rem] bg-cyan-600 p-6 text-white shadow-lg">
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-3">
-                        <h2 className="text-2xl font-black uppercase tracking-tight">Vocal Command</h2>
+                        <h2 className="text-2xl font-black  tracking-tight">Vocal Command</h2>
                         <p className="text-slate-100 text-xs max-w-sm font-medium leading-relaxed">
                             Signal strength optimal. Calibrate your frequency and dominate the airwaves.
                         </p>
@@ -93,12 +93,12 @@ export default function CommunicationPracticePage() {
                             const nextScenario = scenarios.length > 0 ? scenarios[0] : null; // Simple fallback as scenarios don't store distinct progress locally in this view
                             return nextScenario ? (
                                 <Link href={`/practice/communication/${nextScenario.id}?title=${encodeURIComponent(nextScenario.title)}&prompt=${encodeURIComponent(nextScenario.prompt)}`}>
-                                    <button className="px-4 py-2 bg-white text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-slate-50 transition-colors">
+                                    <button className="px-4 py-2 bg-white text-slate-900 text-[10px] font-black   rounded-lg hover:bg-slate-50 transition-colors">
                                         RESUME PROTOCOL
                                     </button>
                                 </Link>
                             ) : (
-                                <button className="px-4 py-2 bg-white/20 text-white backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors">
+                                <button className="px-4 py-2 bg-white/20 text-white backdrop-blur-md border border-white/20 text-[10px] font-black   rounded-lg transition-colors">
                                     All Channels Clear 📡
                                 </button>
                             );
@@ -109,10 +109,10 @@ export default function CommunicationPracticePage() {
                             <span className="material-icons-outlined text-2xl">graphic_eq</span>
                         </div>
                         <div>
-                            <p className="text-[9px] font-black text-slate-200 uppercase tracking-widest mb-1">Signal_Status</p>
+                            <p className="text-[9px] font-black text-slate-200   mb-1">Signal_Status</p>
                             <div className="flex items-baseline gap-1">
                                 <span className="text-2xl font-black">{scenarios.length}</span>
-                                <span className="text-[9px] font-bold text-slate-200 uppercase">Channels</span>
+                                <span className="text-[9px] font-bold text-slate-200 ">Channels</span>
                             </div>
                         </div>
                     </div>
@@ -133,14 +133,14 @@ export default function CommunicationPracticePage() {
                                 <div className={`w-10 h-10 rounded-xl ${colors.iconBg} flex items-center justify-center ${colors.iconText} transition-transform group-hover:scale-105`}>
                                     <span className="material-icons-outlined text-xl">{getScenarioIcon(s.title)}</span>
                                 </div>
-                                <span className={`px-2 py-0.5 rounded text-[8px] font-black tracking-widest uppercase border ${getDifficultyColor(s.difficulty)} shadow-sm`}>
+                                <span className={`px-2 py-0.5 rounded text-[8px] font-black   border ${getDifficultyColor(s.difficulty)} shadow-sm`}>
                                     {s.difficulty}
                                 </span>
                             </div>
 
                             {/* Content */}
                             <div className="space-y-2 flex-grow">
-                                <h3 className={`text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight uppercase group-hover:${colors.iconText} transition-colors`}>{s.title}</h3>
+                                <h3 className={`text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight  group-hover:${colors.iconText} transition-colors`}>{s.title}</h3>
                                 <p className="text-slate-600 dark:text-slate-400 text-[10px] leading-relaxed font-medium line-clamp-2">
                                     {s.prompt}
                                 </p>
@@ -149,7 +149,7 @@ export default function CommunicationPracticePage() {
                             {/* Action */}
                             <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/50">
                                 <Link href={`/practice/communication/${s.id}?title=${encodeURIComponent(s.title)}&prompt=${encodeURIComponent(s.prompt)}`}>
-                                    <button className={`w-full ${colors.button} font-black text-[9px] tracking-widest uppercase py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
+                                    <button className={`w-full ${colors.button} font-black text-[9px]   py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
                                         INITIATE PROTOCOL
                                         <span className="material-symbols-rounded text-base">arrow_forward</span>
                                     </button>
@@ -165,8 +165,8 @@ export default function CommunicationPracticePage() {
                         <span className="material-icons-outlined text-xl">add</span>
                     </div>
                     <div className="space-y-0.5">
-                        <h4 className="text-[10px] font-black text-slate-300 uppercase tracking-widest group-hover:text-slate-400 transition-colors">Nodes Pending</h4>
-                        <p className="text-[8px] text-slate-300 font-black uppercase tracking-widest">Awaiting Update</p>
+                        <h4 className="text-[10px] font-black text-slate-300   group-hover:text-slate-400 transition-colors">Nodes Pending</h4>
+                        <p className="text-[8px] text-slate-300 font-black  ">Awaiting Update</p>
                     </div>
                 </div>
             </div>

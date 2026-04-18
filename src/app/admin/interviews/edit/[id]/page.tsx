@@ -147,7 +147,7 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                 return (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
                         <div>
-                            <label className="block text-xs font-black text-slate-700 uppercase tracking-widest mb-1.5">Job Role</label>
+                            <label className="block text-xs font-black text-slate-700   mb-1.5">Job Role</label>
                             <input
                                 type="text"
                                 className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:border-slate-500 focus:outline-none transition-all text-sm font-bold active:scale-[0.99]"
@@ -157,7 +157,7 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-black text-slate-700 uppercase tracking-widest mb-1.5">Job Description (Optional)</label>
+                            <label className="block text-xs font-black text-slate-700   mb-1.5">Job Description (Optional)</label>
                             <textarea
                                 className="w-full p-4 rounded-xl border-2 border-slate-100 focus:border-slate-500 focus:outline-none transition-all min-h-[200px]"
                                 placeholder="Paste the JD here for better question targeting..."
@@ -169,7 +169,7 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                             <button
                                 onClick={handleGeneratePlan}
                                 disabled={!formData.title || isLoading}
-                                className="flex-1 h-12 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-center gap-2 active:scale-95"
+                                className="flex-1 h-12 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-black   hover:bg-slate-50 transition-all flex items-center justify-center gap-2 active:scale-95"
                             >
                                 {isLoading ? (
                                     <div className="flex items-center gap-3">
@@ -185,7 +185,7 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                             </button>
                             <button
                                 onClick={() => setStep(2)}
-                                className="flex-1 h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 hover:bg-[var(--color-primary-dark)] transition-all active:scale-95"
+                                className="flex-1 h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black   shadow-lg shadow-indigo-100 hover:bg-[var(--color-primary-dark)] transition-all active:scale-95"
                             >
                                 Skip to Plan
                             </button>
@@ -196,8 +196,8 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                 return (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
                         <div className="flex items-center justify-between mb-2">
-                            <h3 className="text-xl font-black uppercase tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">Review Interview Plan</h3>
-                            <button onClick={() => setStep(1)} className="text-sm font-bold text-slate-600 hover:text-slate-900 uppercase tracking-widest">Edit JD</button>
+                            <h3 className="text-xl font-black  tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">Review Interview Plan</h3>
+                            <button onClick={() => setStep(1)} className="text-sm font-bold text-slate-600 hover:text-slate-900  ">Edit JD</button>
                         </div>
                         <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                             {interviewPlan.modules.map((m, idx) => (
@@ -205,11 +205,11 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center font-black text-sm">{idx + 1}</div>
-                                            <h4 className="font-black text-slate-800 uppercase tracking-tight">{m.title}</h4>
+                                            <h4 className="font-black text-slate-800  tracking-tight">{m.title}</h4>
                                         </div>
                                         <button
                                             onClick={() => handleAddQuestion(idx)}
-                                            className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1 hover:text-slate-900"
+                                            className="text-[10px] font-black text-slate-600   flex items-center gap-1 hover:text-slate-900"
                                         >
                                             <span className="material-icons text-sm">add_circle_outline</span>
                                             Add Question
@@ -233,7 +233,7 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                                             </div>
                                         ))}
                                         {m.questions.length === 0 && (
-                                            <p className="text-xs text-slate-400 italic py-2">No questions in this module.</p>
+                                            <p className="text-xs text-slate-400  py-2">No questions in this module.</p>
                                         )}
                                     </div>
                                 </div>
@@ -241,7 +241,7 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                         </div>
                         <button
                             onClick={() => setStep(3)}
-                            className="w-full h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-primary-dark)] transition-all active:scale-95"
+                            className="w-full h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black   hover:bg-[var(--color-primary-dark)] transition-all active:scale-95"
                         >
                             Next: Configure Experience
                         </button>
@@ -250,10 +250,10 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
             case 3:
                 return (
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-4">
-                        <h3 className="text-xl font-black uppercase tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">Interview Setup</h3>
+                        <h3 className="text-xl font-black  tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">Interview Setup</h3>
                         <div className="grid grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Duration (Min)</label>
+                                <label className="block text-sm font-bold text-slate-700   mb-2">Duration (Min)</label>
                                 <input
                                     type="number"
                                     className="w-full h-12 px-4 rounded-xl border-2 border-slate-100 focus:border-slate-500 focus:outline-none transition-all text-lg font-medium"
@@ -262,9 +262,9 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Difficulty</label>
+                                <label className="block text-sm font-bold text-slate-700   mb-2">Difficulty</label>
                                 <select
-                                    className="w-full h-12 px-4 rounded-xl border-2 border-slate-100 focus:border-slate-500 focus:outline-none transition-all font-bold uppercase text-sm"
+                                    className="w-full h-12 px-4 rounded-xl border-2 border-slate-100 focus:border-slate-500 focus:outline-none transition-all font-bold  text-sm"
                                     value={formData.difficulty}
                                     onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
                                 >
@@ -275,13 +275,13 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-4">Interviewer Strictness</label>
+                            <label className="block text-sm font-bold text-slate-700   mb-4">Interviewer Strictness</label>
                             <div className="grid grid-cols-3 gap-4">
                                 {['Chill', 'Medium', 'Robot'].map((level) => (
                                     <button
                                         key={level}
                                         onClick={() => setFormData({ ...formData, strictness: level })}
-                                        className={`h-16 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] transition-all ${formData.strictness === level ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-300'}`}
+                                        className={`h-16 rounded-xl border-2 font-black   text-[10px] transition-all ${formData.strictness === level ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-300'}`}
                                     >
                                         {level}
                                     </button>
@@ -289,15 +289,15 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                             </div>
                         </div>
                         <div className="flex gap-3 pt-4">
-                            <button onClick={() => setStep(2)} className="flex-1 h-12 bg-slate-100 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all active:scale-95">Back</button>
-                            <button onClick={() => setStep(4)} className="flex-[2] h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-primary-dark)] transition-all active:scale-95">Next: Select Avatar</button>
+                            <button onClick={() => setStep(2)} className="flex-1 h-12 bg-slate-100 text-slate-600 rounded-xl text-xs font-black   hover:bg-slate-200 transition-all active:scale-95">Back</button>
+                            <button onClick={() => setStep(4)} className="flex-[2] h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black   hover:bg-[var(--color-primary-dark)] transition-all active:scale-95">Next: Select Avatar</button>
                         </div>
                     </div>
                 );
             case 4:
                 return (
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-4">
-                        <h3 className="text-xl font-black uppercase tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">AI Interviewer Persona</h3>
+                        <h3 className="text-xl font-black  tracking-tight text-slate-900 border-l-4 border-slate-900 pl-4">AI Interviewer Persona</h3>
                         <div className="grid grid-cols-2 gap-6">
                             {[
                                 { id: ' Dravid', type: 'Technical', img: '/avatars/dravid.png' },
@@ -315,15 +315,15 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                         />
                                     </div>
-                                    <h5 className="font-black text-slate-800 uppercase tracking-tight">{p.id}</h5>
-                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{p.type}</p>
+                                    <h5 className="font-black text-slate-800  tracking-tight">{p.id}</h5>
+                                    <p className="text-[10px] font-bold text-slate-500  ">{p.type}</p>
                                     {formData.avatar.includes(p.id) && <div className="absolute top-2 right-2 w-6 h-6 bg-[var(--color-primary)] rounded-full flex items-center justify-center text-white"><span className="material-icons text-sm">check</span></div>}
                                 </button>
                             ))}
                         </div>
                         <div className="flex gap-3 pt-4">
-                            <button onClick={() => setStep(3)} className="flex-1 h-12 bg-slate-100 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all active:scale-95">Back</button>
-                            <button onClick={() => setStep(5)} className="flex-[2] h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-primary-dark)] transition-all active:scale-95">Review & Finalize</button>
+                            <button onClick={() => setStep(3)} className="flex-1 h-12 bg-slate-100 text-slate-600 rounded-xl text-xs font-black   hover:bg-slate-200 transition-all active:scale-95">Back</button>
+                            <button onClick={() => setStep(5)} className="flex-[2] h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black   hover:bg-[var(--color-primary-dark)] transition-all active:scale-95">Review & Finalize</button>
                         </div>
                     </div>
                 );
@@ -334,29 +334,29 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[var(--color-primary)] text-white mb-4 animate-bounce">
                                 <span className="material-icons text-4xl">verified</span>
                             </div>
-                            <h3 className="text-2xl font-black uppercase tracking-tight text-slate-900">Confirm Updates</h3>
+                            <h3 className="text-2xl font-black  tracking-tight text-slate-900">Confirm Updates</h3>
                             <p className="text-slate-500 text-sm font-medium">Apply changes to your AI interviewer?</p>
                         </div>
                         <div className="bg-slate-50 rounded-2xl p-6 space-y-4">
                             <div className="flex justify-between border-b border-slate-200 pb-3">
-                                <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Target Role</span>
-                                <span className="text-sm font-black text-slate-800 uppercase">{formData.title}</span>
+                                <span className="text-xs font-black text-slate-400  ">Target Role</span>
+                                <span className="text-sm font-black text-slate-800 ">{formData.title}</span>
                             </div>
                             <div className="flex justify-between border-b border-slate-200 pb-3">
-                                <span className="text-xs font-black text-slate-400 uppercase tracking-widest">AI Agent</span>
-                                <span className="text-sm font-black text-slate-800 uppercase">{formData.avatar}</span>
+                                <span className="text-xs font-black text-slate-400  ">AI Agent</span>
+                                <span className="text-sm font-black text-slate-800 ">{formData.avatar}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Technical Modules</span>
+                                <span className="text-xs font-black text-slate-400  ">Technical Modules</span>
                                 <span className="text-sm font-black text-slate-800">{interviewPlan.modules.length} Sessions</span>
                             </div>
                         </div>
                         <div className="flex gap-3 pt-4">
-                            <button onClick={() => setStep(4)} className="flex-1 h-12 bg-slate-100 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all active:scale-95">Back</button>
+                            <button onClick={() => setStep(4)} className="flex-1 h-12 bg-slate-100 text-slate-600 rounded-xl text-xs font-black   hover:bg-slate-200 transition-all active:scale-95">Back</button>
                             <button
                                 onClick={handleUpdateInterview}
                                 disabled={isLoading}
-                                className="flex-[2] h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 hover:bg-[var(--color-primary-dark)] disabled:opacity-50 transition-all flex items-center justify-center gap-2 active:scale-95"
+                                className="flex-[2] h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black   shadow-lg shadow-indigo-100 hover:bg-[var(--color-primary-dark)] disabled:opacity-50 transition-all flex items-center justify-center gap-2 active:scale-95"
                             >
                                 {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Save Changes"}
                             </button>
@@ -370,11 +370,11 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                             <span className="material-icons text-6xl">check_circle</span>
                         </div>
                         <div className="space-y-2">
-                            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Interview Updated!</h2>
+                            <h2 className="text-2xl font-black text-slate-900  tracking-tight">Interview Updated!</h2>
                             <p className="text-slate-500 text-sm font-medium">Your changes have been deployed successfully.</p>
                         </div>
                         <div className="flex flex-col gap-3 pt-4">
-                            <button onClick={() => router.push('/admin/interviews')} className="w-full h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 hover:bg-[var(--color-primary-dark)] transition-all active:scale-95">Go to Command Center</button>
+                            <button onClick={() => router.push('/admin/interviews')} className="w-full h-12 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black   shadow-lg shadow-indigo-100 hover:bg-[var(--color-primary-dark)] transition-all active:scale-95">Go to Command Center</button>
                         </div>
                     </div>
                 );
@@ -418,9 +418,9 @@ export default function EditInterviewPage({ params }: { params: Promise<{ id: st
                         <div>
                             <div className="flex items-center gap-2 mb-0.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">Protocol Architect v1.0</span>
+                                <span className="text-[9px] font-black text-amber-500  ">Protocol Architect v1.0</span>
                             </div>
-                            <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none">Calibrate Interview</h1>
+                            <h1 className="text-xl font-black text-slate-900 tracking-tight  leading-none">Calibrate Interview</h1>
                         </div>
                     </div>
                     {renderStep()}

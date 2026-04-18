@@ -24,7 +24,7 @@ export default function DiscussionProductPage() {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#686bed] opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#686bed]"></span>
                             </span>
-                            <span className="text-[10px] font-bold tracking-widest uppercase text-[#686bed]">AI Moderator Active</span>
+                            <span className="text-[10px] font-bold   text-[#686bed]">AI Moderator Active</span>
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] text-slate-900 tracking-tight">
@@ -83,7 +83,7 @@ export default function DiscussionProductPage() {
                                             <span className="material-symbols-rounded text-sm">smart_toy</span>
                                         </div>
                                         <div className="bg-[#686bed] text-white p-4 rounded-xl rounded-tr-none shadow-md">
-                                            <p className="text-sm italic">Interesting point. How would that affect our churn rate in European markets?</p>
+                                            <p className="text-sm ">Interesting point. How would that affect our churn rate in European markets?</p>
                                         </div>
                                     </div>
                                     {/* User 2 */}
@@ -138,7 +138,7 @@ export default function DiscussionProductPage() {
                         ].map((stat, i) => (
                             <div key={i} className="text-center">
                                 <div className="text-4xl font-bold text-[#686bed] mb-2">{stat.val}%</div>
-                                <div className="text-sm font-bold uppercase tracking-widest text-slate-400">{stat.label}</div>
+                                <div className="text-sm font-bold   text-slate-400">{stat.label}</div>
                                 <div className="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden">
                                     <motion.div
                                         initial={{ width: 0 }}
@@ -169,7 +169,7 @@ export default function DiscussionProductPage() {
                                     <h4 className="font-bold text-lg text-slate-900">AI Coaching Note</h4>
                                     <span className="bg-[#686bed]/10 text-[#686bed] text-xs font-bold px-2 py-1 rounded">Live Analysis</span>
                                 </div>
-                                <p className="text-sm italic text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-100 leading-relaxed">
+                                <p className="text-sm  text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-100 leading-relaxed">
                                     "The candidate successfully de-escalated the client concern but missed an opportunity to upsell. Recommended focus: Commercial Awareness."
                                 </p>
                                 <div className="space-y-2">
@@ -233,10 +233,10 @@ export default function DiscussionProductPage() {
                         <table className="w-full text-left">
                             <thead className="bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Rank</th>
-                                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Candidate</th>
-                                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Module</th>
-                                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Score</th>
+                                    <th className="px-6 py-4 text-xs font-bold   text-slate-500">Rank</th>
+                                    <th className="px-6 py-4 text-xs font-bold   text-slate-500">Candidate</th>
+                                    <th className="px-6 py-4 text-xs font-bold   text-slate-500">Module</th>
+                                    <th className="px-6 py-4 text-xs font-bold   text-slate-500">Score</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 text-sm">

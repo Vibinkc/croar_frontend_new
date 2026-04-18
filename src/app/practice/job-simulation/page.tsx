@@ -44,8 +44,8 @@ export default function StudentJobSimulationList() {
                 <div className="relative z-10 p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="space-y-4">
                         <div className="space-y-1">
-                            <span className="inline-block px-2 py-0.5 bg-white/20 rounded text-[9px] font-black uppercase tracking-widest text-white/90">Simulation Active</span>
-                            <h2 className="text-3xl font-black text-white uppercase tracking-tight">Job Simulator</h2>
+                            <span className="inline-block px-2 py-0.5 bg-white/20 rounded text-[9px] font-black   text-white/90">Simulation Active</span>
+                            <h2 className="text-3xl font-black text-white  tracking-tight">Job Simulator</h2>
                         </div>
                         <p className="text-white/80 text-xs max-w-sm font-medium leading-relaxed">
                             Full-spectrum interview simulations. Experience realistic multi-round hiring processes for top tech roles.
@@ -57,10 +57,10 @@ export default function StudentJobSimulationList() {
                             <span className="material-icons-outlined text-2xl">work_outline</span>
                         </div>
                         <div>
-                            <p className="text-[9px] font-black text-violet-100 uppercase tracking-widest mb-1.5">Market_Ops</p>
+                            <p className="text-[9px] font-black text-violet-100   mb-1.5">Market_Ops</p>
                             <div className="flex items-baseline gap-1.5 text-white">
                                 <span className="text-2xl font-black">{simulations.length}</span>
-                                <span className="text-[9px] font-bold uppercase">Roles</span>
+                                <span className="text-[9px] font-bold ">Roles</span>
                             </div>
                         </div>
                     </div>
@@ -79,13 +79,13 @@ export default function StudentJobSimulationList() {
                                 <div className={`w-10 h-10 rounded-xl ${colors.iconBg} flex items-center justify-center ${colors.iconText} transition-transform group-hover:scale-105`}>
                                     <span className="material-icons-outlined text-xl">corporate_fare</span>
                                 </div>
-                                <span className="px-2 py-0.5 rounded text-[8px] font-black tracking-widest uppercase border border-slate-100 bg-slate-50 text-slate-500 shadow-sm">
+                                <span className="px-2 py-0.5 rounded text-[8px] font-black   border border-slate-100 bg-slate-50 text-slate-500 shadow-sm">
                                     {sim.company_name}
                                 </span>
                             </div>
 
                             <div className="space-y-2 flex-grow">
-                                <h3 className={`text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight uppercase group-hover:text-slate-700 transition-colors`}>{sim.title}</h3>
+                                <h3 className={`text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight  group-hover:text-slate-700 transition-colors`}>{sim.title}</h3>
                                 <p className="text-slate-600 dark:text-slate-400 text-[10px] leading-relaxed font-medium line-clamp-2">{sim.description}</p>
 
                                 <div className="flex items-center gap-1 mt-3">
@@ -94,7 +94,7 @@ export default function StudentJobSimulationList() {
                                             <div className={`h-full ${colors.bar} opacity-50`}></div>
                                         </div>
                                     ))}
-                                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+                                    <span className="text-[8px] font-bold text-slate-400   ml-1">
                                         {sim.rounds?.length} Rounds
                                     </span>
                                 </div>
@@ -105,14 +105,14 @@ export default function StudentJobSimulationList() {
                                 {sim.user_attempt ? (
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center px-1">
-                                            <span className="text-[8px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-1">
+                                            <span className="text-[8px] font-black text-slate-900   flex items-center gap-1">
                                                 <span className="material-icons-outlined text-[10px]">verified</span>
                                                 Completed
                                             </span>
-                                            <span className="text-[10px] font-black text-slate-900 uppercase">Score: {sim.user_attempt.overall_score}%</span>
+                                            <span className="text-[10px] font-black text-slate-900 ">Score: {sim.user_attempt.overall_score}%</span>
                                         </div>
                                         <Link href={`/practice/job-simulation/${sim.id}`}>
-                                            <button className={`w-full bg-slate-900 text-white font-black text-[9px] tracking-widest uppercase py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
+                                            <button className={`w-full bg-slate-900 text-white font-black text-[9px]   py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
                                                 VIEW RESULTS
                                                 <span className="material-symbols-rounded text-base">analytics</span>
                                             </button>
@@ -120,7 +120,7 @@ export default function StudentJobSimulationList() {
                                     </div>
                                 ) : (
                                     <Link href={`/practice/job-simulation/${sim.id}`}>
-                                        <button className={`w-full ${colors.button} font-black text-[9px] tracking-widest uppercase py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
+                                        <button className={`w-full ${colors.button} font-black text-[9px]   py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
                                             START APPLICATION
                                             <span className="material-symbols-rounded text-base">arrow_forward</span>
                                         </button>

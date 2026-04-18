@@ -211,8 +211,8 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                         <span className="material-icons text-xl text-slate-900">psychology</span>
                     </div>
                     <div>
-                        <h1 className="text-[8px] font-black uppercase tracking-widest text-slate-400 leading-none">Moderated GD</h1>
-                        <p className="text-sm font-black text-white leading-none mt-1 tracking-tight uppercase italic">{id.split('-')[0]}: High Fidelity Voice</p>
+                        <h1 className="text-[8px] font-black   text-slate-400 leading-none">Moderated GD</h1>
+                        <p className="text-sm font-black text-white leading-none mt-1 tracking-tight  ">{id.split('-')[0]}: High Fidelity Voice</p>
                     </div>
                 </div>
 
@@ -227,7 +227,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
 
                     <div className="hidden sm:flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl">
                         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Live</span>
+                        <span className="text-[10px] font-black   text-emerald-500">Live</span>
                     </div>
                 </div>
             </header>
@@ -240,7 +240,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                         <div className="bg-slate-900/90 backdrop-blur-md text-white py-3 px-6 rounded-2xl border border-white/10 flex items-center justify-between animate-in slide-in-from-top duration-300 pointer-events-auto shadow-2xl">
                             <div className="flex items-center gap-3">
                                 <span className="material-icons text-red-400">error</span>
-                                <p className="font-bold text-xs uppercase tracking-wider">{error}</p>
+                                <p className="font-bold text-xs  ">{error}</p>
                             </div>
                         </div>
                     )}
@@ -248,7 +248,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                         <div className="bg-amber-500 text-slate-950 py-2 px-6 rounded-2xl flex items-center justify-between animate-in slide-in-from-top duration-300 pointer-events-auto shadow-2xl">
                             <div className="flex items-center gap-3">
                                 <span className="material-icons">warning</span>
-                                <p className="font-black uppercase tracking-wider text-[10px]">Head Movement Detected! Please stay focused</p>
+                                <p className="font-black   text-[10px]">Head Movement Detected! Please stay focused</p>
                             </div>
                         </div>
                     )}
@@ -257,8 +257,8 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                             <div className="flex items-center gap-3">
                                 <span className="material-icons animate-bounce">pan_tool</span>
                                 <div>
-                                    <p className="font-black uppercase tracking-wider text-[10px]">Hand Raised</p>
-                                    <p className="text-[8px] font-bold opacity-80 uppercase">Position: #{queue.findIndex(q => String(q.id) === String(currentUser?.id)) + 1}</p>
+                                    <p className="font-black   text-[10px]">Hand Raised</p>
+                                    <p className="text-[8px] font-bold opacity-80 ">Position: #{queue.findIndex(q => String(q.id) === String(currentUser?.id)) + 1}</p>
                                 </div>
                             </div>
                         </div>
@@ -270,7 +270,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                     {/* Top Row for Consolidated AI Bots (Analytical Alex, Strategic Sam, Creative Casey) */}
                     {participants.some(p => String(p.id).startsWith('-') && p.id !== -1) && (
                         <div className="flex items-center gap-4 py-2 px-6 bg-slate-900/40 rounded-full border border-white/5 backdrop-blur-md shrink-0">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mr-2 border-r border-white/10 pr-4">Virtual Peers</span>
+                            <span className="text-[10px] font-black  tracking-[0.2em] text-slate-500 mr-2 border-r border-white/10 pr-4">Virtual Peers</span>
                             <div className="flex -space-x-3">
                                 {participants.filter(p => String(p.id).startsWith('-') && p.id !== -1).slice(0, 3).map((bot, idx) => {
                                     const botNameKey = bot.name.toLowerCase().replace(' ', '-');
@@ -287,7 +287,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl text-[10px] font-black text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-[100] shadow-2xl scale-90 group-hover:scale-100 uppercase tracking-widest">
+                                            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl text-[10px] font-black text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-[100] shadow-2xl scale-90 group-hover:scale-100  ">
                                                 {bot.name}
                                             </div>
                                         </div>
@@ -331,7 +331,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                 {/* Collapsible Sidebar (Transcript) */}
                 <aside className={`w-[400px] border-l border-white/5 bg-slate-900/30 backdrop-blur-3xl flex flex-col transition-all duration-500 transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full absolute right-0 top-0 h-full'}`}>
                     <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Live Transcript</h3>
+                        <h3 className="text-xs font-black  tracking-[0.2em] text-slate-400">Live Transcript</h3>
                         <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-2 hover:bg-white/5 rounded-lg">
                             <span className="material-icons">close</span>
                         </button>
@@ -341,13 +341,13 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center opacity-20 gap-4">
                                 <span className="material-icons text-6xl">forum</span>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-center">Waiting for discussion to start...</p>
+                                <p className="text-[10px] font-black   text-center">Waiting for discussion to start...</p>
                             </div>
                         ) : (
                             messages.map((m, i) => (
                                 <div key={i} className={`flex flex-col gap-1 ${m.user_id === currentUser?.id ? 'items-end' : 'items-start'}`}>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">
+                                        <span className="text-[8px] font-black text-slate-500  ">
                                             {m.user_name === 'AI Moderator' ? 'Moderator' : (m.user_id === currentUser?.id ? 'You' : m.user_name)}
                                         </span>
                                         <span className="text-[6px] text-slate-600">{new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -364,7 +364,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                     </div>
 
                     <div className="p-4 bg-slate-900/50 border-t border-white/5">
-                        <p className="text-[8px] font-black text-slate-600 uppercase tracking-widest text-center">Voice interaction only • Transcript auto-updates</p>
+                        <p className="text-[8px] font-black text-slate-600   text-center">Voice interaction only • Transcript auto-updates</p>
                     </div>
                 </aside>
             </div>
@@ -373,7 +373,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
             <footer className="h-24 px-8 border-t border-white/5 bg-slate-950/80 backdrop-blur-2xl flex items-center justify-between shrink-0 z-50">
                 <div className="flex items-center gap-4 w-1/3">
                     <div className="hidden sm:flex flex-col">
-                        <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest leading-tight">Meeting Details</span>
+                        <span className="text-[8px] font-black text-slate-500   leading-tight">Meeting Details</span>
                         <span className="text-sm font-bold text-white truncate max-w-[150px]">{id}</span>
                     </div>
                 </div>
@@ -414,7 +414,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                     {queue.some(q => String(q.id) === String(currentUser?.id)) && (
                         <button
                             onClick={finishTurn}
-                            className="h-14 px-8 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-amber-500 hover:text-black transition-all active:scale-95 animate-in slide-in-from-bottom-4 shadow-xl shadow-amber-500/5"
+                            className="h-14 px-8 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-2xl font-black   text-[10px] hover:bg-amber-500 hover:text-black transition-all active:scale-95 animate-in slide-in-from-bottom-4 shadow-xl shadow-amber-500/5"
                         >
                             Finish Turn
                         </button>
@@ -422,7 +422,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
 
                     <button
                         onClick={handleEndSession}
-                        className="h-14 px-8 bg-red-600/10 border border-red-500/30 text-red-500 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-red-500 hover:text-white transition-all active:scale-95"
+                        className="h-14 px-8 bg-red-600/10 border border-red-500/30 text-red-500 rounded-2xl font-black   text-[10px] hover:bg-red-500 hover:text-white transition-all active:scale-95"
                     >
                         {isEnding ? 'Leaving...' : 'End Session'}
                     </button>
@@ -455,8 +455,8 @@ function AIModeratorCard({ isSpeaking, lastMessage }: { isSpeaking: boolean, las
             }`}>
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6">
                 <div className="flex items-center gap-2">
-                    <div className="px-2 py-0.5 bg-amber-500 text-black text-[8px] font-black rounded uppercase tracking-widest">Moderator</div>
-                    <span className="text-xs font-black text-white uppercase tracking-tighter">AI Mentor</span>
+                    <div className="px-2 py-0.5 bg-amber-500 text-black text-[8px] font-black rounded  ">Moderator</div>
+                    <span className="text-xs font-black text-white  tracking-tighter">AI Mentor</span>
                 </div>
             </div>
 
@@ -470,7 +470,7 @@ function AIModeratorCard({ isSpeaking, lastMessage }: { isSpeaking: boolean, las
             {isSpeaking && (
                 <div className="absolute top-6 left-6 right-6">
                     <div className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 animate-in fade-in slide-in-from-top-2">
-                        <p className="text-white text-[10px] font-medium leading-tight italic line-clamp-2">"{lastMessage || "Listening..."}"</p>
+                        <p className="text-white text-[10px] font-medium leading-tight  line-clamp-2">"{lastMessage || "Listening..."}"</p>
                     </div>
                 </div>
             )}
@@ -518,7 +518,7 @@ function ParticipantCard({ participant, currentUser, stream, isMicOn, isSpeaking
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <span className="text-sm font-black text-white uppercase tracking-tighter truncate max-w-[150px]">
+                        <span className="text-sm font-black text-white  tracking-tighter truncate max-w-[150px]">
                             {isLocal ? 'You' : participant.name}
                         </span>
                         {isLocal && isMicOn && (
@@ -537,7 +537,7 @@ function ParticipantCard({ participant, currentUser, stream, isMicOn, isSpeaking
                             </div>
                         )}
                         {isHandRaised && (
-                            <div className="px-3 py-1 bg-blue-600 text-white text-[8px] font-black rounded-full uppercase tracking-widest flex items-center gap-1 shadow-lg animate-in zoom-in-90">
+                            <div className="px-3 py-1 bg-blue-600 text-white text-[8px] font-black rounded-full   flex items-center gap-1 shadow-lg animate-in zoom-in-90">
                                 <span className="material-icons text-[10px]">pan_tool</span>
                                 #{queueIndex + 1}
                             </div>

@@ -46,9 +46,9 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                         <div>
                             <div className="flex items-center gap-1.5">
                                 <span className={`w-1.5 h-1.5 rounded-full ${project.status === 'Active' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
-                                <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest">{project.status}</p>
+                                <p className="text-[7px] font-black text-slate-400  ">{project.status}</p>
                             </div>
-                            <h3 className="text-sm font-black text-slate-900 tracking-tight leading-none mt-1 uppercase truncate max-w-[140px] group-hover:text-[#7C3AED] transition-colors">{project.name}</h3>
+                            <h3 className="text-sm font-black text-slate-900 tracking-tight leading-none mt-1  truncate max-w-[140px] group-hover:text-[#7C3AED] transition-colors">{project.name}</h3>
                         </div>
                     </div>
                     
@@ -69,7 +69,7 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                     </div>
                 </div>
 
-                <p className="text-[10px] font-bold text-slate-500 leading-snug uppercase tracking-tight line-clamp-2 h-8 opacity-70">
+                <p className="text-[10px] font-bold text-slate-500 leading-snug  tracking-tight line-clamp-2 h-8 opacity-70">
                     {project.description || "Operational parameters not specified."}
                 </p>
 
@@ -80,7 +80,7 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                                 {m.first_name[0]}
                             </div>
                         )) : (
-                            <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest italic">Unit_Null</span>
+                            <span className="text-[8px] font-black text-slate-300   ">Unit_Null</span>
                         )}
                         {project.members.length > 3 && (
                             <div className="w-7 h-7 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center text-[8px] font-black text-slate-400 shadow-sm">
@@ -89,8 +89,8 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                         )}
                     </div>
                     <div className="text-right">
-                        <p className="text-[7px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">Ends</p>
-                        <p className="text-[9px] font-black text-slate-800 leading-none tabular-nums italic">{project.end_date ? new Date(project.end_date).toLocaleDateString() : 'TBD'}</p>
+                        <p className="text-[7px] font-black text-slate-300   leading-none mb-1">Ends</p>
+                        <p className="text-[9px] font-black text-slate-800 leading-none tabular-nums ">{project.end_date ? new Date(project.end_date).toLocaleDateString() : 'TBD'}</p>
                     </div>
                 </div>
             </div>
@@ -98,9 +98,9 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
             <div className="px-4 py-2.5 bg-slate-50/50 flex items-center justify-between border-t border-slate-50">
                 <div className="flex items-center gap-1 opacity-40">
                     <span className="material-symbols-rounded text-xs">schedule</span>
-                    <span className="text-[8px] font-black tracking-widest uppercase truncate">{project.start_date ? new Date(project.start_date).toLocaleDateString() : 'TBD'}</span>
+                    <span className="text-[8px] font-black   truncate">{project.start_date ? new Date(project.start_date).toLocaleDateString() : 'TBD'}</span>
                 </div>
-                <span className="text-[9px] font-black text-[#7C3AED] uppercase tracking-widest opacity-80 group-hover:opacity-100 group-hover:tracking-[0.2em] transition-all">Mission_Data</span>
+                <span className="text-[9px] font-black text-[#7C3AED]   opacity-80 group-hover:opacity-100 group-hover:tracking-[0.2em] transition-all">Mission_Data</span>
             </div>
         </motion.div>
     );

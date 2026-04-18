@@ -147,14 +147,14 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                     className="group bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg translate-y-0 hover:-translate-y-0.5"
                 >
                     <span className="material-icons-outlined text-base group-hover:rotate-90 transition-transform">add</span>
-                    <span className="text-[10px] font-black uppercase tracking-widest">New Session</span>
+                    <span className="text-[10px] font-black  ">New Session</span>
                 </button>
             </div>
 
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center p-20">
                     <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 tracking-[0.3em]">Scanning_Nodes</p>
+                    <p className="text-[10px] font-black   text-slate-400 tracking-[0.3em]">Scanning_Nodes</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -169,22 +169,22 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                                 <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all duration-300">
                                     <span className="material-icons-outlined text-xl">forum</span>
                                 </div>
-                                <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border bg-slate-50 text-slate-600 border-slate-100`}>
+                                <span className={`px-2.5 py-1 rounded-full text-[9px] font-black   border bg-slate-50 text-slate-600 border-slate-100`}>
                                     {gd.status}
                                 </span>
                             </div>
 
                             <div className="flex-1 mb-5 relative z-10">
-                                <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-2 line-clamp-1">{gd.topic}</h3>
-                                <p className="text-[10px] font-medium text-slate-400 line-clamp-3 leading-relaxed italic mb-3">
+                                <h3 className="text-sm font-black text-slate-900  tracking-tight mb-2 line-clamp-1">{gd.topic}</h3>
+                                <p className="text-[10px] font-medium text-slate-400 line-clamp-3 leading-relaxed  mb-3">
                                     "{gd.description || "No session context provided."}"
                                 </p>
                                 <div className="flex items-center gap-3">
-                                    <div className="flex items-center text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                    <div className="flex items-center text-[9px] font-black text-slate-400  ">
                                         <span className="material-icons-outlined text-xs mr-1 text-slate-500">timer</span>
                                         {gd.duration ? Math.round(gd.duration / 60) : "5"} MINS
                                     </div>
-                                    <div className="flex items-center text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                    <div className="flex items-center text-[9px] font-black text-slate-400  ">
                                         <span className="material-icons-outlined text-xs mr-1 text-slate-500">calendar_today</span>
                                         {gd.created_at ? format(new Date(gd.created_at), "MMM d, yyyy") : "N/A"}
                                     </div>
@@ -194,7 +194,7 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                             <div className="flex items-center gap-2 mt-auto pt-4 border-t border-slate-50 relative z-10">
                                 <Link
                                     href={`/admin/discussion/${gd.id}`}
-                                    className="flex-1 bg-slate-50 hover:bg-[var(--color-primary)] hover:text-white text-slate-500 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 shadow-sm"
+                                    className="flex-1 bg-slate-50 hover:bg-[var(--color-primary)] hover:text-white text-slate-500 py-2.5 rounded-xl text-[9px] font-black   flex items-center justify-center gap-2 transition-all duration-300 shadow-sm"
                                 >
                                     <span className="material-icons-outlined text-sm">leaderboard</span>
                                     Leaderboard
@@ -224,7 +224,7 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                         <div className="w-12 h-12 rounded-2xl bg-slate-50 group-hover:bg-[var(--color-primary)] group-hover:text-white flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110">
                             <span className="material-icons-outlined text-2xl group-hover:rotate-90 transition-transform">add</span>
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Deploy_New_Session</span>
+                        <span className="text-[10px] font-black  tracking-[0.2em]">Deploy_New_Session</span>
                     </button>
                 </div>
             )}
@@ -232,16 +232,16 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
             {showCreateModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
                     <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl p-6 border border-slate-100 animate-in zoom-in-95 fade-in duration-200">
-                        <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight mb-5">Create GD Session</h3>
+                        <h3 className="text-lg font-black text-slate-900  tracking-tight mb-5">Create GD Session</h3>
                         <form onSubmit={handleCreateGD} className="space-y-4">
                             <div>
                                 <div className="flex justify-between items-center mb-1.5">
-                                    <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Topic / Question</label>
+                                    <label className="block text-[9px] font-black text-slate-400  ">Topic / Question</label>
                                     <button
                                         type="button"
                                         onClick={handleGenerateGD}
                                         disabled={isGeneratingGD}
-                                        className="text-[9px] font-black uppercase text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] flex items-center gap-1 disabled:opacity-50"
+                                        className="text-[9px] font-black  text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] flex items-center gap-1 disabled:opacity-50"
                                     >
                                         <span className={`material-symbols-rounded text-xs ${isGeneratingGD ? 'animate-spin' : ''}`}>
                                             {isGeneratingGD ? 'progress_activity' : 'auto_awesome'}
@@ -259,7 +259,7 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                                 />
                             </div>
                             <div>
-                                <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Description (Context)</label>
+                                <label className="block text-[9px] font-black text-slate-400   mb-1.5">Description (Context)</label>
                                 <textarea
                                     className="w-full p-3 rounded-xl border border-slate-200 focus:border-[var(--color-primary)] focus:outline-none transition-all font-medium min-h-[80px] text-xs text-black"
                                     placeholder="Brief background for the discussion..."
@@ -268,7 +268,7 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                                 />
                             </div>
                             <div>
-                                <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Duration (minutes)</label>
+                                <label className="block text-[9px] font-black text-slate-400   mb-1.5">Duration (minutes)</label>
                                 <input
                                     type="number"
                                     required
@@ -283,13 +283,13 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                                 <button
                                     type="button"
                                     onClick={() => setShowCreateModal(false)}
-                                    className="flex-1 h-10 bg-slate-50 text-slate-400 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-100 transition-all"
+                                    className="flex-1 h-10 bg-slate-50 text-slate-400 rounded-xl font-black   text-[9px] hover:bg-slate-100 transition-all"
                                 >
                                     Discard
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 h-10 bg-[var(--color-primary)] text-white rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-[var(--color-primary-dark)] transition-all shadow-lg shadow-indigo-100"
+                                    className="flex-1 h-10 bg-[var(--color-primary)] text-white rounded-xl font-black   text-[9px] hover:bg-[var(--color-primary-dark)] transition-all shadow-lg shadow-indigo-100"
                                 >
                                     Initialize Session
                                 </button>
@@ -302,10 +302,10 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
             {showEditModal && editGD && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
                     <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl p-6 border border-slate-100 animate-in zoom-in-95 fade-in duration-200">
-                        <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight mb-5">Edit GD Session</h3>
+                        <h3 className="text-lg font-black text-slate-900  tracking-tight mb-5">Edit GD Session</h3>
                         <form onSubmit={handleEditGD} className="space-y-4">
                             <div>
-                                <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Topic / Question</label>
+                                <label className="block text-[9px] font-black text-slate-400   mb-1.5">Topic / Question</label>
                                 <input
                                     type="text"
                                     required
@@ -315,7 +315,7 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                                 />
                             </div>
                             <div>
-                                <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Description (Context)</label>
+                                <label className="block text-[9px] font-black text-slate-400   mb-1.5">Description (Context)</label>
                                 <textarea
                                     className="w-full p-3 rounded-xl border border-slate-200 focus:border-[var(--color-primary)] focus:outline-none transition-all font-medium min-h-[80px] text-xs text-black"
                                     value={editGD.description}
@@ -323,7 +323,7 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                                 />
                             </div>
                             <div>
-                                <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Duration (minutes)</label>
+                                <label className="block text-[9px] font-black text-slate-400   mb-1.5">Duration (minutes)</label>
                                 <input
                                     type="number"
                                     required
@@ -338,13 +338,13 @@ function DiscussionList({ divisionId, departmentId }: { divisionId: number | nul
                                 <button
                                     type="button"
                                     onClick={() => { setShowEditModal(false); setEditGD(null); }}
-                                    className="flex-1 h-10 bg-slate-50 text-slate-400 rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-slate-100 transition-all"
+                                    className="flex-1 h-10 bg-slate-50 text-slate-400 rounded-xl font-black   text-[9px] hover:bg-slate-100 transition-all"
                                 >
                                     Discard
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 h-10 bg-[var(--color-primary)] text-white rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-[var(--color-primary-dark)] transition-all shadow-lg shadow-indigo-100"
+                                    className="flex-1 h-10 bg-[var(--color-primary)] text-white rounded-xl font-black   text-[9px] hover:bg-[var(--color-primary-dark)] transition-all shadow-lg shadow-indigo-100"
                                 >
                                     Update Protocol
                                 </button>

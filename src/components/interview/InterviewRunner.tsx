@@ -96,7 +96,7 @@ export default function InterviewRunner({
                 <div className="flex-1 h-full max-h-[480px] flex flex-col items-center justify-center p-6 bg-slate-900/80 rounded-3xl border border-white/5 relative overflow-hidden">
                     <div className="w-full max-w-2xl text-center space-y-6 z-10">
                         {/* Role Label */}
-                        <div className={`inline-block px-3 py-1 rounded-full text-xs font-black tracking-widest mb-4 uppercase ${latestMessage.role === 'ai' ? 'bg-slate-800 text-slate-300 border border-slate-700' : 'bg-white text-slate-900 border border-white'
+                        <div className={`inline-block px-3 py-1 rounded-full text-xs font-black  mb-4  ${latestMessage.role === 'ai' ? 'bg-slate-800 text-slate-300 border border-slate-700' : 'bg-white text-slate-900 border border-white'
                             }`}>
                             {latestMessage.role === 'ai' ? 'Interviewer' : 'You'}
                         </div>
@@ -129,7 +129,7 @@ export default function InterviewRunner({
                         className={`w-full h-full object-cover transform scale-x-[-1] ${!mediaState.isCameraEnabled ? 'invisible' : ''}`}
                     />
 
-                    <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg text-[10px] text-white font-black uppercase tracking-widest border border-white/10 flex items-center gap-2">
+                    <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg text-[10px] text-white font-black   border border-white/10 flex items-center gap-2">
                         <span className={`h-2 w-2 rounded-full ${mediaState.isMicEnabled ? 'bg-slate-200' : 'bg-slate-400'}`}></span>
                         Candidate_Feed
                     </div>
@@ -159,7 +159,7 @@ export default function InterviewRunner({
 
                 {/* Center Action (Passive Status Indicator) */}
                 <div
-                    className={`h-12 px-6 rounded-full flex items-center gap-3 transition-all duration-300 text-[10px] font-black uppercase tracking-widest border ${currentStep === 'listening'
+                    className={`h-12 px-6 rounded-full flex items-center gap-3 transition-all duration-300 text-[10px] font-black   border ${currentStep === 'listening'
                         ? 'bg-white text-slate-900 border-white shadow-[0_0_20px_rgba(255,255,255,0.1)]'
                         : 'bg-slate-800 text-slate-400 border-white/5'
                         }`}

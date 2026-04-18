@@ -73,15 +73,15 @@ function JobSimulationList({ divisionId, departmentId }: { divisionId: number | 
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
                 <div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase">Created Simulations</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 flex items-center gap-2">
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight ">Created Simulations</h1>
+                    <p className="text-[10px] font-bold text-slate-400   mt-1 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                         Management Portal / Repository
                     </p>
                 </div>
                 <Link
                     href={`/admin/job-simulation/create${departmentId ? `?department_id=${departmentId}` : ""}`}
-                    className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-slate-800 shadow-xl shadow-slate-200 hover:shadow-slate-300 transition-all flex items-center gap-2 group active:scale-95"
+                    className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black  tracking-[0.2em] hover:bg-slate-800 shadow-xl shadow-slate-200 hover:shadow-slate-300 transition-all flex items-center gap-2 group active:scale-95"
                 >
                     <span className="material-icons-outlined text-sm group-hover:rotate-90 transition-transform duration-300 font-bold">add</span>
                     New Simulation
@@ -96,16 +96,16 @@ function JobSimulationList({ divisionId, departmentId }: { divisionId: number | 
                                 <span className="material-icons-outlined text-xl">architecture</span>
                             </div>
                             <div className="flex flex-col items-end gap-1">
-                                <span className="px-2.5 py-0.5 rounded-lg bg-indigo-50 text-[9px] font-black text-indigo-600 uppercase tracking-[0.1em] border border-indigo-100/50">
+                                <span className="px-2.5 py-0.5 rounded-lg bg-indigo-50 text-[9px] font-black text-indigo-600  tracking-[0.1em] border border-indigo-100/50">
                                     {profile.rounds?.length || 0} Rounds
                                 </span>
-                                <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest">Ver 1.0.4</span>
+                                <span className="text-[7px] font-black text-slate-300  ">Ver 1.0.4</span>
                             </div>
                         </div>
 
                         <div className="mb-4">
-                            <h3 className="text-base font-black text-slate-900 mb-0.5 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{profile.title}</h3>
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Simulation Architecture</p>
+                            <h3 className="text-base font-black text-slate-900 mb-0.5 group-hover:text-indigo-600 transition-colors  tracking-tight">{profile.title}</h3>
+                            <p className="text-[9px] font-black text-slate-400   leading-none">Simulation Architecture</p>
                         </div>
 
                         <div className="space-y-3 mb-6">
@@ -127,7 +127,7 @@ function JobSimulationList({ divisionId, departmentId }: { divisionId: number | 
                         <div className="flex items-center gap-2 pt-4 border-t border-slate-50 mt-auto">
                             <Link
                                 href={`/admin/job-simulation/edit/${profile.id}`}
-                                className="flex-1 py-2.5 rounded-xl bg-slate-50 text-slate-500 hover:bg-slate-900 hover:text-white text-[9px] font-black uppercase tracking-widest text-center transition-all shadow-sm"
+                                className="flex-1 py-2.5 rounded-xl bg-slate-50 text-slate-500 hover:bg-slate-900 hover:text-white text-[9px] font-black   text-center transition-all shadow-sm"
                             >
                                 Edit Focus
                             </Link>
@@ -153,8 +153,8 @@ function JobSimulationList({ divisionId, departmentId }: { divisionId: number | 
                         <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                             <span className="material-icons-outlined text-4xl text-slate-200">inventory_2</span>
                         </div>
-                        <p className="text-slate-400 font-black uppercase text-[12px] tracking-[0.3em]">No simulations found in repository</p>
-                        <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest mt-2">Initialize your first simulation to begin</p>
+                        <p className="text-slate-400 font-black  text-[12px] tracking-[0.3em]">No simulations found in repository</p>
+                        <p className="text-[10px] text-slate-300 font-bold   mt-2">Initialize your first simulation to begin</p>
                     </div>
                 )}
             </div>

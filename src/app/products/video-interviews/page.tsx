@@ -23,7 +23,7 @@ export default function VideoInterviewsProductPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-red-400/30 bg-red-500/10 px-3 py-1 rounded-full text-red-300 text-xs font-bold uppercase tracking-widest backdrop-blur-md"
+                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-red-400/30 bg-red-500/10 px-3 py-1 rounded-full text-red-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                             Live Computer Vision
@@ -65,7 +65,7 @@ export default function VideoInterviewsProductPage() {
             <section className="px-4 py-16" id="features">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-2 text-center md:text-left">
-                        <span className="text-red-500 font-bold uppercase tracking-widest text-sm">Visual Intelligence</span>
+                        <span className="text-red-500 font-bold   text-sm">Visual Intelligence</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Why Appearance Matters</h2>
                         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">Humans judge trustworthiness in milliseconds. We help you control the signals you're sending.</p>
                     </div>
@@ -128,7 +128,7 @@ export default function VideoInterviewsProductPage() {
                         viewport={{ once: true }}
                         className="flex flex-col gap-6"
                     >
-                        <div className="inline-block px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-bold uppercase tracking-widest w-fit">
+                        <div className="inline-block px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-bold   w-fit">
                             AI Director Mode
                         </div>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Real-Time Guidance</h2>
@@ -136,11 +136,11 @@ export default function VideoInterviewsProductPage() {
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
                                 <div className="text-2xl font-black text-slate-900">40+</div>
-                                <div className="text-xs text-slate-500 uppercase font-bold">Facial Landmarks</div>
+                                <div className="text-xs text-slate-500  font-bold">Facial Landmarks</div>
                             </div>
                             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
                                 <div className="text-2xl font-black text-slate-900">99%</div>
-                                <div className="text-xs text-slate-500 uppercase font-bold">Gaze Accuracy</div>
+                                <div className="text-xs text-slate-500  font-bold">Gaze Accuracy</div>
                             </div>
                         </div>
                     </motion.div>
@@ -151,7 +151,7 @@ export default function VideoInterviewsProductPage() {
                         className="bg-slate-900 aspect-video rounded-2xl shadow-2xl relative overflow-hidden border-8 border-slate-200 ring-1 ring-slate-300"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-black z-0 flex items-center justify-center">
-                            <span className="text-white/10 text-6xl font-black tracking-widest transform -rotate-12">VIEWFINDER</span>
+                            <span className="text-white/10 text-6xl font-black  transform -rotate-12">VIEWFINDER</span>
                         </div>
                         {/* Overlay Elements */}
                         <div className="absolute inset-4 z-10 flex flex-col justify-between">

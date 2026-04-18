@@ -128,8 +128,8 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
             {/* Header Section matching Aptitude style */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Resume Templates</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight ">Resume Templates</h1>
+                    <p className="text-[10px] font-bold text-slate-400   mt-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
                         Template Architecture & Parsing Rules
                     </p>
@@ -138,13 +138,13 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
 
             {/* Create New Template */}
             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <h2 className="text-sm font-black mb-4 text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                <h2 className="text-sm font-black mb-4 text-slate-900  tracking-tight flex items-center gap-2">
                     <span className="material-icons-outlined text-lg text-slate-400">post_add</span>
                     {editingId ? "Edit Resume Template" : "Create New Resume Template"}
                 </h2>
                 <div className="space-y-5">
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Template Name</label>
+                        <label className="block text-[10px] font-black text-slate-400   mb-1.5">Template Name</label>
                         <input
                             className="w-full h-10 px-4 rounded-xl border border-slate-200 focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10 focus:outline-none transition-all font-medium text-black text-xs"
                             placeholder="e.g. Software Engineer Resume"
@@ -154,7 +154,7 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Reference PDF {editingId && "(Optional if keeping existing)"}</label>
+                        <label className="block text-[10px] font-black text-slate-400   mb-1.5">Reference PDF {editingId && "(Optional if keeping existing)"}</label>
                         <div className="relative group">
                             <input
                                 type="file"
@@ -162,7 +162,7 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
                                 className="block w-full text-xs text-slate-500
                                   file:mr-4 file:py-3 file:px-6
                                   file:rounded-xl file:border-0
-                                  file:text-[10px] file:font-black file:uppercase file:tracking-widest
+                                  file:text-[10px] file:font-black file: file:
                                   file:bg-slate-50 file:text-slate-700
                                   hover:file:bg-[var(--color-primary)] hover:file:text-white
                                   file:transition-all
@@ -177,7 +177,7 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
                         <button
                             onClick={handleAnalyze}
                             disabled={analyzing || !templateFile}
-                            className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${analyzing || !templateFile ? "bg-slate-50 text-slate-300 cursor-not-allowed" : "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] shadow-xl shadow-indigo-100"}`}
+                            className={`px-6 py-2.5 rounded-xl font-black text-[10px]   transition-all ${analyzing || !templateFile ? "bg-slate-50 text-slate-300 cursor-not-allowed" : "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] shadow-xl shadow-indigo-100"}`}
                         >
                             {analyzing ? "Analyzing Document..." : "Analyze & Extract Fields"}
                         </button>
@@ -186,7 +186,7 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
                     {analyzedFields && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
                             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Extracted Structure Preview</h3>
+                                <h3 className="text-[10px] font-black text-slate-400   mb-3">Extracted Structure Preview</h3>
                                 <div className="text-[10px] overflow-auto max-h-60 bg-white p-4 rounded-xl border border-slate-100 font-mono text-slate-500">
                                     <pre>{JSON.stringify(analyzedFields, null, 2)}</pre>
                                 </div>
@@ -194,13 +194,13 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
                             <div className="flex gap-4">
                                 <button
                                     onClick={handleSave}
-                                    className="px-6 py-2.5 bg-[var(--color-primary)] text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-xl shadow-indigo-100 hover:bg-[var(--color-primary-dark)] transition-all"
+                                    className="px-6 py-2.5 bg-[var(--color-primary)] text-white font-black rounded-xl text-[10px]   shadow-xl shadow-indigo-100 hover:bg-[var(--color-primary-dark)] transition-all"
                                 >
                                     {editingId ? "Update Template" : "Save Template"}
                                 </button>
                                 <button
                                     onClick={resetForm}
-                                    className="px-6 py-2.5 bg-slate-50 text-slate-400 font-black rounded-xl text-[10px] uppercase tracking-widest hover:bg-slate-100 transition-all"
+                                    className="px-6 py-2.5 bg-slate-50 text-slate-400 font-black rounded-xl text-[10px]   hover:bg-slate-100 transition-all"
                                 >
                                     {editingId ? "Cancel Edit" : "Reset Form"}
                                 </button>
@@ -213,8 +213,8 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
             {/* List Templates */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-base font-black text-slate-900 uppercase tracking-tight">Existing Templates</h2>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{templates.length} Active Architectures</span>
+                    <h2 className="text-base font-black text-slate-900  tracking-tight">Existing Templates</h2>
+                    <span className="text-[10px] font-bold text-slate-400  ">{templates.length} Active Architectures</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -228,15 +228,15 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
                                 <div className="h-10 w-10 rounded-xl bg-indigo-50 flex items-center justify-center text-[var(--color-primary)] group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all duration-300">
                                     <span className="material-icons-outlined text-lg">description</span>
                                 </div>
-                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">{format(new Date(t.created_at), "MMM d, yyyy")}</span>
+                                <span className="text-[8px] font-black text-slate-300   bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">{format(new Date(t.created_at), "MMM d, yyyy")}</span>
                             </div>
 
-                            <h3 className="font-black text-sm text-slate-900 uppercase tracking-tight mb-1 group-hover:text-[var(--color-primary)] transition-colors line-clamp-1 relative z-10">{t.name}</h3>
-                            <p className="text-[9px] font-bold text-slate-400 truncate mb-4 uppercase tracking-widest relative z-10">FILE: {t.file_url.split('/').pop()}</p>
+                            <h3 className="font-black text-sm text-slate-900  tracking-tight mb-1 group-hover:text-[var(--color-primary)] transition-colors line-clamp-1 relative z-10">{t.name}</h3>
+                            <p className="text-[9px] font-bold text-slate-400 truncate mb-4   relative z-10">FILE: {t.file_url.split('/').pop()}</p>
 
                             <div className="flex justify-between items-center mt-auto pt-4 border-t border-slate-50 relative z-10">
                                 <div className="flex gap-2">
-                                    <span className="px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[8px] font-black uppercase tracking-widest text-slate-500 group-hover:bg-indigo-50/50 group-hover:text-indigo-500 transition-colors">
+                                    <span className="px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[8px] font-black   text-slate-500 group-hover:bg-indigo-50/50 group-hover:text-indigo-500 transition-colors">
                                         {t.extracted_fields?.sections?.length || 0} SECTIONS
                                     </span>
                                 </div>
@@ -254,7 +254,7 @@ function ResumeBuilderList({ divisionId, departmentId }: { divisionId: number | 
                     {templates.length === 0 && (
                         <div className="col-span-full py-20 text-center text-slate-300 bg-slate-50/10 rounded-[2rem] border-2 border-dashed border-slate-100">
                             <span className="material-icons-outlined text-4xl mb-4 block opacity-30">cloud_upload</span>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em]">No_Templates_Deployed</p>
+                            <p className="text-[10px] font-black  tracking-[0.2em]">No_Templates_Deployed</p>
                         </div>
                     )}
                 </div>

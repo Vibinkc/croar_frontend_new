@@ -273,19 +273,19 @@ export default function ScreeningAutomationPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shadow-sm">
             <span className="material-symbols-rounded text-indigo-600 text-xl">fact_check</span>
           </div>
           <div>
             <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Screening Automation</h1>
-            <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mt-0.5">Rules-Based Candidate Filtering</p>
+            <p className="text-[10px] font-black text-indigo-500   mt-0.5">Rules-Based Candidate Filtering</p>
           </div>
         </div>
       </div>
 
       {/* Command Bar */}
-      <div className="bg-white rounded-[2rem] border border-slate-100 p-3 shadow-xl shadow-slate-200/40 mb-8 flex flex-col sm:flex-row items-center gap-4">
-        <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-2.5 flex-1 w-full sm:w-auto transition-all focus-within:bg-white focus-within:border-indigo-100 focus-within:ring-4 focus-within:ring-indigo-500/5 group">
+      <div className="bg-white rounded-xl border border-slate-100 p-3 shadow-xl shadow-slate-200/40 mb-8 flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 flex-1 w-full sm:w-auto transition-all focus-within:bg-white focus-within:border-indigo-100 focus-within:ring-4 focus-within:ring-indigo-500/5 group">
           <span className="material-symbols-rounded text-slate-400 group-focus-within:text-indigo-500 transition-colors">work</span>
           <select
             value={selectedJobId}
@@ -300,7 +300,7 @@ export default function ScreeningAutomationPage() {
         </div>
         <button
           onClick={openCreate}
-          className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#0F172A] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
+          className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#0F172A] text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
         >
           <span className="material-symbols-rounded text-lg">add_circle</span>
           Add Rule
@@ -311,14 +311,14 @@ export default function ScreeningAutomationPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-32 gap-4">
           <div className="w-10 h-10 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Synchronizing Rules...</p>
+          <p className="text-[10px] font-black text-slate-400  tracking-[0.2em]">Synchronizing Rules...</p>
         </div>
       ) : automations.length === 0 ? (
-        <div className="bg-white rounded-[3rem] border border-dashed border-slate-200 p-20 text-center">
-          <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+        <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-20 text-center">
+          <div className="w-20 h-20 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-6">
             <span className="material-symbols-rounded text-4xl text-slate-200">fact_check</span>
           </div>
-          <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">No Screening Rules</h3>
+          <h3 className="text-lg font-black text-slate-800  tracking-tight">No Screening Rules</h3>
           <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">Deploy your first automated screening rule to streamline your recruitment pipeline.</p>
         </div>
       ) : (
@@ -327,13 +327,13 @@ export default function ScreeningAutomationPage() {
             <motion.div
               layout
               key={a.id}
-              className={`group bg-white rounded-[2rem] border p-1.5 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 ${
+              className={`group bg-white rounded-xl border p-1.5 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 ${
                 a.is_enabled ? "border-slate-100" : "border-slate-100 opacity-60 grayscale-[0.5]"
               }`}
             >
               <div className="p-5 space-y-4">
                 <div className="flex justify-between items-start">
-                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${a.is_enabled ? "bg-indigo-50 text-indigo-600 shadow-sm" : "bg-slate-50 text-slate-400"}`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${a.is_enabled ? "bg-indigo-50 text-indigo-600 shadow-sm" : "bg-slate-50 text-slate-400"}`}>
                     <span className="material-symbols-rounded text-xl">rule</span>
                   </div>
                   <button onClick={() => handleToggle(a)} disabled={togglingId === a.id} className={`relative w-10 h-5 rounded-full transition-all duration-300 ${a.is_enabled ? "bg-indigo-500 shadow-lg shadow-indigo-100" : "bg-slate-200"}`}>
@@ -343,9 +343,9 @@ export default function ScreeningAutomationPage() {
                 
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Round {a.stage_index}</span>
+                    <span className="text-[10px] font-black text-slate-400  ">Round {a.stage_index}</span>
                     <span className="w-1 h-3 rounded-full bg-slate-100" />
-                    <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest truncate max-w-[120px]">{a.stage_name || "SCREENING"}</span>
+                    <span className="text-[10px] font-black text-indigo-500   truncate max-w-[120px]">{a.stage_name || "SCREENING"}</span>
                   </div>
                   <p className="text-sm font-black text-slate-800 tracking-tight line-clamp-2 md:h-10 leading-tight">
                     <span className="text-slate-400 font-medium">IF: </span>{a.criteria}
@@ -364,12 +364,12 @@ export default function ScreeningAutomationPage() {
                 </div>
               </div>
 
-              <div className="bg-slate-50/50 rounded-[1.5rem] p-2 flex items-center justify-between gap-2 overflow-hidden border border-slate-50">
+              <div className="bg-slate-50/50 rounded-xl p-2 flex items-center justify-between gap-2 overflow-hidden border border-slate-50">
                 <div className="flex gap-2 pl-2">
                   {a.auto_move && (
-                    <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black text-indigo-500 uppercase tracking-tight shadow-sm">Auto-Move</span>
+                    <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black text-indigo-500  tracking-tight shadow-sm">Auto-Move</span>
                   )}
-                  <span className={`px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black uppercase tracking-tight shadow-sm ${a.is_immediate ? "text-emerald-500" : "text-slate-500"}`}>
+                  <span className={`px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black  tracking-tight shadow-sm ${a.is_immediate ? "text-emerald-500" : "text-slate-500"}`}>
                     {a.is_immediate ? "Immediate" : "Scheduled"}
                   </span>
                 </div>
@@ -397,15 +397,15 @@ export default function ScreeningAutomationPage() {
               {/* Drawer Header */}
               <div className="flex items-center justify-between px-8 py-6 border-b border-slate-50">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-[1.5rem] bg-indigo-50 flex items-center justify-center shadow-inner">
+                  <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center shadow-inner">
                     <span className="material-symbols-rounded text-indigo-600 text-2xl">settings_input_component</span>
                   </div>
                   <div>
-                    <h2 className="text-xl font-black text-slate-800 leading-tight italic uppercase tracking-tight">{editingId ? "Edit Rule" : "Configure Rule"}</h2>
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-0.5">Tactical Automation Node</p>
+                    <h2 className="text-xl font-black text-slate-800 leading-tight   tracking-tight">{editingId ? "Edit Rule" : "Configure Rule"}</h2>
+                    <p className="text-[10px] font-black text-slate-300   mt-0.5">Automation Action</p>
                   </div>
                 </div>
-                <button onClick={closeModal} className="w-10 h-10 rounded-2xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
+                <button onClick={closeModal} className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
                   <span className="material-symbols-rounded text-xl">close</span>
                 </button>
               </div>
@@ -414,11 +414,11 @@ export default function ScreeningAutomationPage() {
               <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8 custom-scrollbar">
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Target Job Requirement*</label>
+                    <label className="text-[10px] font-black text-slate-400   ml-1">Target Job Requirement*</label>
                     <select
                       value={form.job_requirement_id}
                       onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-700 focus:bg-white focus:border-indigo-500 outline-none transition-all"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold text-slate-700 focus:bg-white focus:border-indigo-500 outline-none transition-all"
                     >
                       <option value="">Select requirement...</option>
                       {jobs.map((j) => <option key={j.id} value={j.id}>{j.title}</option>)}
@@ -426,33 +426,33 @@ export default function ScreeningAutomationPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Connect to Hiring Round</label>
+                    <label className="text-[10px] font-black text-slate-400   ml-1">Connect to Hiring Round</label>
                     <div className="grid grid-cols-5 gap-3">
-                      <input type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-2xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder="Idx" />
-                      <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} className="col-span-4 bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-indigo-500 focus:bg-white" placeholder="Round Name (e.g. Technical Interview)" />
+                      <input type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder="Idx" />
+                      <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} className="col-span-4 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold outline-none focus:border-indigo-500 focus:bg-white" placeholder="Round Name (e.g. Technical Interview)" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Trigger Condition*</label>
-                    <textarea rows={4} value={form.criteria} onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} className="w-full bg-slate-50 border border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all resize-none" placeholder="IF candidate meets this criteria (e.g. 'Shortlisted' or 'Score > 80')..." />
+                    <label className="text-[10px] font-black text-slate-400   ml-1">Trigger Condition*</label>
+                    <textarea rows={4} value={form.criteria} onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all resize-none" placeholder="IF candidate meets this criteria (e.g. 'Shortlisted' or 'Score > 80')..." />
                   </div>
 
                   <div className="space-y-4 pt-4 border-t border-slate-50">
-                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                       <div>
-                        <p className="text-sm font-black text-slate-800 tracking-tight italic uppercase">Active Status</p>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rule is currently operational</p>
+                        <p className="text-sm font-black text-slate-800 tracking-tight  ">Active Status</p>
+                        <p className="text-[10px] font-bold text-slate-400  ">Rule is currently operational</p>
                       </div>
                       <button onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_enabled ? "bg-indigo-500" : "bg-slate-200"}`}>
                         <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 ${form.is_enabled ? "translate-x-5" : ""}`} />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                       <div>
-                        <p className="text-sm font-black text-slate-800 tracking-tight italic uppercase">Auto-Move Candidate</p>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Advance workflow on trigger</p>
+                        <p className="text-sm font-black text-slate-800 tracking-tight  ">Auto-Move Candidate</p>
+                        <p className="text-[10px] font-bold text-slate-400  ">Advance workflow on trigger</p>
                       </div>
                       <button onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.auto_move ? "bg-indigo-500" : "bg-slate-200"}`}>
                         <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 ${form.auto_move ? "translate-x-5" : ""}`} />
@@ -467,9 +467,9 @@ export default function ScreeningAutomationPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full py-4 bg-[#0F172A] text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-slate-200"
+                  className="w-full py-4 bg-[#0F172A] text-white rounded-xl text-[11px] font-black  tracking-[0.2em] hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-slate-200"
                 >
-                  {saving ? "SYNCHRONIZING..." : editingId ? "UPDATE RULE" : "DEPLOY RULE"}
+                  {saving ? "SAVING..." : editingId ? "UPDATE RULE" : "SAVE RULE"}
                 </button>
               </div>
             </motion.div>
@@ -481,9 +481,9 @@ export default function ScreeningAutomationPage() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDelete}
-        title="Destroy Automation Node?"
-        message="Are you sure you want to delete this screening rule? This action will immediately halt all automated processing for this specific criteria."
-        confirmLabel="Yes, Destroy"
+        title="Delete Automation Rule?"
+        message="Are you sure you want to delete this screening rule?"
+        confirmLabel="Yes, Delete"
         cancelLabel="No"
         isDestructive={true}
       />

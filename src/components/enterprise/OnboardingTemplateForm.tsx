@@ -157,7 +157,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                     {/* Basic Info */}
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Template Name</label>
+                            <label className="text-[10px] font-black text-slate-400   ml-1">Template Name</label>
                             <input 
                                 type="text" 
                                 className="w-full bg-slate-50 border border-slate-100 rounded-[20px] px-6 py-4 text-slate-900 font-bold text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm"
@@ -168,7 +168,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Overall Description</label>
+                            <label className="text-[10px] font-black text-slate-400   ml-1">Overall Description</label>
                             <textarea 
                                 className="w-full bg-slate-50 border border-slate-100 rounded-[20px] px-6 py-4 text-slate-900 font-bold text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm min-h-[120px]"
                                 placeholder="Purpose of this flow..."
@@ -181,7 +181,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
 
                     {/* Section Management */}
                     <div className="space-y-6">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 block">Define Sections</label>
+                        <label className="text-[10px] font-black text-slate-400   ml-1 block">Define Sections</label>
                         <div className="space-y-3">
                             {sections.map((s, idx) => (
                                 <div 
@@ -241,7 +241,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                     </h4>
                                     <p className="text-slate-500 text-xs font-medium mt-1">Configure fields for this section.</p>
                                 </div>
-                                <span className="px-4 py-2 bg-indigo-100 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest">
+                                <span className="px-4 py-2 bg-indigo-100 text-indigo-600 rounded-xl text-[10px] font-black  ">
                                     {(sections.find(s => s.id === activeSectionId)?.fields || []).length} Fields
                                 </span>
                             </div>
@@ -257,7 +257,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             </div>
                                             <div>
                                                 <p className="text-sm font-black text-slate-800">{field.label}</p>
-                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{field.type} • {field.required ? "Required" : "Optional"}</p>
+                                                <p className="text-[9px] font-black text-slate-400  ">{field.type} • {field.required ? "Required" : "Optional"}</p>
                                             </div>
                                         </div>
                                          {canAccess("onboarding:moderate") && (
@@ -275,10 +275,10 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                              {/* Add New Field Box */}
                             {canAccess("onboarding:moderate") && (
                                 <div className="bg-white p-8 rounded-[36px] border border-slate-200 shadow-xl shadow-slate-200/40 space-y-6">
-                                    <h5 className="text-xs font-black uppercase tracking-widest text-slate-400">Add New Field</h5>
+                                    <h5 className="text-xs font-black   text-slate-400">Add New Field</h5>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Field Label (Display)</label>
+                                            <label className="text-[9px] font-black text-slate-500   ml-1">Field Label (Display)</label>
                                             <input 
                                                 type="text" 
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
@@ -293,7 +293,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Field Type</label>
+                                            <label className="text-[9px] font-black text-slate-500   ml-1">Field Type</label>
                                             <select 
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
                                                 value={newFieldType}
@@ -309,7 +309,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             </select>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Unique Identifier</label>
+                                            <label className="text-[9px] font-black text-slate-500   ml-1">Unique Identifier</label>
                                             <input 
                                                 type="text" 
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
@@ -320,7 +320,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                         </div>
                                         {newFieldType === "select" && (
                                             <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1">Options (Comma Separated)</label>
+                                                <label className="text-[9px] font-black text-slate-500   ml-1">Options (Comma Separated)</label>
                                                 <input 
                                                     type="text" 
                                                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
@@ -336,13 +336,13 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                                 className={`flex items-center gap-3 cursor-pointer p-3 rounded-xl border transition-all ${newFieldRequired ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-white border-slate-100 text-slate-400"}`}
                                             >
                                                 <span className="material-icons-outlined text-lg">{newFieldRequired ? "check_box" : "check_box_outline_blank"}</span>
-                                                <span className="text-[10px] font-black uppercase tracking-widest">Mark as Required</span>
+                                                <span className="text-[10px] font-black  ">Mark as Required</span>
                                             </div>
                                         </div>
                                     </div>
                                     <button 
                                         onClick={addField}
-                                        className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all shadow-lg"
+                                        className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px]   hover:bg-black transition-all shadow-lg"
                                     >
                                         Add Field to {sections.find(s => s.id === activeSectionId)?.title}
                                     </button>
@@ -368,14 +368,14 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
             <div className="mt-12 flex gap-4">
                 <button 
                     onClick={() => router.push("/enterprise/settings/onboarding-templates")}
-                    className="px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
+                    className="px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-black text-xs   transition-all"
                 >
                     Cancel
                 </button>
                 {canAccess("onboarding:moderate") && (
                     <button 
                         onClick={handleSave}
-                        className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-2xl shadow-indigo-500/40"
+                        className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs   transition-all shadow-2xl shadow-indigo-500/40"
                     >
                         {template ? "Update Template" : "Save Template"}
                     </button>

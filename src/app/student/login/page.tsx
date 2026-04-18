@@ -68,7 +68,7 @@ export default function StudentLoginPage() {
                         <h2 className="text-5xl font-extrabold text-white leading-tight mb-6">
                             Start your learning journey today.
                         </h2>
-                        <p className="text-white/80 text-lg font-light tracking-wide italic">
+                        <p className="text-white/80 text-lg font-light tracking-wide ">
                             Dedicated portal for students to excel and grow.
                         </p>
                     </div>
@@ -80,7 +80,7 @@ export default function StudentLoginPage() {
                     <div className="mb-10 text-center lg:text-left">
                         <div className="flex items-center justify-center lg:justify-start gap-3 mb-10">
                             <img src="/Academik_logo.png" alt="Academik.ai" className="h-10 object-contain" />
-                            <span className="bg-indigo-50 dark:bg-indigo-900/30 text-[10px] font-black px-2 py-1 rounded-lg text-indigo-500 tracking-widest border border-indigo-100 dark:border-indigo-800">STUDENT</span>
+                            <span className="bg-indigo-50 dark:bg-indigo-900/30 text-[10px] font-black px-2 py-1 rounded-lg text-indigo-500  border border-indigo-100 dark:border-indigo-800">STUDENT</span>
                         </div>
                         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Student Login</h1>
                         <p className="text-slate-500 dark:text-slate-400">
@@ -141,7 +141,7 @@ export default function StudentLoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold uppercase text-xs tracking-widest rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95 flex items-center justify-center gap-2"
+                            className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold  text-xs  rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95 flex items-center justify-center gap-2"
                         >
                             {isLoading ? "Signing in..." : "Login to Dashboard"}
                             <span className="material-icons-outlined text-sm">login</span>

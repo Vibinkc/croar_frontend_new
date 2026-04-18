@@ -112,7 +112,7 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
                         </p>
                     </div>
 
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Select Assessment Template</label>
+                    <label className="block text-[10px] font-black   text-slate-500 mb-2">Select Assessment Template</label>
                     {isLoading ? (
                         <div className="py-4 flex justify-center">
                             <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
@@ -136,7 +136,7 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <h4 className="font-bold text-slate-800 text-sm">{template.name}</h4>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                                            <p className="text-[10px] font-bold text-slate-400   mt-0.5">
                                                 {template.type} • {template.topic}
                                             </p>
                                         </div>
@@ -172,7 +172,7 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
                     <button
                         onClick={handleSend}
                         disabled={isSending || !selectedTemplateId}
-                        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black   rounded-lg shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {isSending ? (
                             <>

@@ -174,7 +174,7 @@ export default function CandidateAssessmentPage() {
                 <Code2 className="w-8 h-8 text-indigo-500" />
               )}
             </div>
-            <h1 className="text-3xl font-black text-white tracking-tight italic">
+            <h1 className="text-3xl font-black text-white tracking-tight ">
               {testData?.organization?.name || "Technical"} Assessment
             </h1>
             <p className="text-slate-500 text-sm">Verify your application to begin the test with {testData?.organization?.name || "us"}.</p>
@@ -182,7 +182,7 @@ export default function CandidateAssessmentPage() {
           
           <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Email Address</label>
+              <label className="text-[10px] font-black text-slate-500  tracking-[0.2em] ml-1">Email Address</label>
               <input 
                 type="email" 
                 value={email} 
@@ -197,7 +197,7 @@ export default function CandidateAssessmentPage() {
             <button 
               onClick={handleVerify}
               disabled={loading || !email}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl py-4 font-black text-sm uppercase tracking-widest transition-all disabled:opacity-50 shadow-lg shadow-indigo-500/20"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl py-4 font-black text-sm   transition-all disabled:opacity-50 shadow-lg shadow-indigo-500/20"
             >
               {loading ? "Verifying..." : "Continue"}
             </button>
@@ -212,7 +212,7 @@ export default function CandidateAssessmentPage() {
       <div className="min-h-screen bg-[#0A0A0B] flex flex-col items-center justify-center p-6 text-slate-300">
         <div className="w-full max-w-2xl space-y-8">
           <div className="text-center space-y-4">
-            <h2 className="text-4xl font-black text-white italic tracking-tight">Ready to start?</h2>
+            <h2 className="text-4xl font-black text-white  tracking-tight">Ready to start?</h2>
             <p className="text-slate-500">Please review the instructions before beginning your assessment.</p>
           </div>
 
@@ -223,7 +223,7 @@ export default function CandidateAssessmentPage() {
                   <Clock className="w-5 h-5 text-indigo-500" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest">Duration</h4>
+                  <h4 className="text-xs font-black text-slate-500  ">Duration</h4>
                   <p className="text-lg font-black text-white">30 Minutes</p>
                 </div>
               </div>
@@ -235,7 +235,7 @@ export default function CandidateAssessmentPage() {
                   <Activity className="w-5 h-5 text-emerald-500" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest">Questions</h4>
+                  <h4 className="text-xs font-black text-slate-500  ">Questions</h4>
                   <p className="text-lg font-black text-white">{attempt.generated_questions?.length || 0} Total</p>
                 </div>
               </div>
@@ -246,7 +246,7 @@ export default function CandidateAssessmentPage() {
           <button 
             onClick={handleStartTest}
             disabled={loading}
-            className="w-full bg-white text-slate-950 rounded-2xl py-5 font-black text-base uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center justify-center gap-3 group"
+            className="w-full bg-white text-slate-950 rounded-2xl py-5 font-black text-base   hover:bg-slate-200 transition-all flex items-center justify-center gap-3 group"
           >
             Start Assessment
             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -264,7 +264,7 @@ export default function CandidateAssessmentPage() {
         <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center text-slate-500">
            <div className="flex flex-col items-center gap-4">
               <AlertCircle className="w-12 h-12 text-slate-800" />
-              <p className="text-sm font-black uppercase tracking-widest">No questions found in this assessment</p>
+              <p className="text-sm font-black  ">No questions found in this assessment</p>
            </div>
         </div>
       );
@@ -283,13 +283,13 @@ export default function CandidateAssessmentPage() {
                   <Code2 className="w-5 h-5 text-white" />
                 )}
               </div>
-              <span className="font-black text-white text-sm tracking-tighter italic uppercase">
+              <span className="font-black text-white text-sm tracking-tighter  ">
                 {testData?.organization?.name || "Screen"}
               </span>
             </div>
             <div className="h-6 w-px bg-slate-800 mx-2" />
             <div className="flex items-center gap-3">
-              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">
+              <span className="text-xs font-black text-slate-500  ">
                 Question {currentIdx + 1} / {testData.questions.length}
               </span>
               <span className="text-xs font-bold text-slate-400">· {testData.topic}</span>
@@ -318,7 +318,7 @@ export default function CandidateAssessmentPage() {
             <div className="h-12 border-b border-slate-800/50 flex items-center px-6 shrink-0">
               <div className="flex items-center gap-2 text-[#7C3AED]">
                 <Info className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Instructions</span>
+                <span className="text-[10px] font-black  ">Instructions</span>
               </div>
             </div>
             <div className="flex-1 p-8 overflow-y-auto custom-scrollbar space-y-8">
@@ -331,7 +331,7 @@ export default function CandidateAssessmentPage() {
                 
                 {currentQuestion.content?.constraints && (
                   <div className="mt-8">
-                    <h4 className="text-white text-xs font-black uppercase tracking-widest mb-3">Constraints</h4>
+                    <h4 className="text-white text-xs font-black   mb-3">Constraints</h4>
                     <ul className="space-y-2 list-none p-0">
                       {(Array.isArray(currentQuestion?.content?.constraints) ? currentQuestion.content.constraints : [currentQuestion?.content?.constraints]).map((c: string, i: number) => (
                         <li key={i} className="flex items-center gap-2">
@@ -345,19 +345,19 @@ export default function CandidateAssessmentPage() {
                 
                 {currentQuestion.content?.examples && (
                   <div className="mt-8 space-y-6">
-                    <h4 className="text-white text-xs font-black uppercase tracking-widest mb-3">Examples</h4>
+                    <h4 className="text-white text-xs font-black   mb-3">Examples</h4>
                     {currentQuestion.content.examples.map((ex: any, i: number) => (
                       <div key={i} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 space-y-3 font-mono text-[13px]">
                         <div className="flex gap-4">
-                          <span className="text-slate-500 w-16 uppercase text-[10px] font-bold">Input</span>
+                          <span className="text-slate-500 w-16  text-[10px] font-bold">Input</span>
                           <span className="text-indigo-400">{ex.input}</span>
                         </div>
                         <div className="flex gap-4 border-t border-slate-800/50 pt-2">
-                          <span className="text-slate-500 w-16 uppercase text-[10px] font-bold">Output</span>
+                          <span className="text-slate-500 w-16  text-[10px] font-bold">Output</span>
                           <span className="text-emerald-400">{ex.output}</span>
                         </div>
                         {ex.explanation && (
-                          <p className="text-[11px] text-slate-500 font-sans italic pt-1">{ex.explanation}</p>
+                          <p className="text-[11px] text-slate-500 font-sans  pt-1">{ex.explanation}</p>
                         )}
                       </div>
                     ))}
@@ -374,7 +374,7 @@ export default function CandidateAssessmentPage() {
                 <div className="h-12 flex items-center mb-8">
                   <div className="flex items-center gap-2 text-indigo-500">
                     <Layout className="w-4 h-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Select Answer</span>
+                    <span className="text-[10px] font-black  ">Select Answer</span>
                   </div>
                 </div>
                 <div className="grid gap-3">
@@ -405,14 +405,14 @@ export default function CandidateAssessmentPage() {
                 <div className="h-12 border-b border-slate-800/50 flex items-center justify-between px-6 shrink-0">
                   <div className="flex items-center gap-2 text-emerald-500">
                     <Terminal className="w-4 h-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Code Editor</span>
+                    <span className="text-[10px] font-black  ">Code Editor</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-black text-slate-500 uppercase">{currentQuestion.difficulty || "Medium"}</span>
+                    <span className="text-[10px] font-black text-slate-500 ">{currentQuestion.difficulty || "Medium"}</span>
                     <select 
                       value={selectedLanguage}
                       onChange={(e) => setSelectedLanguage(e.target.value)}
-                      className="bg-slate-900 border border-slate-800 text-[10px] font-black uppercase text-slate-400 px-2 py-1 rounded-md focus:outline-none"
+                      className="bg-slate-900 border border-slate-800 text-[10px] font-black  text-slate-400 px-2 py-1 rounded-md focus:outline-none"
                     >
                       <option value="python">Python 3</option>
                       <option value="java">Java</option>
@@ -442,7 +442,7 @@ export default function CandidateAssessmentPage() {
                   <div className="h-10 border-b border-slate-800/50 flex items-center justify-between px-6 shrink-0">
                      <div className="flex items-center gap-2 text-slate-500">
                       <Activity className="w-3.5 h-3.5" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Tests</span>
+                      <span className="text-[10px] font-black  ">Tests</span>
                     </div>
                     {runningTests && <span className="text-[10px] font-bold text-indigo-500 animate-pulse">Running...</span>}
                   </div>
@@ -500,7 +500,7 @@ export default function CandidateAssessmentPage() {
               <button 
                 onClick={runTests}
                 disabled={runningTests || loading}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl border border-emerald-500/30 text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500/10 transition-all"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl border border-emerald-500/30 text-emerald-500 text-xs font-black   hover:bg-emerald-500/10 transition-all"
               >
                 <Play className="w-4 h-4" />
                 Run Tests
@@ -509,7 +509,7 @@ export default function CandidateAssessmentPage() {
             <button 
               onClick={handleComplete}
               disabled={loading}
-              className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-white text-slate-950 text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all shadow-lg shadow-white/5 active:scale-95"
+              className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-white text-slate-950 text-xs font-black   hover:bg-slate-200 transition-all shadow-lg shadow-white/5 active:scale-95"
             >
               <Send className="w-4 h-4" />
               Submit Test
@@ -544,20 +544,20 @@ export default function CandidateAssessmentPage() {
           <div className="w-20 h-20 bg-emerald-500/10 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-emerald-500/20">
             <CheckCircle2 className="w-10 h-10" />
           </div>
-          <h2 className="text-3xl font-black text-white mb-4 italic tracking-tight uppercase">Successfully Submitted!</h2>
+          <h2 className="text-3xl font-black text-white mb-4  tracking-tight ">Successfully Submitted!</h2>
           <p className="text-slate-500 text-sm leading-relaxed mb-8">
             Your assessment has been recorded. Our team will review your solutions and get back to you shortly.
           </p>
           
           {score !== null && (
             <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 mb-8 inline-block">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Final Score</p>
+              <p className="text-[10px] font-black text-slate-500   mb-1">Final Score</p>
               <p className="text-4xl font-black text-white">{score}%</p>
             </div>
           )}
           
           <div className="pt-4 border-t border-slate-800 flex flex-col gap-2">
-            <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Assessment ID</p>
+            <p className="text-[10px] font-black text-slate-600  ">Assessment ID</p>
             <p className="text-[10px] font-mono text-slate-700 truncate px-4">{attempt?.id}</p>
           </div>
         </div>

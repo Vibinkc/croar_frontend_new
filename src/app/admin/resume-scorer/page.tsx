@@ -111,7 +111,7 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-indigo-50 border-t-[var(--color-primary)] rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Architecture</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Architecture</p>
         </div>
     );
 
@@ -120,8 +120,8 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
             {/* Header Section matching Aptitude style */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Resume Scorer Config</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight ">Resume Scorer Config</h1>
+                    <p className="text-[10px] font-bold text-slate-400   mt-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
                         Define ATS Rules & Scoring Criteria
                     </p>
@@ -132,7 +132,7 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
                             if (isCreating) resetForm();
                             else setIsCreating(true);
                         }}
-                        className={`group ${isCreating ? "bg-slate-100 text-slate-400 hover:bg-slate-200" : "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]"} px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-100/50 hover:shadow-indigo-200 flex items-center gap-3 active:scale-95`}
+                        className={`group ${isCreating ? "bg-slate-100 text-slate-400 hover:bg-slate-200" : "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]"} px-6 py-3.5 rounded-2xl text-[10px] font-black   transition-all shadow-xl shadow-indigo-100/50 hover:shadow-indigo-200 flex items-center gap-3 active:scale-95`}
                     >
                         <span className="material-icons-outlined text-sm font-bold group-hover:rotate-90 transition-transform duration-500">{isCreating ? "close" : "add"}</span>
                         <span>{isCreating ? "Discard" : "New Configuration"}</span>
@@ -144,10 +144,10 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 animate-in slide-in-from-top-4 duration-500">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="flex justify-between items-center mb-2">
-                            <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">{editingId ? "Modify Configuration" : "Initialize New Config"}</h3>
+                            <h3 className="text-base font-black text-slate-900  tracking-tight">{editingId ? "Modify Configuration" : "Initialize New Config"}</h3>
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Config Name</label>
+                            <label className="block text-[10px] font-black text-slate-400   mb-1.5">Config Name</label>
                             <input
                                 type="text"
                                 value={name}
@@ -158,7 +158,7 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
                             />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Instructions for AI Engine</label>
+                            <label className="block text-[10px] font-black text-slate-400   mb-1.5">Instructions for AI Engine</label>
                             <textarea
                                 value={instruction}
                                 onChange={(e) => setInstruction(e.target.value)}
@@ -168,10 +168,10 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
                             />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Reference Protocol (PDF) - Optional</label>
+                            <label className="block text-[10px] font-black text-slate-400   mb-2">Reference Protocol (PDF) - Optional</label>
                             <label className="flex flex-col items-center px-6 py-8 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:bg-indigo-50/30 hover:border-[var(--color-primary)]/50 transition-all group">
                                 <span className="material-icons-outlined text-slate-300 mb-2 text-3xl transition-transform group-hover:scale-110 group-hover:text-[var(--color-primary)]">upload_file</span>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-[var(--color-primary)]">{formatFile ? formatFile.name : (editingId ? "Replace Protocol" : "Initialize Reference PDF")}</span>
+                                <span className="text-[10px] font-black text-slate-400   group-hover:text-[var(--color-primary)]">{formatFile ? formatFile.name : (editingId ? "Replace Protocol" : "Initialize Reference PDF")}</span>
                                 <input
                                     type="file"
                                     accept="application/pdf"
@@ -181,7 +181,7 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
                             </label>
                         </div>
                         <div className="flex justify-end pt-4 border-t border-slate-50">
-                            <button type="submit" className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-100">
+                            <button type="submit" className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-6 py-2.5 rounded-xl text-[10px] font-black   transition-all shadow-xl shadow-indigo-100">
                                 {editingId ? "Update Protocol" : "Deploy Config"}
                             </button>
                         </div>
@@ -201,18 +201,18 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
                             <div className="h-10 w-10 rounded-xl bg-indigo-50 flex items-center justify-center text-[var(--color-primary)] group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all duration-300">
                                 <span className="material-icons-outlined text-lg">terminal</span>
                             </div>
-                            <span className="text-[8px] font-black text-[var(--color-primary)] uppercase tracking-widest bg-indigo-50/50 border border-indigo-100 px-2 py-1 rounded-lg group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all">ID_{config.id.toString().padStart(3, '0')}</span>
+                            <span className="text-[8px] font-black text-[var(--color-primary)]   bg-indigo-50/50 border border-indigo-100 px-2 py-1 rounded-lg group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all">ID_{config.id.toString().padStart(3, '0')}</span>
                         </div>
 
-                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-2 relative z-10 group-hover:text-[var(--color-primary)] transition-colors line-clamp-1">{config.name}</h3>
+                        <h3 className="text-sm font-black text-slate-900  tracking-tight mb-2 relative z-10 group-hover:text-[var(--color-primary)] transition-colors line-clamp-1">{config.name}</h3>
                         <div className="relative z-10 flex-1 mb-4">
-                            <p className="text-[9px] font-medium text-slate-400 line-clamp-3 bg-slate-50 p-3 rounded-xl leading-relaxed italic border border-slate-100/50 group-hover:border-indigo-50/50 transition-colors">
+                            <p className="text-[9px] font-medium text-slate-400 line-clamp-3 bg-slate-50 p-3 rounded-xl leading-relaxed  border border-slate-100/50 group-hover:border-indigo-50/50 transition-colors">
                                 "{config.instruction_text}"
                             </p>
                         </div>
 
                         <div className="pt-4 border-t border-slate-50 flex justify-between items-center relative z-10 mt-auto">
-                            <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-1.5">
+                            <span className="text-[8px] font-bold text-slate-300   flex items-center gap-1.5">
                                 <span className="material-icons-outlined text-[10px]">calendar_today</span>
                                 {new Date(config.created_at).toLocaleDateString()}
                             </span>
@@ -234,7 +234,7 @@ function ResumeScorerList({ divisionId, departmentId }: { divisionId: number | n
             {configs.length === 0 && (
                 <div className="py-20 text-center text-slate-300 bg-slate-50/10 rounded-[2.5rem] border-2 border-dashed border-slate-100">
                     <span className="material-icons-outlined text-4xl mb-4 block opacity-30">settings_input_component</span>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em]">No_Configurations_Deployed</p>
+                    <p className="text-[10px] font-black  tracking-[0.2em]">No_Configurations_Deployed</p>
                 </div>
             )}
         </div>

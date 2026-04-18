@@ -117,7 +117,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                                     <span className="material-icons-outlined text-xl">account_balance</span>
                                 </div>
                                 <h3 className="font-bold text-base text-slate-900 z-10">{div.name}</h3>
-                                <p className={`text-[9px] font-black ${variant.text} uppercase tracking-widest mt-0.5 z-10`}>College Division</p>
+                                <p className={`text-[9px] font-black ${variant.text}   mt-0.5 z-10`}>College Division</p>
                                 <div className={`absolute -bottom-3 -right-3 opacity-5 ${variant.text} group-hover:opacity-10 transition-all duration-500`}>
                                     <span className="material-icons-outlined text-6xl">account_balance</span>
                                 </div>
@@ -138,7 +138,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
     if (localDivId && !localDeptId && !allowDivisionOverview) {
         return (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <nav className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400">
+                <nav className="flex items-center gap-2 text-xs font-black   text-slate-400">
                     <button onClick={() => setLocalDivId(null)} className="hover:text-black transition-all">All Colleges</button>
                     <span className="material-icons-outlined text-sm">chevron_right</span>
                     <span className="text-black">{activeDiv?.name}</span>
@@ -168,7 +168,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                                     <span className="material-icons-outlined text-xl">school</span>
                                 </div>
                                 <h3 className="font-bold text-base text-slate-900 z-10">{dept.name}</h3>
-                                <p className={`text-[9px] font-black ${variant.text} uppercase tracking-widest mt-0.5 z-10`}>Academic Department</p>
+                                <p className={`text-[9px] font-black ${variant.text}   mt-0.5 z-10`}>Academic Department</p>
                                 <div className={`absolute -bottom-3 -right-3 opacity-5 ${variant.text} group-hover:opacity-10 transition-all duration-500`}>
                                     <span className="material-icons-outlined text-6xl">school</span>
                                 </div>
@@ -188,7 +188,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
     // STATE 3: Final Content
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
-            <nav className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400">
+            <nav className="flex items-center gap-2 text-xs font-black   text-slate-400">
                 <button
                     onClick={() => { setLocalDivId(null); setLocalDeptId(null); }}
                     className="hover:text-black transition-all"

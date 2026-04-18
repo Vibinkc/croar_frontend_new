@@ -259,14 +259,14 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
 
                 <div className="space-y-4">
                     <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Mission Objective</h3>
+                        <h3 className="text-xs font-black   text-slate-500 mb-3">Mission Objective</h3>
                         <p className="text-sm text-slate-300 leading-relaxed">
                             {data.text || "Redirect the laser to eliminate all alien threats."}
                         </p>
                     </div>
 
                     <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 space-y-4">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-slate-500">Tool Inventory</h3>
+                        <h3 className="text-xs font-black   text-slate-500">Tool Inventory</h3>
 
                         <div className="grid grid-cols-2 gap-3">
                             <button
@@ -276,7 +276,7 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
                             >
                                 <span className="material-icons-outlined text-3xl rotate-45">change_history</span>
                                 <div className="text-center leading-none">
-                                    <span className="block text-xs font-bold uppercase">Reflector</span>
+                                    <span className="block text-xs font-bold ">Reflector</span>
                                     <span className="text-[10px] opacity-60">x{inventory.reflectors}</span>
                                 </div>
                             </button>
@@ -288,7 +288,7 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
                             >
                                 <span className="material-icons-outlined text-3xl">alt_route</span>
                                 <div className="text-center leading-none">
-                                    <span className="block text-xs font-bold uppercase">Splitter</span>
+                                    <span className="block text-xs font-bold ">Splitter</span>
                                     <span className="text-[10px] opacity-60">x{inventory.splitters}</span>
                                 </div>
                             </button>
@@ -299,7 +299,7 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
                 <div className="mt-auto pt-6 border-t border-slate-800">
                     <button
                         onClick={runSimulation}
-                        className={`w-full py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-lg ${isRunning ? 'bg-rose-500 hover:bg-rose-600 shadow-rose-900/20' : 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-900/20'}`}
+                        className={`w-full py-4 rounded-xl text-sm font-black   transition-all shadow-lg ${isRunning ? 'bg-rose-500 hover:bg-rose-600 shadow-rose-900/20' : 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-900/20'}`}
                     >
                         <div className="flex items-center justify-center gap-2">
                             <span className="material-icons-outlined">{isRunning ? 'stop' : 'play_arrow'}</span>
@@ -459,13 +459,13 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
                             <div className="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto border border-indigo-500/30">
                                 <span className="material-icons-outlined text-4xl text-indigo-400 rotate-45">terrain</span>
                             </div>
-                            <h2 className="text-4xl font-black tracking-tighter text-white uppercase italic">Spatial Protocol</h2>
+                            <h2 className="text-4xl font-black tracking-tighter text-white  ">Spatial Protocol</h2>
                             <p className="text-slate-400 font-medium">Clear the sector of all robotic threats. Use laser redirection to hit hidden targets.</p>
                         </div>
 
                         <button
                             onClick={handleLaunch}
-                            className="group relative px-12 py-5 bg-indigo-600 rounded-2xl text-lg font-black uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-indigo-500 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(79,70,229,0.3)]"
+                            className="group relative px-12 py-5 bg-indigo-600 rounded-2xl text-lg font-black  tracking-[0.3em] overflow-hidden transition-all hover:bg-indigo-500 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(79,70,229,0.3)]"
                         >
                             <span className="relative z-10">Execute Mission</span>
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />

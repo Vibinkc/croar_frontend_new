@@ -76,8 +76,8 @@ function AssessmentList({ divisionId, departmentId }: { divisionId: number | nul
             {/* Multi-Action Hub */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
                 <div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none mb-2">Evaluation Vaults</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight  leading-none mb-2">Evaluation Vaults</h1>
+                    <p className="text-[10px] font-bold text-slate-400  tracking-[0.2em] flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
                         Central Repository / Assessment Engine
                     </p>
@@ -85,21 +85,21 @@ function AssessmentList({ divisionId, departmentId }: { divisionId: number | nul
                 <div className="flex flex-wrap gap-3">
                     <Link
                         href={`/admin/assessments/create?tab=MANUAL${departmentId ? `&department_id=${departmentId}` : ""}`}
-                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
+                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black  tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
                     >
                         <span className="material-icons-outlined text-sm font-bold">add</span>
                         Manual Init
                     </Link>
                     <Link
                         href={`/admin/assessments/create?tab=BULK${departmentId ? `&department_id=${departmentId}` : ""}`}
-                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
+                        className="px-5 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-[10px] font-black  tracking-[0.1em] hover:bg-slate-100 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
                     >
                         <span className="material-icons-outlined text-sm font-bold">table_view</span>
                         Bulk Ingestion
                     </Link>
                     <Link
                         href={`/admin/assessments/create?tab=AI${departmentId ? `&department_id=${departmentId}` : ""}`}
-                        className="px-6 py-3 bg-slate-900 text-white rounded-lg text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black shadow-lg shadow-slate-200 hover:shadow-indigo-500/20 transition-all flex items-center gap-2 group active:scale-95"
+                        className="px-6 py-3 bg-slate-900 text-white rounded-lg text-[10px] font-black  tracking-[0.2em] hover:bg-black shadow-lg shadow-slate-200 hover:shadow-indigo-500/20 transition-all flex items-center gap-2 group active:scale-95"
                     >
                         <span className="material-icons-outlined text-sm group-hover:rotate-180 transition-transform duration-700 font-bold">auto_awesome</span>
                         AI Architect
@@ -111,10 +111,10 @@ function AssessmentList({ divisionId, departmentId }: { divisionId: number | nul
                 <table className="min-w-full divide-y divide-slate-100">
                     <thead className="bg-slate-50/50">
                         <tr>
-                            <th scope="col" className="px-4 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Protocol_ID</th>
-                            <th scope="col" className="px-4 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Title</th>
-                            <th scope="col" className="px-4 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Duration</th>
-                            <th scope="col" className="px-4 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Volume</th>
+                            <th scope="col" className="px-4 py-2 text-left text-[10px] font-black text-slate-400  ">Protocol_ID</th>
+                            <th scope="col" className="px-4 py-2 text-left text-[10px] font-black text-slate-400  ">Title</th>
+                            <th scope="col" className="px-4 py-2 text-left text-[10px] font-black text-slate-400  ">Duration</th>
+                            <th scope="col" className="px-4 py-2 text-left text-[10px] font-black text-slate-400  ">Volume</th>
                             <th scope="col" className="relative px-4 py-2"><span className="sr-only">Actions</span></th>
                         </tr>
                     </thead>
@@ -129,7 +129,7 @@ function AssessmentList({ divisionId, departmentId }: { divisionId: number | nul
                                     <div className="text-[10px] font-medium text-slate-400 truncate max-w-xs">{assessment.description}</div>
                                 </td>
                                 <td className="px-4 py-2 whitespace-nowrap">
-                                    <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[9px] font-black uppercase tracking-widest border border-slate-200">
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[9px] font-black   border border-slate-200">
                                         {assessment.time_limit_minutes} MINS
                                     </span>
                                 </td>

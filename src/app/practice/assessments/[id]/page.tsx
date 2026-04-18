@@ -26,10 +26,10 @@ const MarkdownContent = ({ content, isDark }: { content: string, isDark: boolean
 
                 // Headers
                 if (trimmed.startsWith('####')) {
-                    return <h4 key={idx} className={`text-[11px] font-black uppercase tracking-[0.15em] mt-6 mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{trimmed.replace(/^####\s*/, '')}</h4>;
+                    return <h4 key={idx} className={`text-[11px] font-black  tracking-[0.15em] mt-6 mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{trimmed.replace(/^####\s*/, '')}</h4>;
                 }
                 if (trimmed.startsWith('###')) {
-                    return <h3 key={idx} className={`text-[13px] font-black uppercase tracking-[0.2em] mt-8 mb-4 ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`}>{trimmed.replace(/^###\s*/, '')}</h3>;
+                    return <h3 key={idx} className={`text-[13px] font-black  tracking-[0.2em] mt-8 mb-4 ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`}>{trimmed.replace(/^###\s*/, '')}</h3>;
                 }
                 if (trimmed.startsWith('##')) {
                     return <h2 key={idx} className={`text-[18px] font-bold tracking-tight mt-6 mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>{trimmed.replace(/^##\s*/, '')}</h2>;
@@ -632,7 +632,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
         <div className="min-h-screen bg-slate-900 flex items-center justify-center">
             <div className="text-center">
                 <div className="w-12 h-12 border-4 border-slate-700 border-t-slate-500 rounded-full animate-spin mb-4"></div>
-                <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase">Synchronizing_Telemetry</p>
+                <p className="text-[10px] font-black tracking-[0.3em] text-slate-500 ">Synchronizing_Telemetry</p>
             </div>
         </div>
     );
@@ -662,7 +662,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                         <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mb-6 border shadow-inner ${assessment.is_ai_generated ? 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20' : 'bg-slate-700 text-red-500 border-slate-600'}`}>
                             <span className="material-icons-outlined text-5xl">{assessment.is_ai_generated ? 'psychology' : 'gpp_good'}</span>
                         </div>
-                        <h1 className="text-3xl font-black text-white uppercase tracking-tighter">
+                        <h1 className="text-3xl font-black text-white  tracking-tighter">
                             {assessment.is_ai_generated ? 'Adaptive Neural Protocol' : 'Secure Protocol Required'}
                         </h1>
                         <p className="text-sm text-slate-300 font-medium tracking-wide mt-2 max-w-md mx-auto leading-relaxed">
@@ -677,7 +677,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                         <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex items-start gap-4 hover:border-slate-700 transition-colors">
                             <span className={`material-icons-outlined text-xl mt-0.5 ${assessment.is_ai_generated ? 'text-indigo-400' : 'text-red-400'}`}>{assessment.is_ai_generated ? 'view_quilt' : 'fullscreen'}</span>
                             <div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">
+                                <span className="text-[10px] font-black text-slate-400   block mb-1">
                                     {assessment.is_ai_generated ? 'Protocol Focus' : 'Force Fullscreen'}
                                 </span>
                                 <span className="text-xs font-bold text-white leading-snug block">
@@ -688,7 +688,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                         <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex items-start gap-4 hover:border-slate-700 transition-colors">
                             <span className={`material-icons-outlined text-xl mt-0.5 ${assessment.is_ai_generated ? 'text-indigo-400' : 'text-red-400'}`}>{assessment.is_ai_generated ? 'swap_horiz' : 'visibility_off'}</span>
                             <div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">
+                                <span className="text-[10px] font-black text-slate-400   block mb-1">
                                     {assessment.is_ai_generated ? 'Multi-Tasking OK' : 'No Tab Switching'}
                                 </span>
                                 <span className="text-xs font-bold text-white leading-snug block">
@@ -699,14 +699,14 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                         <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex items-start gap-4 hover:border-slate-700 transition-colors">
                             <span className={`material-icons-outlined text-xl mt-0.5 ${assessment.is_ai_generated ? 'text-indigo-400' : 'text-red-400'}`}>block</span>
                             <div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Right Click Disabled</span>
+                                <span className="text-[10px] font-black text-slate-400   block mb-1">Right Click Disabled</span>
                                 <span className="text-xs font-bold text-white leading-snug block">Context menu is blocked.</span>
                             </div>
                         </div>
                         <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex items-start gap-4 hover:border-slate-700 transition-colors">
                             <span className={`material-icons-outlined text-xl mt-0.5 ${assessment.is_ai_generated ? 'text-indigo-400' : 'text-red-400'}`}>content_paste_off</span>
                             <div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">No Copy/Paste</span>
+                                <span className="text-[10px] font-black text-slate-400   block mb-1">No Copy/Paste</span>
                                 <span className="text-xs font-bold text-white leading-snug block">Clipboard actions are disabled.</span>
                             </div>
                         </div>
@@ -714,18 +714,18 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800">
-                            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Duration</span>
+                            <span className="text-[9px] font-black text-slate-500   block mb-1">Duration</span>
                             <span className="text-2xl font-black text-white">{assessment.time_limit_minutes}m</span>
                         </div>
                         <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800">
-                            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Questions</span>
+                            <span className="text-[9px] font-black text-slate-500   block mb-1">Questions</span>
                             <span className="text-2xl font-black text-white">{allQuestions.length}</span>
                         </div>
                     </div>
 
                     <button
                         onClick={startAssessment}
-                        className={`w-full text-white font-black text-[12px] tracking-[0.2em] uppercase py-5 rounded-2xl transition-all shadow-lg active:scale-95 hover:scale-[1.02] border ${assessment.is_ai_generated ? 'bg-indigo-600 hover:bg-indigo-500 border-indigo-500/50' : 'bg-red-600 hover:bg-red-500 border-red-500/50'}`}
+                        className={`w-full text-white font-black text-[12px] tracking-[0.2em]  py-5 rounded-2xl transition-all shadow-lg active:scale-95 hover:scale-[1.02] border ${assessment.is_ai_generated ? 'bg-indigo-600 hover:bg-indigo-500 border-indigo-500/50' : 'bg-red-600 hover:bg-red-500 border-red-500/50'}`}
                     >
                         {assessment.is_ai_generated ? 'Initialize Neural Link' : 'Initiate Secure Protocol'}
                     </button>
@@ -738,7 +738,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                                 router.push('/practice/assessments');
                             }
                         }}
-                        className="text-[10px] font-black text-slate-500 hover:text-slate-300 uppercase tracking-widest transition-colors py-2"
+                        className="text-[10px] font-black text-slate-500 hover:text-slate-300   transition-colors py-2"
                     >
                         Abort Mission
                     </button>
@@ -757,16 +757,16 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                         <span className="material-icons-outlined text-5xl">{percent >= 70 ? 'verified' : 'analytics'}</span>
                     </div>
 
-                    <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter mb-2">Protocol_Terminated</h1>
-                    <p className="text-[10px] font-black text-slate-400 tracking-[0.3em] uppercase mb-10">Telemetry Summary Synchronized</p>
+                    <h1 className="text-3xl font-black text-slate-900  tracking-tighter mb-2">Protocol_Terminated</h1>
+                    <p className="text-[10px] font-black text-slate-400 tracking-[0.3em]  mb-10">Telemetry Summary Synchronized</p>
 
                     <div className="grid grid-cols-2 gap-6 mb-12">
                         <div className="bg-slate-50 p-6 rounded-3xl">
-                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-2">Final_Agility_Score</span>
+                            <span className="text-[8px] font-black text-slate-400   block mb-2">Final_Agility_Score</span>
                             <span className={`text-4xl font-black ${percent >= 70 ? 'text-slate-900' : 'text-slate-900'}`}>{percent}%</span>
                         </div>
                         <div className="bg-slate-50 p-6 rounded-3xl">
-                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-2">Questions_Processed</span>
+                            <span className="text-[8px] font-black text-slate-400   block mb-2">Questions_Processed</span>
                             <span className="text-4xl font-black text-slate-900">{scoreData.score}/{scoreData.total_questions}</span>
                         </div>
                     </div>
@@ -774,7 +774,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                     <div className="flex flex-col gap-4">
                         <button
                             onClick={() => router.push(`/practice/assessments/results/${scoreData.id}${assessment?.is_ai_generated ? '?from=ai' : ''}`)}
-                            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-[11px] tracking-[0.2em] uppercase py-4 rounded-2xl transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2"
+                            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-[11px] tracking-[0.2em]  py-4 rounded-2xl transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2"
                         >
                             View Detailed Analysis
                             <span className="material-icons-outlined text-lg">assessment</span>
@@ -788,7 +788,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                                     router.push("/practice/assessments");
                                 }
                             }}
-                            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black text-[11px] tracking-[0.2em] uppercase py-4 rounded-2xl transition-all shadow-xl active:scale-95"
+                            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black text-[11px] tracking-[0.2em]  py-4 rounded-2xl transition-all shadow-xl active:scale-95"
                         >
                             Return to Command Center
                         </button>
@@ -834,7 +834,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
 
                 <div className="flex items-center gap-6">
                     <div className="flex flex-col items-center">
-                        <span className={`text-[9px] font-black tracking-widest uppercase mb-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                        <span className={`text-[9px] font-black   mb-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                             {isDeadlineApproaching ? "PROTOCOL_DEADLINE" : "TIME_REMAINING"}
                         </span>
                         <div className={`text-lg font-black font-mono tracking-tighter ${timeLeft < 60 ? 'text-red-500 animate-pulse' : isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -855,7 +855,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                             {isDark ? 'light_mode' : 'dark_mode'}
                         </span>
                         <div className="overflow-hidden max-w-0 opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-500 ease-in-out whitespace-nowrap">
-                            <span className="text-[11px] font-black tracking-widest uppercase">
+                            <span className="text-[11px] font-black  ">
                                 {isDark ? 'Light' : 'Dark'}
                             </span>
                         </div>
@@ -889,13 +889,13 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                         }}>
                             <div className="max-w-2xl space-y-8">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest border
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-black   border
                                         ${currentQuestion.difficulty === 'HARD' ? 'text-rose-500 border-rose-500/20 bg-rose-50' :
                                             currentQuestion.difficulty === 'MEDIUM' ? 'text-amber-500 border-amber-500/20 bg-amber-50' :
                                                 'text-emerald-500 border-emerald-500/20 bg-emerald-50'}`}>
                                         {currentQuestion.difficulty || 'MEDIUM'}
                                     </span>
-                                    <span className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{currentQuestion.topic}</span>
+                                    <span className={`text-[10px] font-bold   ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{currentQuestion.topic}</span>
                                 </div>
 
                                 {/* Markdown Rendering for Instructions */}
@@ -905,18 +905,18 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                                     <div className="space-y-6 pt-4">
                                         {currentQuestion.content.examples.map((ex, i) => (
                                             <div key={i} className="space-y-3">
-                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
+                                                <span className="text-[10px] font-black  tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
                                                 <div className={`rounded-xl border p-4 font-mono text-[12px] space-y-2 ${isDark ? 'bg-[#1e1f23]/30 border-[#2d2e32]' : 'bg-slate-50 border-slate-100'}`}>
                                                     <div className="flex gap-4">
-                                                        <span className="text-[#8e9297] w-12 shrink-0 font-bold uppercase tracking-widest text-[9px]">Input:</span>
+                                                        <span className="text-[#8e9297] w-12 shrink-0 font-bold   text-[9px]">Input:</span>
                                                         <span className={isDark ? 'text-emerald-400' : 'text-emerald-600'}>{ex.input}</span>
                                                     </div>
                                                     <div className="flex gap-4">
-                                                        <span className="text-[#8e9297] w-12 shrink-0 font-bold uppercase tracking-widest text-[9px]">Output:</span>
+                                                        <span className="text-[#8e9297] w-12 shrink-0 font-bold   text-[9px]">Output:</span>
                                                         <span className={isDark ? 'text-indigo-400' : 'text-indigo-600'}>{ex.output}</span>
                                                     </div>
                                                     {ex.explanation && (
-                                                        <div className="flex gap-4 border-t border-slate-200/50 dark:border-slate-800 pt-2 mt-2 italic text-[11px]">
+                                                        <div className="flex gap-4 border-t border-slate-200/50 dark:border-slate-800 pt-2 mt-2  text-[11px]">
                                                             <span className="text-slate-400">Note:</span>
                                                             <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>{ex.explanation}</span>
                                                         </div>
@@ -943,18 +943,18 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                                 <div className={`p-3 flex items-center justify-between flex-shrink-0 border-b ${isDark ? 'border-[#2d2e32]/30' : 'border-black/10'}`}>
                                     <div className="flex items-center gap-2">
                                         <span className="material-icons-outlined text-[16px]">terminal</span>
-                                        <span className="text-[10px] font-black uppercase tracking-[0.15em]">Console output</span>
+                                        <span className="text-[10px] font-black  tracking-[0.15em]">Console output</span>
                                     </div>
                                     <button
                                         onClick={() => setShowConsole(false)}
-                                        className="px-2 py-1 rounded hover:bg-white/5 transition-colors text-[9px] font-black uppercase tracking-widest text-[#8e9297] hover:text-white"
+                                        className="px-2 py-1 rounded hover:bg-white/5 transition-colors text-[9px] font-black   text-[#8e9297] hover:text-white"
                                     >
                                         Close
                                     </button>
                                 </div>
                                 <div className="flex-1 p-4 font-mono text-[11px] overflow-y-auto leading-relaxed no-scrollbar select-text bg-black/10">
                                     {consoleOutput.length === 0 ? (
-                                        <div className="flex gap-3 text-white/40 italic">
+                                        <div className="flex gap-3 text-white/40 ">
                                             <span className="text-emerald-500 opacity-60">➜</span>
                                             <span># waiting for code execution...</span>
                                         </div>
@@ -974,7 +974,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                                             {Object.values(executingTests).some(v => v) && (
                                                 <div className="flex gap-2 items-center text-indigo-400 animate-pulse mt-4 ml-4">
                                                     <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
-                                                    <span className="italic uppercase tracking-widest text-[9px] font-black">AI Verification engine running...</span>
+                                                    <span className="   text-[9px] font-black">AI Verification engine running...</span>
                                                 </div>
                                             )}
                                         </div>
@@ -1072,7 +1072,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                     <div className="flex items-center gap-2">
                         {/* Progress Indicator */}
                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border bg-slate-50/50 border-slate-200/50">
-                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Section Progress</span>
+                            <span className="text-[10px] font-black   text-slate-400">Section Progress</span>
                             <span className="text-[12px] font-bold text-slate-900">{activeCodingQuestionIndex + 1} / {currentSection.questions.length}</span>
                         </div>
                     </div>

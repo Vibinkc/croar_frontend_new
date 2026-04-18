@@ -58,10 +58,10 @@ export default function PsychometricResult({ result, test, onClose, isModal = fa
                 )}
 
                 <div className="space-y-4">
-                    <span className="inline-block px-4 py-1 bottom-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-[10px] font-black uppercase tracking-[0.4em]">
+                    <span className="inline-block px-4 py-1 bottom-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-[10px] font-black  tracking-[0.4em]">
                         Mission_Complete
                     </span>
-                    <h1 className="text-5xl font-black uppercase tracking-tighter">Profile_Analyzed</h1>
+                    <h1 className="text-5xl font-black  tracking-tighter">Profile_Analyzed</h1>
                 </div>
 
                 <div className="relative py-12 px-8 bg-slate-900 rounded-[2.5rem] border border-white/5 overflow-hidden">
@@ -71,7 +71,7 @@ export default function PsychometricResult({ result, test, onClose, isModal = fa
 
                     <div className="relative z-10 space-y-6">
                         <div>
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] block mb-4">{test?.trait || "Trait"} Index</span>
+                            <span className="text-[10px] font-black text-slate-500  tracking-[0.4em] block mb-4">{test?.trait || "Trait"} Index</span>
                             <div className="flex items-center justify-center gap-3">
                                 <span className="text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">
                                     {(result.trait_score || 0).toFixed(1)}
@@ -82,7 +82,7 @@ export default function PsychometricResult({ result, test, onClose, isModal = fa
 
                         {/* Accuracy Display */}
                         <div className="flex flex-col items-center justify-center gap-2">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Accuracy_Rating</span>
+                            <span className="text-[10px] font-black text-slate-400  tracking-[0.4em]">Accuracy_Rating</span>
                             <div className="text-4xl font-black text-white tracking-tight flex items-center gap-2">
                                 {((result.trait_score || 0) * 10).toFixed(0)}%
                                 <span className="text-[10px] text-slate-500 font-bold tracking-[0.2em] bg-white/10 px-2 py-1 rounded">PRECISION</span>
@@ -99,7 +99,7 @@ export default function PsychometricResult({ result, test, onClose, isModal = fa
                         </div>
 
                         <div className="text-left bg-black/20 p-6 rounded-2xl border border-white/5">
-                            <p className="text-sm text-slate-400 italic leading-relaxed font-medium">
+                            <p className="text-sm text-slate-400  leading-relaxed font-medium">
                                 "{result.profile_summary}"
                             </p>
                         </div>
@@ -109,7 +109,7 @@ export default function PsychometricResult({ result, test, onClose, isModal = fa
                 {!isModal && (
                     <button
                         onClick={() => router.push("/practice/psychometric")}
-                        className="w-full py-5 bg-white text-[#050510] rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-slate-200 transition-all active:scale-95 flex items-center justify-center gap-3"
+                        className="w-full py-5 bg-white text-[#050510] rounded-2xl text-[10px] font-black  tracking-[0.3em] hover:bg-slate-200 transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
                         Return_to_Psychometric
                         <span className="material-icons-outlined text-sm">logout</span>

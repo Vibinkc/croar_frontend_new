@@ -23,7 +23,7 @@ export default function CommunicationProductPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-pink-400/30 bg-pink-500/10 px-3 py-1 rounded-full text-pink-300 text-xs font-bold uppercase tracking-widest backdrop-blur-md"
+                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-pink-400/30 bg-pink-500/10 px-3 py-1 rounded-full text-pink-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-pink-400">mic</span>
                             AI Audio Analysis
@@ -65,7 +65,7 @@ export default function CommunicationProductPage() {
             <section className="px-4 py-16" id="features">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-2 text-center md:text-left">
-                        <span className="text-pink-600 font-bold uppercase tracking-widest text-sm">Signal Processing</span>
+                        <span className="text-pink-600 font-bold   text-sm">Signal Processing</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Visualize Your Voice</h2>
                         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">We analyze *how* you say it, not just *what* you say.</p>
                     </div>
@@ -136,12 +136,12 @@ export default function CommunicationProductPage() {
                         <div className="flex gap-4 mt-4">
                             <div className="text-center">
                                 <div className="text-3xl font-black text-pink-500">92%</div>
-                                <div className="text-xs text-slate-500 uppercase">Clarity Boost</div>
+                                <div className="text-xs text-slate-500 ">Clarity Boost</div>
                             </div>
                             <div className="w-px bg-slate-700 h-12"></div>
                             <div className="text-center">
                                 <div className="text-3xl font-black text-blue-500">3x</div>
-                                <div className="text-xs text-slate-500 uppercase">Confidence</div>
+                                <div className="text-xs text-slate-500 ">Confidence</div>
                             </div>
                         </div>
                     </motion.div>
@@ -185,7 +185,7 @@ export default function CommunicationProductPage() {
                                     <div className={`p-2 rounded-lg ${i % 2 === 0 ? 'bg-pink-100 text-pink-600' : 'bg-purple-100 text-purple-600'}`}>
                                         <span className="material-symbols-rounded">{i % 2 === 0 ? 'mic' : 'campaign'}</span>
                                     </div>
-                                    <span className="px-2 py-1 bg-white border border-slate-200 rounded text-[10px] font-bold text-slate-500 uppercase">{track.difficulty}</span>
+                                    <span className="px-2 py-1 bg-white border border-slate-200 rounded text-[10px] font-bold text-slate-500 ">{track.difficulty}</span>
                                 </div>
                                 <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-pink-600 transition-colors">{track.title}</h3>
                                 <p className="text-slate-500 text-sm mb-4">{track.desc}</p>
@@ -305,7 +305,7 @@ export default function CommunicationProductPage() {
                     <button onClick={() => router.push("/practice/communication")} className="bg-pink-600 text-white font-bold py-5 px-12 rounded-full text-xl hover:scale-105 transition-transform shadow-xl">
                         Open Voice Lab
                     </button>
-                    <p className="mt-6 text-xs text-pink-300 font-mono uppercase tracking-widest font-bold">Requires Microphone Access • Privacy Protected</p>
+                    <p className="mt-6 text-xs text-pink-300 font-mono   font-bold">Requires Microphone Access • Privacy Protected</p>
                 </div>
             </footer>
         </main>

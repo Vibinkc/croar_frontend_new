@@ -105,6 +105,7 @@ export default function InterviewAutomationPage() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [automations, setAutomations] = useState<Automation[]>([]);
   const [selectedJobId, setSelectedJobId] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -427,10 +428,19 @@ export default function InterviewAutomationPage() {
     setForm(f => ({ ...f, time_slots: slots }));
   };
 
+  // ─── Computed ───────────────────────────────────────────────────────────────
+  const filteredAutomations = automations.filter(a => {
+    const term = searchQuery.toLowerCase();
+    return a.criteria.toLowerCase().includes(term) ||
+           jobTitle(a.job_requirement_id).toLowerCase().includes(term) ||
+           (a.stage_name && a.stage_name.toLowerCase().includes(term)) ||
+           (a.interviewer_email && a.interviewer_email.toLowerCase().includes(term));
+  });
+
   // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] p-4 animate-in fade-in duration-500">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
@@ -446,42 +456,97 @@ export default function InterviewAutomationPage() {
       )}
 
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-9 h-9 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center">
-            <span className="material-symbols-rounded text-[#7C3AED] text-xl">event_available</span>
+      <div className="mb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
+              <span className="material-symbols-rounded text-[#7C3AED] text-2xl">event_available</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Interview Automation</h1>
+              <p className="text-slate-500 text-[13px] font-medium mt-1">
+                Automatically schedule AI or human technical interviews based on your hiring criteria.
+              </p>
+            </div>
           </div>
-          <h1 className="text-2xl font-black text-slate-900">Interview Automation</h1>
-        </div>
-        <p className="text-slate-500 text-sm ml-12">
-          Automatically schedule AI or human technical interviews based on your hiring criteria.
-        </p>
-      </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
-        <div className="flex items-center gap-2 flex-1">
-          <span className="material-symbols-rounded text-slate-400 text-lg">work</span>
-          <select
-            value={selectedJobId}
-            onChange={(e) => setSelectedJobId(e.target.value)}
-            className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/30 focus:border-[#7C3AED]"
-          >
-            <option value="">All Jobs</option>
-            {jobs.map((j) => (
-              <option key={j.id} value={j.id}>{j.title}</option>
-            ))}
-          </select>
+          <div className="flex items-center gap-3">
+             {canAccess("automation:moderate") && (
+                <button
+                  onClick={openCreate}
+                  className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-xl text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
+                >
+                  <span className="material-symbols-rounded text-lg">add</span>
+                  NEW AUTOMATION
+                </button>
+              )}
+          </div>
         </div>
-        {canAccess("automation:moderate") && (
-          <button
-            onClick={openCreate}
-            className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors shadow-md shadow-[#7C3AED]/20"
-          >
-            <span className="material-symbols-rounded text-base">add</span>
-            New Automation
-          </button>
-        )}
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: "Total Rules", value: automations.length, icon: "rule", color: "indigo" },
+            { label: "Slots Booked", value: "24", icon: "event_upcoming", color: "emerald" },
+            { label: "Success Rate", value: "88.5%", icon: "monitoring", color: "amber" },
+            { label: "Interviewers", value: "12 Active", icon: "groups", color: "purple" }
+          ].map((stat, i) => (
+            <div key={i} className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${
+                  stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
+                  stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
+                  stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
+                  'bg-purple-50 text-purple-600'
+                }`}>
+                  <span className="material-symbols-rounded text-xl">{stat.icon}</span>
+                </div>
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
+              </div>
+              <p className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{stat.value}</p>
+              <p className="text-[11px] font-bold text-slate-400 capitalize">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Interaction Bar */}
+        <div className="mt-8 flex flex-col md:flex-row items-center gap-4">
+           <div className="flex-1 relative w-full">
+              <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+              <input 
+                type="text"
+                placeholder="Search by rules, jobs, or interviewers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-11 bg-white border border-slate-200 rounded-xl pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
+              />
+           </div>
+
+           <div className="flex items-center gap-3 w-full md:w-auto">
+              {(searchQuery || selectedJobId) && (
+                <button 
+                  onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
+                  className="text-[11px] font-black text-[#7C3AED] hover:underline px-2 tracking-tight"
+                >
+                  RESET FILTERS
+                </button>
+              )}
+              <div className="relative w-full md:w-64">
+                <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">work</span>
+                <select
+                  value={selectedJobId}
+                  onChange={(e) => setSelectedJobId(e.target.value)}
+                  className="w-full h-11 border border-slate-200 rounded-xl pl-10 pr-10 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
+                >
+                  <option value="">All Job Requirements</option>
+                  {jobs.map((j) => (
+                    <option key={j.id} value={j.id}>{j.title}</option>
+                  ))}
+                </select>
+                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">expand_more</span>
+              </div>
+           </div>
+        </div>
       </div>
 
       {/* List */}
@@ -489,29 +554,31 @@ export default function InterviewAutomationPage() {
         <div className="flex justify-center py-20">
           <div className="w-8 h-8 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
         </div>
-      ) : automations.length === 0 ? (
+      ) : filteredAutomations.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
             <span className="material-symbols-rounded text-[#7C3AED] text-4xl">event_available</span>
           </div>
-          <p className="text-slate-700 font-bold text-lg">No automations yet</p>
+          <p className="text-slate-700 font-bold text-lg">{searchQuery ? 'No matching rules' : 'No automations yet'}</p>
           <p className="text-slate-400 text-sm mt-1 max-w-xs">
-            Create your first interview automation to auto-schedule interviews.
+            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Create your first interview automation to auto-schedule interviews.'}
           </p>
-          <button
-            onClick={openCreate}
-            className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors"
-          >
-            <span className="material-symbols-rounded text-base">add</span>
-            Create Automation
-          </button>
+          {!searchQuery && (
+            <button
+              onClick={openCreate}
+              className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors"
+            >
+              <span className="material-symbols-rounded text-base">add</span>
+              Create Automation
+            </button>
+          )}
         </div>
       ) : (
-        <div className="space-y-3">
-          {automations.map((a) => (
+        <div className="space-y-4">
+          {filteredAutomations.map((a) => (
             <div
               key={a.id}
-              className={`bg-white border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
+              className={`bg-white border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
                 a.is_enabled ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
               }`}
             >
@@ -521,7 +588,7 @@ export default function InterviewAutomationPage() {
                 </div>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                    <span className="text-xs font-black text-slate-400  ">
                       Round {a.stage_index}{a.stage_name ? ` · ${a.stage_name}` : ""}
                     </span>
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${a.is_enabled ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-400"}`}>
@@ -533,12 +600,12 @@ export default function InterviewAutomationPage() {
                     <span className="text-slate-400 font-medium">If: </span>{a.criteria}
                   </p>
                   <div className="flex flex-wrap gap-3 mt-1.5">
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                      <span className="material-symbols-rounded text-xs">work</span>
+                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                      <span className="material-symbols-rounded text-[14px]">work</span>
                       {jobTitle(a.job_requirement_id)}
                     </span>
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                      <span className="material-symbols-rounded text-xs">schedule</span>
+                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                      <span className="material-symbols-rounded text-[14px]">schedule</span>
                       {a.start_date && a.end_date 
                         ? `${a.start_date} to ${a.end_date}`
                         : a.start_date ? `From ${a.start_date}`
@@ -547,16 +614,16 @@ export default function InterviewAutomationPage() {
                       {" | "}{a.start_time} - {a.end_time} ({a.duration}m | {a.daily_limit} caps)
                     </span>
                     {a.auto_move && (
-                      <span className="flex items-center gap-1 text-[11px] text-[#7C3AED] font-bold bg-[#7C3AED]/5 px-2 py-0.5 rounded-lg border border-[#7C3AED]/10">
-                        <span className="material-symbols-rounded text-xs">keyboard_double_arrow_right</span>
-                        Auto-Move
+                      <span className="flex items-center gap-1.5 text-[11px] text-[#7C3AED] font-black bg-[#7C3AED]/5 px-2.5 py-1 rounded-xl border border-[#7C3AED]/10">
+                        <span className="material-symbols-rounded text-[14px]">keyboard_double_arrow_right</span>
+                        AUTO-MOVE
                       </span>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-3 shrink-0">
                 {/* Toggle */}
                 <button
                   onClick={() => handleToggle(a)}
@@ -569,14 +636,14 @@ export default function InterviewAutomationPage() {
                 {canAccess("automation:moderate") && (
                   <>
                     {/* Edit */}
-                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
+                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
                       <span className="material-symbols-rounded text-base">edit</span>
                     </button>
                     {/* Delete */}
                     <button onClick={() => {
                        setAutomationToDelete(a);
                        setIsDeleteModalOpen(true);
-                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
+                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
                       {deletingId === a.id ? (
                         <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
                       ) : (
@@ -605,7 +672,7 @@ export default function InterviewAutomationPage() {
                 <h2 className="text-lg font-black text-slate-800 leading-tight">
                   {editingId ? "Edit Automation" : "New Automation"}
                 </h2>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Interview Configuration</p>
+                <p className="text-[10px] font-bold text-slate-400   mt-0.5">Interview Configuration</p>
               </div>
             </div>
             <button onClick={closeModal} className="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
@@ -617,7 +684,7 @@ export default function InterviewAutomationPage() {
           <div className="flex border-b border-slate-100 shrink-0">
             <button
               onClick={() => setActiveTab("config")}
-              className={`flex-1 py-3 text-xs font-bold uppercase tracking-widest relative transition-colors ${
+              className={`flex-1 py-3 text-xs font-bold   relative transition-colors ${
                 activeTab === "config" ? "text-[#7C3AED]" : "text-slate-400 hover:text-slate-600"
               }`}
             >
@@ -628,7 +695,7 @@ export default function InterviewAutomationPage() {
             </button>
             <button
               onClick={() => setActiveTab("times")}
-              className={`flex-1 py-3 text-xs font-bold uppercase tracking-widest relative transition-colors ${
+              className={`flex-1 py-3 text-xs font-bold   relative transition-colors ${
                 activeTab === "times" ? "text-[#7C3AED]" : "text-slate-400 hover:text-slate-600"
               }`}
             >
@@ -645,7 +712,7 @@ export default function InterviewAutomationPage() {
              <div className="space-y-6">
             {/* Job */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Job Requirement <span className="text-red-400">*</span>
               </label>
               <select
@@ -662,7 +729,7 @@ export default function InterviewAutomationPage() {
 
             {/* Round */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Hiring Round <span className="text-red-400">*</span>
               </label>
               {jobRounds.length > 0 ? (
@@ -698,9 +765,9 @@ export default function InterviewAutomationPage() {
                 </div>
               )}
               {jobRounds.length > 0 && (form.stage_name || Number(form.stage_index) > 1) && (
-                <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#7C3AED]/5 rounded-lg border border-[#7C3AED]/10">
+                <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#7C3AED]/5 rounded-xl border border-[#7C3AED]/10">
                   <span className="material-symbols-rounded text-xs text-[#7C3AED]">check_circle</span>
-                  <p className="text-[10px] text-[#7C3AED] font-bold uppercase tracking-tight">
+                  <p className="text-[10px] text-[#7C3AED] font-bold  tracking-tight">
                     Selected: Round {form.stage_index} — {form.stage_name}
                   </p>
                 </div>
@@ -709,7 +776,7 @@ export default function InterviewAutomationPage() {
 
             {/* Criteria */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Trigger Criteria <span className="text-red-400">*</span>
               </label>
               <textarea
@@ -727,7 +794,7 @@ export default function InterviewAutomationPage() {
             {/* Dates (Optional) */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   Start Date (Optional)
                 </label>
                 <input
@@ -738,7 +805,7 @@ export default function InterviewAutomationPage() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   End Date (Optional)
                 </label>
                 <input
@@ -753,7 +820,7 @@ export default function InterviewAutomationPage() {
             {/* Timings and Caps */}
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   Start Time <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -764,7 +831,7 @@ export default function InterviewAutomationPage() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   End Time <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -775,7 +842,7 @@ export default function InterviewAutomationPage() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   Duration <span className="text-red-400">*</span>
                 </label>
                 <select
@@ -793,7 +860,7 @@ export default function InterviewAutomationPage() {
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Daily Limit (Max Interviews/Day) <span className="text-red-400">*</span>
               </label>
               <input
@@ -807,7 +874,7 @@ export default function InterviewAutomationPage() {
 
             {/* Template (Optional) */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Email Template (Optional)
               </label>
               {templates.length === 0 ? (
@@ -832,31 +899,31 @@ export default function InterviewAutomationPage() {
 
             {/* Interview Type Selection */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-3 ml-1">
                 Interview Type <span className="text-red-400">*</span>
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setForm(f => ({ ...f, interview_type: "GMEET" }))}
-                  className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${
+                  className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
                     form.interview_type === "GMEET" 
                       ? "border-[#7C3AED] bg-[#7C3AED]/5" 
                       : "border-slate-100 bg-white hover:border-slate-200"
                   }`}
                 >
                   <span className={`material-symbols-rounded ${form.interview_type === "GMEET" ? "text-[#7C3AED]" : "text-slate-400"}`}>videocam</span>
-                  <span className={`text-[11px] font-bold uppercase tracking-wider ${form.interview_type === "GMEET" ? "text-[#7C3AED]" : "text-slate-500"}`}>Google Meet</span>
+                  <span className={`text-[11px] font-bold   ${form.interview_type === "GMEET" ? "text-[#7C3AED]" : "text-slate-500"}`}>Google Meet</span>
                 </button>
                 <button
                   onClick={() => setForm(f => ({ ...f, interview_type: "AI" }))}
-                  className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${
+                  className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
                     form.interview_type === "AI" 
                       ? "border-[#7C3AED] bg-[#7C3AED]/5" 
                       : "border-slate-100 bg-white hover:border-slate-200"
                   }`}
                 >
                   <span className={`material-symbols-rounded ${form.interview_type === "AI" ? "text-[#7C3AED]" : "text-slate-400"}`}>psychology</span>
-                  <span className={`text-[11px] font-bold uppercase tracking-wider ${form.interview_type === "AI" ? "text-[#7C3AED]" : "text-slate-500"}`}>AI Interview</span>
+                  <span className={`text-[11px] font-bold   ${form.interview_type === "AI" ? "text-[#7C3AED]" : "text-slate-500"}`}>AI Interview</span>
                 </button>
               </div>
             </div>
@@ -865,7 +932,7 @@ export default function InterviewAutomationPage() {
               <div className="space-y-4 pt-2">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-slate-500   ml-1">
                       AI Interview Template <span className="text-red-400">*</span>
                     </label>
                     <button 
@@ -903,7 +970,7 @@ export default function InterviewAutomationPage() {
               <div className="space-y-4 pt-2">
                 {/* Interviewer Email */}
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Interviewer Email (Optional)
                   </label>
                   <input
@@ -920,7 +987,7 @@ export default function InterviewAutomationPage() {
 
                 {/* Google Meet Link */}
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Personal Google Meet Link (Real Room)
                   </label>
                   <input
@@ -939,7 +1006,7 @@ export default function InterviewAutomationPage() {
 
             {/* Toggles Group */}
             <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-slate-200">
+              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl transition-all hover:border-slate-200">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center">
                     <span className="material-symbols-rounded text-emerald-500 text-lg">check_circle</span>
@@ -957,7 +1024,7 @@ export default function InterviewAutomationPage() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-slate-200">
+              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl transition-all hover:border-slate-200">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center">
                     <span className="material-symbols-rounded text-slate-600 text-lg">double_arrow</span>
@@ -1007,7 +1074,7 @@ export default function InterviewAutomationPage() {
                   {form.time_slots.map((ts, idx) => (
                     <div key={idx} className="flex flex-col mb-4">
                       <div className="flex items-center gap-2 relative">
-                        <span className="absolute left-3 text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none pt-0.5 pointer-events-none">
+                        <span className="absolute left-3 text-[10px] font-black  text-slate-400  leading-none pt-0.5 pointer-events-none">
                           Slot {idx + 1}
                         </span>
                         <div className="flex-1 flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2 focus-within:ring-2 focus-within:ring-[#7C3AED]/50 transition-all">
@@ -1068,7 +1135,7 @@ export default function InterviewAutomationPage() {
             </button>
             <button 
               onClick={closeModal}
-              className="w-full mt-3 h-10 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest"
+              className="w-full mt-3 h-10 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors  "
             >
               Cancel
             </button>

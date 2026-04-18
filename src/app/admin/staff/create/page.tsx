@@ -117,7 +117,7 @@ export default function CreateStaffPage() {
     return (
         <div className="bg-white shadow-sm border border-slate-200 rounded-2xl p-8 max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                <h2 className="text-2xl font-black text-slate-900  tracking-tight">
                     Create {getRoleLabel()} Account
                 </h2>
 
@@ -125,7 +125,7 @@ export default function CreateStaffPage() {
                 <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
                     <button
                         onClick={() => setMode("single")}
-                        className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${mode === "single"
+                        className={`px-4 py-2 rounded-lg text-xs font-black   transition-all ${mode === "single"
                                 ? "bg-white text-slate-900 shadow-sm"
                                 : "text-slate-500 hover:text-slate-900"
                             }`}
@@ -134,7 +134,7 @@ export default function CreateStaffPage() {
                     </button>
                     <button
                         onClick={() => setMode("bulk")}
-                        className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${mode === "bulk"
+                        className={`px-4 py-2 rounded-lg text-xs font-black   transition-all ${mode === "bulk"
                                 ? "bg-white text-slate-900 shadow-sm"
                                 : "text-slate-500 hover:text-slate-900"
                             }`}
@@ -155,7 +155,7 @@ export default function CreateStaffPage() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">First Name</label>
+                            <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">First Name</label>
                             <input
                                 type="text"
                                 value={firstName}
@@ -165,7 +165,7 @@ export default function CreateStaffPage() {
                             />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Last Name</label>
+                            <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Last Name</label>
                             <input
                                 type="text"
                                 value={lastName}
@@ -177,7 +177,7 @@ export default function CreateStaffPage() {
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Email Address</label>
+                        <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Email Address</label>
                         <input
                             type="email"
                             value={email}
@@ -188,7 +188,7 @@ export default function CreateStaffPage() {
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Department</label>
+                        <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Department</label>
                         {role === "ADMIN" ? (
                             <select
                                 value={deptId}
@@ -210,7 +210,7 @@ export default function CreateStaffPage() {
 
                     {targetRole !== "SUB_ADMIN" && (
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Batch / Year</label>
+                            <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Batch / Year</label>
                             <input
                                 type="text"
                                 value={batch}
@@ -220,13 +220,13 @@ export default function CreateStaffPage() {
                                 className={`w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900/5 transition-all text-sm font-bold ${creatorBatch ? 'bg-slate-50 cursor-not-allowed text-slate-500' : ''}`}
                             />
                             {creatorBatch && (
-                                <p className="mt-1 text-[10px] text-slate-400 font-black uppercase tracking-widest italic">Locked to your assigned batch</p>
+                                <p className="mt-1 text-[10px] text-slate-400 font-black   ">Locked to your assigned batch</p>
                             )}
                         </div>
                     )}
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Member ID / Registration ID</label>
+                        <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Member ID / Registration ID</label>
                         <input
                             type="text"
                             value={memberId}
@@ -237,7 +237,7 @@ export default function CreateStaffPage() {
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Initial Password</label>
+                        <label className="block text-[10px] font-black text-slate-400  tracking-[0.2em] mb-2">Initial Password</label>
                         <input
                             type="password"
                             value={password}
@@ -248,7 +248,7 @@ export default function CreateStaffPage() {
                     </div>
 
                     <div className="flex justify-end pt-4">
-                        <button type="submit" className="bg-slate-900 text-white px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-0.5">
+                        <button type="submit" className="bg-slate-900 text-white px-8 py-3 rounded-xl text-xs font-black   hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-0.5">
                             Create {getRoleLabel()}
                         </button>
                     </div>
@@ -256,7 +256,7 @@ export default function CreateStaffPage() {
             ) : (
                 <div className="space-y-6">
                     <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
-                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-4">Bulk Upload Instructions</h3>
+                        <h3 className="text-sm font-black text-slate-900  tracking-tight mb-4">Bulk Upload Instructions</h3>
                         <ul className="space-y-2 text-xs text-slate-600 font-medium">
                             <li className="flex items-start gap-2">
                                 <span className="material-icons-outlined text-sm text-slate-400 mt-0.5">check_circle</span>
@@ -293,7 +293,7 @@ export default function CreateStaffPage() {
                                 <span className="material-icons-outlined text-3xl text-slate-400">upload_file</span>
                             </div>
                             <div>
-                                <p className="text-sm font-black text-slate-900 uppercase tracking-tight">
+                                <p className="text-sm font-black text-slate-900  tracking-tight">
                                     {file ? file.name : "Choose File"}
                                 </p>
                                 <p className="text-xs text-slate-400 font-bold mt-1">
@@ -308,7 +308,7 @@ export default function CreateStaffPage() {
                             <button
                                 onClick={handleBulkUpload}
                                 disabled={uploading}
-                                className="bg-slate-900 text-white px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                className="bg-slate-900 text-white px-8 py-3 rounded-xl text-xs font-black   hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {uploading ? (
                                     <>
@@ -329,7 +329,7 @@ export default function CreateStaffPage() {
                         <div className="bg-green-50 border border-green-100 rounded-xl p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <span className="material-icons-outlined text-green-600">check_circle</span>
-                                <h3 className="text-sm font-black text-green-900 uppercase tracking-tight">Upload Complete</h3>
+                                <h3 className="text-sm font-black text-green-900  tracking-tight">Upload Complete</h3>
                             </div>
                             <div className="grid grid-cols-2 gap-4 text-xs">
                                 <div>
@@ -343,7 +343,7 @@ export default function CreateStaffPage() {
                             </div>
                             {uploadResult.errors && uploadResult.errors.length > 0 && (
                                 <div className="mt-4 pt-4 border-t border-green-200">
-                                    <p className="text-xs font-black text-slate-700 uppercase tracking-widest mb-2">Errors:</p>
+                                    <p className="text-xs font-black text-slate-700   mb-2">Errors:</p>
                                     <ul className="space-y-1 text-xs text-red-600 font-medium max-h-40 overflow-y-auto">
                                         {uploadResult.errors.map((err: string, idx: number) => (
                                             <li key={idx}>• {err}</li>

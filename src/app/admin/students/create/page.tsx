@@ -208,7 +208,7 @@ export default function CreateUserPage() {
                             className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-black ${creatorBatch ? 'bg-slate-50 cursor-not-allowed text-slate-500 font-bold' : ''}`}
                         />
                         {creatorBatch && (
-                            <p className="mt-1 text-[10px] text-slate-400 font-black uppercase tracking-widest italic">Locked to your assigned batch</p>
+                            <p className="mt-1 text-[10px] text-slate-400 font-black   ">Locked to your assigned batch</p>
                         )}
                     </div>
 

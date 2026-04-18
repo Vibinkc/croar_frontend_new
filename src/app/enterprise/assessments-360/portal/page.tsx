@@ -104,20 +104,20 @@ export default function UnifiedEmployeePortal() {
 
             <div className={`w-full z-10 transition-all duration-1000 ease-in-out ${step === 'login' ? 'max-w-[550px]' : 'max-w-[1400px]'}`}>
                 {step === 'login' ? (
-                    <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 p-10 md:p-14 border border-white animate-in fade-in slide-in-from-bottom-8 duration-700">
+                    <div className="bg-white rounded-2xl shadow-2xl shadow-slate-200/50 p-10 md:p-14 border border-white animate-in fade-in slide-in-from-bottom-8 duration-700">
                         <header className="text-center mb-12">
                             <div className="mb-6 tracking-tighter">
-                                <span className="text-5xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent italic">CROAR.AI</span>
+                                <span className="text-5xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent ">CROAR.AI</span>
                             </div>
-                            <h1 className="text-2xl font-black text-slate-400 tracking-[0.1em] mb-2 uppercase">Employee Experience Hub</h1>
-                            <p className="text-slate-300 font-bold uppercase text-[10px] tracking-[0.3em]">Growth, Feedback & Behavioral Training</p>
+                            <h1 className="text-2xl font-black text-slate-400 tracking-[0.1em] mb-2 ">Employee Experience Hub</h1>
+                            <p className="text-slate-300 font-bold  text-[10px] tracking-[0.3em]">Growth, Feedback & Behavioral Training</p>
                         </header>
 
                         <form onSubmit={handleLogin} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Employee UUID / ID</label>
+                                <label className="block text-[10px] font-black text-slate-400   ml-1">Employee UUID / ID</label>
                                 <input 
-                                    className="w-full px-7 py-5 bg-slate-50 border-none rounded-3xl focus:ring-2 focus:ring-indigo-600 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all text-sm"
+                                    className="w-full px-7 py-5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all text-sm"
                                     placeholder="Enter your unique ID..."
                                     value={credentials.employee_id}
                                     onChange={(e) => setCredentials({...credentials, employee_id: e.target.value})}
@@ -126,10 +126,10 @@ export default function UnifiedEmployeePortal() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Corporate Email</label>
+                                <label className="block text-[10px] font-black text-slate-400   ml-1">Corporate Email</label>
                                 <input 
                                     type="email"
-                                    className="w-full px-7 py-5 bg-slate-50 border-none rounded-3xl focus:ring-2 focus:ring-indigo-600 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all text-sm"
+                                    className="w-full px-7 py-5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all text-sm"
                                     placeholder="yourname@company.com"
                                     value={credentials.email}
                                     onChange={(e) => setCredentials({...credentials, email: e.target.value})}
@@ -138,7 +138,7 @@ export default function UnifiedEmployeePortal() {
                             </div>
 
                             {error && (
-                                <div className="p-4 bg-rose-50 text-rose-500 rounded-2xl text-xs font-bold text-center border border-rose-100 animate-shake">
+                                <div className="p-4 bg-rose-50 text-rose-500 rounded-xl text-xs font-bold text-center border border-rose-100 animate-shake">
                                     {error}
                                 </div>
                             )}
@@ -146,12 +146,12 @@ export default function UnifiedEmployeePortal() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-slate-200 hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-50 mt-4 group"
+                                className="w-full py-6 bg-slate-900 text-white rounded-xl font-black text-sm  tracking-[0.2em] shadow-xl shadow-slate-200 hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-50 mt-4 group"
                             >
                                 {loading ? (
                                     <div className="flex items-center justify-center gap-2">
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        <span>Syncing Identity...</span>
+                                        <span>Logging in...</span>
                                     </div>
                                 ) : (
                                     <div className="flex items-center justify-center gap-2">
@@ -162,8 +162,8 @@ export default function UnifiedEmployeePortal() {
                             </button>
                         </form>
 
-                        <footer className="mt-12 text-center text-[10px] text-slate-400 font-medium italic">
-                            Secure unified entry point for organizational growth.
+                        <footer className="mt-12 text-center text-[10px] text-slate-400 font-medium ">
+                            Secure entry point for employee growth.
                         </footer>
                     </div>
                 ) : (
@@ -171,45 +171,45 @@ export default function UnifiedEmployeePortal() {
                         <header className="flex flex-col md:flex-row justify-between items-center gap-6 pb-10 border-b border-slate-100">
                             <div className="text-center md:text-left">
                                 <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-none mb-3">Welcome Back, {employee?.first_name}!</h2>
-                                <p className="text-slate-400 font-black uppercase text-[10px] tracking-[0.4em] flex items-center justify-center md:justify-start gap-2">
+                                <p className="text-slate-400 font-black  text-[10px] tracking-[0.4em] flex items-center justify-center md:justify-start gap-2">
                                     <span className="material-symbols-rounded text-sm text-indigo-500">verified</span>
-                                    {totalTasks} ACTIVE GROWTH REQUESTS IN YOUR PIPELINE
+                                    {totalTasks} ACTIVE TASKS IN YOUR PIPELINE
                                 </p>
                             </div>
                             <button 
                                 onClick={() => setStep('login')}
-                                className="px-8 py-3 bg-white border border-slate-100 text-slate-400 rounded-xl font-black text-[9px] uppercase tracking-widest hover:text-rose-500 hover:border-rose-100 transition-all shadow-sm"
+                                className="px-8 py-3 bg-white border border-slate-100 text-slate-400 rounded-xl font-black text-[9px]   hover:text-rose-500 hover:border-rose-100 transition-all shadow-sm"
                             >
                                 Close Session
                             </button>
                         </header>
 
                         {totalTasks === 0 ? (
-                            <div className="bg-white py-32 rounded-[4rem] text-center border border-slate-100 shadow-xl shadow-slate-100/50">
-                                <div className="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner border border-emerald-100">
+                            <div className="bg-white py-32 rounded-2xl text-center border border-slate-100 shadow-xl shadow-slate-100/50">
+                                <div className="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-inner border border-emerald-100">
                                     <span className="material-symbols-rounded text-5xl">task_alt</span>
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-2">Workspace Synchronized</h3>
-                                <p className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Your development goals are currently up to date</p>
+                                <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-2">All Caught Up</h3>
+                                <p className="text-slate-400 font-black  tracking-[0.2em] text-[10px]">You have no active tasks currently</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                                 {/* 360 Section */}
                                 <section className="space-y-6">
-                                    <h3 className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] flex items-center gap-3 px-2">
+                                    <h3 className="text-[10px] font-black text-indigo-600  tracking-[0.3em] flex items-center gap-3 px-2">
                                         <span className="material-symbols-rounded">group</span>
                                         360° Feedback
                                     </h3>
                                     <div className="space-y-4">
                                         {assessments.length > 0 ? assessments.map((ass) => (
-                                            <div key={ass.id} className="bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-indigo-200 transition-all duration-500 flex items-center justify-between gap-4">
+                                            <div key={ass.id} className="bg-white p-6 rounded-2xl border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-indigo-200 transition-all duration-500 flex items-center justify-between gap-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-black text-base shadow-inner group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+                                                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black text-base shadow-inner group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
                                                         {ass.ratee_name?.[0]}
                                                     </div>
                                                     <div>
                                                         <h4 className="text-sm font-black text-slate-900 leading-tight">Review {ass.ratee_name}</h4>
-                                                        <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest mt-1">{ass.relation}</p>
+                                                        <p className="text-[9px] font-black text-indigo-400   mt-1">{ass.relation}</p>
                                                     </div>
                                                 </div>
                                                 <button
@@ -220,9 +220,9 @@ export default function UnifiedEmployeePortal() {
                                                 </button>
                                             </div>
                                         )) : (
-                                            <div className="py-12 bg-slate-50/50 rounded-[2.5rem] border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
+                                            <div className="py-12 bg-slate-50/50 rounded-2xl border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
                                                 <span className="material-symbols-rounded text-3xl opacity-20">history_edu</span>
-                                                <p className="text-[9px] font-black uppercase tracking-widest italic tracking-widest">No pending reviews</p>
+                                                <p className="text-[9px] font-black    ">No pending reviews</p>
                                             </div>
                                         )}
                                     </div>
@@ -230,20 +230,20 @@ export default function UnifiedEmployeePortal() {
 
                                 {/* Surveys Section */}
                                 <section className="space-y-6">
-                                    <h3 className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em] flex items-center gap-3 px-2">
+                                    <h3 className="text-[10px] font-black text-emerald-600  tracking-[0.3em] flex items-center gap-3 px-2">
                                         <span className="material-symbols-rounded">analytics</span>
                                         Culture Surveys
                                     </h3>
                                     <div className="space-y-4">
                                         {surveys.length > 0 ? surveys.map((srv) => (
-                                            <div key={srv.id} className="bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-emerald-200 transition-all duration-500 flex items-center justify-between gap-4">
+                                            <div key={srv.id} className="bg-white p-6 rounded-2xl border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-emerald-200 transition-all duration-500 flex items-center justify-between gap-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center font-black shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
+                                                    <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
                                                         <span className="material-symbols-rounded text-lg">assignment</span>
                                                     </div>
                                                     <div>
                                                         <h4 className="text-sm font-black text-slate-900 leading-tight">{srv.instance_name}</h4>
-                                                        <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mt-1">{srv.template_title}</p>
+                                                        <p className="text-[9px] font-black text-emerald-400   mt-1">{srv.template_title}</p>
                                                     </div>
                                                 </div>
                                                 <button
@@ -254,9 +254,9 @@ export default function UnifiedEmployeePortal() {
                                                 </button>
                                             </div>
                                         )) : (
-                                            <div className="py-12 bg-slate-50/50 rounded-[2.5rem] border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
+                                            <div className="py-12 bg-slate-50/50 rounded-2xl border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
                                                 <span className="material-symbols-rounded text-3xl opacity-20">poll</span>
-                                                <p className="text-[9px] font-black uppercase tracking-widest italic">All pulse checks completed</p>
+                                                <p className="text-[9px] font-black   ">All pulse checks completed</p>
                                             </div>
                                         )}
                                     </div>
@@ -264,41 +264,41 @@ export default function UnifiedEmployeePortal() {
 
                                 {/* AI Lab Section */}
                                 <section className="space-y-6">
-                                    <h3 className="text-[10px] font-black text-rose-600 uppercase tracking-[0.3em] flex items-center gap-3 px-2">
+                                    <h3 className="text-[10px] font-black text-rose-600  tracking-[0.3em] flex items-center gap-3 px-2">
                                         <span className="material-symbols-rounded font-black">neurology</span>
-                                        Neural Coaching Lab
+                                        AI Practice Lab
                                     </h3>
                                     <div className="space-y-4">
                                         {simulationAssignments.length > 0 ? simulationAssignments.map((sim) => (
-                                            <div key={sim.id} className="bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-rose-200 transition-all duration-500 flex flex-col gap-4">
+                                            <div key={sim.id} className="bg-white p-6 rounded-2xl border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-rose-200 transition-all duration-500 flex flex-col gap-4">
                                                 <div className="flex items-center justify-between">
-                                                    <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center font-black shadow-inner group-hover:bg-rose-600 group-hover:text-white transition-all duration-500">
+                                                    <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center font-black shadow-inner group-hover:bg-rose-600 group-hover:text-white transition-all duration-500">
                                                         <span className="material-symbols-rounded">psychology</span>
                                                     </div>
-                                                    <span className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black uppercase rounded-lg tracking-[0.2em]">Priority Lab</span>
+                                                    <span className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black  rounded-xl tracking-[0.2em]">Practice</span>
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-sm font-black text-slate-900 leading-tight uppercase group-hover:text-rose-600 transition-colors">{sim.title}</h4>
-                                                    <p className="text-[9px] font-bold text-slate-400 italic mt-1 leading-relaxed line-clamp-2">{sim.description}</p>
+                                                    <h4 className="text-sm font-black text-slate-900 leading-tight  group-hover:text-rose-600 transition-colors">{sim.title}</h4>
+                                                    <p className="text-[9px] font-bold text-slate-400  mt-1 leading-relaxed line-clamp-2">{sim.description}</p>
                                                 </div>
                                                 <div className="pt-2 border-t border-slate-50 mt-2 flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
                                                         <span className="material-symbols-rounded text-rose-500 text-xs">record_voice_over</span>
-                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{sim.character}</span>
+                                                        <span className="text-[9px] font-black text-slate-400  ">{sim.character}</span>
                                                     </div>
                                                     <button
                                                         onClick={() => startSimulation(sim.scenario_id, sim.id)}
-                                                        className="px-5 py-2.5 bg-slate-900 text-white rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                                                        className="px-5 py-2.5 bg-slate-900 text-white rounded-xl font-black text-[9px]   hover:bg-rose-600 transition-all shadow-lg active:scale-95 flex items-center gap-2"
                                                     >
-                                                        Engage AI
+                                                        Start Practice
                                                         <span className="material-symbols-rounded text-sm">play_arrow</span>
                                                     </button>
                                                 </div>
                                             </div>
                                         )) : (
-                                            <div className="py-12 bg-slate-50/50 rounded-[2.5rem] border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
+                                            <div className="py-12 bg-slate-50/50 rounded-2xl border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
                                                 <span className="material-symbols-rounded text-3xl opacity-20">lock_open</span>
-                                                <p className="text-[9px] font-black uppercase tracking-widest italic">No lab sessions assigned</p>
+                                                <p className="text-[9px] font-black   ">No lab sessions assigned</p>
                                             </div>
                                         )}
                                     </div>
@@ -310,8 +310,8 @@ export default function UnifiedEmployeePortal() {
             </div>
 
             {/* Global Portal Footer */}
-            <div className={`mt-12 text-[10px] font-black text-slate-300 uppercase tracking-[0.5em] transition-opacity duration-1000 ${step === 'login' ? 'opacity-0' : 'opacity-100'}`}>
-                Neural-Powered Organizational Intelligence Portal
+            <div className={`mt-12 text-[10px] font-black text-slate-300  tracking-[0.5em] transition-opacity duration-1000 ${step === 'login' ? 'opacity-0' : 'opacity-100'}`}>
+                Employee Portal
             </div>
         </div>
     );

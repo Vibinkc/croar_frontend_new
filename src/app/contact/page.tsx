@@ -69,28 +69,28 @@ export default function ContactPage() {
 
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <div>
-                                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">First Name</label>
+                                                        <label className="text-xs font-bold text-slate-500   mb-1 block">First Name</label>
                                                         <input required className="w-full rounded-lg border-[#d6cee8] bg-slate-50 focus:border-[#686bed] focus:ring-[#686bed] h-9 px-3 outline-none text-sm" name="Name_First" placeholder="John" type="text" />
                                                     </div>
                                                     <div>
-                                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Last Name</label>
+                                                        <label className="text-xs font-bold text-slate-500   mb-1 block">Last Name</label>
                                                         <input required className="w-full rounded-lg border-[#d6cee8] bg-slate-50 focus:border-[#686bed] focus:ring-[#686bed] h-9 px-3 outline-none text-sm" name="Name_Last" placeholder="Doe" type="text" />
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Email Address</label>
+                                                    <label className="text-xs font-bold text-slate-500   mb-1 block">Email Address</label>
                                                     <input required className="w-full rounded-lg border-[#d6cee8] bg-slate-50 focus:border-[#686bed] focus:ring-[#686bed] h-9 px-3 outline-none text-sm" name="Email" placeholder="john@example.com" type="email" />
                                                 </div>
                                                 <div>
-                                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Phone Number</label>
+                                                    <label className="text-xs font-bold text-slate-500   mb-1 block">Phone Number</label>
                                                     <input className="w-full rounded-lg border-[#d6cee8] bg-slate-50 focus:border-[#686bed] focus:ring-[#686bed] h-9 px-3 outline-none text-sm" name="PhoneNumber_countrycode" placeholder="+1 (555) 000-0000" type="text" />
                                                 </div>
                                                 <div>
-                                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Subject</label>
+                                                    <label className="text-xs font-bold text-slate-500   mb-1 block">Subject</label>
                                                     <input className="w-full rounded-lg border-[#d6cee8] bg-slate-50 focus:border-[#686bed] focus:ring-[#686bed] h-9 px-3 outline-none text-sm" name="SingleLine" placeholder="How can we help?" type="text" />
                                                 </div>
                                                 <div>
-                                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Your Message</label>
+                                                    <label className="text-xs font-bold text-slate-500   mb-1 block">Your Message</label>
                                                     <textarea required className="w-full rounded-lg border-[#d6cee8] bg-slate-50 focus:border-[#686bed] focus:ring-[#686bed] px-3 py-2 outline-none text-sm h-20 resize-none" name="MultiLine" placeholder="Tell us more..."></textarea>
                                                 </div>
                                                 <button className="w-full bg-[#686bed] text-white font-bold py-3 rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all text-sm">

@@ -103,8 +103,8 @@ export default function InterviewSessionPage() {
                         <div className="h-32 w-32 bg-slate-900 border border-slate-800 rounded-full mx-auto flex items-center justify-center animate-pulse">
                             <span className="material-symbols-rounded text-6xl text-slate-500">leak_add</span>
                         </div>
-                        <h2 className="text-2xl font-black uppercase tracking-tight">Initializing Session...</h2>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Allocating AI resources.</p>
+                        <h2 className="text-2xl font-black  tracking-tight">Initializing Session...</h2>
+                        <p className="text-[10px] text-slate-500 font-bold  ">Allocating AI resources.</p>
                     </div>
                 </div>
             );
@@ -134,10 +134,10 @@ export default function InterviewSessionPage() {
                     <div className="absolute inset-0 bg-slate-900"></div>
                     <div className="relative z-10 p-10 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
                         <div className="max-w-lg space-y-4">
-                            <span className="inline-block px-3 py-1 bg-white/10 text-white text-[10px] font-black tracking-widest uppercase rounded-full border border-white/20 backdrop-blur-sm">
+                            <span className="inline-block px-3 py-1 bg-white/10 text-white text-[10px] font-black   rounded-full border border-white/20 backdrop-blur-sm">
                                 {isFromAssessment ? 'Phase 2: Technical Verification' : 'Conversational AI_v2.0'}
                             </span>
-                            <h2 className="text-3xl font-black text-white uppercase tracking-tight leading-tight">
+                            <h2 className="text-3xl font-black text-white  tracking-tight leading-tight">
                                 {isFromAssessment ? 'Ready for Live Evaluation?' : 'Elevate your interview performance'}
                             </h2>
                             <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-sm">
@@ -201,7 +201,7 @@ export default function InterviewSessionPage() {
                                     Target Job Description
                                 </div>
                                 <div className="bg-slate-50 dark:bg-slate-800/30 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
-                                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium whitespace-pre-wrap italic">
+                                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium whitespace-pre-wrap ">
                                         {interview.job_description || "No job description provided for this session."}
                                     </p>
                                 </div>
@@ -209,7 +209,7 @@ export default function InterviewSessionPage() {
                         </div>
                         <div className="lg:col-span-2 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-700 pt-6 lg:pt-0 lg:pl-10">
                             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 text-center border border-slate-100 dark:border-slate-700">
-                                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Estimated Duration</p>
+                                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500   mb-3">Estimated Duration</p>
                                 <div className="flex items-baseline justify-center gap-1 mb-1">
                                     <span className="font-mono text-4xl font-bold text-slate-800 dark:text-white">{interview.settings?.duration || 30}</span>
                                     <span className="text-lg font-medium text-slate-500 dark:text-slate-400">MIN</span>
@@ -237,7 +237,7 @@ export default function InterviewSessionPage() {
                     <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 pt-6 border-t border-slate-100">
                         <button
                             onClick={handleStartInterview}
-                            className="w-full sm:w-auto px-10 py-4 bg-slate-900 hover:bg-black text-white font-black text-[11px] tracking-[0.2em] uppercase rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3 group"
+                            className="w-full sm:w-auto px-10 py-4 bg-slate-900 hover:bg-black text-white font-black text-[11px] tracking-[0.2em]  rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3 group"
                         >
                             <span>{isFromAssessment ? 'Initiate Phase 2' : 'Start AI Interview'}</span>
                             <span className="material-symbols-rounded text-base font-bold">arrow_forward</span>
@@ -247,7 +247,7 @@ export default function InterviewSessionPage() {
                                 setHasStarted(true);
                                 router.push(`${pathname}?mode=fullscreen`);
                             }}
-                            className="w-full sm:w-auto px-6 py-4 bg-white text-slate-400 font-bold text-[11px] tracking-widest uppercase rounded-2xl border border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                            className="w-full sm:w-auto px-6 py-4 bg-white text-slate-400 font-bold text-[11px]   rounded-2xl border border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
                         >
                             <span className="material-symbols-rounded text-base">settings</span>
                             Hardware Test

@@ -71,7 +71,7 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-center min-h-[60vh]">
             <div className="text-center">
                 <div className="w-16 h-16 border-4 border-slate-100 border-t-[var(--color-primary)] rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Loading Dashboard...</p>
+                <p className="text-slate-400 font-bold   text-xs">Loading Dashboard...</p>
             </div>
         </div>
     );
@@ -89,14 +89,14 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-black text-slate-900 tracking-tight">COMMAND CENTER</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Academik.ai // Admin_Console</p>
+                    <p className="text-[10px] font-bold text-slate-400   mt-0.5">Academik.ai // Admin_Console</p>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 text-slate-700 rounded-lg border border-slate-200">
                     <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-slate-500"></span>
                     </span>
-                    <span className="text-[10px] font-black uppercase tracking-widest">System Online</span>
+                    <span className="text-[10px] font-black  ">System Online</span>
                 </div>
             </div>
 
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
                             <div className={`w-10 h-10 rounded-xl ${item.iconBg} flex items-center justify-center ${item.color} mb-3 group-hover:scale-110 transition-transform`}>
                                 <span className="material-icons-outlined text-xl">{item.icon}</span>
                             </div>
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{item.label}</p>
+                            <p className="text-[9px] font-black text-slate-400   mb-0.5">{item.label}</p>
                             <h3 className="text-2xl font-black text-slate-900 tracking-tighter">{item.val}</h3>
                         </div>
                     </div>
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
                             <p className="text-[10px] text-slate-400 font-medium">Distribution of scores across completed assessments</p>
                         </div>
                         <div className="flex items-center gap-4">
-                            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Performance Spectrum</h4>
+                            <h4 className="text-[10px] font-bold text-slate-400  tracking-tighter">Performance Spectrum</h4>
                         </div>
                     </div>
                     <div className="h-[250px] w-full">
@@ -224,14 +224,14 @@ export default function AdminDashboard() {
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between mb-0.5">
                                             <h4 className="text-sm font-bold text-slate-800 truncate">{item.user}</h4>
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                            <span className="text-[10px] font-bold text-slate-400  ">
                                                 {new Date(item.timestamp).toLocaleDateString()}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs text-slate-500 font-medium">{item.action}</span>
                                             <span className="h-1 w-1 bg-slate-300 rounded-full"></span>
-                                            <span className={`text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-full ${config.badge}`}>
+                                            <span className={`text-[10px]  font-black  px-2 py-0.5 rounded-full ${config.badge}`}>
                                                 {item.details}
                                             </span>
                                         </div>

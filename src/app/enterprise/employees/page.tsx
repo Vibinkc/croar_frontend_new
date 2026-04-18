@@ -75,7 +75,7 @@ export default function EmployeesPage() {
     return (
         <div className="p-4 space-y-4 pt-2 animate-in fade-in duration-500">
             {/* Command Bar */}
-            <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-30 overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl border border-slate-200 shadow-sm sticky top-0 z-30 overflow-x-auto no-scrollbar">
                 <div className="relative group min-w-[200px] flex-1">
                     <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-[#7C3AED] transition-colors">search</span>
                     <input
@@ -92,7 +92,7 @@ export default function EmployeesPage() {
                 {canAccess("employees:create") && (
                     <Link
                         href="/enterprise/employees/add"
-                        className="bg-[#7C3AED] text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap flex-shrink-0"
+                        className="bg-[#7C3AED] text-white px-5 py-2.5 rounded-xl font-black text-[10px]   hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap flex-shrink-0"
                     >
                         <span className="material-symbols-rounded text-lg">add</span>
                         Add Employee
@@ -101,7 +101,7 @@ export default function EmployeesPage() {
             </div>
 
             {/* Content Table */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col min-h-[calc(100vh-12rem)] overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col min-h-[calc(100vh-12rem)] overflow-hidden">
                 {isLoading ? (
                     <div className="p-6 space-y-4 flex-1">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -110,26 +110,26 @@ export default function EmployeesPage() {
                     </div>
                 ) : filteredEmployees.length === 0 ? (
                     <div className="flex-1 flex flex-col items-center justify-center p-20 text-center">
-                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                        <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
                             <span className="material-symbols-rounded text-3xl text-slate-300">badge</span>
                         </div>
                         <h3 className="text-sm font-bold text-slate-900 mb-1">No Employees Found</h3>
                         <p className="text-xs text-slate-500 mb-6 max-w-xs mx-auto">
                             Add your first employee or convert an onboarded candidate.
                         </p>
-                        <Link href="/enterprise/onboarding" className="px-4 py-2 bg-indigo-50 text-[#7C3AED] font-bold text-xs rounded-lg hover:bg-slate-200 transition-all">Go to Onboarding Hub</Link>
+                        <Link href="/enterprise/onboarding" className="px-4 py-2 bg-indigo-50 text-[#7C3AED] font-bold text-xs rounded-xl hover:bg-slate-200 transition-all">Go to Onboarding Hub</Link>
                     </div>
                 ) : (
                     <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-16rem)]">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Employee</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Designation</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Department</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Hire Date</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Employee</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Designation</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Department</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Hire Date</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Status</th>
+                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500   text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -151,7 +151,7 @@ export default function EmployeesPage() {
                                             <span className="text-xs font-semibold text-slate-600">{emp.hire_date ? new Date(emp.hire_date).toLocaleDateString() : "N/A"}</span>
                                         </td>
                                         <td className="px-3 py-1.5">
-                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wide ${
+                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border  tracking-wide ${
                                                 emp.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-100 text-slate-500 border-slate-200'
                                             }`}>
                                                 <span className={`w-1 h-1 rounded-full ${emp.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
@@ -163,7 +163,7 @@ export default function EmployeesPage() {
                                                 {canAccess("employees:update") && (
                                                     <Link
                                                         href={`/enterprise/employees/${emp.id}`}
-                                                        className="w-8 h-8 rounded-lg text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
+                                                        className="w-8 h-8 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
                                                         title="Edit Employee"
                                                     >
                                                         <span className="material-symbols-rounded text-lg">edit</span>
@@ -175,7 +175,7 @@ export default function EmployeesPage() {
                                                             setEmployeeToDelete(emp.id);
                                                             setIsConfirmModalOpen(true);
                                                         }}
-                                                        className="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 flex items-center justify-center transition-all"
+                                                        className="w-8 h-8 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 flex items-center justify-center transition-all"
                                                         title="Delete Employee"
                                                     >
                                                         <span className="material-symbols-rounded text-lg">delete</span>

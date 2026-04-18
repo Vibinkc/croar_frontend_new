@@ -38,7 +38,7 @@ function VideoAttemptList({ interviewId }: { interviewId: string }) {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 animate-in fade-in duration-500">
             <div className="w-10 h-10 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin mb-4"></div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading_Visual_Log</p>
+            <p className="text-[10px] font-black  tracking-[0.3em] text-slate-400">Loading_Visual_Log</p>
         </div>
     );
 
@@ -46,8 +46,8 @@ function VideoAttemptList({ interviewId }: { interviewId: string }) {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">Video Evaluation Results</h1>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Protocol ID: {interviewId}</p>
+                    <h1 className="text-2xl font-black text-slate-900  tracking-tighter mb-2">Video Evaluation Results</h1>
+                    <p className="text-xs font-bold text-slate-400  ">Protocol ID: {interviewId}</p>
                 </div>
             </div>
 
@@ -56,11 +56,11 @@ function VideoAttemptList({ interviewId }: { interviewId: string }) {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-slate-100 bg-slate-50/50">
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Candidate</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Submission Date</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Overall Score</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Feedback Summary</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Candidate</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Submission Date</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Type</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">Overall Score</th>
+                                <th className="p-6 text-[10px] font-black text-slate-400  ">AI Feedback Summary</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -72,7 +72,7 @@ function VideoAttemptList({ interviewId }: { interviewId: string }) {
                                                 {att.user_name ? att.user_name[0] : "?"}
                                             </div>
                                             <div>
-                                                <p className="text-xs font-black text-slate-900 uppercase tracking-wide">
+                                                <p className="text-xs font-black text-slate-900  tracking-wide">
                                                     {att.user_name}
                                                 </p>
                                                 <p className="text-[10px] font-medium text-slate-400">{att.user_email}</p>
@@ -83,7 +83,7 @@ function VideoAttemptList({ interviewId }: { interviewId: string }) {
                                         {format(new Date(att.created_at), "MMM d, yyyy • h:mm a")}
                                     </td>
                                     <td className="p-6">
-                                        <span className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest ${att.type === 'LIVE' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}`}>
+                                        <span className={`px-2 py-1 rounded text-[9px] font-black   ${att.type === 'LIVE' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}`}>
                                             {att.type}
                                         </span>
                                     </td>
@@ -106,7 +106,7 @@ function VideoAttemptList({ interviewId }: { interviewId: string }) {
                                 <tr>
                                     <td colSpan={5} className="p-12 text-center text-slate-300">
                                         <span className="material-icons-outlined text-4xl mb-4 block opacity-30">videocam_off</span>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em]">No_Video_Submissions</p>
+                                        <p className="text-[10px] font-black  tracking-[0.2em]">No_Video_Submissions</p>
                                     </td>
                                 </tr>
                             )}

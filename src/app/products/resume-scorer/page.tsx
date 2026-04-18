@@ -32,7 +32,7 @@ export default function ResumeProductPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-slate-600 bg-slate-800/50 px-3 py-1 rounded-full text-slate-300 text-xs font-bold uppercase tracking-widest backdrop-blur-md"
+                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-slate-600 bg-slate-800/50 px-3 py-1 rounded-full text-slate-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-yellow-500">warning</span>
                             75% of Resumes are Rejected by Bots
@@ -74,7 +74,7 @@ export default function ResumeProductPage() {
             <section className="px-4 py-16" id="features">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-2 text-center md:text-left">
-                        <span className="text-slate-500 font-bold uppercase tracking-widest text-sm">ATS Optimization</span>
+                        <span className="text-slate-500 font-bold   text-sm">ATS Optimization</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">The Talent Scorecard</h2>
                         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">We grade your CV on 3 critical dimensions.</p>
                     </div>
@@ -143,7 +143,7 @@ export default function ResumeProductPage() {
                         <h2 className="text-3xl md:text-5xl font-black text-white">The Black Hole.</h2>
                         <p className="text-lg text-slate-400">Applicant Tracking Systems (ATS) are ruthless. If your resume employs complex columns or graphics, it may be rendered unreadable.</p>
                         <div className="flex flex-col gap-4 mt-8">
-                            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Compatible With</div>
+                            <div className="text-xs font-bold text-slate-500  ">Compatible With</div>
                             <div className="flex flex-wrap gap-6 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all">
                                 <span className="font-black text-xl">WORKDAY</span>
                                 <span className="font-black text-xl">TALEO</span>
@@ -194,7 +194,7 @@ export default function ResumeProductPage() {
                     <h2 className="text-3xl font-black mb-12 text-center text-slate-900">The "Match Rate" Algorithm</h2>
                     <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
                         <div className="w-full md:w-80 bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative flex flex-col h-64">
-                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Your Resume</div>
+                            <div className="text-xs font-bold text-slate-400   mb-4">Your Resume</div>
                             <div className="space-y-3 flex-1 opacity-50">
                                 <div className="h-2 w-full bg-slate-200 rounded"></div>
                                 <div className="h-2 w-3/4 bg-slate-200 rounded"></div>
@@ -210,7 +210,7 @@ export default function ResumeProductPage() {
                         </div>
 
                         <div className="w-full md:w-80 bg-blue-50 border border-blue-100 rounded-xl p-6 shadow-sm relative flex flex-col h-64">
-                            <div className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-4">Job Description</div>
+                            <div className="text-xs font-bold text-blue-400   mb-4">Job Description</div>
                             <div className="space-y-3 flex-1">
                                 <div className="h-2 w-full bg-blue-100 rounded"></div>
                                 <div className="mt-8 border-l-4 border-green-500 pl-4">
@@ -300,7 +300,7 @@ export default function ResumeProductPage() {
 
                     <div className="grid md:grid-cols-2 gap-0 border border-slate-200 rounded-3xl overflow-hidden shadow-xl">
                         <div className="bg-slate-50 p-8 border-b md:border-b-0 md:border-r border-slate-200">
-                            <div className="text-center font-bold text-slate-500 mb-6 uppercase tracking-widest text-xs">Your PDF View</div>
+                            <div className="text-center font-bold text-slate-500 mb-6   text-xs">Your PDF View</div>
                             <div className="bg-white shadow-lg p-6 max-w-[300px] mx-auto min-h-[400px] text-[8px] text-slate-300 space-y-2">
                                 <div className="w-full h-8 bg-slate-200"></div>
                                 <div className="flex gap-2">
@@ -312,7 +312,7 @@ export default function ResumeProductPage() {
                             <p className="text-center text-sm text-slate-500 mt-6 font-medium">"It looks so pretty!"</p>
                         </div>
                         <div className="bg-blue-50 p-8">
-                            <div className="text-center font-bold text-blue-500 mb-6 uppercase tracking-widest text-xs">Recruiter's ATS View</div>
+                            <div className="text-center font-bold text-blue-500 mb-6   text-xs">Recruiter's ATS View</div>
                             <div className="bg-white shadow-lg p-6 max-w-[300px] mx-auto min-h-[400px] text-xs font-mono">
                                 <div className="border-b pb-2 mb-2 font-bold text-slate-900">Candidate ID: #9928</div>
                                 <div className="space-y-1 text-slate-600">
@@ -338,7 +338,7 @@ export default function ResumeProductPage() {
                     <button onClick={() => router.push("/practice/resume-scorer")} className="bg-slate-900 text-white font-bold py-5 px-12 rounded-full text-xl hover:scale-105 transition-transform shadow-xl">
                         Scan My Resume Free
                     </button>
-                    <p className="mt-6 text-xs text-slate-400 uppercase tracking-widest font-bold">100% Secure • Private • No Sign-Up to Test</p>
+                    <p className="mt-6 text-xs text-slate-400   font-bold">100% Secure • Private • No Sign-Up to Test</p>
                 </div>
             </footer>
         </main>

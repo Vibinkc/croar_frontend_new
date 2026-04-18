@@ -180,12 +180,12 @@ export default function AudioRecorder() {
 
                     <div className="space-y-4">
                         <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
-                            <h4 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2 uppercase tracking-wide">Transcript</h4>
-                            <p className="text-zinc-700 dark:text-zinc-300 italic">"{feedback.transcription}"</p>
+                            <h4 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2  tracking-wide">Transcript</h4>
+                            <p className="text-zinc-700 dark:text-zinc-300 ">"{feedback.transcription}"</p>
                         </div>
 
                         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-900/30">
-                            <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2 uppercase tracking-wide">Coach's Tips</h4>
+                            <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2  tracking-wide">Coach's Tips</h4>
                             <p className="text-zinc-700 dark:text-zinc-300 whitespace-pre-line">{feedback.feedback}</p>
                         </div>
                     </div>

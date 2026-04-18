@@ -73,7 +73,7 @@ export default function SuperAdminLayout({
                         >
                             <span className="material-icons-outlined text-slate-600">menu</span>
                         </button>
-                        <span className="text-xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent italic tracking-tighter">CROAR.AI</span>
+                        <span className="text-xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent tracking-tighter">Croar.ai</span>
                     </div>
                 </header>
 

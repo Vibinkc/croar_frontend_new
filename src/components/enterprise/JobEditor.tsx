@@ -86,7 +86,7 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                     </button>
                     <button
                         onClick={() => editor.chain().focus().toggleItalic().run()}
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('italic') ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:text-indigo-600'}`}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('') ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:text-indigo-600'}`}
                     >
                         <span className="material-symbols-rounded text-xl">format_italic</span>
                     </button>

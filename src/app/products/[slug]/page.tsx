@@ -171,7 +171,7 @@ export default function ProductDetailPage() {
                                 {data.stats.map((stat, idx) => (
                                     <div key={idx}>
                                         <div className="text-2xl font-black text-indigo-600">{stat.value}</div>
-                                        <div className="text-xs text-slate-400 uppercase tracking-widest font-bold mt-1">{stat.label}</div>
+                                        <div className="text-xs text-slate-400   font-bold mt-1">{stat.label}</div>
                                     </div>
                                 ))}
                             </div>
@@ -196,7 +196,7 @@ export default function ProductDetailPage() {
             <section className="py-24 px-4 bg-slate-50 dark:bg-slate-950">
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8">Why {data.title}?</h2>
-                    <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium italic underline decoration-indigo-600/30 underline-offset-8">
+                    <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium  underline decoration-indigo-600/30 underline-offset-8">
                         "{data.longDescription}"
                     </p>
                 </div>
@@ -236,7 +236,7 @@ export default function ProductDetailPage() {
                         <div className="grid lg:grid-cols-3 gap-8">
                             {data.curriculum.map((group, idx) => (
                                 <div key={idx} className="bg-slate-50 dark:bg-slate-950 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800">
-                                    <h3 className="text-lg font-black text-indigo-600 uppercase tracking-widest mb-6 pb-4 border-b border-indigo-100 dark:border-indigo-900/30">
+                                    <h3 className="text-lg font-black text-indigo-600   mb-6 pb-4 border-b border-indigo-100 dark:border-indigo-900/30">
                                         {group.category}
                                     </h3>
                                     <ul className="space-y-4">
@@ -343,7 +343,7 @@ export default function ProductDetailPage() {
                     </div>
                     <div className="grid md:grid-cols-3 gap-0 border border-slate-100 dark:border-slate-800 rounded-[3rem] overflow-hidden shadow-2xl">
                         <div className="p-12 bg-slate-50/50 dark:bg-slate-950/50">
-                            <div className="text-indigo-600 font-black uppercase tracking-widest text-xs mb-4">Level 01</div>
+                            <div className="text-indigo-600 font-black   text-xs mb-4">Level 01</div>
                             <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-6 text-center">Foundation</h3>
                             <ul className="space-y-4 text-slate-600 dark:text-slate-400 text-sm font-medium">
                                 <li>• Basic Arithmetic Logic</li>
@@ -356,7 +356,7 @@ export default function ProductDetailPage() {
                             <div className="absolute top-0 right-0 p-4">
                                 <span className="material-icons text-yellow-400">workspace_premium</span>
                             </div>
-                            <div className="bg-white/20 text-white font-black uppercase tracking-widest text-[10px] px-2 py-0.5 rounded inline-block mb-4">Level 02</div>
+                            <div className="bg-white/20 text-white font-black   text-[10px] px-2 py-0.5 rounded inline-block mb-4">Level 02</div>
                             <h3 className="text-2xl font-black mb-6 text-center">Placement-Ready</h3>
                             <ul className="space-y-4 text-indigo-50 text-sm font-medium">
                                 <li>• Complex Data Interpretation</li>
@@ -366,7 +366,7 @@ export default function ProductDetailPage() {
                             </ul>
                         </div>
                         <div className="p-12 bg-slate-50/50 dark:bg-slate-950/50">
-                            <div className="text-indigo-600 font-black uppercase tracking-widest text-xs mb-4">Level 03</div>
+                            <div className="text-indigo-600 font-black   text-xs mb-4">Level 03</div>
                             <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-6 text-center">Elite Solver</h3>
                             <ul className="space-y-4 text-slate-600 dark:text-slate-400 text-sm font-medium">
                                 <li>• GMAT/CAT Level Questions</li>

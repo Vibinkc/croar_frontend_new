@@ -69,7 +69,7 @@ export default function LearningTracks() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
                     >
-                        <span className="text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest text-xs mb-4 block">Recommended for your journey</span>
+                        <span className="text-indigo-600 dark:text-indigo-400 font-bold   text-xs mb-4 block">Recommended for your journey</span>
                         <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-slate-900 dark:text-white">
                             Explore Learning <span className="ai-text-gradient">Tracks</span>
                         </h2>
@@ -84,7 +84,7 @@ export default function LearningTracks() {
                         <button
                             key={category}
                             onClick={() => setActiveCategory(category)}
-                            className={`px-8 py-2.5 rounded-full text-sm font-black transition-all duration-300 border-2 uppercase tracking-tight ${activeCategory === category
+                            className={`px-8 py-2.5 rounded-full text-sm font-black transition-all duration-300 border-2  tracking-tight ${activeCategory === category
                                 ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/30 -translate-y-0.5"
                                 : "bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-indigo-600/30"
                                 }`}
@@ -131,8 +131,8 @@ export default function LearningTracks() {
                                         </div>
 
                                         <div className="relative z-10 flex-grow">
-                                            <div className="text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-[0.1em] mb-1.5 opacity-60">{track.category}</div>
-                                            <h3 className="text-lg font-black mb-2 text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors uppercase leading-tight tracking-tight">
+                                            <div className="text-indigo-600 dark:text-indigo-400 font-black text-[10px]  tracking-[0.1em] mb-1.5 opacity-60">{track.category}</div>
+                                            <h3 className="text-lg font-black mb-2 text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors  leading-tight tracking-tight">
                                                 {track.label}
                                             </h3>
                                             <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed mb-4 line-clamp-2 font-medium">
@@ -141,7 +141,7 @@ export default function LearningTracks() {
                                         </div>
 
                                         <div className="relative z-10 pt-4 border-t border-slate-50 dark:border-slate-800/50 flex items-center justify-between mt-auto">
-                                            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-bold uppercase tracking-wider">
+                                            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-bold  ">
                                                 <span className="material-icons-outlined text-sm">{track.isCustom ? 'tune' : 'groups'}</span>
                                                 {track.stats}
                                             </div>

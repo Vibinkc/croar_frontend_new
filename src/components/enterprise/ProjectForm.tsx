@@ -182,7 +182,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                     <h2 className="text-2xl font-black text-slate-900 tracking-tight">
                         {projectId ? "Project Console" : "New Project"}
                     </h2>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    <p className="text-xs font-bold text-slate-400  ">
                         {projectId ? formData.name : "Fill in the basic project information"}
                     </p>
                 </div>
@@ -190,7 +190,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-[#7C3AED] text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50"
+                        className="bg-[#7C3AED] text-white px-8 py-3 rounded-2xl font-black text-[11px]   hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50"
                     >
                         {isLoading ? "Saving..." : projectId ? "Save Changes" : "Create Project"}
                     </button>
@@ -202,14 +202,14 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                 <button
                     type="button"
                     onClick={() => setActiveTab("basic")}
-                    className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
+                    className={`px-6 py-2.5 rounded-xl font-black text-[10px]   transition-all ${
                         activeTab === "basic" ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-500 hover:text-slate-700"
                     }`}
                 >Settings</button>
                 <button
                     type="button"
                     onClick={() => setActiveTab("members")}
-                    className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
+                    className={`px-6 py-2.5 rounded-xl font-black text-[10px]   transition-all ${
                         activeTab === "members" ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-500 hover:text-slate-700"
                     }`}
                 >Team</button>
@@ -217,7 +217,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                     <button
                         type="button"
                         onClick={() => setActiveTab("tasks")}
-                        className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
+                        className={`px-6 py-2.5 rounded-xl font-black text-[10px]   transition-all ${
                             activeTab === "tasks" ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-500 hover:text-slate-700"
                         }`}
                     >Tasks & Board</button>
@@ -229,10 +229,10 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                     <div className="space-y-10 animate-in fade-in zoom-in-95 duration-300">
                         {/* Basic Info Section */}
                         <div className="space-y-6">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">General Information</h4>
+                            <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">General Information</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Project Name*</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1">Project Name*</label>
                                     <input
                                         name="name"
                                         value={formData.name}
@@ -243,7 +243,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company*</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1">Company*</label>
                                     <select
                                         name="company_id"
                                         value={formData.company_id}
@@ -258,7 +258,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                                <label className="text-[10px] font-black text-slate-400   ml-1">Description</label>
                                 <textarea
                                     name="description"
                                     value={formData.description}
@@ -271,7 +271,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Status</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1">Status</label>
                                     <select
                                         name="status"
                                         value={formData.status}
@@ -284,7 +284,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Start Date</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1">Start Date</label>
                                     <input
                                         type="date"
                                         name="start_date"
@@ -294,7 +294,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">End Date</label>
+                                    <label className="text-[10px] font-black text-slate-400   ml-1">End Date</label>
                                     <input
                                         type="date"
                                         name="end_date"
@@ -309,7 +309,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                         {/* Kanban Workflow Configuration */}
                         <div className="space-y-6 pt-6 border-t border-slate-100">
                             <div>
-                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Kanban Workflow</h4>
+                                <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Kanban Workflow</h4>
                                 <p className="text-[10px] text-slate-400 font-bold ml-1 mt-1">Define the custom stages for your project's task board.</p>
                             </div>
                             <div className="flex flex-wrap gap-3">
@@ -327,7 +327,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                             style={{ animationDelay: `${idx * 50}ms` }}
                                         >
                                             <span className="material-symbols-rounded text-slate-400 text-sm">drag_indicator</span>
-                                            <span className="text-xs font-black text-indigo-600 uppercase tracking-widest">{col}</span>
+                                            <span className="text-xs font-black text-indigo-600  ">{col}</span>
                                             <button 
                                                 type="button" 
                                                 onClick={() => handleRemoveColumn(col)}
@@ -364,7 +364,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             {/* Current Members */}
                             <div className="space-y-4">
-                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Project Team</h4>
+                                <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Project Team</h4>
                                 <div className="grid gap-3">
                                     {(formData.members || []).length === 0 ? (
                                         <div className="p-10 border-2 border-dashed border-slate-100 rounded-[32px] text-center">
@@ -374,12 +374,12 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                         formData.members.map((m: any) => (
                                             <div key={m.id} className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xs uppercase shadow-sm">
+                                                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xs  shadow-sm">
                                                         {m.first_name[0]}{m.last_name[0]}
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-black text-slate-800 tracking-tight">{m.first_name} {m.last_name}</p>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{m.designation || "Project Member"}</p>
+                                                        <p className="text-[9px] font-black text-slate-400  ">{m.designation || "Project Member"}</p>
                                                     </div>
                                                 </div>
                                                 <button 
@@ -397,25 +397,25 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
                             {/* Add Members */}
                             <div className="space-y-4">
-                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Assign Talent</h4>
+                                <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Assign Talent</h4>
                                 <div className="max-h-[500px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
                                     {employees
                                         .filter(emp => !(formData.members || []).some((m: any) => m.id === emp.id))
                                         .map((emp) => (
                                             <div key={emp.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#7C3AED]/20 hover:bg-slate-50/50 transition-all group">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 group-hover:bg-[#7C3AED]/10 group-hover:text-[#7C3AED] flex items-center justify-center font-black text-xs uppercase transition-all shadow-sm">
+                                                    <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 group-hover:bg-[#7C3AED]/10 group-hover:text-[#7C3AED] flex items-center justify-center font-black text-xs  transition-all shadow-sm">
                                                         {emp.first_name[0]}{emp.last_name[0]}
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-black text-slate-800 tracking-tight">{emp.first_name} {emp.last_name}</p>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{emp.designation || "Available"}</p>
+                                                        <p className="text-[9px] font-black text-slate-400  ">{emp.designation || "Available"}</p>
                                                     </div>
                                                 </div>
                                                 <button 
                                                     type="button"
                                                     onClick={() => handleAddMember(emp.id)}
-                                                    className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-[9px] font-black uppercase tracking-widest text-slate-500 hover:text-[#7C3AED] hover:border-[#7C3AED] hover:bg-white transition-all shadow-sm"
+                                                    className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-[9px] font-black   text-slate-500 hover:text-[#7C3AED] hover:border-[#7C3AED] hover:bg-white transition-all shadow-sm"
                                                 >
                                                     Assign
                                                 </button>

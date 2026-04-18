@@ -78,10 +78,10 @@ export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: Em
                     <div className="flex-1 overflow-auto p-6 bg-slate-50 dark:bg-slate-900">
                         <div className="max-w-4xl mx-auto space-y-6">
                             <div className="flex items-center justify-between">
-                                <h2 className="text-2xl font-black uppercase text-slate-800 dark:text-white">Interview Complete</h2>
+                                <h2 className="text-2xl font-black  text-slate-800 dark:text-white">Interview Complete</h2>
                                 <button
                                     onClick={onComplete}
-                                    className="px-6 py-2 bg-slate-900 text-white text-sm font-bold uppercase tracking-widest rounded-lg hover:bg-slate-800 transition-colors"
+                                    className="px-6 py-2 bg-slate-900 text-white text-sm font-bold   rounded-lg hover:bg-slate-800 transition-colors"
                                 >
                                     Return to Results
                                 </button>
@@ -123,8 +123,8 @@ export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: Em
                         <div className="h-20 w-20 bg-slate-800 border border-slate-700 rounded-full mx-auto flex items-center justify-center animate-pulse">
                             <span className="material-symbols-rounded text-4xl text-slate-500">leak_add</span>
                         </div>
-                        <h2 className="text-xl font-black uppercase tracking-tight">Initializing Session...</h2>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Allocating AI resources.</p>
+                        <h2 className="text-xl font-black  tracking-tight">Initializing Session...</h2>
+                        <p className="text-[10px] text-slate-500 font-bold  ">Allocating AI resources.</p>
                     </div>
                 </div>
             );
@@ -155,10 +155,10 @@ export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: Em
                 </div>
 
                 <div className="space-y-4">
-                    <span className="inline-block px-3 py-1 bg-rose-100 text-rose-600 text-[10px] font-black tracking-widest uppercase rounded-full">
+                    <span className="inline-block px-3 py-1 bg-rose-100 text-rose-600 text-[10px] font-black   rounded-full">
                         Final Round
                     </span>
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                    <h2 className="text-3xl font-black text-slate-900 dark:text-white  tracking-tight">
                         Ready for the Live Interview?
                     </h2>
                     <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-lg mx-auto">
@@ -186,7 +186,7 @@ export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: Em
 
                 <button
                     onClick={handleStartInterview}
-                    className="px-8 py-4 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs tracking-[0.2em] uppercase rounded-xl transition-all shadow-lg hover:shadow-rose-500/30 flex items-center justify-center gap-3 mx-auto"
+                    className="px-8 py-4 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs tracking-[0.2em]  rounded-xl transition-all shadow-lg hover:shadow-rose-500/30 flex items-center justify-center gap-3 mx-auto"
                 >
                     Start Final Round
                     <span className="material-icons-outlined text-base">arrow_forward</span>

@@ -94,7 +94,7 @@ function ActivityLogList({ divisionId, departmentId, batch }: { divisionId: numb
                         link.click();
                         document.body.removeChild(link);
                     }}
-                    className="p-2 text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
+                    className="p-2 text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-2 text-[10px] font-black  "
                     title="Export Logs"
                 >
                     <span className="material-icons-outlined">download</span>
@@ -110,7 +110,7 @@ function ActivityLogList({ divisionId, departmentId, batch }: { divisionId: numb
             </div>
 
             {isLoading ? (
-                <div className="flex justify-center p-12 text-slate-400 font-black uppercase tracking-[0.2em] animate-pulse">Syncing Audit Stream...</div>
+                <div className="flex justify-center p-12 text-slate-400 font-black  tracking-[0.2em] animate-pulse">Syncing Audit Stream...</div>
             ) : logs.length === 0 ? (
                 <div className="bg-white border-2 border-dashed border-slate-200 p-12 rounded-[2.5rem] text-center">
                     <span className="material-icons-outlined text-4xl text-slate-300 mb-4">history</span>
@@ -126,13 +126,13 @@ function ActivityLogList({ divisionId, departmentId, batch }: { divisionId: numb
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between mb-1">
-                                        <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight truncate">{log.user_name}</h4>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-2 py-1 rounded-full">
+                                        <h4 className="text-sm font-black text-slate-900  tracking-tight truncate">{log.user_name}</h4>
+                                        <span className="text-[10px] font-bold text-slate-400   bg-slate-100 px-2 py-1 rounded-full">
                                             {format(new Date(log.timestamp), "MMM dd, HH:mm:ss")}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-2 mb-1">
-                                        <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${getActionColor(log.action)}`}>
+                                        <span className={`text-[10px] font-black   px-2 py-0.5 rounded-full ${getActionColor(log.action)}`}>
                                             {log.action}
                                         </span>
                                     </div>

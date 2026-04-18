@@ -79,7 +79,7 @@ export default function AssessmentsListPage() {
         <div className="min-h-screen bg-slate-50 flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
                 <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-500 rounded-full animate-spin"></div>
-                <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Synchronizing_Assessments</span>
+                <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 ">Synchronizing_Assessments</span>
             </div>
         </div>
     );
@@ -91,7 +91,7 @@ export default function AssessmentsListPage() {
             <section className="relative overflow-hidden rounded-[1.5rem] bg-sky-600 p-6 text-white shadow-lg">
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-3">
-                        <h2 className="text-2xl font-black uppercase tracking-tight">Assessment Hub</h2>
+                        <h2 className="text-2xl font-black  tracking-tight">Assessment Hub</h2>
                         <p className="text-slate-100 text-xs max-w-sm font-medium leading-relaxed">
                             Validate your technical precision. Complete high-stakes simulated protocols within your scheduled window.
                         </p>
@@ -101,10 +101,10 @@ export default function AssessmentsListPage() {
                             <span className="material-icons-outlined text-2xl">verified_user</span>
                         </div>
                         <div>
-                            <p className="text-[9px] font-black text-slate-200 uppercase tracking-widest mb-1">Active_Protocols</p>
+                            <p className="text-[9px] font-black text-slate-200   mb-1">Active_Protocols</p>
                             <div className="flex items-baseline gap-1">
                                 <span className="text-2xl font-black">{assessments.filter(a => isAssessmentActive(a) && !a.is_completed).length}</span>
-                                <span className="text-[9px] font-bold text-slate-200 uppercase">Live</span>
+                                <span className="text-[9px] font-bold text-slate-200 ">Live</span>
                             </div>
                         </div>
                     </div>
@@ -129,24 +129,24 @@ export default function AssessmentsListPage() {
                                     <span className="material-icons-outlined text-xl">{a.is_completed ? 'check_circle' : getAssessmentIcon(a.title, a.categories)}</span>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                    <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[8px] font-black tracking-widest text-slate-500 uppercase border border-slate-200">
+                                    <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[8px] font-black  text-slate-500  border border-slate-200">
                                         PR_0{a.id}
                                     </span>
-                                    {status === 'SCHEDULED' && <span className="text-[7px] font-black text-slate-500 tracking-widest uppercase bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">Coming Up</span>}
-                                    {status === 'EXPIRED' && <span className="text-[7px] font-black text-slate-400 tracking-widest uppercase bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-full">Expired</span>}
-                                    {status === 'ACTIVE' && <span className="text-[7px] font-black text-slate-900 tracking-widest uppercase bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">Live Now</span>}
+                                    {status === 'SCHEDULED' && <span className="text-[7px] font-black text-slate-500   bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">Coming Up</span>}
+                                    {status === 'EXPIRED' && <span className="text-[7px] font-black text-slate-400   bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-full">Expired</span>}
+                                    {status === 'ACTIVE' && <span className="text-[7px] font-black text-slate-900   bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">Live Now</span>}
                                 </div>
                             </div>
 
                             {/* Card Body */}
                             <div className="space-y-4 flex-grow">
                                 <div className="space-y-2">
-                                    <h3 className={`text-base font-black tracking-tight leading-tight uppercase transition-colors ${a.is_completed ? 'text-slate-400' : 'text-slate-900 group-hover:text-slate-600'}`}>
+                                    <h3 className={`text-base font-black tracking-tight leading-tight  transition-colors ${a.is_completed ? 'text-slate-400' : 'text-slate-900 group-hover:text-slate-600'}`}>
                                         {a.title}
                                     </h3>
                                     <div className="flex flex-wrap gap-2">
                                         {(a.categories || []).map(cat => (
-                                            <span key={cat} className="px-2 py-0.5 rounded-md bg-slate-100 text-[7px] font-black text-slate-500 uppercase tracking-widest border border-slate-200">
+                                            <span key={cat} className="px-2 py-0.5 rounded-md bg-slate-100 text-[7px] font-black text-slate-500   border border-slate-200">
                                                 {cat}
                                             </span>
                                         ))}
@@ -157,23 +157,23 @@ export default function AssessmentsListPage() {
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-1.5">
                                             <span className="material-icons-outlined text-[12px] text-slate-400">schedule</span>
-                                            <span className="text-[9px] font-black text-slate-500 uppercase">{a.time_limit_minutes}m Duration</span>
+                                            <span className="text-[9px] font-black text-slate-500 ">{a.time_limit_minutes}m Duration</span>
                                         </div>
                                         <div className="flex items-center gap-1.5">
                                             <span className="material-icons-outlined text-[12px] text-slate-400">quiz</span>
-                                            <span className="text-[9px] font-black text-slate-500 uppercase">{a.question_count} Questions</span>
+                                            <span className="text-[9px] font-black text-slate-500 ">{a.question_count} Questions</span>
                                         </div>
                                     </div>
                                     {(a.start_at || a.end_at) && (
                                         <div className="flex flex-col gap-1 mt-1 pt-2 border-t border-slate-100">
                                             {a.start_at && (
-                                                <div className="flex justify-between items-center text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
+                                                <div className="flex justify-between items-center text-[8px] font-bold text-slate-400  tracking-tighter">
                                                     <span>Open:</span>
                                                     <span className="text-slate-600">{formatShortDate(a.start_at)}</span>
                                                 </div>
                                             )}
                                             {a.end_at && (
-                                                <div className="flex justify-between items-center text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
+                                                <div className="flex justify-between items-center text-[8px] font-bold text-slate-400  tracking-tighter">
                                                     <span>Close:</span>
                                                     <span className="text-slate-600">{formatShortDate(a.end_at)}</span>
                                                 </div>
@@ -182,7 +182,7 @@ export default function AssessmentsListPage() {
                                     )}
                                 </div>
 
-                                <p className="text-[10px] text-slate-400 leading-relaxed font-medium line-clamp-2 italic">
+                                <p className="text-[10px] text-slate-400 leading-relaxed font-medium line-clamp-2 ">
                                     {a.description || "No specific protocol instructions provided by Command Center."}
                                 </p>
                             </div>
@@ -190,19 +190,19 @@ export default function AssessmentsListPage() {
                             {/* Card Action */}
                             <div className="mt-6">
                                 {a.is_completed ? (
-                                    <button disabled className="w-full bg-slate-50 text-slate-400 font-black text-[9px] tracking-[0.2em] uppercase py-3 rounded-2xl cursor-not-allowed flex items-center justify-center gap-2 border border-slate-100">
+                                    <button disabled className="w-full bg-slate-50 text-slate-400 font-black text-[9px] tracking-[0.2em]  py-3 rounded-2xl cursor-not-allowed flex items-center justify-center gap-2 border border-slate-100">
                                         PROTOCOL_FINALIZED
                                         <span className="material-symbols-rounded text-base">verified</span>
                                     </button>
                                 ) : isActive ? (
                                     <Link href={`/practice/assessments/${a.id}`}>
-                                        <button className="w-full bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white font-black text-[9px] tracking-[0.2em] uppercase py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-sm shadow-slate-100">
+                                        <button className="w-full bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white font-black text-[9px] tracking-[0.2em]  py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-sm shadow-slate-100">
                                             INITIATE_PROTOCOL
                                             <span className="material-symbols-rounded text-base">arrow_forward</span>
                                         </button>
                                     </Link>
                                 ) : (
-                                    <button disabled className="w-full bg-slate-50 text-slate-400 font-black text-[9px] tracking-[0.2em] uppercase py-3 rounded-2xl cursor-not-allowed flex items-center justify-center border border-slate-100">
+                                    <button disabled className="w-full bg-slate-50 text-slate-400 font-black text-[9px] tracking-[0.2em]  py-3 rounded-2xl cursor-not-allowed flex items-center justify-center border border-slate-100">
                                         {status === 'SCHEDULED' ? 'WINDOW_PENDING' : 'PROTOCOL_EXPIRED'}
                                     </button>
                                 )}
@@ -218,7 +218,7 @@ export default function AssessmentsListPage() {
                         <span className="material-icons-outlined text-3xl text-slate-300">upcoming</span>
                     </div>
                     <div className="space-y-2">
-                        <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Systems_Idle</h2>
+                        <h2 className="text-xl font-black text-slate-900  tracking-tight">Systems_Idle</h2>
                         <p className="text-xs text-slate-400 font-medium tracking-wide">No active assessment sessions currently assigned to your protocol.</p>
                     </div>
                 </div>

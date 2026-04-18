@@ -186,7 +186,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
 
                     {/* Template Selection */}
                     <div className="mb-6">
-                        <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Load Template</label>
+                        <label className="block text-xs font-bold   text-slate-500 mb-2">Load Template</label>
                         <select
                             className="w-full p-3 border border-slate-200 rounded-xl text-slate-900 bg-white font-medium focus:ring-2 focus:ring-indigo-100 outline-none"
                             value={selectedTemplateId}
@@ -238,7 +238,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
 
                         {/* Variable Dashboard */}
                         <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                            <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Detected Variables</h4>
+                            <h4 className="text-xs font-bold   text-slate-500 mb-3">Detected Variables</h4>
 
                             <div className="space-y-3">
                                 {/* Standard Variables */}

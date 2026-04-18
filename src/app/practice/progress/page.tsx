@@ -46,7 +46,7 @@ export default function ProgressPage() {
         <div className="min-h-screen bg-slate-50 flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
                 <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div>
-                <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Synchronizing_Telemetry</span>
+                <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 ">Synchronizing_Telemetry</span>
             </div>
         </div>
     );
@@ -55,7 +55,7 @@ export default function ProgressPage() {
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
             <div className="bg-white rounded-[2.5rem] p-12 border border-slate-100 flex flex-col items-center justify-center text-center space-y-4 max-w-md">
                 <span className="material-icons-outlined text-4xl text-slate-400 animate-pulse">error_outline</span>
-                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Telemetry_Link_Failure</h2>
+                <h2 className="text-xl font-black text-slate-900  tracking-tight">Telemetry_Link_Failure</h2>
                 <p className="text-xs text-slate-400 font-medium tracking-wide">Failed to establish a secure link to the progress data servers.</p>
             </div>
         </div>
@@ -67,15 +67,15 @@ export default function ProgressPage() {
             <div className="bg-white border-b border-slate-100 mb-8">
                 <div className="max-w-[1200px] mx-auto px-6 py-10">
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-black text-slate-500 tracking-[0.4em] uppercase">Student Portal // Performance Telemetry</span>
-                        <Link href="/practice" className="group flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-all text-[10px] font-black tracking-[0.2em] uppercase">
+                        <span className="text-[10px] font-black text-slate-500 tracking-[0.4em] ">Student Portal // Performance Telemetry</span>
+                        <Link href="/practice" className="group flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-all text-[10px] font-black tracking-[0.2em] ">
                             <span className="material-icons-outlined text-[14px]">arrow_back</span>
                             Leave_Dashboard
                         </Link>
                     </div>
                     <div>
-                        <h1 className="text-4xl font-black tracking-tight text-slate-900 mb-2 uppercase">Progress_Analytics</h1>
-                        <p className="text-[11px] text-slate-500 font-bold tracking-wider uppercase max-w-lg leading-relaxed">
+                        <h1 className="text-4xl font-black tracking-tight text-slate-900 mb-2 ">Progress_Analytics</h1>
+                        <p className="text-[11px] text-slate-500 font-bold   max-w-lg leading-relaxed">
                             Monitor your cognitive trajectory and mission success rates across all active training modules.
                         </p>
                     </div>
@@ -89,7 +89,7 @@ export default function ProgressPage() {
                         <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 mb-4 transition-transform group-hover:scale-110">
                             <span className="material-icons-outlined text-xl">assignment</span>
                         </div>
-                        <dt className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Assessments_Completed</dt>
+                        <dt className="text-[10px] font-black text-blue-400   mb-1">Assessments_Completed</dt>
                         <dd className="text-3xl font-black text-blue-900 tracking-tighter">{stats.total_assessments}</dd>
                     </div>
 
@@ -97,7 +97,7 @@ export default function ProgressPage() {
                         <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center text-violet-900 mb-4 transition-transform group-hover:scale-110">
                             <span className="material-icons-outlined text-xl">verified</span>
                         </div>
-                        <dt className="text-[10px] font-black text-violet-400 uppercase tracking-widest mb-1">Agility_Score_Avg</dt>
+                        <dt className="text-[10px] font-black text-violet-400   mb-1">Agility_Score_Avg</dt>
                         <dd className="text-3xl font-black text-violet-900 tracking-tighter">{stats.average_score}%</dd>
                     </div>
 
@@ -105,7 +105,7 @@ export default function ProgressPage() {
                         <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-700 mb-4 transition-transform group-hover:scale-110">
                             <span className="material-icons-outlined text-xl">quiz</span>
                         </div>
-                        <dt className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Questions_Analyzed</dt>
+                        <dt className="text-[10px] font-black text-indigo-400   mb-1">Questions_Analyzed</dt>
                         <dd className="text-3xl font-black text-indigo-900 tracking-tighter">{stats.total_practice_questions}</dd>
                     </div>
                 </div>
@@ -116,7 +116,7 @@ export default function ProgressPage() {
                         <div className="px-8 py-5 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-slate-900 animate-pulse"></div>
-                                <span className="text-[9px] font-black tracking-[0.4em] text-slate-400 uppercase">Recent_Activity_Log</span>
+                                <span className="text-[9px] font-black tracking-[0.4em] text-slate-400 ">Recent_Activity_Log</span>
                             </div>
                         </div>
 
@@ -127,7 +127,7 @@ export default function ProgressPage() {
                                         <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-300">
                                             <span className="material-symbols-rounded text-2xl">history</span>
                                         </div>
-                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">No_Activity_Detected</p>
+                                        <p className="text-[10px] font-black text-slate-300  ">No_Activity_Detected</p>
                                     </div>
                                 ) : (
                                     stats.recent_activity.map((item) => {
@@ -141,8 +141,8 @@ export default function ProgressPage() {
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-black text-slate-900 uppercase tracking-tight group-hover:text-slate-700 transition-colors">{item.title}</p>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{new Date(item.completed_at).toLocaleDateString()}</p>
+                                                        <p className="text-sm font-black text-slate-900  tracking-tight group-hover:text-slate-700 transition-colors">{item.title}</p>
+                                                        <p className="text-[9px] font-black text-slate-400  tracking-[0.2em]">{new Date(item.completed_at).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
                                                 <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-100 shadow-sm">
@@ -163,7 +163,7 @@ export default function ProgressPage() {
                         <div className="px-8 py-5 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-slate-900 animate-pulse"></div>
-                                <span className="text-[9px] font-black tracking-[0.4em] text-slate-400 uppercase">Success_Trajectory</span>
+                                <span className="text-[9px] font-black tracking-[0.4em] text-slate-400 ">Success_Trajectory</span>
                             </div>
                         </div>
 
@@ -171,7 +171,7 @@ export default function ProgressPage() {
                             {stats.recent_activity.length === 0 ? (
                                 <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 border-2 border-dashed border-slate-50 rounded-[2rem]">
                                     <span className="material-icons-outlined text-4xl text-slate-200">monitoring</span>
-                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Awaiting_Data_Streams</p>
+                                    <p className="text-[10px] font-black text-slate-300  ">Awaiting_Data_Streams</p>
                                 </div>
                             ) : (
                                 <div className="flex-1 relative mt-8">
@@ -246,7 +246,7 @@ export default function ProgressPage() {
                                     <div className="absolute top-[105%] left-0 right-0 flex justify-between">
                                         {stats.recent_activity.map((item, i) => (
                                             <div key={i} className="flex flex-col items-center w-0 overflow-visible">
-                                                <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter whitespace-nowrap rotate-12 origin-left mt-2 px-1">
+                                                <span className="text-[7px] font-black text-slate-400  tracking-tighter whitespace-nowrap rotate-12 origin-left mt-2 px-1">
                                                     {item.title}
                                                 </span>
                                             </div>
@@ -255,11 +255,11 @@ export default function ProgressPage() {
                                 </div>
                             )}
                             <div className="mt-8 pt-6 border-t border-slate-50 flex justify-between items-center">
-                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em]">Historical_Trend_v1.0</span>
+                                <span className="text-[8px] font-black text-slate-300  tracking-[0.3em]">Historical_Trend_v1.0</span>
                                 <div className="flex gap-4">
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-slate-900"></div>
-                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Efficiency</span>
+                                        <span className="text-[8px] font-black text-slate-400  ">Efficiency</span>
                                     </div>
                                 </div>
                             </div>

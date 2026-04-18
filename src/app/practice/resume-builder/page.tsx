@@ -51,7 +51,7 @@ export default function ResumeBuilderStudent() {
             <section className="relative overflow-hidden rounded-[1.5rem] bg-orange-600 p-6 text-white shadow-lg">
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-3">
-                        <h2 className="text-2xl font-black uppercase tracking-tight">Resume Builder</h2>
+                        <h2 className="text-2xl font-black  tracking-tight">Resume Builder</h2>
                         <p className="text-slate-100 text-xs max-w-sm font-medium leading-relaxed">
                             Choose a professional template approved by your institution.
                             Our system will guide you through the required fields to build a perfect resume.
@@ -120,7 +120,7 @@ export default function ResumeBuilderStudent() {
                             </div>
                             <div className="p-6 flex-1">
                                 <h3 className="text-lg font-bold text-slate-900 group-hover:text-slate-600 transition-colors">{t.name}</h3>
-                                <p className="text-xs text-slate-400 mt-2 font-bold uppercase tracking-widest">{t.extracted_fields?.sections?.length || 0} Sections</p>
+                                <p className="text-xs text-slate-400 mt-2 font-bold  ">{t.extracted_fields?.sections?.length || 0} Sections</p>
                             </div>
                             <div className="absolute top-4 right-4 h-8 w-8 rounded-full bg-white flex items-center justify-center shadow text-slate-600 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
                                 <span className="material-icons-outlined text-sm">arrow_forward</span>

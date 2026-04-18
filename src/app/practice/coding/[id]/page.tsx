@@ -328,7 +328,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
         <div className="min-h-screen flex items-center justify-center bg-slate-50">
             <div className="text-center space-y-4">
                 <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto"></div>
-                <p className="text-xs font-black text-indigo-600 uppercase tracking-widest animate-pulse">Loading Problem...</p>
+                <p className="text-xs font-black text-indigo-600   animate-pulse">Loading Problem...</p>
             </div>
         </div>
     );
@@ -380,7 +380,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                             {isDark ? 'light_mode' : 'dark_mode'}
                         </span>
                         <div className="overflow-hidden max-w-0 opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-500 ease-in-out whitespace-nowrap">
-                            <span className="text-[11px] font-black tracking-widest uppercase">
+                            <span className="text-[11px] font-black  ">
                                 {isDark ? 'Light' : 'Dark'}
                             </span>
                         </div>
@@ -411,13 +411,13 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                         <div className={`flex-1 overflow-y-auto p-12 transition-all duration-300 no-scrollbar`}>
                             <div className="max-w-2xl space-y-6">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest border
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-black   border
                                         ${problem.difficulty === 'EASY' ? 'text-emerald-500 border-emerald-500/20 bg-emerald-50' :
                                             problem.difficulty === 'MEDIUM' ? 'text-amber-500 border-amber-500/20 bg-amber-50' :
                                                 'text-rose-500 border-rose-500/20 bg-rose-50'}`}>
                                         {problem.difficulty}
                                     </span>
-                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{problem.topic}</span>
+                                    <span className="text-[10px] text-slate-500 font-bold  ">{problem.topic}</span>
                                 </div>
 
                                 <h2 className={`text-lg md:text-xl font-semibold leading-relaxed ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -434,7 +434,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                                     <div className="space-y-6 pt-4">
                                         {(problem.content.examples || problem.content.test_cases?.slice(0, 2)).map((ex: any, i: number) => (
                                             <div key={i} className="space-y-3">
-                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
+                                                <span className="text-[10px] font-black  tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
                                                 <div className={`rounded-xl border p-4 font-mono text-[12px] space-y-2 ${isDark ? 'bg-[#1e1f23]/30 border-[#2d2e32]' : 'bg-slate-50 border-slate-100'}`}>
                                                     <div className="flex gap-4">
                                                         <span className="text-[#8e9297] w-12 shrink-0">Input:</span>
@@ -445,7 +445,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                                                         <span className={isDark ? 'text-indigo-400' : 'text-indigo-600'}>{ex.expected || ex.output}</span>
                                                     </div>
                                                     {ex.explanation && (
-                                                        <div className="flex gap-4 border-t border-[#8e9297]/10 pt-2 mt-2 italic">
+                                                        <div className="flex gap-4 border-t border-[#8e9297]/10 pt-2 mt-2 ">
                                                             <span className="text-[#8e9297] w-12 shrink-0">Note:</span>
                                                             <span className="text-[#8e9297]">{ex.explanation}</span>
                                                         </div>
@@ -458,7 +458,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
 
                                 {problem.content.constraints && problem.content.constraints.length > 0 && (
                                     <div className="space-y-3 pt-4">
-                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8e9297]">Constraints</span>
+                                        <span className="text-[10px] font-black  tracking-[0.2em] text-[#8e9297]">Constraints</span>
                                         <ul className="space-y-2">
                                             {problem.content.constraints.map((c: string, i: number) => (
                                                 <li key={i} className="flex items-start gap-3 text-[13px]">
@@ -489,11 +489,11 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                             <div className={`p-3 flex items-center justify-between flex-shrink-0 border-b ${isDark ? 'border-[#2d2e32]/30' : 'border-black/10'}`}>
                                 <div className="flex items-center gap-2">
                                     <span className="material-icons-outlined text-[16px]">terminal</span>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.15em]">Console output</span>
+                                    <span className="text-[10px] font-black  tracking-[0.15em]">Console output</span>
                                 </div>
                                 <button
                                     onClick={() => setShowConsole(false)}
-                                    className="px-2 py-1 rounded hover:bg-white/5 transition-colors text-[9px] font-black uppercase tracking-widest text-[#8e9297] hover:text-white"
+                                    className="px-2 py-1 rounded hover:bg-white/5 transition-colors text-[9px] font-black   text-[#8e9297] hover:text-white"
                                 >
                                     Close
                                 </button>
@@ -502,7 +502,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                                 {consoleOutput.length === 0 ? (
                                     <div className="flex gap-3">
                                         <span className="text-emerald-500 opacity-60">➜</span>
-                                        <span className="text-white/40 italic"># waiting for execution...</span>
+                                        <span className="text-white/40 "># waiting for execution...</span>
                                     </div>
                                 ) : (
                                     consoleOutput.map((line, idx) => (
@@ -518,7 +518,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                                 {Object.values(executingTests).some(v => v) && (
                                     <div className="flex gap-2 items-center text-indigo-400 animate-pulse mt-4 ml-4">
                                         <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
-                                        <span className="italic">AI Verification engine running...</span>
+                                        <span className="">AI Verification engine running...</span>
                                     </div>
                                 )}
                             </div>
@@ -572,7 +572,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                         {/* Status / Score display */}
                         {result && result.score !== undefined && (
                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-slate-50 border-slate-200">
-                                <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">Score</span>
+                                <span className="text-[10px] font-black   text-slate-500">Score</span>
                                 <span className={`text-[12px] font-bold ${result.score === 100 ? 'text-emerald-600' : 'text-slate-900'}`}>{result.score}%</span>
                             </div>
                         )}

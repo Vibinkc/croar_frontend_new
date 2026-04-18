@@ -66,7 +66,7 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
         }
     };
 
-    if (loading) return <div className="p-20 text-center font-black uppercase tracking-widest text-slate-400 animate-pulse">Loading Protocol Data...</div>;
+    if (loading) return <div className="p-20 text-center font-black   text-slate-400 animate-pulse">Loading Protocol Data...</div>;
 
     return (
         <div className="max-w-[1800px] mx-auto space-y-6 pb-20 px-6">
@@ -78,8 +78,8 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
                     <span className="material-icons-outlined text-lg">arrow_back</span>
                 </button>
                 <div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase">Edit Protocol</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Modify Psychometric Analysis</p>
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight ">Edit Protocol</h1>
+                    <p className="text-[10px] font-bold text-slate-400  ">Modify Psychometric Analysis</p>
                 </div>
             </div>
 
@@ -88,7 +88,7 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
                 <div className="space-y-5">
                     <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-100 p-6 space-y-5">
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Title</label>
+                            <label className="block text-[10px] font-black text-slate-400   mb-2">Title</label>
                             <input
                                 type="text"
                                 value={title}
@@ -98,7 +98,7 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
                         </div>
 
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Description</label>
+                            <label className="block text-[10px] font-black text-slate-400   mb-2">Description</label>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -107,7 +107,7 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
                         </div>
 
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Target Trait</label>
+                            <label className="block text-[10px] font-black text-slate-400   mb-2">Target Trait</label>
                             <input
                                 type="text"
                                 value={trait}
@@ -119,7 +119,7 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
                         <button
                             onClick={handleSave}
                             disabled={saving}
-                            className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-primary-dark)] transition-all shadow-xl shadow-indigo-100 hover:shadow-indigo-200 disabled:opacity-50 flex items-center justify-center gap-3"
+                            className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl text-[11px] font-black  tracking-[0.2em] hover:bg-[var(--color-primary-dark)] transition-all shadow-xl shadow-indigo-100 hover:shadow-indigo-200 disabled:opacity-50 flex items-center justify-center gap-3"
                         >
                             {saving ? (
                                 <>
@@ -160,7 +160,7 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
                                                 placeholder="Indicator text..."
                                             />
                                             <div className="flex items-center gap-4">
-                                                <label className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer">
+                                                <label className="flex items-center gap-2 text-[10px] font-black text-slate-400   cursor-pointer">
                                                     <input
                                                         type="radio"
                                                         name={`weight-${idx}`}
@@ -170,7 +170,7 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
                                                     />
                                                     Positive
                                                 </label>
-                                                <label className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer">
+                                                <label className="flex items-center gap-2 text-[10px] font-black text-slate-400   cursor-pointer">
                                                     <input
                                                         type="radio"
                                                         name={`weight-${idx}`}
@@ -197,7 +197,7 @@ export default function EditPsychometricPage({ params }: { params: Promise<{ id:
 
                             <button
                                 onClick={() => setQuestions([...questions, { text: "", weight: 1.0 }])}
-                                className="w-full py-4 rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs"
+                                className="w-full py-4 rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-black   text-xs"
                             >
                                 <span className="material-icons-outlined">add</span>
                                 Add Manual Indicator

@@ -51,13 +51,13 @@ export default function ConfirmationModal({
                             <div className="flex gap-3 w-full">
                                 <button
                                     onClick={onClose}
-                                    className="flex-1 px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 font-black text-[11px] uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95"
+                                    className="flex-1 px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 font-black text-[11px]   hover:bg-slate-50 transition-all active:scale-95"
                                 >
                                     {cancelLabel}
                                 </button>
                                 <button
                                     onClick={onConfirm}
-                                    className={`flex-1 px-6 py-3 rounded-2xl font-black text-[11px] uppercase tracking-widest text-white shadow-lg transition-all active:scale-95 ${
+                                    className={`flex-1 px-6 py-3 rounded-2xl font-black text-[11px]   text-white shadow-lg transition-all active:scale-95 ${
                                         isDestructive 
                                         ? "bg-rose-500 hover:bg-rose-600 shadow-rose-100" 
                                         : "bg-[#7C3AED] hover:bg-[#6D28D9] shadow-indigo-100"

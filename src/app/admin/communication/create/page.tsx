@@ -86,17 +86,17 @@ export default function CreateScenarioPage() {
                     </button>
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Knowledge Engine v2.0</span>
+                            <span className="text-[9px] font-black text-slate-400  ">Knowledge Engine v2.0</span>
                             <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                            <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">Simulation_Construct</span>
+                            <span className="text-[9px] font-black text-indigo-500  ">Simulation_Construct</span>
                         </div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase leading-none">Initialize Scenario</h1>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight  leading-none">Initialize Scenario</h1>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">System_Ready</span>
+                    <span className="text-[10px] font-black text-slate-900  ">System_Ready</span>
                 </div>
             </div>
 
@@ -104,7 +104,7 @@ export default function CreateScenarioPage() {
                 <div className="lg:col-span-8">
                     <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.04)] overflow-hidden">
                         <div className="p-10 border-b border-slate-50 bg-slate-50/30">
-                            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-3">
+                            <h2 className="text-sm font-black text-slate-900   flex items-center gap-3">
                                 <span className="material-icons-outlined text-indigo-500">settings_input_component</span>
                                 Scenario Configuration
                             </h2>
@@ -113,7 +113,7 @@ export default function CreateScenarioPage() {
                         <form onSubmit={handleSubmit} className="p-10 space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Protocol Title</label>
+                                    <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-1">Protocol Title</label>
                                     <input
                                         type="text"
                                         value={title}
@@ -125,7 +125,7 @@ export default function CreateScenarioPage() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Difficulty Complexity</label>
+                                    <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-1">Difficulty Complexity</label>
                                     <select
                                         value={difficulty}
                                         onChange={(e) => setDifficulty(e.target.value)}
@@ -140,12 +140,12 @@ export default function CreateScenarioPage() {
 
                             <div className="space-y-3">
                                 <div className="flex justify-between items-center mb-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Prompt / Reality Matrix</label>
+                                    <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-1">Prompt / Reality Matrix</label>
                                     <button
                                         type="button"
                                         onClick={handleGenerate}
                                         disabled={isGenerating || !title}
-                                        className={`px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${isGenerating || !title
+                                        className={`px-5 py-2.5 rounded-xl text-[9px] font-black   transition-all flex items-center gap-2 ${isGenerating || !title
                                             ? 'bg-slate-50 text-slate-300 cursor-not-allowed border border-slate-100'
                                             : 'bg-slate-900 text-white hover:bg-black shadow-lg shadow-slate-200 active:scale-95'
                                             }`}
@@ -169,13 +169,13 @@ export default function CreateScenarioPage() {
                                 <button
                                     type="button"
                                     onClick={() => router.back()}
-                                    className="px-8 py-4 border border-slate-200 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-slate-50 transition-all active:scale-95"
+                                    className="px-8 py-4 border border-slate-200 text-slate-400 text-[10px] font-black  tracking-[0.2em] rounded-2xl hover:bg-slate-50 transition-all active:scale-95"
                                 >
                                     Abort
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-10 py-4 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-black transition-all shadow-xl shadow-slate-100 active:scale-95"
+                                    className="px-10 py-4 bg-slate-900 text-white text-[10px] font-black  tracking-[0.2em] rounded-2xl hover:bg-black transition-all shadow-xl shadow-slate-100 active:scale-95"
                                 >
                                     Initialize Protocol
                                 </button>
@@ -188,7 +188,7 @@ export default function CreateScenarioPage() {
                     {/* Guidance Card */}
                     <div className="bg-[var(--color-primary)] rounded-[2.5rem] p-10 text-white shadow-2xl shadow-indigo-100 relative overflow-hidden group">
                         <div className="absolute -right-12 -bottom-12 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
-                        <h3 className="text-lg font-black uppercase tracking-tight mb-6 relative z-10">Simulation Engineering</h3>
+                        <h3 className="text-lg font-black  tracking-tight mb-6 relative z-10">Simulation Engineering</h3>
                         <div className="space-y-6 relative z-10">
                             {[
                                 { icon: 'psychology', text: 'Define clear vocal objectives' },
@@ -199,7 +199,7 @@ export default function CreateScenarioPage() {
                                     <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
                                         <span className="material-icons-outlined text-lg">{item.icon}</span>
                                     </div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest">{item.text}</span>
+                                    <span className="text-[10px] font-black  ">{item.text}</span>
                                 </div>
                             ))}
                         </div>
@@ -207,19 +207,19 @@ export default function CreateScenarioPage() {
 
                     {/* Diagnostic Card */}
                     <div className="bg-white rounded-[2.5rem] border border-slate-100 p-10 shadow-sm">
-                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Neural Diagnostics</h3>
+                        <h3 className="text-[10px] font-black text-slate-400   mb-6">Neural Diagnostics</h3>
                         <div className="space-y-4">
                             <div className="flex justify-between items-center py-3 border-b border-slate-50">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Protocol Type</span>
-                                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">VOICE_SIM</span>
+                                <span className="text-[10px] font-bold text-slate-400  ">Protocol Type</span>
+                                <span className="text-[10px] font-black text-slate-900  ">VOICE_SIM</span>
                             </div>
                             <div className="flex justify-between items-center py-3 border-b border-slate-50">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Latency Status</span>
-                                <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">MINIMAL</span>
+                                <span className="text-[10px] font-bold text-slate-400  ">Latency Status</span>
+                                <span className="text-[10px] font-black text-emerald-500  ">MINIMAL</span>
                             </div>
                             <div className="flex justify-between items-center py-3">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sector Ingestion</span>
-                                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{departmentId ? 'SPECIFIC' : 'GLOBAL'}</span>
+                                <span className="text-[10px] font-bold text-slate-400  ">Sector Ingestion</span>
+                                <span className="text-[10px] font-black text-slate-900  ">{departmentId ? 'SPECIFIC' : 'GLOBAL'}</span>
                             </div>
                         </div>
                     </div>

@@ -128,15 +128,15 @@ export default function CreateVideoInterviewPage() {
                 <div>
                     <div className="flex items-center gap-2 mb-0.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
-                        <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">Protocol Architect v2.0</span>
+                        <span className="text-[9px] font-black text-indigo-500  ">Protocol Architect v2.0</span>
                     </div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none">Init Video Protocol</h1>
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight  leading-none">Init Video Protocol</h1>
                 </div>
             </div>
 
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5">
                 <div>
-                    <label className="block text-xs font-black text-slate-700 uppercase tracking-widest mb-1.5">Topic / Skill</label>
+                    <label className="block text-xs font-black text-slate-700   mb-1.5">Topic / Skill</label>
                     <input
                         type="text"
                         value={topic}
@@ -147,7 +147,7 @@ export default function CreateVideoInterviewPage() {
                 </div>
 
                 <div>
-                    <label className="block text-xs font-black text-slate-700 uppercase tracking-widest mb-1.5">Number of Questions</label>
+                    <label className="block text-xs font-black text-slate-700   mb-1.5">Number of Questions</label>
                     <select
                         value={questionCount}
                         onChange={(e) => setQuestionCount(e.target.value === "Other" ? "Other" : Number(e.target.value))}
@@ -175,7 +175,7 @@ export default function CreateVideoInterviewPage() {
                     <button
                         onClick={handleGenerate}
                         disabled={!topic || isGenerating}
-                        className="w-full h-11 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[var(--color-primary-dark)] disabled:opacity-50 transition active:scale-95 shadow-lg shadow-indigo-100"
+                        className="w-full h-11 bg-[var(--color-primary)] text-white rounded-xl text-xs font-black   hover:bg-[var(--color-primary-dark)] disabled:opacity-50 transition active:scale-95 shadow-lg shadow-indigo-100"
                     >
                         {isGenerating ? "Generating Questions..." : "Generate with AI"}
                     </button>
@@ -184,24 +184,24 @@ export default function CreateVideoInterviewPage() {
 
             {generatedQuestions && (
                 <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5 animate-in fade-in slide-in-from-bottom-4">
-                    <h2 className="text-base font-black text-slate-800 uppercase tracking-tight">Review Questions</h2>
+                    <h2 className="text-base font-black text-slate-800  tracking-tight">Review Questions</h2>
                     <div className="space-y-4">
                         {generatedQuestions.modules.map((module: any, idx: number) => (
                             <div key={idx} className="bg-slate-50 p-5 rounded-xl border border-slate-100">
                                 <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{module.title}</h3>
+                                    <h3 className="text-[10px] font-black text-slate-400  ">{module.title}</h3>
                                     <div className="flex items-center gap-3">
                                         <button
                                             onClick={() => handleAddAiQuestion(idx)}
                                             disabled={isGeneratingQuestion[idx]}
-                                            className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1 hover:text-[var(--color-primary)] disabled:opacity-50 transition-colors"
+                                            className="text-[9px] font-black text-slate-500   flex items-center gap-1 hover:text-[var(--color-primary)] disabled:opacity-50 transition-colors"
                                         >
                                             <span className="material-icons text-sm">auto_awesome</span>
                                             {isGeneratingQuestion[idx] ? "Generating..." : "Generate with AI"}
                                         </button>
                                         <button
                                             onClick={() => handleAddQuestion(idx)}
-                                            className="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest flex items-center gap-1 hover:text-[var(--color-primary-dark)] transition-colors"
+                                            className="text-[9px] font-black text-[var(--color-primary)]   flex items-center gap-1 hover:text-[var(--color-primary-dark)] transition-colors"
                                         >
                                             <span className="material-icons-outlined text-sm">add_circle_outline</span>
                                             Add Question
@@ -229,7 +229,7 @@ export default function CreateVideoInterviewPage() {
                                         </div>
                                     ))}
                                     {module.questions.length === 0 && (
-                                        <p className="text-[10px] text-slate-400 italic py-2">No questions in this module.</p>
+                                        <p className="text-[10px] text-slate-400  py-2">No questions in this module.</p>
                                     )}
                                 </div>
                             </div>
@@ -238,13 +238,13 @@ export default function CreateVideoInterviewPage() {
                     <div className="flex gap-3 pt-4 border-t border-slate-100">
                         <button
                             onClick={() => setGeneratedQuestions(null)}
-                            className="flex-1 h-11 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition active:scale-95"
+                            className="flex-1 h-11 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 text-xs font-black   transition active:scale-95"
                         >
                             Discard
                         </button>
                         <button
                             onClick={handleSave}
-                            className="flex-1 h-11 bg-[var(--color-primary)] text-white rounded-xl hover:bg-[var(--color-primary-dark)] text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 transition active:scale-95"
+                            className="flex-1 h-11 bg-[var(--color-primary)] text-white rounded-xl hover:bg-[var(--color-primary-dark)] text-xs font-black   shadow-lg shadow-indigo-100 transition active:scale-95"
                         >
                             Save & Publish
                         </button>

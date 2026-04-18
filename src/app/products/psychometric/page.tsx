@@ -23,7 +23,7 @@ export default function PsychometricProductPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-purple-400/30 bg-purple-500/10 px-3 py-1 rounded-full text-purple-300 text-xs font-bold uppercase tracking-widest backdrop-blur-md"
+                            className="inline-flex mx-auto items-center gap-2 mb-2 border border-purple-400/30 bg-purple-500/10 px-3 py-1 rounded-full text-purple-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-purple-400">biotech</span>
                             Behavioral Science Lab
@@ -62,7 +62,7 @@ export default function PsychometricProductPage() {
             <section className="px-4 py-16" id="features">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-2 text-center md:text-left">
-                        <span className="text-purple-600 font-bold uppercase tracking-widest text-sm">Industrial Psychology</span>
+                        <span className="text-purple-600 font-bold   text-sm">Industrial Psychology</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">The Big 5 Model</h2>
                         <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">The most scientifically robust way to describe human personality differences.</p>
                     </div>
@@ -256,7 +256,7 @@ export default function PsychometricProductPage() {
                     <div className="grid md:grid-cols-3 gap-8">
                         <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-purple-500 transition-colors group">
                             <div className="flex justify-between items-start mb-6">
-                                <h3 className="text-2xl font-bold font-serif italic text-purple-300">Startups</h3>
+                                <h3 className="text-2xl font-bold font-serif  text-purple-300">Startups</h3>
                                 <span className="material-symbols-rounded text-slate-600 group-hover:text-purple-500 transition-colors">rocket_launch</span>
                             </div>
                             <p className="text-sm text-slate-400 mb-6 min-h-[60px]">High Openness + Low Neuroticism. You thrive in chaos and uncertainty.</p>
@@ -268,7 +268,7 @@ export default function PsychometricProductPage() {
 
                         <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-blue-500 transition-colors group">
                             <div className="flex justify-between items-start mb-6">
-                                <h3 className="text-2xl font-bold font-serif italic text-blue-300">Corporate</h3>
+                                <h3 className="text-2xl font-bold font-serif  text-blue-300">Corporate</h3>
                                 <span className="material-symbols-rounded text-slate-600 group-hover:text-blue-500 transition-colors">apartment</span>
                             </div>
                             <p className="text-sm text-slate-400 mb-6 min-h-[60px]">High Conscientiousness + High Agreeableness. You are a team player who executes.</p>
@@ -280,7 +280,7 @@ export default function PsychometricProductPage() {
 
                         <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-green-500 transition-colors group">
                             <div className="flex justify-between items-start mb-6">
-                                <h3 className="text-2xl font-bold font-serif italic text-green-300">R&D</h3>
+                                <h3 className="text-2xl font-bold font-serif  text-green-300">R&D</h3>
                                 <span className="material-symbols-rounded text-slate-600 group-hover:text-green-500 transition-colors">biotech</span>
                             </div>
                             <p className="text-sm text-slate-400 mb-6 min-h-[60px]">Very High Openness + Introversion. You prefer deep work and solving novel problems.</p>
@@ -301,7 +301,7 @@ export default function PsychometricProductPage() {
                     <button onClick={() => router.push("/practice/psychometric")} className="bg-purple-600 text-white font-bold py-5 px-12 rounded-full text-xl hover:scale-105 transition-transform shadow-xl">
                         Start Personality Test
                     </button>
-                    <p className="mt-6 text-xs text-purple-300 font-mono uppercase tracking-widest font-bold">Takes approx. 12 minutes • Scientific Assessment</p>
+                    <p className="mt-6 text-xs text-purple-300 font-mono   font-bold">Takes approx. 12 minutes • Scientific Assessment</p>
                 </div>
             </footer>
         </main>

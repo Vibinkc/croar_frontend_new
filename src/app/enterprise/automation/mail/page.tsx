@@ -86,6 +86,7 @@ export default function MailAutomationPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [automationToDelete, setAutomationToDelete] = useState<Automation | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
   const showToast = (msg: any, type: "success" | "error" = "success") => {
@@ -298,10 +299,19 @@ export default function MailAutomationPage() {
     }));
   };
 
+  // ─── Computed ───────────────────────────────────────────────────────────────
+  const filteredAutomations = automations.filter(a => {
+    const term = searchQuery.toLowerCase();
+    return a.criteria.toLowerCase().includes(term) ||
+           jobTitle(a.job_requirement_id).toLowerCase().includes(term) ||
+           templateName(a.template_id).toLowerCase().includes(term) ||
+           (a.stage_name && a.stage_name.toLowerCase().includes(term));
+  });
+
   // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] p-4 animate-in fade-in duration-500">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
@@ -317,42 +327,89 @@ export default function MailAutomationPage() {
       )}
 
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-9 h-9 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center">
-            <span className="material-symbols-rounded text-[#7C3AED] text-xl">mark_email_unread</span>
+      <div className="mb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
+              <span className="material-symbols-rounded text-[#7C3AED] text-2xl">mark_email_unread</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Mail Automation</h1>
+              <p className="text-slate-500 text-[13px] font-medium mt-1">
+                Configure automated emails for specific jobs and hiring rounds.
+              </p>
+            </div>
           </div>
-          <h1 className="text-2xl font-black text-slate-900">Mail Automation</h1>
-        </div>
-        <p className="text-slate-500 text-sm ml-12">
-          Configure automated emails for specific jobs and hiring rounds based on any criteria you define.
-        </p>
-      </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
-        <div className="flex items-center gap-2 flex-1">
-          <span className="material-symbols-rounded text-slate-400 text-lg">work</span>
-          <select
-            value={selectedJobId}
-            onChange={(e) => setSelectedJobId(e.target.value)}
-            className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/30 focus:border-[#7C3AED]"
-          >
-            <option value="">All Jobs</option>
-            {jobs.map((j) => (
-              <option key={j.id} value={j.id}>{j.title}</option>
-            ))}
-          </select>
+          <div className="flex items-center gap-3">
+              {canAccess("communications:moderate") && (
+                <button
+                  onClick={openCreate}
+                  className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-xl text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
+                >
+                  <span className="material-symbols-rounded text-lg">add</span>
+                  NEW AUTOMATION
+                </button>
+              )}
+          </div>
         </div>
-        {canAccess("communications:moderate") && (
-          <button
-            onClick={openCreate}
-            className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors shadow-md shadow-[#7C3AED]/20"
-          >
-            <span className="material-symbols-rounded text-base">add</span>
-            New Automation
-          </button>
-        )}
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: "Total Rules", value: automations.length, icon: "rule", color: "indigo" },
+            { label: "Active Pipeline", value: automations.filter(a => a.is_enabled).length, icon: "bolt", color: "emerald" },
+            { label: "Waitlist Logic", value: "Enabled", icon: "timer", color: "amber" },
+            { label: "Engagement Rate", value: "92.4%", icon: "monitoring", color: "purple" }
+          ].map((stat, i) => (
+            <div key={i} className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${
+                  stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
+                  stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
+                  stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
+                  'bg-purple-50 text-purple-600'
+                }`}>
+                  <span className="material-symbols-rounded text-xl">{stat.icon}</span>
+                </div>
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
+              </div>
+              <p className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{stat.value}</p>
+              <p className="text-[11px] font-bold text-slate-400 capitalize">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Interaction Bar */}
+        <div className="mt-8 flex flex-col md:flex-row items-center gap-4">
+           <div className="flex-1 relative w-full">
+              <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+              <input 
+                type="text"
+                placeholder="Search by rules, jobs, or templates..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-11 bg-white border border-slate-200 rounded-xl pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
+              />
+           </div>
+
+           <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="relative w-full md:w-64">
+                <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">work</span>
+                <select
+                  value={selectedJobId}
+                  onChange={(e) => setSelectedJobId(e.target.value)}
+                  className="w-full h-11 border border-slate-200 rounded-xl pl-10 pr-10 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
+                >
+                  <option value="">All Job Requirements</option>
+                  {jobs.map((j) => (
+                    <option key={j.id} value={j.id}>{j.title}</option>
+                  ))}
+                </select>
+                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">expand_more</span>
+              </div>
+           </div>
+        </div>
       </div>
 
       {/* List */}
@@ -360,16 +417,16 @@ export default function MailAutomationPage() {
         <div className="flex justify-center py-20">
           <div className="w-8 h-8 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
         </div>
-      ) : automations.length === 0 ? (
+      ) : filteredAutomations.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-xl bg-[#7C3AED]/5 flex items-center justify-center mb-4">
             <span className="material-symbols-rounded text-[#7C3AED] text-4xl">mark_email_unread</span>
           </div>
-          <p className="text-slate-700 font-bold text-lg">No automations yet</p>
+          <p className="text-slate-700 font-bold text-lg">{searchQuery ? 'No matching rules' : 'No automations yet'}</p>
           <p className="text-slate-400 text-sm mt-1 max-w-xs">
-            Create your first mail automation to automatically trigger emails when your criteria are met.
+            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Create your first mail automation to automatically trigger emails when your criteria are met.'}
           </p>
-          {canAccess("communications:moderate") && (
+          {!searchQuery && canAccess("communications:moderate") && (
             <button
               onClick={openCreate}
               className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl text-sm font-bold hover:bg-[#6d28d9] transition-colors"
@@ -380,11 +437,11 @@ export default function MailAutomationPage() {
           )}
         </div>
       ) : (
-        <div className="space-y-3">
-          {automations.map((a) => (
+        <div className="space-y-4">
+          {filteredAutomations.map((a) => (
             <div
               key={a.id}
-              className={`bg-white border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
+              className={`bg-white border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
                 a.is_enabled ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
               }`}
             >
@@ -394,7 +451,7 @@ export default function MailAutomationPage() {
                 </div>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                    <span className="text-xs font-black text-slate-400  ">
                       Round {a.stage_index}{a.stage_name ? ` · ${a.stage_name}` : ""}
                     </span>
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${a.is_enabled ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-400"}`}>
@@ -406,29 +463,29 @@ export default function MailAutomationPage() {
                     <span className="text-slate-400 font-medium">If: </span>{a.criteria}
                   </p>
                   <div className="flex flex-wrap gap-3 mt-1.5">
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                      <span className="material-symbols-rounded text-xs">work</span>
+                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                      <span className="material-symbols-rounded text-[14px]">work</span>
                       {jobTitle(a.job_requirement_id)}
                     </span>
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                      <span className="material-symbols-rounded text-xs">mail</span>
+                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                      <span className="material-symbols-rounded text-[14px]">description</span>
                       {templateName(a.template_id)}
                     </span>
                     {a.auto_move && (
-                      <span className="flex items-center gap-1 text-[11px] text-[#7C3AED] font-bold bg-[#7C3AED]/5 px-2 py-0.5 rounded-lg border border-[#7C3AED]/10">
-                        <span className="material-symbols-rounded text-xs">keyboard_double_arrow_right</span>
-                        Auto-Move
+                      <span className="flex items-center gap-1.5 text-[11px] text-[#7C3AED] font-black bg-[#7C3AED]/5 px-2.5 py-1 rounded-xl border border-[#7C3AED]/10">
+                        <span className="material-symbols-rounded text-[14px]">keyboard_double_arrow_right</span>
+                        AUTO-MOVE
                       </span>
                     )}
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                      <span className="material-symbols-rounded text-xs">schedule</span>
+                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                      <span className="material-symbols-rounded text-[14px]">schedule</span>
                       {a.is_immediate ? "Immediate" : `Scheduled: ${new Date(a.send_at!).toLocaleString()}`}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-3 shrink-0">
                 {/* Toggle */}
                 {canAccess("communications:moderate") && (
                   <button
@@ -442,7 +499,7 @@ export default function MailAutomationPage() {
                 )}
                 {/* Edit */}
                 {canAccess("communications:moderate") && (
-                  <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
+                  <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
                     <span className="material-symbols-rounded text-base">edit</span>
                   </button>
                 )}
@@ -451,7 +508,7 @@ export default function MailAutomationPage() {
                   <button onClick={() => {
                     setAutomationToDelete(a);
                     setIsDeleteModalOpen(true);
-                  }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
+                  }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
                     {deletingId === a.id ? (
                       <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
                     ) : (
@@ -479,7 +536,7 @@ export default function MailAutomationPage() {
                 <h2 className="text-lg font-black text-slate-800 leading-tight">
                   {editingId ? "Edit Automation" : "New Automation"}
                 </h2>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Mail Configuration</p>
+                <p className="text-[10px] font-bold text-slate-400   mt-0.5">Mail Configuration</p>
               </div>
             </div>
             <button onClick={closeModal} className="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
@@ -491,7 +548,7 @@ export default function MailAutomationPage() {
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
             {/* Job */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Job Requirement <span className="text-red-400">*</span>
               </label>
               <select
@@ -508,7 +565,7 @@ export default function MailAutomationPage() {
 
             {/* Round */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Hiring Round <span className="text-red-400">*</span>
               </label>
               {jobRounds.length > 0 ? (
@@ -544,9 +601,9 @@ export default function MailAutomationPage() {
                 </div>
               )}
               {jobRounds.length > 0 && (form.stage_name || Number(form.stage_index) > 1) && (
-                <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#7C3AED]/5 rounded-lg border border-[#7C3AED]/10">
+                <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#7C3AED]/5 rounded-xl border border-[#7C3AED]/10">
                   <span className="material-symbols-rounded text-xs text-[#7C3AED]">check_circle</span>
-                  <p className="text-[10px] text-[#7C3AED] font-bold uppercase tracking-tight">
+                  <p className="text-[10px] text-[#7C3AED] font-bold  tracking-tight">
                     Selected: Round {form.stage_index} — {form.stage_name}
                   </p>
                 </div>
@@ -555,7 +612,7 @@ export default function MailAutomationPage() {
 
             {/* Criteria */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Trigger Criteria <span className="text-red-400">*</span>
               </label>
               <textarea
@@ -572,7 +629,7 @@ export default function MailAutomationPage() {
 
             {/* Template */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Email Template <span className="text-red-400">*</span>
               </label>
               {templates.length === 0 ? (
@@ -597,7 +654,7 @@ export default function MailAutomationPage() {
 
             {/* Toggles Group */}
             <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-slate-200">
+              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl transition-all hover:border-slate-200">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center">
                     <span className="material-symbols-rounded text-emerald-500 text-lg">check_circle</span>
@@ -615,7 +672,7 @@ export default function MailAutomationPage() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-slate-200">
+              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl transition-all hover:border-slate-200">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center">
                     <span className="material-symbols-rounded text-slate-600 text-lg">bolt</span>
@@ -635,7 +692,7 @@ export default function MailAutomationPage() {
 
               {!form.is_immediate && (
                 <div className="animate-in slide-in-from-top-2 duration-200 px-1">
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Scheduled Date & Time <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -647,7 +704,7 @@ export default function MailAutomationPage() {
                 </div>
               )}
 
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-slate-200">
+              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl transition-all hover:border-slate-200">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center">
                     <span className="material-symbols-rounded text-slate-600 text-lg">double_arrow</span>
@@ -685,7 +742,7 @@ export default function MailAutomationPage() {
             </button>
             <button 
               onClick={closeModal}
-              className="w-full mt-3 h-10 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest"
+              className="w-full mt-3 h-10 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors  "
             >
               Cancel
             </button>

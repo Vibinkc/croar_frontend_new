@@ -38,14 +38,14 @@ export default function AIGenerationOverlay({ isOpen, title = "Generating Conten
                 </div>
 
                 <div className="space-y-2">
-                    <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{title}</h3>
+                    <h3 className="text-2xl font-black text-slate-900  tracking-tight">{title}</h3>
                     <div className="h-8"> {/* Fixed height to prevent layout shift */}
-                        <AILoadingText className="text-slate-500 font-medium text-lg italic" />
+                        <AILoadingText className="text-slate-500 font-medium text-lg " />
                     </div>
                 </div>
 
                 <div className="pt-4">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    <p className="text-xs font-bold text-slate-400  ">
                         This might take a few seconds
                     </p>
                 </div>

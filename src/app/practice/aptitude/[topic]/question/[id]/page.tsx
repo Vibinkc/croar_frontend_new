@@ -125,7 +125,7 @@ export default function QuestionPage({ params }: { params: Promise<{ topic: stri
         <div className="min-h-screen flex items-center justify-center bg-slate-50">
             <div className="text-center space-y-4">
                 <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto"></div>
-                <p className="text-xs font-black text-indigo-600 uppercase tracking-widest animate-pulse">Loading Asset...</p>
+                <p className="text-xs font-black text-indigo-600   animate-pulse">Loading Asset...</p>
             </div>
         </div>
     );
@@ -162,7 +162,7 @@ export default function QuestionPage({ params }: { params: Promise<{ topic: stri
                         {capitalizedTopic} Aptitude
                     </span>
                     <div className={`w-px h-4 ${isDark ? 'bg-[#2d2e32]' : 'bg-slate-200/80'}`} />
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${question.difficulty === 'Easy' ? (isDark ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-emerald-50 text-emerald-600 border-emerald-100') :
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-black   border ${question.difficulty === 'Easy' ? (isDark ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-emerald-50 text-emerald-600 border-emerald-100') :
                         question.difficulty === 'Medium' ? (isDark ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-amber-50 text-amber-600 border-amber-100') :
                             (isDark ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-rose-50 text-rose-600 border-rose-100')
                         }`}>
@@ -183,7 +183,7 @@ export default function QuestionPage({ params }: { params: Promise<{ topic: stri
                             {isDark ? 'light_mode' : 'dark_mode'}
                         </span>
                         <div className="overflow-hidden max-w-0 opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-500 ease-in-out whitespace-nowrap">
-                            <span className="text-[11px] font-black tracking-widest uppercase">
+                            <span className="text-[11px] font-black  ">
                                 {isDark ? 'Light' : 'Dark'}
                             </span>
                         </div>
@@ -223,7 +223,7 @@ export default function QuestionPage({ params }: { params: Promise<{ topic: stri
                             </h2>
                             {question.sub_topic && (
                                 <div className="mt-6 pt-6 border-t border-dashed border-slate-200 dark:border-slate-800">
-                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 block mb-2">Topic</span>
+                                    <span className="text-[10px] font-black  tracking-[0.2em] text-slate-400 block mb-2">Topic</span>
                                     <span className={`inline-block px-2 py-1 rounded text-[11px] font-bold ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'}`}>
                                         {question.sub_topic}
                                     </span>
