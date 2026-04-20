@@ -28,6 +28,7 @@ export default function EmployeesPage() {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [employeeToDelete, setEmployeeToDelete] = useState<string | null>(null);
 
@@ -66,38 +67,96 @@ export default function EmployeesPage() {
         }
     };
 
-    const filteredEmployees = employees.filter(emp => 
-        (emp.first_name + " " + emp.last_name).toLowerCase().includes(searchQuery.toLowerCase()) ||
-        emp.employee_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        emp.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredEmployees = employees.filter(emp => {
+        const matchesSearch = (emp.first_name + " " + emp.last_name).toLowerCase().includes(searchQuery.toLowerCase()) ||
+                             emp.employee_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                             emp.email.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = statusFilter === "all" || emp.status === statusFilter;
+        return matchesSearch && matchesStatus;
+    });
 
     return (
-        <div className="p-4 space-y-4 pt-2 animate-in fade-in duration-500">
-            {/* Command Bar */}
-            <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl border border-slate-200 shadow-sm sticky top-0 z-30 overflow-x-auto no-scrollbar">
-                <div className="relative group min-w-[200px] flex-1">
-                    <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-[#7C3AED] transition-colors">search</span>
+        <div className="p-6 space-y-8 animate-in fade-in duration-500 bg-[#F8FAFC] min-h-screen">
+            {/* Header */}
+            <div>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
+                            <span className="material-symbols-rounded text-[#7C3AED] text-2xl">badge</span>
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Employee Directory</h1>
+                            <p className="text-slate-500 text-[13px] font-medium mt-1">
+                                Manage your workforce, departments, and employee records in one place.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        {canAccess("employees:create") && (
+                            <Link
+                                href="/enterprise/employees/add"
+                                className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
+                            >
+                                <span className="material-symbols-rounded text-lg">add</span>
+                                ADD EMPLOYEE
+                            </Link>
+                        )}
+                    </div>
+                </div>
+
+                {/* Stats Section */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {[
+                        { label: "Total Employees", value: employees.length, icon: "groups", color: "indigo" },
+                        { label: "Active Workforce", value: employees.filter(e => e.status === 'Active').length, icon: "verified", color: "emerald" },
+                        { label: "Departments", value: new Set(employees.filter(e => e.department).map(e => e.department?.id)).size, icon: "domain", color: "amber" },
+                        { label: "New Hires", value: employees.filter(e => e.hire_date && new Date(e.hire_date) > new Date(new Date().getFullYear(), new Date().getMonth(), 1)).length, icon: "person_add", color: "purple" }
+                    ].map((stat, i) => (
+                        <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${
+                                    stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
+                                    stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
+                                    stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
+                                    'bg-purple-50 text-purple-600'
+                                }`}>
+                                    <span className="material-symbols-rounded text-xl">{stat.icon}</span>
+                                </div>
+                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
+                            </div>
+                            <p className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{stat.value}</p>
+                            <p className="text-[11px] font-bold text-slate-400 capitalize">{stat.label}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Interaction Bar */}
+            <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className="flex-1 relative w-full group">
+                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#7C3AED]">search</span>
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search employees..."
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-10 pr-4 text-[11px] font-bold placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:bg-white focus:border-[#7C3AED] transition-all"
+                        placeholder="Search by name, ID, or email..."
+                        className="w-full h-12 bg-white border border-slate-200 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
                     />
                 </div>
 
-                <div className="h-6 w-px bg-slate-200 mx-1 flex-shrink-0"></div>
-
-                {canAccess("employees:create") && (
-                    <Link
-                        href="/enterprise/employees/add"
-                        className="bg-[#7C3AED] text-white px-5 py-2.5 rounded-xl font-black text-[10px]   hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap flex-shrink-0"
+                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm min-w-[200px]">
+                    <span className="material-symbols-rounded text-slate-400 ml-2 text-lg">filter_list</span>
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="w-full bg-transparent border-none text-[11px] font-black text-slate-700 focus:outline-none focus:ring-0 cursor-pointer uppercase tracking-wider"
                     >
-                        <span className="material-symbols-rounded text-lg">add</span>
-                        Add Employee
-                    </Link>
-                )}
+                        <option value="all">All Workforce</option>
+                        <option value="Active">Active Only</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
             </div>
 
             {/* Content Table */}

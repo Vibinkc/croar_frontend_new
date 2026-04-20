@@ -31,6 +31,14 @@ export default function ScenarioManagement() {
     const [isCreating, setIsCreating] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+
+    const filteredScenarios = scenarios.filter(sc => 
+        (statusFilter === "all" || sc.difficulty === statusFilter) &&
+        (sc.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+         sc.category.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
     const [isAiGenerating, setIsAiGenerating] = useState(false);
     const [aiPrompt, setAiPrompt] = useState("");
     const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
@@ -296,23 +304,47 @@ export default function ScenarioManagement() {
                     </button>
                 </div>
             </div>
+            <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className="flex-1 relative w-full group">
+                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#7C3AED]">search</span>
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search scenarios by title or category..."
+                        className="w-full h-12 bg-white border border-slate-100 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
+                    />
+                </div>
+                
+                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-100 shadow-sm min-w-[200px]">
+                    <span className="material-symbols-rounded text-slate-400 ml-2 text-lg">filter_list</span>
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="w-full bg-transparent border-none text-[11px] font-black text-slate-700 focus:outline-none focus:ring-0 cursor-pointer uppercase tracking-wider"
+                    >
+                        <option value="all">All Difficulties</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+            </div>
 
             {/* Content Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {scenarios.map((sc) => (
+                {filteredScenarios.length > 0 ? filteredScenarios.map((sc) => (
                     <motion.div 
                         layout
                         key={sc.id} 
-                        className="group bg-white rounded-2xl border border-slate-100 p-1.5 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 relative overflow-hidden"
+                        className="bg-white rounded-2xl border border-slate-100 p-1.5 shadow-sm relative overflow-hidden"
                     >
-                        <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        
                         <div className="p-8 pb-4 space-y-6">
                             <div className="flex justify-between items-start">
-                                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
+                                <div className="w-12 h-12 bg-[#7C3AED] text-white rounded-xl flex items-center justify-center shadow-sm">
                                     <Brain className="w-6 h-6" />
                                 </div>
-                                <div className="flex gap-2 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+                                <div className="flex items-center gap-1">
                                     {(canAccess("scenarios:moderate") || role === "ADMIN") && (
                                         <button 
                                             onClick={() => {
@@ -320,17 +352,17 @@ export default function ScenarioManagement() {
                                                 setForm({...sc});
                                                 setIsCreating(true);
                                             }}
-                                            className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
+                                            className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors"
                                         >
-                                            <Edit3 className="w-5 h-5" />
+                                            <span className="material-symbols-rounded text-[20px]">edit</span>
                                         </button>
                                     )}
                                     {(canAccess("scenarios:delete") || role === "ADMIN") && (
                                         <button 
                                             onClick={() => { setScenarioToDelete(sc.id); setIsDeleteModalOpen(true); }}
-                                            className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all shadow-sm"
+                                            className="p-1.5 text-slate-400 hover:text-rose-600 transition-colors"
                                         >
-                                            <Trash2 className="w-5 h-5" />
+                                            <span className="material-symbols-rounded text-[20px]">delete</span>
                                         </button>
                                     )}
                                 </div>
@@ -338,32 +370,40 @@ export default function ScenarioManagement() {
 
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50/50 border border-indigo-100/50 rounded-xl">
-                                        <span className="w-1 h-1 rounded-full bg-indigo-400" />
-                                        <span className="text-[7.5px] font-black text-indigo-500  ">{sc.category}</span>
+                                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-violet-50 border border-violet-100 rounded-lg">
+                                        <span className="w-1 h-1 rounded-full bg-[#7C3AED]" />
+                                        <span className="text-[8px] font-black text-[#7C3AED] uppercase tracking-widest">{sc.category}</span>
                                     </div>
-                                    <span className="text-[7.5px] font-black text-slate-300   tabular-nums ">{sc.difficulty}</span>
+                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{sc.difficulty}</span>
                                 </div>
-                                <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-none   group-hover:text-indigo-600 transition-colors truncate">{sc.title}</h3>
-                                <p className="text-[10px] font-bold text-slate-400 leading-relaxed  tracking-tight line-clamp-2 h-10 opacity-70 ">
-                                    {sc.description || "Description not provided for this scenario."}
+                                <h3 className="text-lg font-black text-slate-900 tracking-tight leading-tight line-clamp-1">{sc.title}</h3>
+                                <p className="text-[10px] font-medium text-slate-500 leading-relaxed tracking-tight line-clamp-2 h-10">
+                                    {sc.description || "Experimental training framework for advanced skill acquisition."}
                                 </p>
                             </div>
                         </div>
                         
                         {(canAccess("scenarios:moderate") || role === "ADMIN") && (
-                            <div className="px-8 py-5 flex items-center gap-4 bg-slate-50/50 border-t border-slate-50 rounded-b-[2.5rem]">
+                            <div className="px-8 py-5 flex items-center gap-4 bg-slate-50/50 border-t border-slate-50 rounded-b-2xl">
                                 <button 
                                     onClick={() => setIsAssigningId(sc.id)}
-                                    className="flex-1 h-12 bg-slate-900 hover:bg-indigo-600 text-white rounded-xl text-[9px] font-black  tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 group/btn"
+                                    className="flex-1 h-11 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 group/btn"
                                 >
-                                    <Play className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                                    <Play className="w-3.5 h-3.5" />
                                     Assign Scenario
                                 </button>
                             </div>
                         )}
                     </motion.div>
-                ))}
+                )) : (
+                    <div className="col-span-full py-32 text-center bg-white rounded-2xl border border-dashed border-slate-100">
+                        <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <span className="material-symbols-rounded text-4xl text-slate-200">psychology</span>
+                        </div>
+                        <h3 className="text-xl font-black text-slate-800 tracking-tight">No Scenarios Detected</h3>
+                        <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">Initialize a new simulation framework or use the AI Neural Assistant to generate one.</p>
+                    </div>
+                )}
             </div>
 
             {/* Blueprint Drawer */}
@@ -376,7 +416,7 @@ export default function ScenarioManagement() {
                             {/* Drawer Header */}
                             <div className="flex items-center justify-between px-10 py-8 border-b border-slate-50 shrink-0">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-14 h-14 rounded-xl bg-slate-900 flex items-center justify-center shadow-2xl rotate-3">
+                                    <div className="w-14 h-14 rounded-xl bg-slate-900 flex items-center justify-center shadow-2xl">
                                         <DraftingCompass className="w-8 h-8 text-indigo-400" />
                                     </div>
                                     <div>
@@ -506,7 +546,7 @@ export default function ScenarioManagement() {
                                         form="architect-form"
                                         type="submit"
                                         disabled={submitting}
-                                        className="px-10 h-14 bg-slate-900 text-white rounded-xl font-black text-[10px]  tracking-[0.3em] hover:bg-indigo-600 transition-all active:scale-95 shadow-2xl flex items-center gap-3"
+                                        className="px-10 h-14 bg-[#7C3AED] text-white rounded-xl font-black text-[10px]  tracking-[0.3em] hover:bg-[#6D28D9] transition-all active:scale-95 shadow-2xl flex items-center gap-3"
                                     >
                                         {submitting && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
                                         {submitting ? 'Saving' : editingId ? 'Update Scenario' : 'Save Scenario'}
@@ -579,7 +619,7 @@ export default function ScenarioManagement() {
                                 <button 
                                     onClick={handleAssign}
                                     disabled={assigning || selectedEmployees.length === 0}
-                                    className="w-full h-16 bg-slate-900 text-white rounded-xl font-black text-[11px]  tracking-[0.3em] hover:bg-indigo-600 transition-all shadow-2xl disabled:opacity-30 active:scale-95 flex items-center justify-center gap-4"
+                                    className="w-full h-16 bg-[#7C3AED] text-white rounded-xl font-black text-[11px]  tracking-[0.3em] hover:bg-[#6D28D9] transition-all shadow-2xl disabled:opacity-30 active:scale-95 flex items-center justify-center gap-4"
                                 >
                                     {assigning && <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
                                     {assigning ? 'Assigning' : 'Assign Scenario'}

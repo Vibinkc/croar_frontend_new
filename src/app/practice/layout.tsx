@@ -250,7 +250,7 @@ function LayoutContent({
                         </button>
 
                         <h1 className="text-sm font-bold tracking-tight truncate max-w-[200px] sm:max-w-none">
-                            {navGroups.flatMap(g => g.items).find(i => isActive(i.path) && (i.path === pathname || i.path === '/practice' && pathname === '/practice'))?.name || "Dashboard Overview"}
+                            {navGroups.flatMap(g => g.items).find(i => isActive(i.path) && (i.path === pathname || i.path === '/practice' && pathname === '/practice'))?.name || "Mission Control"}
                         </h1>
                     </div>
 

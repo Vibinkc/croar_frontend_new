@@ -224,7 +224,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                 )}
             </div>
 
-            <div className="bg-white rounded-[32px] p-10 border border-slate-100 shadow-sm border-t-4 border-t-[#7C3AED] animate-in fade-in slide-in-from-bottom-4 duration-500 min-h-[600px]">
+            <div className="bg-white rounded-[20px] p-10 border border-slate-100 shadow-sm border-t-4 border-t-[#7C3AED] animate-in fade-in slide-in-from-bottom-4 duration-500 min-h-[600px]">
                 {activeTab === "basic" && (
                     <div className="space-y-10 animate-in fade-in zoom-in-95 duration-300">
                         {/* Basic Info Section */}
@@ -367,18 +367,18 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                 <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Project Team</h4>
                                 <div className="grid gap-3">
                                     {(formData.members || []).length === 0 ? (
-                                        <div className="p-10 border-2 border-dashed border-slate-100 rounded-[32px] text-center">
+                                        <div className="p-10 border-2 border-dashed border-slate-100 rounded-[20px] text-center">
                                             <p className="text-xs font-bold text-slate-400">No members assigned yet.</p>
                                         </div>
                                     ) : (
                                         formData.members.map((m: any) => (
                                             <div key={m.id} className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xs  shadow-sm">
+                                                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xs  shadow-sm uppercase">
                                                         {m.first_name[0]}{m.last_name[0]}
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-black text-slate-800 tracking-tight">{m.first_name} {m.last_name}</p>
+                                                        <p className="text-sm font-black text-slate-800 tracking-tight capitalize">{m.first_name} {m.last_name}</p>
                                                         <p className="text-[9px] font-black text-slate-400  ">{m.designation || "Project Member"}</p>
                                                     </div>
                                                 </div>
@@ -404,11 +404,11 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                         .map((emp) => (
                                             <div key={emp.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#7C3AED]/20 hover:bg-slate-50/50 transition-all group">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 group-hover:bg-[#7C3AED]/10 group-hover:text-[#7C3AED] flex items-center justify-center font-black text-xs  transition-all shadow-sm">
+                                                    <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 group-hover:bg-[#7C3AED]/10 group-hover:text-[#7C3AED] flex items-center justify-center font-black text-xs  transition-all shadow-sm uppercase">
                                                         {emp.first_name[0]}{emp.last_name[0]}
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-black text-slate-800 tracking-tight">{emp.first_name} {emp.last_name}</p>
+                                                        <p className="text-sm font-black text-slate-800 tracking-tight capitalize">{emp.first_name} {emp.last_name}</p>
                                                         <p className="text-[9px] font-black text-slate-400  ">{emp.designation || "Available"}</p>
                                                     </div>
                                                 </div>

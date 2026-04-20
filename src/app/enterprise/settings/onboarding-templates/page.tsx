@@ -50,6 +50,7 @@ export default function OnboardingTemplatesPage() {
     const { token, canAccess } = useAuth();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [templateToDelete, setTemplateToDelete] = useState<{ id: string; name: string } | null>(null);
+    const [onboardingSearch, setOnboardingSearch] = useState("");
 
     useEffect(() => {
         fetchTemplates();
@@ -127,7 +128,7 @@ export default function OnboardingTemplatesPage() {
                     {canAccess("onboarding:moderate") && (
                         <Link 
                             href="/enterprise/settings/onboarding-templates/create"
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
                             New Template
@@ -135,11 +136,93 @@ export default function OnboardingTemplatesPage() {
                     )}
                     <button 
                         onClick={fetchTemplates}
-                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 hover:border-violet-100 transition-all flex items-center justify-center shadow-sm"
+                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 transition-all flex items-center justify-center shadow-sm"
                     >
                         <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
+            </div>
+
+            {/* Stat Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-[#7C3AED]">Active Flows</span>
+                        <div className="w-12 h-12 rounded-xl bg-violet-50 text-[#7C3AED] flex items-center justify-center transition-all group-hover:scale-110">
+                            <Layers className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {templates.length}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-blue-500">Total Sections</span>
+                        <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <ClipboardList className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {templates.reduce((acc, t) => acc + (t.form_config?.sections?.length || 0), 0)}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-emerald-500">Form Fields</span>
+                        <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <Cpu className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {templates.reduce((acc, t) => acc + (t.form_config?.sections?.reduce((sAcc, s) => sAcc + (s.fields?.length || 0), 0) || 0), 0)}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-amber-500">Avg Steps</span>
+                        <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <Layout className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {templates.length ? Math.round(templates.reduce((acc, t) => acc + (t.form_config?.sections?.length || 0), 0) / templates.length) : 0}
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative group">
+                <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors">search</span>
+                <input 
+                    type="text"
+                    placeholder="Search onboarding templates by name..."
+                    className="w-full h-12 pl-12 pr-6 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50 transition-all font-medium text-sm"
+                    value={onboardingSearch}
+                    onChange={(e) => setOnboardingSearch(e.target.value)}
+                />
             </div>
 
             {/* Template List */}
@@ -153,7 +236,7 @@ export default function OnboardingTemplatesPage() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {templates.map((t) => (
+                    {templates.filter(t => t.name.toLowerCase().includes(onboardingSearch.toLowerCase())).map((t) => (
                         <motion.div 
                             layout
                             key={t.id}
@@ -164,27 +247,29 @@ export default function OnboardingTemplatesPage() {
                                     <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
                                         <Layers className="w-6 h-6 stroke-[1.5]" />
                                     </div>
-                                    {canAccess("onboarding:moderate") && (
-                                        <div className="flex gap-2">
-                                            <Link 
-                                                href={`/enterprise/settings/onboarding-templates/${t.id}/edit`}
-                                                className="p-2 bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all rounded-xl"
-                                                onClick={(e) => e.stopPropagation()}
-                                            >
-                                                <Edit3 className="w-4 h-4" />
-                                            </Link>
-                                            <button 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setTemplateToDelete({ id: t.id, name: t.name });
-                                                    setIsDeleteModalOpen(true);
-                                                }} 
-                                                className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    )}
+                                    <div className="flex items-center gap-2">
+                                        {canAccess("onboarding:moderate") && (
+                                            <>
+                                                <Link 
+                                                    href={`/enterprise/settings/onboarding-templates/${t.id}/edit`}
+                                                    className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-[#7C3AED] hover:bg-violet-50 rounded-xl transition-all"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <Edit3 className="w-4 h-4" />
+                                                </Link>
+                                                <button 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setTemplateToDelete({ id: t.id, name: t.name });
+                                                        setIsDeleteModalOpen(true);
+                                                    }} 
+                                                    className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-1">
@@ -214,10 +299,9 @@ export default function OnboardingTemplatesPage() {
                                 </div>
                                 <Link 
                                     href={`/enterprise/settings/onboarding-templates/${t.id}/edit`}
-                                    className="text-slate-300 group-hover:text-indigo-600 transition-colors flex items-center gap-1.5"
+                                    className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-300 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all"
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    <span className="text-[10px] font-bold  ">Configure</span>
                                     <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </div>

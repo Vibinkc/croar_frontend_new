@@ -26,6 +26,8 @@ function TeamManagementContent() {
     const [roles, setRoles] = useState<any[]>([]);
     const [permissions, setPermissions] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedRoleFilter, setSelectedRoleFilter] = useState("ALL");
 
     // Member Form State
     const [isAddingMember, setIsAddingMember] = useState(false);
@@ -43,26 +45,21 @@ function TeamManagementContent() {
 
     useEffect(() => {
         fetchData();
-    }, [activeTab]);
+    }, []);
 
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            if (activeTab === "members") {
-                const [memRes, roleRes] = await Promise.all([
-                    apiClient.get("/api/v1/enterprise/team/members"),
-                    apiClient.get("/api/v1/enterprise/team/roles")
-                ]);
-                if (memRes.ok) setMembers(await memRes.json());
-                if (roleRes.ok) setRoles(await roleRes.json());
-            } else {
-                const [roleRes, permRes] = await Promise.all([
-                    apiClient.get("/api/v1/enterprise/team/roles"),
-                    apiClient.get("/api/v1/platform/permissions")
-                ]);
-                if (roleRes.ok) setRoles(await roleRes.json());
-                if (permRes.ok) setPermissions(await permRes.json());
-            }
+            // Fetch everything initially to populate stats
+            const [memRes, roleRes, permRes] = await Promise.all([
+                apiClient.get("/api/v1/enterprise/team/members"),
+                apiClient.get("/api/v1/enterprise/team/roles"),
+                apiClient.get("/api/v1/enterprise/team/permissions")
+            ]);
+            
+            if (memRes.ok) setMembers(await memRes.json());
+            if (roleRes.ok) setRoles(await roleRes.json());
+            if (permRes.ok) setPermissions(await permRes.json());
         } catch (e) {
             console.error(e);
         } finally {
@@ -129,7 +126,7 @@ function TeamManagementContent() {
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">Team Management</h1>
-                        <p className="text-slate-500 text-[10px] font-medium   ">Manage organization personnel and access</p>
+                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest mt-0.5">Organization personnel & access</p>
                     </div>
                 </div>
 
@@ -141,7 +138,7 @@ function TeamManagementContent() {
                         >
                             Members
                         </button>
-                        {canAccess("team:moderate") && (
+                        {canAccess("employees:moderate") && (
                             <button 
                                 onClick={() => setActiveTab("roles")}
                                 className={`px-4 py-1.5 rounded-xl text-[10px] font-bold transition-all ${activeTab === "roles" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
@@ -150,28 +147,128 @@ function TeamManagementContent() {
                             </button>
                         )}
                     </div>
-                    
-                    <button 
-                        onClick={fetchData}
-                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 hover:border-violet-100 transition-all flex items-center justify-center shadow-sm"
-                    >
-                        <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                    </button>
                 </div>
+            </div>
+
+            {/* Stat Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-[#7C3AED]">Total Members</span>
+                        <div className="w-12 h-12 rounded-xl bg-violet-50 text-[#7C3AED] flex items-center justify-center transition-all group-hover:scale-110">
+                            <Users className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {members.length}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-emerald-500">Active Roles</span>
+                        <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <ShieldCheck className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {roles.length}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-indigo-500">System Roles</span>
+                        <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <Lock className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {roles.filter(r => r.is_system).length}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-amber-500">Global Permissions</span>
+                        <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <Shield className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {permissions.length || "..."}
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Search and Filter Bar */}
+            <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className="relative flex-1 group">
+                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors">search</span>
+                    <input 
+                        type="text"
+                        placeholder="Search members by name or email..."
+                        className="w-full h-12 pl-12 pr-6 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50 transition-all font-medium text-sm"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+                <div className="flex items-center gap-2 bg-white border border-slate-200 p-1.5 rounded-xl shadow-sm">
+                    <span className="material-symbols-rounded text-slate-400 pl-2">filter_list</span>
+                    <select 
+                        className="bg-transparent text-[10px] font-black uppercase tracking-widest text-slate-600 outline-none pr-4 cursor-pointer"
+                        value={selectedRoleFilter}
+                        onChange={(e) => setSelectedRoleFilter(e.target.value)}
+                    >
+                        <option value="ALL">All Roles</option>
+                        {roles.map(r => (
+                            <option key={r.id} value={r.name}>{r.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <button 
+                    onClick={fetchData}
+                    className="w-12 h-12 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 transition-all flex items-center justify-center shadow-sm"
+                >
+                    <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                </button>
             </div>
 
             {activeTab === "members" ? (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Members List */}
-                    <div className={canAccess("team:moderate") ? "lg:col-span-7 space-y-6" : "lg:col-span-12 space-y-6"}>
+                    <div className={canAccess("employees:moderate") ? "lg:col-span-7 space-y-6" : "lg:col-span-12 space-y-6"}>
                         <div className="flex items-center justify-between px-2">
                             <h2 className="text-xl font-bold text-slate-900 tracking-tight">Active Members</h2>
                             <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-4 py-1.5 rounded-full">{members.length} team members</span>
                         </div>
                         
-                        <div className={`grid gap-6 ${canAccess("team:moderate") ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
+                        <div className={`grid gap-6 ${canAccess("employees:moderate") ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
                             <AnimatePresence mode="popLayout">
-                                {members.map((member, i) => (
+                                {members.filter(m => {
+                                    const matchesSearch = (m.first_name + " " + m.last_name + m.email).toLowerCase().includes(searchQuery.toLowerCase());
+                                    const matchesRole = selectedRoleFilter === "ALL" || m.roles?.some((r: any) => r.name === selectedRoleFilter);
+                                    return matchesSearch && matchesRole;
+                                }).map((member, i) => (
                                     <motion.div 
                                         layout
                                         initial={{ opacity: 0, scale: 0.95 }}
@@ -211,7 +308,7 @@ function TeamManagementContent() {
                     </div>
 
                     {/* Add Member Form */}
-                    {canAccess("team:moderate") && (
+                    {canAccess("employees:moderate") && (
                         <div className="lg:col-span-5">
                             <div className="bg-white p-8 md:p-10 rounded-xl border border-slate-200/60 shadow-2xl shadow-slate-200/50 sticky top-8">
                                 <div className="space-y-2 mb-10">
@@ -308,13 +405,13 @@ function TeamManagementContent() {
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Roles List */}
-                    <div className={canAccess("team:moderate") ? "lg:col-span-7 space-y-6" : "lg:col-span-12 space-y-6"}>
+                    <div className={canAccess("employees:moderate") ? "lg:col-span-7 space-y-6" : "lg:col-span-12 space-y-6"}>
                         <div className="flex items-center justify-between px-2">
                             <h2 className="text-xl font-bold text-slate-900 tracking-tight">Access Control</h2>
                             <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-4 py-1.5 rounded-full">{roles.length} available roles</span>
                         </div>
 
-                        <div className={`grid gap-6 ${canAccess("team:moderate") ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
+                        <div className={`grid gap-6 ${canAccess("employees:moderate") ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
                             {roles.map(role => (
                                 <div key={role.id} className="bg-white p-8 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col">
                                     <div className="flex justify-between items-start mb-8">
@@ -326,7 +423,7 @@ function TeamManagementContent() {
                                                 <Lock className="w-4 h-4" />
                                             </span>
                                         ) : (
-                                            canAccess("team:moderate") && (
+                                            canAccess("employees:moderate") && (
                                                 <button className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl">
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
@@ -353,7 +450,7 @@ function TeamManagementContent() {
                     </div>
 
                     {/* Create Role Form */}
-                    {canAccess("team:moderate") && (
+                    {canAccess("employees:moderate") && (
                         <div className="lg:col-span-5">
                             <div className="bg-white p-8 md:p-10 rounded-xl border border-slate-200/60 shadow-2xl shadow-slate-200/50 sticky top-8">
                                 <div className="space-y-2 mb-10">

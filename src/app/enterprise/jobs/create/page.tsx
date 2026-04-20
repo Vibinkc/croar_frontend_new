@@ -247,9 +247,9 @@ export default function CreateJobPage() {
                 <AnimatePresence mode="wait">
                     {currentStep === 1 && (
                         <motion.div key="step1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex-1 bg-slate-50/50 overflow-y-auto p-4 md:p-8 no-scrollbar relative">
-                            <div className="mx-auto max-w-[1400px] h-full grid grid-cols-1 xl:grid-cols-12 gap-6 w-full">
+                            <div className="mx-auto max-w-[1400px] grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
                                 {/* Left Form Column */}
-                                <div className="xl:col-span-4 space-y-6 flex flex-col">
+                                <div className="lg:col-span-4 space-y-6 flex flex-col">
                                     {/* Core Details Card */}
                                     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5 relative overflow-hidden group">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
@@ -352,7 +352,7 @@ export default function CreateJobPage() {
                                 </div>
 
                                 {/* Right Description Area */}
-                                <div className="xl:col-span-8 flex flex-col h-full bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                                <div className="lg:col-span-8 flex flex-col min-h-[600px] bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
                                     <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white z-10 shrink-0">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">

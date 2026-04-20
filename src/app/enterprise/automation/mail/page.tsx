@@ -358,9 +358,9 @@ export default function MailAutomationPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { label: "Total Rules", value: automations.length, icon: "rule", color: "indigo" },
-            { label: "Active Pipeline", value: automations.filter(a => a.is_enabled).length, icon: "bolt", color: "emerald" },
-            { label: "Waitlist Logic", value: "Enabled", icon: "timer", color: "amber" },
-            { label: "Engagement Rate", value: "92.4%", icon: "monitoring", color: "purple" }
+            { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, icon: "bolt", color: "emerald" },
+            { label: "Immediate Trigger", value: automations.filter(a => a.is_immediate).length, icon: "flash_on", color: "amber" },
+            { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, icon: "double_arrow", color: "purple" }
           ].map((stat, i) => (
             <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
               <div className="flex items-start justify-between mb-4">
@@ -437,88 +437,94 @@ export default function MailAutomationPage() {
           )}
         </div>
       ) : (
-        <div className="space-y-4">
-          {filteredAutomations.map((a) => (
-            <div
-              key={a.id}
-              className={`bg-white border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
-                a.is_enabled ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
-              }`}
-            >
-              <div className="flex items-start gap-3 flex-1 min-w-0">
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${a.is_enabled ? "bg-[#7C3AED]/10" : "bg-slate-100"}`}>
-                  <span className={`material-symbols-rounded text-xl ${a.is_enabled ? "text-[#7C3AED]" : "text-slate-400"}`}>forward_to_inbox</span>
-                </div>
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="text-xs font-black text-slate-400  ">
-                      Round {a.stage_index}{a.stage_name ? ` · ${a.stage_name}` : ""}
-                    </span>
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${a.is_enabled ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-400"}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${a.is_enabled ? "bg-emerald-500" : "bg-slate-400"}`} />
-                      {a.is_enabled ? "Active" : "Disabled"}
-                    </span>
-                  </div>
-                  <p className="text-sm font-bold text-slate-800 truncate">
-                    <span className="text-slate-400 font-medium">If: </span>{a.criteria}
-                  </p>
-                  <div className="flex flex-wrap gap-3 mt-1.5">
-                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                      <span className="material-symbols-rounded text-[14px]">work</span>
-                      {jobTitle(a.job_requirement_id)}
-                    </span>
-                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                      <span className="material-symbols-rounded text-[14px]">description</span>
-                      {templateName(a.template_id)}
-                    </span>
-                    {a.auto_move && (
-                      <span className="flex items-center gap-1.5 text-[11px] text-[#7C3AED] font-black bg-[#7C3AED]/5 px-2.5 py-1 rounded-lg border border-[#7C3AED]/10">
-                        <span className="material-symbols-rounded text-[14px]">keyboard_double_arrow_right</span>
-                        AUTO-MOVE
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                      <span className="material-symbols-rounded text-[14px]">schedule</span>
-                      {a.is_immediate ? "Immediate" : `Scheduled: ${new Date(a.send_at!).toLocaleString()}`}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                {/* Toggle */}
-                {canAccess("communications:moderate") && (
-                  <button
-                    onClick={() => handleToggle(a)}
-                    disabled={togglingId === a.id}
-                    title={a.is_enabled ? "Disable" : "Enable"}
-                    className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                  >
-                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
-                  </button>
-                )}
-                {/* Edit */}
-                {canAccess("communications:moderate") && (
-                  <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors" title="Edit">
-                    <span className="material-symbols-rounded text-base">edit</span>
-                  </button>
-                )}
-                {/* Delete */}
-                {canAccess("communications:delete") && (
-                  <button onClick={() => {
-                    setAutomationToDelete(a);
-                    setIsDeleteModalOpen(true);
-                  }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-40" title="Delete">
-                    {deletingId === a.id ? (
-                      <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <span className="material-symbols-rounded text-base">delete</span>
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Rule Configuration</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Target Job & Template</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Trigger/Schedule</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {filteredAutomations.map((a) => (
+                  <tr key={a.id} className="hover:bg-slate-50/50 transition-all group">
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-black uppercase">
+                            Round {a.stage_index}
+                          </span>
+                          {a.stage_name && (
+                            <span className="text-[10px] font-bold text-slate-400">{a.stage_name}</span>
+                          )}
+                        </div>
+                        <p className="text-xs font-bold text-slate-800 line-clamp-1">
+                          <span className="text-slate-400 font-medium italic mr-1">If:</span>
+                          {a.criteria}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                          <span className="material-symbols-rounded text-sm text-slate-400">work</span>
+                          {jobTitle(a.job_requirement_id)}
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10px] font-medium text-slate-400">
+                          <span className="material-symbols-rounded text-sm text-slate-300">description</span>
+                          {templateName(a.template_id)}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                          <span className="material-symbols-rounded text-sm text-slate-400">schedule</span>
+                          {a.is_immediate ? "Immediate" : new Date(a.send_at!).toLocaleString()}
+                        </div>
+                        {a.auto_move && (
+                          <div className="flex items-center gap-1 text-[9px] font-black text-emerald-600 uppercase">
+                            <span className="material-symbols-rounded text-xs">keyboard_double_arrow_right</span>
+                            Auto-Move Active
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleToggle(a)}
+                        disabled={togglingId === a.id}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                      >
+                        <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        {canAccess("communications:moderate") && (
+                          <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors">
+                            <span className="material-symbols-rounded text-base">edit</span>
+                          </button>
+                        )}
+                        {canAccess("communications:delete") && (
+                          <button onClick={() => {
+                            setAutomationToDelete(a);
+                            setIsDeleteModalOpen(true);
+                          }} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors">
+                            <span className="material-symbols-rounded text-base">delete</span>
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

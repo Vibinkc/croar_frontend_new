@@ -41,6 +41,8 @@ function InterviewTemplatesContent() {
     const [editingTemplate, setEditingTemplate] = useState<InterviewTemplate | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [templateToDelete, setTemplateToDelete] = useState<{ id: string; name: string } | null>(null);
+    const [interviewSearch, setInterviewSearch] = useState("");
+    const [difficultyFilter, setDifficultyFilter] = useState("ALL");
 
     const fetchTemplates = useCallback(async () => {
         if (!token) return;
@@ -129,7 +131,7 @@ function InterviewTemplatesContent() {
                                 setEditingTemplate(null);
                                 setShowBuilder(true);
                             }}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
                             New Template
@@ -137,10 +139,109 @@ function InterviewTemplatesContent() {
                     )}
                     <button 
                         onClick={fetchTemplates}
-                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 hover:border-violet-100 transition-all flex items-center justify-center shadow-sm"
+                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 transition-all flex items-center justify-center shadow-sm"
                     >
                         <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
+                </div>
+            </div>
+
+            {/* Stat Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-[#7C3AED]">Total Templates</span>
+                        <div className="w-12 h-12 rounded-xl bg-violet-50 text-[#7C3AED] flex items-center justify-center transition-all group-hover:scale-110">
+                            <MessagesSquare className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {templates.length}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-blue-500">Video Calls</span>
+                        <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <Video className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {templates.filter(t => t.require_video).length}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-emerald-500">Audio Only</span>
+                        <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <Mic2 className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {templates.filter(t => !t.require_video).length}
+                    </div>
+                </motion.div>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+                >
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-amber-500">Avg Duration</span>
+                        <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center transition-all group-hover:scale-110">
+                            <Clock className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
+                        {templates.length ? Math.round(templates.reduce((acc, t) => acc + t.duration, 0) / templates.length) : 0}
+                        <span className="text-sm font-bold text-slate-400 ml-2">min</span>
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Search and Filter Bar */}
+            <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className="relative flex-1 group">
+                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors">search</span>
+                    <input 
+                        type="text"
+                        placeholder="Search interview templates by title or topic..."
+                        className="w-full h-12 pl-12 pr-6 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50 transition-all font-medium text-sm"
+                        value={interviewSearch}
+                        onChange={(e) => setInterviewSearch(e.target.value)}
+                    />
+                </div>
+                <div className="flex items-center gap-2 bg-white border border-slate-200 p-1.5 rounded-xl shadow-sm">
+                    <span className="material-symbols-rounded text-slate-400 pl-2">filter_list</span>
+                    <select 
+                        className="bg-transparent text-[10px] font-black uppercase tracking-widest text-slate-600 outline-none pr-4 cursor-pointer"
+                        value={difficultyFilter}
+                        onChange={(e) => setDifficultyFilter(e.target.value)}
+                    >
+                        <option value="ALL">All Difficulties</option>
+                        <option value="Entry">Entry</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Expert">Expert</option>
+                    </select>
                 </div>
             </div>
 
@@ -154,7 +255,11 @@ function InterviewTemplatesContent() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {templates.map(template => (
+                    {templates.filter(t => {
+                        const matchesSearch = (t.title + t.topic).toLowerCase().includes(interviewSearch.toLowerCase());
+                        const matchesDiff = difficultyFilter === "ALL" || t.difficulty === difficultyFilter;
+                        return matchesSearch && matchesDiff;
+                    }).map(template => (
                         <motion.div
                             layout
                             key={template.id}
@@ -171,18 +276,32 @@ function InterviewTemplatesContent() {
                                     <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
                                         {template.require_video ? <Video className="w-6 h-6 stroke-[1.5]" /> : <Mic2 className="w-6 h-6 stroke-[1.5]" />}
                                     </div>
-                                    {canAccess("interviews:delete") && (
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setTemplateToDelete({ id: template.id, name: template.title });
-                                                setIsDeleteModalOpen(true);
-                                            }}
-                                            className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl opacity-0 group-hover:opacity-100"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    )}
+                                    <div className="flex items-center gap-2">
+                                        {canAccess("interviews:moderate") && (
+                                            <button 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setEditingTemplate(template);
+                                                    setShowBuilder(true);
+                                                }}
+                                                className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-[#7C3AED] hover:bg-violet-50 rounded-xl transition-all"
+                                            >
+                                                <span className="material-symbols-rounded text-lg">edit</span>
+                                            </button>
+                                        )}
+                                        {canAccess("interviews:delete") && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setTemplateToDelete({ id: template.id, name: template.title });
+                                                    setIsDeleteModalOpen(true);
+                                                }}
+                                                className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                                 
                                 <div className="space-y-3">
@@ -210,14 +329,8 @@ function InterviewTemplatesContent() {
                                     <Calendar className="w-3.5 h-3.5" />
                                     <span className="text-[10px] font-bold  ">{new Date(template.created_at).toLocaleDateString()}</span>
                                 </div>
-                                <div className="text-slate-300 group-hover:text-indigo-600 transition-colors">
-                                    {canAccess("interviews:moderate") ? (
-                                        <Edit3 className="hidden" /> 
-                                    ) : null}
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="text-[10px] font-bold  ">Edit</span>
-                                        <ArrowRight className="w-4 h-4" />
-                                    </div>
+                                <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-300 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all">
+                                    <ArrowRight className="w-4 h-4" />
                                 </div>
                             </div>
                         </motion.div>

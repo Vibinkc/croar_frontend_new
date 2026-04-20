@@ -161,7 +161,7 @@ export default function X360QuestionBank() {
                 </button>
                 <div>
                     <h1 className="text-lg font-black text-slate-900 tracking-tight leading-none">Question Bank</h1>
-                    <p className="text-slate-500 mt-1 text-[10px] font-medium">Build and manage your feedback framework with AI assistance.</p>
+                    <p className="text-slate-500 mt-1 text-[10px] font-black uppercase tracking-widest opacity-70">Build and manage your feedback framework with AI assistance.</p>
                 </div>
             </header>
 

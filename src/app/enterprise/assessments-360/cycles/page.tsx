@@ -67,10 +67,10 @@ export default function X360CyclesList() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50">
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400   border-b border-slate-50">Cycle Name</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400   border-b border-slate-50">Timeline</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400   border-b border-slate-50">Status</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400   border-b border-slate-50 text-right">Actions</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Cycle Name</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Timeline</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Status</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">

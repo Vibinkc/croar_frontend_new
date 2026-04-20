@@ -635,9 +635,9 @@ export default function AssessmentAutomationPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { label: "Total Rules", value: automations.length, icon: "rule", color: "indigo" },
-            { label: "Ready Items", value: automations.filter(a => a.generated_questions?.length).length, icon: "task_alt", color: "emerald" },
-            { label: "Avg. AI Fit", value: "84.2%", icon: "monitoring", color: "amber" },
-            { label: "Gen Active", value: "Live", icon: "auto_awesome", color: "purple" }
+            { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, icon: "bolt", color: "emerald" },
+            { label: "Ready Assessments", value: automations.filter(a => a.generated_questions?.length).length, icon: "task_alt", color: "amber" },
+            { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, icon: "double_arrow", color: "purple" }
           ].map((stat, i) => (
             <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
               <div className="flex items-start justify-between mb-4">
@@ -713,116 +713,122 @@ export default function AssessmentAutomationPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {filteredAutomations.map((a) => (
-            <div
-              key={a.id}
-              className={`bg-white border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all duration-200 ${
-                a.is_enabled ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
-              }`}
-            >
-              <div className="flex items-start gap-3 flex-1 min-w-0">
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${a.is_enabled ? "bg-[#7C3AED]/10" : "bg-slate-100"}`}>
-                  <span className={`material-symbols-rounded text-xl ${a.is_enabled ? "text-[#7C3AED]" : "text-slate-400"}`}>assignment_turned_in</span>
-                </div>
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="text-xs font-black text-slate-400  ">
-                      Round {a.stage_index}{a.stage_name ? ` · ${a.stage_name}` : ""}
-                    </span>
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${a.is_immediate ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"}`}>
-                      <span className="material-symbols-rounded text-[10px]">{a.is_immediate ? "flash_on" : "schedule"}</span>
-                      {a.is_immediate ? "Immediate" : `Scheduled: ${new Date(a.send_at!.endsWith('Z') ? a.send_at! : a.send_at! + 'Z').toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}`}
-                    </span>
-                    {a.auto_move && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#7C3AED]/10 text-[#7C3AED]">
-                        <span className="material-symbols-rounded text-[10px]">double_arrow</span>
-                        Auto-Move
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm font-bold text-slate-800 truncate">
-                    <span className="text-slate-400 font-medium">If: </span>{a.criteria}
-                  </p>
-                  <div className="flex flex-wrap gap-3 mt-1.5">
-                    <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                      <span className="material-symbols-rounded text-[14px]">work</span>
-                      {jobTitle(a.job_requirement_id)}
-                    </span>
-                    <span className="flex items-center gap-1.5 text-[11px] text-[#7C3AED] font-black">
-                      <span className="material-symbols-rounded text-[14px]">topic</span>
-                      {a.type}: {a.topic}
-                      {a.email_template && (
-                        <span className="flex items-center gap-1 ml-2 px-2 py-0.5 bg-[#7C3AED]/5 rounded-lg border border-[#7C3AED]/10 text-[9px]  ">
-                          <span className="material-symbols-rounded text-[12px]">email</span>
-                          {a.email_template.name}
-                        </span>
-                      )}
-                    </span>
-                    <span className={`flex items-center gap-1.5 text-[11px] ${a.generated_questions ? "text-emerald-500" : "text-amber-500"} font-black`}>
-                      <span className="material-symbols-rounded text-[14px]">{a.generated_questions ? "check_circle" : "warning"}</span>
-                      {a.generated_questions ? `${a.generated_questions.length} QUESTIONS READY` : "NO QUESTIONS YET"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                {canAccess("automation:moderate") && (
-                  <button
-                    onClick={() => handleGenerateQuestions(a.id)}
-                    disabled={generatingId === a.id}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7C3AED]/10 text-[#7C3AED] rounded-lg text-[10px] font-black   hover:bg-[#7C3AED] hover:text-white transition-all disabled:opacity-50"
-                    title="Generate/Refresh AI Questions"
-                  >
-                    {generatingId === a.id ? (
-                      <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <span className="material-symbols-rounded text-sm">auto_awesome</span>
-                    )}
-                    {a.generated_questions ? "Regen AI" : "Gen AI"}
-                  </button>
-                )}
-                {a.generated_questions && (
-                  <button
-                    onClick={() => {
-                      setPreviewingAutomation(a);
-                      setOriginalQuestions(a.generated_questions);
-                    }}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-emerald-50 text-emerald-500 transition-all"
-                    title="Preview Questions"
-                  >
-                    <span className="material-symbols-rounded text-base">visibility</span>
-                  </button>
-                )}
-                <button
-                  onClick={() => handleToggle(a)}
-                  disabled={togglingId === a.id || !canAccess("automation:moderate")}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${!canAccess("automation:moderate") ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
-                </button>
-                {canAccess("automation:moderate") && (
-                  <>
-                    <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED]">
-                      <span className="material-symbols-rounded text-base">edit</span>
-                    </button>
-                    <button onClick={() => {
-                       setAutomationToDelete(a);
-                       setIsDeleteModalOpen(true);
-                    }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500">
-                      {deletingId === a.id ? (
-                        <span className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <span className="material-symbols-rounded text-base">delete</span>
-                      )}
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Rule Configuration</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Job & Assessment Topic</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Readiness</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Trigger/Schedule</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {filteredAutomations.map((a) => (
+                  <tr key={a.id} className="hover:bg-slate-50/50 transition-all group">
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-black uppercase tracking-tight">
+                            Round {a.stage_index}
+                          </span>
+                          {a.stage_name && (
+                            <span className="text-[10px] font-bold text-slate-400 tracking-tight">{a.stage_name}</span>
+                          )}
+                        </div>
+                        <p className="text-xs font-bold text-slate-800 line-clamp-1">
+                          <span className="text-slate-400 font-medium italic mr-1">If:</span>
+                          {a.criteria}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                          <span className="material-symbols-rounded text-sm text-slate-400">work</span>
+                          {jobTitle(a.job_requirement_id)}
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10px] font-black text-[#7C3AED] uppercase">
+                          <span className="material-symbols-rounded text-sm">psychology</span>
+                          {a.type}: {a.topic}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase ${a.generated_questions ? "text-emerald-500" : "text-amber-500"}`}>
+                        <span className="material-symbols-rounded text-sm">{a.generated_questions ? "check_circle" : "warning"}</span>
+                        {a.generated_questions ? `${a.generated_questions.length} QUESTIONS READY` : "NO QUESTIONS YET"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                          <span className="material-symbols-rounded text-sm text-slate-400">{a.is_immediate ? "flash_on" : "schedule"}</span>
+                          {a.is_immediate ? "Immediate" : new Date(a.send_at!.endsWith('Z') ? a.send_at! : a.send_at! + 'Z').toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                        </div>
+                        {a.auto_move && (
+                          <div className="flex items-center gap-1 text-[9px] font-black text-indigo-500 uppercase">
+                            <span className="material-symbols-rounded text-xs">double_arrow</span>
+                            Auto-Move Active
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleToggle(a)}
+                        disabled={togglingId === a.id || !canAccess("automation:moderate")}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                      >
+                        <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {canAccess("automation:moderate") && (
+                          <button
+                            onClick={() => handleGenerateQuestions(a.id)}
+                            disabled={generatingId === a.id}
+                            className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all ${a.generated_questions ? "bg-slate-50 text-slate-400 hover:bg-[#7C3AED]/10 hover:text-[#7C3AED]" : "bg-[#7C3AED]/10 text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white shadow-lg shadow-indigo-100"}`}
+                            title={a.generated_questions ? "Regenerate AI Questions" : "Generate AI Questions"}
+                          >
+                            {generatingId === a.id ? (
+                              <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <span className="material-symbols-rounded text-lg">auto_awesome</span>
+                            )}
+                          </button>
+                        )}
+                        {a.generated_questions && (
+                          <button
+                            onClick={() => {
+                              setPreviewingAutomation(a);
+                              setOriginalQuestions(a.generated_questions);
+                            }}
+                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm shadow-emerald-100"
+                            title="Preview Questions"
+                          >
+                            <span className="material-symbols-rounded text-lg">visibility</span>
+                          </button>
+                        )}
+                        <button onClick={() => openEdit(a)} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-all">
+                          <span className="material-symbols-rounded text-lg">edit</span>
+                        </button>
+                        <button onClick={() => { setAutomationToDelete(a); setIsDeleteModalOpen(true); }} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-all">
+                          <span className="material-symbols-rounded text-lg">delete</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+
       )}
 
       {/* ── Side Panel Drawer ─────────────────────────────────────────────────── */}
