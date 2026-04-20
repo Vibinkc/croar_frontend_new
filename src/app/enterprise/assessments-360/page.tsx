@@ -1,13 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
 
+interface Cycle {
+    id: string;
+    name: string;
+    status: string;
+    start_date: string;
+    end_date: string;
+}
+
 export default function X360Dashboard() {
-    const { token, canAccess } = useAuth();
+    const { canAccess } = useAuth();
     const router = useRouter();
     const [stats, setStats] = useState({
         activeCycles: 0,
@@ -15,7 +23,7 @@ export default function X360Dashboard() {
         completedMyAssessments: 0,
         totalParticipants: 0
     });
-    const [recentCycles, setRecentCycles] = useState<any[]>([]);
+    const [recentCycles, setRecentCycles] = useState<Cycle[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
@@ -25,34 +33,36 @@ export default function X360Dashboard() {
         (cycle.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                const [statsRes, cyclesRes] = await Promise.all([
-                    apiClient.get('/api/v1/enterprise/x360/stats'),
-                    apiClient.get('/api/v1/enterprise/x360/cycles')
-                ]);
+    const fetchDashboardData = useCallback(async () => {
+        try {
+            const [statsRes, cyclesRes] = await Promise.all([
+                apiClient.get('/api/v1/enterprise/x360/stats'),
+                apiClient.get('/api/v1/enterprise/x360/cycles')
+            ]);
 
-                if (statsRes.ok && cyclesRes.ok) {
-                    const statsData = await statsRes.json();
-                    const cycles = await cyclesRes.json();
-                    
-                    setStats({
-                        activeCycles: statsData.active_cycles,
-                        pendingMyAssessments: statsData.pending_my_assignments,
-                        completedMyAssessments: statsData.completed_my_assignments,
-                        totalParticipants: statsData.total_participants
-                    });
-                    setRecentCycles(cycles.slice(0, 3));
-                }
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
+            if (statsRes.ok && cyclesRes.ok) {
+                const statsData = await statsRes.json();
+                const cycles = await cyclesRes.json();
+                
+                setStats({
+                    activeCycles: statsData.active_cycles,
+                    pendingMyAssessments: statsData.pending_my_assignments,
+                    completedMyAssessments: statsData.completed_my_assignments,
+                    totalParticipants: statsData.total_participants
+                });
+                setRecentCycles(cycles.slice(0, 3));
             }
-        };
-        fetchDashboardData();
+        } catch (error) {
+            console.error("Failed to fetch dashboard data:", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, [fetchDashboardData]);
+
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">

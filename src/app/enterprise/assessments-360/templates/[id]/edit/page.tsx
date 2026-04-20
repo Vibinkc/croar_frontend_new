@@ -12,6 +12,23 @@ interface Question {
     category: string;
 }
 
+interface Template {
+    id: string;
+    name: string;
+    description?: string;
+    questions?: {
+        question: {
+            id: string;
+        };
+    }[];
+}
+
+interface AIQuestion {
+    text: string;
+    type: string;
+    category: string;
+}
+
 export default function EditX360Template({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const { token } = useAuth();
@@ -47,12 +64,12 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const tData = await tRes.json();
-                const currentTpl = tData.find((t: any) => t.id === id);
+                const currentTpl = tData.find((t: Template) => t.id === id);
                 if (currentTpl) {
                     setFormData({
                         name: currentTpl.name,
                         description: currentTpl.description || "",
-                        question_ids: currentTpl.questions?.map((q: any) => q.question.id) || []
+                        question_ids: currentTpl.questions?.map((q: { question: { id: string } }) => q.question.id) || []
                     });
                 }
             } catch (error) {
@@ -96,7 +113,7 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
             });
             
             if (genRes.ok) {
-                const aiQuestions = await genRes.json();
+                const aiQuestions: AIQuestion[] = await genRes.json();
                 const newQuestionIds: string[] = [];
                 
                 for (const q of aiQuestions) {

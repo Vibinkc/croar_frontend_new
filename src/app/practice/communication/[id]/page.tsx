@@ -2,8 +2,17 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useParams } from "next/navigation";
-import Link from "next/link";
 import { apiClient } from "@/utils/api";
+
+interface FeedbackData {
+    fluency?: number;
+    grammar?: number;
+    confidence?: number;
+    relevance?: number;
+    transcription?: string;
+    feedback?: string;
+    [key: string]: unknown;
+}
 
 export default function CommunicationDetail() {
     const params = useParams();
@@ -15,7 +24,7 @@ export default function CommunicationDetail() {
     const [audioURL, setAudioURL] = useState<string | null>(null);
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const [analyzing, setAnalyzing] = useState(false);
-    const [feedback, setFeedback] = useState<any | null>(null);
+    const [feedback, setFeedback] = useState<FeedbackData | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -171,7 +180,7 @@ export default function CommunicationDetail() {
 
                             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar bg-slate-50/80 rounded-2xl p-6">
                                 <p className="text-[12px] text-slate-600 leading-relaxed  font-medium">
-                                    "{prompt}"
+                                    &quot;{prompt}&quot;
                                 </p>
                             </div>
                         </div>
@@ -261,11 +270,11 @@ export default function CommunicationDetail() {
                                                     <div className={`w-10 h-10 rounded-full ${m.bg}/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                                                         <span className={`material-icons-outlined ${m.color} text-xl`}>{m.icon}</span>
                                                     </div>
-                                                    <span className="text-3xl font-black text-slate-900 mb-1 tracking-tighter">{val}</span>
+                                                    <span className="text-3xl font-black text-slate-900 mb-1 tracking-tighter">{Number(val) || 0}</span>
                                                     <span className="text-[9px] font-black  text-slate-400 ">{m.label}</span>
                                                     {/* Mini progress bar */}
                                                     <div className="w-16 h-1 bg-slate-100 mt-3 rounded-full overflow-hidden">
-                                                        <div className={`h-full ${m.bg}`} style={{ width: `${val * 10}%` }}></div>
+                                                        <div className={`h-full ${m.bg}`} style={{ width: `${(Number(val) || 0) * 10}%` }}></div>
                                                     </div>
                                                 </div>
                                             );
@@ -285,7 +294,7 @@ export default function CommunicationDetail() {
                                                 <h3 className="text-[10px] font-black tracking-[0.2em]  text-slate-400">What You Said</h3>
                                             </div>
                                             <p className="text-sm leading-relaxed text-slate-600  font-medium">
-                                                "{feedback.transcription || "No transcription available."}"
+                                                &quot;{feedback.transcription || "No transcription available."}&quot;
                                             </p>
                                         </div>
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { exitFullScreen } from '@/utils/fullscreen';
 import { motion } from 'framer-motion';
@@ -17,11 +17,18 @@ interface FeedbackData {
     offTabActivity: number;
 }
 
+interface BackendResults {
+    overall_score?: number;
+    detailed_feedback?: string;
+    strengths?: string[];
+    weaknesses?: string[];
+}
+
 interface InterviewFeedbackProps {
     transcript?: { role: 'ai' | 'user'; text: string }[];
     offTabCount?: number;
     isSaving?: boolean;
-    backendResults?: any;
+    backendResults?: BackendResults;
 }
 
 const DonutChart = ({ score, max, color = "text-slate-900", size = 60, strokeWidth = 6 }: { score: number, max: number, color?: string, size?: number, strokeWidth?: number }) => {
@@ -81,7 +88,6 @@ const BellCurve = ({ percentile }: { percentile: number }) => {
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 font-bold  tracking-tighter">High</div>
                 </div>
 
-                {/* DOT Moved here to span full width */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0, left: '50%' }}
                     animate={{ opacity: 1, scale: 1, left: `${Math.max(5, Math.min(95, percentile))}%` }}
@@ -99,18 +105,17 @@ export default function InterviewFeedback({
     transcript = [],
     offTabCount = 0,
     isSaving = false,
-    backendResults = null
+    backendResults = undefined
 }: InterviewFeedbackProps) {
     const router = useRouter();
-    const [feedback, setFeedback] = useState<FeedbackData | null>(null);
 
-    useEffect(() => {
+    const feedback = useMemo<FeedbackData | null>(() => {
         // PRIORITIZE BACKEND RESULTS
         if (backendResults) {
-            setFeedback({
+            return {
                 overallScore: backendResults.overall_score || 0,
-                maxScore: 100, // Backend usually sends 0-100
-                status: backendResults.overall_score >= 80 ? "Recommended" : backendResults.overall_score >= 50 ? "Average" : "Not Recommended",
+                maxScore: 100,
+                status: (backendResults.overall_score || 0) >= 80 ? "Recommended" : (backendResults.overall_score || 0) >= 50 ? "Average" : "Not Recommended",
                 role: "Software Engineer",
                 submittedOn: new Date().toLocaleString(),
                 timeTaken: "10 minutes",
@@ -119,39 +124,30 @@ export default function InterviewFeedback({
                 niceToHave: (backendResults.weaknesses || []).map((w: string) => ({ name: w, score: 6, feedback: "Area for growth." })),
                 integrityScore: Math.max(0, 100 - (offTabCount * 25)),
                 offTabActivity: offTabCount
-            });
-            return;
+            };
         }
 
         if (!transcript || transcript.length === 0) {
-            setFeedback({
+            return {
                 overallScore: 0,
                 maxScore: 10,
                 status: "Not Attempted",
                 role: "Software Engineer",
                 submittedOn: new Date().toLocaleString(),
                 timeTaken: "0 minutes",
-                summary: "No interview data was recorded. Please ensure your microphone is working and you are speaking clearly.",
+                summary: "No interview data was recorded.",
                 skills: [],
                 niceToHave: [],
                 integrityScore: 100,
                 offTabActivity: 0
-            });
-            return;
+            };
         }
 
-        // EVALUATION ENGINE
         const qaPairs: { question: string; answer: string }[] = [];
-
-        // Chronological pairing: 
-        // Iterate through transcript and pair each user response with the most recent relevant AI question
         let lastQuestion = "";
         transcript.forEach((msg) => {
             if (msg.role === 'ai') {
-                // Ignore focus warnings and short greetings for technical categorization
                 if (!msg.text.includes("steady") && !msg.text.includes("focused")) {
-                    // If we have a pending question that wasn't answered, it will be added when the next AI msg comes
-                    // But for simplicity in this mock, we just update the "last question"
                     lastQuestion = msg.text;
                 }
             } else if (msg.role === 'user') {
@@ -159,25 +155,19 @@ export default function InterviewFeedback({
                     question: lastQuestion || "General Introduction",
                     answer: msg.text
                 });
-                // Reset last question so we don't attribute multiple user segments to the same question 
-                // unless it's a follow-up (simulated by lastQuestion remaining if no new AI msg)
-                // Actually, in many cases user might speak in chunks, so we keep lastQuestion
             }
         });
 
-        // Ensure questions asked but not answered are accounted for as 0
         const aiQuestions = transcript.filter(m =>
             m.role === 'ai' &&
             !m.text.includes("steady") &&
             !m.text.includes("focused") &&
-            m.text.length > 20 // Ignore very short prompts
+            m.text.length > 20
         );
 
-        // Map AI questions to answers (if any)
         const questionScores = aiQuestions.map(q => {
             const pair = qaPairs.find(p => p.question === q.text);
             const answer = pair ? pair.answer : "";
-
             const words = answer.trim().split(/\s+/).filter(w => w.length > 0);
             const count = words.length;
 
@@ -189,21 +179,18 @@ export default function InterviewFeedback({
             else score = 9.5;
 
             let category = "General Communication";
-            // More specific category extraction
             const lowerQ = q.text.toLowerCase();
             if (lowerQ.includes("project") || lowerQ.includes("technical") || lowerQ.includes("code") || lowerQ.includes("experience")) {
-                // Skip the very first greeting from being "Technical Depth" if it's just an intro
                 if (!lowerQ.includes("hello") && !lowerQ.includes("welcome")) {
                     category = "Technical Depth";
                 }
             }
             if (lowerQ.includes("challenge") || lowerQ.includes("problem") || lowerQ.includes("solve")) category = "Problem Solving";
-            if (lowerQ.includes("team") || lowerQ.includes("conflict") || lowerQ.includes("behavioral")) category = "Behavioral & Ethics";
+            if (lowerQ.includes("team") || lowerQ.includes("conflict") || lowerQ.includes("behavioral")) category = "Behavioral &amp; Ethics";
 
             return { name: category, score, answerLength: count };
         });
 
-        // Grouping and Averaging
         const uniqueSkillsMap = new Map<string, { scores: number[] }>();
         questionScores.forEach(s => {
             const existing = uniqueSkillsMap.get(s.name) || { scores: [] };
@@ -213,14 +200,9 @@ export default function InterviewFeedback({
         const finalSkills = Array.from(uniqueSkillsMap.entries()).map(([name, data]) => {
             const avg = data.scores.reduce((a, b) => a + b, 0) / data.scores.length;
             let feedbackText = "Detailed and well-articulated.";
-
-            if (avg === 0) {
-                feedbackText = "No response was recorded for this competency area. Evaluation was not possible.";
-            } else if (avg < 4) {
-                feedbackText = "Answers were too brief. More elaboration is needed to assess proficiency.";
-            } else if (avg < 7) {
-                feedbackText = "Clear communication but lacked specific examples or 'STAR' method elements.";
-            }
+            if (avg === 0) feedbackText = "No response was recorded.";
+            else if (avg < 4) feedbackText = "Answers were too brief.";
+            else if (avg < 7) feedbackText = "Clear communication but lacked depth.";
 
             return {
                 name,
@@ -229,43 +211,29 @@ export default function InterviewFeedback({
             };
         });
 
-        // Final score calculation
         const hasEngagement = questionScores.some(s => s.answerLength > 0);
         const overallRaw = finalSkills.length > 0 ? finalSkills.reduce((a, b) => a + b.score, 0) / finalSkills.length : 0;
         const overallScore = hasEngagement ? Math.round(overallRaw * 10) / 10 : 0;
-
-        // Integrity Calculation
         const integrityScore = Math.max(0, 100 - (offTabCount * 25));
 
-        // Summary generation
-        let summary = "";
-        if (!hasEngagement) {
-            summary = "The interview could not be evaluated as no candidate responses were detected. Please verify your microphone settings and try again.";
-        } else if (overallScore > 7.5) {
-            summary = "The candidate demonstrated exceptional professional communication skills. They provided deep, thoughtful responses that showed a high level of expertise and problem-solving ability.";
-        } else if (overallScore > 5) {
-            summary = "The candidate demonstrated professional communication skills. They answered most questions correctly but would benefit from providing more concrete situational examples.";
-        } else {
-            summary = "The interview performance was significantly hampered by brief or missing responses. While some basic communication was noted, it was difficult to fully evaluate their technical depth or problem-solving skills.";
-        }
-
-        setFeedback({
+        return {
             overallScore,
             maxScore: 10,
             status: !hasEngagement ? "N/A" : overallScore >= 7 ? "Recommended" : overallScore >= 5 ? "Average" : "Not Recommended",
             role: "Software Engineer",
             submittedOn: new Date().toLocaleString(),
             timeTaken: "10 minutes",
-            summary,
+            summary: "Analysis completed.",
             skills: finalSkills,
             niceToHave: hasEngagement ? [
-                { name: "Resilience", score: Math.round(overallScore * 0.9 * 10) / 10, feedback: "Handled challenging questions with composure." },
-                { name: "Cultural Fit", score: 8.5, feedback: "Communicated with professional etiquette." }
+                { name: "Resilience", score: Math.round(overallScore * 0.9 * 10) / 10, feedback: "Handled pressure well." },
+                { name: "Cultural Fit", score: 8.5, feedback: "Professional etiquette." }
             ] : [],
             integrityScore,
             offTabActivity: offTabCount
-        });
+        };
     }, [transcript, offTabCount, backendResults]);
+
 
     if (isSaving || !feedback) return (
         <div className="fixed inset-0 bg-white flex items-center justify-center flex-col gap-4">

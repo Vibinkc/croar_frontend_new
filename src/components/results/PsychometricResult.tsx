@@ -4,9 +4,18 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
+interface PsychometricResultData {
+    trait_score?: number;
+    profile_summary?: string;
+}
+
+interface PsychometricTest {
+    trait?: string;
+}
+
 interface PsychometricResultProps {
-    result: any;
-    test: any;
+    result: PsychometricResultData;
+    test: PsychometricTest;
     onClose?: () => void;
     isModal?: boolean;
 }
@@ -19,15 +28,18 @@ export default function PsychometricResult({ result, test, onClose, isModal = fa
     useEffect(() => {
         if (!isModal && result && resultRef.current) {
             const enterFullScreen = async () => {
-                const element = resultRef.current;
+                const element = resultRef.current as (HTMLElement & {
+                    webkitRequestFullscreen?: () => Promise<void>;
+                    msRequestFullscreen?: () => Promise<void>;
+                });
                 if (!element) return;
                 try {
                     if (element.requestFullscreen) {
                         await element.requestFullscreen();
-                    } else if ((element as any).webkitRequestFullscreen) {
-                        await (element as any).webkitRequestFullscreen();
-                    } else if ((element as any).msRequestFullscreen) {
-                        await (element as any).msRequestFullscreen();
+                    } else if (element.webkitRequestFullscreen) {
+                        await element.webkitRequestFullscreen();
+                    } else if (element.msRequestFullscreen) {
+                        await element.msRequestFullscreen();
                     }
                 } catch (err) {
                     console.error("Error attempting to enable full-screen mode:", err);
@@ -100,7 +112,7 @@ export default function PsychometricResult({ result, test, onClose, isModal = fa
 
                         <div className="text-left bg-black/20 p-6 rounded-2xl border border-white/5">
                             <p className="text-sm text-slate-400  leading-relaxed font-medium">
-                                "{result.profile_summary}"
+                                &quot;{result.profile_summary}&quot;
                             </p>
                         </div>
                     </div>

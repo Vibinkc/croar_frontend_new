@@ -13,7 +13,7 @@ export default function AIGenerationOverlay({ isOpen, title = "Generating Conten
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
+        setTimeout(() => setMounted(true), 0);
         if (isOpen) {
             document.body.style.overflow = "hidden";
         } else {

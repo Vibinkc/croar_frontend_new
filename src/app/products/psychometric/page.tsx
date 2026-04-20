@@ -42,7 +42,7 @@ export default function PsychometricProductPage() {
                             transition={{ delay: 0.4 }}
                             className="text-white/80 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto"
                         >
-                            Employers don't just hire skills; they hire people. Discover your "Big 5" traits, workplace archetype, and hidden leadership strengths using our clinically validated assessment.
+                            Employers don&apos;t just hire skills; they hire people. Discover your &quot;Big 5&quot; traits, workplace archetype, and hidden leadership strengths using our clinically validated assessment.
                         </motion.p>
                     </div>
                     <motion.div
@@ -94,7 +94,7 @@ export default function PsychometricProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Workplace Archetypes</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed">Are you "The Commander", "The Mediator", or "The Analyst"? Understand your default mode of operation.</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed">Are you &quot;The Commander&quot;, &quot;The Mediator&quot;, or &quot;The Analyst&quot;? Understand your default mode of operation.</p>
                             </div>
                         </motion.div>
                         <motion.div
@@ -127,7 +127,7 @@ export default function PsychometricProductPage() {
                         className="flex flex-col gap-6"
                     >
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Backed by Science.</h2>
-                        <p className="text-lg text-slate-600">We don't do horoscopes. We measure core psychological constructs that predict workplace performance, team fit, and leadership potential.</p>
+                        <p className="text-lg text-slate-600">We don&apos;t do horoscopes. We measure core psychological constructs that predict workplace performance, team fit, and leadership potential.</p>
 
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             {[
@@ -208,7 +208,7 @@ export default function PsychometricProductPage() {
                         <div className="flex-1">
                             <h2 className="text-3xl font-black text-slate-900 mb-6">More Than Just a Horoscope.</h2>
                             <p className="text-slate-600 text-lg leading-relaxed mb-8">
-                                We don't do "Barnum statements". Our assessment is built on the robust Big 5 (OCEAN) model, calibrated against a normative database of 50,000+ successful professionals.
+                                We don&apos;t do &quot;Barnum statements&quot;. Our assessment is built on the robust Big 5 (OCEAN) model, calibrated against a normative database of 50,000+ successful professionals.
                             </p>
                             <div className="space-y-4">
                                 <div className="flex items-center gap-4">

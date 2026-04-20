@@ -342,7 +342,7 @@ function zf_ValidateAndSubmit(){
 	
 	function zf_SetDateAndMonthRegexBasedOnDateFormate(dateFormat){
 		
-		var dateAndMonthRegexFormateArray = new Array();
+		var dateAndMonthRegexFormateArray = [];
 		var dateFormatRegExp;
         var monthYearFormatRegExp;
 		if(dateFormat === "dd-MMM-yyyy"){

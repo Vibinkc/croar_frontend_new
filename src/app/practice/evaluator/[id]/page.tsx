@@ -180,6 +180,7 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
                                 <div className="relative z-10 space-y-4">
                                     <span className="text-[7px] font-black text-slate-400 tracking-[0.4em]  block">Mission_Briefing</span>
                                     <p className="text-xs font-medium leading-relaxed  text-slate-300">
+                                        {/* eslint-disable-next-line react/no-unescaped-entities */}
                                         "{problem.content.question}"
                                     </p>
                                 </div>

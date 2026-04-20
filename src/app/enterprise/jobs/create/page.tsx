@@ -66,6 +66,16 @@ const DEFAULT_WORKFLOW_STAGES: WorkflowStage[] = [
     { id: '1', name: 'Initial Screening', type: 'Screening', icon: 'search' }
 ];
 
+interface Company {
+    id: string;
+    name: string;
+}
+
+interface EmailTemplate {
+    id: string;
+    name: string;
+}
+
 export default function CreateJobPage() {
     const { token } = useAuth();
     const router = useRouter();
@@ -74,46 +84,8 @@ export default function CreateJobPage() {
     const [currentStep, setCurrentStep] = useState(1);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [createdJobId, setCreatedJobId] = useState("");
-    const [companies, setCompanies] = useState<any[]>([]);
-    const [emailTemplates, setEmailTemplates] = useState<any[]>([]);
-
-    useEffect(() => {
-        if (token) {
-            fetchCompanies();
-            fetchEmailTemplates();
-        }
-    }, [token]);
-
-    const fetchEmailTemplates = async () => {
-        try {
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setEmailTemplates(data);
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const fetchCompanies = async () => {
-        try {
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/company/`, {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setCompanies(data);
-                if (data.length > 0) {
-                    setFormData(prev => ({ ...prev, company_id: data[0].id }));
-                }
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const [companies, setCompanies] = useState<Company[]>([]);
+    const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
 
     const [formData, setFormData] = useState({
         title: "",
@@ -135,6 +107,45 @@ export default function CreateJobPage() {
         application_fields: DEFAULT_APPLICATION_FIELDS,
         workflow_stages: DEFAULT_WORKFLOW_STAGES
     });
+
+    const fetchEmailTemplates = useCallback(async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setEmailTemplates(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch email templates:", error);
+        }
+    }, [token]);
+
+    const fetchCompanies = useCallback(async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/company/`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setCompanies(data);
+                if (data.length > 0) {
+                    setFormData(prev => ({ ...prev, company_id: data[0].id }));
+                }
+            }
+        } catch (error) {
+            console.error("Failed to fetch companies:", error);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if (token) {
+            fetchCompanies();
+            fetchEmailTemplates();
+        }
+    }, [token, fetchCompanies, fetchEmailTemplates]);
+
 
     const steps = [
         { id: 1, name: "Job Details", icon: "ClipboardList" },
@@ -165,7 +176,7 @@ export default function CreateJobPage() {
                 setShowSuccessModal(true);
             }
         } catch (error) {
-            console.error(error);
+            console.error("Failed to submit job:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -185,7 +196,7 @@ export default function CreateJobPage() {
                 setFormData({ ...formData, description: data.description, required_skills: data.skills?.join(", ") || formData.required_skills });
             }
         } catch (error) {
-            console.error(error);
+            console.error("Failed to generate AI description:", error);
         } finally {
             setIsGeneratingAI(false);
         }
@@ -446,7 +457,7 @@ export default function CreateJobPage() {
                                                 <div className="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-all shadow-inner"><Pin className="w-4 h-4" /></div>
                                                 <div className="flex-1 grid grid-cols-2 gap-4 items-center">
                                                     <input type="text" className="bg-transparent border-none outline-none text-[13px] font-black text-slate-800 p-0 focus:text-indigo-600 transition-colors  " value={field.label} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, label: e.target.value } : f) }))} />
-                                                    <select className="bg-slate-50 border-none outline-none text-[9px] font-black text-slate-400  px-3 py-1.5 rounded-xl cursor-pointer hover:bg-slate-100 transition-all w-32" value={field.type} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, type: e.target.value as any } : f) }))}>
+                                                    <select className="bg-slate-50 border-none outline-none text-[9px] font-black text-slate-400  px-3 py-1.5 rounded-xl cursor-pointer hover:bg-slate-100 transition-all w-32" value={field.type} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, type: e.target.value as ApplicationField['type'] } : f) }))}>
                                                         <option value="text">Text</option><option value="email">Email</option><option value="number">Number</option><option value="boolean">Boolean</option><option value="file">File</option>
                                                     </select>
                                                 </div>

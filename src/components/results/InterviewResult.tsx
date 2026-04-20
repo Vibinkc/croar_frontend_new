@@ -2,8 +2,16 @@
 
 import Link from "next/link";
 
+interface InterviewResultData {
+    overall_score?: number;
+    tone_analysis?: string;
+    strengths?: string[];
+    weaknesses?: string[];
+    detailed_feedback?: string;
+}
+
 interface InterviewResultProps {
-    result: any;
+    result: InterviewResultData;
     onClose?: () => void;
     isModal?: boolean;
 }

@@ -85,6 +85,7 @@ export default function JobDetailPage() {
     const [applications, setApplications] = useState<Application[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [onboardings, setOnboardings] = useState<any[]>([]);
     const [isOnboardingLoading, setIsOnboardingLoading] = useState(false);
 

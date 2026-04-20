@@ -4,13 +4,30 @@ import { useState, useEffect } from "react";
 import { apiClient } from "@/utils/api";
 import Link from "next/link";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface ResumeTemplate {
+    id: string;
+    name: string;
+    extracted_fields?: {
+        sections?: Record<string, unknown>[];
+    };
+}
+
+interface ResumeSubmission {
+    id: number;
+    template_id: string;
+    created_at: string;
+}
+
 export default function ResumeBuilderStudent() {
-    const [templates, setTemplates] = useState<any[]>([]);
-    const [submissions, setSubmissions] = useState<any[]>([]);
+    const [templates, setTemplates] = useState<ResumeTemplate[]>([]);
+    const [submissions, setSubmissions] = useState<ResumeSubmission[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const load = async () => {
+            // eslint-disable-next-line react-hooks/immutability
             await Promise.all([fetchTemplates(), fetchSubmissions()]);
             setIsLoading(false);
         };
@@ -74,8 +91,8 @@ export default function ResumeBuilderStudent() {
                         My Resumes
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {submissions.map(s => {
-                            const tmpl = templates.find(t => t.id === s.template_id);
+                        {submissions.map((s: ResumeSubmission) => {
+                            const tmpl = templates.find((t: ResumeTemplate) => t.id === s.template_id);
                             return (
                                 <div key={s.id} className="bg-orange-50/50 p-6 rounded-xl border border-orange-100 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-start justify-between mb-2">
@@ -113,7 +130,7 @@ export default function ResumeBuilderStudent() {
                     Create New Resume
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {templates.map(t => (
+                    {templates.map((t: ResumeTemplate) => (
                         <Link key={t.id} href={`/practice/resume-builder/${t.id}`} className="group relative bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
                             <div className="h-40 bg-slate-50 flex items-center justify-center group-hover:bg-slate-100 transition-colors">
                                 <span className="material-icons-outlined text-6xl text-slate-300 group-hover:text-slate-500 transition-colors">description</span>

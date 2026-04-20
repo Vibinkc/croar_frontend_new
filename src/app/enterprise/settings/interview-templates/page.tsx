@@ -5,7 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-    Plus, 
     Trash2, 
     Settings2, 
     Mic2, 
@@ -13,7 +12,6 @@ import {
     Clock, 
     Search, 
     RefreshCcw, 
-    ChevronRight,
     MessagesSquare,
     Calendar,
     ArrowRight
@@ -30,7 +28,7 @@ interface InterviewTemplate {
     require_video: boolean;
     type: string;
     created_at: string;
-    plan?: any;
+    plan?: Record<string, unknown>;
 }
 
 function InterviewTemplatesContent() {
@@ -57,8 +55,8 @@ function InterviewTemplatesContent() {
                 const data = await res.json();
                 setTemplates(data);
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to fetch interview templates:", error);
         } finally {
             setTimeout(() => setIsLoading(false), 600);
         }
@@ -82,8 +80,8 @@ function InterviewTemplatesContent() {
             if (res.ok) {
                 setTemplates((prev) => prev.filter((t) => t.id !== templateToDelete.id));
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to delete interview template:", error);
         } finally {
             setIsDeleteModalOpen(false);
             setTemplateToDelete(null);

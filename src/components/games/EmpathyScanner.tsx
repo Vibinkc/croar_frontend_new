@@ -30,7 +30,7 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
 
     useEffect(() => {
         if (gameStarted && !showFinalResult) {
-            setIsScanning(true);
+            setTimeout(() => setIsScanning(true), 0);
             const timer = setTimeout(() => setIsScanning(false), 2500);
             return () => clearTimeout(timer);
         }
@@ -102,7 +102,7 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                         <div className="text-7xl font-black text-indigo-400 tracking-tighter">
                             {Math.round((score / data.length) * 100)}%
                         </div>
-                        <p className="text-indigo-300/60 mt-4 font-medium ">"Empathy is the ultimate tactical advantage."</p>
+                        <p className="text-indigo-300/60 mt-4 font-medium ">&quot;Empathy is the ultimate tactical advantage.&quot;</p>
                     </div>
                 </motion.div>
             </div>
@@ -206,7 +206,7 @@ export default function EmpathyScanner({ data, onComplete }: EmpathyScannerProps
                             <p className="text-[10px] font-black  tracking-[0.2em] text-indigo-300">Situation Log</p>
                         </div>
                         <h2 className="text-xl font-bold  leading-relaxed text-slate-100">
-                            "{currentQuestion.text}"
+                            &quot;{currentQuestion.text}&quot;
                         </h2>
                     </div>
 

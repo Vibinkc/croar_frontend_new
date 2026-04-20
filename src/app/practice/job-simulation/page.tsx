@@ -5,6 +5,7 @@ import Link from "next/link";
 import { apiClient } from "@/utils/api";
 
 export default function StudentJobSimulationList() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [simulations, setSimulations] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -89,6 +90,7 @@ export default function StudentJobSimulationList() {
                                 <p className="text-slate-600 dark:text-slate-400 text-[10px] leading-relaxed font-medium line-clamp-2">{sim.description}</p>
 
                                 <div className="flex items-center gap-1 mt-3">
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                     {sim.rounds?.slice(0, 4).map((r: any, idx: number) => (
                                         <div key={idx} className="h-1 flex-1 bg-slate-100 rounded-full overflow-hidden">
                                             <div className={`h-full ${colors.bar} opacity-50`}></div>

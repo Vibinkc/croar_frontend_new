@@ -18,12 +18,73 @@ import {
     Area
 } from "recharts";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface StatEntry {
+    date: string;
+    count: number;
+}
+
+interface ProficiencyEntry {
+    type: string;
+    score: number;
+    count?: number;
+}
+
+interface Ranking {
+    label: string;
+    rank: number | string;
+    total: number;
+    percentile: number;
+}
+
+interface UserStats {
+    rankings?: Ranking[];
+    activity_history?: StatEntry[];
+    total_practice_questions?: number;
+    total_assessments?: number;
+    average_score?: number;
+    proficiency?: ProficiencyEntry[];
+}
+
+interface UserMe {
+    first_name: string;
+    last_name: string;
+    username: string;
+    department_name?: string;
+}
+
+interface Badge {
+    id: string;
+    name: string;
+    group: string;
+    icon: string;
+    color: string;
+    bg: string;
+    next: {
+        target: number;
+        current: number;
+        label: string;
+    } | null;
+}
+
+interface Certificate {
+    id: string;
+    category: string;
+    level: number;
+    levelName: string;
+    count: number;
+    nextMilestone: number;
+    issueDate: string | null;
+    idStr: string;
+}
+
 export default function ProfilePage() {
     const { user: authUser, role } = useAuth();
-    const [stats, setStats] = useState<any>(null);
-    const [me, setMe] = useState<any>(null);
+    const [stats, setStats] = useState<UserStats | null>(null);
+    const [me, setMe] = useState<UserMe | null>(null);
     const [loading, setLoading] = useState(true);
-    const [selectedCert, setSelectedCert] = useState<any>(null);
+    const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,8 +116,8 @@ export default function ProfilePage() {
     }
 
     const ratings = stats?.rankings || [];
-    const batchRank = ratings.find((r: any) => r.label === "Batch Rank") || { rank: "N/A", total: 1, percentile: 0 };
-    const departmentRank = ratings.find((r: any) => r.label === "Department Rank") || { rank: "N/A", total: 1, percentile: 0 };
+    const batchRank = ratings.find((r: Ranking) => r.label === "Batch Rank") || { rank: "N/A", total: 1, percentile: 0 };
+    const departmentRank = ratings.find((r: Ranking) => r.label === "Department Rank") || { rank: "N/A", total: 1, percentile: 0 };
 
     // Format activity for heatmap
     // Generate last 365 days
@@ -65,7 +126,7 @@ export default function ProfilePage() {
         const d = new Date();
         d.setDate(today.getDate() - (363 - i));
         const dateStr = d.toISOString().split('T')[0];
-        const activity = stats?.activity_history?.find((h: any) => h.date === dateStr);
+        const activity = stats?.activity_history?.find((h: StatEntry) => h.date === dateStr);
         return { date: dateStr, count: activity?.count || 0 };
     });
 
@@ -77,19 +138,19 @@ export default function ProfilePage() {
     const hardCount = Math.max(0, solvedCount - easyCount - medCount);
 
     const heatmapData = stats?.activity_history || [];
-    const totalSubmissions = heatmapData.reduce((acc: number, curr: any) => acc + curr.count, 0);
-    const activeDays = heatmapData.filter((h: any) => h.count > 0).length;
+    const totalSubmissions = heatmapData.reduce((acc: number, curr: StatEntry) => acc + curr.count, 0);
+    const activeDays = heatmapData.filter((h: StatEntry) => h.count > 0).length;
 
     // Calculate streak
     let currentStreak = 0;
-    const sortedHistory = [...heatmapData].sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const sortedHistory = [...heatmapData].sort((a: StatEntry, b: StatEntry) => new Date(b.date).getTime() - new Date(a.date).getTime());
     for (let i = 0; i < sortedHistory.length; i++) {
         if (sortedHistory[i].count > 0) currentStreak++;
         else if (i > 0) break; // Only break if not the first check (today/yesterday might be 0)
     }
     // Badge Calculation Logic
     const calculateBadges = () => {
-        const badges: any[] = [];
+        const badges: Badge[] = [];
         const assessments = stats?.total_assessments || 0;
         const practice = stats?.total_practice_questions || 0;
         const streak = currentStreak;
@@ -123,8 +184,8 @@ export default function ProfilePage() {
 
     // Certification Calculation Logic (Category-wise)
     const calculateCertificates = () => {
-        const certs: any[] = [];
-        stats?.proficiency?.forEach((item: any) => {
+        const certs: Certificate[] = [];
+        stats?.proficiency?.forEach((item: ProficiencyEntry) => {
             const count = item.count || 0;
             const category = item.type;
 
@@ -240,7 +301,7 @@ export default function ProfilePage() {
                         <div className="mt-8">
                             <h3 className="text-[10px] font-black text-slate-400   mb-4">Proficiency Categories</h3>
                             <div className="space-y-3">
-                                {stats?.proficiency?.map((item: any, i: number) => (
+                                {stats?.proficiency?.map((item: ProficiencyEntry, i: number) => (
                                     <div key={i} className="flex justify-between text-[11px] font-bold">
                                         <span className="text-slate-600 dark:text-slate-300">{item.type}</span>
                                         <span className="text-slate-900 dark:text-white">{item.score}%</span>
@@ -384,7 +445,7 @@ export default function ProfilePage() {
                             </div>
                             {/* Simple Skill Progress Bars */}
                             <div className="space-y-5">
-                                {stats?.proficiency?.map((item: any, i: number) => (
+                                {stats?.proficiency?.map((item: ProficiencyEntry, i: number) => (
                                     <div key={i}>
                                         <div className="flex justify-between text-[11px] font-bold mb-2  tracking-wide">
                                             <span className="text-slate-600 dark:text-slate-300">{item.type}</span>
@@ -591,6 +652,7 @@ export default function ProfilePage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300 print:p-0 print:bg-white">
                     {/* Level-based Color Mapping */}
                     {(() => {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const levelColors: any = {
                             1: { border: '#CD7F32', bg: '#FFF5EB', text: '#8B5A2B', highlight: 'bg-[#CD7F32]/10', borderHighlight: 'border-[#CD7F32]/20' },
                             2: { border: '#A0A0A0', bg: '#F8F8F8', text: '#4B4B4B', highlight: 'bg-[#A0A0A0]/10', borderHighlight: 'border-[#A0A0A0]/20' },

@@ -9,7 +9,9 @@ import { apiClient } from "@/utils/api";
 export default function SurveyDashboard() {
     const { token, canAccess } = useAuth();
     const router = useRouter();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [instances, setInstances] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [templates, setTemplates] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");

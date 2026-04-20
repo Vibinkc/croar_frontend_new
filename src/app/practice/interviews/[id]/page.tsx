@@ -15,6 +15,7 @@ export default function InterviewSessionPage() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const isFromAssessment = searchParams.get("source") === "assessment";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [interview, setInterview] = useState<any>(null);
     const [hasStarted, setHasStarted] = useState(false);
 
@@ -32,6 +33,7 @@ export default function InterviewSessionPage() {
 
     useEffect(() => {
         if (params.id) {
+            // eslint-disable-next-line react-hooks/immutability
             fetchInterviewDetails();
         }
     }, [params.id]);

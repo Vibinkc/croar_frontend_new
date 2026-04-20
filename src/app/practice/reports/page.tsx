@@ -21,16 +21,67 @@ import EvaluatorResult from "@/components/results/EvaluatorResult";
 import InterviewResult from "@/components/results/InterviewResult";
 import AssessmentResult from "@/components/results/AssessmentResult";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface Ranking {
+    label: string;
+    rank: number | string;
+    total: number;
+    percentile: number;
+}
+
+interface Comparison {
+    metric: string;
+    user: number;
+    batch_avg: number;
+}
+
+interface ReportStats {
+    rankings?: Ranking[];
+    comparisons?: Comparison[];
+}
+
+interface ActivityItem {
+    id: string;
+    type: string;
+    title: string;
+    date: string;
+    score: number;
+    details?: Record<string, string | number | boolean | undefined>;
+}
+
+interface PracticeStat {
+    topic: string;
+    module_type: string;
+    progress_percentage: number;
+    completed_questions: number;
+    total_questions: number;
+    correct_answers: number;
+}
+
+interface ActivityData {
+    timeline: ActivityItem[];
+    practice_stats: PracticeStat[];
+}
+
+interface UserMe {
+    id: string;
+    first_name: string;
+    last_name: string;
+    username: string;
+}
+
 export default function StudentReportsPage() {
     const { user: authUser } = useAuth();
-    const [stats, setStats] = useState<any>(null);
-    const [activityData, setActivityData] = useState<any>(null);
+    const [stats, setStats] = useState<ReportStats | null>(null);
+    const [activityData, setActivityData] = useState<ActivityData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<UserMe | null>(null);
 
     // Modal State
-    const [selectedActivity, setSelectedActivity] = useState<any>(null);
-    const [reportData, setReportData] = useState<any>(null);
+    const [selectedActivity, setSelectedActivity] = useState<ActivityItem | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [reportData, setReportData] = useState<Record<string, any> | null>(null);
     const [loadingReport, setLoadingReport] = useState(false);
 
     useEffect(() => {
@@ -61,7 +112,7 @@ export default function StudentReportsPage() {
         }
     };
 
-    const handleViewReport = async (item: any) => {
+    const handleViewReport = async (item: ActivityItem) => {
         setSelectedActivity(item);
         setLoadingReport(true);
         setReportData(null);
@@ -85,12 +136,12 @@ export default function StudentReportsPage() {
         let csvContent = "data:text/csv;charset=utf-8,";
         csvContent += "PRACTICE PROGRESS\n";
         csvContent += "Topic,Module Type,Progress %,Completed,Total,Correct\n";
-        practice_stats.forEach((s: any) => {
+        practice_stats.forEach((s: PracticeStat) => {
             csvContent += `${s.topic},${s.module_type},${s.progress_percentage},${s.completed_questions},${s.total_questions},${s.correct_answers}\n`;
         });
         csvContent += "\nACTIVITY TIMELINE\n";
         csvContent += "Date,Time,Type,Title,Score %\n";
-        timeline.forEach((item: any) => {
+        timeline.forEach((item: ActivityItem) => {
             const dateStr = item.date ? format(new Date(item.date), "yyyy-MM-dd") : "N/A";
             const timeStr = item.date ? format(new Date(item.date), "HH:mm") : "N/A";
             csvContent += `${dateStr},${timeStr},${item.type},${item.title},${item.score || 0}\n`;
@@ -173,7 +224,7 @@ export default function StudentReportsPage() {
             {/* Combined Stats Row (Horizontal) */}
             <div className="flex flex-nowrap gap-3 overflow-x-auto no-scrollbar pb-2">
                 {/* Rankings */}
-                {stats?.rankings?.map((rank: any, i: number) => (
+                {stats?.rankings?.map((rank: Ranking, i: number) => (
                     <div key={i} className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm transition-all hover:shadow-md flex-shrink-0 min-w-[200px]">
                         <span className="text-[8px] font-black   text-slate-400 block mb-1">{rank.label}</span>
                         <div className="flex items-baseline gap-1">
@@ -199,7 +250,7 @@ export default function StudentReportsPage() {
                             Practice Progress
                         </h3>
                         <div className="space-y-6">
-                            {practice_stats.map((stat: any, i: number) => (
+                            {practice_stats.map((stat: PracticeStat, i: number) => (
                                 <div key={i} className="group">
                                     <div className="flex justify-between text-xs font-bold text-slate-700 mb-2">
                                         <span className=" tracking-tight">{stat.topic} <span className="text-slate-400 font-medium">({stat.module_type})</span></span>
@@ -262,7 +313,7 @@ export default function StudentReportsPage() {
                         </h3>
 
                         <div className="space-y-8 relative before:absolute before:inset-y-0 before:left-[19px] before:w-0.5 before:bg-slate-50">
-                            {timeline.map((item: any, i: number) => {
+                            {timeline.map((item: ActivityItem, i: number) => {
                                 const typeColors = getTypeColor(item.type);
                                 return (
                                     <div key={i} className="relative pl-12 group">
@@ -315,8 +366,15 @@ export default function StudentReportsPage() {
     );
 }
 
-function StatCard({ label, value, icon, theme = 'primary' }: any) {
-    const themeColors: any = {
+interface StatCardProps {
+    label: string;
+    value: string | number;
+    icon: string;
+    theme?: 'primary' | 'blue' | 'violet' | 'emerald' | 'amber';
+}
+
+function StatCard({ label, value, icon, theme = 'primary' }: StatCardProps) {
+    const themeColors: Record<string, { bg: string; text: string; hoverBg: string; hoverText: string }> = {
         primary: { bg: 'bg-slate-50', text: 'text-slate-400', hoverBg: 'group-hover:bg-slate-900', hoverText: 'group-hover:text-white' },
         blue: { bg: 'bg-blue-50', text: 'text-blue-500', hoverBg: 'group-hover:bg-blue-500', hoverText: 'group-hover:text-white' },
         violet: { bg: 'bg-violet-50', text: 'text-violet-500', hoverBg: 'group-hover:bg-violet-500', hoverText: 'group-hover:text-white' },
@@ -360,7 +418,7 @@ function getTypeColor(type: string) {
     }
 }
 
-function renderDetails(item: any) {
+function renderDetails(item: ActivityItem) {
     const { details } = item;
     const d = details || {};
 

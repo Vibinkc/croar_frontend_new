@@ -67,7 +67,7 @@ export default function VideoInterviewsProductPage() {
                     <div className="flex flex-col gap-2 text-center md:text-left">
                         <span className="text-red-500 font-bold   text-sm">Visual Intelligence</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Why Appearance Matters</h2>
-                        <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">Humans judge trustworthiness in milliseconds. We help you control the signals you're sending.</p>
+                        <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">Humans judge trustworthiness in milliseconds. We help you control the signals you&apos;re sending.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <motion.div
@@ -82,7 +82,7 @@ export default function VideoInterviewsProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Eye Contact Tracking</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed">Are you looking at the lens or your screen? We map your gaze to ensure you're connecting with your audience.</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed">Are you looking at the lens or your screen? We map your gaze to ensure you&apos;re connecting with your audience.</p>
                             </div>
                         </motion.div>
                         <motion.div
@@ -97,7 +97,7 @@ export default function VideoInterviewsProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Micro-Expressions</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed">We detect fast flashes of doubt, fear, or annoyance that you might not even know you're showing.</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed">We detect fast flashes of doubt, fear, or annoyance that you might not even know you&apos;re showing.</p>
                             </div>
                         </motion.div>
                         <motion.div
@@ -132,7 +132,7 @@ export default function VideoInterviewsProductPage() {
                             AI Director Mode
                         </div>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Real-Time Guidance</h2>
-                        <p className="text-lg text-slate-600">Prepare for the "Video On" moment. Our interface overlays helpful cues while you record, ensuring you stay centered, audible, and engaged.</p>
+                        <p className="text-lg text-slate-600">Prepare for the &quot;Video On&quot; moment. Our interface overlays helpful cues while you record, ensuring you stay centered, audible, and engaged.</p>
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
                                 <div className="text-2xl font-black text-slate-900">40+</div>

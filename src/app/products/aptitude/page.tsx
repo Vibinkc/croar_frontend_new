@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
@@ -42,7 +41,7 @@ export default function AptitudeProductPage() {
                             transition={{ delay: 0.4 }}
                             className="text-white/80 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto"
                         >
-                            Aptitude isn't just about math; it's about decision-making speed. Our adaptive platform trains your brain to recognize patterns, calculate probabilities, and solve complex problems under intense time pressure.
+                            Aptitude isn&apos;t just about math; it&apos;s about decision-making speed. Our adaptive platform trains your brain to recognize patterns, calculate probabilities, and solve complex problems under intense time pressure.
                         </motion.p>
                     </div>
                     <motion.div
@@ -94,7 +93,7 @@ export default function AptitudeProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Adaptive Difficulty</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed">If you ace Level 1, we skip Level 2. Our algorithm keeps you in the "Flow State" by constantly adjusting the challenge.</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed">If you ace Level 1, we skip Level 2. Our algorithm keeps you in the &quot;Flow State&quot; by constantly adjusting the challenge.</p>
                             </div>
                         </motion.div>
                         <motion.div
@@ -109,7 +108,7 @@ export default function AptitudeProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Granular Analytics</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed">Know exactly that you are weak in "Compound Interest" but strong in "Simple Interest" with micro-topic tagging.</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed">Know exactly that you are weak in &quot;Compound Interest&quot; but strong in &quot;Simple Interest&quot; with micro-topic tagging.</p>
                             </div>
                         </motion.div>
                     </div>
@@ -224,7 +223,7 @@ export default function AptitudeProductPage() {
             <footer className="px-4 py-20 mt-8 border-t border-slate-200 bg-white text-center">
                 <div className="max-w-3xl mx-auto">
                     <h2 className="text-4xl font-black text-slate-900 mb-6">Ready to Test Your Limits?</h2>
-                    <p className="text-slate-500 text-lg mb-8">Take a free diagnostic test today. We'll identify your strengths and weaknesses in under 15 minutes.</p>
+                    <p className="text-slate-500 text-lg mb-8">Take a free diagnostic test today. We&apos;ll identify your strengths and weaknesses in under 15 minutes.</p>
                     <button onClick={() => router.push("/practice/aptitude")} className="bg-blue-600 text-white font-bold py-5 px-12 rounded-full text-xl hover:scale-105 transition-transform shadow-xl">
                         Start Diagnostic Test
                     </button>

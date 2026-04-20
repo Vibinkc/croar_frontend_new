@@ -40,7 +40,7 @@ export default function AIInterviewPage() {
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   // Cleanup on finish
   useEffect(() => {
@@ -112,17 +112,16 @@ export default function AIInterviewPage() {
     }
 
     if (typeof window !== "undefined") {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 // ... (rest of the recognition logic remains similar)
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = true;
         recognitionRef.current.interimResults = true;
         
-        recognitionRef.current.onresult = (event: any) => {
+        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
           const transcript = Array.from(event.results)
-            .map((result: any) => result[0])
-            .map((result: any) => result.transcript)
+            .map((result) => result[0].transcript)
             .join("");
           setCurrentInput(transcript);
         };
@@ -271,7 +270,7 @@ export default function AIInterviewPage() {
             </div>
 
             <div className="p-6 bg-slate-950/50 rounded-3xl border border-slate-800/50 text-sm text-slate-400 leading-relaxed font-medium ">
-              "Your responses have been securely stored. Our hiring team will review the session and get back to you with the next steps soon."
+              &quot;Your responses have been securely stored. Our hiring team will review the session and get back to you with the next steps soon.&quot;
             </div>
           </motion.div>
         </div>

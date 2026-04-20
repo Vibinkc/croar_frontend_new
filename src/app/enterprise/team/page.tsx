@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import { apiClient } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,12 +19,34 @@ import {
     UserCircle
 } from "lucide-react";
 
+interface Permission {
+    id: string;
+    module: string;
+    action: string;
+}
+
+interface Role {
+    id: string;
+    name: string;
+    description?: string;
+    is_system?: boolean;
+    permissions?: Permission[];
+}
+
+interface Member {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    roles?: Role[];
+}
+
 function TeamManagementContent() {
-    const { role: userRole, canAccess } = useAuth();
+    const { canAccess } = useAuth();
     const [activeTab, setActiveTab] = useState<"members" | "roles">("members");
-    const [members, setMembers] = useState<any[]>([]);
-    const [roles, setRoles] = useState<any[]>([]);
-    const [permissions, setPermissions] = useState<any[]>([]);
+    const [members, setMembers] = useState<Member[]>([]);
+    const [roles, setRoles] = useState<Role[]>([]);
+    const [permissions, setPermissions] = useState<Permission[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedRoleFilter, setSelectedRoleFilter] = useState("ALL");
@@ -43,29 +65,29 @@ function TeamManagementContent() {
     const [roleDescription, setRoleDescription] = useState("");
     const [selectedPermissionIds, setSelectedPermissionIds] = useState<string[]>([]);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setIsLoading(true);
         try {
-            // Fetch everything initially to populate stats
             const [memRes, roleRes, permRes] = await Promise.all([
                 apiClient.get("/api/v1/enterprise/team/members"),
                 apiClient.get("/api/v1/enterprise/team/roles"),
                 apiClient.get("/api/v1/enterprise/team/permissions")
             ]);
             
-            if (memRes.ok) setMembers(await memRes.json());
-            if (roleRes.ok) setRoles(await roleRes.json());
-            if (permRes.ok) setPermissions(await permRes.json());
-        } catch (e) {
-            console.error(e);
+            if (memRes.ok) setMembers(await memRes.json() as Member[]);
+            if (roleRes.ok) setRoles(await roleRes.json() as Role[]);
+            if (permRes.ok) setPermissions(await permRes.json() as Permission[]);
+        } catch (error) {
+            console.error("Failed to fetch team data:", error);
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
 
     const handleAddMember = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -87,8 +109,8 @@ function TeamManagementContent() {
                 setSelectedRoleIds([]);
                 fetchData();
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to add member:", error);
         } finally {
             setIsLoading(false);
         }
@@ -110,8 +132,8 @@ function TeamManagementContent() {
                 setSelectedPermissionIds([]);
                 fetchData();
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to create role:", error);
         } finally {
             setIsLoading(false);
         }
@@ -126,7 +148,7 @@ function TeamManagementContent() {
                     </div>
                     <div>
                         <h1 className="text-lg font-black text-slate-900 tracking-tight">Team Management</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest mt-0.5">Organization personnel & access</p>
+                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest mt-0.5">Organization personnel &amp; access</p>
                     </div>
                 </div>
 
@@ -266,7 +288,7 @@ function TeamManagementContent() {
                             <AnimatePresence mode="popLayout">
                                 {members.filter(m => {
                                     const matchesSearch = (m.first_name + " " + m.last_name + m.email).toLowerCase().includes(searchQuery.toLowerCase());
-                                    const matchesRole = selectedRoleFilter === "ALL" || m.roles?.some((r: any) => r.name === selectedRoleFilter);
+                                    const matchesRole = selectedRoleFilter === "ALL" || m.roles?.some((r: Role) => r.name === selectedRoleFilter);
                                     return matchesSearch && matchesRole;
                                 }).map((member, i) => (
                                     <motion.div 
@@ -290,7 +312,7 @@ function TeamManagementContent() {
                                         </div>
 
                                         <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-50 mt-auto">
-                                            {member.roles?.map((r: any) => (
+                                            {member.roles?.map((r: Role) => (
                                                 <span key={r.id} className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-bold   border border-indigo-100/30">
                                                     {r.name}
                                                 </span>
@@ -435,7 +457,7 @@ function TeamManagementContent() {
                                     <p className="text-sm text-slate-400 font-medium mb-8 leading-relaxed line-clamp-2 h-10">{role.description || "Standard organizational access control permissions."}</p>
                                     
                                     <div className="flex flex-wrap gap-2 pt-6 border-t border-slate-50 mt-auto">
-                                        {role.permissions?.slice(0, 3).map((p: any) => (
+                                        {role.permissions?.slice(0, 3).map((p: Permission) => (
                                             <span key={p.id} className="px-2.5 py-1 bg-slate-50 text-slate-500 rounded-xl text-[10px] font-bold   border border-slate-100">
                                                 {p.module}
                                             </span>

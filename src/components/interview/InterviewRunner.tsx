@@ -1,12 +1,16 @@
 import { useRef, useEffect } from 'react';
 import { InterviewStep } from "@/hooks/useInterviewSession";
+import Image from 'next/image';
 
 interface InterviewRunnerProps {
-    interview: any;
+    interview: {
+        avatar_config?: {
+            avatar?: string;
+        };
+    } | null;
     currentStep: InterviewStep;
     transcript: { role: 'ai' | 'user'; text: string }[];
     onEnd: () => void;
-    onSendMessage: (text: string) => void;
     isAiSpeaking: boolean;
     mediaState: {
         stream: MediaStream | null;
@@ -22,7 +26,6 @@ export default function InterviewRunner({
     currentStep,
     transcript,
     onEnd,
-    onSendMessage,
     isAiSpeaking,
     mediaState
 }: InterviewRunnerProps) {
@@ -45,7 +48,7 @@ export default function InterviewRunner({
     // Get the latest message for the center display
     const latestMessage = transcript.length > 0
         ? transcript[transcript.length - 1]
-        : { role: 'ai', text: "Initializing interview session..." };
+        : { role: 'ai' as const, text: "Initializing interview session..." };
 
     const avatarName = interview?.avatar_config?.avatar || "Dravid";
     const isSarah = avatarName.toLowerCase().includes("sarah");
@@ -66,10 +69,11 @@ export default function InterviewRunner({
 
                         {/* Avatar Image/Representation */}
                         <div className="relative h-40 w-40 rounded-full overflow-hidden border-4 border-slate-800 z-10 bg-slate-900 shadow-2xl">
-                            <img
+                            <Image
                                 src={avatarImg}
                                 alt={displayName}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         </div>
 
@@ -103,7 +107,7 @@ export default function InterviewRunner({
 
                         {/* Main Text */}
                         <p className="text-xl md:text-2xl font-medium leading-relaxed text-slate-100 animate-[fadeIn_0.5s_ease-out]">
-                            "{latestMessage.text}"
+                            &ldquo;{latestMessage.text}&rdquo;
                         </p>
                     </div>
 

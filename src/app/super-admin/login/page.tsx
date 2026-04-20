@@ -47,6 +47,7 @@ export default function SuperAdminLoginPage() {
 
             login(data.access_token, data.role);
             router.push("/super-admin");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setError(err.message || "Invalid email or password");
         } finally {

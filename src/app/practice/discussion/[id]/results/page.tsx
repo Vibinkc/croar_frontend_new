@@ -21,7 +21,7 @@ export default function GDResultsPage({ params }: { params: Promise<{ id: string
     const router = useRouter();
     const [results, setResults] = useState<Result[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<Record<string, unknown> | null>(null);
 
     useEffect(() => {
         const userStr = Cookies.get("user");
@@ -105,7 +105,7 @@ export default function GDResultsPage({ params }: { params: Promise<{ id: string
                                         </div>
 
                                         <p className="text-slate-600 font-medium  mb-8 border-l-4 border-slate-200 pl-6 text-lg leading-relaxed">
-                                            "{res.summary}"
+                                            &quot;{res.summary}&quot;
                                         </p>
 
                                         <div className="grid grid-cols-2 gap-6">

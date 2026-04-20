@@ -5,6 +5,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 
 interface TaskCardProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     task: any;
     getStatusColor: (status: string) => string;
 }

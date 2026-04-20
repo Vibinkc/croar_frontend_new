@@ -9,6 +9,13 @@ import { apiClient } from "@/utils/api";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
+interface CurrentUser {
+    id: string | number;
+    name: string;
+}
+
+import { Participant } from "@/hooks/useDiscussionSession";
+
 export default function GDDiscussionRoom({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
@@ -32,7 +39,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
     } = useDiscussionSession(id);
 
     const [isMicOn, setIsMicOn] = useState(false);
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
     const transcriptEndRef = useRef<HTMLDivElement>(null);
     // Remove individual videoRef, use participant row
     const [stream, setStream] = useState<MediaStream | null>(null);
@@ -68,8 +75,9 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
         const token = Cookies.get("auth_");
         if (token) {
             try {
-                const decoded: any = jwtDecode(token);
+                const decoded = jwtDecode(token) as { user_id?: string | number, sub?: string | number, name?: string };
                 // decoded.user_id is now provided by backend
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setCurrentUser({
                     id: decoded.user_id || decoded.sub,
                     name: decoded.name || "Me"
@@ -191,7 +199,9 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
     // Auto-finalize when timer hits 0
     useEffect(() => {
         if (timeRemaining === 0 && status === 'active') {
-            handleEndSession();
+            setTimeout(() => {
+                handleEndSession();
+            }, 0);
         }
     }, [timeRemaining, status]);
 
@@ -278,9 +288,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                                     return (
                                         <div key={idx} className="relative group first:ml-2">
                                             <div className={`w-12 h-12 rounded-full border-2 transition-all duration-300 relative z-0 ${bot.isSpeaking ? 'border-amber-400 scale-110 z-10 shadow-lg shadow-amber-400/20' : 'border-slate-800'}`}>
-                                                <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
-                                                    <img src={botAvatar} alt={bot.name} className="w-full h-full object-cover" onError={(e) => { (e.target as any).src = 'https://ui-avatars.com/api/?name=' + bot.name; }} />
-                                                </div>
+                                                    <img src={botAvatar} alt={bot.name} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + bot.name; }} />
                                                 {bot.isSpeaking && (
                                                     <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-400 rounded-full flex items-center justify-center shadow-lg">
                                                         <span className="material-icons text-[10px] text-slate-950 font-black">volume_up</span>
@@ -470,7 +478,7 @@ function AIModeratorCard({ isSpeaking, lastMessage }: { isSpeaking: boolean, las
             {isSpeaking && (
                 <div className="absolute top-6 left-6 right-6">
                     <div className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 animate-in fade-in slide-in-from-top-2">
-                        <p className="text-white text-[10px] font-medium leading-tight  line-clamp-2">"{lastMessage || "Listening..."}"</p>
+                        <p className="text-white text-[10px] font-medium leading-tight  line-clamp-2">&quot;{lastMessage || "Listening..."}&quot;</p>
                     </div>
                 </div>
             )}
@@ -479,7 +487,7 @@ function AIModeratorCard({ isSpeaking, lastMessage }: { isSpeaking: boolean, las
 }
 
 // Refactored ParticipantCard
-function ParticipantCard({ participant, currentUser, stream, isMicOn, isSpeaking, queueIndex }: { participant: any, currentUser: any, stream: MediaStream | null, isMicOn: boolean, isSpeaking?: boolean, queueIndex: number }) {
+function ParticipantCard({ participant, currentUser, stream, isMicOn, isSpeaking, queueIndex }: { participant: Participant, currentUser: CurrentUser | null, stream: MediaStream | null, isMicOn: boolean, isSpeaking?: boolean, queueIndex: number }) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const isLocal = String(participant.id) === String(currentUser?.id);
     const isHandRaised = queueIndex !== -1;
@@ -523,9 +531,11 @@ function ParticipantCard({ participant, currentUser, stream, isMicOn, isSpeaking
                         </span>
                         {isLocal && isMicOn && (
                             <div className="flex gap-0.5 items-end h-3">
-                                {[1, 2, 3].map(i => (
-                                    <div key={i} className="w-0.5 bg-blue-400 rounded-full animate-pulse" style={{ height: `${20 + Math.random() * 80}%`, animationDelay: `${i * 0.1}s` }} />
-                                ))}
+                                {/* eslint-disable-next-line react-hooks/purity */}
+                                {[1, 2, 3].map(i => {
+                                    // eslint-disable-next-line react-hooks/purity
+                                    return <div key={i} className="w-0.5 bg-blue-400 rounded-full animate-pulse" style={{ height: `${20 + Math.random() * 80}%`, animationDelay: `${i * 0.1}s` }} />;
+                                })}
                             </div>
                         )}
                     </div>

@@ -39,6 +39,7 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                             await playPromise;
                         }
                         // Video playing successfully
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     } catch (playError: any) {
                         if (playError.name === 'AbortError') {
                             // Video play interrupted by load request.

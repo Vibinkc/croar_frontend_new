@@ -19,6 +19,19 @@ interface AuthContextType {
     permissions: string[];
     canAccess: (permission?: string) => boolean;
     isLoading: boolean;
+    login: (token: string, userRole: string) => void;
+    logout: () => void;
+}
+
+interface JWTPayload {
+    role?: string;
+    sub?: string;
+    user_id?: string;
+    department_id?: number;
+    department_name?: string;
+    division_id?: number;
+    division_name?: string;
+    batch?: string;
 }
 
 
@@ -45,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (token) {
             fetchMe(token);
             try {
-                const decoded: any = jwtDecode(token);
+                const decoded = jwtDecode<JWTPayload>(token);
                 setAccessToken(token);
                 if (decoded.role) {
                     setRole(decoded.role);
@@ -111,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setRole(userRole);
         fetchMe(token);
         try {
-            const decoded: any = jwtDecode(token);
+            const decoded = jwtDecode<JWTPayload>(token);
             if (decoded.sub) {
                 setUser(decoded.sub);
             }

@@ -22,11 +22,30 @@ import {
 } from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
+interface Scenario {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    character_name: string;
+    character_role: string;
+    system_prompt: string;
+    initial_message: string;
+    difficulty: string;
+}
+
+interface Employee {
+    id: string;
+    first_name: string;
+    last_name: string;
+    designation: string;
+}
+
 export default function ScenarioManagement() {
     const { token, canAccess, role } = useAuth();
     const router = useRouter();
-    const [scenarios, setScenarios] = useState<any[]>([]);
-    const [employees, setEmployees] = useState<any[]>([]);
+    const [scenarios, setScenarios] = useState<Scenario[]>([]);
+    const [employees, setEmployees] = useState<Employee[]>([]);
     const [loading, setLoading] = useState(true);
     const [isCreating, setIsCreating] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);

@@ -52,11 +52,7 @@ export default function OnboardingTemplatesPage() {
     const [templateToDelete, setTemplateToDelete] = useState<{ id: string; name: string } | null>(null);
     const [onboardingSearch, setOnboardingSearch] = useState("");
 
-    useEffect(() => {
-        fetchTemplates();
-    }, [token]);
-
-    const fetchTemplates = async () => {
+    const fetchTemplates = useCallback(async () => {
         if (!token) return;
         setIsLoading(true);
         try {
@@ -72,7 +68,12 @@ export default function OnboardingTemplatesPage() {
         } finally {
             setTimeout(() => setIsLoading(false), 600);
         }
-    };
+    }, [token]);
+
+    useEffect(() => {
+        fetchTemplates();
+    }, [fetchTemplates]);
+
 
     const handleDelete = async () => {
         if (!templateToDelete) return;

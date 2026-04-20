@@ -66,7 +66,7 @@ export default function InterviewLobby({ onJoin, mediaState }: InterviewLobbyPro
             // Audio Visualization logic
             if (mediaState.isMicEnabled) {
                 if (!audioContextRef.current) {
-                    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+                    audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
                 }
                 const audioContext = audioContextRef.current;
                 const source = audioContext.createMediaStreamSource(mediaState.stream);
@@ -96,7 +96,7 @@ export default function InterviewLobby({ onJoin, mediaState }: InterviewLobbyPro
 
                 updateLevel();
             } else {
-                setMicLevel(0);
+                setTimeout(() => setMicLevel(0), 0);
                 if (animationFrameRef.current) {
                     cancelAnimationFrame(animationFrameRef.current);
                 }

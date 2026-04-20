@@ -89,14 +89,15 @@ export default function MailAutomationPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
-  const showToast = (msg: any, type: "success" | "error" = "success") => {
+  const showToast = (msg: string | string[] | { msg?: string; detail?: string } | null, type: "success" | "error" = "success") => {
     let finalMsg = "";
     if (typeof msg === "string") {
       finalMsg = msg;
     } else if (Array.isArray(msg)) {
-      finalMsg = msg.map((e: any) => e.msg || (typeof e === 'string' ? e : JSON.stringify(e))).join(", ");
+      finalMsg = msg.map((e: string | { msg?: string }) => (typeof e === 'string' ? e : (e.msg || JSON.stringify(e)))).join(", ");
     } else if (msg && typeof msg === "object") {
-      finalMsg = msg.msg || msg.detail || JSON.stringify(msg);
+      const obj = msg as { msg?: string; detail?: string };
+      finalMsg = obj.msg || obj.detail || JSON.stringify(msg);
     } else {
       finalMsg = String(msg || "An error occurred");
     }
@@ -230,7 +231,7 @@ export default function MailAutomationPage() {
         fetchAutomations(selectedJobId || undefined);
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast((err as any)?.detail || "Failed to save automation.", "error");
+        showToast(err, "error");
       }
     } finally {
       setSaving(false);

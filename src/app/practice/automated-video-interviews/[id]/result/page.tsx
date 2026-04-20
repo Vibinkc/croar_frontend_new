@@ -31,6 +31,7 @@ export default function AnalysisResultPage() {
         }
     }, [id]);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const analyzeResults = async (transcript: any[]) => {
         try {
             const response = await apiClient.post(`/api/v1/interviews/${id}/analyze-async`, { transcript });

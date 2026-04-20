@@ -5,6 +5,32 @@ import { useRouter } from "next/navigation";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
 import { BACKEND_URL } from "@/utils/api";
 
+interface Assessment {
+    id: string;
+    ratee_name: string;
+    relation: string;
+}
+
+interface Survey {
+    id: string;
+    instance_name: string;
+    template_title: string;
+    token: string;
+}
+
+interface SimulationAssignment {
+    id: string;
+    scenario_id: string;
+    title: string;
+    description: string;
+    character: string;
+}
+
+interface Employee {
+    id: string;
+    first_name: string;
+}
+
 export default function UnifiedEmployeePortal() {
     const router = useRouter();
     const [step, setStep] = useState<'login' | 'list'>('login');
@@ -16,17 +42,17 @@ export default function UnifiedEmployeePortal() {
         email: ""
     });
     
-    const [assessments, setAssessments] = useState<any[]>([]);
-    const [surveys, setSurveys] = useState<any[]>([]);
-    const [simulationAssignments, setSimulationAssignments] = useState<any[]>([]);
-    const [employee, setEmployee] = useState<any>(null);
+    const [assessments, setAssessments] = useState<Assessment[]>([]);
+    const [surveys, setSurveys] = useState<Survey[]>([]);
+    const [simulationAssignments, setSimulationAssignments] = useState<SimulationAssignment[]>([]);
+    const [employee, setEmployee] = useState<Employee | null>(null);
 
     // Simulation Session State
     const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
     const [activeAssignmentId, setActiveAssignmentId] = useState<string | null>(null);
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleLogin = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         setLoading(true);
         setError("");
         
@@ -87,7 +113,7 @@ export default function UnifiedEmployeePortal() {
                     onClose={() => {
                         setActiveSessionId(null);
                         // Refresh data after completion
-                        handleLogin(new Event('submit') as any);
+                        handleLogin();
                     }} 
                 />
             </div>

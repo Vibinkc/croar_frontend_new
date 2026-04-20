@@ -6,12 +6,44 @@ import AIGenerationOverlay from "@/components/ui/AIGenerationOverlay";
 import { useAuth } from "@/context/AuthContext";
 import { useDivision } from "@/context/DivisionContext";
 
+interface TestCase {
+    input: string;
+    output: string;
+}
+
+interface Question {
+    id?: string;
+    type: string;
+    topic: string;
+    difficulty: string;
+    content: {
+        question?: string;
+        scenario?: string;
+        initial_code?: { python: string };
+        test_cases?: TestCase[];
+        options?: {
+            A: string;
+            B: string;
+            C: string;
+            D: string;
+        };
+        min_words?: number;
+        max_words?: number;
+    };
+    correct_answer: {
+        answer: string;
+        explanation: string;
+    };
+    department_id?: number | null;
+    batch?: string | null;
+}
+
 interface QuestionFormProps {
-    onSuccess: (newQuestion: any) => void;
+    onSuccess: (newQuestion: Question) => void;
     onCancel: () => void;
     initialType?: string;
     lockType?: boolean;
-    initialData?: any;
+    initialData?: Question;
     departmentId?: number | null;
 }
 
@@ -30,9 +62,11 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
     const [optionD, setOptionD] = useState(initialData?.content?.options?.D || "");
     const [correctOption, setCorrectOption] = useState(initialData?.correct_answer?.answer || "A");
     const [explanation, setExplanation] = useState(initialData?.correct_answer?.explanation || initialData?.correct_answer?.answer || "");
+    const [minWords, setMinWords] = useState(initialData?.content?.min_words || 0);
+    const [maxWords, setMaxWords] = useState(initialData?.content?.max_words || 500);
     const [loading, setLoading] = useState(false);
     const [generating, setGenerating] = useState(false);
-    const [testCases, setTestCases] = useState<any[]>(initialData?.content?.test_cases || []);
+    const [testCases, setTestCases] = useState<TestCase[]>(initialData?.content?.test_cases || []);
     const [availableTopics, setAvailableTopics] = useState<string[]>([]);
     // If we have initialData.batch, we use it, otherwise we use the globally selected batch or the creator's batch
     const [batch, setBatch] = useState(initialData?.batch || selectedBatch || creatorBatch || "");
@@ -126,8 +160,8 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 difficulty,
                 content: {
                     question: questionText,
-                    min_words: Number((e.target as any).min_words?.value || 0),
-                    max_words: Number((e.target as any).max_words?.value || 500),
+                    min_words: minWords,
+                    max_words: maxWords,
                 },
                 correct_answer: {
                     answer: explanation, // Store sample/target answer here
@@ -206,19 +240,19 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
     return (
         <div className="bg-white rounded-3xl p-0">
             <AIGenerationOverlay isOpen={generating} title="Synchronizing Neural Link" />
-            {!lockType && (
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-bold text-gray-900  tracking-tight">Add Custom Question</h3>
-                    <button
-                        onClick={onCancel}
-                        className="text-gray-400 hover:text-gray-600"
-                    >
-                        <span className="material-icons-outlined">close</span>
-                    </button>
-                </div>
-            )}
-
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+                {!lockType && (
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-lg font-bold text-gray-900  tracking-tight">Add Custom Question</h3>
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="text-gray-400 hover:text-gray-600"
+                        >
+                            <span className="material-symbols-rounded">close</span>
+                        </button>
+                    </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {!lockType && (
                         <div>
@@ -232,7 +266,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                 <option value="CODING">Coding</option>
                                 <option value="COMMUNICATION">Communication</option>
                                 <option value="PERSONALITY">Personality Test</option>
-                                <option value="BEHAVIORAL">Behavioral & Emotional</option>
+                                <option value="BEHAVIORAL">Behavioral &amp; Emotional</option>
                                 <option value="SUBJECTIVE">Subjective (AI Evaluator)</option>
                             </select>
                         </div>
@@ -263,11 +297,6 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                 Generate with AI
                             </button>
                         )}
-                        <datalist id="topic-suggestions">
-                            {availableTopics.map(t => (
-                                <option key={t} value={t} />
-                            ))}
-                        </datalist>
                     </div>
                     <div>
                         <label className="block text-[10px] font-black text-gray-400   mb-1">Difficulty</label>
@@ -301,11 +330,11 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in duration-700">
                         <div>
                             <label className="block text-[10px] font-black text-gray-400   mb-1">Min Word Limit</label>
-                            <input name="min_words" type="number" defaultValue={0} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
+                            <input name="min_words" type="number" value={minWords} onChange={e => setMinWords(parseInt(e.target.value))} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                         </div>
                         <div>
                             <label className="block text-[10px] font-black text-gray-400   mb-1">Max Word Limit</label>
-                            <input name="max_words" type="number" defaultValue={500} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
+                            <input name="max_words" type="number" value={maxWords} onChange={e => setMaxWords(parseInt(e.target.value))} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                         </div>
                     </div>
                 )}
@@ -435,15 +464,14 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         Cancel
                     </button>
                     <button
-                        type="button"
-                        onClick={handleSubmit as any}
+                        type="submit"
                         disabled={loading}
                         className="px-8 py-3 bg-slate-900 text-white text-[10px] font-black  tracking-[0.2em] rounded-xl hover:bg-slate-800 transition-all shadow-xl shadow-slate-100 disabled:opacity-50 active:scale-95"
                     >
                         {loading ? 'Processing...' : 'Save Configuration'}
                     </button>
                 </div>
-            </div>
+            </form>
         </div >
     );
 }

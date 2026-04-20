@@ -170,7 +170,7 @@ export default function DiscussionProductPage() {
                                     <span className="bg-[#686bed]/10 text-[#686bed] text-xs font-bold px-2 py-1 rounded">Live Analysis</span>
                                 </div>
                                 <p className="text-sm  text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-100 leading-relaxed">
-                                    "The candidate successfully de-escalated the client concern but missed an opportunity to upsell. Recommended focus: Commercial Awareness."
+                                    &quot;The candidate successfully de-escalated the client concern but missed an opportunity to upsell. Recommended focus: Commercial Awareness.&quot;
                                 </p>
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-2">
@@ -267,7 +267,7 @@ export default function DiscussionProductPage() {
                 <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center relative z-10">
                     <h2 className="text-4xl lg:text-5xl font-extrabold mb-8">Ready to step up?</h2>
                     <p className="text-slate-400 text-xl max-w-2xl mx-auto mb-12">
-                        Demonstrate your soft skills in a way that resumes can't capture.
+                        Demonstrate your soft skills in a way that resumes can&apos;t capture.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button

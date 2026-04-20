@@ -8,6 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import ProjectCard from "@/components/enterprise/ProjectCard";
 
+interface Member {
+    first_name: string;
+    last_name: string;
+}
+
 interface Project {
     id: string;
     name: string;
@@ -15,7 +20,7 @@ interface Project {
     status: string;
     start_date: string;
     end_date: string;
-    members: any[];
+    members: Member[];
 }
 
 export default function ProjectsPage() {
@@ -214,7 +219,7 @@ export default function ProjectsPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <div className="flex -space-x-2">
-                                                    {(proj.members || []).slice(0, 3).map((m, i) => (
+                                                    {(proj.members || []).slice(0, 3).map((m: Member, i: number) => (
                                                         <div key={i} className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-600 uppercase">
                                                             {m.first_name?.[0]}{m.last_name?.[0]}
                                                         </div>

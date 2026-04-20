@@ -29,7 +29,7 @@ export default function AboutPage() {
                     <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 items-center">
                         <div>
                             <span className="text-[#6366F1] font-bold   text-sm">Our Purpose</span>
-                            <h2 className="text-4xl md:text-5xl font-black mt-4 mb-8 leading-tight">The 'Why' Behind the Platform</h2>
+                            <h2 className="text-4xl md:text-5xl font-black mt-4 mb-8 leading-tight">The &apos;Why&apos; Behind the Platform</h2>
                             <p className="text-lg text-slate-600 leading-relaxed mb-6">
                                 We believe that talent is universal, but opportunity is not. Our platform was born from a desire to bridge this gap, using advanced integrative AI to remove the filters of bias and pedigree.
                             </p>
@@ -179,7 +179,7 @@ export default function AboutPage() {
                     <div className="max-w-[800px] mx-auto">
                         <h2 className="text-5xl font-black mb-6">Join Our Mission</h2>
                         <p className="text-xl text-slate-600 mb-10 leading-relaxed">
-                            Whether you're looking for your next career move or a partner to transform your hiring, we're building the future together.
+                            Whether you&apos;re looking for your next career move or a partner to transform your hiring, we&apos;re building the future together.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <button className="bg-[#6366F1] hover:bg-[#6366F1]/90 text-white font-black px-10 py-4 rounded-xl text-lg shadow-xl shadow-[#6366F1]/20 transition-all transform hover:scale-105">View Careers</button>

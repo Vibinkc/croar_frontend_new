@@ -68,6 +68,7 @@ export default function AptitudePage() {
     };
 
     const getColorClasses = (color: string) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const colors: any = {
             slate: { border: "bg-slate-500", bg: "bg-slate-50 dark:bg-slate-800", text: "text-slate-600", progress: "bg-slate-500" },
         };

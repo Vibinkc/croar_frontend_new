@@ -17,6 +17,28 @@ export interface Participant {
     isSpeaking?: boolean;
 }
 
+interface SpeechRecognitionEvent extends Event {
+    results: {
+        [index: number]: {
+            [index: number]: {
+                transcript: string;
+            };
+        };
+    };
+}
+
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    start(): void;
+    stop(): void;
+    abort(): void;
+    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void) | null;
+    onerror: ((this: SpeechRecognition, ev: { error: string }) => void) | null;
+    onend: ((this: SpeechRecognition, ev: Event) => void) | null;
+}
+
 export const useDiscussionSession = (sessionId: string) => {
     const [queue, setQueue] = useState<{ id: number, name: string }[]>([]);
     const [messages, setMessages] = useState<DiscussionMessage[]>([]);
@@ -29,7 +51,7 @@ export const useDiscussionSession = (sessionId: string) => {
     // Speech & AI State
     const [isAiSpeaking, setIsAiSpeaking] = useState(false);
     const isAiSpeakingRef = useRef(false);
-    const recognition = useRef<any>(null);
+    const recognition = useRef<SpeechRecognition | null>(null);
     const isSessionActiveRef = useRef(true); // Track session active state
 
     // Cleanup TTS on unmount
@@ -290,7 +312,7 @@ export const useDiscussionSession = (sessionId: string) => {
 
     // Timer Interval
     useEffect(() => {
-        let timer: any;
+        let timer: NodeJS.Timeout;
         if (status === 'active' && timeRemaining !== null && timeRemaining > 0) {
             timer = setInterval(() => {
                 setTimeRemaining((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
@@ -344,7 +366,8 @@ export const useDiscussionSession = (sessionId: string) => {
         if (isAiSpeakingRef.current) return;
 
         if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-            const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+            const SpeechRecognition = (window as unknown as { SpeechRecognition: new() => SpeechRecognition; webkitSpeechRecognition: new() => SpeechRecognition }).SpeechRecognition || 
+                                     (window as unknown as { SpeechRecognition: new() => SpeechRecognition; webkitSpeechRecognition: new() => SpeechRecognition }).webkitSpeechRecognition;
 
             // Prevent multiple instances
             if (recognition.current) {
@@ -356,7 +379,7 @@ export const useDiscussionSession = (sessionId: string) => {
             recognition.current.interimResults = false;
             recognition.current.lang = 'en-US';
 
-            recognition.current.onresult = (event: any) => {
+            recognition.current.onresult = (event: SpeechRecognitionEvent) => {
                 // Echo Cancellation Check
                 if (isAiSpeakingRef.current) {
                     return;
@@ -368,7 +391,7 @@ export const useDiscussionSession = (sessionId: string) => {
                 }
             };
 
-            recognition.current.onerror = (event: any) => {
+            recognition.current.onerror = (event: { error: string }) => {
                 // Ignore speech recognition errors internally
             };
 

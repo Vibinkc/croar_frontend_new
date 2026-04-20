@@ -1,8 +1,14 @@
-"use client";
-
-import { useEffect, useState, use } from "react";
-import { apiClient } from "@/utils/api";
 import Link from "next/link";
+
+interface College {
+    id: string;
+    name: string;
+    slug: string;
+    db_name: string;
+    admin_email: string;
+    admin_profile_image?: string;
+    is_active: boolean;
+}
 
 interface Division {
     id: number;
@@ -13,7 +19,7 @@ interface Division {
 export default function SuperAdminDivisions({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const [divisions, setDivisions] = useState<Division[]>([]);
-    const [college, setCollege] = useState<any>(null);
+    const [college, setCollege] = useState<College | null>(null);
     const [name, setName] = useState("");
     const [slug, setSlug] = useState("");
     const [isLoading, setIsLoading] = useState(false);

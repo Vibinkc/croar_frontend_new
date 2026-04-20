@@ -55,7 +55,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                         survey_type_id: tpl.survey_type_id,
                         title: tpl.title,
                         description: tpl.description || "",
-                        questions: tpl.questions.map((q: any) => ({
+                        questions: tpl.questions.map((q: { text: string; type: Question["type"]; scale_min?: number; scale_max?: number; options?: string }) => ({
                             text: q.text,
                             type: q.type,
                             scale_min: q.scale_min || 1,
@@ -87,7 +87,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
         }));
     };
 
-    const updateQuestion = (idx: number, field: keyof Question, value: any) => {
+    const updateQuestion = (idx: number, field: keyof Question, value: string | number) => {
         setFormData(prev => {
             const qs = [...prev.questions];
             qs[idx] = { ...qs[idx], [field]: value };
@@ -111,7 +111,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
 
     const removeOption = (qIdx: number, optIdx: number) => {
         const q = formData.questions[qIdx];
-        const opts = JSON.parse(q.options || "[]").filter((_: any, i: number) => i !== optIdx);
+        const opts = JSON.parse(q.options || "[]").filter((_: string, i: number) => i !== optIdx);
         updateQuestion(qIdx, "options", JSON.stringify(opts));
     };
 
@@ -126,7 +126,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
             });
             if (res.ok) {
                 const aiQuestions = await res.json();
-                const formatted = aiQuestions.map((q: any) => ({
+                const formatted = aiQuestions.map((q: { text: string; type: Question["type"]; options?: string[] }) => ({
                     text: q.text,
                     type: q.type,
                     scale_min: 1,

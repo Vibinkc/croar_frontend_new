@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
@@ -42,7 +41,7 @@ export default function CommunicationProductPage() {
                             transition={{ delay: 0.4 }}
                             className="text-white/80 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto"
                         >
-                            The world's most advanced AI Speech Coach. We analyze your tone, pacing, filler words, and confidence in real-time to turn you into a master communicator.
+                            The world&apos;s most advanced AI Speech Coach. We analyze your tone, pacing, filler words, and confidence in real-time to turn you into a master communicator.
                         </motion.p>
                     </div>
                     <motion.div
@@ -82,7 +81,7 @@ export default function CommunicationProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Fluency Timeline</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed">See typical pauses, hesitations, and "umms" mapped on a timeline. Identify your stumbling blocks.</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed">See typical pauses, hesitations, and &quot;umms&quot; mapped on a timeline. Identify your stumbling blocks.</p>
                             </div>
                         </motion.div>
                         <motion.div
@@ -112,7 +111,7 @@ export default function CommunicationProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Pace Alert</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed"> speaking too fast undermines authority. We track your Words Per Minute (WPM) to keep you in the "Goldilocks Zone".</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed"> speaking too fast undermines authority. We track your Words Per Minute (WPM) to keep you in the &quot;Goldilocks Zone&quot;.</p>
                             </div>
                         </motion.div>
                     </div>
@@ -156,13 +155,13 @@ export default function CommunicationProductPage() {
                         <div className="bg-red-900/40 border border-red-500/30 p-6 rounded-xl relative overflow-hidden backdrop-blur-sm">
                             <div className="inline-block px-2 py-0.5 bg-red-500/20 text-red-500 text-[10px] font-bold rounded mb-2 border border-red-500/30">BEFORE</div>
                             <p className="font-mono text-slate-300 text-sm leading-relaxed">
-                                "So, <span className="bg-red-500/30 px-1 text-white">um</span>, I think I'm <span className="bg-red-500/30 px-1 text-white">like</span> good at coding? I guess I can learn fast."
+                                &quot;So, um, I think I&apos;m like good at coding? I guess I can learn fast.&quot;
                             </p>
                         </div>
                         <div className="bg-green-900/40 border border-green-500/30 p-6 rounded-xl relative overflow-hidden backdrop-blur-sm">
                             <div className="inline-block px-2 py-0.5 bg-green-500/20 text-green-500 text-[10px] font-bold rounded mb-2 border border-green-500/30">AFTER TALIXO</div>
                             <p className="font-mono text-white text-sm leading-relaxed">
-                                "I am a proficient developer <strong className="bg-green-500/30 px-1">specializing in React</strong>. I have a proven track record of rapid learning."
+                                &quot;I am a proficient developer <strong className="bg-green-500/30 px-1">specializing in React</strong>. I have a proven track record of rapid learning.&quot;
                             </p>
                         </div>
                     </motion.div>
@@ -225,7 +224,7 @@ export default function CommunicationProductPage() {
                                     <div className="space-y-4 font-mono text-sm">
                                         <div className="flex gap-4">
                                             <span className="text-slate-500">00:04</span>
-                                            <span>Good modulation on "Project Lead".</span>
+                                            <span>Good modulation on &quot;Project Lead&quot;.</span>
                                         </div>
                                         <div className="flex gap-4 text-yellow-400">
                                             <span className="text-slate-500">00:12</span>
@@ -248,7 +247,7 @@ export default function CommunicationProductPage() {
                                 </div>
                                 <h3 className="text-3xl font-black text-slate-900 mb-4">The Filler Word Trap</h3>
                                 <p className="text-lg text-slate-600 leading-relaxed mb-6">
-                                    "Um", "Like", "You know". We catch them all. Our semantic filter highlights these confidence-killers in your transcript so you can surgically remove them from your vocabulary.
+                                    &quot;Um&quot;, &quot;Like&quot;, &quot;You know&quot;. We catch them all. Our semantic filter highlights these confidence-killers in your transcript so you can surgically remove them from your vocabulary.
                                 </p>
                                 <div className="flex flex-wrap gap-2">
                                     {['Basically', 'Actually', 'Literally', 'Like'].map((word) => (
@@ -301,7 +300,7 @@ export default function CommunicationProductPage() {
             <footer className="px-4 py-20 mt-8 border-t border-slate-200 bg-white text-center">
                 <div className="max-w-3xl mx-auto">
                     <h2 className="text-4xl font-black text-slate-900 mb-6">Find Your Voice.</h2>
-                    <p className="text-slate-500 text-lg mb-8">Don't let poor communication hold back your brilliant ideas.</p>
+                    <p className="text-slate-500 text-lg mb-8">Don&apos;t let poor communication hold back your brilliant ideas.</p>
                     <button onClick={() => router.push("/practice/communication")} className="bg-pink-600 text-white font-bold py-5 px-12 rounded-full text-xl hover:scale-105 transition-transform shadow-xl">
                         Open Voice Lab
                     </button>

@@ -13,6 +13,12 @@ interface Question {
     active_flag: boolean;
 }
 
+interface GeneratedQuestion {
+    text: string;
+    type: string;
+    category: string;
+}
+
 export default function X360QuestionBank() {
     const { token } = useAuth();
     const router = useRouter();
@@ -34,7 +40,7 @@ export default function X360QuestionBank() {
         customCategory: ""
     });
     const [isGenerating, setIsGenerating] = useState(false);
-    const [generatedQuestions, setGeneratedQuestions] = useState<any[]>([]);
+    const [generatedQuestions, setGeneratedQuestions] = useState<GeneratedQuestion[]>([]);
     const suggestionsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

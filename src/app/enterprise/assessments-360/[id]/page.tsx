@@ -50,7 +50,7 @@ export default function X360FillAssessment() {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/portal/assignments-by-rater/${raterId}`);
             if (res.ok) {
                 const data = await res.json();
-                setPendingTasks(data.filter((t: any) => t.id !== assignmentId));
+                setPendingTasks(data.filter((t: Assignment) => t.id !== assignmentId));
             }
         } catch (error) {
             console.error("Error fetching pending tasks:", error);

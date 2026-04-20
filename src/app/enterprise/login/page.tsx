@@ -61,8 +61,9 @@ function EnterpriseLoginContent() {
             // Redirect to enterprise dashboard
             router.push("/enterprise/dashboard");
 
-        } catch (err: any) {
-            setError(err.message || "Invalid credentials");
+        } catch (err) {
+            const error = err as Error;
+            setError(error.message || "Invalid credentials");
         }
     };
 
@@ -80,7 +81,7 @@ function EnterpriseLoginContent() {
                     </div>
                     <h1 className="text-4xl font-bold text-white mb-6">Enterprise Portal</h1>
                     <p className="text-slate-400 text-lg leading-relaxed">
-                        Manage your organization's talent pipeline, access advanced analytics, and streamine your recruitment process with our enterprise solutions.
+                        Manage your organization&apos;s talent pipeline, access advanced analytics, and streamline your recruitment process with our enterprise solutions.
                     </p>
                 </div>
             </div>

@@ -37,6 +37,7 @@ interface Onboarding {
     completed_at?: string;
     candidate_email?: string;
     job_title?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     application?: any;
 }
 
@@ -56,6 +57,7 @@ export default function OnboardingDashboard() {
     const { token } = useAuth();
     const router = useRouter();
     const [onboardings, setOnboardings] = useState<Onboarding[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [jobs, setJobs] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");

@@ -153,7 +153,7 @@ export default function AutomationHubPage() {
                         <h3 className="text-sm font-black text-emerald-900">Instant Execution</h3>
                     </div>
                     <p className="text-[11px] text-emerald-700/80 font-medium leading-relaxed">
-                        Mail and Assessment automations can be set to 'Immediate' to trigger the second a candidate moves to a specific stage.
+                        Mail and Assessment automations can be set to &apos;Immediate&apos; to trigger the second a candidate moves to a specific stage.
                     </p>
                 </div>
                 <div className="p-5 bg-amber-50/50 rounded-xl border border-amber-100/50">

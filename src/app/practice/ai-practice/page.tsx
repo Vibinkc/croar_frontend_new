@@ -17,6 +17,7 @@ interface AssessmentPreview {
         title: string;
         weightage: number;
         question_count: number;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         questions: any[];
     }[];
     total_questions_generated: number;

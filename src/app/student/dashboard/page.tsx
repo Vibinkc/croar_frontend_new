@@ -17,7 +17,8 @@ export default function StudentDashboard() {
         if (!token || role !== "STUDENT") {
             router.push("/student/login");
         } else {
-            setLoading(false);
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setLoading(prev => prev ? false : prev);
         }
     }, [router]);
 

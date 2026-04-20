@@ -13,7 +13,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
     const title = searchParams.get("title") || "Coding Problem";
 
     // Data State
-    const [problem, setProblem] = useState<any>(null);
+    const [problem, setProblem] = useState<Problem | null>(null);
     const [loading, setLoading] = useState(true);
 
     // Editor State
@@ -21,10 +21,11 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
     const [code, setCode] = useState("");
     const [analyzing, setAnalyzing] = useState(false);
     const [executingTests, setExecutingTests] = useState<{ [key: string]: boolean }>({});
-    const [result, setResult] = useState<any | null>(null);
+    const [result, setResult] = useState<AnalysisResult | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
     const [customInput, setCustomInput] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [customTestResult, setCustomTestResult] = useState<any>(null);
     const [executingCustomTest, setExecutingCustomTest] = useState(false);
 
@@ -34,7 +35,6 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
     const [leftPaneHeight, setLeftPaneHeight] = useState(70);
     const [showConsole, setShowConsole] = useState(false);
     const splitPaneRef = useRef<HTMLDivElement>(null);
-    const [isTransitioning, setIsTransitioning] = useState(false); // For visual consistency with JobSim
     const [rightPaneHeight, setRightPaneHeight] = useState(60);
 
     const isDark = theme === 'dark';
@@ -75,8 +75,6 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
     };
 
     const runCodeAnalysis = async (saveAttempt: boolean = false, testIndices: number[] | null = null) => {
-        // Legacy submission logic using coach/code (for Submit button only)
-
         setShowConsole(true);
         setConsoleOutput(prev => [...prev, "> Submitting code for final analysis..."]);
 
@@ -125,10 +123,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
 
             const data = await res.json();
 
-            // Map single result back to our structure
-            const passed = data.passed; // Overall passed (should be true if single test passed)
-            // The API returns 'test_cases' list with results. 
-            // Since we sent one, we expect one back.
+            const passed = data.passed;
             const resultCase = data.test_cases?.[0];
 
             const resultData = {
@@ -138,32 +133,10 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                 message: data.output
             };
 
-            setResult((prev: any) => {
-                const newMap = prev?.test_results ? [...prev.test_results] : [];
-                // Update or add this test result
-                // We need to match the structure expected by transformTestResults or update it directly?
-                // transformTestResults uses `case_id` or index. 
-                // Let's just update the internal `result` state to match what `transformTestResults` expects, 
-                // OR better, let's just bypass `transformTestResults` for this individual update? 
-                // No, `CodeQuestion` uses `transformTestResults(result)`.
-                // So we need to constructing a "fake" apiResult that has `test_results`.
-
-                // Let's assume `prev` is the API structure.
-                // We need to update `prev.test_results` array.
+            setResult((prev: AnalysisResult | null) => {
                 const newResults = prev?.test_results ? [...prev.test_results] : [];
-                // Remove existing result for this index if acts up, or just update.
-                // Since `case_id` might be missing from backend `verify-code`, we rely on index.
-                // We'll reconstruct the array.
-
-                // Remove old result for this index (if we can identify it)
-                // Actually `CodeQuestion` is passed `transformTestResults(result, id)`.
-                // If we want to support this hybrid model, we might need `testResults` state directly in Page?
-                // But `CodeQuestion` expects `testResults` prop.
-                // Let's stick to updating `result.test_results`.
-
-                // Find if we already have a result for this index
-                const existingIdx = newResults.findIndex((r: any) => r.case_id === index);
-                const newEntry = {
+                const existingIdx = newResults.findIndex((r: TestResult) => r.case_id === index);
+                const newEntry: TestResult = {
                     case_id: index,
                     passed: resultData.passed,
                     actual_output: resultData.actual_output,
@@ -207,8 +180,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
         setShowConsole(true);
         setConsoleOutput(["> Starting execution of all test cases..."]);
 
-        // Reset results?
-        setResult((prev: any) => ({ ...prev, test_results: [] }));
+        setResult((prev: AnalysisResult | null) => ({ ...prev, test_results: [] }));
 
         const testCases = problem?.content?.test_cases || [];
         for (let i = 0; i < testCases.length; i++) {
@@ -232,7 +204,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                 code,
                 language,
                 problem_statement: problem?.content?.question || "No description",
-                test_cases: [{ input: customInput, expected: "" }] // No expected for custom
+                test_cases: [{ input: customInput, expected: "" }]
             });
 
             if (res.ok) {
@@ -260,7 +232,6 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
         runCodeAnalysis(true, null);
     };
 
-    // Resize Logic
     const handleMouseDown = (e: React.MouseEvent) => {
         const startX = e.clientX;
         const startWidth = leftPaneWidth;
@@ -341,12 +312,10 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
     return (
         <div className={`h-full overflow-hidden flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-[#111214] text-[#8e9297]' : 'bg-[#fcfcfd] text-slate-600'}`}>
 
-            {/* 1. HEADER */}
             <header className={`border-b h-14 flex items-center justify-between px-6 z-40 transition-colors duration-300 ${isDark ? 'bg-[#111214] border-[#2d2e32]' : 'bg-white border-slate-200/50 shadow-[0_1px_2px_rgba(0,0,0,0.02)]'}`}>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => {
-                            // If we have history, go back (likely to topic list). Else go to main list.
                             if (window.history.length > 2) {
                                 router.back();
                             } else {
@@ -368,7 +337,6 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {/* Theme Switcher */}
                     <button
                         onClick={() => setTheme(isDark ? 'light' : 'dark')}
                         className={`group flex items-center h-9 px-2 rounded-full border transition-all duration-300 hover:px-3 ${isDark
@@ -388,12 +356,10 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                 </div>
             </header>
 
-            {/* 2. MAIN AREA WITH RESIZABLE SPLIT PANE */}
             <main
                 ref={splitPaneRef}
                 className="flex-1 flex overflow-hidden relative"
             >
-                {/* LEFT PANE: Instructions */}
                 <div
                     style={{ width: `${leftPaneWidth}%` }}
                     className={`flex flex-col border-r transition-colors duration-300 ${isDark ? 'border-[#2d2e32] bg-[#111214]' : 'border-slate-200 bg-white'}`}
@@ -430,9 +396,10 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                                     </div>
                                 </div>
 
-                                {(problem.content.examples || problem.content.test_cases?.length > 0) && (
+                                {(problem.content.examples || problem.content.test_cases?.length || 0 > 0) && (
                                     <div className="space-y-6 pt-4">
-                                        {(problem.content.examples || problem.content.test_cases?.slice(0, 2)).map((ex: any, i: number) => (
+                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                        {(problem.content.examples || problem.content.test_cases?.slice(0, 2))?.map((ex: any, i: number) => (
                                             <div key={i} className="space-y-3">
                                                 <span className="text-[10px] font-black  tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
                                                 <div className={`rounded-xl border p-4 font-mono text-[12px] space-y-2 ${isDark ? 'bg-[#1e1f23]/30 border-[#2d2e32]' : 'bg-slate-50 border-slate-100'}`}>
@@ -473,7 +440,6 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                         </div>
                     </div>
 
-                    {/* HORIZONTAL DRAG HANDLE (LEFT) */}
                     {showConsole && (
                         <div
                             onMouseDown={handleLeftHorizontalMouseDown}
@@ -483,7 +449,6 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                         </div>
                     )}
 
-                    {/* BOTTOM: Console Output */}
                     {showConsole && (
                         <div style={{ height: `${100 - leftPaneHeight}%` }} className={`flex flex-col overflow-hidden ${isDark ? 'bg-[#0f1113]' : 'bg-slate-900'} text-[#8e9297] no-scrollbar border-t ${isDark ? 'border-indigo-500/20' : 'border-indigo-500/10'}`}>
                             <div className={`p-3 flex items-center justify-between flex-shrink-0 border-b ${isDark ? 'border-[#2d2e32]/30' : 'border-black/10'}`}>
@@ -526,7 +491,6 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                     )}
                 </div>
 
-                {/* VERTICAL DRAG HANDLE */}
                 <div
                     onMouseDown={handleMouseDown}
                     className="absolute top-0 bottom-0 w-1 cursor-col-resize z-50 transition-colors group flex items-center justify-center hover:bg-indigo-500/20"
@@ -535,7 +499,6 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                     <div className={`w-[1px] h-full ${isDark ? 'bg-[#2d2e32]' : 'bg-slate-200'} group-hover:bg-indigo-500/50 transition-colors`} />
                 </div>
 
-                {/* RIGHT PANE: Code Editor */}
                 <div
                     style={{ width: `${100 - leftPaneWidth}%` }}
                     className={`flex flex-col overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#0d0f11]' : 'bg-[#f8fafc]'}`}
@@ -565,11 +528,9 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                 </div>
             </main>
 
-            {/* 3. FOOTER */}
             <footer className={`border-t h-16 flex items-center px-6 z-50 transition-colors duration-300 ${isDark ? 'bg-[#111214] border-[#2d2e32]' : 'bg-white border-slate-200/50 shadow-[0_-8px_20px_rgba(0,0,0,0.01)]'}`}>
                 <div className="w-full flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        {/* Status / Score display */}
                         {result && result.score !== undefined && (
                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-slate-50 border-slate-200">
                                 <span className="text-[10px] font-black   text-slate-500">Score</span>
@@ -627,17 +588,12 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
     );
 }
 
-// Helper to transform API result array to Map expected by CodeQuestion
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const transformTestResults = (apiResult: any, questionId: string) => {
+const transformTestResults = (apiResult: AnalysisResult, questionId: string) => {
     if (!apiResult || !apiResult.test_results) return {};
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const map: { [key: string]: any } = {};
+    const map: { [key: string]: TransformedTestResult } = {};
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    apiResult.test_results.forEach((r: any, idx: number) => {
-        // Use case_id if available (from backend), otherwise fallback to index
+    apiResult.test_results.forEach((r: TestResult, idx: number) => {
         const caseIndex = (r.case_id !== undefined && r.case_id !== null) ? r.case_id : idx;
         const testId = `${questionId}_${caseIndex}`;
         map[testId] = {

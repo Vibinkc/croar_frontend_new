@@ -11,11 +11,17 @@ interface ModuleProgress {
     topic: string;
 }
 
+interface StudentStats {
+    total_assessments: number;
+    average_score: number;
+    total_practice_questions: number;
+    proficiency: { type: string; score: number }[];
+}
+
 export default function StudentDashboard() {
     const [greeting, setGreeting] = useState("");
     const [progressData, setProgressData] = useState<ModuleProgress[]>([]);
-    const [stats, setStats] = useState<any>(null);
-    // const { accessToken: token } = useAuth(); // Unused token
+    const [stats, setStats] = useState<StudentStats | null>(null);
 
     useEffect(() => {
         const hour = new Date().getHours();
@@ -23,11 +29,13 @@ export default function StudentDashboard() {
         else if (hour < 18) setGreeting("GOOD AFTERNOON");
         else setGreeting("GOOD EVENING");
 
+        // eslint-disable-next-line react-hooks/immutability
         fetchProgress();
+        // eslint-disable-next-line react-hooks/immutability
         fetchStats();
     }, []);
 
-    const fetchProgress = async () => {
+    async function fetchProgress() {
         try {
             console.log("Fetching progress from:", `/api/v1/progress/`);
             const res = await apiClient.get(`/api/v1/progress/`);
@@ -40,7 +48,7 @@ export default function StudentDashboard() {
         }
     };
 
-    const fetchStats = async () => {
+    async function fetchStats() {
         try {
             const res = await apiClient.get(`/api/v1/users/me/stats`);
             if (res.ok) {
@@ -104,7 +112,7 @@ export default function StudentDashboard() {
     ];
 
     const getColorClasses = (color: string) => {
-        const colors: any = {
+        const colors: Record<string, { border: string; bg: string; text: string; progress: string }> = {
             blue: { border: "border-blue-100", bg: "bg-blue-50 dark:bg-slate-800", text: "text-blue-600", progress: "bg-blue-500" },
             purple: { border: "border-purple-100", bg: "bg-purple-50 dark:bg-slate-800", text: "text-purple-600", progress: "bg-purple-500" },
             rose: { border: "border-rose-100", bg: "bg-rose-50 dark:bg-slate-800", text: "text-rose-600", progress: "bg-rose-500" },
@@ -128,7 +136,7 @@ export default function StudentDashboard() {
                             {greeting},<br />ELITE PLAYER.
                         </h2>
                         <p className="text-slate-100 text-xs max-w-sm font-medium opacity-90">
-                            The skill tree is waiting. Ready to dominate today's missions and claim your XP?
+                            The skill tree is waiting. Ready to dominate today&apos;s missions and claim your XP?
                         </p>
                     </div>
                 </div>
@@ -264,9 +272,9 @@ export default function StudentDashboard() {
                                 {/* Data Polygon */}
                                 {stats?.proficiency && (() => {
                                     const scores = {
-                                        "Communication": stats.proficiency.find((p: any) => p.type === 'Communication')?.score || 0,
-                                        "Aptitude": stats.proficiency.find((p: any) => p.type === 'Aptitude')?.score || 0,
-                                        "Coding": stats.proficiency.find((p: any) => p.type === 'Coding')?.score || 0,
+                                        "Communication": stats.proficiency.find((p: { type: string; score: number }) => p.type === 'Communication')?.score || 0,
+                                        "Aptitude": stats.proficiency.find((p: { type: string; score: number }) => p.type === 'Aptitude')?.score || 0,
+                                        "Coding": stats.proficiency.find((p: { type: string; score: number }) => p.type === 'Coding')?.score || 0,
                                     };
                                     // Scale 0-100 to 0-50
                                     const p1 = { x: 50, y: 50 - (scores["Aptitude"] * 0.5) };
@@ -296,7 +304,7 @@ export default function StudentDashboard() {
                                 <p className="text-[10px] font-medium text-slate-500 leading-relaxed">
                                     Profile telemetry indicates consistent growth. Maintain current training velocity to optimize the proficiency triad.
                                     <span className="block mt-2 text-slate-400 ">
-                                        // Recommendation: prioritize under-indexed vectors for balanced skill acquisition.
+                                        {`// Recommendation: prioritize under-indexed vectors for balanced skill acquisition.`}
                                     </span>
                                 </p>
                             </div>

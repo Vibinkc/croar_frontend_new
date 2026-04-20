@@ -61,7 +61,7 @@ export default function X360MyAssessments() {
                     {pending.length === 0 ? (
                         <div className="col-span-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-12 text-center">
                             <span className="material-symbols-rounded text-4xl text-slate-300 mb-2">done_all</span>
-                            <p className="text-slate-500 font-bold">You're all caught up!</p>
+                            <p className="text-slate-500 font-bold">You&apos;re all caught up!</p>
                             <p className="text-slate-400 text-xs mt-1">No pending feedback requests for you.</p>
                         </div>
                     ) : (

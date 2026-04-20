@@ -7,9 +7,45 @@ import { apiClient } from "@/utils/api";
 import ProjectKanban from "./ProjectKanban";
 import { Reorder } from "framer-motion";
 
+interface Employee {
+    id: string;
+    first_name: string;
+    last_name: string;
+    designation?: string;
+}
+
+interface Company {
+    id: string;
+    name: string;
+}
+
+interface Task {
+    id: string;
+    title: string;
+    description: string;
+    column: string;
+    status: string;
+    due_date?: string | null;
+    assignee?: Employee;
+    employee_id?: string | null;
+}
+
+interface ProjectData {
+    id?: string;
+    name: string;
+    description: string;
+    status: string;
+    start_date: string;
+    end_date: string;
+    company_id: string;
+    members: Employee[];
+    tasks: Task[];
+    kanban_columns: string[];
+}
+
 interface ProjectFormProps {
     projectId?: string;
-    initialData?: any;
+    initialData?: ProjectData;
 }
 
 export default function ProjectForm({ projectId, initialData }: ProjectFormProps) {
@@ -17,10 +53,10 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
     const { token } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("basic");
-    const [employees, setEmployees] = useState<any[]>([]);
-    const [companies, setCompanies] = useState<any[]>([]);
+    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [companies, setCompanies] = useState<Company[]>([]);
     
-    const [formData, setFormData] = useState<any>({
+    const [formData, setFormData] = useState<ProjectData>({
         name: "",
         description: "",
         status: "Active",
@@ -81,7 +117,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData((prev: any) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -157,7 +193,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
             alert("Column already exists");
             return;
         }
-        setFormData((prev: any) => ({
+        setFormData((prev) => ({
             ...prev,
             kanban_columns: [...prev.kanban_columns, newColumnName.trim()]
         }));
@@ -165,11 +201,11 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
     };
 
     const handleRemoveColumn = (col: string) => {
-        if (formData.tasks.some((t: any) => t.column === col)) {
+        if (formData.tasks.some((t) => t.column === col)) {
             alert("Cannot remove column while it has tasks. Move or delete tasks first.");
             return;
         }
-        setFormData((prev: any) => ({
+        setFormData((prev) => ({
             ...prev,
             kanban_columns: prev.kanban_columns.filter((c: string) => c !== col)
         }));
@@ -310,13 +346,13 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                         <div className="space-y-6 pt-6 border-t border-slate-100">
                             <div>
                                 <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Kanban Workflow</h4>
-                                <p className="text-[10px] text-slate-400 font-bold ml-1 mt-1">Define the custom stages for your project's task board.</p>
+                                <p className="text-[10px] text-slate-400 font-bold ml-1 mt-1">Define the custom stages for your project&apos;s task board.</p>
                             </div>
                             <div className="flex flex-wrap gap-3">
                                 <Reorder.Group 
                                     axis="x" 
                                     values={formData.kanban_columns} 
-                                    onReorder={(newOrder) => setFormData((prev: any) => ({ ...prev, kanban_columns: newOrder }))}
+                                    onReorder={(newOrder) => setFormData((prev) => ({ ...prev, kanban_columns: newOrder }))}
                                     className="flex flex-wrap gap-3"
                                 >
                                     {formData.kanban_columns?.map((col: string, idx: number) => (
@@ -371,7 +407,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                             <p className="text-xs font-bold text-slate-400">No members assigned yet.</p>
                                         </div>
                                     ) : (
-                                        formData.members.map((m: any) => (
+                                        formData.members.map((m) => (
                                             <div key={m.id} className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xs  shadow-sm uppercase">
@@ -400,7 +436,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                 <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Assign Talent</h4>
                                 <div className="max-h-[500px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
                                     {employees
-                                        .filter(emp => !(formData.members || []).some((m: any) => m.id === emp.id))
+                                        .filter(emp => !(formData.members || []).some((m) => m.id === emp.id))
                                         .map((emp) => (
                                             <div key={emp.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#7C3AED]/20 hover:bg-slate-50/50 transition-all group">
                                                 <div className="flex items-center gap-3">

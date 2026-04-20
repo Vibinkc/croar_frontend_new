@@ -106,10 +106,9 @@ export default function StudentResumeScorerPage() {
         }
     };
 
-    const [pdfDocument, setPdfDocument] = useState<any>(null);
-    const [processedFeedback, setProcessedFeedback] = useState<Feedback[]>([]);
+    const [pdfDocument, setPdfDocument] = useState<pdfjs.PDFDocumentProxy | null>(null);
 
-    const onDocumentLoadSuccess = (pdf: any) => {
+    const onDocumentLoadSuccess = (pdf: pdfjs.PDFDocumentProxy) => {
         setNumPages(pdf.numPages);
         setPdfDocument(pdf);
     };
@@ -135,10 +134,11 @@ export default function StudentResumeScorerPage() {
                         const viewport = page.getViewport({ scale: 1 });
 
                         let pageText = "";
-                        const itemMap: any[] = []; // Maps char index to item box
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        const itemMap: { start: number; end: number; box: any }[] = []; // Maps char index to item box
 
                         // Build page text and coordinate map
-                        textContent.items.forEach((item: any) => {
+                        textContent.items.forEach((item: { str: string; transform: number[]; width: number; height?: number }) => {
                             const str = item.str;
                             // PDF coordinates are (x, y) from bottom-left
                             // viewport helps convert. But usually raw TextContent has transform
@@ -202,7 +202,7 @@ export default function StudentResumeScorerPage() {
                             // Better: Just use the text items that contain words from the quote.
 
                             const quoteWords = cleanQuote.split(' ');
-                            const matchedItems = textContent.items.filter((t: any) => {
+                            const matchedItems = textContent.items.filter((t: { str: string; transform: number[]; width: number; height?: number }) => {
                                 const tStr = t.str.toLowerCase();
                                 return quoteWords.some((qw: string) => tStr.includes(qw) && qw.length > 3);
                             });
@@ -406,7 +406,7 @@ export default function StudentResumeScorerPage() {
                                         </div>
                                     </div>
                                     <p className="text-xs text-slate-500 leading-relaxed mb-3 bg-slate-50 p-2 rounded-lg border border-slate-100">
-                                        "{item.quote}"
+                                        &quot;{item.quote}&quot;
                                     </p>
                                     <div className="flex gap-2 mb-2">
                                         <span className="material-icons-outlined text-slate-400 text-base">lightbulb</span>

@@ -326,7 +326,8 @@ export default function GlobalTasksPage() {
                                 </div>
                                 <h3 className="text-2xl font-black text-slate-900 mb-2">No tasks found</h3>
                                 <p className="text-slate-500 font-medium max-w-sm mx-auto">
-                                    We couldn't find any tasks matching your criteria. Try adjusting your search or selecting a specific project.
+                                    {/* eslint-disable-next-line react/no-unescaped-entities */}
+                                    We couldn&apos;t find any tasks matching your criteria. Try adjusting your search or selecting a specific project.
                                 </p>
                             </div>
                         )}

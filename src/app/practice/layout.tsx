@@ -38,7 +38,8 @@ function LayoutContent({
 
     useEffect(() => {
         // Close mobile menu on route change
-        setIsMobileMenuOpen(false);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMobileMenuOpen(prev => prev ? false : prev);
     }, [pathname]);
 
     if (isLoading || role !== "STUDENT") {

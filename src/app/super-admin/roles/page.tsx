@@ -1,18 +1,29 @@
-"use client";
+import { Suspense } from 'react';
+interface Permission {
+    id: string;
+    resource: string;
+    action: string;
+    module: string;
+}
 
-import { useEffect, useState, Suspense } from "react";
-import { apiClient } from "@/utils/api";
-import { useRouter } from "next/navigation";
+interface Role {
+    id: string;
+    name: string;
+    description: string;
+    role_rank: number;
+    is_system: boolean;
+    permissions: Permission[];
+}
 
 function RolesContent() {
-    const [roles, setRoles] = useState<any[]>([]);
-    const [permissions, setPermissions] = useState<any[]>([]);
+    const [roles, setRoles] = useState<Role[]>([]);
+    const [permissions, setPermissions] = useState<Permission[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [permSearch, setPermSearch] = useState("");
     
     // UI State
     const [isEditing, setIsEditing] = useState(false);
-    const [selectedRole, setSelectedRole] = useState<any | null>(null);
+    const [selectedRole, setSelectedRole] = useState<Role | null>(null);
     
     // Form State
     const [name, setName] = useState("");
@@ -50,12 +61,12 @@ function RolesContent() {
         setIsEditing(true);
     };
 
-    const handleOpenEdit = (role: any) => {
+    const handleOpenEdit = (role: Role) => {
         setSelectedRole(role);
         setName(role.name);
         setDescription(role.description || "");
         setRank(role.role_rank);
-        setSelectedPermIds(role.permissions.map((p: any) => p.id));
+        setSelectedPermIds(role.permissions.map((p) => p.id));
         setIsEditing(true);
     };
 
@@ -110,7 +121,7 @@ function RolesContent() {
         p.module.toLowerCase().includes(permSearch.toLowerCase())
     );
 
-    const groupedPermissions = filteredPermissions.reduce((acc: any, perm: any) => {
+    const groupedPermissions = filteredPermissions.reduce((acc: Record<string, Permission[]>, perm: Permission) => {
         if (!acc[perm.module]) acc[perm.module] = [];
         acc[perm.module].push(perm);
         return acc;
@@ -203,7 +214,7 @@ function RolesContent() {
                                                 <div key={module} className="space-y-3">
                                                     <h4 className="text-[9px] font-black text-slate-400   border-b border-slate-200 pb-1">{module} Module</h4>
                                                     <div className="grid grid-cols-1 gap-2">
-                                                        {groupedPermissions[module].map((perm: any) => (
+                                                        {groupedPermissions[module].map((perm) => (
                                                             <div 
                                                                 key={perm.id}
                                                                 onClick={() => togglePermission(perm.id)}
@@ -261,7 +272,7 @@ function RolesContent() {
                                     </p>
 
                                     <div className="flex flex-wrap gap-1.5 mb-8">
-                                        {role.permissions.slice(0, 4).map((p: any) => (
+                                        {role.permissions.slice(0, 4).map((p) => (
                                             <span key={p.id} className="px-2 py-1 bg-slate-50 text-slate-500 rounded text-[8px] font-black   border border-slate-100">
                                                 {p.resource}
                                             </span>

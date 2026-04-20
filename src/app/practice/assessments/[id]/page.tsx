@@ -116,15 +116,14 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
     const [activeSectionIndex, setActiveSectionIndex] = useState(0);
     const [activeCodingQuestionIndex, setActiveCodingQuestionIndex] = useState(0);
     const [activeLanguage, setActiveLanguage] = useState("python");
-    const [executionResult, setExecutionResult] = useState<any>(null);
-    const [isRunning, setIsRunning] = useState(false);
+
     const [loading, setLoading] = useState(true);
     const [answers, setAnswers] = useState<{ [key: number]: string }>({});
-    const answersRef = useRef<{ [key: number]: string }>({}); // Ref to track answers without re-triggering effects
+    const answersRef = useRef<{ [key: number]: string }>({});
 
     const [timeLeft, setTimeLeft] = useState<number>(0);
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [scoreData, setScoreData] = useState<any>(null);
+    const [scoreData, setScoreData] = useState<Record<string, unknown> | null>(null);
     const [isUnderway, setIsUnderway] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [isDeadlineApproaching, setIsDeadlineApproaching] = useState(false);
@@ -132,7 +131,6 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showInterview, setShowInterview] = useState(false);
 
-    // Layout & Theme State (to match Job Simulation)
     const [theme, setTheme] = useState<'dark' | 'light'>('light');
     const [leftPaneWidth, setLeftPaneWidth] = useState(45);
     const [leftPaneHeight, setLeftPaneHeight] = useState(70);
@@ -141,29 +139,101 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
     const [transitionDirection, setTransitionDirection] = useState<'next' | 'prev'>('next');
     const [showConsole, setShowConsole] = useState(true);
 
-    // Code Execution State
-    const [testResults, setTestResults] = useState<{ [key: string]: any }>({});
+    const [testResults, setTestResults] = useState<{ [key: string]: Record<string, unknown> }>({});
     const [executingTests, setExecutingTests] = useState<{ [key: string]: boolean }>({});
     const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
     const [customInput, setCustomInput] = useState("");
-    const [customTestResult, setCustomTestResult] = useState<any>(null);
+    const [customTestResult, setCustomTestResult] = useState<Record<string, unknown> | null>(null);
     const [executingCustomTest, setExecutingCustomTest] = useState(false);
 
     const isDark = theme === 'dark';
-
-    // Violation lock to prevent loops
     const violationDetectedRef = useRef(false);
-
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-
-    // Refs for reliable state access in event listeners
     const isSubmittingRef = useRef(false);
     const isSubmittedRef = useRef(false);
 
+    const fetchAssessment = useCallback(async () => {
+        try {
+            const res = await apiClient.get(`/api/v1/assessments/${id}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.is_completed && data.last_attempt_id) {
+                    router.replace(`/practice/assessments/results/${data.last_attempt_id}${data.is_ai_generated ? '?from=ai' : ''}`);
+                    return;
+                }
+                setAssessment(data);
+                const questions: Question[] = [];
+                if (data.sections && data.sections.length > 0) {
+                    data.sections.forEach((section: Section) => {
+                        if (section.questions) questions.push(...section.questions);
+                    });
+                }
+                setAllQuestions(questions);
+                const initialAnswers: { [key: number]: string } = {};
+                questions.forEach((q: Question) => {
+                    if (q.content.initial_code && (q.type?.toLowerCase() === 'code' || q.type?.toLowerCase() === 'coding')) {
+                        const defaultCode = q.content.initial_code[activeLanguage] || Object.values(q.content.initial_code)[0];
+                        initialAnswers[q.id] = defaultCode;
+                    }
+                });
+                setAnswers(prev => ({ ...initialAnswers, ...prev }));
+                answersRef.current = { ...initialAnswers, ...answersRef.current };
+                const durationSeconds = data.time_limit_minutes * 60;
+                let timeUntilDeadline = durationSeconds;
+                if (data.end_at) {
+                    const now = new Date().getTime();
+                    const deadline = new Date(data.end_at).getTime();
+                    const remainingWindow = Math.floor((deadline - now) / 1000);
+                    timeUntilDeadline = Math.min(durationSeconds, remainingWindow);
+                    if (remainingWindow < durationSeconds) setIsDeadlineApproaching(true);
+                }
+                setTimeLeft(Math.max(0, timeUntilDeadline));
+                if (timeUntilDeadline <= 0) {
+                    alert("This assessment protocol has already expired.");
+                    router.push(data.is_ai_generated ? '/practice/ai-practice' : '/practice/assessments');
+                }
+            } else {
+                alert("Failed to load assessment");
+            }
+        } catch (e) { console.error(e); } finally { setLoading(false); }
+    }, [id, router, activeLanguage]);
+
+    const submitAssessment = useCallback(async () => {
+        if (isSubmittedRef.current || isSubmittingRef.current) return;
+        isSubmittingRef.current = true;
+        setIsSubmitting(true);
+        if (timerRef.current) clearInterval(timerRef.current);
+        try {
+            const currentAnswers = answersRef.current;
+            const res = await apiClient.post(`/api/v1/assessments/${id}/submit`, { answers: currentAnswers });
+            if (res.ok) {
+                const data = await res.json();
+                if (assessment?.interview_id) {
+                    setShowInterview(true);
+                    return;
+                }
+                setScoreData(data);
+                isSubmittedRef.current = true;
+                setIsSubmitted(true);
+                if (document.fullscreenElement) {
+                    await document.exitFullscreen().catch(err => console.error(err));
+                }
+            } else {
+                if (!violationDetectedRef.current) alert("Failed to submit assessment.");
+                isSubmittingRef.current = false;
+                setIsSubmitting(false);
+            }
+        } catch (e) {
+            console.error(e);
+            isSubmittingRef.current = false;
+            setIsSubmitting(false);
+        }
+    }, [id, assessment?.interview_id]);
+
     useEffect(() => {
         fetchAssessment();
-    }, []); // Only fetch once on mount
+    }, [fetchAssessment]);
 
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -175,11 +245,8 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
 
         const handleViolation = (reason: string) => {
             if (violationDetectedRef.current || isSubmittedRef.current || isSubmittingRef.current) return;
-
             violationDetectedRef.current = true;
-            // Immediate alert to block user action
             alert(reason);
-            // Then submit
             submitAssessment();
         };
 
@@ -197,19 +264,13 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
 
         const handleFullscreenChange = () => {
             setIsFullscreen(!!document.fullscreenElement);
-            // Check refs to avoid stale closures triggering false violations
             if (isUnderway && !document.fullscreenElement && !isSubmittedRef.current && !isSubmittingRef.current && !assessment?.is_ai_generated) {
                 handleViolation("Assessment Violation: Exiting fullscreen mode is not allowed.");
             }
         };
 
-        const handleContextMenu = (e: MouseEvent) => {
-            e.preventDefault();
-        };
-
-        const handleCopyPaste = (e: ClipboardEvent) => {
-            e.preventDefault();
-        };
+        const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+        const handleCopyPaste = (e: ClipboardEvent) => e.preventDefault();
 
         window.addEventListener('beforeunload', handleBeforeUnload);
         if (!assessment?.is_ai_generated) {
@@ -232,9 +293,8 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
             document.removeEventListener('cut', handleCopyPaste);
             document.removeEventListener('paste', handleCopyPaste);
         };
-    }, [isUnderway, isSubmitted, assessment?.is_ai_generated]); // kept dependencies minimum
+    }, [isUnderway, assessment?.is_ai_generated, submitAssessment]);
 
-    // Dedicated Timer Effect
     useEffect(() => {
         if (isUnderway && !isSubmitted && timeLeft > 0) {
             timerRef.current = setInterval(() => {
@@ -247,87 +307,14 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                 });
             }, 1000);
         }
-
         return () => {
             if (timerRef.current) {
                 clearInterval(timerRef.current);
                 timerRef.current = null;
             }
         };
-    }, [isUnderway, isSubmitted]);
+    }, [isUnderway, isSubmitted, timeLeft, submitAssessment]);
 
-    const fetchAssessment = async () => {
-        try {
-            // const token = Cookies.get("auth_");
-            const res = await apiClient.get(`/api/v1/assessments/${id}`);
-            if (res.ok) {
-                const data = await res.json();
-
-                // If already completed, redirect to results
-                if (data.is_completed && data.last_attempt_id) {
-                    router.replace(`/practice/assessments/results/${data.last_attempt_id}${data.is_ai_generated ? '?from=ai' : ''}`);
-                    return;
-                }
-
-                setAssessment(data);
-
-                // Flatten questions from all sections
-                const questions: Question[] = [];
-                if (data.sections && data.sections.length > 0) {
-                    data.sections.forEach((section: Section) => {
-                        if (section.questions) {
-                            questions.push(...section.questions);
-                        }
-                    });
-                }
-                setAllQuestions(questions);
-
-                // Initialize answers with initial code for each question
-                const initialAnswers: { [key: number]: string } = {};
-                questions.forEach((q: Question) => {
-                    if (q.content.initial_code && (q.type?.toLowerCase() === 'code' || q.type?.toLowerCase() === 'coding')) {
-                        // Use activeLanguage or default to python
-                        const defaultCode = q.content.initial_code[activeLanguage] || Object.values(q.content.initial_code)[0];
-                        initialAnswers[q.id] = defaultCode;
-                    }
-                });
-                setAnswers(prev => ({ ...initialAnswers, ...prev }));
-                answersRef.current = { ...initialAnswers, ...answersRef.current };
-
-                // Calculate time left: min(duration, time until end_at)
-                const durationSeconds = data.time_limit_minutes * 60;
-                let timeUntilDeadline = durationSeconds;
-
-                if (data.end_at) {
-                    const now = new Date().getTime();
-                    const deadline = new Date(data.end_at).getTime();
-                    const remainingWindow = Math.floor((deadline - now) / 1000);
-                    timeUntilDeadline = Math.min(durationSeconds, remainingWindow);
-
-                    if (remainingWindow < durationSeconds) {
-                        setIsDeadlineApproaching(true);
-                    }
-                }
-
-                setTimeLeft(Math.max(0, timeUntilDeadline));
-
-                if (timeUntilDeadline <= 0) {
-                    alert("This assessment protocol has already expired.");
-                    if (data.is_ai_generated) {
-                        router.push('/practice/ai-practice');
-                    } else {
-                        router.push('/practice/assessments');
-                    }
-                }
-            } else {
-                alert("Failed to load assessment");
-            }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const startAssessment = () => {
         if (containerRef.current && !assessment?.is_ai_generated) {
@@ -569,54 +556,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
         document.addEventListener('mouseup', handleMouseUp);
     };
 
-    const submitAssessment = async () => {
-        if (isSubmittedRef.current || isSubmittingRef.current) return;
 
-        isSubmittingRef.current = true;
-        setIsSubmitting(true);
-
-        if (timerRef.current) clearInterval(timerRef.current);
-
-        try {
-            // Use answersRef.current to get the latest answers even inside event listeners
-            const currentAnswers = answersRef.current;
-
-            // const token = Cookies.get("auth_");
-            const res = await apiClient.post(`/api/v1/assessments/${id}/submit`, { answers: currentAnswers });
-
-            if (res.ok) {
-                const data = await res.json();
-
-                // --- SEAMLESS TRANSITION LOGIC ---
-                // If there is a linked interview, transition immediately instead of showing results
-                // If there is a linked interview, transition immediately instead of showing results
-                if (assessment?.interview_id) {
-                    setShowInterview(true);
-                    return;
-                }
-
-                setScoreData(data);
-
-                isSubmittedRef.current = true;
-                setIsSubmitted(true);
-
-                if (document.fullscreenElement) {
-                    await document.exitFullscreen().catch(err => console.error(err));
-                }
-            } else {
-                // Only show error if it wasn't a forced violation submission
-                if (!violationDetectedRef.current) {
-                    alert("Failed to submit assessment.");
-                }
-                isSubmittingRef.current = false;
-                setIsSubmitting(false);
-            }
-        } catch (e) {
-            console.error(e);
-            isSubmittingRef.current = false;
-            setIsSubmitting(false);
-        }
-    };
 
     const currentSection = assessment?.sections[activeSectionIndex];
     const currentQuestion = currentSection?.questions[activeCodingQuestionIndex];

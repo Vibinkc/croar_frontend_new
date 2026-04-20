@@ -9,6 +9,7 @@ import ProjectForm from "@/components/enterprise/ProjectForm";
 export default function ProjectDetailsPage() {
     const params = useParams();
     const { token } = useAuth();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [project, setProject] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
 

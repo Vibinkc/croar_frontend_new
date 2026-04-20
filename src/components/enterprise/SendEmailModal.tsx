@@ -9,9 +9,21 @@ interface SendEmailModalProps {
     token: string;
 }
 
+interface EmailTemplate {
+    id: string;
+    name: string;
+    subject: string;
+    body: string;
+}
+
+interface SenderContext {
+    company_name?: string;
+    recruiter_name?: string;
+}
+
 export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, token }: SendEmailModalProps) {
     const slug = "default"; // Added to fix "Cannot find name 'slug'" error
-    const [templates, setTemplates] = useState<any[]>([]);
+    const [templates, setTemplates] = useState<EmailTemplate[]>([]);
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
     const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
@@ -22,7 +34,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
     const [aiPurpose, setAiPurpose] = useState("schedule an interview");
     const [aiTone, setAiTone] = useState("professional");
 
-    const [senderContext, setSenderContext] = useState<any>(null);
+    const [senderContext, setSenderContext] = useState<SenderContext | null>(null);
     const [customVars, setCustomVars] = useState<string[]>([]);
     const [customVarValues, setCustomVarValues] = useState<Record<string, string>>({});
 

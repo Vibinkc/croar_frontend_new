@@ -175,7 +175,7 @@ export default function CodingProductPage() {
                             </div>
                             <div className="flex">
                                 <span className="w-8 text-slate-600 select-none text-right mr-4">2</span>
-                                <span className="pl-4"><span className="text-slate-500">// Parse the input integer</span></span>
+                                <span className="pl-4"><span className="text-slate-500">{`// Parse the input integer`}</span></span>
                             </div>
                             <div className="flex">
                                 <span className="w-8 text-slate-600 select-none text-right mr-4">3</span>
@@ -187,7 +187,7 @@ export default function CodingProductPage() {
                             </div>
                             <div className="flex">
                                 <span className="w-8 text-slate-600 select-none text-right mr-4">5</span>
-                                <span className="pl-8"><span className="text-purple-400">return</span> <span className="text-green-400">"Even"</span>;</span>
+                                <span className="pl-8"><span className="text-purple-400">return</span> <span className="text-green-400">&quot;Even&quot;</span>;</span>
                             </div>
                             <div className="flex">
                                 <span className="w-8 text-slate-600 select-none text-right mr-4">6</span>
@@ -233,7 +233,7 @@ export default function CodingProductPage() {
                     <div className="text-center mb-16">
                         <h2 className="text-3xl font-black text-slate-900">Speak Any Language.</h2>
                         <p className="text-slate-600 mt-4 text-lg max-w-2xl mx-auto">
-                            Whether you're a Python script-kiddie or a C++ systems architect, our environment adapts to your toolchain.
+                            Whether you&apos;re a Python script-kiddie or a C++ systems architect, our environment adapts to your toolchain.
                         </p>
                     </div>
 

@@ -8,13 +8,29 @@ import { useAuth } from "@/context/AuthContext";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
 import { BACKEND_URL } from "@/utils/api";
 
+interface Scenario {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+}
+
+interface Assignment {
+    id: string;
+    scenario: {
+        id: string;
+        title: string;
+        description: string;
+    };
+}
+
 function SimulationPortalContent() {
     const { token, userId } = useAuth();
     const searchParams = useSearchParams();
     const router = useRouter();
     
-    const [scenarios, setScenarios] = useState<any[]>([]);
-    const [assignments, setAssignments] = useState<any[]>([]);
+    const [scenarios, setScenarios] = useState<Scenario[]>([]);
+    const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
     const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
     const [activeAssignmentId, setActiveAssignmentId] = useState<string | null>(null);

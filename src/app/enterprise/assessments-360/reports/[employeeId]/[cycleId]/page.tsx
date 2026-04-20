@@ -10,6 +10,38 @@ import {
     Tooltip, Legend 
 } from 'recharts';
 
+interface CategoryScore {
+    category: string;
+    self_score: number | null;
+    manager_score: number | null;
+    peer_score: number | null;
+    overall_average: number;
+}
+
+interface TextResponse {
+    category: string;
+    relation: string;
+    question: string;
+    answer: string;
+}
+
+interface Report {
+    template_name: string;
+    completed_assignments: number;
+    total_assignments: number;
+    category_scores: CategoryScore[];
+    text_responses: TextResponse[];
+}
+
+interface ChartDataItem {
+    subject: string;
+    Self: number;
+    Manager: number;
+    Peers: number;
+    Average: number;
+    fullMark: number;
+}
+
 export default function X360ReportPage() {
     const { token } = useAuth();
     const router = useRouter();
@@ -17,7 +49,7 @@ export default function X360ReportPage() {
     const employeeId = params.employeeId as string;
     const cycleId = params.cycleId as string;
 
-    const [report, setReport] = useState<any>(null);
+    const [report, setReport] = useState<Report | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -39,7 +71,7 @@ export default function X360ReportPage() {
     if (loading) return <div className="p-12 text-center text-slate-500 font-bold">Generating report...</div>;
     if (!report) return <div className="p-12 text-center text-rose-500 font-bold">Report not found.</div>;
 
-    const chartData = report.category_scores.map((cs: any) => ({
+    const chartData: ChartDataItem[] = report.category_scores.map((cs) => ({
         subject: cs.category,
         Self: cs.self_score || 0,
         Manager: cs.manager_score || 0,
@@ -106,7 +138,7 @@ export default function X360ReportPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {report.category_scores.map((cs: any) => (
+                                {report.category_scores.map((cs) => (
                                     <tr key={cs.category} className="hover:bg-slate-50 transition-colors">
                                         <td className="py-5 px-2 text-xs font-black text-slate-700  tracking-tighter">{cs.category}</td>
                                         <td className="py-5 px-2 text-center font-bold text-sm text-indigo-600">{cs.self_score?.toFixed(1) || '-'}</td>
@@ -130,14 +162,14 @@ export default function X360ReportPage() {
                             No qualitative responses yet.
                         </p>
                     ) : (
-                        report.text_responses.map((resp: any, idx: number) => (
+                        report.text_responses.map((resp, idx) => (
                             <div key={idx} className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm space-y-3 hover:border-indigo-100 transition-all">
                                 <div className="flex justify-between items-start">
                                     <span className="text-[10px] font-black  text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">{resp.category}</span>
                                     <span className="text-[10px] font-black  text-slate-400 ">{resp.relation}</span>
                                 </div>
                                 <p className="text-[11px] font-black text-slate-400  tracking-tighter">Question: {resp.question}</p>
-                                <p className="text-sm font-medium text-slate-700 leading-relaxed ">"{resp.answer}"</p>
+                                <p className="text-sm font-medium text-slate-700 leading-relaxed ">&quot;{resp.answer}&quot;</p>
                             </div>
                         ))
                     )}

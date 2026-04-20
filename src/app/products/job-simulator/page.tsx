@@ -116,7 +116,7 @@ export default function JobSimProductPage() {
                             <span className="text-[#686bed] font-bold   text-sm">The Experience</span>
                             <h2 className="text-3xl lg:text-4xl font-bold mt-4 mb-6 text-slate-900">Experience Real Workplace Scenarios</h2>
                             <p className="text-slate-600 leading-relaxed mb-8 text-lg">
-                                Our Job Simulator doesn't just ask questions—it drops candidates into the heart of the action. From managing conflicting deadlines to resolving client crises, witness how they handle the pressure.
+                                Our Job Simulator doesn&apos;t just ask questions—it drops candidates into the heart of the action. From managing conflicting deadlines to resolving client crises, witness how they handle the pressure.
                             </p>
                             <ul className="space-y-4 text-slate-700">
                                 {[
@@ -284,7 +284,7 @@ export default function JobSimProductPage() {
                     <div className="max-w-2xl">
                         <h2 className="text-4xl font-bold mb-6">Total Immersion</h2>
                         <p className="text-slate-400 text-lg leading-relaxed mb-8">
-                            We've designed the environment to minimize the 'test-taking' feeling. From high-fidelity visuals to realistic ambient sounds, candidates feel like they're truly on the job.
+                            We&apos;ve designed the environment to minimize the &apos;test-taking&apos; feeling. From high-fidelity visuals to realistic ambient sounds, candidates feel like they&apos;re truly on the job.
                         </p>
                         <div className="flex gap-16">
                             <div>

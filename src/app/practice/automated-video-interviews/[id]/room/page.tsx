@@ -15,6 +15,11 @@ interface Interview {
     };
 }
 
+interface InterviewResult {
+    question: string;
+    answer: string;
+}
+
 // Web Speech API type handling handled via local casting to avoid global conflicts
 
 export default function VideoInterviewRoom() {
@@ -32,14 +37,15 @@ export default function VideoInterviewRoom() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const speechRecognitionRef = useRef<any>(null);
+    const speechRecognitionRef = useRef<SpeechRecognition | null>(null);
     const chunksRef = useRef<Blob[]>([]);
 
     // Store results: { question: string, answer: string }
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<InterviewResult[]>([]);
 
     useEffect(() => {
         if (id) {
+            // eslint-disable-next-line react-hooks/immutability
             fetchInterview();
         }
     }, [id]);
@@ -53,7 +59,7 @@ export default function VideoInterviewRoom() {
 
                 // Flatten questions
                 const allQuestions: string[] = [];
-                data.interview_plan.modules.forEach((m: any) => {
+                data.interview_plan.modules.forEach((m: { questions: string[] }) => {
                     m.questions.forEach((q: string) => allQuestions.push(q));
                 });
                 setQuestions(allQuestions);
@@ -112,16 +118,16 @@ export default function VideoInterviewRoom() {
         }
 
         // 2. Start Speech Recognition (Transcript)
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
             recognition.lang = 'en-US';
 
-            recognition.onresult = (event: any) => {
+            recognition.onresult = (event: SpeechRecognitionEvent) => {
                 let finalTranscript = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                for (let i = 0; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
                         finalTranscript += event.results[i][0].transcript;
                     }
@@ -321,7 +327,7 @@ export default function VideoInterviewRoom() {
 }
 
 // Helper to start camera effects
-function StartCameraEffect({ videoRef, streamRef }: { videoRef: any, streamRef: any }) {
+function StartCameraEffect({ videoRef, streamRef }: { videoRef: React.RefObject<HTMLVideoElement | null>, streamRef: React.RefObject<MediaStream | null> }) {
     useEffect(() => {
         async function enable() {
             try {

@@ -97,8 +97,18 @@ export default function EditJobPage() {
         workflow_stages: DEFAULT_WORKFLOW_STAGES,
     });
 
-    const [companies, setCompanies] = useState<any[]>([]);
-    const [emailTemplates, setEmailTemplates] = useState<any[]>([]);
+    interface Company {
+        id: string;
+        name: string;
+    }
+
+    interface EmailTemplate {
+        id: string;
+        name: string;
+    }
+
+    const [companies, setCompanies] = useState<Company[]>([]);
+    const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
 
     const steps = [
         { id: 1, name: "Job Details", icon: "ClipboardList" },
@@ -551,7 +561,7 @@ export default function EditJobPage() {
                                                 <div className="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-all shadow-inner"><Pin className="w-4 h-4" /></div>
                                                 <div className="flex-1 grid grid-cols-2 gap-4 items-center">
                                                     <input type="text" className="bg-transparent border-none outline-none text-[13px] font-black text-slate-800 p-0 focus:text-indigo-600 transition-colors  " value={field.label} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, label: e.target.value } : f) }))} />
-                                                    <select className="bg-slate-50 border-none outline-none text-[9px] font-black text-slate-400  px-3 py-1.5 rounded-xl cursor-pointer hover:bg-slate-100 transition-all w-32" value={field.type} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, type: e.target.value as any } : f) }))}>
+                                                    <select className="bg-slate-50 border-none outline-none text-[9px] font-black text-slate-400  px-3 py-1.5 rounded-xl cursor-pointer hover:bg-slate-100 transition-all w-32" value={field.type} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, type: e.target.value as ApplicationField['type'] } : f) }))}>
                                                         <option value="text">Text</option><option value="email">Email</option><option value="number">Number</option><option value="boolean">Boolean</option><option value="file">File</option>
                                                     </select>
                                                 </div>

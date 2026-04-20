@@ -46,8 +46,10 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
                 console.error("[Labyrinth] Invalid data structure - missing or invalid grid:", data);
                 // Provide a default empty grid
                 const emptyGrid = Array(64).fill(null).map(() => ({ type: 'EMPTY' as TileType, rot: 0 }));
-                setGrid(emptyGrid);
-                setInventory({ reflectors: 0, splitters: 0 });
+                setTimeout(() => {
+                    setGrid(emptyGrid);
+                    setInventory({ reflectors: 0, splitters: 0 });
+                }, 0);
                 return;
             }
 
@@ -60,11 +62,13 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
             while (initialGrid.length < 64) initialGrid.push({ type: 'EMPTY', rot: 0 });
 
             console.log("[Labyrinth] Initialized grid with", initialGrid.length, "cells");
-            setGrid(initialGrid);
-            setInventory({
-                reflectors: data.inventory?.reflectors || 0,
-                splitters: data.inventory?.splitters || 0
-            });
+            setTimeout(() => {
+                setGrid(initialGrid);
+                setInventory({
+                    reflectors: data.inventory?.reflectors || 0,
+                    splitters: data.inventory?.splitters || 0
+                });
+            }, 0);
             console.log("[Labyrinth] Inventory:", data.inventory);
         }
     }, [data]);
@@ -130,10 +134,17 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
     const handleLaunch = async () => {
         if (containerRef.current) {
             try {
-                const el = containerRef.current as any;
-                if (el.requestFullscreen) await el.requestFullscreen();
-                else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
-                else if (el.msRequestFullscreen) await el.msRequestFullscreen();
+                const el = containerRef.current as HTMLElement & {
+                    webkitRequestFullscreen?: () => Promise<void>;
+                    msRequestFullscreen?: () => Promise<void>;
+                };
+                if (el.requestFullscreen) {
+                    await el.requestFullscreen();
+                } else if (el.webkitRequestFullscreen) {
+                    await el.webkitRequestFullscreen();
+                } else if (el.msRequestFullscreen) {
+                    await el.msRequestFullscreen();
+                }
             } catch (err) {
                 console.log("Fullscreen blocked or failed", err);
             }
@@ -176,7 +187,7 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
         const MAX_STEPS = 50;
 
         beams.forEach(startBeam => {
-            let curr = { ...startBeam };
+            const curr = { ...startBeam };
             const path = [{ x: curr.x, y: curr.y }];
 
             for (let step = 0; step < MAX_STEPS; step++) {

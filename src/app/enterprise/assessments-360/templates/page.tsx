@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
@@ -30,11 +30,7 @@ export default function X360Templates() {
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchTemplates();
-    }, []);
-
-    const fetchTemplates = async () => {
+    const fetchTemplates = useCallback(async () => {
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/templates`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -46,11 +42,15 @@ export default function X360Templates() {
                 setTemplates([]);
             }
         } catch (error) {
-            console.error(error);
+            console.error("Failed to fetch templates:", error);
         } finally {
             setLoading(false);
         }
-    };
+    }, [token]);
+
+    useEffect(() => {
+        fetchTemplates();
+    }, [fetchTemplates]);
 
     const handleDelete = async (id: string) => {
         if (!window.confirm("Are you sure you want to delete this template?")) return;
@@ -63,7 +63,7 @@ export default function X360Templates() {
                 fetchTemplates();
             }
         } catch (error) {
-            console.error(error);
+            console.error("Failed to delete template:", error);
         }
     };
 

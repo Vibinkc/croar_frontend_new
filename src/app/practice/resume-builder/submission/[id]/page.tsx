@@ -6,10 +6,28 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Handlebars from "handlebars";
 
+interface ResumeSubmission {
+    id: string;
+    template_id: string;
+    data: Record<string, unknown>;
+}
+
+interface ResumeTemplate {
+    id: string;
+    html_template?: string;
+    extracted_fields?: {
+        sections: {
+            title: string;
+            label?: string;
+            type?: 'list' | 'text';
+        }[];
+    };
+}
+
 export default function ResumeViewer() {
     const { id } = useParams();
-    const [submission, setSubmission] = useState<any>(null);
-    const [template, setTemplate] = useState<any>(null);
+    const [submission, setSubmission] = useState<ResumeSubmission | null>(null);
+    const [template, setTemplate] = useState<ResumeTemplate | null>(null);
     const [loading, setLoading] = useState(true);
     const resumeRef = useRef<HTMLDivElement>(null);
 
@@ -93,8 +111,9 @@ export default function ResumeViewer() {
         const { sections } = template.extracted_fields || { sections: [] };
         return (
             <>
-                {sections.map((section: any) => {
-                    const sectionData = data[section.title];
+                {sections.map((section: { title: string; label?: string; type?: string }) => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const sectionData = data[section.title] as any;
                     if (!sectionData) return null;
 
                     const isPersonal = section.title.includes("personal") || section.title.includes("contact");
@@ -122,9 +141,9 @@ export default function ResumeViewer() {
                                 {section.label || section.title}
                             </h2>
 
-                            {isList ? (
+                            {isList && Array.isArray(sectionData) ? (
                                 <div className="space-y-4">
-                                    {(sectionData as any[]).map((item, idx) => (
+                                    {sectionData.map((item: Record<string, string>, idx: number) => (
                                         <div key={idx} className="mb-2">
                                             <div className="flex justify-between items-baseline mb-1">
                                                 <h3 className="font-bold text-slate-800 text-md">

@@ -12,15 +12,36 @@ import PipelinePuzzle from "@/components/games/PipelinePuzzle";
 import PsychometricResult from "@/components/results/PsychometricResult";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface Question {
+    id: number | string;
+    text: string;
+    options?: string[];
+    test_type?: string;
+}
+
+interface Test {
+    id: number;
+    title: string;
+    description: string;
+    test_type: string;
+    questions: Question[];
+}
+
+interface TestResult {
+    id: string;
+    score: number;
+    trait_scores?: Record<string, number>;
+}
+
 export default function PsychometricTestSessionPage({ params }: { params: Promise<{ id: string }> }) {
     const unwrappedParams = use(params);
     const { id } = unwrappedParams;
     const router = useRouter();
 
-    const [test, setTest] = useState<any>(null);
-    const [responses, setResponses] = useState<{ [key: string]: any }>({});
+    const [test, setTest] = useState<Test | null>(null);
+    const [responses, setResponses] = useState<{ [key: string]: number | string }>({});
     const [submitting, setSubmitting] = useState(false);
-    const [result, setResult] = useState<any>(null);
+    const [result, setResult] = useState<TestResult | null>(null);
     const [isStarted, setIsStarted] = useState(false);
 
     const resultRef = useRef<HTMLDivElement>(null);
@@ -42,12 +63,16 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
                 const element = resultRef.current;
                 if (!element) return;
                 try {
-                    if (element.requestFullscreen) {
-                        await element.requestFullscreen();
-                    } else if ((element as any).webkitRequestFullscreen) {
-                        await (element as any).webkitRequestFullscreen();
-                    } else if ((element as any).msRequestFullscreen) {
-                        await (element as any).msRequestFullscreen();
+                    const el = element as HTMLElement & {
+                        webkitRequestFullscreen?: () => Promise<void>;
+                        msRequestFullscreen?: () => Promise<void>;
+                    };
+                    if (el.requestFullscreen) {
+                        await el.requestFullscreen();
+                    } else if (el.webkitRequestFullscreen) {
+                        await el.webkitRequestFullscreen();
+                    } else if (el.msRequestFullscreen) {
+                        await el.msRequestFullscreen();
                     }
                 } catch (err) {
                     console.error("Error attempting to enable full-screen mode:", err);
@@ -64,7 +89,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
         }));
     };
 
-    const handleSubmit = async (finalResponses?: Record<string, any>, timeTaken?: number) => {
+    const handleSubmit = async (finalResponses?: Record<string, number | string | object>, timeTaken?: number) => {
         setSubmitting(true);
         try {
             const res = await apiClient.post(`/api/v1/psychometric/submit`, {
@@ -228,7 +253,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
 
             {/* Questions List */}
             <div className="space-y-6">
-                {test.questions?.map((q: any) => (
+                {test.questions?.map((q: Question) => (
                     <div key={q.id} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
                         <p className="text-lg font-bold text-slate-800 mb-8 leading-relaxed">
                             {q.text}

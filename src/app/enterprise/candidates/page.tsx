@@ -37,7 +37,13 @@ interface Candidate {
     created_at: string;
     resume_url?: string;
     applied_jobs?: { id: string; title: string }[];
-    parsed_data?: any;
+    parsed_data?: Record<string, unknown>;
+}
+
+interface Application {
+    id: string;
+    job_requirement_id: string;
+    candidate: Candidate;
 }
 
 const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; onClose: () => void }) => {
@@ -176,10 +182,10 @@ export default function AllCandidatesPage() {
                     setJobs(currentJobs);
                 }
 
-                const jobsMap = new Map(currentJobs.map((j: any) => [j.id, j]));
+                const jobsMap = new Map(currentJobs.map((j: Job) => [j.id, j]));
                 const candidateMap = new Map<string, Candidate>();
 
-                appsData.forEach((app: any) => {
+                appsData.forEach((app: Application) => {
                     const cand = app.candidate;
                     if (!candidateMap.has(cand.id)) {
                         candidateMap.set(cand.id, {

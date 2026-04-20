@@ -4,13 +4,43 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { BACKEND_URL } from "@/utils/api";
 
+interface ApplicationField {
+    id: string;
+    label: string;
+    type: string;
+    icon: string;
+    is_required: boolean;
+}
+
+interface PublicJob {
+    id: string;
+    title: string;
+    description: string;
+    job_type?: string;
+    work_mode?: string;
+    location?: string;
+    experience_min?: number;
+    experience_max?: string | number;
+    salary_min?: number;
+    salary_max?: number;
+    salary_currency?: string;
+    salary_frequency?: string;
+    required_skills?: string[];
+    application_fields?: ApplicationField[];
+}
+
+interface Organization {
+    name: string;
+    logo_url?: string;
+}
+
 export default function PublicJobPage() {
     const params = useParams();
     const router = useRouter();
     const { id } = params;
 
-    const [job, setJob] = useState<any>(null);
-    const [orgName, setOrgName] = useState("");
+    const [job, setJob] = useState<PublicJob | null>(null);
+    const [orgName, setOrgName] = useState<string | Organization>("");
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [applied, setApplied] = useState(false);
@@ -41,7 +71,7 @@ export default function PublicJobPage() {
                 
                 // Initialize boolean fields with "No"
                 const initialData: Record<string, string> = {};
-                data.job.application_fields?.forEach((f: any) => {
+                data.job.application_fields?.forEach((f: ApplicationField) => {
                     if (f.type === 'boolean') {
                         const key = f.label.toLowerCase().replace(/\s+/g, '_');
                         initialData[key] = "No";
@@ -67,9 +97,9 @@ export default function PublicJobPage() {
                 data.append(key, value);
             });
 
-            if (resumeFile) {
+            if (resumeFile && job) {
                 // Find if there is a file field in application_fields
-                const fileField = job.application_fields?.find((f: any) => f.type === 'file');
+                const fileField = job.application_fields?.find((f: ApplicationField) => f.type === 'file');
                 const fieldName = fileField ? fileField.label.toLowerCase().replace(/\s+/g, '_') : 'resume';
                 data.append(fieldName, resumeFile);
             }
@@ -145,16 +175,16 @@ export default function PublicJobPage() {
                 <div className="max-w-[95%] mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl overflow-hidden">
-                            {(typeof orgName === 'object' && (orgName as any).logo_url) ? (
-                                <img src={(orgName as any).logo_url} alt="Logo" className="w-full h-full object-contain" />
+                            {(typeof orgName === 'object' && orgName.logo_url) ? (
+                                <img src={orgName.logo_url} alt="Logo" className="w-full h-full object-contain" />
                             ) : (
-                                (typeof orgName === 'object' ? (orgName as any).name?.[0] : (orgName?.[0] || 'A')).toUpperCase()
+                                (typeof orgName === 'object' ? orgName.name?.[0] : (orgName?.[0] || 'A')).toUpperCase()
                             )}
                         </div>
                         <div className="flex flex-col">
                             <span className="text-sm font-black text-slate-900 leading-tight">Career Portal</span>
                             <span className="text-[10px] font-black text-slate-400  ">
-                                {typeof orgName === 'object' ? (orgName as any).name : orgName} 
+                                {typeof orgName === 'object' ? orgName.name : orgName} 
                             </span>
                         </div>
                     </div>
@@ -168,8 +198,8 @@ export default function PublicJobPage() {
                         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full -mr-32 -mt-32 blur-3xl"></div>
 
                         <div className="relative z-10 flex flex-wrap items-center gap-3 mb-6">
-                            {(typeof orgName === 'object' && (orgName as any).logo_url) && (
-                                <img src={(orgName as any).logo_url} className="h-8 object-contain mb-2 block" alt="Company Logo" />
+                            {(typeof orgName === 'object' && orgName.logo_url) && (
+                                <img src={orgName.logo_url} className="h-8 object-contain mb-2 block" alt="Company Logo" />
                             )}
                             <div className="w-full"></div>
                             <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black   rounded-lg">
@@ -262,7 +292,7 @@ export default function PublicJobPage() {
                                 </div>
                                 <h3 className="text-2xl font-black text-white mb-3">Application Sent!</h3>
                                 <p className="text-slate-400 font-medium text-sm leading-relaxed">
-                                    Thank you for your interest. The recruiting team at {typeof orgName === 'object' ? (orgName as any).name : (orgName || "our team")} has received your profile and will be in touch shortly.
+                                    Thank you for your interest. The recruiting team at {typeof orgName === 'object' ? orgName.name : (orgName || "our team")} has received your profile and will be in touch shortly.
                                 </p>
                             </div>
                         ) : (
@@ -280,7 +310,7 @@ export default function PublicJobPage() {
                                         { id: '2', label: 'Email Address', type: 'email', icon: 'alternate_email', is_required: true },
                                         { id: '3', label: 'Key Skills', type: 'text', icon: 'bolt', is_required: false },
                                         { id: '4', label: 'Resume / CV', type: 'file', icon: 'description', is_required: true }
-                                    ]).map((field: any) => {
+                                    ]).map((field) => {
                                         const fieldKey = field.label.toLowerCase().replace(/\s+/g, '_');
 
                                         if (field.type === 'file') {
@@ -383,7 +413,7 @@ export default function PublicJobPage() {
                                 </form>
 
                                 <p className="relative z-10 text-[10px] text-slate-500 text-center mt-8 font-medium">
-                                    By submitting, you agree to share your profile details with {typeof orgName === 'object' ? (orgName as any).name : (orgName || "our organization")}.
+                                    By submitting, you agree to share your profile details with {typeof orgName === 'object' ? orgName.name : (orgName || "our organization")}.
                                 </p>
                             </>
                         )}

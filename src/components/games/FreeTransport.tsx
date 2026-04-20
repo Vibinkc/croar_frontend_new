@@ -9,9 +9,16 @@ interface Ship {
     risk_factor: number;
 }
 
+interface Answer {
+    question_id: number;
+    load: number;
+    limit: number;
+    outcome: 'SAFE' | 'SINKED';
+}
+
 interface FreeTransportProps {
     questions: Ship[];
-    onComplete: (score: number, answers: any[]) => void;
+    onComplete: (score: number, answers: Answer[]) => void;
 }
 
 export default function FreeTransport({ questions, onComplete }: FreeTransportProps) {
@@ -19,7 +26,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
     const [currentLoad, setCurrentLoad] = useState(0);
     const [totalScore, setTotalScore] = useState(0);
     const [gameState, setGameState] = useState<'INTRO' | 'LOADING' | 'SAILING' | 'SINKING' | 'RESULT'>('INTRO');
-    const [answers, setAnswers] = useState<any[]>([]);
+    const [answers, setAnswers] = useState<Answer[]>([]);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const currentShip = questions[currentIndex];
@@ -29,12 +36,16 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
         const element = containerRef.current;
         if (!element) return;
         try {
-            if (element.requestFullscreen) {
-                await element.requestFullscreen();
-            } else if ((element as any).webkitRequestFullscreen) {
-                await (element as any).webkitRequestFullscreen();
-            } else if ((element as any).msRequestFullscreen) {
-                await (element as any).msRequestFullscreen();
+            const el = element as HTMLElement & {
+                webkitRequestFullscreen?: () => Promise<void>;
+                msRequestFullscreen?: () => Promise<void>;
+            };
+            if (el.requestFullscreen) {
+                await el.requestFullscreen();
+            } else if (el.webkitRequestFullscreen) {
+                await el.webkitRequestFullscreen();
+            } else if (el.msRequestFullscreen) {
+                await el.msRequestFullscreen();
             }
         } catch (err) {
             console.error("Error attempting to enable full-screen mode:", err);

@@ -19,7 +19,13 @@ interface Candidate {
     skills: string[];
     phone?: string;
     profile_image?: string;
-    parsed_data?: any;
+    parsed_data?: Record<string, unknown>;
+}
+
+interface AIFeedback {
+    fit_reason?: string;
+    not_fit_reason?: string;
+    highlights?: string[];
 }
 
 interface Application {
@@ -31,7 +37,7 @@ interface Application {
     aptitude_score?: number;
     coding_score?: number;
     ai_interview_score?: number;
-    ai_feedback?: any;
+    ai_feedback?: AIFeedback;
     applied_at?: string;
     candidate: Candidate;
     job_requirement_id: string;
@@ -54,6 +60,11 @@ interface Job {
     title: string;
     company_id?: string;
     location?: string;
+}
+
+interface OnboardingTemplate {
+    id: string;
+    name: string;
 }
 
 // --- Helpers ---
@@ -84,7 +95,7 @@ interface CandidateModalProps {
     onClose: () => void;
     onStatusUpdate: (appId: string, statusId: number | string) => void;
     onRefresh: () => void;
-    onboardingTemplates: any[];
+    onboardingTemplates: OnboardingTemplate[];
     stages: Stage[];
 }
 
@@ -293,7 +304,7 @@ export default function KanbanBoardPage() {
     const [selectedApps, setSelectedApps] = useState<Set<string>>(new Set());
     const [searchQuery, setSearchQuery] = useState("");
     const [viewApplication, setViewApplication] = useState<Application | null>(null);
-    const [onboardingTemplates, setOnboardingTemplates] = useState<any[]>([]);
+    const [onboardingTemplates, setOnboardingTemplates] = useState<OnboardingTemplate[]>([]);
 
     // Drag and Drop State
     const [draggedAppId, setDraggedAppId] = useState<string | null>(null);
@@ -417,7 +428,7 @@ export default function KanbanBoardPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                console.log("Fetched applications with scores:", data.map((a: any) => ({ name: a.candidate.full_name, ai: a.ai_match_score, inter: a.ai_interview_score })));
+                console.log("Fetched applications with scores:", data.map((a: Application) => ({ name: a.candidate.full_name, ai: a.ai_match_score, inter: a.ai_interview_score })));
                 setApplications(data);
             }
         } catch (error) {
@@ -843,8 +854,8 @@ export default function KanbanBoardPage() {
                                                 key={app.id}
                                                 layout
                                                 draggable
-                                                onDragStart={(e) => handleDragStart(e as any, app.id)}
-                                                onDragEnd={(e) => handleDragEnd(e as any)}
+                                                onDragStart={(e) => handleDragStart(e as unknown as React.DragEvent, app.id)}
+                                                onDragEnd={(e) => handleDragEnd(e as unknown as React.DragEvent)}
                                                 initial={{ opacity: 0, scale: 0.95 }}
                                                 animate={{ opacity: 1, scale: 1 }}
                                                 exit={{ opacity: 0, scale: 0.95 }}

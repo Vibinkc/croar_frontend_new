@@ -10,7 +10,7 @@ interface PsychometricTest {
     trait: string;
     description: string;
     test_type?: string;
-    questions?: any[];
+    questions?: { id: number | string; text: string }[];
 }
 
 export default function StudentPsychometricListPage() {

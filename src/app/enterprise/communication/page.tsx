@@ -381,7 +381,7 @@ const MailboxPage = () => {
                                             </Badge>
                                         </div>
                                         <p className="text-sm text-slate-700 mb-4 ">
-                                            "The AI has analyzed this message. You can generate a smart reply based on candidates requirements and the job context."
+                                            &quot;The AI has analyzed this message. You can generate a smart reply based on candidates requirements and the job context.&quot;
                                         </p>
 
                                         {smartReply && (

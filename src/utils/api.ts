@@ -46,7 +46,7 @@ export const apiClient = {
                 try {
                     const errBody = await response.clone().text();
                     console.error("Error Body:", errBody);
-                } catch (e) { }
+                } catch { /* silence cloned body read errors */ }
             }
 
             if (response.status === 401) {
@@ -64,7 +64,7 @@ export const apiClient = {
         return this.request(path, { ...options, method: 'GET' });
     },
 
-    post(path: string, body: any, options: FetchOptions = {}) {
+    post<T>(path: string, body: T, options: FetchOptions = {}) {
         return this.request(path, {
             ...options,
             method: 'POST',
@@ -72,7 +72,7 @@ export const apiClient = {
         });
     },
 
-    put(path: string, body: any, options: FetchOptions = {}) {
+    put<T>(path: string, body: T, options: FetchOptions = {}) {
         return this.request(path, {
             ...options,
             method: 'PUT',

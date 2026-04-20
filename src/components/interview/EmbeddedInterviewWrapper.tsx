@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useInterviewSession } from "@/hooks/useInterviewSession";
 import InterviewLobby from "@/components/interview/InterviewLobby";
 import InterviewRunner from "@/components/interview/InterviewRunner";
@@ -6,14 +6,22 @@ import InterviewFeedback from "@/components/interview/InterviewFeedback";
 import AIGenerationOverlay from "@/components/ui/AIGenerationOverlay";
 import { apiClient } from "@/utils/api";
 
+interface InterviewData {
+    id: number;
+    title: string;
+    topic: string;
+    difficulty: string;
+    duration: number;
+    require_video: boolean;
+}
+
 interface EmbeddedInterviewWrapperProps {
     interviewId: number;
     onComplete: () => void;
-    // Optional: Pass assessment context if needed
 }
 
 export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: EmbeddedInterviewWrapperProps) {
-    const [interview, setInterview] = useState<any>(null);
+    const [interview, setInterview] = useState<InterviewData | null>(null);
     const [hasStarted, setHasStarted] = useState(false);
 
     const {
@@ -28,13 +36,7 @@ export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: Em
         actions
     } = useInterviewSession({ interviewId: interviewId.toString() });
 
-    useEffect(() => {
-        if (interviewId) {
-            fetchInterviewDetails();
-        }
-    }, [interviewId]);
-
-    const fetchInterviewDetails = async () => {
+    const fetchInterviewDetails = useCallback(async () => {
         try {
             const response = await apiClient.get(`/api/v1/interviews/${interviewId}`);
             if (response.ok) {
@@ -44,7 +46,13 @@ export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: Em
         } catch (error) {
             console.error("Failed to fetch interview", error);
         }
-    };
+    }, [interviewId]);
+
+    useEffect(() => {
+        if (interviewId) {
+            setTimeout(() => fetchInterviewDetails(), 0);
+        }
+    }, [interviewId, fetchInterviewDetails]);
 
     const handleStartInterview = () => {
         setHasStarted(true);
@@ -53,20 +61,20 @@ export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: Em
 
     // Ensure media is stopped when interview completes or starts saving
     useEffect(() => {
-        if ((status === 'completed' || isSaving) && mediaState.stream) {
+        const { stream, setStream } = mediaState;
+        if ((status === 'completed' || isSaving) && stream) {
             console.log("Interview completed/saving - stopping media tracks");
-            mediaState.stream.getTracks().forEach(track => {
+            stream.getTracks().forEach(track => {
                 track.stop();
             });
-            mediaState.setStream(null);
+            setStream(null);
         }
-    }, [status, isSaving]);
+    }, [status, isSaving, mediaState]);
 
     // Handle session end/completion
     useEffect(() => {
         if (status === 'completed' && backendResults) {
             // Optional: Auto-redirect or show a "Finish Assessment" button after some time?
-            // For now, we show the feedback component which is fine.
         }
     }, [status, backendResults]);
 

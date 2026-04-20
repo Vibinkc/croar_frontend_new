@@ -1,8 +1,24 @@
 "use client";
 
+interface EvaluatorResultData {
+    score?: number;
+    grammar_score?: number;
+    tone_score?: number;
+    structure_score?: number;
+    relevance_score?: number;
+    feedback?: string;
+    word_count?: number;
+}
+
+interface ProblemData {
+    content: {
+        min_words?: number;
+    };
+}
+
 interface EvaluatorResultProps {
-    result: any;
-    problem?: any;
+    result: EvaluatorResultData;
+    problem?: ProblemData;
     onClose?: () => void;
     isModal?: boolean;
 }
@@ -98,7 +114,7 @@ export default function EvaluatorResult({ result, problem, onClose, isModal = fa
                         <div className="bg-white/5 rounded-2xl p-6 border border-white/5">
                             <div className="prose prose-invert prose-sm max-w-none">
                                 <p className=" text-slate-300 text-sm leading-relaxed font-medium whitespace-pre-wrap">
-                                    "{result.feedback}"
+                                    &quot;{result.feedback}&quot;
                                 </p>
                             </div>
                         </div>

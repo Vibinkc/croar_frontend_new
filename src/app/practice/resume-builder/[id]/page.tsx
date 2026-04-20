@@ -1,10 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { apiClient } from "@/utils/api";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { apiClient } from "@/utils/api";
 import AIGenerationOverlay from "@/components/ui/AIGenerationOverlay";
+
+interface Field {
+    key: string;
+    label: string;
+    type: string;
+    placeholder: string;
+}
+
+interface Section {
+    title: string;
+    label: string;
+    type: 'list' | 'object';
+    fields: Field[];
+}
+
+interface Template {
+    id: string;
+    name: string;
+    extracted_fields: {
+        sections: Section[];
+    };
+}
 
 export default function ResumeBuilderForm() {
     const { id } = useParams();
@@ -12,8 +34,8 @@ export default function ResumeBuilderForm() {
     const searchParams = useSearchParams();
     const submissionId = searchParams.get("sub");
 
-    const [template, setTemplate] = useState<any>(null);
-    const [formData, setFormData] = useState<any>({});
+    const [template, setTemplate] = useState<Template | null>(null);
+    const [formData, setFormData] = useState<Record<string, any>>({}); // eslint-disable-line @typescript-eslint/no-explicit-any
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -83,12 +105,13 @@ export default function ResumeBuilderForm() {
         }
     };
 
-    const handleFieldChange = (sectionKey: string, fieldKey: string, value: any, index?: number) => {
-        setFormData((prev: any) => {
+    const handleFieldChange = (sectionKey: string, fieldKey: string, value: string, index?: number) => {
+        setFormData((prev) => {
             const newBigData = { ...prev };
 
             // Check if section is list or object from template
-            const sectionDef = template.extracted_fields.sections.find((s: any) => s.title === sectionKey);
+            const sectionDef = template?.extracted_fields.sections.find((s) => s.title === sectionKey);
+            if (!sectionDef) return prev;
 
             if (!newBigData[sectionKey]) {
                 if (sectionDef.type === 'list') newBigData[sectionKey] = [];
@@ -109,14 +132,14 @@ export default function ResumeBuilderForm() {
     };
 
     const addListItem = (sectionKey: string) => {
-        setFormData((prev: any) => {
+        setFormData((prev) => {
             const newList = [...(prev[sectionKey] || []), {}];
             return { ...prev, [sectionKey]: newList };
         });
     };
 
     const removeListItem = (sectionKey: string, index: number) => {
-        setFormData((prev: any) => {
+        setFormData((prev) => {
             const newList = [...(prev[sectionKey] || [])];
             newList.splice(index, 1);
             return { ...prev, [sectionKey]: newList };
@@ -256,7 +279,7 @@ export default function ResumeBuilderForm() {
             </div>
 
             <div className="space-y-8">
-                {sections.map((section: any) => (
+                {sections.map((section: Section) => (
                     <div key={section.title} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                         <div className="flex justify-between items-center mb-6 border-b border-slate-50 pb-4">
                             <h2 className="text-lg font-bold text-slate-800  tracking-tight">{section.label || section.title}</h2>
@@ -272,7 +295,8 @@ export default function ResumeBuilderForm() {
 
                         {section.type === 'list' ? (
                             <div className="space-y-6">
-                                {(formData[section.title] || []).map((item: any, idx: number) => (
+                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                {(formData[section.title] || []).map((item: Record<string, any>, idx: number) => (
                                     <div key={idx} className="relative bg-slate-50 p-4 rounded-xl border border-slate-100">
                                         <button
                                             onClick={() => removeListItem(section.title, idx)}
@@ -281,7 +305,7 @@ export default function ResumeBuilderForm() {
                                             <span className="material-icons-outlined text-sm">close</span>
                                         </button>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {section.fields.map((field: any) => (
+                                            {section.fields.map((field: Field) => (
                                                 <div key={field.key} className={field.type === 'textarea' ? 'col-span-full' : ''}>
                                                     <label className="block text-xs font-bold text-slate-500 mb-1">{field.label}</label>
                                                     {field.type === 'textarea' ? (
@@ -312,7 +336,7 @@ export default function ResumeBuilderForm() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {section.fields.map((field: any) => (
+                                {section.fields.map((field: Field) => (
                                     <div key={field.key} className={field.type === 'textarea' ? 'col-span-full' : ''}>
                                         <label className="block text-xs font-bold text-slate-500 mb-1">{field.label}</label>
                                         {field.type === 'textarea' ? (

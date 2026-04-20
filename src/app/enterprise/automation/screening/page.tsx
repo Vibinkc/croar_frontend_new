@@ -90,14 +90,15 @@ export default function ScreeningAutomationPage() {
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
-  const showToast = (msg: any, type: "success" | "error" = "success") => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const showToast = (msg: string | string[] | Record<string, any> | null, type: "success" | "error" = "success") => {
     let finalMsg = "";
     if (typeof msg === "string") {
       finalMsg = msg;
     } else if (Array.isArray(msg)) {
-      finalMsg = msg.map((e: any) => e.msg || (typeof e === 'string' ? e : JSON.stringify(e))).join(", ");
+      finalMsg = msg.map((e: string | { msg?: string }) => (typeof e === 'string' ? e : (e.msg || JSON.stringify(e)))).join(", ");
     } else if (msg && typeof msg === "object") {
-      finalMsg = msg.msg || msg.detail || JSON.stringify(msg);
+      finalMsg = (msg as { msg?: string; detail?: string }).msg || (msg as { msg?: string; detail?: string }).detail || JSON.stringify(msg);
     } else {
       finalMsg = String(msg || "An error occurred");
     }
@@ -212,7 +213,7 @@ export default function ScreeningAutomationPage() {
         fetchAutomations(selectedJobId || undefined);
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast((err as any)?.detail || "Failed to save automation.", "error");
+        showToast((err as { detail?: string })?.detail || "Failed to save automation.", "error");
       }
     } finally {
       setSaving(false);

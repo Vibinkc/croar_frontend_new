@@ -11,12 +11,43 @@ import McqQuestion from "@/components/assessment/McqQuestion";
 import TextQuestion from "@/components/assessment/TextQuestion";
 import CodeQuestion from "@/components/assessment/CodeQuestion";
 
+interface TestCase {
+    input?: string;
+    expected?: string;
+    output?: string;
+    explanation?: string;
+    actual?: string;
+    passed?: boolean;
+    status?: string;
+}
+
+interface Question {
+    id: string | number;
+    text: string;
+    type: string;
+    initial_code?: string;
+    examples?: TestCase[];
+    test_cases?: TestCase[];
+    constraints?: string[];
+    options?: string[];
+}
+
+interface Round {
+    round_title: string;
+    questions: Question[];
+}
+
+interface SimulationData {
+    rounds: Round[];
+    user_attempt?: Record<string, unknown>;
+}
+
 export default function JobSimulationSessionPage({ params }: { params: Promise<{ id: string }> }) {
     const unwrappedParams = use(params);
     const { id } = unwrappedParams;
     const router = useRouter();
 
-    const [simulation, setSimulation] = useState<any>(null);
+    const [simulation, setSimulation] = useState<SimulationData | null>(null);
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [answers, setAnswers] = useState<{ [key: string]: string }>({});
@@ -34,12 +65,12 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
     const [selectedLanguage, setSelectedLanguage] = useState('python');
 
     // Test logic is kept here because it involves API calls and global state
-    const [testResults, setTestResults] = useState<{ [key: string]: any }>({});
+    const [testResults, setTestResults] = useState<{ [key: string]: TestCase }>({});
     const [executingTests, setExecutingTests] = useState<{ [key: string]: boolean }>({});
     const [showConsole, setShowConsole] = useState(false);
     const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
     const [customInput, setCustomInput] = useState("");
-    const [customTestResult, setCustomTestResult] = useState<any>(null);
+    const [customTestResult, setCustomTestResult] = useState<TestCase | null>(null);
     const [executingCustomTest, setExecutingCustomTest] = useState(false);
 
     useEffect(() => {
@@ -259,7 +290,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
 
             if (res.ok) {
                 const data = await res.json();
-                setSimulation((prev: any) => ({ ...prev, user_attempt: data }));
+                setSimulation(prev => prev ? { ...prev, user_attempt: data } : null);
                 setCompleted(true);
             }
         } catch (e) {
@@ -451,7 +482,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
 
                                         {(currentQuestion.examples || currentQuestion.test_cases?.length > 0) && (
                                             <div className="space-y-6">
-                                                {(currentQuestion.examples || currentQuestion.test_cases?.slice(0, 2)).map((ex: any, i: number) => (
+                                                {(currentQuestion.examples || currentQuestion.test_cases?.slice(0, 2)).map((ex: TestCase, i: number) => (
                                                     <div key={i} className="space-y-3">
                                                         <span className="text-[10px] font-black  tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
                                                         <div className={`rounded-xl border p-4 font-mono text-[12px] space-y-2 ${isDark ? 'bg-[#1e1f23]/30 border-[#2d2e32]' : 'bg-slate-50 border-slate-100'}`}>

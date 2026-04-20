@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Pipe {
@@ -28,20 +28,20 @@ const PipelinePuzzle: React.FC<PipelinePuzzleProps> = ({ level, onComplete }) =>
     const [isWon, setIsWon] = useState(false);
     const [moves, setMoves] = useState(0);
 
-    // Initialize grid
+    // Initialize grid when level changes
     useEffect(() => {
         if (level && level.grid) {
-            setGrid(level.grid.map(p => ({
+            const initialGrid = level.grid.map(p => ({
                 ...p,
-                isActive: false,
                 // Ensure Start/End nodes are always rotatable in the frontend
                 isFixed: p.nodeType === 'PIPE' ? p.isFixed : false
-            })));
+            }));
+            setTimeout(() => setGrid(initialGrid), 0);
         }
     }, [level]);
 
     // Connection Ports mapping based on type and rotation
-    const getPorts = (pipe: Pipe) => {
+    const getPorts = useCallback((pipe: Pipe) => {
         const r = pipe.rotation % 360;
 
         // Start and End nodes always have exactly ONE connection point
@@ -62,14 +62,15 @@ const PipelinePuzzle: React.FC<PipelinePuzzleProps> = ({ level, onComplete }) =>
             if (r === 270) return ['left', 'top'];
         }
         return [];
-    };
+    }, []);
 
-    // Pathfinding to check connectivity and update active pipes
-    useEffect(() => {
-        if (grid.length === 0) return;
+    // Pathfinding to determine which pipes are active (derived state)
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization
+    const activeGrid = useMemo(() => {
+        if (grid.length === 0) return [];
 
         const startNode = grid.find(p => p.nodeType === 'START');
-        if (!startNode) return;
+        if (!startNode) return grid.map(p => ({ ...p, isActive: false }));
 
         const activeSet = new Set<string>();
         const queue: Pipe[] = [startNode];
@@ -105,24 +106,24 @@ const PipelinePuzzle: React.FC<PipelinePuzzleProps> = ({ level, onComplete }) =>
             }
         }
 
-        // Update active status
-        const nextGrid = grid.map(p => ({
+        return grid.map(p => ({
             ...p,
             isActive: activeSet.has(`${p.r},${p.c}`)
         }));
+    }, [grid, getPorts]);
 
-        // Check win condition
-        const endNodeActive = nextGrid.find(p => p.nodeType === 'END')?.isActive;
-
-        if (JSON.stringify(nextGrid) !== JSON.stringify(grid)) {
-            setGrid(nextGrid);
+    // Check win condition based on derived state
+    useEffect(() => {
+        const endNode = activeGrid.find(p => p.nodeType === 'END');
+        if (endNode?.isActive && !isWon) {
+            setTimeout(() => {
+                setIsWon(true);
+            }, 0);
+            const finalScore = Math.max(1, 10 - Math.floor(moves / 5));
+            const timer = setTimeout(() => onComplete(finalScore), 2000);
+            return () => clearTimeout(timer);
         }
-
-        if (endNodeActive && !isWon) {
-            setIsWon(true);
-            setTimeout(() => onComplete(Math.max(1, 10 - Math.floor(moves / 5))), 2000);
-        }
-    }, [grid, moves]);
+    }, [activeGrid, isWon, moves, onComplete]);
 
     const handleRotate = (r: number, c: number) => {
         if (isWon) return;
@@ -171,7 +172,7 @@ const PipelinePuzzle: React.FC<PipelinePuzzleProps> = ({ level, onComplete }) =>
                         gap: '12px'
                     }}
                 >
-                    {grid.map((pipe, idx) => (
+                    {activeGrid.map((pipe) => (
                         <motion.div
                             key={`${pipe.r}-${pipe.c}`}
                             whileHover={!pipe.isFixed && !isWon ? { scale: 1.05, zIndex: 10 } : {}}

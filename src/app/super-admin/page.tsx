@@ -4,8 +4,15 @@ import { useEffect, useState, Suspense } from "react";
 import { apiClient } from "@/utils/api";
 import Link from "next/link";
 
+interface PlatformStats {
+    tenants: number;
+    users: number;
+    global_roles: number;
+    system_status: string;
+}
+
 function SuperAdminDashboardContent() {
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<PlatformStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -121,7 +128,7 @@ function SuperAdminDashboardContent() {
                                         <div className="flex items-start gap-3">
                                             <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
                                             <div>
-                                                <p className="text-[11px] font-bold text-slate-800 leading-snug tracking-tight">Organization "TechCorp" was provisioned by root_admin.</p>
+                                                <p className="text-[11px] font-bold text-slate-800 leading-snug tracking-tight">Organization &quot;TechCorp&quot; was provisioned by root_admin.</p>
                                                 <p className="text-[9px] text-slate-400 font-medium mt-1  ">45 minutes ago</p>
                                             </div>
                                         </div>

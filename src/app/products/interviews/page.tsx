@@ -42,7 +42,7 @@ export default function InterviewsProductPage() {
                             transition={{ delay: 0.4 }}
                             className="text-white/80 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto"
                         >
-                            Practice with specific personas—from the "Friendly HR" to the "Ruthless Tech Lead". Get grilled on your actual resume projects, salary expectations, and behavioral questions.
+                            Practice with specific personas—from the &quot;Friendly HR&quot; to the &quot;Ruthless Tech Lead&quot;. Get grilled on your actual resume projects, salary expectations, and behavioral questions.
                         </motion.p>
                     </div>
                     <motion.div
@@ -67,7 +67,7 @@ export default function InterviewsProductPage() {
                     <div className="flex flex-col gap-2 text-center md:text-left">
                         <span className="text-indigo-600 font-bold   text-sm">Contextual Intelligence</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Inside the AI Mind</h2>
-                        <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">Our AI doesn't just read from a list. It builds a mental model of your profile and adapts the difficulty.</p>
+                        <p className="text-slate-600 dark:text-gray-400 text-lg max-w-2xl">Our AI doesn&apos;t just read from a list. It builds a mental model of your profile and adapts the difficulty.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <motion.div
@@ -82,7 +82,7 @@ export default function InterviewsProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Reads Your Resume</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed">The AI parses your PDF before the chat starts. It knows you claimed to be an "Expert in Python" and will ask specific questions to verify that claim.</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed">The AI parses your PDF before the chat starts. It knows you claimed to be an &quot;Expert in Python&quot; and will ask specific questions to verify that claim.</p>
                             </div>
                         </motion.div>
                         <motion.div
@@ -112,7 +112,7 @@ export default function InterviewsProductPage() {
                             </div>
                             <div>
                                 <p className="text-xl font-bold text-slate-900">Drills Down</p>
-                                <p className="text-slate-500 mt-2 leading-relaxed">It refuses to accept surface-level answers. If you are vague, it will follow up with "Can you give me a specific example?"</p>
+                                <p className="text-slate-500 mt-2 leading-relaxed">It refuses to accept surface-level answers. If you are vague, it will follow up with &quot;Can you give me a specific example?&quot;</p>
                             </div>
                         </motion.div>
                     </div>
@@ -129,7 +129,7 @@ export default function InterviewsProductPage() {
                         className="flex flex-col gap-6"
                     >
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900">Anatomy of a Session</h2>
-                        <p className="text-lg text-slate-600">"Tell me about yourself." It sounds simple, but 80% of candidates fail here by rambling. Our structured 15-minute sessions sharpen your delivery.</p>
+                        <p className="text-lg text-slate-600">&quot;Tell me about yourself.&quot; It sounds simple, but 80% of candidates fail here by rambling. Our structured 15-minute sessions sharpen your delivery.</p>
                         <ul className="space-y-4">
                             <li className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                                 <span className="material-symbols-rounded text-green-500 bg-green-50 p-2 rounded-full">check</span>
@@ -141,7 +141,7 @@ export default function InterviewsProductPage() {
                             </li>
                             <li className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                                 <span className="material-symbols-rounded text-green-500 bg-green-50 p-2 rounded-full">check</span>
-                                <span className="font-bold text-slate-700">"Do you have questions?" Strategy</span>
+                                <span className="font-bold text-slate-700">&quot;Do you have questions?&quot; Strategy</span>
                             </li>
                         </ul>
                     </motion.div>
@@ -187,7 +187,7 @@ export default function InterviewsProductPage() {
 
                         <div className="p-4 bg-indigo-50 rounded-lg text-sm text-indigo-800 border border-indigo-100 flex gap-3 items-start">
                             <span className="material-symbols-rounded text-indigo-600 text-lg mt-0.5">auto_awesome</span>
-                            <span>"Great answer! You correctly identified the trade-offs. Now, how would you handle async actions?"</span>
+                            <span>&quot;Great answer! You correctly identified the trade-offs. Now, how would you handle async actions?&quot;</span>
                         </div>
                     </motion.div>
                 </div>
@@ -246,7 +246,7 @@ export default function InterviewsProductPage() {
                                 <div className="bg-yellow-500 h-full w-[60%]"></div>
                             </div>
                         </div>
-                        <p className="text-sm  text-slate-400 text-center">"Your technical explanation was solid, but you missed an opportunity to highlight business impact."</p>
+                        <p className="text-sm  text-slate-400 text-center">&quot;Your technical explanation was solid, but you missed an opportunity to highlight business impact.&quot;</p>
                     </motion.div>
                     <motion.div
                         initial={{ opacity: 0, x: 30 }}
@@ -255,7 +255,7 @@ export default function InterviewsProductPage() {
                         className="order-1 lg:order-2"
                     >
                         <h2 className="text-3xl md:text-5xl font-black mb-6 text-white">Instant Post-Mortem.</h2>
-                        <p className="text-lg text-white/70 mb-8 max-w-lg">Stop wondering "How did I do?". Get immediate, detailed feedback on your answer quality, relevance, and tone. We grade every single message.</p>
+                        <p className="text-lg text-white/70 mb-8 max-w-lg">Stop wondering &quot;How did I do?&quot;. Get immediate, detailed feedback on your answer quality, relevance, and tone. We grade every single message.</p>
                         <button onClick={() => router.push("/practice/interviews")} className="bg-indigo-600 text-white px-8 py-4 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-indigo-600/50">
                             Start Feedback Loop
                         </button>

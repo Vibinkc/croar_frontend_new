@@ -1,14 +1,18 @@
-"use client";
-
-import { useEffect, useState, Suspense } from "react";
-import { apiClient } from "@/utils/api";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from 'react';
 import Link from "next/link";
+
+interface Organization {
+    id: string;
+    name: string;
+    email: string;
+    website: string;
+    is_active: boolean;
+}
 
 function OrganizationsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [organizations, setOrganizations] = useState<any[]>([]);
+    const [organizations, setOrganizations] = useState<Organization[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     
     // Form State
@@ -166,7 +170,7 @@ function OrganizationsContent() {
                 ) : (
                     <div className="max-w-6xl mx-auto space-y-5">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {organizations.map((org) => (
+                            {organizations.map((org: Organization) => (
                                 <div key={org.id} className="bg-white p-5 rounded-2xl border border-slate-200 hover:shadow-xl transition-all group overflow-hidden relative">
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white">

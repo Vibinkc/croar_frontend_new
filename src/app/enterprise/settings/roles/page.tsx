@@ -19,15 +19,30 @@ import {
     Shield
 } from "lucide-react";
 
+interface Permission {
+    id: string;
+    module: string;
+    resource: string;
+    action: string;
+}
+
+interface Role {
+    id: string;
+    name: string;
+    description?: string;
+    is_system?: boolean;
+    permissions: Permission[];
+}
+
 function EnterpriseRolesContent() {
-    const [roles, setRoles] = useState<any[]>([]);
-    const [permissions, setPermissions] = useState<any[]>([]);
+    const [roles, setRoles] = useState<Role[]>([]);
+    const [permissions, setPermissions] = useState<Permission[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [permSearch, setPermSearch] = useState("");
     
     // UI State
     const [isEditing, setIsEditing] = useState(false);
-    const [selectedRole, setSelectedRole] = useState<any | null>(null);
+    const [selectedRole, setSelectedRole] = useState<Role | null>(null);
     
     // Form State
     const [name, setName] = useState("");
@@ -71,11 +86,11 @@ function EnterpriseRolesContent() {
         setIsEditing(true);
     };
 
-    const handleOpenEdit = (role: any) => {
+    const handleOpenEdit = (role: Role) => {
         setSelectedRole(role);
         setName(role.name);
         setDescription(role.description || "");
-        setSelectedPermIds(role.permissions.map((p: any) => p.id));
+        setSelectedPermIds(role.permissions.map((p: Permission) => p.id));
         setIsEditing(true);
     };
 
@@ -124,7 +139,7 @@ function EnterpriseRolesContent() {
         (p.module?.toLowerCase() || "").includes(permSearch.toLowerCase())
     );
 
-    const groupedPermissions = filteredPermissions.reduce((acc: any, perm: any) => {
+    const groupedPermissions = filteredPermissions.reduce((acc: Record<string, Permission[]>, perm: Permission) => {
         if (!acc[perm.module]) acc[perm.module] = [];
         acc[perm.module].push(perm);
         return acc;
@@ -346,7 +361,7 @@ function EnterpriseRolesContent() {
                                                     <h4 className="text-xs font-bold text-slate-400  ">{module} Module</h4>
                                                 </div>
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    {groupedPermissions[module].map((perm: any) => (
+                                                    {groupedPermissions[module].map((perm: Permission) => (
                                                         <div 
                                                             key={perm.id}
                                                             onClick={() => togglePermission(perm.id)}

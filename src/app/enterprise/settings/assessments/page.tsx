@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
     Plus, 
     Trash2, 
-    Edit3, 
     X, 
     Save, 
     Zap, 
@@ -16,14 +15,11 @@ import {
     Brain, 
     Clock, 
     ListChecks, 
-    ChevronRight,
     ArrowRight,
     Search,
-    BookOpen,
     RefreshCcw,
     Settings2,
-    Calendar,
-    PenTool
+    Calendar
 } from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
@@ -34,7 +30,7 @@ interface AssessmentTemplate {
     topic: string;
     question_count: number;
     test_duration: number;
-    generated_questions?: any[];
+    generated_questions?: Record<string, unknown>[];
     email_template_id?: string;
     created_at?: string;
 }
@@ -69,17 +65,10 @@ export default function AssessmentTemplatesPage() {
     
     // Tab and Generation State
     const [activeTab, setActiveTab] = useState<'config' | 'questions'>('config');
-    const [generatedQuestions, setGeneratedQuestions] = useState<any[]>([]);
+    const [generatedQuestions, setGeneratedQuestions] = useState<Record<string, unknown>[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    useEffect(() => {
-        if (token) {
-            fetchTemplates();
-            fetchEmailTemplates();
-        }
-    }, [token]);
-
-    const fetchEmailTemplates = async () => {
+    const fetchEmailTemplates = useCallback(async () => {
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, {
                 headers: { "Authorization": `Bearer ${token}` }
@@ -88,12 +77,12 @@ export default function AssessmentTemplatesPage() {
                 const data = await res.json();
                 setEmailTemplates(data);
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to fetch email templates:", error);
         }
-    };
+    }, [token]);
 
-    const fetchTemplates = async () => {
+    const fetchTemplates = useCallback(async () => {
         setIsLoading(true);
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment-templates/`, {
@@ -103,12 +92,19 @@ export default function AssessmentTemplatesPage() {
                 const data = await res.json();
                 setTemplates(data);
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to fetch assessment templates:", error);
         } finally {
             setTimeout(() => setIsLoading(false), 600);
         }
-    };
+    }, [token]);
+
+    useEffect(() => {
+        if (token) {
+            fetchTemplates();
+            fetchEmailTemplates();
+        }
+    }, [token, fetchTemplates, fetchEmailTemplates]);
 
     const handleOpenModal = (template?: AssessmentTemplate) => {
         if (template) {
@@ -147,14 +143,14 @@ export default function AssessmentTemplatesPage() {
                 setGeneratedQuestions(questions);
                 setActiveTab('questions');
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to generate questions:", error);
         } finally {
             setIsGenerating(false);
         }
     };
 
-    const handleUpdateQuestion = (qId: string, field: string, value: any) => {
+    const handleUpdateQuestion = (qId: string, field: string, value: string | string[]) => {
         setGeneratedQuestions(prev => prev.map(q => q.id === qId ? { ...q, [field]: value } : q));
     };
 
@@ -208,8 +204,8 @@ export default function AssessmentTemplatesPage() {
                 fetchTemplates();
                 setIsModalOpen(false);
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to save assessment template:", error);
         }
     };
 
@@ -225,8 +221,8 @@ export default function AssessmentTemplatesPage() {
             if (res.ok) {
                 setTemplates(prev => prev.filter(t => t.id !== templateToDelete.id));
             }
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("Failed to delete assessment template:", error);
         } finally {
             setIsDeleteModalOpen(false);
             setTemplateToDelete(null);
@@ -523,7 +519,7 @@ export default function AssessmentTemplatesPage() {
                                                         <label className="text-[10px] font-bold text-slate-500   ml-1">Type</label>
                                                         <select
                                                             value={type}
-                                                            onChange={e => setType(e.target.value as any)}
+                                                            onChange={e => setType(e.target.value as "APTITUDE" | "CODING" | "BOTH")}
                                                             className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:bg-white/10 transition-all"
                                                             disabled={!canAccess("assessments:moderate")}
                                                         >

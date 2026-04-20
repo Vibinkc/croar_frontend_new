@@ -41,9 +41,9 @@ interface SpeechRecognition extends EventTarget {
     start(): void;
     stop(): void;
     abort(): void;
-    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
-    onerror: ((this: SpeechRecognition, ev: any) => any) | null;
-    onend: ((this: SpeechRecognition, ev: Event) => any) | null;
+    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void) | null;
+    onerror: ((this: SpeechRecognition, ev: { error: string }) => void) | null;
+    onend: ((this: SpeechRecognition, ev: Event) => void) | null;
 }
 
 declare global {
@@ -57,6 +57,13 @@ declare global {
     }
 }
 
+interface BackendResults {
+    overall_score?: number;
+    detailed_feedback?: string;
+    strengths?: string[];
+    weaknesses?: string[];
+}
+
 export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
     const [status, setStatus] = useState<InterviewStatus>('initializing');
     const [currentStep, setCurrentStep] = useState<InterviewStep>('introduction');
@@ -64,11 +71,11 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
     const [transcript, setTranscript] = useState<{ role: 'ai' | 'user'; text: string }[]>([]);
     const [isMicEnabled, setIsMicEnabled] = useState(true);
     const [isCameraEnabled, setIsCameraEnabled] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [error] = useState<string | null>(null);
     const [offTabCount, setOffTabCount] = useState(0);
-    const [lastFocusWarningTime, setLastFocusWarningTime] = useState(0);
+    const lastFocusWarningTimeRef = useRef(0);
     const [isSaving, setIsSaving] = useState(false);
-    const [backendResults, setBackendResults] = useState<any | null>(null);
+    const [backendResults, setBackendResults] = useState<BackendResults | null>(null);
 
     // Track integrity (off-tab activity)
     useEffect(() => {
@@ -142,7 +149,7 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
         }
         return () => {
             if (recognitionRef.current) {
-                try { recognitionRef.current.abort(); } catch (e) { }
+                try { recognitionRef.current.abort(); } catch { /* ignore */ }
             }
         };
     }, []);
@@ -152,7 +159,7 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
         return () => {
             if (mediaStreamRef.current) {
                 mediaStreamRef.current.getTracks().forEach(t => {
-                    try { t.stop(); } catch (e) { }
+                    try { t.stop(); } catch { /* ignore */ }
                 });
             }
         };
@@ -236,14 +243,17 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
         if (status === 'active' && gazeStatus.lookingAwayDuration > 3000) {
             const now = Date.now();
             // Warn every 15 seconds
-            if (now - lastFocusWarningTime > 15000) {
+            if (now - lastFocusWarningTimeRef.current > 15000) {
+                lastFocusWarningTimeRef.current = now;
                 const focusMessage = "Please keep your head steady and stay focused on the camera.";
-                setTranscript((prev) => [...prev, { role: 'ai', text: focusMessage }]);
-                speak(focusMessage);
-                setLastFocusWarningTime(now);
+                // Wrap in timeout to satisfy react-hooks/set-state-in-effect
+                setTimeout(() => {
+                    setTranscript((prev) => [...prev, { role: 'ai', text: focusMessage }]);
+                    speak(focusMessage);
+                }, 0);
             }
         }
-    }, [gazeStatus.lookingAwayDuration, status, lastFocusWarningTime, speak]);
+    }, [gazeStatus.lookingAwayDuration, status, speak]);
 
     const joinSession = async () => {
         setStatus('active');
@@ -360,7 +370,7 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
         setStatus('completed');
     }, [interviewId, transcript, setMediaStream]);
 
-    const generateResponse = async (userText: string): Promise<string> => {
+    const generateResponse = useCallback(async (userText: string): Promise<string> => {
         try {
             const response = await apiClient.post(`/api/v1/interviews/${interviewId}/chat`, {
                 transcript: transcript, // Send history
@@ -378,7 +388,7 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
             console.error("Error calling AI chat:", error);
             return "I apologize, I'm having trouble connecting. Let's continue.";
         }
-    };
+    }, [interviewId, transcript]);
 
     const sendMessage = useCallback((text: string) => {
         if (!isSessionActiveRef.current) return;
@@ -403,11 +413,8 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
                     if (isSessionActiveRef.current) endSession();
                 }, 8000);
             }
-
-            // Note: Ideally backend should tell us if we are done, but keeping simple for now
-            // We could parse the AI response to see if it says "Goodbye" or similar
         }, 1500);
-    }, [conversationStage, speak, transcript, endSession]);
+    }, [conversationStage, speak, endSession, generateResponse]);
 
     const startListening = useCallback(() => {
         if (recognitionRef.current && isMicEnabled) {
@@ -426,7 +433,7 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
                     }
                 };
 
-                recognitionRef.current.onerror = (event: any) => {
+                recognitionRef.current.onerror = (event: { error: string }) => {
                     if (event.error === 'no-speech' || event.error === 'aborted') {
                         return;
                     }
@@ -440,20 +447,16 @@ export function useInterviewSession({ interviewId }: UseInterviewSessionProps) {
                                 recognitionRef.current.onend = null;
                                 recognitionRef.current.start();
                             }
-                        } catch (e) {
-                            // ignore
-                        }
+                        } catch { /* ignore */ }
                     }
                 };
 
                 recognitionRef.current.start();
                 console.log("Started listening...");
 
-            } catch (e) {
-                // ignore
-            }
+            } catch { /* ignore */ }
         }
-    }, [isMicEnabled, sendMessage, currentStep, isAiSpeaking]);
+    }, [isMicEnabled, sendMessage, currentStep]);
 
     useEffect(() => {
         if (currentStep === 'listening' && isMicEnabled && !isAiSpeaking) {

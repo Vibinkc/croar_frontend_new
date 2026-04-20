@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient, BACKEND_URL } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
@@ -10,17 +10,94 @@ interface EmployeeFormProps {
     candidateId?: string;
 }
 
+interface Department {
+    id: string;
+    name: string;
+}
+
+interface Company {
+    id: string;
+    name: string;
+}
+
+interface Dependent {
+    name: string;
+    relationship: string;
+    date_of_birth?: string;
+}
+
+interface EducationDetail {
+    degree: string;
+    institution: string;
+    year_of_passing: string;
+}
+
+interface EmergencyContact {
+    name: string;
+    relationship: string;
+    phone: string;
+}
+
+interface PaymentInfo {
+    bank_name: string;
+    account_number: string;
+    ifsc_code: string;
+}
+
+interface EmployeeFormData {
+    employee_id: string;
+    first_name: string;
+    middle_name: string;
+    last_name: string;
+    email: string;
+    mobile: string;
+    phone_number: string;
+    designation: string;
+    status: string;
+    employment_type: string;
+    hire_date: string;
+    original_hire_date: string;
+    probation_end_date: string;
+    source: string;
+    notice_period: number;
+    about_yourself: string;
+    pan_card_number: string;
+    aadhar_card_number: string;
+    passport_number: string;
+    date_of_birth: string;
+    gender: string;
+    marital_status: string;
+    blood_group: string;
+    address_line_1: string;
+    address_line_2: string;
+    city: string;
+    state: string;
+    country: string;
+    pincode: string;
+    company_id: string;
+    department_id: string;
+    reporting_to_id: string;
+    dependents: Dependent[];
+    educational_details: EducationDetail[];
+    emergency_contacts: EmergencyContact[];
+    social_profiles: Record<string, string>;
+    payment_information: PaymentInfo[];
+    roles_responsibilities: string;
+    skills: string[];
+    documents: { name: string; file_path: string }[];
+}
+
 export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormProps) {
     const router = useRouter();
     const { token } = useAuth();
     const [activeTab, setActiveTab] = useState("job");
     const [isLoading, setIsLoading] = useState(false);
-    const [departments, setDepartments] = useState<any[]>([]);
-    const [companies, setCompanies] = useState<any[]>([]);
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [companies, setCompanies] = useState<Company[]>([]);
     const [isDeptModalOpen, setIsDeptModalOpen] = useState(false);
     const [newDeptName, setNewDeptName] = useState("");
     
-    const [formData, setFormData] = useState<any>({
+    const [formData, setFormData] = useState<EmployeeFormData>({
         employee_id: "",
         first_name: "",
         middle_name: "",
@@ -63,60 +140,35 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
         documents: []
     });
 
-    useEffect(() => {
-        fetchInitialData();
-        if (employeeId) {
-            fetchEmployeeData();
-        } else if (candidateId) {
-            prefillFromCandidate();
-        }
-    }, [employeeId, candidateId]);
-
-    const fetchInitialData = async () => {
-        try {
-            const [deptRes, compRes] = await Promise.all([
-                apiClient.get("/api/v1/enterprise/employees/departments"),
-                apiClient.get("/api/v1/enterprise/company/")
-            ]);
-            if (deptRes.ok) setDepartments(await deptRes.json());
-            if (compRes.ok) setCompanies(await compRes.json());
-        } catch (error) {
-            console.error("Error fetching initial data:", error);
-        }
-    };
-
-    const fetchEmployeeData = async () => {
+    const fetchEmployeeData = useCallback(async () => {
         setIsLoading(true);
         try {
             const res = await apiClient.get(`/api/v1/enterprise/employees/${employeeId}`);
             if (res.ok) {
                 const data = await res.json();
-                // Sanitize null values to empty strings/arrays for controlled components
-                const sanitized = Object.keys(data).reduce((acc: any, key) => {
-                    if (data[key] === null) {
-                        acc[key] = Array.isArray(formData[key]) ? [] : "";
-                    } else {
-                        acc[key] = data[key];
-                    }
-                    return acc;
-                }, {});
-                setFormData((prev: any) => ({ ...prev, ...sanitized }));
+                setFormData((prev) => {
+                    const sanitized = Object.keys(data).reduce((acc: Record<string, unknown>, key) => {
+                        if (data[key] === null) {
+                            const defaultVal = Array.isArray(prev[key as keyof EmployeeFormData]) ? [] : "";
+                            acc[key] = defaultVal;
+                        } else {
+                            acc[key] = data[key];
+                        }
+                        return acc;
+                    }, {});
+                    return { ...prev, ...sanitized as Partial<EmployeeFormData> };
+                });
             }
         } catch (error) {
             console.error("Error fetching employee:", error);
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [employeeId]);
 
-    const prefillFromCandidate = async () => {
+    const prefillFromCandidate = useCallback(async () => {
         setIsLoading(true);
         try {
-            // We can use the convert-candidate endpoint to get a preview or just pre-fill manually
-            // But if we use convert-candidate, it creates the record. 
-            // Better to have a "preview-convert" endpoint or just fetch candidate + onboarding data.
-            // For now, let's call the actual convert and then redirect to edit? 
-            // Or fetch data. Let's fetch data for pre-fill.
             const [candRes, onbRes] = await Promise.all([
                 apiClient.get(`/api/v1/enterprise/candidates/${candidateId}`),
                 apiClient.get(`/api/v1/enterprise/onboarding/?candidate_id=${candidateId}`)
@@ -129,9 +181,8 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 
                 const job_info = onb.job_info || {};
                 const personal_info = onb.personal_info || {};
-                const form_data = onb.form_data || {};
                 
-                setFormData((prev: any) => ({
+                setFormData((prev) => ({
                     ...prev,
                     first_name: personal_info.first_name || cand.full_name?.split(" ")[0] || "",
                     last_name: personal_info.last_name || cand.full_name?.split(" ").slice(1).join(" ") || "",
@@ -141,7 +192,6 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                     source: cand.source_platform || "Recruitment",
                     skills: cand.skills || [],
                     company_id: onb.application?.job_requirement?.company_id || "",
-                    // Add more pre-fill logic as needed
                 }));
             }
         } catch (error) {
@@ -149,11 +199,33 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [candidateId]);
+
+    const fetchInitialData = useCallback(async () => {
+        try {
+            const [deptRes, compRes] = await Promise.all([
+                apiClient.get("/api/v1/enterprise/employees/departments"),
+                apiClient.get("/api/v1/enterprise/company/")
+            ]);
+            if (deptRes.ok) setDepartments(await deptRes.json());
+            if (compRes.ok) setCompanies(await compRes.json());
+        } catch (error) {
+            console.error("Error fetching initial data:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchInitialData();
+        if (employeeId) {
+            fetchEmployeeData();
+        } else if (candidateId) {
+            prefillFromCandidate();
+        }
+    }, [employeeId, candidateId, fetchInitialData, fetchEmployeeData, prefillFromCandidate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData((prev: any) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -177,7 +249,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 let errMsg = "Failed to save employee";
                 if (err.detail) {
                     if (Array.isArray(err.detail)) {
-                        errMsg = err.detail.map((e: any) => `${e.loc?.slice(-1)[0] || 'Field'}: ${e.msg}`).join('\n');
+                        errMsg = err.detail.map((e: { loc?: string[]; msg: string }) => `${e.loc?.slice(-1)[0] || 'Field'}: ${e.msg}`).join('\n');
                     } else {
                         errMsg = err.detail;
                     }
@@ -208,7 +280,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
             if (res.ok) {
                 const newDept = await res.json();
                 setDepartments(prev => [...prev, newDept]);
-                setFormData((prev: any) => ({ ...prev, department_id: newDept.id }));
+                setFormData((prev) => ({ ...prev, department_id: newDept.id }));
                 setIsDeptModalOpen(false);
                 setNewDeptName("");
             } else {
@@ -483,7 +555,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                                 <h3 className="text-sm font-bold text-slate-800">Documents</h3>
                                 <p className="text-[10px] text-slate-500 font-semibold  md:pr-4 leading-relaxed">Onboarding documents and related details are managed entirely through the Candidate Onboarding Portal. Records here are read-only references synced securely from their onboarding session.</p>
                                 <div className="space-y-2">
-                                    {formData.documents.map((doc: any, idx: number) => (
+                                    {formData.documents.map((doc, idx) => (
                                         <a key={idx} href={doc.file_path} target="_blank" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-white hover:shadow-sm border border-slate-200 transition-all">
                                             <span className="text-[11px] font-bold text-slate-600">{doc.name}</span>
                                             <span className="material-symbols-rounded text-lg text-slate-400">download</span>

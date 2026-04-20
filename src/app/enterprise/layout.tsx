@@ -69,8 +69,12 @@ export default function EnterprisePortalLayout({
 
             console.log(`[AUTH] Authorized access granted for role: ${role}`);
         }
-        setIsMobileMenuOpen(false);
     }, [role, token, isLoading, router, pathname, isLoginPage, canAccess]);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMobileMenuOpen(prev => prev ? false : prev);
+    }, [pathname]);
 
     if (isLoginPage) {
         return <>{children}</>;

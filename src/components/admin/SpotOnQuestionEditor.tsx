@@ -14,10 +14,10 @@ interface Pattern {
 }
 
 interface SpotOnQuestionEditorProps {
-    target: any; // Could be { lines: Line[] } or just Line[]
-    options: any[];
+    target: { lines: Line[] } | Line[];
+    options: ({ lines: Line[] } | Line[])[];
     correctIndex: number;
-    onUpdate: (data: any) => void;
+    onUpdate: (data: unknown) => void;
 }
 
 export default function SpotOnQuestionEditor({ target, options, correctIndex, onUpdate }: SpotOnQuestionEditorProps) {

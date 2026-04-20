@@ -1,26 +1,32 @@
-"use client";
-
-import { useEffect, useState, Suspense } from "react";
-import { apiClient } from "@/utils/api";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from 'react';
 import Link from "next/link";
+
+interface College {
+    id: string;
+    name: string;
+    slug: string;
+    db_name: string;
+    admin_email: string;
+    admin_profile_image?: string;
+    is_active: boolean;
+}
 
 function SuperAdminCollegesContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const editId = searchParams.get('edit');
 
-    const [colleges, setColleges] = useState<any[]>([]);
-    const [name, setName] = useState("");
-    const [slug, setSlug] = useState("");
-    const [dbName, setDbName] = useState("");
-    const [adminEmail, setAdminEmail] = useState("");
-    const [adminPassword, setAdminPassword] = useState("");
-    const [adminProfileImage, setAdminProfileImage] = useState("");
+    const [colleges, setColleges] = useState<College[]>([]);
+    const [name, setName] = useState<string>("");
+    const [slug, setSlug] = useState<string>("");
+    const [dbName, setDbName] = useState<string>("");
+    const [adminEmail, setAdminEmail] = useState<string>("");
+    const [adminPassword, setAdminPassword] = useState<string>("");
+    const [adminProfileImage, setAdminProfileImage] = useState<string>("");
     const [uploadMode, setUploadMode] = useState<'url' | 'file'>('url');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedCollege, setSelectedCollege] = useState<any | null>(null);
+    const [selectedCollege, setSelectedCollege] = useState<College | null>(null);
 
     // Fetch colleges just to find the one to edit if ID is present
     // Optimization: In a real app we might fetching a single item by ID, but list is small.
@@ -93,7 +99,7 @@ function SuperAdminCollegesContent() {
     };
 
     // Load college into form for Edit Mode
-    const loadCollege = (college: any) => {
+    const loadCollege = (college: College) => {
         setSelectedCollege(college);
         setName(college.name || "");
         setSlug(college.slug || "");
@@ -186,7 +192,7 @@ function SuperAdminCollegesContent() {
         }
     };
 
-    const toggleStatus = async (college: any) => {
+    const toggleStatus = async (college: College) => {
         try {
             await apiClient.put(`/api/v1/super-admin/tenants/${college.id}`, { is_active: !college.is_active });
             // Refresh local state if current

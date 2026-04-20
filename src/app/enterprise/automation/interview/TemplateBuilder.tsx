@@ -12,10 +12,22 @@ interface Question {
   difficulty: string;
 }
 
+interface Template {
+  id?: string;
+  title: string;
+  topic: string;
+  duration: number;
+  difficulty: string;
+  require_video: boolean;
+  plan: {
+    questions: Question[];
+  };
+}
+
 interface TemplateBuilderProps {
   onClose: () => void;
-  onSave: (template: any) => void;
-  initialData?: any;
+  onSave: (template: Template) => void;
+  initialData?: Template | null;
   token: string;
   backendUrl: string;
 }
@@ -287,7 +299,7 @@ export default function TemplateBuilder({
                 <div>
                   <h4 className="text-sm font-black text-slate-400  ">No questions yet</h4>
                   <p className="text-xs text-slate-400 leading-relaxed mt-1">
-                    Enter a topic on the left and click "Generate with AI" or add questions manually.
+                    Enter a topic on the left and click &quot;Generate with AI&quot; or add questions manually.
                   </p>
                 </div>
               </div>

@@ -26,7 +26,8 @@ export default function SuperAdminLayout({
                 router.push("/super-admin/login");
             }
         }
-        setIsMobileMenuOpen(false);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMobileMenuOpen(prev => prev ? false : prev);
     }, [role, token, isLoading, isLoginPage, router, pathname]);
 
     if (isLoginPage) {

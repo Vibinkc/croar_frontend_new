@@ -34,7 +34,7 @@ interface Automation {
   type: AssessmentType;
   topic: string;
   question_count: number;
-  generated_questions: any[] | null;
+  generated_questions: Question[] | null;
   test_duration: number;
   email_template_id: string | null;
   template_id: string | null;
@@ -55,6 +55,27 @@ interface EmailTemplate {
   subject: string;
 }
 
+interface Question {
+  id: string;
+  type: AssessmentType;
+  title?: string;
+  description?: string;
+  problem_statement?: string;
+  question?: string;
+  options?: string[];
+  correct_answer?: string;
+  explanation?: string;
+}
+
+interface AssessmentTemplate {
+  id: string;
+  name: string;
+  type?: string;
+  topic?: string;
+  question_count?: number;
+  test_duration?: number;
+}
+
 interface FormState {
   job_requirement_id: string;
   stage_index: number | string;
@@ -70,7 +91,7 @@ interface FormState {
   is_immediate: boolean;
   auto_move: boolean;
   send_at: string;
-  generated_questions: any[] | null;
+  generated_questions: Question[] | null;
 }
 
 const EMPTY_FORM: FormState = {
@@ -111,26 +132,26 @@ export default function AssessmentAutomationPage() {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [togglingId, setTogglingId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [automationToDelete, setAutomationToDelete] = useState<Automation | null>(null);
   const [previewingAutomation, setPreviewingAutomation] = useState<Automation | null>(null);
   const [originalForm, setOriginalForm] = useState<FormState | null>(null);
-  const [originalQuestions, setOriginalQuestions] = useState<any[] | null>(null);
+  const [originalQuestions, setOriginalQuestions] = useState<Question[] | null>(null);
   const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
-  const [assessmentTemplates, setAssessmentTemplates] = useState<any[]>([]);
+  const [assessmentTemplates, setAssessmentTemplates] = useState<AssessmentTemplate[]>([]);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   const [activeTab, setActiveTab] = useState<'config' | 'questions'>('config');
 
-  const showToast = (msg: any, type: "success" | "error" = "success") => {
+  const showToast = (msg: string | { msg?: string, detail?: string } | Array<{ msg?: string } | string>, type: "success" | "error" = "success") => {
     let finalMsg = "";
     if (typeof msg === "string") {
       finalMsg = msg;
     } else if (Array.isArray(msg)) {
-      finalMsg = msg.map((e: any) => e.msg || (typeof e === 'string' ? e : JSON.stringify(e))).join(", ");
+      finalMsg = msg.map((e: { msg?: string } | string) => (typeof e === 'string' ? e : (e.msg || JSON.stringify(e)))).join(", ");
     } else if (msg && typeof msg === "object") {
-      finalMsg = msg.msg || msg.detail || JSON.stringify(msg);
+      const obj = msg as { msg?: string, detail?: string };
+      finalMsg = obj.msg || obj.detail || JSON.stringify(msg);
     } else {
       finalMsg = String(msg || "An error occurred");
     }
@@ -232,7 +253,7 @@ export default function AssessmentAutomationPage() {
       is_immediate: a.is_immediate,
       auto_move: a.auto_move || false,
       send_at: a.send_at ? toLocalISO(a.send_at) : "",
-      generated_questions: (a.generated_questions || []).map((q: any) => ({
+      generated_questions: (a.generated_questions || []).map((q: Question) => ({
         ...q,
         id: q.id || crypto.randomUUID(),
       })) || null,
@@ -280,12 +301,12 @@ export default function AssessmentAutomationPage() {
         headers: authHeaders,
       });
       if (res.ok) {
-        let questions = await res.json();
+        const questions = await res.json();
         // Handle both raw array and { questions: [...] } format
         const qArray = Array.isArray(questions) ? questions : (questions.questions || []);
         
         // Ensure each question has an ID for proper React rendering
-        const finalQuestions = qArray.map((q: any) => ({
+        const finalQuestions = qArray.map((q: Question) => ({
           ...q,
           id: q.id || crypto.randomUUID()
         }));
@@ -440,7 +461,6 @@ export default function AssessmentAutomationPage() {
 
   const handleDelete = async () => {
     if (!automationToDelete) return;
-    setDeletingId(automationToDelete.id);
     try {
       const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${automationToDelete.id}`, {
         method: "DELETE",
@@ -453,24 +473,23 @@ export default function AssessmentAutomationPage() {
         showToast("Failed to delete.", "error");
       }
     } finally {
-      setDeletingId(null);
       setIsDeleteModalOpen(false);
       setAutomationToDelete(null);
     }
   };
 
-  const handleUpdateQuestion = (id: string, field: string, value: any) => {
+  const handleUpdateQuestion = (id: string, field: string, value: string | string[]) => {
     if (previewingAutomation) {
       setPreviewingAutomation(prev => ({
         ...prev!,
-        generated_questions: (prev!.generated_questions || []).map((q: any) =>
+        generated_questions: (prev!.generated_questions || []).map((q: Question) =>
           q.id === id ? { ...q, [field]: value } : q
         )
       }));
     } else {
       setForm(f => ({
         ...f,
-        generated_questions: (f.generated_questions || []).map((q: any) =>
+        generated_questions: (f.generated_questions || []).map((q: Question) =>
           q.id === id ? { ...q, [field]: value } : q
         )
       }));
@@ -481,12 +500,12 @@ export default function AssessmentAutomationPage() {
     if (previewingAutomation) {
       setPreviewingAutomation(prev => ({
         ...prev!,
-        generated_questions: (prev!.generated_questions || []).filter((q: any) => q.id !== id)
+        generated_questions: (prev!.generated_questions || []).filter((q: Question) => q.id !== id)
       }));
     } else {
       setForm(f => ({
         ...f,
-        generated_questions: (f.generated_questions || []).filter((q: any) => q.id !== id)
+        generated_questions: (f.generated_questions || []).filter((q: Question) => q.id !== id)
       }));
     }
     showToast("Question removed.");
@@ -495,9 +514,9 @@ export default function AssessmentAutomationPage() {
   const handleAddQuestion = () => {
     const currentType = (previewingAutomation?.type || form.type) === "CODING" ? "CODING" : "APTITUDE";
     
-    const newQ: any = {
+    const newQ: Question = {
       id: crypto.randomUUID(),
-      type: currentType,
+      type: currentType as AssessmentType,
     };
 
     if (currentType === "CODING") {
@@ -1141,7 +1160,7 @@ export default function AssessmentAutomationPage() {
 
                     {form.generated_questions && form.generated_questions.length > 0 ? (
                       <div className="space-y-6">
-                        {form.generated_questions.map((q: any, idx: number) => (
+                        {form.generated_questions.map((q: Question, idx: number) => (
                           <div key={q.id} className="bg-white border border-slate-100 rounded-lg p-6 shadow-sm hover:shadow-md transition-all relative group">
                             <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#7C3AED] text-white rounded-lg flex items-center justify-center font-black  shadow-lg">#{idx + 1}</div>
                             
@@ -1225,7 +1244,7 @@ export default function AssessmentAutomationPage() {
                         </div>
                         <h3 className="text-sm font-black text-slate-400  ">No Preview Yet</h3>
                         <p className="max-w-[240px] text-[10px] font-bold text-slate-300   leading-relaxed mt-2">
-                          Click "Generate AI Questions" in the configuration tab to see AI-generated questions here.
+                          Click &quot;Generate AI Questions&quot; in the configuration tab to see AI-generated questions here.
                         </p>
                       </div>
                     )}
@@ -1295,7 +1314,7 @@ export default function AssessmentAutomationPage() {
             </div>
 
             <div className="p-8 space-y-8 overflow-y-auto pr-4 custom-scrollbar flex-1 bg-slate-50/30">
-              {(previewingAutomation.generated_questions || []).map((q: any, idx: number) => (
+              {(previewingAutomation.generated_questions || []).map((q: Question, idx: number) => (
                 <div key={q.id} className="bg-white border border-slate-100 rounded-lg p-6 shadow-sm hover:shadow-md transition-all relative group">
                   <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#7C3AED] text-white rounded-lg flex items-center justify-center font-black  shadow-lg">#{idx + 1}</div>
                   

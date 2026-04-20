@@ -67,7 +67,7 @@ export default function CreateTemplate() {
         }));
     };
 
-    const updateQuestion = (idx: number, field: keyof Question, value: any) => {
+    const updateQuestion = (idx: number, field: keyof Question, value: string | number) => {
         setFormData(prev => {
             const qs = [...prev.questions];
             qs[idx] = { ...qs[idx], [field]: value };
@@ -91,7 +91,7 @@ export default function CreateTemplate() {
 
     const removeOption = (qIdx: number, optIdx: number) => {
         const q = formData.questions[qIdx];
-        const opts = JSON.parse(q.options || "[]").filter((_: any, i: number) => i !== optIdx);
+        const opts = JSON.parse(q.options || "[]").filter((_: string, i: number) => i !== optIdx);
         updateQuestion(qIdx, "options", JSON.stringify(opts));
     };
 
@@ -106,7 +106,7 @@ export default function CreateTemplate() {
             });
             if (res.ok) {
                 const aiQuestions = await res.json();
-                const formatted = aiQuestions.map((q: any) => ({
+                const formatted = aiQuestions.map((q: { text: string; type: Question["type"]; options?: string[] }) => ({
                     text: q.text,
                     type: q.type,
                     scale_min: 1,

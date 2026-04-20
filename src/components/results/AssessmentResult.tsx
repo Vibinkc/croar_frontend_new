@@ -86,7 +86,7 @@ export default function AssessmentResult({ result, test, questions, onClose }: A
                     </div>
 
                     <p className="text-sm text-slate-500 max-w-xl leading-relaxed bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50 ">
-                        "{test.description}"
+                        &quot;{test.description}&quot;
                     </p>
                 </div>
 

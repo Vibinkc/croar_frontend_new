@@ -5,19 +5,52 @@ import { useParams, useRouter } from "next/navigation";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface OnboardingField {
+    name: string;
+    label: string;
+    type: string;
+    required: boolean;
+    options?: string[];
+}
+
+interface OnboardingSection {
+    id: string;
+    title: string;
+    fields: OnboardingField[];
+}
+
+interface OnboardingTemplate {
+    form_config: {
+        sections: OnboardingSection[];
+    };
+}
+
+interface OnboardingData {
+    candidate_email: string;
+    company_name: string;
+    company_logo?: string;
+    onboarding_code: string;
+    job_title: string;
+    form_data?: Record<string, Record<string, unknown>>;
+    template?: OnboardingTemplate;
+    rejected_fields?: string[];
+}
+
 export default function CandidateOnboardingPage() {
     const params = useParams();
     const router = useRouter();
     const { token } = params;
 
-    const [onboarding, setOnboarding] = useState<any>(null);
+    const [onboarding, setOnboarding] = useState<OnboardingData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [step, setStep] = useState(0); // 0 = Verification, 1 = Welcome, 2+ = Dynamic
     const [submitted, setSubmitted] = useState(false);
 
-    const [formData, setFormData] = useState<any>({});
-    const [formConfig, setFormConfig] = useState<any>({ sections: [] });
+    const [formData, setFormData] = useState<Record<string, Record<string, unknown>>>({});
+    const [formConfig, setFormConfig] = useState<{ sections: OnboardingSection[] }>({ sections: [] });
     
     // Verification State
     const [verificationEmail, setVerificationEmail] = useState("");
@@ -57,8 +90,8 @@ export default function CandidateOnboardingPage() {
         }
     };
 
-    const handleUpdate = (sectionId: string, fieldName: string, value: any) => {
-        setFormData((prev: any) => ({
+    const handleUpdate = (sectionId: string, fieldName: string, value: string | number | boolean) => {
+        setFormData((prev: Record<string, Record<string, unknown>>) => ({
             ...prev,
             [sectionId]: {
                 ...prev[sectionId],
@@ -132,17 +165,17 @@ export default function CandidateOnboardingPage() {
     const steps = [
         { id: "verify", name: "Verify", icon: "security" },
         { id: "welcome", name: "Welcome", icon: "wave" },
-        ...dynamicSections.map((s: any) => ({
+        ...dynamicSections.map((s: OnboardingSection) => ({
             id: s.id,
             name: s.title,
-            icon: s.fields?.some((f: any) => f.type === "file") ? "description" : "article"
+            icon: s.fields?.some((f: OnboardingField) => f.type === "file") ? "description" : "article"
         }))
     ];
 
     const currentStep = steps[step];
-    const currentSection = dynamicSections.find((s: any) => s.id === currentStep?.id);
+    const currentSection = dynamicSections.find((s: OnboardingSection) => s.id === currentStep?.id);
 
-    const renderDynamicSection = (section: any) => {
+    const renderDynamicSection = (section: OnboardingSection) => {
         return (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col gap-1">
@@ -159,7 +192,7 @@ export default function CandidateOnboardingPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                    {section.fields?.map((field: any) => (
+                    {section.fields?.map((field: OnboardingField) => (
                         <div key={field.name} className="flex flex-col gap-1.5">
                             <label className="text-[10px] font-black text-slate-500   ml-1">
                                 {field.label} {field.required && <span className="text-red-500 font-bold">*</span>}
@@ -277,7 +310,7 @@ export default function CandidateOnboardingPage() {
                     <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-lg overflow-hidden">
                             {onboarding.company_logo ? (
-                                <img src={onboarding.company_logo} alt="Logo" className="w-full h-full object-contain" />
+                                <img src={onboarding.company_logo} alt={onboarding.company_name || "Company Logo"} className="w-full h-full object-contain" />
                             ) : (
                                 (onboarding.company_name?.[0] || "C").toUpperCase()
                             )}

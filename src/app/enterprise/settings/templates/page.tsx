@@ -160,7 +160,7 @@ export default function EmailTemplatesPage() {
                     setIsAiMode(false);
                 }
             }
-        } catch (e: any) {
+        } catch (e) {
             console.error(e);
         } finally {
             setIsGenerating(false);
@@ -179,7 +179,7 @@ export default function EmailTemplatesPage() {
             if (res.ok) {
                 setTemplates(prev => prev.filter(t => t.id !== templateToDelete.id));
             }
-        } catch (e: any) {
+        } catch (e) {
             console.error(e);
         } finally {
             setIsDeleteModalOpen(false);
@@ -208,7 +208,7 @@ export default function EmailTemplatesPage() {
                 fetchTemplates();
                 setIsModalOpen(false);
             }
-        } catch (e: any) {
+        } catch (e) {
             console.error(e);
         }
     };

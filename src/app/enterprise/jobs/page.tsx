@@ -81,7 +81,7 @@ export default function EnterpriseJobsPage() {
                 }
             });
             if (res.ok) {
-                const data = await res.json();
+                const data: Company[] = await res.json();
                 setCompanies(data);
             }
         } catch (error) {
@@ -98,7 +98,7 @@ export default function EnterpriseJobsPage() {
                 }
             });
             if (res.ok) {
-                const data = await res.json();
+                const data: Job[] = await res.json();
                 setJobs(data);
             }
         } catch (error) {
@@ -322,7 +322,7 @@ export default function EnterpriseJobsPage() {
                             <Briefcase className="w-10 h-10 text-slate-300" />
                         </div>
                         <h3 className="text-xl font-black text-slate-900 mb-2">No jobs available</h3>
-                        <p className="text-slate-500 max-w-xs mx-auto mb-8">Try adjusting your filters or search terms to find what you're looking for.</p>
+                        <p className="text-slate-500 max-w-xs mx-auto mb-8">Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
                         <button onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); }} className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm">Clear All Filters</button>
                     </div>
                 ) : (

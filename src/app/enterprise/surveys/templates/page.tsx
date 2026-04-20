@@ -5,25 +5,46 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
 
+interface Template {
+    id: string;
+    title: string;
+    description: string;
+    survey_type: {
+        name: string;
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    questions?: any[];
+}
+
 export default function SurveyTemplates() {
-    const { token } = useAuth();
     const router = useRouter();
-    const [templates, setTemplates] = useState<any[]>([]);
+    const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchTemplates = async () => {
-            try {
-                const res = await apiClient.get('/api/v1/enterprise/surveys/templates');
-                if (res.ok) setTemplates(await res.json());
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchTemplates();
+    const fetchTemplates = useCallback(async () => {
+        try {
+            const res = await apiClient.get('/api/v1/enterprise/surveys/templates');
+            if (res.ok) setTemplates(await res.json());
+        } catch (error) {
+            console.error("Failed to fetch survey templates:", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchTemplates();
+    }, [fetchTemplates]);
+
+    const handleDelete = async (id: string) => {
+        if (!window.confirm("Are you sure you want to delete this template?")) return;
+        try {
+            const res = await apiClient.delete(`/api/v1/enterprise/surveys/templates/${id}`);
+            if (res.ok) fetchTemplates();
+        } catch (error) {
+            console.error("Failed to delete template:", error);
+        }
+    };
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">

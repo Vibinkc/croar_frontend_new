@@ -9,15 +9,38 @@ interface Message {
     content: string;
 }
 
+interface Report {
+    communication_score?: number;
+    empathy_score?: number;
+    problem_solving_score?: number;
+    strengths?: string[];
+    areas_for_improvement?: string[];
+}
+
+interface Scenario {
+    title: string;
+    difficulty: string;
+    character_name: string;
+    character_role: string;
+}
+
+interface Session {
+    status: string;
+    report?: Report;
+    feedback?: string;
+    scenario: Scenario;
+    conversation?: Message[];
+}
+
 interface SimulationChatProps {
     sessionId: string;
-    onComplete?: (report: any) => void;
+    onComplete?: (report: Report) => void;
     onClose?: () => void;
 }
 
 export default function SimulationChat({ sessionId, onComplete, onClose }: SimulationChatProps) {
     const { token } = useAuth();
-    const [session, setSession] = useState<any>(null);
+    const [session, setSession] = useState<Session | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(true);
@@ -45,7 +68,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
             });
             const data = await res.json();
             setSession(data);
-            setMessages(data.conversation?.filter((m: any) => m.role !== "system") || []);
+            setMessages(data.conversation?.filter((m: Message) => m.role !== "system") || []);
         } catch (error) {
             console.error(error);
         } finally {
@@ -142,7 +165,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                             <span className="material-symbols-rounded">neurology</span>
                             Executive Feedback
                         </h3>
-                        <p className="text-2xl font-bold leading-tight ">"{session.feedback}"</p>
+                        <p className="text-2xl font-bold leading-tight ">&quot;{session.feedback}&quot;</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -236,7 +259,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
 
                     <div className="pt-8">
                         <div className="p-6 border border-white/10 rounded-xl bg-white/5 text-[10px] font-bold text-white/60 leading-relaxed ">
-                            "A behavioral mirror designed for high-fidelity interactive role-play."
+                            &quot;A behavioral mirror designed for high-fidelity interactive role-play.&quot;
                         </div>
                     </div>
                 </div>
@@ -314,7 +337,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
-                                    handleSend(e as any);
+                                    handleSend(e as unknown as React.FormEvent);
                                 }
                             }}
                             disabled={sending}

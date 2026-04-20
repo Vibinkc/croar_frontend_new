@@ -99,8 +99,15 @@ export default function EnterpriseDashboard() {
         }
     ];
 
-    const getColorClasses = (color: string) => {
-        const colors: any = {
+    interface ColorClasses {
+        border: string;
+        bg: string;
+        text: string;
+        dot: string;
+    }
+
+    const getColorClasses = (color: string): ColorClasses => {
+        const colors: Record<string, ColorClasses> = {
             indigo: { border: "border-indigo-100", bg: "bg-indigo-50/30", text: "text-indigo-600", dot: "bg-indigo-400" },
             purple: { border: "border-[#7C3AED]/10", bg: "bg-[#7C3AED]/5", text: "text-[#7C3AED]", dot: "bg-[#7C3AED]" },
             rose: { border: "border-rose-100", bg: "bg-rose-50/30", text: "text-rose-600", dot: "bg-rose-400" },

@@ -115,21 +115,22 @@ export default function InterviewAutomationPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [automationToDelete, setAutomationToDelete] = useState<Automation | null>(null);
-  const [interviewTemplates, setInterviewTemplates] = useState<any[]>([]);
+  const [interviewTemplates, setInterviewTemplates] = useState<Template[]>([]);
   const [showTemplateBuilder, setShowTemplateBuilder] = useState(false);
-  const [selectedTemplateForEdit, setSelectedTemplateForEdit] = useState<any>(null);
+  const [selectedTemplateForEdit, setSelectedTemplateForEdit] = useState<Template | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   
   const [activeTab, setActiveTab] = useState<"config" | "times">("config");
 
-  const showToast = (msg: any, type: "success" | "error" = "success") => {
+  const showToast = (msg: string | string[] | { msg?: string; detail?: string } | null, type: "success" | "error" = "success") => {
     let finalMsg = "";
     if (typeof msg === "string") {
       finalMsg = msg;
     } else if (Array.isArray(msg)) {
-      finalMsg = msg.map((e: any) => e.msg || (typeof e === 'string' ? e : JSON.stringify(e))).join(", ");
+      finalMsg = msg.map((e: string | { msg?: string }) => (typeof e === 'string' ? e : (e.msg || JSON.stringify(e)))).join(", ");
     } else if (msg && typeof msg === "object") {
-      finalMsg = msg.msg || msg.detail || JSON.stringify(msg);
+      const obj = msg as { msg?: string; detail?: string };
+      finalMsg = obj.msg || obj.detail || JSON.stringify(msg);
     } else {
       finalMsg = String(msg || "An error occurred");
     }
@@ -246,8 +247,8 @@ export default function InterviewAutomationPage() {
       start_date: a.start_date ?? "",
       end_date: a.end_date ?? "",
       google_meet_link: a.google_meet_link ?? "",
-      interview_type: (a as any).interview_type || "GMEET",
-      interview_template_id: (a as any).interview_template_id || "",
+      interview_type: (a as Automation & { interview_type?: string }).interview_type || "GMEET",
+      interview_template_id: (a as Automation & { interview_template_id?: string }).interview_template_id || "",
     });
     setActiveTab("config");
     setShowModal(true);
@@ -286,7 +287,7 @@ export default function InterviewAutomationPage() {
           const interval = Number(form.duration) || 30;
           
           if (startMins < endMins) {
-            let generated: string[] = [];
+            const generated: string[] = [];
             for (let i = 0; i < limit; i++) {
                 const slotMins = startMins + i * interval;
                 if (slotMins + interval > endMins) break;
@@ -330,7 +331,7 @@ export default function InterviewAutomationPage() {
         fetchAutomations(selectedJobId || undefined);
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast((err as any)?.detail || "Failed to save automation.", "error");
+        showToast((err as { detail?: string })?.detail || "Failed to save automation.", "error");
       }
     } finally {
       setSaving(false);
@@ -406,8 +407,8 @@ export default function InterviewAutomationPage() {
     const [sh, sm] = form.start_time.split(":").map(Number);
     const [eh, em] = form.end_time.split(":").map(Number);
     
-    let startMins = sh * 60 + sm;
-    let endMins = eh * 60 + em;
+    const startMins = sh * 60 + sm;
+    const endMins = eh * 60 + em;
     
     if (startMins >= endMins) {
       showToast("End time must be after start time", "error");
@@ -416,7 +417,7 @@ export default function InterviewAutomationPage() {
     
     const interval = Number(form.duration) || 30;
     
-    let slots: string[] = [];
+    const slots: string[] = [];
     for (let i = 0; i < limit; i++) {
         const slotMins = startMins + i * interval;
         if (slotMins + interval > endMins) break;
@@ -561,7 +562,7 @@ export default function InterviewAutomationPage() {
           </div>
           <p className="text-slate-700 font-bold text-lg">{searchQuery ? 'No matching rules' : 'No automations yet'}</p>
           <p className="text-slate-400 text-sm mt-1 max-w-xs">
-            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Create your first interview automation to auto-schedule interviews.'}
+            {searchQuery ? `We couldn&apos;t find any results for &quot;${searchQuery}&quot;` : 'Create your first interview automation to auto-schedule interviews.'}
           </p>
           {!searchQuery && (
             <button

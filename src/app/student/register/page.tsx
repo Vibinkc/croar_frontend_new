@@ -47,6 +47,7 @@ export default function StudentRegisterPage() {
             }
 
             router.push("/student/login?registered=true");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setError(err.message || "Registration failed. Please try again.");
         } finally {

@@ -52,12 +52,14 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
 
     useEffect(() => {
         if (template) {
-            setName(template.name);
-            setDescription(template.description || "");
-            setSections(template.form_config?.sections || []);
-            if (template.form_config?.sections?.length > 0) {
-                setActiveSectionId(template.form_config.sections[0].id);
-            }
+            setTimeout(() => {
+                setName(template.name);
+                setDescription(template.description || "");
+                setSections(template.form_config?.sections || []);
+                if (template.form_config?.sections?.length > 0) {
+                    setActiveSectionId(template.form_config.sections[0].id);
+                }
+            }, 0);
         }
     }, [template]);
 
@@ -297,6 +299,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             <select 
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
                                                 value={newFieldType}
+                                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                 onChange={(e) => setNewFieldType(e.target.value as any)}
                                             >
                                                 <option value="text">Text Input</option>

@@ -26,7 +26,7 @@ export default function TermsPage() {
 
                     <h2 className="text-2xl font-bold mt-8 mb-4 text-[#0d0e1b]">3. User Responsibilities</h2>
                     <p className="mb-4">
-                        You agree to use our platform only for lawful purposes. You must not use our service to transmit any unsolicited or unauthorized advertising, or to engage in any conduct that restricts or inhibits anyone's use or enjoyment of the platform.
+                        You agree to use our platform only for lawful purposes. You must not use our service to transmit any unsolicited or unauthorized advertising, or to engage in any conduct that restricts or inhibits anyone&apos;s use or enjoyment of the platform.
                     </p>
 
                     <h2 className="text-2xl font-bold mt-8 mb-4 text-[#0d0e1b]">4. Modification of Terms</h2>

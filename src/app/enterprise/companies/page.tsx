@@ -14,13 +14,25 @@ interface Company {
     created_at: string;
 }
 
+interface Job {
+    id: string;
+    title: string;
+    created_at: string;
+}
+
+interface Activity {
+    id: string;
+    description: string;
+    timestamp: string;
+}
+
 interface Analytics {
     active_jobs: number;
     total_candidates: number;
     avg_match_score: number;
     sourcing_efficiency: number;
-    recent_jobs: any[];
-    recent_activity: any[];
+    recent_jobs: Job[];
+    recent_activity: Activity[];
 }
 
 interface GlobalStats {
@@ -234,7 +246,7 @@ export default function CompaniesPage() {
                         <div className="col-span-full py-24 text-center bg-slate-50/50 rounded-2xl border-4 border-dashed border-slate-100">
                             <span className="material-symbols-rounded text-7xl text-slate-200 mb-6">explore</span>
                             <h3 className="text-2xl font-black text-slate-400  tracking-tighter">No companies found</h3>
-                            <p className="text-slate-300 font-bold mt-2  text-xs ">Click "Add Company" to get started</p>
+                            <p className="text-slate-300 font-bold mt-2  text-xs ">Click &quot;Add Company&quot; to get started</p>
                         </div>
                     )}
                 </div>
@@ -343,7 +355,7 @@ export default function CompaniesPage() {
                                             <div>
                                                 <h3 className="text-2xl font-black text-slate-900 tracking-tighter  mb-8 border-b border-slate-100 pb-4">Latest Opportunities</h3>
                                                 <div className="space-y-4">
-                                                    {(companyAnalytics.recent_jobs || []).map((job: any) => (
+                                                    {(companyAnalytics.recent_jobs || []).map((job: Job) => (
                                                         <div key={job.id} className="group flex items-center justify-between p-6 bg-slate-50/50 hover:bg-indigo-50 rounded-xl border border-transparent hover:border-indigo-100 transition-all cursor-pointer">
                                                             <div className="flex items-center gap-6">
                                                                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-slate-400 group-hover:text-indigo-600 transition-colors shadow-sm">
@@ -395,7 +407,7 @@ export default function CompaniesPage() {
                                                 <h4 className="text-3xl font-black mb-1">SYSTEM</h4>
                                                 <p className="text-[11px] font-black   opacity-80">Up to date</p>
                                                 <div className="mt-8 pt-8 border-t border-white/20">
-                                                    <p className="text-xs font-medium leading-relaxed  opacity-90">"All data and analytics are currently tracked in real-time."</p>
+                                                    <p className="text-xs font-medium leading-relaxed  opacity-90">&quot;All data and analytics are currently tracked in real-time.&quot;</p>
                                                 </div>
                                             </div>
                                         </div>

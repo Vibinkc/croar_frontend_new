@@ -4,14 +4,42 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/utils/api";
 
+interface Question {
+    id: string;
+    text: string;
+    type: "RATING" | "TEXT" | "MCQ";
+    scale_min: number;
+    scale_max: number;
+    options?: string;
+}
+
+interface Invite {
+    instance: {
+        name: string;
+        template: {
+            description: string;
+            survey_type: {
+                name: string;
+            };
+            questions: Question[];
+        };
+    };
+}
+
+interface Response {
+    question_id: string;
+    answer_value: number | null;
+    answer_text: string;
+}
+
 export default function FillSurvey({ params }: { params: Promise<{ token: string }> }) {
     const { token } = use(params);
     const router = useRouter();
-    const [invite, setInvite] = useState<any>(null);
+    const [invite, setInvite] = useState<Invite | null>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [completed, setCompleted] = useState(false);
-    const [responses, setResponses] = useState<any[]>([]);
+    const [responses, setResponses] = useState<Response[]>([]);
 
     useEffect(() => {
         const fetchInvite = async () => {
@@ -21,7 +49,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                     const data = await res.json();
                     setInvite(data);
                     // Initialize responses
-                    setResponses(data.instance.template.questions.map((q: any) => ({
+                    setResponses(data.instance.template.questions.map((q: Question) => ({
                         question_id: q.id,
                         answer_value: q.type === 'RATING' ? 3 : null,
                         answer_text: ""
@@ -38,7 +66,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
         fetchInvite();
     }, [token, router]);
 
-    const updateResponse = (idx: number, field: string, value: any) => {
+    const updateResponse = (idx: number, field: keyof Response, value: string | number | null) => {
         setResponses(prev => {
             const next = [...prev];
             next[idx] = { ...next[idx], [field]: value };
@@ -128,7 +156,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                 </header>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {questions.map((q: any, i: number) => (
+                    {questions.map((q: Question, i: number) => (
                         <div key={q.id} className="bg-white p-10 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/10 space-y-8 group transition-all duration-500 hover:border-indigo-600">
                             <div className="flex gap-6 items-start">
                                 <span className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 font-black text-xs flex items-center justify-center shrink-0 border border-slate-100 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all">

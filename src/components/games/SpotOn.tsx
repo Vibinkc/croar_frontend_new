@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 interface Line {
     x1: number;
@@ -29,10 +30,10 @@ interface SpotOnProps {
 
 // Enhanced Particle for "Starburst" effect - Full Screen Version
 const StarParticle = ({ i, count }: { i: number, count: number }) => {
-    // Distribute angles evenly but add some random jitter
+    // Use a stable pseudo-random value based on i to keep render pure
+    const seed = (i * 15485863) % 1000000 / 1000000;
     const angle = (i * (360 / count)) * (Math.PI / 180);
-    // Much larger distance to cover full screen
-    const distance = 400 + Math.random() * 300;
+    const distance = 400 + seed * 300;
 
     // Randomize shapes
     const isStar = i % 2 === 0;
@@ -63,7 +64,7 @@ const StarParticle = ({ i, count }: { i: number, count: number }) => {
 export default function SpotOn({ questions, onComplete }: SpotOnProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [responses, setResponses] = useState<Record<string, number>>({});
-    const [startTime] = useState(Date.now());
+    const [startTime] = useState(() => Date.now());
     const [timeLeft, setTimeLeft] = useState(10);
     const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
     const [score, setScore] = useState(0);
@@ -71,7 +72,6 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
 
     const [showBlast, setShowBlast] = useState(false);
     const [showSkull, setShowSkull] = useState(false);
-    const [matchIndex, setMatchIndex] = useState<number | null>(null);
 
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -82,12 +82,16 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
             const element = containerRef.current;
             if (!element) return;
             try {
-                if (element.requestFullscreen) {
-                    await element.requestFullscreen();
-                } else if ((element as any).webkitRequestFullscreen) {
-                    await (element as any).webkitRequestFullscreen();
-                } else if ((element as any).msRequestFullscreen) {
-                    await (element as any).msRequestFullscreen();
+                const el = element as HTMLElement & {
+                    webkitRequestFullscreen?: () => Promise<void>;
+                    msRequestFullscreen?: () => Promise<void>;
+                };
+                if (el.requestFullscreen) {
+                    await el.requestFullscreen();
+                } else if (el.webkitRequestFullscreen) {
+                    await el.webkitRequestFullscreen();
+                } else if (el.msRequestFullscreen) {
+                    await el.msRequestFullscreen();
                 }
             } catch (err) {
                 console.error("Error attempting to enable full-screen mode:", err);
@@ -101,7 +105,6 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
 
         const isCorrect = choiceIndex === questions[currentIndex].correct_index;
         setFeedback(isCorrect ? 'correct' : 'wrong');
-        setMatchIndex(choiceIndex);
 
         if (isCorrect) {
             setScore(prev => prev + 100);
@@ -110,13 +113,11 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
             setTimeout(() => {
                 setShowScorePopup(false);
                 setShowBlast(false);
-                setMatchIndex(null);
             }, 800);
         } else {
             setShowSkull(true);
             setTimeout(() => {
                 setShowSkull(false);
-                setMatchIndex(null);
             }, 800);
         }
 
@@ -141,7 +142,7 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
         if (feedback) return;
 
         if (timeLeft <= 0) {
-            handleSelect(-1);
+            setTimeout(() => handleSelect(-1), 0);
             return;
         }
 
@@ -157,11 +158,12 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
     const renderPattern = (pattern: Pattern, color: string = "#fff") => {
         if (pattern.imageUrl) {
             return (
-                <div className="w-full h-full p-2 flex items-center justify-center">
-                    <img
+                <div className="w-full h-full p-2 flex items-center justify-center relative">
+                    <Image
                         src={pattern.imageUrl}
                         alt="Pattern"
-                        className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                        fill
+                        className="object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                         style={{ filter: color !== '#fff' ? `drop-shadow(0 0 10px ${color})` : undefined }}
                     />
                 </div>

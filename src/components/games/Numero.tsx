@@ -1,16 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface Option {
+    value: number;
+}
+
 interface Question {
     id: number;
     text: string;
     target?: { type?: 'MATH' | 'PATTERN' };
-    options: any[];
+    options: Option[];
+    correct_index: number;
+}
+
+interface Answer {
+    question_id: number;
+    user_response: number;
+    correct: boolean;
 }
 
 interface NumeroProps {
     questions: Question[];
-    onComplete: (score: number, answers: any[]) => void;
+    onComplete: (score: number, answers: Answer[]) => void;
 }
 
 const BG_COLORS = [
@@ -30,7 +41,7 @@ export default function Numero({ questions, onComplete }: NumeroProps) {
     const [started, setStarted] = useState(false);
     const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [answers, setAnswers] = useState<any[]>([]);
+    const [answers, setAnswers] = useState<Answer[]>([]);
 
     // Refs
     const containerRef = useRef<HTMLDivElement>(null);
@@ -44,6 +55,7 @@ export default function Numero({ questions, onComplete }: NumeroProps) {
             const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
             return () => clearInterval(timer);
         } else if (timeLeft === 0 && started) {
+            // eslint-disable-next-line react-hooks/immutability
             handleComplete();
         }
     }, [started, timeLeft]);
@@ -52,20 +64,26 @@ export default function Numero({ questions, onComplete }: NumeroProps) {
         const element = containerRef.current;
         if (element) {
             try {
-                if (element.requestFullscreen) await element.requestFullscreen();
-                else if ((element as any).webkitRequestFullscreen) await (element as any).webkitRequestFullscreen();
+                const el = element as HTMLElement & {
+                    webkitRequestFullscreen?: () => Promise<void>;
+                };
+                if (el.requestFullscreen) {
+                    await el.requestFullscreen();
+                } else if (el.webkitRequestFullscreen) {
+                    await el.webkitRequestFullscreen();
+                }
             } catch (err) { console.error(err); }
         }
         setStarted(true);
     };
 
     const handleAnswer = (selectedVal: number) => {
-        const correctIdx = (currentQuestion as any).correct_index;
+        const correctIdx = currentQuestion.correct_index;
         const options = currentQuestion.options || [];
         const correctValue = options[correctIdx]?.value;
         const isCorrect = selectedVal === correctValue;
 
-        const newAnswer = {
+        const newAnswer: Answer = {
             question_id: currentQuestion.id,
             user_response: selectedVal,
             correct: isCorrect
@@ -81,7 +99,7 @@ export default function Numero({ questions, onComplete }: NumeroProps) {
         }
     };
 
-    const handleComplete = (finalAnswers?: any[]) => {
+    function handleComplete(finalAnswers?: Answer[]) {
         const answersToSubmit = finalAnswers || answers;
         const correctCount = answersToSubmit.filter(a => a.correct).length;
         const total = questions.length || 1;
@@ -177,7 +195,7 @@ export default function Numero({ questions, onComplete }: NumeroProps) {
 
                         {/* Options Grid */}
                         <div className="grid grid-cols-2 gap-4 mt-8">
-                            {(currentQuestion.options || []).map((opt: any, idx: number) => (
+                            {(currentQuestion.options || []).map((opt, idx: number) => (
                                 <button
                                     key={idx}
                                     onClick={() => handleAnswer(opt.value)}

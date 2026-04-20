@@ -12,6 +12,12 @@ interface Question {
     category: string;
 }
 
+interface AIQuestion {
+    text: string;
+    type: string;
+    category: string;
+}
+
 export default function CreateX360Template() {
     const { token } = useAuth();
     const router = useRouter();
@@ -69,7 +75,7 @@ export default function CreateX360Template() {
             });
             
             if (genRes.ok) {
-                const aiQuestions = await genRes.json();
+                const aiQuestions: AIQuestion[] = await genRes.json();
                 const newQuestionIds: string[] = [];
                 
                 for (const q of aiQuestions) {

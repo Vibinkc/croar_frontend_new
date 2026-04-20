@@ -21,24 +21,78 @@ import {
   Activity
 } from "lucide-react";
 
+interface Attempt {
+  id: string;
+  status: string;
+  score: number | null;
+  generated_questions?: string[];
+  topic?: string;
+  type?: string;
+}
+
+interface Question {
+  id: string;
+  title?: string;
+  question?: string;
+  problem_statement?: string;
+  question_text?: string;
+  type: "APTITUDE" | "CODING";
+  options?: string[];
+  initial_code?: Record<string, string>;
+  difficulty?: string;
+  content?: {
+    constraints?: string | string[];
+    examples?: Array<{
+      input: string;
+      output: string;
+      explanation?: string;
+    }>;
+    test_cases?: Array<{
+      input: string;
+      output: string;
+      is_hidden: boolean;
+    }>;
+  };
+}
+
+interface TestData {
+  id: string;
+  duration: number;
+  type: string;
+  questions: Question[];
+  topic: string;
+  organization?: {
+    name: string;
+    logo_url: string | null;
+  };
+}
+
+interface TestResult {
+  passed: boolean;
+  input: string;
+  expected: string;
+  actual: string;
+  isHidden: boolean;
+}
+
 type TestStatus = "VERIFY" | "INTRO" | "TESTING" | "COMPLETED" | "ERROR";
 
 export default function CandidateAssessmentPage() {
   const { id: automationId } = useParams();
   const [status, setStatus] = useState<TestStatus>("VERIFY");
   const [email, setEmail] = useState("");
-  const [attempt, setAttempt] = useState<any>(null);
-  const [testData, setTestData] = useState<any>(null);
+  const [attempt, setAttempt] = useState<Attempt | null>(null);
+  const [testData, setTestData] = useState<TestData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [currentIdx, setCurrentIdx] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [score, setScore] = useState<number | null>(null);
   
   // Coding specific states
   const [selectedLanguage, setSelectedLanguage] = useState("python");
-  const [testResults, setTestResults] = useState<any[]>([]);
+  const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [runningTests, setRunningTests] = useState(false);
 
   // 1. Verify Email
@@ -86,8 +140,8 @@ export default function CandidateAssessmentPage() {
         setTimeLeft(data.duration * 60);
         
         // Initialize answers if needed
-        const initialAnswers: any = {};
-        data.questions.forEach((q: any) => {
+        const initialAnswers: Record<string, string> = {};
+        data.questions.forEach((q: Question) => {
           if (data.type === "CODING") {
             initialAnswers[q.id] = q.initial_code?.[selectedLanguage] || q.initial_code?.python || "// Write your code here";
           }
@@ -110,10 +164,11 @@ export default function CandidateAssessmentPage() {
     } else if (status === "TESTING" && timeLeft === 0) {
       handleComplete();
     }
-  }, [status, timeLeft]);
+  }, [status, timeLeft, handleComplete]);
 
   // 3. Submit
-  const handleComplete = async () => {
+  const handleComplete = useCallback(async () => {
+    if (!attempt) return;
     setLoading(true);
     try {
       const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/public/assessment/${attempt.id}/submit`, {
@@ -131,20 +186,20 @@ export default function CandidateAssessmentPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [answers, attempt]);
 
   const runTests = async () => {
     setRunningTests(true);
     // Mock test execution delay
     await new Promise(r => setTimeout(r, 1500));
     
-    const currentQ = testData.questions?.[currentIdx];
+    const currentQ = testData?.questions?.[currentIdx];
     if (!currentQ) return;
     const testCases = currentQ.content?.test_cases || [];
     
     // Simple mock runner: if code has "return", pass some, fail some
     const code = answers[currentQ.id] || "";
-    const results = testCases.map((tc: any, i: number) => ({
+    const results: TestResult[] = testCases.map((tc, i) => ({
       passed: code.trim().length > 10, // Mock pass/fail
       input: tc.input,
       expected: tc.output,
@@ -236,10 +291,10 @@ export default function CandidateAssessmentPage() {
                 </div>
                 <div>
                   <h4 className="text-xs font-black text-slate-500  ">Questions</h4>
-                  <p className="text-lg font-black text-white">{attempt.generated_questions?.length || 0} Total</p>
+                  <p className="text-lg font-black text-white">{attempt?.generated_questions?.length || 0} Total</p>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">You will be tested on {attempt.topic}. This assessment contains {attempt.type === 'BOTH' ? 'coding and technical' : attempt.type?.toLowerCase()} rounds.</p>
+              <p className="text-xs text-slate-500 leading-relaxed">You will be tested on {attempt?.topic}. This assessment contains {attempt?.type === 'BOTH' ? 'coding and technical' : attempt?.type?.toLowerCase()} rounds.</p>
             </div>
           </div>
 
@@ -346,7 +401,7 @@ export default function CandidateAssessmentPage() {
                 {currentQuestion.content?.examples && (
                   <div className="mt-8 space-y-6">
                     <h4 className="text-white text-xs font-black   mb-3">Examples</h4>
-                    {currentQuestion.content.examples.map((ex: any, i: number) => (
+                    {currentQuestion.content.examples.map((ex, i) => (
                       <div key={i} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 space-y-3 font-mono text-[13px]">
                         <div className="flex gap-4">
                           <span className="text-slate-500 w-16  text-[10px] font-bold">Input</span>

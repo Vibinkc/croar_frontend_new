@@ -45,15 +45,7 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
     const [data, setData] = useState<AttemptResult | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchResult();
-    }, []);
-
-    useEffect(() => {
-        fetchResult();
-    }, []);
-
-    const fetchResult = async () => {
+    const fetchResult = useCallback(async () => {
         try {
             const res = await apiClient.get(`/api/v1/activity/details/ASSESSMENT/${attemptId}`);
             if (res.ok) {
@@ -67,7 +59,11 @@ export default function AssessmentResultPage({ params }: { params: Promise<{ att
         } finally {
             setLoading(false);
         }
-    };
+    }, [attemptId]);
+
+    useEffect(() => {
+        fetchResult();
+    }, [fetchResult]);
 
     if (loading) return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center">

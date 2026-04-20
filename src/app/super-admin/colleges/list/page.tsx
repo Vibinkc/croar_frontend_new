@@ -1,11 +1,17 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { apiClient, FRONTEND_DOMAIN } from "@/utils/api";
 import Link from "next/link";
 
+interface College {
+    id: string;
+    name: string;
+    slug: string;
+    db_name: string;
+    admin_email: string;
+    admin_profile_image?: string;
+    is_active: boolean;
+}
+
 export default function DeployedNodesList() {
-    const [colleges, setColleges] = useState<any[]>([]);
+    const [colleges, setColleges] = useState<College[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -38,7 +44,7 @@ export default function DeployedNodesList() {
         }
     };
 
-    const toggleStatus = async (college: any) => {
+    const toggleStatus = async (college: College) => {
         try {
             await apiClient.put(`/api/v1/super-admin/tenants/${college.id}`, { is_active: !college.is_active });
             fetchColleges();
@@ -84,7 +90,7 @@ export default function DeployedNodesList() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
-                                    {colleges.map((c) => (
+                                    {colleges.map((c: College) => (
                                         <tr key={c.id} className="hover:bg-slate-50/50 transition-colors group">
                                             <td className="px-5 py-3">
                                                 <div className="flex items-center gap-2">

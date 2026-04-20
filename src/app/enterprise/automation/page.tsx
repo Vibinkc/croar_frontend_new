@@ -38,9 +38,13 @@ interface Automation {
   criteria: string;
   is_enabled: boolean;
   type: "mail" | "assessment" | "interview" | "onboarding";
-  // specific metadata could be here
+  action_type?: "mail" | "assessment" | "interview" | "onboarding";
   template_id?: string;
   is_immediate?: boolean;
+  topic?: string;
+  generated_questions?: Record<string, unknown>[];
+  interview_type?: string;
+  time_slots?: string[];
 }
 
 // ─── Page Component ─────────────────────────────────────────────────────────
@@ -107,15 +111,15 @@ export default function AutomationCanvasPage() {
         endpoints.map(ep => fetch(ep.url, { headers: authHeaders }).then(r => r.ok ? r.json() : []).catch(() => []))
       );
 
-      let allAutomations: any[] = [];
+      let allAutomations: (Automation & { action_type: string })[] = [];
       endpoints.forEach((ep, idx) => {
         const data = responses[idx];
         if (Array.isArray(data)) {
           allAutomations = [
             ...allAutomations,
             ...data
-              .filter((d: any) => !d.job_requirement_id || String(d.job_requirement_id) === String(jobId))
-              .map((d: any) => ({ ...d, action_type: ep.type as any })),
+              .filter((d: Automation) => !d.job_requirement_id || String(d.job_requirement_id) === String(jobId))
+              .map((d: Automation) => ({ ...d, action_type: ep.type as "mail" | "assessment" | "interview" | "onboarding" })),
           ];
         }
       });
@@ -158,8 +162,8 @@ export default function AutomationCanvasPage() {
             boxShadow: '0 4px 14px 0 rgba(124, 58, 237, 0.1)',
             width: 180,
           },
-          sourcePosition: 'right' as any,
-          targetPosition: 'left' as any,
+          sourcePosition: 'right' as const,
+          targetPosition: 'left' as const,
         });
 
         // Connect to previous round
@@ -248,8 +252,8 @@ export default function AutomationCanvasPage() {
               opacity: auto.is_enabled ? 1 : 0.6,
               cursor: 'pointer',
             },
-            sourcePosition: 'bottom' as any,
-            targetPosition: 'top' as any,
+            sourcePosition: 'bottom' as const,
+            targetPosition: 'top' as const,
           });
 
           newEdges.push({
@@ -277,10 +281,10 @@ export default function AutomationCanvasPage() {
     if (node.id.startsWith("auto-") && canAccess("automation:moderate")) {
       // Correct ID extraction: skip "auto-" and the next segment (type)
       const parts = node.id.split("-");
-      const type = parts[1];
+      const type = parts[1] as "mail" | "assessment" | "interview" | "onboarding";
       const id = node.id.replace(`auto-${type}-`, "");
       
-      setActiveNodeType(type as any);
+      setActiveNodeType(type);
       setEditingId(id);
       setIsModalOpen(true);
     }

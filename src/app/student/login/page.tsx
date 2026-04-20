@@ -47,8 +47,9 @@ export default function StudentLoginPage() {
             localStorage.setItem("role", "STUDENT");
 
             router.push("/student/dashboard");
-        } catch (err: any) {
-            setError(err.message || "Invalid email or password");
+        } catch (err) {
+            const error = err as Error;
+            setError(error.message || "Invalid email or password");
         } finally {
             setIsLoading(false);
         }
@@ -149,7 +150,7 @@ export default function StudentLoginPage() {
 
                         <div className="text-center pt-6">
                             <p className="text-sm text-slate-500 dark:text-slate-400">
-                                Don't have a student account?{" "}
+                                Don&apos;t have a student account?{" "}
                                 <Link href="/student/register" className="text-indigo-600 font-bold hover:underline">
                                     Register Now
                                 </Link>

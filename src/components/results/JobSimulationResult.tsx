@@ -5,10 +5,38 @@ import McqQuestion from "@/components/assessment/McqQuestion";
 import TextQuestion from "@/components/assessment/TextQuestion";
 import CodeQuestion from "@/components/assessment/CodeQuestion";
 
+interface RoundScore {
+    score: number;
+    title: string;
+}
+
+interface QuestionSnapshot {
+    id: string | number;
+    type: string;
+    text: string;
+    options?: string[];
+}
+
+interface Feedback {
+    summary?: string;
+    question_feedback?: Record<string, {
+        score: number;
+        feedback: string;
+        correct_answer?: string;
+    }>;
+}
+
+interface Attempt {
+    overall_score: number;
+    round_scores: Record<string, RoundScore>;
+    questions_snapshot: QuestionSnapshot[];
+    answers: Record<string, string>;
+    feedback: Feedback;
+}
+
 interface JobSimulationResultProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    attempt: any;
-    onClose?: () => void; // Optional for modal usage
+    attempt: Attempt;
+    onClose?: () => void;
     isModal?: boolean;
 }
 
@@ -43,8 +71,7 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
 
                             {/* Round Wise Scores - Stacked for sidebar */}
                             <div className="grid grid-cols-1 gap-2 mb-6 text-left">
-                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                {attempt?.round_scores && Object.entries(attempt.round_scores).map(([num, data]: [string, any]) => (
+                                {attempt?.round_scores && Object.entries(attempt.round_scores).map(([num, data]) => (
                                     <div key={num} className="bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-sm">
                                         <div className="flex justify-between items-center mb-1">
                                             <span className="text-[9px] font-black text-slate-400  ">Round {num}</span>
@@ -86,8 +113,7 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
                 <div className="lg:col-span-8">
                     {(attempt?.questions_snapshot && attempt?.questions_snapshot.length > 0) && (
                         <div className="space-y-4">
-                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                            {attempt.questions_snapshot.map((q: any, idx: number) => {
+                            {attempt.questions_snapshot.map((q, idx: number) => {
                                 const qId = String(q.id);
                                 const feedbackData = attempt.feedback?.question_feedback?.[qId];
                                 const userAnswer = attempt.answers?.[qId];

@@ -124,7 +124,9 @@ export default function ProductDetailPage() {
 
     useEffect(() => {
         if (slug && productData[slug as string]) {
-            setData(productData[slug as string]);
+            setTimeout(() => {
+                setData(productData[slug as string]);
+            }, 0);
         }
     }, [slug]);
 
@@ -197,7 +199,7 @@ export default function ProductDetailPage() {
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8">Why {data.title}?</h2>
                     <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium  underline decoration-indigo-600/30 underline-offset-8">
-                        "{data.longDescription}"
+                        &quot;{data.longDescription}&quot;
                     </p>
                 </div>
             </section>
@@ -320,7 +322,7 @@ export default function ProductDetailPage() {
                         <div className="order-1 lg:order-2">
                             <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-6">Why Industry Leaders <span className="text-indigo-600">Demand</span> This Skill</h2>
                             <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed font-medium">
-                                In a world of rapid automation, the ability to think logically and handle complex data is the ultimate competitive advantage. Academik's Aptitude module is designed using real hiring patterns from the last 10 years.
+                                In a world of rapid automation, the ability to think logically and handle complex data is the ultimate competitive advantage. Academik&apos;s Aptitude module is designed using real hiring patterns from the last 10 years.
                             </p>
                             <ul className="space-y-4">
                                 {["Curated by Ex-McKinsey & Google Recruiters", "Real-time Problem Solving Frameworks", "Integrated with ATS Pre-screening Models"].map((point, idx) => (

@@ -7,13 +7,62 @@ import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 
+interface OnboardingDocument {
+    id: string;
+    name: string;
+    status: string;
+    file_path?: string;
+}
+
+interface OnboardingActivity {
+    id: string;
+    action: string;
+    description?: string;
+    performed_by: string;
+    timestamp: string;
+}
+
+interface OnboardingField {
+    name: string;
+    label: string;
+    type: string;
+}
+
+interface OnboardingSection {
+    id: string;
+    title: string;
+    fields: OnboardingField[];
+}
+
+interface Onboarding {
+    id: string;
+    onboarding_code: string;
+    initiation_date: string;
+    status: { name: string };
+    application: {
+        candidate_id: string;
+        candidate: {
+            full_name: string;
+        };
+    };
+    template: {
+        form_config: {
+            sections: OnboardingSection[];
+        };
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    form_data: Record<string, any>;
+    documents: OnboardingDocument[];
+    activities: OnboardingActivity[];
+}
+
 export default function OnboardingDetailsPage() {
     const params = useParams();
     const router = useRouter();
     const { id } = params;
     const { token, canAccess } = useAuth();
 
-    const [onboarding, setOnboarding] = useState<any>(null);
+    const [onboarding, setOnboarding] = useState<Onboarding | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
     const [activeTab, setActiveTab] = useState("Employee");
@@ -254,7 +303,7 @@ export default function OnboardingDetailsPage() {
                     {activeTab === "Employee" && (
                         <div className="space-y-4">
                             {templateSections.length > 0 ? (
-                                templateSections.map((section: any) => (
+                                templateSections.map((section: OnboardingSection) => (
                                     <div key={section.id} className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden group">
                                         <button 
                                             onClick={() => toggleSection(section.title)}
@@ -274,7 +323,7 @@ export default function OnboardingDetailsPage() {
                                                     transition={{ duration: 0.3, ease: "easeInOut" }}
                                                 >
                                                     <div className="px-8 pb-8 pt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-6 border-t border-slate-50">
-                                                        {section.fields?.map((field: any) => (
+                                                        {section.fields?.map((field: OnboardingField) => (
                                                             <div key={field.name} className="space-y-1 relative group/field">
                                                                 <div className="flex items-center justify-between">
                                                                     <p className="text-[10px] font-black text-slate-400  ">{field.label}</p>
@@ -333,7 +382,7 @@ export default function OnboardingDetailsPage() {
 
                     {activeTab === "Documents" && (
                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {onboarding.documents?.map((doc: any) => (
+                            {onboarding.documents?.map((doc: OnboardingDocument) => (
                                 <div key={doc.id} className="bg-white border border-slate-100 rounded-2xl p-6 flex items-center justify-between hover:border-[#7C3AED]/30 hover:shadow-xl hover:shadow-[#7C3AED]/5 transition-all group">
                                     <div className="flex items-center gap-4 text-left">
                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${doc.status === "Received" ? "bg-emerald-50 text-emerald-600" : "bg-slate-50 text-slate-400"}`}>
@@ -377,7 +426,7 @@ export default function OnboardingDetailsPage() {
                     {activeTab === "Activity Log" && (
                         <div className="bg-white border border-slate-100 rounded-2xl p-10 shadow-sm relative overflow-hidden">
                             <div className="space-y-8 relative before:absolute before:left-5 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
-                                {onboarding.activities?.map((act: any) => (
+                                {onboarding.activities?.map((act: OnboardingActivity) => (
                                     <div key={act.id} className="relative pl-12 group/act">
                                         <div className="absolute left-0 top-1.5 w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 z-10 transition-colors group-hover/act:border-[#7C3AED] group-hover/act:text-[#7C3AED]">
                                             <span className="material-symbols-rounded text-base">history</span>
@@ -433,7 +482,7 @@ export default function OnboardingDetailsPage() {
                                                     <p className="text-[10px] font-black text-rose-600   mb-2">Documents Rejection ({rejectedDocIds.size})</p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {Array.from(rejectedDocIds).map(id => {
-                                                            const doc = onboarding.documents.find((d: any) => d.id === id);
+                                                            const doc = onboarding.documents.find((d: OnboardingDocument) => d.id === id);
                                                             return (
                                                                 <span key={id} className="px-3 py-1 bg-white border border-rose-200 text-rose-600 text-[10px] font-bold rounded-xl flex items-center gap-2">
                                                                     {doc?.name}
