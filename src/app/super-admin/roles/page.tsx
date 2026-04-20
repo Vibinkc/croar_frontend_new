@@ -1,4 +1,8 @@
-import { Suspense } from 'react';
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import { apiClient } from "@/utils/api";
+
 interface Permission {
     id: string;
     resource: string;

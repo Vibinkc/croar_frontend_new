@@ -1,4 +1,10 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { apiClient } from "@/utils/api";
+
+const FRONTEND_DOMAIN = process.env.NEXT_PUBLIC_FRONTEND_DOMAIN || "app.croar.in";
 
 interface College {
     id: string;
