@@ -125,7 +125,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
         setIsLoading(true);
         try {
             const url = projectId ? `/api/v1/enterprise/projects/${projectId}` : "/api/v1/enterprise/projects/";
-            const method = projectId ? "PATCH" : "POST";
+            const method = projectId ? "PUT" : "POST";
             
             const res = await apiClient.request(url, {
                 method,
