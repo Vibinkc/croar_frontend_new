@@ -203,7 +203,7 @@ export default function OrganizationProfilePage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {canAccess("enterprise:moderate") && (
+                    {canAccess("organization:moderate") && (
                         <button
                             onClick={handleSave}
                             disabled={isSaving || !hasChanges}
@@ -247,7 +247,7 @@ export default function OrganizationProfilePage() {
                                         <Building2 className="w-16 h-16 text-slate-200" />
                                     )}
                                 </div>
-                                {canAccess("enterprise:moderate") && (
+                                {canAccess("organization:moderate") && (
                                     <button 
                                         onClick={() => fileInputRef.current?.click()}
                                         className="absolute -bottom-2 -right-2 w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-2xl hover:bg-indigo-600 transition-all scale-0 group-hover/logo:scale-100"
@@ -333,7 +333,7 @@ export default function OrganizationProfilePage() {
                                     <input 
                                         value={name}
                                         onChange={e => setName(e.target.value)}
-                                        readOnly={!canAccess("enterprise:moderate")}
+                                        readOnly={!canAccess("organization:moderate")}
                                         className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-slate-900 font-semibold focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all outline-none"
                                         placeholder="Enter your legal company name"
                                     />
@@ -343,7 +343,7 @@ export default function OrganizationProfilePage() {
                                     <input 
                                         value={industry}
                                         onChange={e => setIndustry(e.target.value)}
-                                        readOnly={!canAccess("enterprise:moderate")}
+                                        readOnly={!canAccess("organization:moderate")}
                                         className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-slate-900 font-semibold focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all outline-none"
                                         placeholder="e.g. Technology, Healthcare"
                                     />
@@ -356,7 +356,7 @@ export default function OrganizationProfilePage() {
                                     <input 
                                         value={location}
                                         onChange={e => setLocation(e.target.value)}
-                                        readOnly={!canAccess("enterprise:moderate")}
+                                        readOnly={!canAccess("organization:moderate")}
                                         className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-12 text-slate-900 font-semibold focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all outline-none"
                                         placeholder="e.g. London, United Kingdom"
                                     />
@@ -380,12 +380,12 @@ export default function OrganizationProfilePage() {
                                             <input 
                                                 value={logoUrl}
                                                 onChange={e => setLogoUrl(e.target.value)}
-                                                readOnly={!canAccess("enterprise:moderate")}
+                                                readOnly={!canAccess("organization:moderate")}
                                                 className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-slate-700 font-medium focus:bg-white focus:border-indigo-600 transition-all outline-none text-sm"
                                                 placeholder="https://your-domain.com/logo.png"
                                             />
                                         </div>
-                                        {canAccess("enterprise:moderate") && (
+                                        {canAccess("organization:moderate") && (
                                             <button 
                                                 onClick={() => fileInputRef.current?.click()}
                                                 className="h-12 px-6 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-all flex items-center gap-2 shadow-lg"

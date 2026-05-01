@@ -18,10 +18,18 @@ export default function SuperAdminSidebar() {
             ]
         },
         {
+            title: "User Intelligence",
+            items: [
+                { label: "Global Users", icon: "groups", path: "/super-admin/users" },
+                { label: "Audit Logs", icon: "receipt_long", path: "/super-admin/logs" },
+            ]
+        },
+        {
             title: "System Config",
             items: [
                 { label: "Global Roles", icon: "security", path: "/super-admin/roles" },
                 { label: "Organizations", icon: "business", path: "/super-admin/organizations" },
+                { label: "Platform Settings", icon: "settings_suggest", path: "/super-admin/settings" },
             ]
         }
     ];

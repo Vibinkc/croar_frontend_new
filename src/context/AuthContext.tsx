@@ -21,6 +21,7 @@ interface AuthContextType {
     isLoading: boolean;
     login: (token: string, userRole: string) => void;
     logout: () => void;
+    ssoProvider: string | null;
 }
 
 interface JWTPayload {
@@ -32,6 +33,7 @@ interface JWTPayload {
     division_id?: number;
     division_name?: string;
     batch?: string;
+    sso?: string;
 }
 
 
@@ -49,6 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [batch, setBatch] = useState<string | null>(null);
     const [permissions, setPermissions] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [ssoProvider, setSsoProvider] = useState<string | null>(null);
 
     const router = useRouter();
 
@@ -85,6 +88,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
                 if (decoded.batch) {
                     setBatch(decoded.batch);
+                }
+                if (decoded.sso) {
+                    setSsoProvider(decoded.sso);
                 }
 
             } catch (e) {
@@ -143,24 +149,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (decoded.batch) {
                 setBatch(decoded.batch);
             }
+            if (decoded.sso) {
+                setSsoProvider(decoded.sso);
+            }
 
         } catch (e) {
             console.error("Invalid token on login", e);
         }
     };
 
-    const logout = () => {
+    const logout = async () => {
         const isEnterprise = window.location.pathname.startsWith('/enterprise');
+        const currentSso = ssoProvider;
+        
         Cookies.remove("auth_");
         setAccessToken(null);
         setRole(null);
         setUser(null);
         setUserId(null);
+        setSsoProvider(null);
         setDepartmentId(null);
         setDepartmentName(null);
         setDivisionId(null);
         setDivisionName(null);
         setBatch(null);
+
+        if (currentSso === "microsoft") {
+            try {
+                const { getMsalInstance } = await import("@/utils/microsoftAuth");
+                const msal = await getMsalInstance();
+                await msal.logoutRedirect({
+                    postLogoutRedirectUri: window.location.origin + (isEnterprise ? "/enterprise/login" : "/login")
+                });
+                return; // Redirect handled by MSAL
+            } catch (e) {
+                console.error("Microsoft logout error", e);
+            }
+        }
         
         if (isEnterprise) {
             router.push("/enterprise/login");
@@ -191,7 +216,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             canAccess,
             login,
             logout,
-            isLoading
+            isLoading,
+            ssoProvider
         }}>
             {children}
         </AuthContext.Provider>

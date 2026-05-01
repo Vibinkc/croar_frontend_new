@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"; // Added
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
 import SendEmailModal from "@/components/enterprise/SendEmailModal";
 import SendAssessmentModal from "@/components/enterprise/SendAssessmentModal";
 import SendOnboardingModal from "@/components/enterprise/SendOnboardingModal";
@@ -674,7 +675,13 @@ export default function KanbanBoardPage() {
                     </div>
 
                     <div className="flex-1 flex justify-end items-center gap-4">
-
+                        <Link
+                            href="/enterprise/sourcing/chat"
+                            className="flex items-center gap-2 px-5 h-11 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] hover:shadow-indigo-500/20 text-white rounded-xl text-[10px] font-black shadow-lg shadow-indigo-100 transition-all active:scale-95 whitespace-nowrap"
+                        >
+                            <span className="material-icons-outlined text-[16px]">auto_awesome</span>
+                            SOURCE TALENT
+                        </Link>
 
                         <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
 

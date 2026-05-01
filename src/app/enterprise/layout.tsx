@@ -14,6 +14,7 @@ export default function EnterprisePortalLayout({
     const { role, token, user, isLoading, logout, permissions, canAccess } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // List of allowed roles for the Enterprise Portal
@@ -21,8 +22,10 @@ export default function EnterprisePortalLayout({
 
     // Skip layout for login, portal and assessment pages
     const isLoginPage = 
-        pathname === "/enterprise/login" || 
-        pathname === "/enterprise/login/" || 
+        pathname.startsWith("/enterprise/login") || 
+        pathname.startsWith("/enterprise/signup") || 
+        pathname.startsWith("/enterprise/forgot-password") || 
+        pathname.startsWith("/enterprise/reset-password") ||
         pathname.startsWith("/enterprise/assessments-360/portal") ||
         pathname.startsWith("/enterprise/surveys/fill") ||
         pathname.startsWith("/enterprise/ai-training/portal") ||
@@ -106,6 +109,8 @@ export default function EnterprisePortalLayout({
             title: "Talent Search",
             items: [
                 { label: "Candidate Search", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
+                { label: "Profile Sourcing", icon: "share_location", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
+                { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
             ]
         },
         {
@@ -186,7 +191,7 @@ export default function EnterprisePortalLayout({
         return `group flex items-center gap-3 px-3 py-1.5 rounded-lg transition-all duration-200 ${isActive
             ? "bg-[#7C3AED]/10 text-[#7C3AED]"
             : "text-slate-500 hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]"
-            }`;
+            } ${isSidebarCollapsed ? 'justify-center px-0' : ''}`;
     };
 
     return (
@@ -201,27 +206,41 @@ export default function EnterprisePortalLayout({
 
             {/* Sidebar */}
             <aside className={`
-                fixed inset-y-0 left-0 z-50 w-52 bg-white border-r border-slate-100 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 md:h-screen
+                fixed inset-y-0 left-0 z-50 ${isSidebarCollapsed ? 'w-16' : 'w-52'} bg-white border-r border-slate-100 flex flex-col transition-all duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 md:h-screen
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
-                <div className="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col">
+                <div className="p-2 flex-1 overflow-y-auto no-scrollbar flex flex-col">
                     {/* Logo Section (Standard Student Portal Logo) */}
-                    <div className="p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50">
-                        <Link href="/enterprise/dashboard" className="flex items-center gap-2 tracking-tighter">
-                            <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent">Croar.ai</span>
-                        </Link>
+                    <div className={`p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50 ${isSidebarCollapsed ? 'px-2 flex-col gap-4' : ''}`}>
+                        {!isSidebarCollapsed && (
+                            <Link href="/enterprise/dashboard" className="flex items-center gap-2 tracking-tighter">
+                                <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent">Croar.ai</span>
+                            </Link>
+                        )}
+                        
+                        {/* Toggle Button Positioned on Edge */}
+                        <div className={`absolute -right-4 top-8 z-50 transition-all duration-300`}>
+                            <button 
+                                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                                className="w-8 h-8 rounded-full border border-slate-100 bg-white hover:bg-slate-50 text-slate-400 hover:text-indigo-600 transition-all shadow-sm flex items-center justify-center"
+                            >
+                                <span className="material-symbols-rounded text-xl">
+                                    {isSidebarCollapsed ? 'chevron_right' : 'chevron_left'}
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
                     {/* Navigation Groups */}
                     <nav className="space-y-4 px-1">
                         {accessibleNavGroups.map((group) => (
                             <div key={group.title}>
-                                <p className="text-[11px] font-bold text-slate-400 mb-2 px-3">{group.title}</p>
+                                {!isSidebarCollapsed && <p className="text-[11px] font-bold text-slate-400 mb-2 px-3">{group.title}</p>}
                                 <div className="space-y-0.5">
                                     {group.items.map((item) => (
-                                        <Link key={item.path} href={item.path} className={navLinkClass(item.path)}>
+                                        <Link key={item.path} href={item.path} className={navLinkClass(item.path)} title={isSidebarCollapsed ? item.label : ''}>
                                             <span className="material-symbols-rounded text-xl">{item.icon}</span>
-                                            <span className="text-[10px] font-bold whitespace-nowrap">{item.label}</span>
+                                            {!isSidebarCollapsed && <span className="text-[10px] font-bold whitespace-nowrap">{item.label}</span>}
                                         </Link>
                                     ))}
                                 </div>
@@ -231,23 +250,26 @@ export default function EnterprisePortalLayout({
                 </div>
 
                 {/* Sidebar Footer User Info (Student Portal Style) */}
-                <div className="p-3 border-t border-slate-50 shrink-0">
-                    <div className="flex items-center gap-2 mb-4 px-2">
-                        <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                <div className={`p-3 border-t border-slate-50 shrink-0 ${isSidebarCollapsed ? 'px-1' : ''}`}>
+                    <div className={`flex items-center gap-2 mb-4 px-2 ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}>
+                        <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md shrink-0">
                             {user ? user.charAt(0).toUpperCase() : 'R'}
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-bold text-slate-700 truncate">{user || "recruiter@techcorp.com"}</p>
-                            <p className="text-[10px] font-medium text-slate-400">{role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Recruiter'}</p>
-                        </div>
+                        {!isSidebarCollapsed && (
+                            <div className="flex-1 min-w-0">
+                                <p className="text-[10px] font-bold text-slate-700 truncate">{user || "recruiter@techcorp.com"}</p>
+                                <p className="text-[10px] font-medium text-slate-400">{role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Recruiter'}</p>
+                            </div>
+                        )}
                     </div>
 
                     <button
                         onClick={logout}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all duration-200 group"
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all duration-200 group ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}
+                        title={isSidebarCollapsed ? 'Logout' : ''}
                     >
                         <span className="material-symbols-rounded text-slate-500 text-[20px]">logout</span>
-                        <span className="text-[10px] font-bold">Logout</span>
+                        {!isSidebarCollapsed && <span className="text-[10px] font-bold">Logout</span>}
                     </button>
                 </div>
             </aside>

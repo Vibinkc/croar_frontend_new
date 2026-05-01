@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { BACKEND_URL } from "@/utils/api";
 
 interface ApplicationField {
@@ -37,7 +37,9 @@ interface Organization {
 export default function PublicJobPage() {
     const params = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { id } = params;
+    const prefilledEmail = searchParams.get('email');
 
     const [job, setJob] = useState<PublicJob | null>(null);
     const [orgName, setOrgName] = useState<string | Organization>("");
@@ -69,14 +71,23 @@ export default function PublicJobPage() {
                 setJob(data.job);
                 setOrgName(data.organization);
                 
-                // Initialize boolean fields with "No"
+                // Initialize boolean fields and pre-fill email
                 const initialData: Record<string, string> = {};
                 data.job.application_fields?.forEach((f: ApplicationField) => {
+                    const key = f.label.toLowerCase().replace(/\s+/g, '_');
                     if (f.type === 'boolean') {
-                        const key = f.label.toLowerCase().replace(/\s+/g, '_');
                         initialData[key] = "No";
                     }
+                    if (prefilledEmail && (f.type === 'email' || key === 'email_address' || key === 'email')) {
+                        initialData[key] = prefilledEmail;
+                    }
                 });
+
+                // Fallback for default email field if not in application_fields
+                if (prefilledEmail && !Object.values(initialData).includes(prefilledEmail)) {
+                    initialData['email_address'] = prefilledEmail;
+                }
+
                 setFormData(initialData);
             }
         } catch (error) {
@@ -168,8 +179,55 @@ export default function PublicJobPage() {
         return map[lower] || lower;
     };
 
+    const jsonLd = job ? {
+        "@context": "https://schema.org/",
+        "@type": "JobPosting",
+        "title": job.title,
+        "description": job.description,
+        "identifier": {
+            "@type": "PropertyValue",
+            "name": typeof orgName === 'object' ? orgName.name : orgName,
+            "value": job.id
+        },
+        "datePosted": new Date().toISOString(), // Fallback if no posted_at
+        "validThrough": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days default
+        "employmentType": job.job_type === "Full Time" ? "FULL_TIME" : job.job_type === "Part Time" ? "PART_TIME" : "OTHER",
+        "hiringOrganization": {
+            "@type": "Organization",
+            "name": typeof orgName === 'object' ? orgName.name : orgName,
+            "logo": typeof orgName === 'object' ? orgName.logo_url : undefined
+        },
+        "jobLocation": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": job.location || "Remote",
+                "addressRegion": "",
+                "postalCode": "",
+                "addressCountry": "IN"
+            }
+        },
+        "baseSalary": job.salary_min ? {
+            "@type": "MonetaryAmount",
+            "currency": job.salary_currency || "INR",
+            "value": {
+                "@type": "QuantitativeValue",
+                "minValue": job.salary_min,
+                "maxValue": job.salary_max || job.salary_min,
+                "unitText": job.salary_frequency === "Yearly" ? "YEAR" : "MONTH"
+            }
+        } : undefined
+    } : null;
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] font-sans">
+            {/* Google Jobs Structured Data */}
+            {jsonLd && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
+            )}
             {/* Top Navigation / Brand */}
             <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-100 z-50">
                 <div className="max-w-[95%] mx-auto px-6 h-20 flex items-center justify-between">
@@ -388,10 +446,13 @@ export default function PublicJobPage() {
                                                         type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : 'text'}
                                                         step="any"
                                                         placeholder={`Enter ${field.label}`}
-                                                        className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-indigo-500 focus:bg-white/10 outline-none transition-all text-white font-bold text-sm placeholder:text-slate-600"
+                                                        className={`w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-indigo-500 focus:bg-white/10 outline-none transition-all text-white font-bold text-sm placeholder:text-slate-600 ${
+                                                            (field.type === 'email' || fieldKey === 'email' || fieldKey === 'email_address') && prefilledEmail ? "opacity-60 cursor-not-allowed bg-slate-800" : ""
+                                                        }`}
                                                         value={formData[fieldKey] || ""}
                                                         onChange={e => setFormData({ ...formData, [fieldKey]: e.target.value })}
                                                         required={field.is_required}
+                                                        readOnly={(field.type === 'email' || fieldKey === 'email' || fieldKey === 'email_address') && !!prefilledEmail}
                                                     />
                                                 </div>
                                             </div>

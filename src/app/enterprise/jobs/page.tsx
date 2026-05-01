@@ -25,6 +25,8 @@ import {
     Check
 } from "lucide-react";
 import { motion } from "framer-motion";
+import PublishJobModal from "@/components/enterprise/PublishJobModal";
+import { Globe as GlobeIcon } from "lucide-react";
 
 interface JobPosting {
     platform: string;
@@ -65,6 +67,13 @@ export default function EnterpriseJobsPage() {
     const [selectedLocation, setSelectedLocation] = useState<string>("ALL");
     const [selectedType, setSelectedType] = useState<string>("ALL");
     const [copiedJobId, setCopiedJobId] = useState<string | null>(null);
+
+    // Publish Modal State
+    const [publishModal, setPublishModal] = useState<{ isOpen: boolean; jobId: string; jobTitle: string }>({
+        isOpen: false,
+        jobId: "",
+        jobTitle: ""
+    });
 
     useEffect(() => {
         if (token) {
@@ -418,6 +427,13 @@ export default function EnterpriseJobsPage() {
                                                     <Tag className="w-4 h-4" />
                                                 </button>
                                                 <div className={`absolute right-0 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100 transition-all scale-95 group-hover/menu:scale-100 flex flex-col ${index >= filteredJobs.length - 2 ? "bottom-full mb-2 origin-bottom-right" : "top-full mt-2 origin-top-right"}`}>
+                                                    <button 
+                                                        onClick={() => setPublishModal({ isOpen: true, jobId: job.id, jobTitle: job.title })} 
+                                                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black text-indigo-600 hover:bg-indigo-50 transition-all"
+                                                    >
+                                                        <GlobeIcon className="w-4 h-4" />
+                                                        Publish Job
+                                                    </button>
                                                     <button onClick={() => {}} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black text-slate-600 hover:bg-slate-50 hover:text-[#7C3AED] transition-all">
                                                         <Plus className="w-4 h-4" />
                                                         Post Template
@@ -438,6 +454,15 @@ export default function EnterpriseJobsPage() {
                     </table>
                 )}
             </div>
+
+            {/* Publish Modal */}
+            <PublishJobModal 
+                isOpen={publishModal.isOpen}
+                onClose={() => setPublishModal({ ...publishModal, isOpen: false })}
+                jobId={publishModal.jobId}
+                jobTitle={publishModal.jobTitle}
+                token={token}
+            />
         </div>
     );
 };
