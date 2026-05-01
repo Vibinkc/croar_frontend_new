@@ -39,6 +39,7 @@ import {
     Sparkles,
     Link as LinkIcon
 } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api-config";
 
 const PLATFORM_LOGOS: Record<string, React.FC<{ className?: string }>> = {
     github: ({ className }) => (
@@ -238,7 +239,7 @@ export default function ProfileSourcingPage() {
     const fetchDetails = async (url: string) => {
         setFetchingDetails(true);
         try {
-            const res = await fetch(`http://localhost:8000/api/v1/enterprise/sourcing/profile_details?url=${encodeURIComponent(url)}`);
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/profile_details?url=${encodeURIComponent(url)}`);
             const data = await res.json();
             setSelectedProfileDetails(data);
         } catch (err) {
@@ -259,7 +260,7 @@ export default function ProfileSourcingPage() {
         try {
             // Updated to point to the newly integrated enterprise sourcing route
             const response = await fetch(
-                `http://localhost:8000/api/v1/enterprise/sourcing/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&page=${newPage}&page_size=15&platform=${selectedPlatform}`
+                `${API_BASE_URL}/api/v1/enterprise/sourcing/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&page=${newPage}&page_size=15&platform=${selectedPlatform}`
             );
             const data = await response.json();
             setResults(data);

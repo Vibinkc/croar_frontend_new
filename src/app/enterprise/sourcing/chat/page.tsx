@@ -39,6 +39,7 @@ import {
     BarChart
 } from "lucide-react";
 import { Chart } from "react-google-charts";
+import { API_BASE_URL } from "@/lib/api-config";
 
 interface Profile {
     full_name: string;
@@ -135,7 +136,7 @@ export default function ProfileSourcingChatPage() {
     const fetchSessions = async () => {
         if (!token) return;
         try {
-            const res = await fetch("http://localhost:8000/api/v1/enterprise/sourcing/chat/sessions", {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/sessions`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -151,7 +152,7 @@ export default function ProfileSourcingChatPage() {
         if (!token) return;
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:8000/api/v1/enterprise/sourcing/chat/sessions/${sessionId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/sessions/${sessionId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -181,7 +182,7 @@ export default function ProfileSourcingChatPage() {
     const saveSession = async (messages: any[], title: string) => {
         if (!token) return;
         try {
-            const res = await fetch("http://localhost:8000/api/v1/enterprise/sourcing/chat/sessions", {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/sessions`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -210,7 +211,7 @@ export default function ProfileSourcingChatPage() {
         if (!token) return;
         if (!window.confirm("Are you sure you want to delete this search history? This action cannot be undone.")) return;
         try {
-            const res = await fetch(`http://localhost:8000/api/v1/enterprise/sourcing/chat/sessions/${sessionId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/sessions/${sessionId}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -228,7 +229,7 @@ export default function ProfileSourcingChatPage() {
     const fetchJobs = async () => {
         if (!token) return;
         try {
-            const res = await fetch("http://localhost:8000/api/v1/enterprise/sourcing/chat/jobs", {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/jobs`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -252,7 +253,7 @@ export default function ProfileSourcingChatPage() {
         setIsShortlisting(true);
         try {
             const job = jobs.find(j => j.id === selectedJobId);
-            const res = await fetch("http://localhost:8000/api/v1/enterprise/sourcing/chat/shortlist", {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/shortlist`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -317,7 +318,7 @@ export default function ProfileSourcingChatPage() {
                 formData.append('file', audioBlob, 'recording.webm');
 
                 try {
-                    const response = await fetch("http://localhost:8000/api/v1/enterprise/audio/transcribe", {
+                    const response = await fetch(`${API_BASE_URL}/api/v1/enterprise/audio/transcribe`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -361,7 +362,7 @@ export default function ProfileSourcingChatPage() {
             setLoading(true);
             try {
                 const res = await fetch(
-                    `http://localhost:8000/api/v1/enterprise/sourcing/chat_db?q=${encodeURIComponent(text)}&page=1&limit=${itemsPerPage}`
+                    `${API_BASE_URL}/api/v1/enterprise/sourcing/chat_db?q=${encodeURIComponent(text)}&page=1&limit=${itemsPerPage}`
                 );
                 if (!res.ok) throw new Error("Database query failed");
                 const data = await res.json();
@@ -405,7 +406,7 @@ export default function ProfileSourcingChatPage() {
             }
 
             const res = await fetch(
-                `http://localhost:8000/api/v1/enterprise/sourcing/chat_db?q=${encodeURIComponent(finalQuery)}&page=${pageIndex}&limit=${itemsPerPage}`
+                `${API_BASE_URL}/api/v1/enterprise/sourcing/chat_db?q=${encodeURIComponent(finalQuery)}&page=${pageIndex}&limit=${itemsPerPage}`
             );
             if (!res.ok) throw new Error("Database query failed");
             const data = await res.json();
@@ -447,7 +448,7 @@ export default function ProfileSourcingChatPage() {
 
     const fetchDistribution = async (q: string) => {
         try {
-            const res = await fetch(`http://localhost:8000/api/v1/enterprise/sourcing/chat_distribution?q=${encodeURIComponent(q)}`);
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat_distribution?q=${encodeURIComponent(q)}`);
             if (res.ok) {
                 const data = await res.json();
                 setFullDistribution(data);

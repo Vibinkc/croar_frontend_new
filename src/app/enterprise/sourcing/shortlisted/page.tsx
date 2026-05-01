@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE_URL } from "@/lib/api-config";
 
 const PLATFORM_DOMAINS: Record<string, string> = {
     github: "github.com",
@@ -112,7 +113,7 @@ export default function ShortlistedTalentPage() {
         if (!token) return;
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:8000/api/v1/enterprise/sourcing/chat/shortlisted", {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/shortlisted`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -136,7 +137,7 @@ export default function ShortlistedTalentPage() {
         if (!token) return;
         if (!confirm("Remove this candidate from shortlist?")) return;
         try {
-            const res = await fetch(`http://localhost:8000/api/v1/enterprise/sourcing/chat/shortlisted/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/shortlisted/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -161,7 +162,7 @@ export default function ShortlistedTalentPage() {
 
         setIsSendingJD(profile.profile_url || profile.full_name);
         try {
-            const res = await fetch("http://localhost:8000/api/v1/enterprise/sourcing/chat/send-jd", {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/send-jd`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -253,7 +254,7 @@ export default function ShortlistedTalentPage() {
                 formData.append('file', audioBlob, 'recording.webm');
 
                 try {
-                    const response = await fetch("http://localhost:8000/api/v1/enterprise/audio/transcribe", {
+                    const response = await fetch(`${API_BASE_URL}/api/v1/enterprise/audio/transcribe`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
