@@ -103,6 +103,7 @@ export default function EnterprisePortalLayout({
                 { label: "Jobs", icon: "business_center", path: "/enterprise/jobs", permission: "jobs:read" },
                 { label: "Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
                 { label: "Mail", icon: "alternate_email", path: "/enterprise/communication", permission: "communications:read" },
+                { label: "Job Portals", icon: "rocket_launch", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
             ]
         },
         {

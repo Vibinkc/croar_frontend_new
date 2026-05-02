@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     Users,
     Bookmark,
@@ -31,7 +31,8 @@ import {
     MoreVertical,
     Eye,
     Square,
-    CheckSquare
+    CheckSquare,
+    X
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
@@ -100,6 +101,8 @@ interface ShortlistedProfile {
     profile: any;
     shortlisted_at: string;
     status: string;
+    candidate_interest?: any;
+    source?: string;
 }
 
 export default function ShortlistedTalentPage() {
@@ -108,6 +111,11 @@ export default function ShortlistedTalentPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedJobId, setSelectedJobId] = useState<string>("ALL");
+    const [selectedSource, setSelectedSource] = useState<string>("ALL");
+    const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
+    const [movingCandidate, setMovingCandidate] = useState<ShortlistedProfile | null>(null);
+    const [isMoving, setIsMoving] = useState(false);
+    const [allJobs, setAllJobs] = useState<{id: string, title: string}[]>([]);
 
     const fetchShortlists = async () => {
         if (!token) return;
@@ -127,9 +135,25 @@ export default function ShortlistedTalentPage() {
         }
     };
 
+    const fetchAllJobs = async () => {
+        if (!token) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/jobs/`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setAllJobs(data.map((j: any) => ({ id: j.id, title: j.title })));
+            }
+        } catch (e) {
+            console.error("Failed to fetch jobs", e);
+        }
+    };
+
     useEffect(() => {
         if (token) {
             fetchShortlists();
+            fetchAllJobs();
         }
     }, [token]);
 
@@ -290,15 +314,32 @@ export default function ShortlistedTalentPage() {
         const headline = (item.profile.headline || "").toLowerCase();
         const search = searchQuery.toLowerCase();
 
-        const matchesSearch = fullName.includes(search) || headline.includes(search);
-        const matchesJob = selectedJobId === "ALL" || item.job_id === selectedJobId;
+        // New searchable fields from candidate_interest
+        const interest = item.candidate_interest || {};
+        const exp = (interest.total_experience || "").toString().toLowerCase();
+        const relExp = (interest.relevant_experience || "").toString().toLowerCase();
+        const company = (interest.previous_company || "").toLowerCase();
+        const skills = (interest.top_skills || "").toLowerCase();
+        const preference = (interest.work_preference || "").toLowerCase();
 
-        return matchesSearch && matchesJob;
+        const matchesSearch = 
+            fullName.includes(search) || 
+            headline.includes(search) ||
+            exp.includes(search) ||
+            relExp.includes(search) ||
+            company.includes(search) ||
+            skills.includes(search) ||
+            preference.includes(search);
+
+        const matchesJob = selectedJobId === "ALL" || item.job_id === selectedJobId;
+        const matchesSource = selectedSource === "ALL" || (item.source || "AI Sourcing") === selectedSource;
+
+        return matchesSearch && matchesJob && matchesSource;
     });
 
     console.log("Shortlists:", shortlists.length, "Filtered:", filteredShortlists.length, "Search:", searchQuery);
 
-    const jobOptions = Array.from(new Set(shortlists.map(s => JSON.stringify({ id: s.job_id, title: s.job_title }))))
+    const jobOptions = allJobs.length > 0 ? allJobs : Array.from(new Set(shortlists.map(s => JSON.stringify({ id: s.job_id, title: s.job_title }))))
         .map(j => JSON.parse(j));
 
     const stats = {
@@ -306,6 +347,33 @@ export default function ShortlistedTalentPage() {
         github: shortlists.filter(s => s.profile && s.profile.platform === "github").length,
         linkedin: shortlists.filter(s => s.profile && s.profile.platform === "linkedin").length,
         others: shortlists.filter(s => s.profile && s.profile.platform !== "github" && s.profile.platform !== "linkedin").length
+    };
+
+    const moveCandidate = async (targetJobId: string, targetJobTitle: string) => {
+        if (!movingCandidate || !token) return;
+        setIsMoving(true);
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/shortlisted/${movingCandidate.shortlist_id}/move`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ job_id: targetJobId, job_title: targetJobTitle })
+            });
+            if (res.ok) {
+                alert(`Successfully moved to ${targetJobTitle}`);
+                setIsMoveModalOpen(false);
+                setMovingCandidate(null);
+                fetchShortlists();
+            } else {
+                alert("Failed to move candidate");
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsMoving(false);
+        }
     };
 
     return (
@@ -388,14 +456,6 @@ export default function ShortlistedTalentPage() {
                     </button>
                 </div>
 
-                <div className="flex items-center p-1.5 bg-slate-50 border border-slate-100 rounded-2xl">
-                    <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-[#7C3AED] shadow-sm">
-                        <List className="w-5 h-5" />
-                    </button>
-                    <button className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:bg-white/50 transition-all">
-                        <LayoutGrid className="w-5 h-5" />
-                    </button>
-                </div>
 
                 <button
                     onClick={() => {
@@ -427,10 +487,26 @@ export default function ShortlistedTalentPage() {
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                 </div>
+
+                <div className="relative">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                        <Filter className="w-4 h-4" />
+                    </div>
+                    <select
+                        value={selectedSource}
+                        onChange={(e) => setSelectedSource(e.target.value)}
+                        className="bg-slate-50 border border-slate-100 rounded-2xl py-3 pl-9 pr-10 text-xs font-bold text-slate-600 outline-none appearance-none cursor-pointer hover:bg-white transition-all shadow-sm min-w-[160px]"
+                    >
+                        <option value="ALL">All Sources</option>
+                        <option value="AI Sourcing">AI Sourcing</option>
+                        <option value="Job Portal">Job Portal</option>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
             </div>
 
             {/* Content Table */}
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden min-h-[500px]">
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden min-h-[500px]">
                 {loading ? (
                     <div className="p-8 space-y-4">
                         {[1, 2, 3, 4, 5].map(i => (
@@ -439,7 +515,7 @@ export default function ShortlistedTalentPage() {
                     </div>
                 ) : filteredShortlists.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-20 text-center">
-                        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
+                        <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-6">
                             <Users className="w-10 h-10 text-slate-300" />
                         </div>
                         <h3 className="text-xl font-black text-slate-900 mb-2">No candidates found</h3>
@@ -525,7 +601,7 @@ export default function ShortlistedTalentPage() {
                                             <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm transition-all group-hover:scale-110">
                                                 <PlatformLogoRenderer platform={item.profile?.platform || 'github'} className="w-4 h-4" />
                                             </div>
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.profile?.platform || 'sourced'}</span>
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.source || 'AI Sourcing'}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-5">
@@ -533,6 +609,11 @@ export default function ShortlistedTalentPage() {
                                             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-100/50 text-emerald-700 text-[9px] font-black border border-emerald-200/50 uppercase tracking-wider">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 Applied for Job
+                                            </span>
+                                        ) : item.status === 'Interest Expressed' ? (
+                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-100/50 text-amber-700 text-[9px] font-black border border-amber-200/50 uppercase tracking-wider">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                                Interest Expressed
                                             </span>
                                         ) : item.status === 'mail_sent' ? (
                                             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-100/50 text-indigo-700 text-[9px] font-black border border-indigo-200/50 uppercase tracking-wider">
@@ -580,7 +661,6 @@ export default function ShortlistedTalentPage() {
                                                             </div>
                                                             View Profile
                                                         </a>
-
                                                         <button
                                                             onClick={() => {
                                                                 sendJD(item.profile, item.job_title, item.job_id);
@@ -597,6 +677,35 @@ export default function ShortlistedTalentPage() {
                                                                 )}
                                                             </div>
                                                             {isSendingJD === (item.profile.profile_url || item.profile.full_name) ? "Sending..." : "Send JD"}
+                                                        </button>
+
+                                                        <button
+                                                            onClick={() => {
+                                                                const link = `${window.location.origin}/engagement/${item.shortlist_id}?source=Direct Link`;
+                                                                navigator.clipboard.writeText(link);
+                                                                alert("Engagement link copied to clipboard!");
+                                                                setActiveMenu(null);
+                                                            }}
+                                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-[11px] font-black text-slate-600 hover:bg-slate-50 rounded-xl transition-all group"
+                                                        >
+                                                            <div className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-sm transition-all">
+                                                                <Bookmark className="w-3.5 h-3.5" />
+                                                            </div>
+                                                            Copy Share Link
+                                                        </button>
+
+                                                        <button
+                                                            onClick={() => {
+                                                                setMovingCandidate(item);
+                                                                setIsMoveModalOpen(true);
+                                                                setActiveMenu(null);
+                                                            }}
+                                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-[11px] font-black text-slate-600 hover:bg-slate-50 rounded-xl transition-all group"
+                                                        >
+                                                            <div className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-sm transition-all">
+                                                                <Briefcase className="w-3.5 h-3.5" />
+                                                            </div>
+                                                            Move to Job
                                                         </button>
 
                                                         <div className="my-1 border-t border-slate-50" />
@@ -682,6 +791,71 @@ export default function ShortlistedTalentPage() {
                     )}
                 </div>
             </div>
+
+            {/* Move to Job Modal */}
+            <AnimatePresence>
+                {isMoveModalOpen && (
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm">
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden"
+                        >
+                            <div className="p-8 border-b border-slate-50">
+                                <div className="flex items-center justify-between mb-2">
+                                    <h3 className="text-xl font-black text-slate-900">Move Candidate</h3>
+                                    <button onClick={() => setIsMoveModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full transition-all">
+                                        <X className="w-5 h-5 text-slate-400" />
+                                    </button>
+                                </div>
+                                <p className="text-sm font-bold text-slate-400">Select the destination job for <span className="text-[#7C3AED]">{movingCandidate?.profile.full_name}</span></p>
+                            </div>
+
+                            <div className="p-4 max-h-[400px] overflow-y-auto">
+                                <div className="space-y-2">
+                                    {jobOptions.map(job => (
+                                        <button
+                                            key={job.id}
+                                            disabled={job.id === movingCandidate?.job_id}
+                                            onClick={() => moveCandidate(job.id, job.title)}
+                                            className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all text-left group ${
+                                                job.id === movingCandidate?.job_id 
+                                                ? 'bg-slate-50 border-slate-100 opacity-50 cursor-not-allowed'
+                                                : 'bg-white border-slate-100 hover:border-[#7C3AED] hover:shadow-lg hover:shadow-[#7C3AED]/5'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                                                    job.id === movingCandidate?.job_id ? 'bg-slate-200 text-slate-400' : 'bg-slate-50 text-slate-400 group-hover:bg-[#7C3AED] group-hover:text-white'
+                                                }`}>
+                                                    <Briefcase className="w-5 h-5" />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-black text-slate-900">{job.title}</span>
+                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Active Requisition</span>
+                                                </div>
+                                            </div>
+                                            {job.id === movingCandidate?.job_id && (
+                                                <span className="text-[10px] font-black text-slate-400 uppercase px-2 py-1 bg-white rounded-lg border border-slate-100">Current</span>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="p-6 bg-slate-50/50 flex items-center justify-end gap-3">
+                                <button
+                                    onClick={() => setIsMoveModalOpen(false)}
+                                    className="px-6 py-3 text-xs font-black text-slate-500 hover:bg-white rounded-xl transition-all"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

@@ -390,7 +390,7 @@ export default function EnterpriseJobsPage() {
                                             {/* Copy Link Button */}
                                             <button 
                                                 onClick={async () => {
-                                                    const url = `${window.location.origin}/jobs/${job.id}`;
+                                                    const url = `${window.location.origin}/jobs/${job.id}?source=Direct Link`;
                                                     try {
                                                         if (navigator.clipboard && window.isSecureContext) {
                                                             await navigator.clipboard.writeText(url);

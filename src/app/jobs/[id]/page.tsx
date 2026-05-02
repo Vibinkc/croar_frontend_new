@@ -115,6 +115,12 @@ export default function PublicJobPage() {
                 data.append(fieldName, resumeFile);
             }
 
+            // Capture and add source tracking
+            const urlSource = searchParams.get('source');
+            if (urlSource) {
+                data.append("source", urlSource);
+            }
+
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/public/jobs/${id}/apply`, {
                 method: "POST",
                 body: data

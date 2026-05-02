@@ -42,7 +42,8 @@ interface Application {
     applied_at?: string;
     candidate: Candidate;
     job_requirement_id: string;
-    onboarding_id?: string; // Added
+    onboarding_id?: string;
+    source?: string;
 }
 
 interface Company {
@@ -319,6 +320,7 @@ export default function KanbanBoardPage() {
     const [selectedLocation, setSelectedLocation] = useState<string>("ALL");
     const [minMatchScore, setMinMatchScore] = useState<number>(0);
     const [appliedPeriod, setAppliedPeriod] = useState<string>("ALL");
+    const [selectedSource, setSelectedSource] = useState<string>("ALL");
     const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
     // Email Modal
@@ -612,9 +614,11 @@ export default function KanbanBoardPage() {
                 else if (appliedPeriod === "30D") matchesPeriod = diffDays <= 30;
             }
 
-            return matchesSearch && matchesJob && matchesCompany && matchesLocation && matchesScore && matchesPeriod;
+            const matchesSource = selectedSource === "ALL" || (app.source || "AI Sourcing") === selectedSource;
+
+            return matchesSearch && matchesJob && matchesCompany && matchesLocation && matchesScore && matchesPeriod && matchesSource;
         });
-    }, [applications, searchQuery, selectedJobId, selectedCompanyId, selectedLocation, minMatchScore, appliedPeriod, jobs]);
+    }, [applications, searchQuery, selectedJobId, selectedCompanyId, selectedLocation, minMatchScore, appliedPeriod, selectedSource, jobs]);
 
     const getStageApps = (stageId: number | string) => filteredApplications.filter(app => String(app.current_stage) === String(stageId));
 
@@ -635,7 +639,8 @@ export default function KanbanBoardPage() {
         selectedCompanyId && selectedCompanyId !== "ALL" && selectedCompanyId !== "",
         selectedLocation !== "ALL" && selectedLocation !== "",
         minMatchScore > 0,
-        appliedPeriod !== "ALL" && appliedPeriod !== ""
+        appliedPeriod !== "ALL" && appliedPeriod !== "",
+        selectedSource !== "ALL" && selectedSource !== ""
     ].filter(Boolean).length;
 
     return (
@@ -790,6 +795,24 @@ export default function KanbanBoardPage() {
                                             <option value="TODAY">Joined Today</option>
                                             <option value="7D">Last 7 Days</option>
                                             <option value="30D">Last 30 Days</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Source Filter */}
+                                <div className="space-y-1.5">
+                                    <label className="text-[9px] font-black text-slate-400   ml-1">Origin Source</label>
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
+                                        <span className="material-icons-outlined text-slate-400 text-lg">share</span>
+                                        <select
+                                            value={selectedSource}
+                                            onChange={(e) => setSelectedSource(e.target.value)}
+                                            className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
+                                        >
+                                            <option value="ALL">All Sources</option>
+                                            <option value="AI Sourcing">AI Sourcing</option>
+                                            <option value="Job Portal">Job Portal</option>
+                                            <option value="Direct Link">Direct Link</option>
                                         </select>
                                     </div>
                                 </div>
