@@ -43,7 +43,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
           {children}
-          <AgentCopilot />
+          {/* <AgentCopilot /> */}
         </AuthProvider>
       </body>
     </html>
