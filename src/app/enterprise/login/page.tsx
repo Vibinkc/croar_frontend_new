@@ -35,6 +35,10 @@ function EnterpriseLoginContent() {
     const [msRedirecting, setMsRedirecting] = useState(false);
 
     useEffect(() => {
+        // Force SSO buttons to be visible by default since we just configured them
+        setGoogleSsoEnabled(true);
+        setMicrosoftSsoEnabled(true);
+        
         const checkStatus = async () => {
             try {
                 const resSignup = await fetch(`${BACKEND_URL}/api/v1/super-admin/system/settings/signup_enabled`);
@@ -42,15 +46,16 @@ function EnterpriseLoginContent() {
                     const data = await resSignup.json();
                     setSignupEnabled(data.value !== false);
                 }
+                // Optional: We can still check, but we won't hide them if it fails
                 const resGoogle = await fetch(`${BACKEND_URL}/api/v1/super-admin/system/settings/google_sso_enabled`);
                 if (resGoogle.ok) {
                     const data = await resGoogle.json();
-                    setGoogleSsoEnabled(data.value !== false);
+                    if (data.value === false) setGoogleSsoEnabled(false);
                 }
                 const resMs = await fetch(`${BACKEND_URL}/api/v1/super-admin/system/settings/microsoft_sso_enabled`);
                 if (resMs.ok) {
                     const data = await resMs.json();
-                    setMicrosoftSsoEnabled(data.value !== false);
+                    if (data.value === false) setMicrosoftSsoEnabled(false);
                 }
             } catch (e) {
                 console.error("Failed to check status", e);
@@ -318,7 +323,7 @@ function EnterpriseLoginContent() {
                         </button>
                     </form>
 
-                    {/* {(googleSsoEnabled || microsoftSsoEnabled) && (
+                    {(googleSsoEnabled || microsoftSsoEnabled) && (
                         <div className="relative my-8">
                             <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-slate-100 dark:border-slate-800"></div>
@@ -384,7 +389,7 @@ function EnterpriseLoginContent() {
                                 <span>Sign In with Office 365</span>
                             </button>
                         )}
-                    </div> */}
+                    </div>
 
                     {signupEnabled && (
                         <p className="text-center text-sm text-slate-500 mt-8">
