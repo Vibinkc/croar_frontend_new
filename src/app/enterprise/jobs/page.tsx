@@ -98,6 +98,28 @@ export default function EnterpriseJobsPage() {
         }
     };
 
+    const handleDeleteJob = async (jobId: string) => {
+        if (!confirm("Are you sure you want to delete this job and all associated automations? This action cannot be undone.")) return;
+
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            if (res.ok) {
+                setJobs(prev => prev.filter(j => j.id !== jobId));
+            } else {
+                const error = await res.json();
+                alert(`Error deleting job: ${error.detail || "Unknown error"}`);
+            }
+        } catch (error) {
+            console.error("Error deleting job:", error);
+            alert("Failed to delete job. Please try again.");
+        }
+    };
+
     const fetchJobs = async () => {
         setIsLoading(true);
         try {
@@ -439,7 +461,10 @@ export default function EnterpriseJobsPage() {
                                                         Post Template
                                                     </button>
                                                     {canAccess("jobs:delete") && (
-                                                        <button onClick={() => { if(confirm("Delete job?")) {} }} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black text-rose-500 hover:bg-rose-50 transition-all">
+                                                        <button 
+                                                            onClick={() => handleDeleteJob(job.id)} 
+                                                            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black text-rose-500 hover:bg-rose-50 transition-all"
+                                                        >
                                                             <Archive className="w-4 h-4" />
                                                             Delete Job
                                                         </button>
