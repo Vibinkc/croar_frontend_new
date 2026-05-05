@@ -1,7 +1,20 @@
 import Cookies from "js-cookie";
 
-export const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "";
-export const FRONTEND_DOMAIN = process.env.NEXT_PUBLIC_FRONTEND_DOMAIN || (typeof window !== "undefined" ? window.location.hostname : "3.94.202.48");
+let backend_url = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "";
+
+// FAIL-SAFE: If we are on HTTPS but the backend is an insecure IP, 
+// force it to use the secure production API domain.
+if (typeof window !== "undefined") {
+    const isHttps = window.location.protocol === 'https:';
+    const isIpBackend = backend_url.includes('100.31.6.242') || backend_url.includes('3.94.202.48');
+    
+    if (isHttps && (isIpBackend || !backend_url)) {
+        backend_url = 'https://api.croar.co';
+    }
+}
+
+export const BACKEND_URL = backend_url;
+export const FRONTEND_DOMAIN = process.env.NEXT_PUBLIC_FRONTEND_DOMAIN || (typeof window !== "undefined" ? window.location.hostname : "app.croar.co");
 
 if (!BACKEND_URL && typeof window !== "undefined") {
     console.warn("NEXT_PUBLIC_API_URL is not defined. API calls will likely fail.");
