@@ -318,7 +318,7 @@ function EnterpriseLoginContent() {
                         </button>
                     </form>
 
-                    {(googleSsoEnabled || microsoftSsoEnabled) && (
+                    {/* {(googleSsoEnabled || microsoftSsoEnabled) && (
                         <div className="relative my-8">
                             <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-slate-100 dark:border-slate-800"></div>
@@ -384,7 +384,7 @@ function EnterpriseLoginContent() {
                                 <span>Sign In with Office 365</span>
                             </button>
                         )}
-                    </div>
+                    </div> */}
 
                     {signupEnabled && (
                         <p className="text-center text-sm text-slate-500 mt-8">
