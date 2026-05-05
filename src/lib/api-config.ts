@@ -12,13 +12,6 @@ export const getApiUrl = () => {
         if (port === '3000') {
             return `${protocol}//${hostname}:8000`;
         }
-        
-        // If we are on a production domain without port 3000, 
-        // we might be using a reverse proxy where /api is mapped.
-        // For now, let's stick to the 8000 logic for your IP setup.
-        if (hostname === '100.31.6.242') {
-            return `http://100.31.6.242:8000`;
-        }
     }
     
     // 3. Fallback to env or localhost
