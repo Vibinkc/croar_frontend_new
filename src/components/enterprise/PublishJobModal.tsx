@@ -40,30 +40,6 @@ const PLATFORMS = [
         description: "Post to your company feed and network (Organic)."
     },
     { 
-        id: "CareerJet", 
-        name: "CareerJet", 
-        icon: Globe, 
-        color: "text-red-500", 
-        bg: "bg-red-50",
-        description: "Global job search engine indexing."
-    },
-    { 
-        id: "Talent.com", 
-        name: "Talent.com", 
-        icon: Zap, 
-        color: "text-blue-600", 
-        bg: "bg-blue-50",
-        description: "High-volume organic job distribution."
-    },
-    { 
-        id: "Jora", 
-        name: "Jora", 
-        icon: Globe, 
-        color: "text-orange-500", 
-        bg: "bg-orange-50",
-        description: "Organic reach via Seek's aggregator network."
-    },
-    { 
         id: "Naukri", 
         name: "Naukri.com", 
         icon: Globe, 
