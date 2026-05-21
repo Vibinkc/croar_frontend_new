@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
-import AgentCopilot from "@/components/enterprise/AgentCopilot";
+// import AgentCopilot from "@/components/enterprise/AgentCopilot";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,9 +43,10 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
           {children}
-          <AgentCopilot />
+          {/* <AgentCopilot /> */}
         </AuthProvider>
       </body>
     </html>
   );
 }
+
