@@ -200,7 +200,7 @@ export default function X360QuestionBank() {
 
                         <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
                             {/* Categories Selection - More Space */}
-                            <div>
+                            <div className="xl:col-span-7">
                                 <label className="block text-[10px] font-black text-violet-100   mb-4 px-1 opacity-70">Target Competencies & Categories</label>
                                 <div className="flex flex-wrap gap-2">
                                     {/* Standard Categories */}
