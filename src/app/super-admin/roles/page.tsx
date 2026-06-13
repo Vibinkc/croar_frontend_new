@@ -47,8 +47,8 @@ function RolesContent() {
                 apiClient.get("/api/v1/super-admin/permissions")
             ]);
             
-            if (rolesRes.ok) setRoles(await rolesRes.json());
-            if (permsRes.ok) setPermissions(await permsRes.json());
+            if (rolesRes.ok) { const r = await rolesRes.json(); setRoles(Array.isArray(r) ? r : []); }
+            if (permsRes.ok) { const p = await permsRes.json(); setPermissions(Array.isArray(p) ? p : []); }
         } catch (e) {
             console.error("Failed to fetch RBAC data", e);
         } finally {

@@ -431,8 +431,9 @@ export default function KanbanBoardPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                console.log("Fetched applications with scores:", data.map((a: Application) => ({ name: a.candidate.full_name, ai: a.ai_match_score, inter: a.ai_interview_score })));
-                setApplications(data);
+                const list: Application[] = Array.isArray(data) ? data : [];
+                console.log("Fetched applications with scores:", list.map((a: Application) => ({ name: a.candidate?.full_name, ai: a.ai_match_score, inter: a.ai_interview_score })));
+                setApplications(list);
             }
         } catch (error) {
             console.error("Error fetching applications:", error);
@@ -594,8 +595,8 @@ export default function KanbanBoardPage() {
     // --- Computed ---
     const filteredApplications = useMemo(() => {
         return applications.filter(app => {
-            const matchesSearch = app.candidate.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                app.candidate.email.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch = (app.candidate?.full_name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (app.candidate?.email || "").toLowerCase().includes(searchQuery.toLowerCase());
 
             const job = jobs.find(j => j.id === app.job_requirement_id);
 

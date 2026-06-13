@@ -53,6 +53,13 @@ const getStatusColor = (statusName: string) => {
     }
 };
 
+// date-fns format() throws RangeError on an Invalid Date; guard before formatting.
+const safeFormat = (value: string | null | undefined, pattern: string): string => {
+    if (!value) return "—";
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? "—" : format(d, pattern);
+};
+
 export default function OnboardingDashboard() {
     const { token } = useAuth();
     const router = useRouter();
@@ -234,7 +241,7 @@ export default function OnboardingDashboard() {
                                         </div>
                                         <div>
                                             <p className="text-xs font-bold text-slate-800 leading-none">
-                                                {format(new Date(ob.initiation_date), "MMM dd, yyyy")}
+                                                {safeFormat(ob.initiation_date, "MMM dd, yyyy")}
                                             </p>
                                             <p className="text-[9px] font-bold text-slate-400   mt-1">Start Date</p>
                                         </div>

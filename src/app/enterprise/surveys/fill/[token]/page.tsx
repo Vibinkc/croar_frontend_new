@@ -32,6 +32,15 @@ interface Response {
     answer_text: string;
 }
 
+const safeOptions = (v: string | undefined | null): string[] => {
+    try {
+        const a = JSON.parse(v || "[]");
+        return Array.isArray(a) ? a : [];
+    } catch {
+        return [];
+    }
+};
+
 export default function FillSurvey({ params }: { params: Promise<{ token: string }> }) {
     const { token } = use(params);
     const router = useRouter();
@@ -193,7 +202,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
 
                             {q.type === 'MCQ' && (
                                 <div className="grid grid-cols-1 gap-3">
-                                    {JSON.parse(q.options || '[]').map((opt: string, optIdx: number) => (
+                                    {safeOptions(q.options).map((opt: string, optIdx: number) => (
                                         <button 
                                             key={optIdx}
                                             type="button"

@@ -196,7 +196,7 @@ export default function X360NewCycle() {
                                     {formData.ratee_ids.includes(emp.id) ? (
                                         <span className="material-symbols-rounded text-sm">check</span>
                                     ) : (
-                                        emp.first_name[0]
+                                        emp.first_name?.[0]
                                     )}
                                 </div>
                                 <div className="min-w-0">

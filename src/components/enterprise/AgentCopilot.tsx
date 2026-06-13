@@ -2,16 +2,23 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_BASE_URL } from '@/lib/api-config';
 
 interface Message {
     role: 'user' | 'agent';
     content: string;
 }
 
+// crypto.randomUUID is unavailable on non-secure (HTTP) origins / older browsers.
+const makeThreadId = () =>
+    (typeof crypto !== 'undefined' && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : `thread-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
 const AgentCopilot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState('');
-    const [threadId] = useState(crypto.randomUUID());
+    const [threadId] = useState(makeThreadId());
     const [messages, setMessages] = useState<Message[]>([
         { role: 'agent', content: "Hi! I'm your AI HR Copilot. I can help you shortlist candidates, trigger assessments, or manage onboarding milestones autonomously." }
     ]);
@@ -35,7 +42,7 @@ const AgentCopilot = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/agents/chat', {
+            const response = await fetch(`${API_BASE_URL}/api/v1/agents/chat`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',

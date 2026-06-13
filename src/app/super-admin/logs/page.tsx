@@ -41,7 +41,7 @@ export default function AuditLogsPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setLogs(data);
+                setLogs(Array.isArray(data) ? data : []);
             }
         } catch (e) {
             console.error("Failed to fetch logs", e);

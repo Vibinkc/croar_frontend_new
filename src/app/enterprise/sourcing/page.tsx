@@ -214,6 +214,7 @@ export default function ProfileSourcingPage() {
     const [query, setQuery] = useState("");
     const [location, setLocation] = useState("");
     const [selectedPlatform, setSelectedPlatform] = useState("github");
+    const [hasContactOnly, setHasContactOnly] = useState(false);
     const [results, setResults] = useState<Profile[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
@@ -260,10 +261,10 @@ export default function ProfileSourcingPage() {
         try {
             // Updated to point to the newly integrated enterprise sourcing route
             const response = await fetch(
-                `${API_BASE_URL}/api/v1/enterprise/sourcing/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&page=${newPage}&page_size=15&platform=${selectedPlatform}`
+                `${API_BASE_URL}/api/v1/enterprise/sourcing/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&page=${newPage}&page_size=15&platform=${selectedPlatform}&has_contact=${hasContactOnly}`
             );
-            const data = await response.json();
-            setResults(data);
+            const data = response.ok ? await response.json() : [];
+            setResults(Array.isArray(data) ? data : (data?.profiles ?? []));
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error) {
             console.error("Search failed:", error);
@@ -422,6 +423,7 @@ export default function ProfileSourcingPage() {
                             <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Sourcing From:</p>
                             <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
                                 {[
+                                    { id: "all", label: "All Platforms", icon: Globe },
                                     { id: "github", label: "GitHub", icon: Github },
                                     { id: "linkedin", label: "LinkedIn", icon: Linkedin },
                                     { id: "stackoverflow", label: "Stack Overflow", icon: Code },
@@ -467,6 +469,18 @@ export default function ProfileSourcingPage() {
                                     </button>
                                 ))}
                             </div>
+
+                            <label className="flex items-center gap-2 cursor-pointer select-none w-fit">
+                                <input
+                                    type="checkbox"
+                                    checked={hasContactOnly}
+                                    onChange={(e) => setHasContactOnly(e.target.checked)}
+                                    className="w-4 h-4 rounded accent-[#7C3AED]"
+                                />
+                                <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest">
+                                    Has contact info only
+                                </span>
+                            </label>
                         </div>
                     </div>
 
@@ -609,7 +623,7 @@ export default function ProfileSourcingPage() {
                                                 {profile.social_links && profile.social_links.length > 0 && (
                                                     <div className="flex flex-wrap gap-2 mt-4">
                                                         {profile.social_links.map((social, sIdx) => {
-                                                            const provider = social.provider.toLowerCase();
+                                                            const provider = (social.provider || "").toLowerCase();
                                                             let Icon = LinkIcon;
                                                             if (provider.includes('linkedin')) Icon = Linkedin;
                                                             if (provider.includes('twitter')) Icon = Twitter;
@@ -861,10 +875,10 @@ export default function ProfileSourcingPage() {
                                             setSearchPhase("results");
                                             try {
                                                 const res = await fetch(
-                                                    `http://localhost:8000/api/v1/enterprise/sourcing/search?q=${encodeURIComponent(extractedFilters.title)}&location=${encodeURIComponent(extractedFilters.location)}&page=1&page_size=15&platform=all`
+                                                    `${API_BASE_URL}/api/v1/enterprise/sourcing/search?q=${encodeURIComponent(extractedFilters.title)}&location=${encodeURIComponent(extractedFilters.location)}&page=1&page_size=15&platform=all`
                                                 );
-                                                const data = await res.json();
-                                                setResults(data);
+                                                const data = res.ok ? await res.json() : [];
+                                                setResults(Array.isArray(data) ? data : (data?.profiles ?? []));
                                             } catch (e) {
                                                 console.error(e);
                                             } finally {

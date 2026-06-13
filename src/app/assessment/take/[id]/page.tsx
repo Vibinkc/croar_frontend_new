@@ -141,7 +141,7 @@ export default function CandidateAssessmentPage() {
         
         // Initialize answers if needed
         const initialAnswers: Record<string, string> = {};
-        data.questions.forEach((q: Question) => {
+        (data.questions || []).forEach((q: Question) => {
           if (data.type === "CODING") {
             initialAnswers[q.id] = q.initial_code?.[selectedLanguage] || q.initial_code?.python || "// Write your code here";
           }

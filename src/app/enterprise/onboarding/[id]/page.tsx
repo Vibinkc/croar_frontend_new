@@ -56,6 +56,13 @@ interface Onboarding {
     activities: OnboardingActivity[];
 }
 
+// date-fns format() throws RangeError on an Invalid Date; guard before formatting.
+const safeFormat = (value: string | null | undefined, pattern: string): string => {
+    if (!value) return "—";
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? "—" : format(d, pattern);
+};
+
 export default function OnboardingDetailsPage() {
     const params = useParams();
     const router = useRouter();
@@ -274,7 +281,7 @@ export default function OnboardingDetailsPage() {
                         </div>
                         <div className="flex flex-col items-end gap-1 text-right">
                             <span className="text-[9px] font-black text-slate-400  tracking-[0.2em]">Initiated On</span>
-                            <span className="text-xs font-black text-slate-700">{format(new Date(onboarding.initiation_date), "MMMM dd, yyyy")}</span>
+                            <span className="text-xs font-black text-slate-700">{safeFormat(onboarding.initiation_date, "MMMM dd, yyyy")}</span>
                         </div>
                     </div>
 
@@ -435,7 +442,7 @@ export default function OnboardingDetailsPage() {
                                             <h4 className="text-sm font-black text-slate-800">{act.action}</h4>
                                             <p className="text-xs font-medium text-slate-400 mt-1">{act.description || `Action performed by ${act.performed_by}`}</p>
                                             <p className="text-[10px] font-black text-[#7C3AED] bg-[#7C3AED]/5 inline-block px-2 py-1 rounded-xl   mt-3">
-                                                {act.timestamp ? format(new Date(act.timestamp), "MMM dd, HH:mm") : "N/A"}
+                                                {safeFormat(act.timestamp, "MMM dd, HH:mm")}
                                             </p>
                                         </div>
                                     </div>

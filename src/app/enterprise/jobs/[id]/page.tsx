@@ -581,11 +581,11 @@ export default function JobDetailPage() {
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-3">
                                                             <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
-                                                                {app.candidate.full_name?.charAt(0)}
+                                                                {app.candidate?.full_name?.charAt(0)}
                                                             </div>
                                                             <div>
-                                                                <p className="text-xs font-black text-slate-900">{app.candidate.full_name}</p>
-                                                                <p className="text-[10px] font-bold text-slate-400">{app.candidate.email}</p>
+                                                                <p className="text-xs font-black text-slate-900">{app.candidate?.full_name}</p>
+                                                                <p className="text-[10px] font-bold text-slate-400">{app.candidate?.email}</p>
                                                             </div>
                                                         </div>
                                                     </td>

@@ -121,7 +121,7 @@ export default function AIInterviewPage() {
         
         recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
           const transcript = Array.from(event.results)
-            .map((result) => result[0].transcript)
+            .map((result) => result[0]?.transcript || "")
             .join("");
           setCurrentInput(transcript);
         };

@@ -19,6 +19,15 @@ interface Question {
     options?: string; // stringified JSON array
 }
 
+const safeOptions = (v: string | undefined | null): string[] => {
+    try {
+        const a = JSON.parse(v || "[]");
+        return Array.isArray(a) ? a : [];
+    } catch {
+        return [];
+    }
+};
+
 export default function CreateTemplate() {
     const { token } = useAuth();
     const router = useRouter();
@@ -77,21 +86,21 @@ export default function CreateTemplate() {
 
     const handleOptionChange = (qIdx: number, optIdx: number, val: string) => {
         const q = formData.questions[qIdx];
-        const opts = JSON.parse(q.options || "[]");
+        const opts = safeOptions(q.options);
         opts[optIdx] = val;
         updateQuestion(qIdx, "options", JSON.stringify(opts));
     };
 
     const addOption = (qIdx: number) => {
         const q = formData.questions[qIdx];
-        const opts = JSON.parse(q.options || "[]");
+        const opts = safeOptions(q.options);
         opts.push(`Option ${opts.length + 1}`);
         updateQuestion(qIdx, "options", JSON.stringify(opts));
     };
 
     const removeOption = (qIdx: number, optIdx: number) => {
         const q = formData.questions[qIdx];
-        const opts = JSON.parse(q.options || "[]").filter((_: string, i: number) => i !== optIdx);
+        const opts = safeOptions(q.options).filter((_: string, i: number) => i !== optIdx);
         updateQuestion(qIdx, "options", JSON.stringify(opts));
     };
 
@@ -297,7 +306,7 @@ export default function CreateTemplate() {
                                     {q.type === 'MCQ' && (
                                         <div className="ml-16 space-y-4 animate-in fade-in duration-400">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {JSON.parse(q.options || "[]").map((opt: string, optIdx: number) => (
+                                                {safeOptions(q.options).map((opt: string, optIdx: number) => (
                                                     <div key={optIdx} className="flex gap-2 items-center group/opt">
                                                         <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-bold text-slate-300 group-hover/opt:bg-indigo-50 transition-colors shrink-0">{String.fromCharCode(65 + optIdx)}</div>
                                                         <input 

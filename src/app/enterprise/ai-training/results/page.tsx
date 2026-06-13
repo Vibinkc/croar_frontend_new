@@ -203,7 +203,7 @@ export default function ResultsDashboard() {
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-[10px]  shadow-lg shadow-slate-200 transition-transform group-hover:scale-110">
-                                                {res.employee_name[0]}
+                                                {res.employee_name?.[0]}
                                             </div>
                                             <div>
                                                 <span className="text-xs font-black text-slate-800  tracking-tight block">{res.employee_name}</span>

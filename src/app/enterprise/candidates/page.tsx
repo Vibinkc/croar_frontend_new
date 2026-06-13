@@ -175,10 +175,12 @@ export default function AllCandidatesPage() {
             ]);
 
             if (appsRes.ok) {
-                const appsData = await appsRes.json();
+                const appsRaw = await appsRes.json();
+                const appsData: Application[] = Array.isArray(appsRaw) ? appsRaw : [];
                 let currentJobs: Job[] = [];
                 if (jobsRes.ok) {
-                    currentJobs = await jobsRes.json();
+                    const jobsRaw = await jobsRes.json();
+                    currentJobs = Array.isArray(jobsRaw) ? jobsRaw : [];
                     setJobs(currentJobs);
                 }
 
@@ -187,6 +189,7 @@ export default function AllCandidatesPage() {
 
                 appsData.forEach((app: Application) => {
                     const cand = app.candidate;
+                    if (!cand) return;
                     if (!candidateMap.has(cand.id)) {
                         candidateMap.set(cand.id, {
                             ...cand,

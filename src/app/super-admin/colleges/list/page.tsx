@@ -104,7 +104,7 @@ export default function DeployedNodesList() {
                                                         {c.admin_profile_image ? (
                                                             <img src={c.admin_profile_image} className="w-full h-full object-cover rounded-lg" alt="" />
                                                         ) : (
-                                                            <span className="text-[10px] font-bold text-slate-500">{c.name.charAt(0)}</span>
+                                                            <span className="text-[10px] font-bold text-slate-500">{c.name?.charAt(0)}</span>
                                                         )}
                                                     </div>
                                                     <span className="text-xs font-bold text-slate-700">{c.name}</span>

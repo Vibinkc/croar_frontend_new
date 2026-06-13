@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState, use } from "react";
+import { apiClient } from "@/utils/api";
 import Link from "next/link";
 
 interface College {

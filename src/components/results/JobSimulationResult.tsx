@@ -164,7 +164,7 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
                                                         questionId={q.id}
                                                         code={userAnswer || ""}
                                                         onCodeChange={() => { }} // No-op
-                                                        language={JSON.parse(localStorage.getItem('last_language') || '"python"')} // Fallback or could store used language in attempt
+                                                        language={(() => { try { return JSON.parse(localStorage.getItem('last_language') || '"python"'); } catch { return 'python'; } })()} // Fallback or could store used language in attempt
                                                         onLanguageChange={() => { }} // No-op
                                                         readOnly={true}
                                                         feedback={feedbackData?.feedback}

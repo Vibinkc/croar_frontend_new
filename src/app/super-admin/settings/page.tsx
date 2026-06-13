@@ -47,7 +47,7 @@ export default function PlatformSettingsPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setSettings(data);
+                setSettings(Array.isArray(data) ? data : []);
             }
         } catch (e) {
             console.error("Failed to fetch settings", e);

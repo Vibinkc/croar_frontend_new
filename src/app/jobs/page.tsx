@@ -74,7 +74,7 @@ function JobPortalContent() {
             const res = await fetch(url);
             if (res.ok) {
                 const data = await res.json();
-                setJobs(data);
+                setJobs(Array.isArray(data) ? data : (data?.jobs ?? []));
             }
         } catch (error) {
             console.error("Error fetching jobs:", error);
@@ -84,7 +84,7 @@ function JobPortalContent() {
     };
 
     const filteredJobs = jobs.filter(job => {
-        const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        const matchesSearch = (job.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
             job.location?.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesType = selectedType === "ALL" || job.job_type === selectedType;
         const matchesLocation = selectedLocation === "ALL" || job.location === selectedLocation;

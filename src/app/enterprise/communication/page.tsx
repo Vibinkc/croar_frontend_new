@@ -297,7 +297,7 @@ const MailboxPage = () => {
                                 {email.subject}
                             </h3>
                             <p className="text-xs text-slate-400 line-clamp-2">
-                                {email.body.replace(/<[^>]*>/g, '')}
+                                {(email.body || '').replace(/<[^>]*>/g, '')}
                             </p>
                         </div>
                     ))}
@@ -351,7 +351,7 @@ const MailboxPage = () => {
                                     <div className="flex items-center justify-between mb-8">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
-                                                {selectedEmail.direction === 'INBOUND' ? selectedEmail.sender_email[0].toUpperCase() : 'Y'}
+                                                {selectedEmail.direction === 'INBOUND' ? (selectedEmail.sender_email?.[0] || '?').toUpperCase() : 'Y'}
                                             </div>
                                             <div>
                                                 <div className="text-sm font-semibold text-slate-900">{selectedEmail.direction === 'INBOUND' ? selectedEmail.sender_email : 'Me'}</div>

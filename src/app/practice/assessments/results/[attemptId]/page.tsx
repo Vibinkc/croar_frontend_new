@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState, use, useCallback } from "react";
 import { apiClient } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

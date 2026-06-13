@@ -126,7 +126,7 @@ export default function ShortlistedTalentPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setShortlists(data);
+                setShortlists(Array.isArray(data) ? data : []);
             }
         } catch (e) {
             console.error("Failed to fetch shortlists", e);

@@ -81,7 +81,7 @@ export default function GlobalTasksPage() {
             const res = await apiClient.request("/api/v1/enterprise/projects/tasks/all");
             if (res.ok) {
                 const data = await res.json();
-                setTasks(data);
+                setTasks(Array.isArray(data) ? data : []);
             }
         } catch (err) {
             console.error("Failed to fetch all tasks", err);
@@ -114,8 +114,8 @@ export default function GlobalTasksPage() {
     };
 
     const filteredGridTasks = tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                             task.project?.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = (task.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+                             (task.project?.name || "").toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === "all" || task.status === statusFilter;
         return matchesSearch && matchesStatus;
     });

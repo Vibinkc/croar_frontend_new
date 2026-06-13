@@ -141,7 +141,7 @@ export default function ProfileSourcingChatPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setSessions(data);
+                setSessions(Array.isArray(data) ? data : []);
             }
         } catch (e) {
             console.error("Failed to fetch sessions", e);
@@ -234,7 +234,7 @@ export default function ProfileSourcingChatPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setJobs(data);
+                setJobs(Array.isArray(data) ? data : []);
                 if (data.length > 0) setSelectedJobId(data[0].id);
             }
         } catch (e) {

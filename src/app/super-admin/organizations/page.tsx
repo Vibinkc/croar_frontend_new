@@ -37,7 +37,8 @@ function OrganizationsContent() {
         try {
             const res = await apiClient.get("/api/v1/super-admin/tenants");
             if (res.ok) {
-                setOrganizations(await res.json());
+                const data = await res.json();
+                setOrganizations(Array.isArray(data) ? data : []);
             }
         } catch (e) {
             console.error("Failed to fetch organizations", e);

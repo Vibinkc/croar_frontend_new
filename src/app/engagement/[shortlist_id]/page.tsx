@@ -108,7 +108,7 @@ export default function CandidateEngagementPage() {
         );
     }
 
-    if (!shortlist) {
+    if (!shortlist || !shortlist.profile) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
                 <div className="max-w-md w-full bg-white p-8 rounded-3xl border border-slate-100 shadow-xl text-center">

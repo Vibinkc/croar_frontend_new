@@ -25,7 +25,11 @@ export default function AnalysisResultPage() {
     useEffect(() => {
         const storedResults = localStorage.getItem(`interview_results_${id}`);
         if (storedResults) {
-            analyzeResults(JSON.parse(storedResults));
+            try {
+                analyzeResults(JSON.parse(storedResults));
+            } catch {
+                router.push("/practice/automated-video-interviews"); // Corrupt results
+            }
         } else if (!storedResults) {
             router.push("/practice/automated-video-interviews"); // No results found
         }

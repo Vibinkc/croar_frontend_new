@@ -48,7 +48,7 @@ export default function GlobalUsersPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setUsers(data);
+                setUsers(Array.isArray(data) ? data : []);
             }
         } catch (e) {
             console.error("Failed to fetch users", e);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use, useRef } from "react";
+import { useEffect, useState, use, useRef, useCallback } from "react";
 import { apiClient } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import Editor from "@monaco-editor/react";
