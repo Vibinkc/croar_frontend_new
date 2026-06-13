@@ -4,6 +4,16 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
+import { useCachedFetch } from "@/hooks/useCachedFetch";
+
+const DEFAULT_STATS: Stats = {
+    active_jobs: 0,
+    total_candidates: 0,
+    total_applications: 0,
+    interviews_scheduled: 0,
+    agent_name: "COMMANDER",
+    high_value_matches: 0,
+};
 
 interface Stats {
     active_jobs: number;
@@ -17,44 +27,21 @@ interface Stats {
 export default function EnterpriseDashboard() {
     const { user, token, role, canAccess, isLoading: isAuthLoading } = useAuth();
     const [greeting, setGreeting] = useState("");
-    const [stats, setStats] = useState<Stats>({
-        active_jobs: 0,
-        total_candidates: 0,
-        total_applications: 0,
-        interviews_scheduled: 0,
-        agent_name: "COMMANDER",
-        high_value_matches: 0
-    });
-    const [isLoading, setIsLoading] = useState(true);
+
+    // Cached: revisiting the dashboard shows the last stats INSTANTLY, then refreshes
+    // in the background instead of blocking on a fresh fetch every time.
+    const { data: statsData, isLoading } = useCachedFetch<Stats>(
+        token ? `${BACKEND_URL}/api/v1/enterprise/dashboard/stats` : null,
+        { token },
+    );
+    const stats = statsData ?? DEFAULT_STATS;
 
     useEffect(() => {
         const hour = new Date().getHours();
         if (hour < 12) setGreeting("Good Morning");
         else if (hour < 18) setGreeting("Good Afternoon");
         else setGreeting("Good Evening");
-
-        if (token) {
-            fetchStats();
-        }
-    }, [token]);
-
-    const fetchStats = async () => {
-        try {
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/dashboard/stats`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setStats(data);
-            }
-        } catch (error) {
-            console.error("Error fetching stats:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    }, []);
 
     const modules = [
         {

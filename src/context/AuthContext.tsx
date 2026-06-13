@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import { clearFetchCache } from "@/hooks/useCachedFetch";
 
 interface AuthContextType {
     accessToken: string | null;
@@ -163,6 +164,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const currentSso = ssoProvider;
         
         Cookies.remove("auth_");
+        clearFetchCache(); // drop cached API responses so the next user can't see them
         setAccessToken(null);
         setRole(null);
         setUser(null);
