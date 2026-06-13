@@ -181,17 +181,34 @@ export default function ProfileSourcingChatPage() {
 
     const saveSession = async (messages: any[], title: string) => {
         if (!token) return;
+        // Strip heavy fields (the full scraped HTML in raw_data) from stored results.
+        // Otherwise each saved session balloons to multiple MB (rejected by nginx and,
+        // as it grows, MongoDB's 16MB document limit) — which silently broke history.
+        const slimMessages = messages.map((m: any) => {
+            if (Array.isArray(m?.results)) {
+                return {
+                    ...m,
+                    results: m.results.map((r: any) => {
+                        if (!r || typeof r !== "object") return r;
+                        const { raw_data, html, ...rest } = r;
+                        void raw_data; void html;
+                        return rest;
+                    }),
+                };
+            }
+            return m;
+        });
         try {
             const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/sessions`, {
                 method: "POST",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     session_id: currentSessionId,
                     title: title,
-                    messages: messages
+                    messages: slimMessages
                 })
             });
             if (res.ok) {
