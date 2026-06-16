@@ -60,7 +60,9 @@ interface FormState {
 
 interface Template {
   id: string;
-  name: string;
+  // Interview templates expose `title`; other template types use `name`.
+  name?: string;
+  title?: string;
 }
 
 interface AutomationNodeModalProps {
@@ -675,7 +677,7 @@ export default function AutomationNodeModal({
                                </div>
                               <select value={form.interview_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, interview_template_id: e.target.value }))} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 bg-white">
                                 <option value="" className="text-slate-900 bg-white">Select AI Template</option>
-                                {interviewTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
+                                {interviewTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.title || t.name || "Untitled template"}</option>)}
                               </select>
                             </div>
                           )}

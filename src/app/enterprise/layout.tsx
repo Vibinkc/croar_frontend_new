@@ -49,6 +49,7 @@ export default function EnterprisePortalLayout({
             // 3. Granular Route Guard
             // Define mapping of route prefixes to required permissions
             const routePermissions: Record<string, string> = {
+                "/enterprise/croar-pilot": "jobs:read",
                 "/enterprise/jobs": "jobs:read",
                 "/enterprise/candidates": "candidates:read",
                 "/enterprise/communication": "communications:read",
@@ -100,6 +101,7 @@ export default function EnterprisePortalLayout({
             title: "Hiring Hub",
             items: [
                 { label: "Dashboard", icon: "grid_view", path: "/enterprise/dashboard", permission: "organization:read" },
+                { label: "Croar Pilot", icon: "smart_toy", path: "/enterprise/croar-pilot", permission: "jobs:read" },
                 { label: "Jobs", icon: "business_center", path: "/enterprise/jobs", permission: "jobs:read" },
                 { label: "Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
                 { label: "Mail", icon: "alternate_email", path: "/enterprise/communication", permission: "communications:read" },
