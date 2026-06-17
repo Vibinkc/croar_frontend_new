@@ -9,6 +9,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 interface Message {
     role: "user" | "agent";
     content: string;
+    action?: PilotAction;
 }
 
 interface SessionMeta {
@@ -318,6 +319,169 @@ function PilotSetupForm({
     );
 }
 
+interface SourcedCandidate {
+    full_name?: string;
+    headline?: string;
+    platform?: string;
+    location?: string;
+    profile_url?: string;
+    email?: string | null;
+}
+
+interface PilotAction {
+    ui?: string;
+    job_id?: string;
+    profiles?: SourcedCandidate[];
+}
+
+// The candidates are already searched server-side (by the source_candidates tool) and arrive on
+// the chat response — this just renders them as a selectable list and sends invites.
+function CandidatePicker({
+    jobId,
+    candidates,
+    token,
+}: {
+    jobId?: string;
+    candidates: SourcedCandidate[];
+    token: string | null;
+}) {
+    const [selected, setSelected] = useState<Set<number>>(
+        () => new Set(candidates.map((c, i) => (c.email ? i : -1)).filter((i) => i >= 0)),
+    );
+    const [sending, setSending] = useState(false);
+    const [result, setResult] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const toggle = (i: number) =>
+        setSelected((s) => {
+            const n = new Set(s);
+            if (n.has(i)) n.delete(i);
+            else n.add(i);
+            return n;
+        });
+    const allSelected = candidates.length > 0 && selected.size === candidates.length;
+    const toggleAll = () => setSelected(allSelected ? new Set() : new Set(candidates.map((_, i) => i)));
+
+    const send = async () => {
+        if (!token || selected.size === 0 || !jobId) return;
+        setSending(true);
+        setError(null);
+        try {
+            const chosen = [...selected].map((i) => ({
+                name: candidates[i].full_name,
+                email: candidates[i].email,
+            }));
+            const res = await fetch(`${API_BASE_URL}/api/v1/agents/pilot/invite`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ job_id: jobId, candidates: chosen }),
+            });
+            const d = await res.json().catch(() => ({}));
+            if (res.ok && d.status === "success") {
+                setResult(
+                    d.test_mode
+                        ? `✓ Sent ${d.sent} test invite${d.sent === 1 ? "" : "s"} to ${d.test_email} (testing — real candidates were not emailed).`
+                        : `✓ Sent ${d.sent} invite${d.sent === 1 ? "" : "s"}.${d.failed ? ` ${d.failed} failed.` : ""}`,
+                );
+            } else {
+                setError(d.detail || "Failed to send invites.");
+            }
+        } catch {
+            setError("Failed to send invites.");
+        } finally {
+            setSending(false);
+        }
+    };
+
+    if (result) {
+        return (
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 text-sm font-bold text-emerald-700">
+                {result}
+            </div>
+        );
+    }
+
+    return (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+            <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-black uppercase tracking-widest text-indigo-600">Candidates</p>
+                {candidates.length > 0 && (
+                    <button onClick={toggleAll} className="text-[11px] font-bold text-indigo-600 hover:underline">
+                        {allSelected ? "Clear all" : "Select all"}
+                    </button>
+                )}
+            </div>
+
+            {candidates.length === 0 ? (
+                <p className="text-sm text-slate-500 py-4 text-center">No candidates found for this role.</p>
+            ) : (
+                <>
+                    <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
+                        {candidates.map((c, i) => (
+                            <label
+                                key={i}
+                                className={`flex items-start gap-3 p-2.5 rounded-xl border cursor-pointer transition-all ${
+                                    selected.has(i) ? "border-indigo-400 bg-white" : "border-slate-200 bg-white/60 hover:border-indigo-200"
+                                }`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={selected.has(i)}
+                                    onChange={() => toggle(i)}
+                                    className="mt-1 accent-indigo-600"
+                                />
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-bold text-slate-800 text-sm truncate">{c.full_name || "Unknown"}</span>
+                                        {c.platform && (
+                                            <span className="text-[9px] font-black uppercase tracking-wide text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                                                {c.platform}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {c.headline && <p className="text-xs text-slate-500 truncate">{c.headline}</p>}
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        {c.email ? (
+                                            <span className="text-[11px] text-emerald-600 font-semibold truncate">{c.email}</span>
+                                        ) : (
+                                            <span className="text-[11px] text-slate-400">no email found</span>
+                                        )}
+                                        {c.profile_url && (
+                                            <a
+                                                href={c.profile_url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="text-[11px] text-indigo-600 hover:underline"
+                                            >
+                                                profile ↗
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                            </label>
+                        ))}
+                    </div>
+
+                    {error && <p className="text-xs text-rose-500 mt-2">{error}</p>}
+
+                    <button
+                        onClick={send}
+                        disabled={sending || selected.size === 0}
+                        className="mt-4 w-full py-3 rounded-xl bg-indigo-600 text-white text-sm font-black hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                        <span className="material-symbols-rounded text-lg">mark_email_read</span>
+                        {sending ? "Sending…" : `Send invites to ${selected.size} selected`}
+                    </button>
+                    <p className="mt-2 text-[10px] text-center text-amber-600 font-semibold">
+                        🧪 Testing — invites are redirected to vibi@appxcess.com, not real candidates.
+                    </p>
+                </>
+            )}
+        </div>
+    );
+}
+
 export default function CroarPilotPage() {
     const { token } = useAuth();
     const [threadId, setThreadId] = useState(makeThreadId());
@@ -398,7 +562,9 @@ export default function CroarPilotPage() {
             const reply = res.ok
                 ? d.response || "Done."
                 : `Pilot error: ${d.detail || "could not reach the agent."}`;
-            const finalMsgs: Message[] = [...withUser, { role: "agent", content: reply }];
+            const action: PilotAction | undefined =
+                res.ok && d.pilot_action?.ui === "candidate_picker" ? d.pilot_action : undefined;
+            const finalMsgs: Message[] = [...withUser, { role: "agent", content: reply, action }];
             setMessages(finalMsgs);
             saveSession(finalMsgs, titleRef.current || text.slice(0, 42));
         } catch {
@@ -570,6 +736,10 @@ export default function CroarPilotPage() {
                             }
                             if (!text) text = "Great — fill in the quick setup form below and I'll build the whole pipeline.";
                         }
+
+                        // The agent's source_candidates tool result arrives on msg.action → picker.
+                        const sourceAction = msg.action?.ui === "candidate_picker" ? msg.action : undefined;
+
                         return (
                             <div key={idx} className="space-y-3">
                                 <div className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
@@ -617,6 +787,16 @@ export default function CroarPilotPage() {
                                         <span className="material-symbols-rounded text-base">check_circle</span>
                                         Details submitted
                                     </p>
+                                )}
+
+                                {sourceAction && (
+                                    <div className="pl-11 max-w-xl">
+                                        <CandidatePicker
+                                            jobId={sourceAction.job_id}
+                                            candidates={sourceAction.profiles || []}
+                                            token={token}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         );
