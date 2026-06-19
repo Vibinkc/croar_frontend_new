@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import CommandPalette from "@/components/enterprise/CommandPalette";
 
 export default function EnterprisePortalLayout({
     children,
@@ -16,6 +17,7 @@ export default function EnterprisePortalLayout({
     const pathname = usePathname();
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isPaletteOpen, setIsPaletteOpen] = useState(false);
 
     // List of allowed roles for the Enterprise Portal
     const ALLOWED_ENTERPRISE_ROLES = ["ADMIN", "RECRUITER", "SUPER_ADMIN", "CONSULTANCY", "RESTRICTED_ACCESS"];
@@ -149,11 +151,8 @@ export default function EnterprisePortalLayout({
                 { label: "Team", icon: "groups", path: "/enterprise/team", permission: "organization:moderate" },
                 { label: "Permissions", icon: "security", path: "/enterprise/settings/roles", permission: "organization:moderate" },
                 { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
-                { label: "Email Templates", icon: "mail", path: "/enterprise/settings/templates", permission: "communications:read" },
-                { label: "Assessment Templates", icon: "quiz", path: "/enterprise/settings/assessments", permission: "assessments:read" },
-                { label: "Interview Templates", icon: "psychology", path: "/enterprise/settings/interview-templates", permission: "interviews:read" },
+                { label: "Templates", icon: "dashboard_customize", path: "/enterprise/templates", permission: "organization:read" },
                 { label: "Onboarding Hub", icon: "person_add", path: "/enterprise/onboarding", permission: "onboarding:read" },
-                { label: "Onboarding Templates", icon: "rule", path: "/enterprise/settings/onboarding-templates", permission: "onboarding:read" },
             ]
         }
     ];
@@ -165,6 +164,11 @@ export default function EnterprisePortalLayout({
             items: group.items.filter(item => canAccess(item.permission))
         }))
         .filter(group => group.items.length > 0);
+
+    // Flattened list for the ⌘K command palette.
+    const commandItems = accessibleNavGroups.flatMap(g =>
+        g.items.map(i => ({ label: i.label, icon: i.icon, path: i.path, group: g.title }))
+    );
 
     const navLinkClass = (path: string) => {
         // Collect all possible navigation paths to find the most specific match
@@ -234,6 +238,21 @@ export default function EnterprisePortalLayout({
                         </div>
                     </div>
 
+                    {/* Quick search (opens the ⌘K command palette) */}
+                    <button
+                        onClick={() => setIsPaletteOpen(true)}
+                        title="Search (Ctrl/Cmd + K)"
+                        className={`flex items-center gap-2 mb-4 mx-1 px-3 py-2 rounded-lg border border-slate-100 bg-slate-50/60 text-slate-400 hover:border-indigo-200 hover:text-indigo-600 transition-all ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
+                    >
+                        <span className="material-symbols-rounded text-xl">search</span>
+                        {!isSidebarCollapsed && (
+                            <>
+                                <span className="text-[10px] font-bold flex-1 text-left">Search…</span>
+                                <kbd className="text-[9px] font-bold bg-white border border-slate-200 rounded px-1 py-0.5">⌘K</kbd>
+                            </>
+                        )}
+                    </button>
+
                     {/* Navigation Groups */}
                     <nav className="space-y-4 px-1">
                         {accessibleNavGroups.map((group) => (
@@ -297,6 +316,9 @@ export default function EnterprisePortalLayout({
                     {children}
                 </main>
             </div>
+
+            {/* Global command palette (⌘K) — jump to any accessible page */}
+            <CommandPalette open={isPaletteOpen} onOpenChange={setIsPaletteOpen} items={commandItems} />
         </div>
     );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useAuth } from "@/context/AuthContext";
@@ -331,7 +332,62 @@ interface SourcedCandidate {
 interface PilotAction {
     ui?: string;
     job_id?: string;
+    role?: string;
+    armed?: string[];
     profiles?: SourcedCandidate[];
+}
+
+// Actionable result card shown after the agent builds a pipeline.
+function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource: () => void }) {
+    return (
+        <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50/60 to-white p-5">
+            <div className="flex items-center gap-3 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0">
+                    <span className="material-symbols-rounded">check_circle</span>
+                </div>
+                <div className="min-w-0">
+                    <p className="text-sm font-black text-slate-900 truncate">
+                        Pipeline ready{action.role ? ` · ${action.role}` : ""}
+                    </p>
+                    <p className="text-[11px] text-slate-500 font-semibold">Live job created and the full pipeline armed.</p>
+                </div>
+            </div>
+
+            {action.armed && action.armed.length > 0 && (
+                <ul className="space-y-1.5 mb-4">
+                    {action.armed.map((a, i) => (
+                        <li key={i} className="flex items-start gap-2 text-[13px] text-slate-700">
+                            <span className="material-symbols-rounded text-emerald-500 text-base mt-0.5">check</span>
+                            <span>{a}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+
+            <div className="flex flex-wrap gap-2">
+                {action.job_id && (
+                    <Link
+                        href={`/enterprise/jobs/${action.job_id}`}
+                        className="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5"
+                    >
+                        <span className="material-symbols-rounded text-base">business_center</span> View job
+                    </Link>
+                )}
+                <button
+                    onClick={onSource}
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5"
+                >
+                    <span className="material-symbols-rounded text-base">person_search</span> Source candidates
+                </button>
+                <Link
+                    href="/enterprise/candidates/kanban"
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5"
+                >
+                    <span className="material-symbols-rounded text-base">filter_list</span> View pipeline
+                </Link>
+            </div>
+        </div>
+    );
 }
 
 // The candidates are already searched server-side (by the source_candidates tool) and arrive on
@@ -563,7 +619,9 @@ export default function CroarPilotPage() {
                 ? d.response || "Done."
                 : `Pilot error: ${d.detail || "could not reach the agent."}`;
             const action: PilotAction | undefined =
-                res.ok && d.pilot_action?.ui === "candidate_picker" ? d.pilot_action : undefined;
+                res.ok && ["candidate_picker", "pipeline_built"].includes(d.pilot_action?.ui)
+                    ? d.pilot_action
+                    : undefined;
             const finalMsgs: Message[] = [...withUser, { role: "agent", content: reply, action }];
             setMessages(finalMsgs);
             saveSession(finalMsgs, titleRef.current || text.slice(0, 42));
@@ -737,8 +795,9 @@ export default function CroarPilotPage() {
                             if (!text) text = "Great — fill in the quick setup form below and I'll build the whole pipeline.";
                         }
 
-                        // The agent's source_candidates tool result arrives on msg.action → picker.
+                        // The agent's tool result arrives on msg.action → picker or built-pipeline card.
                         const sourceAction = msg.action?.ui === "candidate_picker" ? msg.action : undefined;
+                        const builtAction = msg.action?.ui === "pipeline_built" ? msg.action : undefined;
 
                         return (
                             <div key={idx} className="space-y-3">
@@ -795,6 +854,17 @@ export default function CroarPilotPage() {
                                             jobId={sourceAction.job_id}
                                             candidates={sourceAction.profiles || []}
                                             token={token}
+                                        />
+                                    </div>
+                                )}
+
+                                {builtAction && (
+                                    <div className="pl-11 max-w-xl">
+                                        <PipelineBuiltCard
+                                            action={builtAction}
+                                            onSource={() =>
+                                                send(`Source 10 candidates for this role (job ${builtAction.job_id}).`)
+                                            }
                                         />
                                     </div>
                                 )}

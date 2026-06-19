@@ -825,7 +825,25 @@ export default function KanbanBoardPage() {
 
             {/* Board */}
             <div className="flex-1 overflow-x-auto overflow-y-hidden bg-white p-6">
-                <div 
+                {!isLoading && applications.length === 0 && stages.length > 0 && (
+                    <div className="mb-4 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-5 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+                        <div>
+                            <p className="text-sm font-black text-slate-900">No candidates in this pipeline yet</p>
+                            <p className="text-xs text-slate-500 font-semibold mt-0.5">Source candidates with AI, or share the job&apos;s apply link so people can apply.</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2 shrink-0">
+                            <Link href="/enterprise/sourcing/chat" className="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5">
+                                <span className="material-symbols-rounded text-base">person_search</span>
+                                Source candidates
+                            </Link>
+                            <Link href="/enterprise/croar-pilot" className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5">
+                                <span className="material-symbols-rounded text-base">smart_toy</span>
+                                Ask Croar Pilot
+                            </Link>
+                        </div>
+                    </div>
+                )}
+                <div
                     className={`flex h-full gap-2 ${stages.length <= 6 ? 'w-full' : 'min-w-max'}`}
                     style={{ 
                         display: 'grid', 

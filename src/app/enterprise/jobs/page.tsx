@@ -352,9 +352,25 @@ export default function EnterpriseJobsPage() {
                         <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
                             <Briefcase className="w-10 h-10 text-slate-300" />
                         </div>
-                        <h3 className="text-xl font-black text-slate-900 mb-2">No jobs available</h3>
-                        <p className="text-slate-500 max-w-xs mx-auto mb-8">Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
-                        <button onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); }} className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm">Clear All Filters</button>
+                        {jobs.length === 0 ? (
+                            <>
+                                <h3 className="text-xl font-black text-slate-900 mb-2">No jobs yet</h3>
+                                <p className="text-slate-500 max-w-xs mx-auto mb-8">Create your first job to start hiring — let AI set up the whole pipeline, or post one manually.</p>
+                                <div className="flex flex-wrap gap-3 justify-center">
+                                    <Link href="/enterprise/croar-pilot" className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all flex items-center gap-2">
+                                        <span className="material-symbols-rounded text-lg">smart_toy</span>
+                                        Hire with AI
+                                    </Link>
+                                    <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all">Post a job</Link>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <h3 className="text-xl font-black text-slate-900 mb-2">No jobs match your filters</h3>
+                                <p className="text-slate-500 max-w-xs mx-auto mb-8">Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
+                                <button onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); }} className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm">Clear All Filters</button>
+                            </>
+                        )}
                     </div>
                 ) : (
                     <table className="w-full border-collapse">

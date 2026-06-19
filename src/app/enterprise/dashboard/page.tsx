@@ -38,9 +38,9 @@ export default function EnterpriseDashboard() {
 
     useEffect(() => {
         const hour = new Date().getHours();
-        if (hour < 12) setGreeting("Good Morning");
-        else if (hour < 18) setGreeting("Good Afternoon");
-        else setGreeting("Good Evening");
+        const g = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setGreeting(g);
     }, []);
 
     const modules = [
@@ -122,6 +122,12 @@ export default function EnterpriseDashboard() {
                     </div>
 
                     <div className="flex flex-wrap gap-3">
+                        {canAccess("jobs:read") && (
+                            <Link href="/enterprise/croar-pilot" className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-xl text-[10px] font-black hover:from-indigo-400 hover:to-violet-400 transition-all shadow-xl shadow-indigo-900/30 active:scale-95 flex items-center gap-2">
+                                <span className="material-symbols-rounded text-lg">smart_toy</span>
+                                Hire with AI
+                            </Link>
+                        )}
                         {canAccess("jobs:create") && (
                             <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-white text-slate-900 rounded-xl text-[10px] font-black   hover:bg-indigo-400 hover:text-white transition-all shadow-xl active:scale-95 flex items-center gap-2">
                                 <span className="material-symbols-rounded text-lg">add_box</span>
@@ -168,91 +174,151 @@ export default function EnterpriseDashboard() {
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] -mr-64 -mt-64"></div>
             </section>
 
+            {/* Getting Started checklist — guides a new user; hides once set up */}
+            {!isLoading && !(stats.active_jobs > 0 && stats.total_candidates > 0) && (
+                <section className="bg-white border border-indigo-100 rounded-2xl p-6 shadow-sm">
+                    <div className="flex items-center gap-2 mb-1">
+                        <span className="material-symbols-rounded text-indigo-600">rocket_launch</span>
+                        <h3 className="text-sm font-black text-slate-900">Getting started</h3>
+                    </div>
+                    <p className="text-xs text-slate-500 font-semibold mb-5">A few steps to get your first hire moving.</p>
+                    <div className="grid gap-3 md:grid-cols-3">
+                        {[
+                            {
+                                done: stats.active_jobs > 0,
+                                title: "Create your first job",
+                                desc: "Describe the role and we'll set it up.",
+                                actions: [
+                                    { label: "Hire with AI", href: "/enterprise/croar-pilot", primary: true, perm: "jobs:read" },
+                                    { label: "Post manually", href: "/enterprise/jobs/create", primary: false, perm: "jobs:create" },
+                                ],
+                            },
+                            {
+                                done: stats.total_candidates > 0,
+                                title: "Get candidates",
+                                desc: "Source talent or share your apply link.",
+                                actions: [
+                                    { label: "Source candidates", href: "/enterprise/sourcing/chat", primary: true, perm: "candidates:read" },
+                                    { label: "View jobs", href: "/enterprise/jobs", primary: false, perm: "jobs:read" },
+                                ],
+                            },
+                            {
+                                done: stats.total_applications > 0,
+                                title: "Review your pipeline",
+                                desc: "Screen, assess and interview applicants.",
+                                actions: [
+                                    { label: "Open pipeline", href: "/enterprise/candidates/kanban", primary: true, perm: "candidates:read" },
+                                ],
+                            },
+                        ].map((step, i) => (
+                            <div key={i} className={`rounded-xl border p-4 ${step.done ? "border-emerald-200 bg-emerald-50/40" : "border-slate-200 bg-slate-50/50"}`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black ${step.done ? "bg-emerald-500 text-white" : "bg-indigo-100 text-indigo-600"}`}>
+                                        {step.done ? "✓" : i + 1}
+                                    </span>
+                                    <span className="text-xs font-black text-slate-800">{step.title}</span>
+                                </div>
+                                <p className="text-[11px] text-slate-500 font-semibold mb-3 leading-relaxed">{step.desc}</p>
+                                {!step.done && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {step.actions.filter((a) => canAccess(a.perm)).map((a) => (
+                                            <Link key={a.label} href={a.href} className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all ${a.primary ? "bg-indigo-600 text-white hover:bg-indigo-700" : "bg-white border border-slate-200 text-slate-600 hover:border-indigo-300"}`}>
+                                                {a.label}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
             {/* Tactical Grid Modules */}
             <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
                 {/* Core Modules List */}
                 <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-5">
                     {modules.filter(m => canAccess(m.permission)).map((module) => (
                         <Link href={module.path} key={module.title} className="group">
-                            <div className={`relative ${getColorClasses(module.color).bg} border ${getColorClasses(module.color).border} p-5 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden flex flex-col justify-between`}>
-                                <div>
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className={`w-10 h-10 rounded-xl bg-white border border-slate-50 ${getColorClasses(module.color).text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 shadow-sm`}>
-                                            <span className="material-symbols-rounded text-xl">{module.icon}</span>
-                                        </div>
-                                        <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black   bg-white/50 border border-slate-50 text-slate-400 group-hover:bg-white group-hover:text-[#7C3AED] transition-all`}>
-                                            {module.badge}
-                                        </span>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <h3 className="text-sm font-black text-slate-900  tracking-tighter group-hover:text-[#7C3AED] transition-colors">
-                                            {module.title}
-                                        </h3>
-                                        <p className="text-[11px] text-slate-500 font-bold leading-relaxed  opacity-70 mb-6">
-                                            {module.description}
-                                        </p>
-                                    </div>
+                            <div className={`relative ${getColorClasses(module.color).bg} border ${getColorClasses(module.color).border} p-5 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden flex flex-col`}>
+                                <div className={`w-11 h-11 rounded-xl bg-white border border-slate-50 ${getColorClasses(module.color).text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 shadow-sm mb-4`}>
+                                    <span className="material-symbols-rounded text-xl">{module.icon}</span>
                                 </div>
-
-                                <div className="flex flex-wrap gap-1.5 pt-4 border-t border-slate-100/50 mt-4">
-                                    {module.features.map((feature, idx) => (
-                                        <span key={idx} className="px-2.5 py-1 bg-white border border-slate-50 text-slate-400 rounded-lg text-[8px] font-black  tracking-tight group-hover:border-indigo-100/50 transition-all">
-                                            {feature}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-white border border-slate-100/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all scale-50 group-hover:scale-100">
-                                    <span className="material-symbols-rounded text-[#7C3AED]">arrow_forward</span>
+                                <h3 className="text-sm font-black text-slate-900 tracking-tight group-hover:text-[#7C3AED] transition-colors">
+                                    {module.title}
+                                </h3>
+                                <p className="text-[11px] text-slate-500 font-bold leading-relaxed opacity-70 mt-1 mb-4 flex-1">
+                                    {module.description}
+                                </p>
+                                <div className={`flex items-center gap-1 text-[10px] font-black ${getColorClasses(module.color).text}`}>
+                                    Open
+                                    <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                 </div>
                             </div>
                         </Link>
                     ))}
                 </div>
 
-                {/* Strategic Side-Ops */}
-                <div className="lg:col-span-4 space-y-5">
+                {/* Needs your attention — real, clickable items from your live stats */}
+                <div className="lg:col-span-4">
                     <div className="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm h-full flex flex-col">
-                        <div className="flex items-center justify-between mb-6">
-                            <span className="text-[10px] font-black text-slate-900  ">Hiring Performance</span>
+                        <div className="flex items-center justify-between mb-5">
+                            <span className="text-sm font-black text-slate-900">Needs your attention</span>
                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse border-4 border-emerald-50"></div>
                         </div>
 
-                        <div className="flex-1 flex flex-col items-center justify-center py-6">
-                            <div className="relative w-40 h-40 group">
-                                <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible drop-shadow-2xl">
-                                    {[0.2, 0.4, 0.6, 0.8, 1].map((step, i) => (
-                                        <circle key={i} cx="50" cy="50" r={50 * step} className="fill-none stroke-slate-50 stroke-[0.5]" />
+                        {isLoading ? (
+                            <div className="flex-1 flex items-center justify-center text-slate-300 text-sm py-10">Loading…</div>
+                        ) : (() => {
+                            const items = [
+                                { show: stats.high_value_matches > 0, count: stats.high_value_matches, label: "recommended candidates to review", icon: "stars", color: "text-indigo-600 bg-indigo-50" },
+                                { show: stats.interviews_scheduled > 0, count: stats.interviews_scheduled, label: "interviews scheduled", icon: "videocam", color: "text-amber-600 bg-amber-50" },
+                                { show: stats.total_applications > 0, count: stats.total_applications, label: "applications in your pipeline", icon: "conversion_path", color: "text-emerald-600 bg-emerald-50" },
+                            ].filter((i) => i.show && canAccess("candidates:read"));
+
+                            if (items.length === 0) {
+                                return (
+                                    <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
+                                        <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center mb-3">
+                                            <span className="material-symbols-rounded text-2xl">task_alt</span>
+                                        </div>
+                                        <p className="text-sm font-bold text-slate-700">You&apos;re all caught up</p>
+                                        <p className="text-xs text-slate-400 font-semibold mt-1">New candidates and interviews will show up here.</p>
+                                    </div>
+                                );
+                            }
+                            return (
+                                <div className="space-y-2.5 flex-1">
+                                    {items.map((i) => (
+                                        <Link key={i.label} href="/enterprise/candidates/kanban" className="flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-slate-50/50 transition-all group">
+                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${i.color}`}>
+                                                <span className="material-symbols-rounded text-xl">{i.icon}</span>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <span className="text-lg font-black text-slate-900 leading-none">{i.count}</span>
+                                                <p className="text-[11px] text-slate-500 font-semibold leading-tight mt-0.5">{i.label}</p>
+                                            </div>
+                                            <span className="material-symbols-rounded text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all">chevron_right</span>
+                                        </Link>
                                     ))}
-                                    <line x1="50" y1="50" x2="50" y2="0" className="stroke-slate-50 stroke-[0.5]" />
-                                    <line x1="50" y1="50" x2="100" y2="50" className="stroke-slate-50 stroke-[0.5]" />
-                                    <line x1="50" y1="50" x2="50" y2="100" className="stroke-slate-50 stroke-[0.5]" />
-                                    <line x1="50" y1="50" x2="0" y2="50" className="stroke-slate-50 stroke-[0.5]" />
+                                </div>
+                            );
+                        })()}
 
-                                    <polygon
-                                        points="50,15 85,40 60,80 20,50"
-                                        className="fill-[#7C3AED]/10 stroke-[#7C3AED] stroke-[3] transition-all duration-1000 group-hover:fill-[#7C3AED]/20"
-                                    />
-                                    <circle cx="50" cy="15" r="2" className="fill-[#7C3AED]" />
-                                    <circle cx="85" cy="40" r="2" className="fill-indigo-400" />
-                                    <circle cx="60" cy="80" r="2" className="fill-emerald-400" />
-                                    <circle cx="20" cy="50" r="2" className="fill-rose-400" />
-                                </svg>
-
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 text-[8px] font-black text-slate-400  ">Velocity</div>
-                                <div className="absolute top-1/2 right-0 translate-x-10 -translate-y-1/2 text-[8px] font-black text-slate-400  ">Accuracy</div>
-                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-6 text-[8px] font-black text-slate-400  ">Volume</div>
-                                <div className="absolute top-1/2 left-0 -translate-x-10 -translate-y-1/2 text-[8px] font-black text-slate-400  ">Precision</div>
-                            </div>
-                        </div>
-
-                        <div className="mt-6">
-                            <div className="p-5 rounded-xl bg-slate-50 border border-slate-100 relative group overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-[#7C3AED]"></div>
-                                <p className="text-[10px] font-bold text-slate-500 leading-relaxed  tracking-tight">
-                                    AI Suggestion: Hiring speed is <span className="text-[#7C3AED]">14% faster</span> than last month.
-                                </p>
+                        {/* Quick actions */}
+                        <div className="mt-5 pt-4 border-t border-slate-100">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Quick actions</p>
+                            <div className="flex flex-wrap gap-2">
+                                {canAccess("jobs:read") && (
+                                    <Link href="/enterprise/croar-pilot" className="px-3 py-2 rounded-xl bg-indigo-600 text-white text-[11px] font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5">
+                                        <span className="material-symbols-rounded text-base">smart_toy</span> Hire with AI
+                                    </Link>
+                                )}
+                                {canAccess("candidates:read") && (
+                                    <Link href="/enterprise/sourcing/chat" className="px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 text-[11px] font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5">
+                                        <span className="material-symbols-rounded text-base">person_search</span> Source
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </div>
