@@ -26,7 +26,7 @@ export default function InterviewsProductPage() {
                             className="inline-flex mx-auto items-center gap-2 mb-2 border border-indigo-400/30 bg-indigo-500/10 px-3 py-1 rounded-full text-indigo-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-                            AI Powered Simulation
+                            {"AI Powered Simulation"}
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}

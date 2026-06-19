@@ -131,7 +131,7 @@ export default function EmailTemplatesPage() {
                 if (data.content) {
                     let cleanedContent = data.content;
                     if (cleanedContent.includes("```")) {
-                        cleanedContent = cleanedContent.replace(/```json/g, "").replace(/```/g, "");
+                        cleanedContent = cleanedContent.replaceAll("```json", "").replaceAll("```", "");
                     }
                     try {
                         parsed = JSON.parse(cleanedContent);
@@ -254,7 +254,7 @@ export default function EmailTemplatesPage() {
                             className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
-                            New Template
+                            {"New Template"}
                         </button>
                     )}
                     <button 
@@ -491,8 +491,9 @@ export default function EmailTemplatesPage() {
                                 {isAiMode ? (
                                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                                         <div className="space-y-3">
-                                            <label className="text-xs font-bold text-slate-500 ml-1">Template Purpose</label>
+                                            <label htmlFor="tpl-ai-purpose" className="text-xs font-bold text-slate-500 ml-1">Template Purpose</label>
                                             <textarea
+                                                id="tpl-ai-purpose"
                                                 value={aiPurpose}
                                                 onChange={e => setAiPurpose(e.target.value)}
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-6 text-sm font-medium text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner h-40 leading-relaxed"
@@ -515,8 +516,9 @@ export default function EmailTemplatesPage() {
                                         <form id="template-form" onSubmit={e => { e.preventDefault(); handleSave(); }} className="space-y-10">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                                 <div className="space-y-2 group">
-                                                    <label className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Template Name</label>
+                                                    <label htmlFor="tpl-name" className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Template Name</label>
                                                     <input
+                                                        id="tpl-name"
                                                         type="text"
                                                         value={name}
                                                         onChange={e => setName(e.target.value)}
@@ -528,8 +530,9 @@ export default function EmailTemplatesPage() {
                                                 </div>
 
                                                 <div className="space-y-2 group">
-                                                    <label className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Category</label>
+                                                    <label htmlFor="tpl-category" className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Category</label>
                                                     <select
+                                                        id="tpl-category"
                                                         value={category}
                                                         onChange={e => setCategory(e.target.value)}
                                                         className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-sm font-bold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all shadow-inner cursor-pointer"
@@ -544,8 +547,9 @@ export default function EmailTemplatesPage() {
                                             </div>
  
                                             <div className="space-y-2 group">
-                                                <label className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Email Subject</label>
+                                                <label htmlFor="tpl-subject" className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Email Subject</label>
                                                 <input
+                                                    id="tpl-subject"
                                                     type="text"
                                                     value={subject}
                                                     onChange={e => setSubject(e.target.value)}
@@ -558,7 +562,7 @@ export default function EmailTemplatesPage() {
 
                                             <div className="space-y-2 group">
                                                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-1 pb-2">
-                                                        <label className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors">Email Body Content</label>
+                                                        <label htmlFor="base-editor" className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors">Email Body Content</label>
                                                         <div className="flex items-center gap-3">
                                                             <div className="relative group/insert">
                                                                 <select 

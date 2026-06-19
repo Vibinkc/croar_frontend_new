@@ -84,16 +84,18 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
                             <h2 className="text-xs font-black   mb-6 border-b border-slate-50 pb-4">Add Division</h2>
                             <form onSubmit={handleAddDivision} className="space-y-4">
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400  ">Name</label>
+                                    <label htmlFor="division-name" className="text-[10px] font-black text-slate-400  ">Name</label>
                                     <input
+                                        id="division-name"
                                         className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none"
                                         placeholder="e.g. Arts & Science"
-                                        value={name} onChange={e => { setName(e.target.value); setSlug(e.target.value.toLowerCase().replace(/ /g, '-')); }} required
+                                        value={name} onChange={e => { setName(e.target.value); setSlug(e.target.value.toLowerCase().replaceAll(' ', '-')); }} required
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400  ">Slug</label>
+                                    <label htmlFor="division-slug" className="text-[10px] font-black text-slate-400  ">Slug</label>
                                     <input
+                                        id="division-slug"
                                         className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none"
                                         placeholder="e.g. arts-science"
                                         value={slug} onChange={e => setSlug(e.target.value)} required

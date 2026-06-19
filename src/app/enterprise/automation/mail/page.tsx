@@ -349,7 +349,7 @@ export default function MailAutomationPage() {
                   className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
                 >
                   <span className="material-symbols-rounded text-lg">add</span>
-                  NEW AUTOMATION
+                  {"NEW AUTOMATION"}
                 </button>
               )}
           </div>
@@ -433,7 +433,7 @@ export default function MailAutomationPage() {
               className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-lg text-sm font-bold hover:bg-[#6d28d9] transition-colors"
             >
               <span className="material-symbols-rounded text-base">add</span>
-              Create Automation
+              {"Create Automation"}
             </button>
           )}
         </div>
@@ -490,7 +490,7 @@ export default function MailAutomationPage() {
                         {a.auto_move && (
                           <div className="flex items-center gap-1 text-[9px] font-black text-emerald-600 uppercase">
                             <span className="material-symbols-rounded text-xs">keyboard_double_arrow_right</span>
-                            Auto-Move Active
+                            {"Auto-Move Active"}
                           </div>
                         )}
                       </div>
@@ -531,7 +531,13 @@ export default function MailAutomationPage() {
 
       {/* ── Side Panel (Drawer) ───────────────────────────────────────────────── */}
       <div className={`fixed inset-0 z-[100] transition-opacity duration-300 ${showModal ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onClick={closeModal} />
+        <div
+          role="button"
+          tabIndex={0}
+          className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]"
+          onClick={closeModal}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { closeModal(); } }}
+        />
         <div className={`absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${showModal ? "translate-x-0" : "translate-x-full"}`}>
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 shrink-0">
@@ -555,10 +561,11 @@ export default function MailAutomationPage() {
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
             {/* Job */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="mail-job-requirement" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Job Requirement <span className="text-red-400">*</span>
               </label>
               <select
+                id="mail-job-requirement"
                 value={form.job_requirement_id}
                 onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
                 className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -572,11 +579,12 @@ export default function MailAutomationPage() {
 
             {/* Round */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="mail-hiring-round" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Hiring Round <span className="text-red-400">*</span>
               </label>
               {jobRounds.length > 0 ? (
                 <select
+                  id="mail-hiring-round"
                   onChange={handleRoundSelect}
                   defaultValue=""
                   className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -619,10 +627,11 @@ export default function MailAutomationPage() {
 
             {/* Criteria */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="mail-trigger-criteria" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Trigger Criteria <span className="text-red-400">*</span>
               </label>
               <textarea
+                id="mail-trigger-criteria"
                 rows={4}
                 value={form.criteria}
                 onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
@@ -636,7 +645,7 @@ export default function MailAutomationPage() {
 
             {/* Template */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="mail-email-template" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Email Template <span className="text-red-400">*</span>
               </label>
               {templates.length === 0 ? (
@@ -647,6 +656,7 @@ export default function MailAutomationPage() {
                 </div>
               ) : (
                 <select
+                  id="mail-email-template"
                   value={form.template_id}
                   onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}
                   className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -699,10 +709,11 @@ export default function MailAutomationPage() {
 
               {!form.is_immediate && (
                 <div className="animate-in slide-in-from-top-2 duration-200 px-1">
-                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                  <label htmlFor="mail-scheduled-datetime" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Scheduled Date & Time <span className="text-red-400">*</span>
                   </label>
                   <input
+                    id="mail-scheduled-datetime"
                     type="datetime-local"
                     value={form.send_at}
                     onChange={(e) => setForm((f) => ({ ...f, send_at: e.target.value }))}

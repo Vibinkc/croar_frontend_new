@@ -35,7 +35,7 @@ export default function ResumeProductPage() {
                             className="inline-flex mx-auto items-center gap-2 mb-2 border border-slate-600 bg-slate-800/50 px-3 py-1 rounded-full text-slate-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-yellow-500">warning</span>
-                            75% of Resumes are Rejected by Bots
+                            {"75% of Resumes are Rejected by Bots"}
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}

@@ -11,6 +11,7 @@ interface InterviewRunnerProps {
     currentStep: InterviewStep;
     transcript: { role: 'ai' | 'user'; text: string }[];
     onEnd: () => void;
+    onSendMessage?: (text: string) => void;
     isAiSpeaking: boolean;
     mediaState: {
         stream: MediaStream | null;

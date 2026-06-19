@@ -118,9 +118,9 @@ function JobPortalContent() {
                     </div>
 
                     <div className="hidden md:flex items-center gap-8">
-                        <a href="#" className="text-sm font-bold text-slate-900 hover:text-indigo-600 transition-colors">Jobs</a>
-                        <a href="#" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">About</a>
-                        <a href="#" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Teams</a>
+                        <button type="button" className="text-sm font-bold text-slate-900 hover:text-indigo-600 transition-colors">Jobs</button>
+                        <button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">About</button>
+                        <button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Teams</button>
                         <button className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-xs hover:bg-indigo-600 transition-all">
                             Sign In
                         </button>
@@ -201,7 +201,7 @@ function JobPortalContent() {
                         {jobTypes.map(type => (
                             <button
                                 key={type}
-                                onClick={() => setSelectedType(type)}
+                                onClick={() => setSelectedType(type as string)}
                                 className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${selectedType === type ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100" : "bg-white text-slate-500 border border-slate-100 hover:border-indigo-100"}`}
                             >
                                 {type}
@@ -351,7 +351,7 @@ function JobPortalContent() {
                             <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">Teams</h4>
                             <ul className="space-y-4">
                                 {['Engineering', 'Product', 'Design', 'Marketing'].map(t => (
-                                    <li key={t}><a href="#" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</a></li>
+                                    <li key={t}><button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</button></li>
                                 ))}
                             </ul>
                         </div>
@@ -359,7 +359,7 @@ function JobPortalContent() {
                             <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">Company</h4>
                             <ul className="space-y-4">
                                 {['About Us', 'Culture', 'Benefits', 'FAQ'].map(t => (
-                                    <li key={t}><a href="#" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</a></li>
+                                    <li key={t}><button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</button></li>
                                 ))}
                             </ul>
                         </div>
@@ -367,7 +367,7 @@ function JobPortalContent() {
                             <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">Resources</h4>
                             <ul className="space-y-4">
                                 {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'Contact'].map(t => (
-                                    <li key={t}><a href="#" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</a></li>
+                                    <li key={t}><button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</button></li>
                                 ))}
                             </ul>
                         </div>

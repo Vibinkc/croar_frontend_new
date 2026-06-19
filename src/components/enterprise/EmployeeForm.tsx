@@ -352,16 +352,16 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Employee ID*</label>
-                                <input name="employee_id" value={formData.employee_id} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" placeholder="EMP-1001" />
+                                <label htmlFor="emp-employee_id" className="text-[10px] font-black text-slate-400   ml-1">Employee ID*</label>
+                                <input id="emp-employee_id" name="employee_id" value={formData.employee_id} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" placeholder="EMP-1001" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Designation</label>
-                                <input name="designation" value={formData.designation} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" placeholder="Software Engineer" />
+                                <label htmlFor="emp-designation" className="text-[10px] font-black text-slate-400   ml-1">Designation</label>
+                                <input id="emp-designation" name="designation" value={formData.designation} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" placeholder="Software Engineer" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Employment Type</label>
-                                <select name="employment_type" value={formData.employment_type} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
+                                <label htmlFor="emp-employment_type" className="text-[10px] font-black text-slate-400   ml-1">Employment Type</label>
+                                <select id="emp-employment_type" name="employment_type" value={formData.employment_type} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
                                     <option value="">Select</option>
                                     <option value="Full-time">Full-time</option>
                                     <option value="Part-time">Part-time</option>
@@ -373,15 +373,15 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Company*</label>
-                                <select name="company_id" value={formData.company_id} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
+                                <label htmlFor="emp-company_id" className="text-[10px] font-black text-slate-400   ml-1">Company*</label>
+                                <select id="emp-company_id" name="company_id" value={formData.company_id} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
                                     <option value="">Select Company</option>
                                     {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
                             </div>
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between ml-1">
-                                    <label className="text-[10px] font-black text-slate-400  ">Department</label>
+                                    <label htmlFor="emp-department_id" className="text-[10px] font-black text-slate-400  ">Department</label>
                                     <button 
                                         type="button" 
                                         onClick={() => setIsDeptModalOpen(true)}
@@ -390,14 +390,14 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                                         + Add New
                                     </button>
                                 </div>
-                                <select name="department_id" value={formData.department_id} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
+                                <select id="emp-department_id" name="department_id" value={formData.department_id} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
                                     <option value="">Select Department</option>
                                     {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                                 </select>
                             </div>
                              <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Status</label>
-                                <select name="status" value={formData.status} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
+                                <label htmlFor="emp-status" className="text-[10px] font-black text-slate-400   ml-1">Status</label>
+                                <select id="emp-status" name="status" value={formData.status} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
                                     <option value="Active">Active</option>
                                     <option value="Inactive">Inactive</option>
                                     <option value="On Leave">On Leave</option>
@@ -408,22 +408,22 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Hire Date</label>
-                                <input type="date" name="hire_date" value={formData.hire_date} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-hire_date" className="text-[10px] font-black text-slate-400   ml-1">Hire Date</label>
+                                <input id="emp-hire_date" type="date" name="hire_date" value={formData.hire_date} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Probation End Date</label>
-                                <input type="date" name="probation_end_date" value={formData.probation_end_date} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-probation_end_date" className="text-[10px] font-black text-slate-400   ml-1">Probation End Date</label>
+                                <input id="emp-probation_end_date" type="date" name="probation_end_date" value={formData.probation_end_date} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Notice Period (Days)</label>
-                                <input type="number" name="notice_period" value={formData.notice_period} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-notice_period" className="text-[10px] font-black text-slate-400   ml-1">Notice Period (Days)</label>
+                                <input id="emp-notice_period" type="number" name="notice_period" value={formData.notice_period} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400   ml-1">About Yourself</label>
-                            <textarea name="about_yourself" value={formData.about_yourself} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all min-h-[100px]" placeholder="Brief professional summary..." />
+                            <label htmlFor="emp-about_yourself" className="text-[10px] font-black text-slate-400   ml-1">About Yourself</label>
+                            <textarea id="emp-about_yourself" name="about_yourself" value={formData.about_yourself} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all min-h-[100px]" placeholder="Brief professional summary..." />
                         </div>
                     </div>
                 )}
@@ -432,42 +432,42 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                      <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">First Name*</label>
-                                <input name="first_name" value={formData.first_name} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-first_name" className="text-[10px] font-black text-slate-400   ml-1">First Name*</label>
+                                <input id="emp-first_name" name="first_name" value={formData.first_name} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Middle Name</label>
-                                <input name="middle_name" value={formData.middle_name} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-middle_name" className="text-[10px] font-black text-slate-400   ml-1">Middle Name</label>
+                                <input id="emp-middle_name" name="middle_name" value={formData.middle_name} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Last Name*</label>
-                                <input name="last_name" value={formData.last_name} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-last_name" className="text-[10px] font-black text-slate-400   ml-1">Last Name*</label>
+                                <input id="emp-last_name" name="last_name" value={formData.last_name} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                              <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Email*</label>
-                                <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-email" className="text-[10px] font-black text-slate-400   ml-1">Email*</label>
+                                <input id="emp-email" type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Mobile</label>
-                                <input name="mobile" value={formData.mobile} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-mobile" className="text-[10px] font-black text-slate-400   ml-1">Mobile</label>
+                                <input id="emp-mobile" name="mobile" value={formData.mobile} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Phone Number</label>
-                                <input name="phone_number" value={formData.phone_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-phone_number" className="text-[10px] font-black text-slate-400   ml-1">Phone Number</label>
+                                <input id="emp-phone_number" name="phone_number" value={formData.phone_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Date of Birth</label>
-                                <input type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-date_of_birth" className="text-[10px] font-black text-slate-400   ml-1">Date of Birth</label>
+                                <input id="emp-date_of_birth" type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Gender</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
+                                <label htmlFor="emp-gender" className="text-[10px] font-black text-slate-400   ml-1">Gender</label>
+                                <select id="emp-gender" name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
                                     <option value="">Select</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
@@ -475,8 +475,8 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                                 </select>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Marital Status</label>
-                                <select name="marital_status" value={formData.marital_status} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
+                                <label htmlFor="emp-marital_status" className="text-[10px] font-black text-slate-400   ml-1">Marital Status</label>
+                                <select id="emp-marital_status" name="marital_status" value={formData.marital_status} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
                                     <option value="">Select</option>
                                     <option value="Single">Single</option>
                                     <option value="Married">Married</option>
@@ -487,16 +487,16 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                              <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">PAN Card Number</label>
-                                <input name="pan_card_number" value={formData.pan_card_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-pan_card_number" className="text-[10px] font-black text-slate-400   ml-1">PAN Card Number</label>
+                                <input id="emp-pan_card_number" name="pan_card_number" value={formData.pan_card_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Aadhar Card Number</label>
-                                <input name="aadhar_card_number" value={formData.aadhar_card_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-aadhar_card_number" className="text-[10px] font-black text-slate-400   ml-1">Aadhar Card Number</label>
+                                <input id="emp-aadhar_card_number" name="aadhar_card_number" value={formData.aadhar_card_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Passport Number</label>
-                                <input name="passport_number" value={formData.passport_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-passport_number" className="text-[10px] font-black text-slate-400   ml-1">Passport Number</label>
+                                <input id="emp-passport_number" name="passport_number" value={formData.passport_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                         </div>
                      </div>
@@ -505,29 +505,29 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 {activeTab === "contact" && (
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400   ml-1">Address Line 1</label>
-                            <input name="address_line_1" value={formData.address_line_1} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                            <label htmlFor="emp-address_line_1" className="text-[10px] font-black text-slate-400   ml-1">Address Line 1</label>
+                            <input id="emp-address_line_1" name="address_line_1" value={formData.address_line_1} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400   ml-1">Address Line 2</label>
-                            <input name="address_line_2" value={formData.address_line_2} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                            <label htmlFor="emp-address_line_2" className="text-[10px] font-black text-slate-400   ml-1">Address Line 2</label>
+                            <input id="emp-address_line_2" name="address_line_2" value={formData.address_line_2} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">City</label>
-                                <input name="city" value={formData.city} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-city" className="text-[10px] font-black text-slate-400   ml-1">City</label>
+                                <input id="emp-city" name="city" value={formData.city} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">State</label>
-                                <input name="state" value={formData.state} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-state" className="text-[10px] font-black text-slate-400   ml-1">State</label>
+                                <input id="emp-state" name="state" value={formData.state} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Country</label>
-                                <input name="country" value={formData.country} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-country" className="text-[10px] font-black text-slate-400   ml-1">Country</label>
+                                <input id="emp-country" name="country" value={formData.country} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Pincode</label>
-                                <input name="pincode" value={formData.pincode} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                                <label htmlFor="emp-pincode" className="text-[10px] font-black text-slate-400   ml-1">Pincode</label>
+                                <input id="emp-pincode" name="pincode" value={formData.pincode} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
                             </div>
                         </div>
                     </div>
@@ -536,8 +536,8 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 {activeTab === "documents" && (
                     <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
                          <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400   ml-1">Roles & Responsibilities</label>
-                            <textarea name="roles_responsibilities" value={formData.roles_responsibilities} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all min-h-[120px]" placeholder="List key roles and responsibilities..." />
+                            <label htmlFor="emp-roles_responsibilities" className="text-[10px] font-black text-slate-400   ml-1">Roles & Responsibilities</label>
+                            <textarea id="emp-roles_responsibilities" name="roles_responsibilities" value={formData.roles_responsibilities} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all min-h-[120px]" placeholder="List key roles and responsibilities..." />
                         </div>
 
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -602,8 +602,9 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                         </div>
                         <div className="space-y-8">
                             <div className="space-y-2 group">
-                                <label className="text-[10px] font-black text-slate-400   ml-1 group-focus-within:text-slate-900 transition-colors">Department Designation</label>
-                                <input 
+                                <label htmlFor="emp-new_dept_name" className="text-[10px] font-black text-slate-400   ml-1 group-focus-within:text-slate-900 transition-colors">Department Designation</label>
+                                <input
+                                    id="emp-new_dept_name"
                                     value={newDeptName}
                                     onChange={(e) => setNewDeptName(e.target.value)}
                                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black outline-none focus:border-[#0F172A] focus:bg-white transition-all shadow-inner"

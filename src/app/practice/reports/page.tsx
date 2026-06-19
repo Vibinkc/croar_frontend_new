@@ -247,7 +247,7 @@ export default function StudentReportsPage() {
                     <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-8">
                         <h3 className="text-xs font-black text-slate-900   mb-6 flex items-center gap-2">
                             <span className="material-icons-outlined text-slate-400">fitness_center</span>
-                            Practice Progress
+                            {"Practice Progress"}
                         </h3>
                         <div className="space-y-6">
                             {practice_stats.map((stat: PracticeStat, i: number) => (
@@ -277,7 +277,7 @@ export default function StudentReportsPage() {
                         <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200">
                             <h3 className="text-xs font-black text-slate-900   mb-6 flex items-center gap-2">
                                 <span className="material-icons-outlined text-slate-400">compare_arrows</span>
-                                Peer Benchmarking
+                                {"Peer Benchmarking"}
                             </h3>
                             <div className="w-full h-32">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -309,7 +309,7 @@ export default function StudentReportsPage() {
                     <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-8">
                         <h3 className="text-xs font-black text-slate-900   mb-8 flex items-center gap-2">
                             <span className="material-icons-outlined text-slate-400">timeline</span>
-                            Activity Timeline Feed
+                            {"Activity Timeline Feed"}
                         </h3>
 
                         <div className="space-y-8 relative before:absolute before:inset-y-0 before:left-[19px] before:w-0.5 before:bg-slate-50">
@@ -350,7 +350,7 @@ export default function StudentReportsPage() {
                                                     onClick={() => handleViewReport(item)}
                                                     className="mt-6 w-full bg-white hover:bg-slate-900 hover:text-white text-slate-600 py-3.5 rounded-xl border border-slate-200 transition-all flex items-center justify-center gap-2 group font-black text-[10px]  tracking-[0.2em] hover:shadow-lg"
                                                 >
-                                                    View Intelligence Report
+                                                    {"View Intelligence Report"}
                                                     <span className="material-icons-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                                 </button>
                                             )}
@@ -426,7 +426,7 @@ function renderDetails(item: ActivityItem) {
         return <div className="text-[10px] font-black text-slate-400 ">Operational Rounds: <span className="text-slate-900">{d.rounds}</span></div>;
     }
     if (item.type === 'INTERVIEW') {
-        return <div className="text-[10px] font-black text-slate-400  capitalize">{d.type?.toLowerCase() || 'Video'} Mode Active</div>;
+        return <div className="text-[10px] font-black text-slate-400  capitalize">{String(d.type ?? '').toLowerCase() || 'Video'} Mode Active</div>;
     }
     if (item.type === 'ASSESSMENT') {
         return <div className="text-[10px] font-black text-slate-400 ">{d.total_questions} Logical Units Analyzed</div>;

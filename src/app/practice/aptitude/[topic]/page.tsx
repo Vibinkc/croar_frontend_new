@@ -146,10 +146,18 @@ export default function TopicQuestionsPage({ params }: { params: Promise<{ topic
                         return (
                             <div
                                 key={q.id}
+                                role="button"
+                                tabIndex={0}
                                 className={`group relative border rounded-2xl p-4 transition-all duration-300 ${isDark
                                     ? 'bg-[#16181b] border-[#2d2e32] hover:border-indigo-500/30 hover:bg-[#1a1d21]'
                                     : 'bg-white border-slate-100 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5 hover:-translate-y-0.5'} cursor-pointer`}
                                 onClick={() => router.push(`/practice/aptitude/${decodedTopic}/question/${q.id}`)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        router.push(`/practice/aptitude/${decodedTopic}/question/${q.id}`);
+                                    }
+                                }}
                             >
                                 <div className="flex items-center justify-between gap-4">
                                     <div className="flex items-center gap-5 flex-1 p-1">

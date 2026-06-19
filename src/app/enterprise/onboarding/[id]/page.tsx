@@ -60,7 +60,7 @@ interface Onboarding {
 const safeFormat = (value: string | null | undefined, pattern: string): string => {
     if (!value) return "—";
     const d = new Date(value);
-    return isNaN(d.getTime()) ? "—" : format(d, pattern);
+    return Number.isNaN(d.getTime()) ? "—" : format(d, pattern);
 };
 
 export default function OnboardingDetailsPage() {
@@ -248,7 +248,7 @@ export default function OnboardingDetailsPage() {
                             className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black   shadow-lg shadow-emerald-200 transition-all flex items-center gap-2"
                         >
                             <span className="material-symbols-rounded text-sm">badge</span>
-                            Convert to Employee
+                            <span>Convert to Employee</span>
                         </button>
                     )}
                 </div>
@@ -358,7 +358,7 @@ export default function OnboardingDetailsPage() {
                                                                         if (field.type === 'file') {
                                                                             return (
                                                                                 <button 
-                                                                                    onClick={() => window.open(`${BACKEND_URL.replace('/api/v1', '')}/${val.replace(/\\/g, '/')}`, '_blank')}
+                                                                                    onClick={() => window.open(`${BACKEND_URL.replace('/api/v1', '')}/${val.replaceAll('\\', '/')}`, '_blank')}
                                                                                     className="flex items-center gap-2 text-[#7C3AED] hover:underline"
                                                                                 >
                                                                                     <span className="material-symbols-rounded text-sm">attach_file</span>
@@ -418,7 +418,7 @@ export default function OnboardingDetailsPage() {
                                         )}
                                         {doc.status === "Received" && doc.file_path && (
                                             <button 
-                                                onClick={() => window.open(`${BACKEND_URL.replace('/api/v1', '')}/${doc.file_path.replace(/\\/g, '/')}`, '_blank')}
+                                                onClick={() => window.open(`${BACKEND_URL.replace('/api/v1', '')}/${doc.file_path!.replaceAll('\\', '/')}`, '_blank')}
                                                 className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#7C3AED]/5 text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
                                             >
                                                 <span className="material-symbols-rounded text-lg">visibility</span>
@@ -507,7 +507,7 @@ export default function OnboardingDetailsPage() {
                                                     <div className="flex flex-wrap gap-2">
                                                         {Array.from(rejectedFieldNames).map(name => (
                                                             <span key={name} className="px-3 py-1 bg-white border border-indigo-200 text-indigo-600 text-[10px] font-bold rounded-xl flex items-center gap-2">
-                                                                {name.replace(/_/g, ' ').toUpperCase()}
+                                                                {name.replaceAll('_', ' ').toUpperCase()}
                                                                 <button onClick={() => toggleFieldRejection(name)} className="material-symbols-rounded text-xs hover:text-indigo-800">close</button>
                                                             </span>
                                                         ))}
@@ -518,8 +518,9 @@ export default function OnboardingDetailsPage() {
                                     )}
 
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-400   block mb-2">Feedback / Reason for Correction</label>
-                                        <textarea 
+                                        <label htmlFor="correction-feedback" className="text-[10px] font-black text-slate-400   block mb-2">Feedback / Reason for Correction</label>
+                                        <textarea
+                                            id="correction-feedback"
                                             value={rejectReason}
                                             onChange={(e) => setRejectReason(e.target.value)}
                                             placeholder="Explain what needs to be changed or why specific documents were rejected..."

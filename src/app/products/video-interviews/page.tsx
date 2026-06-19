@@ -26,7 +26,7 @@ export default function VideoInterviewsProductPage() {
                             className="inline-flex mx-auto items-center gap-2 mb-2 border border-red-400/30 bg-red-500/10 px-3 py-1 rounded-full text-red-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                            Live Computer Vision
+                            {"Live Computer Vision"}
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}

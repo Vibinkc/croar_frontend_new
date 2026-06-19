@@ -70,7 +70,7 @@ export default function ProgressPage() {
                         <span className="text-[10px] font-black text-slate-500 tracking-[0.4em] ">Student Portal // Performance Telemetry</span>
                         <Link href="/practice" className="group flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-all text-[10px] font-black tracking-[0.2em] ">
                             <span className="material-icons-outlined text-[14px]">arrow_back</span>
-                            Leave_Dashboard
+                            {"Leave_Dashboard"}
                         </Link>
                     </div>
                     <div>

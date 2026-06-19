@@ -50,8 +50,16 @@ export default function SuperAdminLayout({
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
                 <div
+                    role="button"
+                    tabIndex={0}
                     className="fixed inset-0 bg-slate-900/40 z-40 md:hidden backdrop-blur-sm"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setIsMobileMenuOpen(false);
+                        }
+                    }}
                 />
             )}
 

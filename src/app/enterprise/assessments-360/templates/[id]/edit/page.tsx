@@ -221,8 +221,9 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
                     <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Framework Designation</label>
-                            <input 
+                            <label htmlFor="edit-framework-name" className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Framework Designation</label>
+                            <input
+                                id="edit-framework-name"
                                 className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
                                 value={formData.name}
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -231,8 +232,9 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                             />
                         </div>
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Organization Context</label>
-                            <input 
+                            <label htmlFor="edit-framework-description" className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Organization Context</label>
+                            <input
+                                id="edit-framework-description"
                                 className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
                                 value={formData.description}
                                 onChange={(e) => setFormData({...formData, description: e.target.value})}
@@ -265,13 +267,13 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                                 className="h-14 bg-indigo-600 text-white text-[11px] font-black  tracking-[0.15em] flex items-center gap-3 hover:bg-slate-900 px-8 rounded-xl transition-all shadow-xl shadow-indigo-100 group"
                             >
                                 <span className="material-symbols-rounded text-xl group-hover:rotate-12 transition-transform">psychology</span>
-                                AI Strategy Wizard
+                                <span>AI Strategy Wizard</span>
                             </button>
                         </div>
                     </div>
                     
                     <div className="space-y-16">
-                        {Array.from(new Set(questions.map(q => q.category))).sort().map(cat => {
+                        {Array.from(new Set(questions.map(q => q.category))).sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0).map(cat => {
                             const catQuestions = questions.filter(q => q.category === cat);
                             const selectedInCat = catQuestions.filter(q => formData.question_ids.includes(q.id)).length;
                             
@@ -283,7 +285,7 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                                                 {selectedInCat}
                                             </div>
                                             <div>
-                                                <h4 className="text-lg font-black text-slate-800 tracking-tight">{cat.replace(/_/g, ' ')}</h4>
+                                                <h4 className="text-lg font-black text-slate-800 tracking-tight">{cat.replaceAll('_', ' ')}</h4>
                                                 <p className="text-slate-400 text-[9px] font-bold  tracking-[0.2em]">{catQuestions.length} Total Options</p>
                                             </div>
                                         </div>
@@ -296,9 +298,12 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {catQuestions.map(q => (
-                                            <div 
-                                                key={q.id} 
+                                            <div
+                                                key={q.id}
+                                                role="button"
+                                                tabIndex={0}
                                                 onClick={() => toggleQuestion(q.id)}
+                                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { toggleQuestion(q.id); } }}
                                                 className={`p-6 rounded-xl cursor-pointer transition-all flex flex-col gap-4 border-2 relative group animate-in slide-in-from-bottom-2 duration-500 overflow-hidden ${
                                                     formData.question_ids.includes(q.id) 
                                                     ? 'border-indigo-600 bg-white shadow-2xl shadow-indigo-100' 
@@ -349,7 +354,7 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                         ) : (
                             <>
                                 <span className="material-symbols-rounded text-2xl">published_with_changes</span>
-                                Update Framework Structure
+                                <span>Update Framework Structure</span>
                             </>
                         )}
                     </button>
@@ -371,8 +376,9 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                         </div>
                         <div className="p-8 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-400   px-1">Describe Your Industry</label>
-                                <input 
+                                <label htmlFor="edit-industry-nature" className="text-[10px] font-bold text-slate-400   px-1">Describe Your Industry</label>
+                                <input
+                                    id="edit-industry-nature"
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 transition-all h-[52px]"
                                     value={industryNature}
                                     onChange={(e) => setIndustryNature(e.target.value)}
@@ -394,7 +400,7 @@ export default function EditX360Template({ params }: { params: Promise<{ id: str
                                 ) : (
                                     <>
                                         <span className="material-symbols-rounded text-lg">magic_button</span>
-                                        Inject AI Insights
+                                        <span>Inject AI Insights</span>
                                     </>
                                 )}
                             </button>

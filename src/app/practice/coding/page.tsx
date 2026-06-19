@@ -62,7 +62,7 @@ export default function CodingProblemsPage() {
 
                 // Extract unique topics from the problems themselves or use an API if preferred
                 // Using problems ensures we only show topics that actually have content
-                const topics = Array.from(new Set(data.map(p => p.topic))).sort();
+                const topics = Array.from(new Set(data.map(p => p.topic))).sort((a, b) => a.localeCompare(b));
                 setAvailableTopics(topics);
             }
         } catch (e) {

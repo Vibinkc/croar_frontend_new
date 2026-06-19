@@ -128,14 +128,14 @@ export default function AutomatedVideoInterviewsListPage() {
                             {interview.user_attempt ? (
                                 <Link href={`/practice/automated-video-interviews/${interview.id}/result`}>
                                     <button className="w-full bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white font-black text-[9px] tracking-[0.2em]  py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-sm shadow-slate-100">
-                                        VIEW_RESULTS
+                                        {"VIEW_RESULTS"}
                                         <span className="material-symbols-rounded text-base">analytics</span>
                                     </button>
                                 </Link>
                             ) : (
                                 <Link href={`/practice/automated-video-interviews/${interview.id}/room`}>
                                     <button className="w-full bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white font-black text-[9px] tracking-[0.2em]  py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-sm shadow-slate-100">
-                                        START_RECORDING
+                                        {"START_RECORDING"}
                                         <span className="material-symbols-rounded text-base">arrow_forward</span>
                                     </button>
                                 </Link>

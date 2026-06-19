@@ -172,10 +172,11 @@ export default function TemplateBuilder({
 
           <div className="space-y-6">
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="tb-template-title" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Template Title
               </label>
               <input
+                id="tb-template-title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -186,10 +187,11 @@ export default function TemplateBuilder({
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="tb-interview-topic" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Interview Topic
               </label>
               <input
+                id="tb-interview-topic"
                 type="text"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
@@ -201,10 +203,11 @@ export default function TemplateBuilder({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                <label htmlFor="tb-duration" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   Duration (m)
                 </label>
                 <input
+                  id="tb-duration"
                   type="number"
                   min={5}
                   max={90}
@@ -215,10 +218,11 @@ export default function TemplateBuilder({
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                <label htmlFor="tb-difficulty" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   Difficulty
                 </label>
                 <select
+                  id="tb-difficulty"
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
                   className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -285,7 +289,7 @@ export default function TemplateBuilder({
                 className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED]/10 text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white rounded-xl text-[10px] font-black   transition-all"
               >
                 <span className="material-symbols-rounded text-sm">add</span>
-                Add Question
+                {"Add Question"}
               </button>
             )}
           </div>
@@ -368,7 +372,7 @@ export default function TemplateBuilder({
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-[9px] font-black text-slate-400   ml-1">Key Evaluation Points</label>
+                        <label htmlFor={`tb-eval-points-${q.id}`} className="text-[9px] font-black text-slate-400   ml-1">Key Evaluation Points</label>
                         <div className="flex flex-wrap gap-2">
                           {q.expected_answer_points.map((point, pIdx) => (
                             <div key={pIdx} className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-100 group/point">
@@ -396,7 +400,8 @@ export default function TemplateBuilder({
                             </div>
                           ))}
                           {canAccess("interviews:moderate") && (
-                            <button 
+                            <button
+                              id={`tb-eval-points-${q.id}`}
                               onClick={() => {
                                  updateQuestion(q.id, { expected_answer_points: [...q.expected_answer_points, "New point..."] });
                               }}

@@ -242,7 +242,7 @@ export default function PublicJobPage() {
                             {(typeof orgName === 'object' && orgName.logo_url) ? (
                                 <img src={orgName.logo_url} alt="Logo" className="w-full h-full object-contain" />
                             ) : (
-                                (typeof orgName === 'object' ? orgName.name?.[0] : (orgName?.[0] || 'A')).toUpperCase()
+                                ((typeof orgName === 'object' ? orgName.name?.[0] : orgName?.[0]) || 'A').toUpperCase()
                             )}
                         </div>
                         <div className="flex flex-col">
@@ -274,7 +274,7 @@ export default function PublicJobPage() {
                             </span>
                             <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black   rounded-lg flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                Currently Hiring
+                                {"Currently Hiring"}
                             </span>
                         </div>
 
@@ -494,9 +494,9 @@ export default function PublicJobPage() {
                         Powered by <span className="text-indigo-600">Academik.ai</span> Corporate Excellence
                     </p>
                     <div className="flex items-center gap-6 text-slate-400 text-xs font-bold  ">
-                        <a href="#" className="hover:text-indigo-600 transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-indigo-600 transition-colors">Terms</a>
-                        <a href="#" className="hover:text-indigo-600 transition-colors">Contact</a>
+                        <button type="button" className="hover:text-indigo-600 transition-colors">Privacy</button>
+                        <button type="button" className="hover:text-indigo-600 transition-colors">Terms</button>
+                        <button type="button" className="hover:text-indigo-600 transition-colors">Contact</button>
                     </div>
                 </div>
             </footer>

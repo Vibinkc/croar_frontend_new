@@ -165,7 +165,7 @@ function EnterpriseRolesContent() {
                             className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
-                            Create Role
+                            {"Create Role"}
                         </button>
                     )}
                     <button 
@@ -304,8 +304,9 @@ function EnterpriseRolesContent() {
                             <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                                 <div className="lg:col-span-4 space-y-6">
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors ml-1">Role Name</label>
+                                        <label htmlFor="role-name" className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors ml-1">Role Name</label>
                                         <input
+                                            id="role-name"
                                             className="w-full h-14 bg-slate-50 border border-slate-100 px-6 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner"
                                             placeholder="e.g. Finance Lead"
                                             value={name} onChange={e => setName(e.target.value)} required
@@ -313,8 +314,9 @@ function EnterpriseRolesContent() {
                                         />
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors ml-1">Role Description</label>
+                                        <label htmlFor="role-description" className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors ml-1">Role Description</label>
                                         <textarea
+                                            id="role-description"
                                             className="w-full bg-slate-50 border border-slate-100 p-6 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all resize-none min-h-[160px] shadow-inner leading-relaxed"
                                             placeholder="What can this role do?"
                                             value={description} onChange={e => setDescription(e.target.value)}
@@ -362,9 +364,17 @@ function EnterpriseRolesContent() {
                                                 </div>
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                     {groupedPermissions[module].map((perm: Permission) => (
-                                                        <div 
+                                                        <div
                                                             key={perm.id}
+                                                            role="button"
+                                                            tabIndex={0}
                                                             onClick={() => togglePermission(perm.id)}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                                    e.preventDefault();
+                                                                    togglePermission(perm.id);
+                                                                }
+                                                            }}
                                                             className={`p-5 rounded-xl border cursor-pointer transition-all flex items-center justify-between group/node ${selectedPermIds.includes(perm.id) ? 'bg-slate-900 border-slate-900 text-white shadow-xl' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'}`}
                                                         >
                                                             <div className="space-y-1">

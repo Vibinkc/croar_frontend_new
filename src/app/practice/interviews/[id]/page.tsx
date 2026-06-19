@@ -164,7 +164,7 @@ export default function InterviewSessionPage() {
                             <div>
                                 <div className="font-display text-lg font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
                                     <span className="w-1.5 h-6 bg-slate-500 rounded-full"></span>
-                                    Interview Readiness
+                                    {"Interview Readiness"}
                                 </div>
                                 <ul className="space-y-4">
                                     <li className="flex items-start gap-4">
@@ -200,7 +200,7 @@ export default function InterviewSessionPage() {
                             <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
                                 <div className="font-display text-lg font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
                                     <span className="w-1.5 h-6 bg-slate-500 rounded-full"></span>
-                                    Target Job Description
+                                    {"Target Job Description"}
                                 </div>
                                 <div className="bg-slate-50 dark:bg-slate-800/30 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
                                     <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium whitespace-pre-wrap ">
@@ -221,7 +221,7 @@ export default function InterviewSessionPage() {
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-500 opacity-75"></span>
                                         <span className="relative inline-flex rounded-full h-2 w-2 bg-slate-500"></span>
                                     </span>
-                                    AI System Online
+                                    <span>AI System Online</span>
                                 </div>
                             </div>
                             <div className="mt-8 space-y-3">
@@ -252,14 +252,14 @@ export default function InterviewSessionPage() {
                             className="w-full sm:w-auto px-6 py-4 bg-white text-slate-400 font-bold text-[11px]   rounded-2xl border border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
                         >
                             <span className="material-symbols-rounded text-base">settings</span>
-                            Hardware Test
+                            <span>Hardware Test</span>
                         </button>
                     </div>
                 </div>
                 <footer className="mt-10 text-center">
                     <p className="text-slate-400 dark:text-slate-500 text-[11px] flex items-center justify-center gap-2">
                         <span className="material-symbols-rounded text-sm">verified_user</span>
-                        Secure & Private Interview Environment
+                        <span>Secure & Private Interview Environment</span>
                     </p>
                 </footer>
             </main>

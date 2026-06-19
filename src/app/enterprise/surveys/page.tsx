@@ -66,14 +66,14 @@ export default function SurveyDashboard() {
                                 className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
                             >
                                 <span className="material-symbols-rounded text-base">description</span>
-                                Templates
+                                <span>Templates</span>
                             </Link>
                             <Link 
                                 href="/enterprise/surveys/new" 
                                 className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-[0.2em] flex items-center gap-2 shadow-xl shadow-indigo-100"
                             >
                                 <span className="material-symbols-rounded text-base">add</span>
-                                Launch Survey
+                                <span>Launch Survey</span>
                             </Link>
                         </>
                     )}
@@ -212,12 +212,12 @@ export default function SurveyDashboard() {
                                                     }}
                                                     className="px-3 py-1.5 bg-violet-50 text-[#7C3AED] rounded-xl font-black text-[8px]   hover:bg-[#7C3AED] hover:text-white transition-all border border-violet-100 flex items-center gap-1.5"
                                                 >
-                                                    Remind
+                                                    <span>Remind</span>
                                                     <span className="material-symbols-rounded text-[10px]">send</span>
                                                 </button>
                                             )}
                                             <button className="px-4 py-1.5 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[8px]   hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center gap-1.5">
-                                                View
+                                                <span>View</span>
                                                 <span className="material-symbols-rounded text-[10px]">analytics</span>
                                             </button>
                                         </div>

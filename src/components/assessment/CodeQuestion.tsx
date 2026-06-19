@@ -103,7 +103,18 @@ export default function CodeQuestion({
                                 </button>
                                 {showLanguageDropdown && (
                                     <>
-                                        <div className="fixed inset-0 z-10" onClick={() => setShowLanguageDropdown(false)} />
+                                        <div
+                                            role="button"
+                                            tabIndex={0}
+                                            aria-label="Close language menu"
+                                            className="fixed inset-0 z-10"
+                                            onClick={() => setShowLanguageDropdown(false)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter" || e.key === " ") {
+                                                    setShowLanguageDropdown(false);
+                                                }
+                                            }}
+                                        />
                                         <div className={`absolute top-full left-0 mt-2 w-48 rounded-xl border shadow-xl overflow-hidden z-20 ${isDark ? 'bg-[#1e1f23] border-[#2d2e32]' : 'bg-white border-slate-100'}`}>
                                             {Object.keys(LANGUAGE_CONFIG).map((lang) => (
                                                 <button
@@ -235,7 +246,7 @@ export default function CodeQuestion({
                                             <div className={`mt-4 p-4 rounded-xl text-sm leading-relaxed border ${isDark ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300' : 'bg-indigo-50 border-indigo-100 text-indigo-800'}`}>
                                                 <div className="flex items-center gap-2 mb-2 font-bold   text-[10px] opacity-70">
                                                     <span className="material-icons-outlined text-sm">lightbulb</span>
-                                                    Suggestions
+                                                    <span>Suggestions</span>
                                                 </div>
                                                 <ul className="list-disc list-inside space-y-1">
                                                     {Array.isArray(feedback.suggestions) ? feedback.suggestions.map((s: string, i: number) => (
@@ -257,7 +268,15 @@ export default function CodeQuestion({
                                         return (
                                             <div key={index} className={`rounded-xl border transition-all duration-300 overflow-hidden ${isDark ? 'bg-[#1e1f23] border-[#2d2e32]' : 'bg-white border-slate-200'}`}>
                                                 <div
+                                                    role="button"
+                                                    tabIndex={0}
+                                                    aria-expanded={isExpanded}
                                                     onClick={() => toggleTestExpand(index)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter" || e.key === " ") {
+                                                            toggleTestExpand(index);
+                                                        }
+                                                    }}
                                                     className={`p-3 flex items-center justify-between cursor-pointer hover:bg-opacity-80 transition-colors ${isDark ? 'hover:bg-[#25272c]' : 'hover:bg-slate-50'}`}
                                                 >
                                                     <div className="flex items-center gap-3">
@@ -344,8 +363,9 @@ export default function CodeQuestion({
                         {activeTab === 'custom_input' && !readOnly && (
                             <div className="space-y-4 h-full flex flex-col">
                                 <div className="space-y-2">
-                                    <label className={`text-[10px] font-black   ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Input Data</label>
+                                    <label htmlFor="code-question-custom-input" className={`text-[10px] font-black   ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Input Data</label>
                                     <textarea
+                                        id="code-question-custom-input"
                                         value={customInput}
                                         onChange={(e) => onCustomInputChange && onCustomInputChange(e.target.value)}
                                         className={`w-full h-32 rounded-xl border p-4 font-mono text-xs resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all ${isDark

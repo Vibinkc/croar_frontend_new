@@ -26,7 +26,7 @@ export default function PsychometricProductPage() {
                             className="inline-flex mx-auto items-center gap-2 mb-2 border border-purple-400/30 bg-purple-500/10 px-3 py-1 rounded-full text-purple-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-purple-400">biotech</span>
-                            Behavioral Science Lab
+                            {"Behavioral Science Lab"}
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}

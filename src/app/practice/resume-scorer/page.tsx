@@ -138,7 +138,8 @@ export default function StudentResumeScorerPage() {
                         const itemMap: { start: number; end: number; box: any }[] = []; // Maps char index to item box
 
                         // Build page text and coordinate map
-                        textContent.items.forEach((item: { str: string; transform: number[]; width: number; height?: number }) => {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (textContent.items as any[]).forEach((item: { str: string; transform: number[]; width: number; height?: number }) => {
                             const str = item.str;
                             // PDF coordinates are (x, y) from bottom-left
                             // viewport helps convert. But usually raw TextContent has transform
@@ -202,7 +203,8 @@ export default function StudentResumeScorerPage() {
                             // Better: Just use the text items that contain words from the quote.
 
                             const quoteWords = cleanQuote.split(' ');
-                            const matchedItems = textContent.items.filter((t: { str: string; transform: number[]; width: number; height?: number }) => {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            const matchedItems = (textContent.items as any[]).filter((t: { str: string; transform: number[]; width: number; height?: number }) => {
                                 const tStr = t.str.toLowerCase();
                                 return quoteWords.some((qw: string) => tStr.includes(qw) && qw.length > 3);
                             });
@@ -309,8 +311,9 @@ export default function StudentResumeScorerPage() {
 
                     <div className="space-y-4">
                         <div className="text-left">
-                            <label className="block text-xs font-bold text-slate-500   mb-1">Select Role / Standard</label>
+                            <label htmlFor="resume-scorer-config" className="block text-xs font-bold text-slate-500   mb-1">Select Role / Standard</label>
                             <select
+                                id="resume-scorer-config"
                                 value={selectedConfig}
                                 onChange={(e) => setSelectedConfig(e.target.value)}
                                 className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500/20 bg-slate-50 font-bold text-slate-700"
@@ -347,7 +350,7 @@ export default function StudentResumeScorerPage() {
                             {analyzing ? (
                                 <span className="flex items-center justify-center gap-2">
                                     <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                                    Analyzing...
+                                    {"Analyzing..."}
                                 </span>
                             ) : "Scan Resume"}
                         </button>
@@ -385,7 +388,7 @@ export default function StudentResumeScorerPage() {
                         <div className="p-6 border-b border-slate-100 bg-slate-50">
                             <div className="flex justify-between items-center mb-2">
                                 <h3 className="font-black text-slate-900 text-lg">ANALYSIS REPORT</h3>
-                                <div className={`flex items-center gap-2 px-3 py-1 rounded-lg border ${result.score >= 80 ? "bg-slate-100 border-slate-200 text-slate-800" : result.score >= 60 ? "bg-slate-100 border-slate-200 text-slate-800" : "bg-slate-100 border-slate-200 text-slate-800"}`}>
+                                <div className="flex items-center gap-2 px-3 py-1 rounded-lg border bg-slate-100 border-slate-200 text-slate-800">
                                     <span className="text-xl font-black">{result.score}</span>
                                     <span className="text-[10px] font-black  ">Score</span>
                                 </div>

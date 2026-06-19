@@ -111,7 +111,14 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
     const feedback = ai_feedback || {};
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm" onClick={onClose}>
+        <div
+            role="button"
+            tabIndex={0}
+            aria-label="Close panel"
+            className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm"
+            onClick={onClose}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { onClose(); } }}
+        >
             <motion.div
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
@@ -138,7 +145,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                     className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold  tracking-wide transition-all shadow-md shadow-emerald-100 flex items-center gap-2"
                                 >
                                     <span className="material-icons-outlined text-[16px]">visibility</span>
-                                    View Onboarding
+                                    {"View Onboarding"}
                                 </button>
                             )
                         ) : (
@@ -192,7 +199,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                         className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-bold  tracking-wide transition-all shadow-md shadow-indigo-100 flex items-center gap-2"
                                     >
                                         <span className="material-icons-outlined text-[16px]">person_add</span>
-                                        Initiate
+                                        {"Initiate"}
                                     </button>
                                 </div>
                             )
@@ -211,7 +218,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
                                     <span className="material-icons-outlined text-indigo-600 text-lg">psychology</span>
-                                    AI Fit Analysis
+                                    {"AI Fit Analysis"}
                                 </h3>
                                 <div className={`px-2.5 py-1 rounded-md text-xs font-bold border ${getScoreStyles(ai_match_score)}`}>
                                     Score: {ai_match_score}/100
@@ -263,7 +270,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                         <div>
                             <h3 className="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
                                 <span className="material-icons-outlined text-amber-500 text-lg">star</span>
-                                Key Highlights
+                                {"Key Highlights"}
                             </h3>
                             <ul className="space-y-2">
                                 {feedback.highlights.map((h: string, i: number) => (
@@ -281,7 +288,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                         <div>
                             <h3 className="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
                                 <span className="material-icons-outlined text-blue-500 text-lg">code</span>
-                                Skills
+                                {"Skills"}
                             </h3>
                             <div className="flex flex-wrap gap-1.5">
                                 {candidate.skills.map((skill, i) => (
@@ -446,7 +453,7 @@ export default function KanbanBoardPage() {
 
     const handleStageChange = async (appId: string, newStage: number | string) => {
         const originalApps = [...applications];
-        const stagePayload = parseInt(String(newStage));
+        const stagePayload = Number.parseInt(String(newStage));
 
         setApplications(prev => prev.map(app =>
             app.id === appId ? { ...app, current_stage: stagePayload } : app
@@ -686,14 +693,14 @@ export default function KanbanBoardPage() {
                             className="flex items-center gap-2 px-5 h-11 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] hover:shadow-indigo-500/20 text-white rounded-xl text-[10px] font-black shadow-lg shadow-indigo-100 transition-all active:scale-95 whitespace-nowrap"
                         >
                             <span className="material-icons-outlined text-[16px]">auto_awesome</span>
-                            SOURCE TALENT
+                            {"SOURCE TALENT"}
                         </Link>
 
                         <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
 
                         <div className="flex items-center gap-2 px-4 h-11 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black border border-emerald-100 shadow-sm shadow-emerald-50">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Live Analytics
+                            {"Live Analytics"}
                         </div>
                     </div>
                 </header>
@@ -711,10 +718,11 @@ export default function KanbanBoardPage() {
 
                                 {/* Company Filter */}
                                 <div className="space-y-1.5">
-                                    <label className="text-[9px] font-black text-slate-400   ml-1">Enterprise Client</label>
+                                    <label htmlFor="filter-company" className="text-[9px] font-black text-slate-400   ml-1">Enterprise Client</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
                                         <span className="material-icons-outlined text-slate-400 text-lg">corporate_fare</span>
                                         <select
+                                            id="filter-company"
                                             value={selectedCompanyId}
                                             onChange={(e) => setSelectedCompanyId(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
@@ -731,10 +739,11 @@ export default function KanbanBoardPage() {
 
                                 {/* Role Filter */}
                                 <div className="space-y-1.5">
-                                    <label className="text-[9px] font-black text-slate-400   ml-1">Target Requisition</label>
+                                    <label htmlFor="filter-job" className="text-[9px] font-black text-slate-400   ml-1">Target Requisition</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
                                         <span className="material-icons-outlined text-slate-400 text-lg">work</span>
                                         <select
+                                            id="filter-job"
                                             value={selectedJobId}
                                             onChange={(e) => setSelectedJobId(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer truncate"
@@ -751,10 +760,11 @@ export default function KanbanBoardPage() {
 
                                 {/* Location Filter */}
                                 <div className="space-y-1.5">
-                                    <label className="text-[9px] font-black text-slate-400   ml-1">Geographic Focus</label>
+                                    <label htmlFor="filter-location" className="text-[9px] font-black text-slate-400   ml-1">Geographic Focus</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
                                         <span className="material-icons-outlined text-slate-400 text-lg">location_on</span>
                                         <select
+                                            id="filter-location"
                                             value={selectedLocation}
                                             onChange={(e) => setSelectedLocation(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
@@ -767,10 +777,11 @@ export default function KanbanBoardPage() {
 
                                 {/* Match Score Filter */}
                                 <div className="space-y-1.5">
-                                    <label className="text-[9px] font-black text-slate-400   ml-1">AI Match Accuracy</label>
+                                    <label htmlFor="filter-score" className="text-[9px] font-black text-slate-400   ml-1">AI Match Accuracy</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
                                         <span className="material-icons text-indigo-500 text-lg">bolt</span>
                                         <select
+                                            id="filter-score"
                                             value={minMatchScore}
                                             onChange={(e) => setMinMatchScore(Number(e.target.value))}
                                             className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer font-sans"
@@ -784,10 +795,11 @@ export default function KanbanBoardPage() {
 
                                 {/* Application Period */}
                                 <div className="space-y-1.5">
-                                    <label className="text-[9px] font-black text-slate-400   ml-1">Application Recency</label>
+                                    <label htmlFor="filter-period" className="text-[9px] font-black text-slate-400   ml-1">Application Recency</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
                                         <span className="material-icons-outlined text-slate-400 text-lg">calendar_today</span>
                                         <select
+                                            id="filter-period"
                                             value={appliedPeriod}
                                             onChange={(e) => setAppliedPeriod(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
@@ -802,10 +814,11 @@ export default function KanbanBoardPage() {
 
                                 {/* Source Filter */}
                                 <div className="space-y-1.5">
-                                    <label className="text-[9px] font-black text-slate-400   ml-1">Origin Source</label>
+                                    <label htmlFor="filter-source" className="text-[9px] font-black text-slate-400   ml-1">Origin Source</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
                                         <span className="material-icons-outlined text-slate-400 text-lg">share</span>
                                         <select
+                                            id="filter-source"
                                             value={selectedSource}
                                             onChange={(e) => setSelectedSource(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
@@ -834,11 +847,11 @@ export default function KanbanBoardPage() {
                         <div className="flex flex-wrap gap-2 shrink-0">
                             <Link href="/enterprise/sourcing/chat" className="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5">
                                 <span className="material-symbols-rounded text-base">person_search</span>
-                                Source candidates
+                                {"Source candidates"}
                             </Link>
                             <Link href="/enterprise/croar-pilot" className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5">
                                 <span className="material-symbols-rounded text-base">smart_toy</span>
-                                Ask Croar Pilot
+                                {"Ask Croar Pilot"}
                             </Link>
                         </div>
                     </div>
@@ -859,6 +872,7 @@ export default function KanbanBoardPage() {
                         return (
                             <div
                                 key={stage.id}
+                                role="group"
                                 className="relative flex flex-col h-full rounded-xl border border-slate-200 bg-slate-50/50 min-w-0"
                                 onDragOver={(e) => handleDragOver(e, stage.id)}
                                 onDrop={(e) => handleDrop(e, stage.id)}
@@ -908,7 +922,10 @@ export default function KanbanBoardPage() {
                                                 initial={{ opacity: 0, scale: 0.95 }}
                                                 animate={{ opacity: 1, scale: 1 }}
                                                 exit={{ opacity: 0, scale: 0.95 }}
+                                                role="button"
+                                                tabIndex={0}
                                                 onClick={() => setViewApplication(app)}
+                                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setViewApplication(app); } }}
                                                 whileHover={{ y: -2 }}
                                                 className={`
                                                     group relative bg-white border p-3.5 cursor-grab active:cursor-grabbing transition-all shadow-sm
@@ -1026,7 +1043,7 @@ export default function KanbanBoardPage() {
                                     className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold  tracking-wide transition-all shadow-lg shadow-indigo-200"
                                 >
                                     <span className="material-icons text-[16px]">arrow_forward</span>
-                                    Move to Next Round
+                                    {"Move to Next Round"}
                                 </button>
                             )}
 
@@ -1036,7 +1053,7 @@ export default function KanbanBoardPage() {
                                     className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[11px] font-bold  tracking-wide transition-all shadow-lg shadow-slate-200"
                                 >
                                     <span className="material-icons text-[16px]">email</span>
-                                    Send Email
+                                    {"Send Email"}
                                 </button>
                             )}
 
@@ -1046,7 +1063,7 @@ export default function KanbanBoardPage() {
                                     className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold  tracking-wide transition-all shadow-lg shadow-indigo-200"
                                 >
                                     <span className="material-icons text-[16px]">psychology</span>
-                                    Send Assessment
+                                    {"Send Assessment"}
                                 </button>
                             )}
 
@@ -1056,7 +1073,7 @@ export default function KanbanBoardPage() {
                                     className="flex items-center gap-2 px-5 py-2.5 bg-white border border-rose-100 hover:bg-rose-50 text-rose-600 rounded-xl text-[11px] font-bold  tracking-wide transition-all"
                                 >
                                     <span className="material-icons text-[16px]">delete</span>
-                                    Delete
+                                    {"Delete"}
                                 </button>
                             )}
 
@@ -1066,7 +1083,7 @@ export default function KanbanBoardPage() {
                                     className="flex items-center gap-2 px-5 py-2.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 rounded-xl text-[11px] font-bold  tracking-wide transition-all shadow-sm"
                                 >
                                     <span className="material-icons-outlined text-[16px]">person_add</span>
-                                    Initiate Onboarding
+                                    {"Initiate Onboarding"}
                                 </button>
                             )}
 

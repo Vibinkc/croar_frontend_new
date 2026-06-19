@@ -23,6 +23,18 @@ import {
 } from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
+interface GeneratedQuestion {
+    id: string;
+    type?: string;
+    question?: string;
+    options?: string[];
+    correct_answer?: string;
+    title?: string;
+    description?: string;
+    problem_statement?: string;
+    [key: string]: unknown;
+}
+
 interface AssessmentTemplate {
     id: string;
     name: string;
@@ -30,7 +42,7 @@ interface AssessmentTemplate {
     topic: string;
     question_count: number;
     test_duration: number;
-    generated_questions?: Record<string, unknown>[];
+    generated_questions?: GeneratedQuestion[];
     email_template_id?: string;
     created_at?: string;
 }
@@ -65,7 +77,7 @@ export default function AssessmentTemplatesPage() {
     
     // Tab and Generation State
     const [activeTab, setActiveTab] = useState<'config' | 'questions'>('config');
-    const [generatedQuestions, setGeneratedQuestions] = useState<Record<string, unknown>[]>([]);
+    const [generatedQuestions, setGeneratedQuestions] = useState<GeneratedQuestion[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
 
     const fetchEmailTemplates = useCallback(async () => {
@@ -270,7 +282,7 @@ export default function AssessmentTemplatesPage() {
                             className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
-                            New Template
+                            {"New Template"}
                         </button>
                     )}
                     <button 
@@ -496,8 +508,9 @@ export default function AssessmentTemplatesPage() {
                                 {activeTab === 'config' ? (
                                     <form id="matrix-form" onSubmit={e => { e.preventDefault(); handleSave(); }} className="max-w-xl mx-auto space-y-12">
                                         <div className="space-y-2 group">
-                                            <label className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Template Name</label>
+                                            <label htmlFor="assessment-template-name" className="text-xs font-bold text-slate-500 ml-1 group-focus-within:text-indigo-600 transition-colors">Template Name</label>
                                             <input
+                                                id="assessment-template-name"
                                                 type="text"
                                                 value={name}
                                                 onChange={e => setName(e.target.value)}
@@ -516,8 +529,9 @@ export default function AssessmentTemplatesPage() {
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-8">
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-bold text-slate-500   ml-1">Type</label>
+                                                        <label htmlFor="assessment-type" className="text-[10px] font-bold text-slate-500   ml-1">Type</label>
                                                         <select
+                                                            id="assessment-type"
                                                             value={type}
                                                             onChange={e => setType(e.target.value as "APTITUDE" | "CODING" | "BOTH")}
                                                             className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:bg-white/10 transition-all"
@@ -529,8 +543,9 @@ export default function AssessmentTemplatesPage() {
                                                         </select>
                                                     </div>
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-bold text-slate-500   ml-1">Topic / Skills</label>
+                                                        <label htmlFor="assessment-topic" className="text-[10px] font-bold text-slate-500   ml-1">Topic / Skills</label>
                                                         <input
+                                                            id="assessment-topic"
                                                             type="text"
                                                             value={topic}
                                                             onChange={e => setTopic(e.target.value)}
@@ -543,22 +558,24 @@ export default function AssessmentTemplatesPage() {
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-8">
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-bold text-slate-500   ml-1">Question Count</label>
+                                                        <label htmlFor="assessment-question-count" className="text-[10px] font-bold text-slate-500   ml-1">Question Count</label>
                                                         <input
+                                                            id="assessment-question-count"
                                                             type="number"
                                                             value={questionCount}
-                                                            onChange={e => setQuestionCount(parseInt(e.target.value))}
+                                                            onChange={e => setQuestionCount(Number.parseInt(e.target.value))}
                                                             className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:bg-white/10 transition-all"
                                                             required
                                                             readOnly={!canAccess("assessments:moderate")}
                                                         />
                                                     </div>
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-bold text-slate-500   ml-1">Duration (Mins)</label>
+                                                        <label htmlFor="assessment-duration" className="text-[10px] font-bold text-slate-500   ml-1">Duration (Mins)</label>
                                                         <input
+                                                            id="assessment-duration"
                                                             type="number"
                                                             value={duration}
-                                                            onChange={e => setDuration(parseInt(e.target.value))}
+                                                            onChange={e => setDuration(Number.parseInt(e.target.value))}
                                                             className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:bg-white/10 transition-all"
                                                             required
                                                             readOnly={!canAccess("assessments:moderate")}
@@ -570,10 +587,11 @@ export default function AssessmentTemplatesPage() {
 
                                         <div className="space-y-2 group">
                                             <div className="flex justify-between items-center px-1">
-                                                <label className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors">Invitation Email Template</label>
+                                                <label htmlFor="assessment-email-template" className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors">Invitation Email Template</label>
                                                 <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full  ">Communication</span>
                                             </div>
                                             <select
+                                                id="assessment-email-template"
                                                 value={selectedEmailTemplateId}
                                                 onChange={e => setSelectedEmailTemplateId(e.target.value)}
                                                 className="w-full h-14 bg-white border border-slate-100 rounded-xl px-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 transition-all shadow-inner cursor-pointer"
@@ -638,9 +656,10 @@ export default function AssessmentTemplatesPage() {
                                                         {q.type === 'APTITUDE' ? (
                                                             <>
                                                                 <div className="space-y-2">
-                                                                    <label className="text-xs font-bold text-slate-500 ml-1  group-focus-within:text-indigo-600 transition-colors">Question Text</label>
-                                                                    <textarea 
-                                                                        value={q.question} 
+                                                                    <label htmlFor={`question-text-${q.id}`} className="text-xs font-bold text-slate-500 ml-1  group-focus-within:text-indigo-600 transition-colors">Question Text</label>
+                                                                    <textarea
+                                                                        id={`question-text-${q.id}`}
+                                                                        value={q.question}
                                                                         onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
                                                                         className="w-full h-28 bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-medium text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all resize-none shadow-inner"
                                                                         readOnly={!canAccess("assessments:moderate")}
@@ -653,7 +672,7 @@ export default function AssessmentTemplatesPage() {
                                                                             <input 
                                                                                 value={opt} 
                                                                                 onChange={(e) => {
-                                                                                    const newOpts = [...q.options];
+                                                                                    const newOpts = [...(q.options ?? [])];
                                                                                     newOpts[oi] = e.target.value;
                                                                                     handleUpdateQuestion(q.id, "options", newOpts);
                                                                                 }}
@@ -676,19 +695,21 @@ export default function AssessmentTemplatesPage() {
                                                             <>
                                                                 <div className="space-y-4">
                                                                     <div className="space-y-2">
-                                                                        <label className="text-xs font-bold text-slate-500 ml-1">Challenge Title</label>
-                                                                        <input 
+                                                                        <label htmlFor={`challenge-title-${q.id}`} className="text-xs font-bold text-slate-500 ml-1">Challenge Title</label>
+                                                                        <input
+                                                                            id={`challenge-title-${q.id}`}
                                                                             type="text"
-                                                                            value={q.title} 
+                                                                            value={q.title}
                                                                             onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
                                                                             className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-sm font-bold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all shadow-inner"
                                                                             placeholder="e.g. Implement Reverse Linked List"
                                                                         />
                                                                     </div>
                                                                     <div className="space-y-2">
-                                                                        <label className="text-xs font-bold text-slate-500 ml-1">Problem Specification</label>
-                                                                        <textarea 
-                                                                            value={q.description || q.problem_statement} 
+                                                                        <label htmlFor={`problem-spec-${q.id}`} className="text-xs font-bold text-slate-500 ml-1">Problem Specification</label>
+                                                                        <textarea
+                                                                            id={`problem-spec-${q.id}`}
+                                                                            value={q.description || q.problem_statement}
                                                                             onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
                                                                             className="w-full h-64 bg-slate-50 border border-slate-100 rounded-xl px-8 py-6 text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner leading-relaxed"
                                                                             readOnly={!canAccess("assessments:moderate")}

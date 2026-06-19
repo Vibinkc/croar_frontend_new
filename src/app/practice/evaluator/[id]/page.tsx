@@ -123,7 +123,7 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
                         className="group flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-all text-[10px] font-black tracking-[0.2em] "
                     >
                         <span className="material-icons-outlined text-sm">close</span>
-                        Abort_Module
+                        {"Abort_Module"}
                     </button>
                     <div className="h-5 w-[1px] bg-slate-200"></div>
                     <div className="flex flex-col">
@@ -156,7 +156,7 @@ export default function AIEvaluatorWorkspacePage({ params }: { params: Promise<{
                         ) : (
                             <>
                                 <span className="material-icons-outlined text-sm">send</span>
-                                Finalize_Submission
+                                {"Finalize_Submission"}
                             </>
                         )}
                     </button>

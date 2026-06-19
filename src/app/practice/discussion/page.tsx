@@ -139,7 +139,7 @@ export default function StudentDiscussionListPage() {
                                 onClick={() => router.push(`/practice/discussion/${gd.id}/waiting`)}
                                 className="w-full bg-slate-50 hover:bg-slate-900 text-slate-600 hover:text-white font-black text-[9px] tracking-[0.2em]  py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 border border-slate-100"
                             >
-                                JOIN_PROTOCOL
+                                {"JOIN_PROTOCOL"}
                                 <span className="material-symbols-rounded text-base">arrow_forward</span>
                             </button>
                         </div>

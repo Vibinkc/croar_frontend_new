@@ -38,7 +38,7 @@ export default function TextQuestion({
                 <div className={`p-5 rounded-2xl border ${isDark ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300' : 'bg-indigo-50 border-indigo-100 text-indigo-800'}`}>
                     <div className="flex items-center gap-2 mb-2 font-bold   text-[10px] opacity-70">
                         <span className="material-icons-outlined text-sm">auto_awesome</span>
-                        AI Analysis
+                        <span>AI Analysis</span>
                     </div>
                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{feedback}</p>
                 </div>

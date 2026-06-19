@@ -70,7 +70,7 @@ export default function EditProjectPage() {
                     href="/enterprise/projects"
                     className="inline-flex items-center gap-2 text-[10px] font-black text-slate-400 hover:text-[#7C3AED] transition-colors mb-6 uppercase tracking-widest"
                 >
-                    <span className="material-symbols-rounded text-sm">arrow_back</span>
+                    <span className="material-symbols-rounded text-sm">arrow_back</span>{""}
                     Back to Projects
                 </Link>
                 <ProjectForm projectId={id} initialData={project} />

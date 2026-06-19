@@ -9,7 +9,7 @@ const msalConfig: Configuration = {
     cache: {
         cacheLocation: "sessionStorage",
         storeAuthStateInCookie: false,
-    }
+    } as Configuration["cache"]
 };
 
 let msalInstance: PublicClientApplication | null = null;

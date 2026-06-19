@@ -193,16 +193,15 @@ export default function X360QuestionBank() {
                                 onClick={() => router.push('/enterprise/assessments-360/questions/new')}
                                 className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-[9px] font-black   transition-all flex items-center gap-2 group"
                             >
-                                <span className="material-symbols-rounded text-base group-hover:rotate-90 transition-transform">add</span>
-                                Create Manual
+                                <span className="material-symbols-rounded text-base group-hover:rotate-90 transition-transform">add</span>{"Create Manual"}
                             </button>
                         </div>
 
                         <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
                             {/* Categories Selection - More Space */}
                             <div className="xl:col-span-7">
-                                <label className="block text-[10px] font-black text-violet-100   mb-4 px-1 opacity-70">Target Competencies & Categories</label>
-                                <div className="flex flex-wrap gap-2">
+                                <label htmlFor="ai-target-categories" className="block text-[10px] font-black text-violet-100   mb-4 px-1 opacity-70">Target Competencies & Categories</label>
+                                <div id="ai-target-categories" className="flex flex-wrap gap-2">
                                     {/* Standard Categories */}
                                     {categories.map(cat => (
                                         <button
@@ -239,21 +238,23 @@ export default function X360QuestionBank() {
                             <div className="xl:col-span-5 flex flex-col justify-between gap-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Quantity</label>
+                                        <label htmlFor="ai-quantity" className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Quantity</label>
                                         <div className="relative">
-                                            <input 
+                                            <input
+                                                id="ai-quantity"
                                                 type="number"
                                                 min="1" max="20"
                                                 className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl focus:ring-2 focus:ring-white outline-none text-xs font-bold placeholder:text-violet-200 transition-all hover:bg-white/15"
                                                 value={aiConfig.count}
-                                                onChange={(e) => setAiConfig({...aiConfig, count: parseInt(e.target.value)})}
+                                                onChange={(e) => setAiConfig({...aiConfig, count: Number.parseInt(e.target.value)})}
                                             />
                                             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-violet-200 ">Items</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Business Context</label>
-                                        <input 
+                                        <label htmlFor="ai-business-context" className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Business Context</label>
+                                        <input
+                                            id="ai-business-context"
                                             type="text"
                                             placeholder="e.g. Sales, Health..."
                                             className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl focus:ring-2 focus:ring-white outline-none text-xs font-bold placeholder:text-violet-200 transition-all hover:bg-white/15"
@@ -264,9 +265,10 @@ export default function X360QuestionBank() {
                                 </div>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Add New Category</label>
+                                        <label htmlFor="ai-new-category" className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Add New Category</label>
                                         <div className="flex gap-2">
-                                            <input 
+                                            <input
+                                                id="ai-new-category"
                                                 type="text"
                                                 placeholder="Type and hit + to add..."
                                                 className="flex-1 px-4 py-3 bg-white/10 border border-white/10 rounded-xl focus:ring-2 focus:ring-white outline-none text-xs font-bold placeholder:text-violet-200 transition-all hover:bg-white/15"
@@ -329,8 +331,9 @@ export default function X360QuestionBank() {
                             </div>
                             <form onSubmit={handleAdd} className="space-y-5">
                                 <div>
-                                    <label className="block text-[9px] font-black text-slate-400   mb-2 px-1 opacity-70">Question Content</label>
-                                    <textarea 
+                                    <label htmlFor="manual-question-content" className="block text-[9px] font-black text-slate-400   mb-2 px-1 opacity-70">Question Content</label>
+                                    <textarea
+                                        id="manual-question-content"
                                         className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white focus:ring-4 focus:ring-violet-500/10 outline-none min-h-[120px] text-xs text-slate-700 placeholder:text-slate-300 transition-all font-medium leading-relaxed"
                                         value={newQuestion.text}
                                         onChange={(e) => setNewQuestion({...newQuestion, text: e.target.value})}
@@ -340,9 +343,10 @@ export default function X360QuestionBank() {
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400   mb-2.5 px-1 opacity-70">Response Type</label>
+                                        <label htmlFor="manual-response-type" className="block text-[10px] font-black text-slate-400   mb-2.5 px-1 opacity-70">Response Type</label>
                                         <div className="relative">
-                                            <select 
+                                            <select
+                                                id="manual-response-type"
                                                 className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white outline-none text-sm font-bold text-slate-600 appearance-none transition-all cursor-pointer"
                                                 value={newQuestion.type}
                                                 onChange={(e) => setNewQuestion({...newQuestion, type: e.target.value})}
@@ -354,9 +358,10 @@ export default function X360QuestionBank() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400   mb-2.5 px-1 opacity-70">Core Category</label>
+                                        <label htmlFor="manual-core-category" className="block text-[10px] font-black text-slate-400   mb-2.5 px-1 opacity-70">Core Category</label>
                                         <div className="relative">
-                                            <select 
+                                            <select
+                                                id="manual-core-category"
                                                 className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white outline-none text-sm font-bold text-slate-600 appearance-none transition-all cursor-pointer"
                                                 value={newQuestion.category}
                                                 onChange={(e) => setNewQuestion({...newQuestion, category: e.target.value})}
@@ -428,8 +433,15 @@ export default function X360QuestionBank() {
                     {/* Question List Grouped by Category - Directory View */}
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                         {/* Manual Create Card - THE "CREA" BUTTON */}
-                        <div 
+                        <div
+                            role="button"
+                            tabIndex={0}
                             onClick={() => router.push('/enterprise/assessments-360/questions/new')}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                    router.push('/enterprise/assessments-360/questions/new');
+                                }
+                            }}
                             className="bg-violet-50/30 p-5 rounded-xl border-2 border-dashed border-violet-200 hover:border-violet-400 hover:bg-violet-50 transition-all cursor-pointer flex flex-col items-center justify-center text-center group"
                         >
                             <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center text-[#7C3AED] shadow-xl group-hover:scale-110 transition-transform mb-4 border border-violet-100">
@@ -442,7 +454,7 @@ export default function X360QuestionBank() {
                         {Array.from(new Set([
                             ...categories.map(c => c.id),
                             ...questions.map(q => q.category)
-                        ])).sort().map(cat => {
+                        ])).sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0).map(cat => {
                             const catQuestions = questions.filter(q => q.category === cat);
                             const categoryIcons: Record<string, string> = {
                                 'PERFORMANCE': 'trending_up',
@@ -456,12 +468,19 @@ export default function X360QuestionBank() {
                                 'ADAPTABILITY': 'published_with_changes'
                             };
                             const icon = categoryIcons[cat] || 'folder';
-                            const label = categories.find(c => c.id === cat)?.label || cat.replace(/_/g, ' ');
+                            const label = categories.find(c => c.id === cat)?.label || cat.replaceAll('_', ' ');
 
                             return (
-                                <div 
-                                    key={cat} 
-                                    onClick={() => router.push(`/enterprise/assessments-360/questions/${cat.toLowerCase().replace(/_/g, '-')}`)}
+                                <div
+                                    key={cat}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => router.push(`/enterprise/assessments-360/questions/${cat.toLowerCase().replaceAll('_', '-')}`)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" || e.key === " ") {
+                                            router.push(`/enterprise/assessments-360/questions/${cat.toLowerCase().replaceAll('_', '-')}`);
+                                        }
+                                    }}
                                     className="group bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-200/20 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1 transition-all cursor-pointer relative overflow-hidden flex flex-col items-center text-center animate-in zoom-in duration-500"
                                 >
                                     <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-50/50 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-indigo-100 transition-colors"></div>

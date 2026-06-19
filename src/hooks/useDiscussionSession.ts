@@ -399,7 +399,7 @@ export const useDiscussionSession = (sessionId: string) => {
                 // Auto-Restart if not speaking
                 if (!isAiSpeakingRef.current) {
                     try {
-                        recognition.current.start();
+                        recognition.current?.start();
                     } catch (e) {
                         // ignore
                     }

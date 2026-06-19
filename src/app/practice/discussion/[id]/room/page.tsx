@@ -12,6 +12,9 @@ import { jwtDecode } from "jwt-decode";
 interface CurrentUser {
     id: string | number;
     name: string;
+    full_name?: string;
+    first_name?: string;
+    username?: string;
 }
 
 import { Participant } from "@/hooks/useDiscussionSession";
@@ -79,7 +82,7 @@ export default function GDDiscussionRoom({ params }: { params: Promise<{ id: str
                 // decoded.user_id is now provided by backend
                 // eslint-disable-next-line react-hooks/set-state-in-effect
                 setCurrentUser({
-                    id: decoded.user_id || decoded.sub,
+                    id: decoded.user_id || decoded.sub || "",
                     name: decoded.name || "Me"
                 });
             } catch (e) {

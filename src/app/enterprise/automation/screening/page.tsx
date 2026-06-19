@@ -304,7 +304,7 @@ export default function ScreeningAutomationPage() {
           className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#0F172A] text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
         >
           <span className="material-symbols-rounded text-lg">add_circle</span>
-          Add Rule
+          {"Add Rule"}
         </button>
       </div>
 
@@ -415,8 +415,9 @@ export default function ScreeningAutomationPage() {
               <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8 custom-scrollbar">
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400   ml-1">Target Job Requirement*</label>
+                    <label htmlFor="screening-job-requirement" className="text-[10px] font-black text-slate-400   ml-1">Target Job Requirement*</label>
                     <select
+                      id="screening-job-requirement"
                       value={form.job_requirement_id}
                       onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
                       className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold text-slate-700 focus:bg-white focus:border-indigo-500 outline-none transition-all"
@@ -427,16 +428,16 @@ export default function ScreeningAutomationPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400   ml-1">Connect to Hiring Round</label>
+                    <label htmlFor="screening-stage-index" className="text-[10px] font-black text-slate-400   ml-1">Connect to Hiring Round</label>
                     <div className="grid grid-cols-5 gap-3">
-                      <input type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder="Idx" />
+                      <input id="screening-stage-index" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder="Idx" />
                       <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} className="col-span-4 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold outline-none focus:border-indigo-500 focus:bg-white" placeholder="Round Name (e.g. Technical Interview)" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400   ml-1">Trigger Condition*</label>
-                    <textarea rows={4} value={form.criteria} onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all resize-none" placeholder="IF candidate meets this criteria (e.g. 'Shortlisted' or 'Score > 80')..." />
+                    <label htmlFor="screening-criteria" className="text-[10px] font-black text-slate-400   ml-1">Trigger Condition*</label>
+                    <textarea id="screening-criteria" rows={4} value={form.criteria} onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all resize-none" placeholder="IF candidate meets this criteria (e.g. 'Shortlisted' or 'Score > 80')..." />
                   </div>
 
                   <div className="space-y-4 pt-4 border-t border-slate-50">

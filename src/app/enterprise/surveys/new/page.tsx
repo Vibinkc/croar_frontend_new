@@ -104,8 +104,9 @@ export default function LaunchSurvey() {
                 <div className="lg:col-span-4 space-y-6">
                     <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-100/10 space-y-8">
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400   mb-3 px-1">Campaign Name</label>
-                            <input 
+                            <label htmlFor="survey-campaign-name" className="block text-[10px] font-black text-slate-400   mb-3 px-1">Campaign Name</label>
+                            <input
+                                id="survey-campaign-name"
                                 className="w-full px-5 py-4 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold text-slate-700"
                                 value={formData.name}
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -116,8 +117,9 @@ export default function LaunchSurvey() {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400   mb-3 px-1">Start Date</label>
-                                <input 
+                                <label htmlFor="survey-start-date" className="block text-[10px] font-black text-slate-400   mb-3 px-1">Start Date</label>
+                                <input
+                                    id="survey-start-date"
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-xs font-bold text-slate-700"
                                     type="date"
                                     value={formData.start_date}
@@ -126,8 +128,9 @@ export default function LaunchSurvey() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400   mb-3 px-1">End Date</label>
-                                <input 
+                                <label htmlFor="survey-end-date" className="block text-[10px] font-black text-slate-400   mb-3 px-1">End Date</label>
+                                <input
+                                    id="survey-end-date"
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-xs font-bold text-slate-700"
                                     type="date"
                                     value={formData.end_date}
@@ -138,12 +141,20 @@ export default function LaunchSurvey() {
                         </div>
 
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400   mb-4 px-1">Selected Framework</label>
-                            <div className="space-y-2">
+                            <label htmlFor="survey-framework-list" className="block text-[10px] font-black text-slate-400   mb-4 px-1">Selected Framework</label>
+                            <div id="survey-framework-list" className="space-y-2">
                                 {templates.map(tpl => (
-                                    <div 
+                                    <div
                                         key={tpl.id}
+                                        role="button"
+                                        tabIndex={0}
                                         onClick={() => setFormData({...formData, template_id: tpl.id})}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                setFormData({...formData, template_id: tpl.id});
+                                            }
+                                        }}
                                         className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-4 ${formData.template_id === tpl.id ? 'border-indigo-600 bg-indigo-50/30' : 'border-slate-50 bg-slate-50 hover:border-slate-200'}`}
                                     >
                                         <div className="min-w-0">
@@ -192,9 +203,17 @@ export default function LaunchSurvey() {
 
                     <div className={`grid grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto pr-2 custom-scrollbar transition-opacity ${formData.target_group === 'ALL' ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
                         {employees.map(emp => (
-                            <div 
+                            <div
                                 key={emp.id}
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => toggleEmployee(emp.id)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        toggleEmployee(emp.id);
+                                    }
+                                }}
                                 className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-center gap-3 ${formData.employee_ids.includes(emp.id) ? 'border-indigo-600 bg-indigo-50/30' : 'border-slate-50 bg-slate-50 hover:border-slate-200'}`}
                             >
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-[11px] transition-all border ${formData.employee_ids.includes(emp.id) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-400 border-slate-100 shadow-sm'}`}>

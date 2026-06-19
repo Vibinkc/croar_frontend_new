@@ -38,7 +38,7 @@ export default function DeployedNodesList() {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         if (!confirm("Are you sure you want to decommission this node? This action cannot be undone.")) return;
         try {
             const res = await apiClient.delete(`/api/v1/super-admin/tenants/${id}`);
@@ -80,7 +80,7 @@ export default function DeployedNodesList() {
                             </div>
                             <Link href="/super-admin/colleges" className="px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-colors flex items-center gap-2">
                                 <span className="material-icons-outlined text-sm">add</span>
-                                New Node
+                                {"New Node"}
                             </Link>
                         </div>
 

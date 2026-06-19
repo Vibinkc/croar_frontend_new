@@ -75,7 +75,7 @@ export default function QuestionPage({ params }: { params: Promise<{ topic: stri
         try {
             // const token = Cookies.get("auth_");
             const res = await apiClient.post(`/api/v1/progress/submit-answer`, {
-                question_id: parseInt(id),
+                question_id: Number.parseInt(id),
                 selected_answer: selectedKey,
                 topic: capitalizedTopic,
                 module_type: "APTITUDE"
@@ -100,7 +100,8 @@ export default function QuestionPage({ params }: { params: Promise<{ topic: stri
     };
 
     // Resizer Logic
-    const handleMouseDown = (e: React.MouseEvent) => {
+    const handleMouseDown = (e: React.MouseEvent | React.KeyboardEvent) => {
+        if (!('clientX' in e)) return;
         const startX = e.clientX;
         const startWidth = leftPaneWidth;
 
@@ -235,7 +236,10 @@ export default function QuestionPage({ params }: { params: Promise<{ topic: stri
 
                 {/* VERTICAL DRAG HANDLE */}
                 <div
+                    role="button"
+                    tabIndex={0}
                     onMouseDown={handleMouseDown}
+                    onKeyDown={handleMouseDown}
                     className="absolute top-0 bottom-0 w-1 cursor-col-resize z-50 transition-colors group flex items-center justify-center hover:bg-indigo-500/20"
                     style={{ left: `calc(${leftPaneWidth}% - 1px)` }}
                 >

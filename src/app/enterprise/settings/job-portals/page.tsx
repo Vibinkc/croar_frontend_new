@@ -182,36 +182,36 @@ export default function JobPortalsPage() {
 
                                 <div className="flex-1 overflow-y-auto p-8 space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">User Name *</label>
-                                        <input type="text" placeholder="Enter username" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none" />
+                                        <label htmlFor="jp-username" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">User Name *</label>
+                                        <input id="jp-username" type="text" placeholder="Enter username" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Display Name *</label>
-                                        <input type="text" placeholder="Portal display name" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none" />
+                                        <label htmlFor="jp-display-name" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Display Name *</label>
+                                        <input id="jp-display-name" type="text" placeholder="Portal display name" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">API Key *</label>
-                                        <input type="password" placeholder="••••••••••••••••" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none" />
+                                        <label htmlFor="jp-api-key" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">API Key *</label>
+                                        <input id="jp-api-key" type="password" placeholder="••••••••••••••••" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subscription (Annually)</label>
-                                        <input type="text" placeholder="Select subscription" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none" />
+                                        <label htmlFor="jp-subscription" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subscription (Annually)</label>
+                                        <input id="jp-subscription" type="text" placeholder="Select subscription" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none" />
                                     </div>
                                     
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Available</label>
-                                            <div className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold text-slate-400">0</div>
+                                            <label htmlFor="jp-available" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Available</label>
+                                            <div id="jp-available" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold text-slate-400">0</div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Posted</label>
-                                            <div className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold text-slate-400">0</div>
+                                            <label htmlFor="jp-posted" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Posted</label>
+                                            <div id="jp-posted" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold text-slate-400">0</div>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Job Posting Notification To</label>
-                                        <select className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none appearance-none">
+                                        <label htmlFor="jp-notification-to" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Job Posting Notification To</label>
+                                        <select id="jp-notification-to" className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] transition-all outline-none appearance-none">
                                             <option>Default Recruiter</option>
                                         </select>
                                     </div>

@@ -159,8 +159,11 @@ function LayoutContent({
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
                 <div
+                    role="button"
+                    tabIndex={0}
                     className="fixed inset-0 bg-black/50 z-40 md:hidden"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setIsMobileMenuOpen(false); } }}
                 />
             )}
 

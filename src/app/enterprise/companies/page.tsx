@@ -160,7 +160,7 @@ export default function CompaniesPage() {
                         className="self-start md:self-center px-8 py-4 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black   hover:bg-[#6D28D9] transition-all shadow-2xl shadow-indigo-200 flex items-center gap-3 group active:scale-95"
                     >
                         <span className="material-symbols-rounded text-xl group-hover:rotate-90 transition-transform">add</span>
-                        Add Company
+                        <span>{"Add Company"}</span>
                     </button>
                 )}
             </header>
@@ -266,7 +266,7 @@ export default function CompaniesPage() {
                             <div className="flex items-center gap-4">
                                 <button onClick={() => setSelectedCompany(null)} className="flex items-center gap-2 text-[10px] font-black   text-[#7C3AED] hover:text-[#6D28D9] bg-indigo-50 px-4 py-2 rounded-xl transition-all">
                                     <span className="material-symbols-rounded text-sm">arrow_back</span>
-                                    Back
+                                    <span>{"Back"}</span>
                                 </button>
                                 <span className="text-slate-200 font-black">/</span>
                                 <h2 className="text-sm font-black text-slate-900  tracking-tighter">{selectedCompany.name}</h2>
@@ -274,7 +274,7 @@ export default function CompaniesPage() {
                             <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-bold   border border-emerald-100">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    Live
+                                    <span>{"Live"}</span>
                                 </div>
                             </div>
                         </div>
@@ -440,8 +440,9 @@ export default function CompaniesPage() {
 
                             <form onSubmit={handleAddCompany} className="space-y-8">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 px-2">Company Name</label>
+                                    <label htmlFor="company-name" className="text-[10px] font-black text-slate-500 px-2">Company Name</label>
                                     <input
+                                        id="company-name"
                                         type="text"
                                         required
                                         className="w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] focus:ring-8 focus:ring-[#7C3AED]/5 outline-none transition-all shadow-inner"
@@ -452,8 +453,9 @@ export default function CompaniesPage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 px-2">Industry</label>
+                                        <label htmlFor="company-industry" className="text-[10px] font-black text-slate-500 px-2">Industry</label>
                                         <input
+                                            id="company-industry"
                                             type="text"
                                             className="w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] outline-none transition-all shadow-inner"
                                             placeholder="Fintech"
@@ -462,8 +464,9 @@ export default function CompaniesPage() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 px-2">Location</label>
+                                        <label htmlFor="company-location" className="text-[10px] font-black text-slate-500 px-2">Location</label>
                                         <input
+                                            id="company-location"
                                             type="text"
                                             className="text-xs w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] outline-none transition-all shadow-inner"
                                             placeholder="London, UK"

@@ -151,7 +151,7 @@ export default function ResumeBuilderForm() {
         try {
             let res;
             const payload = {
-                template_id: template.id,
+                template_id: template?.id,
                 data: formData
             };
 
@@ -232,8 +232,9 @@ export default function ResumeBuilderForm() {
 
                 {parsingSource === "file" && (
                     <div className="mt-8 p-6 bg-white rounded-2xl border-2 border-dashed border-orange-200 animate-in fade-in slide-in-from-top-4 duration-300">
-                        <label className="block text-sm font-black text-slate-900 mb-2">Select your resume (PDF, DOCX or TXT)</label>
+                        <label htmlFor="resume-file-input" className="block text-sm font-black text-slate-900 mb-2">Select your resume (PDF, DOCX or TXT)</label>
                         <input
+                            id="resume-file-input"
                             type="file"
                             accept=".pdf,.docx,.txt"
                             onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
@@ -244,8 +245,9 @@ export default function ResumeBuilderForm() {
 
                 {parsingSource === "text" && (
                     <div className="mt-8 animate-in fade-in slide-in-from-top-4 duration-300">
-                        <label className="block text-sm font-black text-slate-900 mb-2">Paste resume text below</label>
+                        <label htmlFor="resume-paste-text" className="block text-sm font-black text-slate-900 mb-2">Paste resume text below</label>
                         <textarea
+                            id="resume-paste-text"
                             value={pastedText}
                             onChange={(e) => setPastedText(e.target.value)}
                             placeholder="e.g. John Doe, Senior Software Engineer..."

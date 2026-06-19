@@ -319,11 +319,11 @@ export default function ProfilePage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                             <p className="text-[10px] font-black text-slate-400   mb-2">Assessment Score</p>
-                            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4">{Math.round(stats?.average_score) || 0}%</h2>
+                            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4">{Math.round(stats?.average_score ?? 0) || 0}%</h2>
                             <div className="h-24 w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={[
-                                        { v: 65 }, { v: 72 }, { v: 68 }, { v: 85 }, { v: Math.round(stats?.average_score) || 0 }
+                                        { v: 65 }, { v: 72 }, { v: 68 }, { v: 85 }, { v: Math.round(stats?.average_score ?? 0) || 0 }
                                     ]}>
                                         <defs>
                                             <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
@@ -368,12 +368,12 @@ export default function ProfilePage() {
                                 <div className="pt-4 border-t border-slate-50 dark:border-slate-800 space-y-3">
                                     <p className="text-[10px] font-black text-slate-400   mb-1">Next Milestones</p>
                                     {earnedBadges.filter(b => b.next).map((badge) => {
-                                        const progress = (badge.next.current / badge.next.target) * 100;
+                                        const progress = (badge.next!.current / badge.next!.target) * 100;
                                         return (
                                             <div key={`next-${badge.id}`} className="space-y-1">
                                                 <div className="flex justify-between text-[8px] font-black   text-slate-500">
                                                     <span>{badge.group}</span>
-                                                    <span>{badge.next.current} / {badge.next.target}</span>
+                                                    <span>{badge.next!.current} / {badge.next!.target}</span>
                                                 </div>
                                                 <div className="w-full h-1 bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden">
                                                     <div
@@ -610,7 +610,15 @@ export default function ProfilePage() {
                             {certificates.filter(c => c.level > 0).map((cert) => (
                                 <div
                                     key={`showcase-cert-${cert.id}`}
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={() => setSelectedCert(cert)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            setSelectedCert(cert);
+                                        }
+                                    }}
                                     className="cursor-pointer group relative flex flex-col items-center p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 hover:border-amber-500/50 hover:shadow-lg transition-all"
                                 >
                                     <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-white mb-3 shadow-md ${cert.level === 3 ? 'bg-gradient-to-br from-amber-400 to-amber-600' :
@@ -752,7 +760,7 @@ export default function ProfilePage() {
                                             className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-full text-[10px] font-black   hover:bg-slate-800 transition-all shadow-lg active:scale-95"
                                         >
                                             <span className="material-symbols-rounded text-lg">download</span>
-                                            Download (PDF)
+                                            {"Download (PDF)"}
                                         </button>
                                     </div>
                                 </div>

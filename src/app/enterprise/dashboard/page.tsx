@@ -111,7 +111,7 @@ export default function EnterpriseDashboard() {
                     <div>
                         <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black   mb-4">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            Dashboard
+                            {"Dashboard"}
                         </div>
                         <h2 className="text-2xl md:text-4xl font-black tracking-tighter leading-none mb-3 ">
                             {greeting}, <span className="text-indigo-400">{isLoading ? 'COMMANDER' : stats.agent_name}</span>.
@@ -125,19 +125,19 @@ export default function EnterpriseDashboard() {
                         {canAccess("jobs:read") && (
                             <Link href="/enterprise/croar-pilot" className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-xl text-[10px] font-black hover:from-indigo-400 hover:to-violet-400 transition-all shadow-xl shadow-indigo-900/30 active:scale-95 flex items-center gap-2">
                                 <span className="material-symbols-rounded text-lg">smart_toy</span>
-                                Hire with AI
+                                {"Hire with AI"}
                             </Link>
                         )}
                         {canAccess("jobs:create") && (
                             <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-white text-slate-900 rounded-xl text-[10px] font-black   hover:bg-indigo-400 hover:text-white transition-all shadow-xl active:scale-95 flex items-center gap-2">
                                 <span className="material-symbols-rounded text-lg">add_box</span>
-                                Post New Job
+                                {"Post New Job"}
                             </Link>
                         )}
                         {canAccess("candidates:read") && (
                             <Link href="/enterprise/candidates/kanban" className="px-6 py-3 bg-white/10 border border-white/10 text-white rounded-xl text-[10px] font-black   hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2">
                                 <span className="material-symbols-rounded text-lg">grid_goldenratio</span>
-                                Manage Pipeline
+                                {"Manage Pipeline"}
                             </Link>
                         )}
                     </div>
@@ -251,7 +251,7 @@ export default function EnterpriseDashboard() {
                                     {module.description}
                                 </p>
                                 <div className={`flex items-center gap-1 text-[10px] font-black ${getColorClasses(module.color).text}`}>
-                                    Open
+                                    {"Open"}
                                     <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                 </div>
                             </div>

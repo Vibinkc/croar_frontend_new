@@ -5,6 +5,58 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { apiClient } from "@/utils/api";
 import CodeQuestion from "@/components/assessment/CodeQuestion";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface TestCase {
+    input?: string;
+    output?: string;
+    expected?: string;
+    explanation?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
+}
+
+interface ProblemContent {
+    question?: string;
+    initial_code?: { [language: string]: string };
+    test_cases?: TestCase[];
+    examples?: TestCase[];
+    constraints?: string[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
+}
+
+interface Problem {
+    id?: number | string;
+    difficulty?: string;
+    topic?: string;
+    content: ProblemContent;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
+}
+
+interface TestResult {
+    case_id?: number | null;
+    passed?: boolean;
+    actual_output?: string;
+    expected_output?: string;
+    message?: string;
+}
+
+interface AnalysisResult {
+    score?: number;
+    feedback?: string;
+    test_results?: TestResult[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
+}
+
+interface TransformedTestResult {
+    passed?: boolean;
+    actual?: string;
+    expected?: string;
+    message?: string;
+}
+
 export default function CodingEditorPage({ params }: { params: Promise<{ id: string }> }) {
     const unwrappedParams = use(params);
     const { id } = unwrappedParams;
@@ -396,7 +448,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                                     </div>
                                 </div>
 
-                                {(problem.content.examples || problem.content.test_cases?.length || 0 > 0) && (
+                                {(problem.content.examples || problem.content.test_cases?.length || false) && (
                                     <div className="space-y-6 pt-4">
                                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                         {(problem.content.examples || problem.content.test_cases?.slice(0, 2))?.map((ex: any, i: number) => (
@@ -442,7 +494,15 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
 
                     {showConsole && (
                         <div
+                            role="button"
+                            tabIndex={0}
+                            aria-label="Resize console panel"
                             onMouseDown={handleLeftHorizontalMouseDown}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                }
+                            }}
                             className={`h-1 cursor-row-resize z-40 group flex items-center justify-center transition-colors hover:bg-indigo-500/20 ${isDark ? 'bg-[#2d2e32]' : 'bg-slate-100'}`}
                         >
                             <div className={`h-[1px] w-full ${isDark ? 'bg-[#3f4147]' : 'bg-slate-200'} group-hover:bg-indigo-500/50`} />
@@ -492,7 +552,15 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                 </div>
 
                 <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Resize panels"
                     onMouseDown={handleMouseDown}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                        }
+                    }}
                     className="absolute top-0 bottom-0 w-1 cursor-col-resize z-50 transition-colors group flex items-center justify-center hover:bg-indigo-500/20"
                     style={{ left: `calc(${leftPaneWidth}% - 1px)` }}
                 >
@@ -569,7 +637,7 @@ export default function CodingEditorPage({ params }: { params: Promise<{ id: str
                                 }`}
                         >
                             <span className="material-icons-outlined text-[18px]">check</span>
-                            Submit
+                            <span>Submit</span>
                         </button>
                     </div>
                 </div>

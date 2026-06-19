@@ -164,7 +164,7 @@ const PLATFORM_DOMAINS: Record<string, string> = {
 };
 
 const PlatformLogoRenderer = ({ platform, className }: { platform: string; className?: string }) => {
-    const pLower = platform.toLowerCase().replace(/[^a-z]/g, '');
+    const pLower = platform.toLowerCase().replaceAll(/[^a-z]/g, '');
     const domain = PLATFORM_DOMAINS[pLower] || `${pLower}.com`;
     
     if (pLower === "leetcode") {
@@ -348,7 +348,7 @@ export default function ProfileSourcingPage() {
             <div className="flex items-start justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2 flex items-center gap-3">
-                        Profile Sourcing
+                        {"Profile Sourcing"}
                         <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-full border border-indigo-100">
                             New Feature
                         </span>
@@ -662,7 +662,7 @@ export default function ProfileSourcingPage() {
                                                                 return (
                                                                     <div key={key} className="flex flex-col bg-slate-50/50 p-2 rounded-xl border border-slate-100/50 hover:bg-white hover:border-indigo-100 transition-all">
                                                                         <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter truncate opacity-70">
-                                                                            {key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim()}
+                                                                            {key.replaceAll(/([A-Z])/g, ' $1').replaceAll('_', ' ').trim()}
                                                                         </span>
                                                                         <span className="text-[10px] font-bold text-slate-700 truncate" title={String(value)}>
                                                                             {String(value)}
@@ -835,7 +835,7 @@ export default function ProfileSourcingPage() {
                                     <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/10 max-w-2xl w-full space-y-4">
                                         <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
                                             <span className="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse shadow-glow" />
-                                            I've mapped out targeted search rules matching your directives:
+                                            {"I've mapped out targeted search rules matching your directives:"}
                                         </p>
 
                                         <div className="flex flex-wrap items-center gap-2 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 shadow-inner">
@@ -1079,8 +1079,9 @@ export default function ProfileSourcingPage() {
                             <div className="flex-1 p-8 space-y-6 overflow-y-auto custom-scrollbar">
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-600 uppercase tracking-wider">Min Experience (Years)</label>
+                                        <label htmlFor="sourcing-min-exp" className="text-xs font-black text-slate-600 uppercase tracking-wider">Min Experience (Years)</label>
                                         <input
+                                            id="sourcing-min-exp"
                                             type="number"
                                             value={extractedFilters.minExp}
                                             onChange={(e) => setExtractedFilters({ ...extractedFilters, minExp: e.target.value })}
@@ -1088,8 +1089,9 @@ export default function ProfileSourcingPage() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-600 uppercase tracking-wider">Max Experience (Years)</label>
+                                        <label htmlFor="sourcing-max-exp" className="text-xs font-black text-slate-600 uppercase tracking-wider">Max Experience (Years)</label>
                                         <input
+                                            id="sourcing-max-exp"
                                             type="text"
                                             placeholder="Example: 10 years"
                                             className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 text-sm font-semibold text-slate-700 focus:outline-none focus:border-indigo-500"
@@ -1098,8 +1100,9 @@ export default function ProfileSourcingPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-600 uppercase tracking-wider">Job Title</label>
+                                    <label htmlFor="sourcing-job-title" className="text-xs font-black text-slate-600 uppercase tracking-wider">Job Title</label>
                                     <input
+                                        id="sourcing-job-title"
                                         type="text"
                                         value={extractedFilters.title}
                                         onChange={(e) => setExtractedFilters({ ...extractedFilters, title: e.target.value })}
@@ -1108,8 +1111,9 @@ export default function ProfileSourcingPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-600 uppercase tracking-wider">Location</label>
+                                    <label htmlFor="sourcing-location" className="text-xs font-black text-slate-600 uppercase tracking-wider">Location</label>
                                     <input
+                                        id="sourcing-location"
                                         type="text"
                                         value={extractedFilters.location}
                                         onChange={(e) => setExtractedFilters({ ...extractedFilters, location: e.target.value })}
@@ -1124,8 +1128,13 @@ export default function ProfileSourcingPage() {
 
             {selectedProfileDetails && (
                 <div
+                    role="button"
+                    tabIndex={0}
                     className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex justify-end"
                     onClick={() => setSelectedProfileDetails(null)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") setSelectedProfileDetails(null);
+                    }}
                 >
                     <motion.div
                         initial={{ x: "100%" }}

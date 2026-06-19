@@ -57,7 +57,7 @@ const getStatusColor = (statusName: string) => {
 const safeFormat = (value: string | null | undefined, pattern: string): string => {
     if (!value) return "—";
     const d = new Date(value);
-    return isNaN(d.getTime()) ? "—" : format(d, pattern);
+    return Number.isNaN(d.getTime()) ? "—" : format(d, pattern);
 };
 
 export default function OnboardingDashboard() {

@@ -268,7 +268,7 @@ export default function VideoInterviewRoom() {
                                 className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black   transition-all flex items-center justify-center gap-2"
                             >
                                 <span className="material-icons">fiber_manual_record</span>
-                                Start Answer
+                                {"Start Answer"}
                             </button>
                         )}
 
@@ -286,7 +286,7 @@ export default function VideoInterviewRoom() {
                                 onClick={handleNext}
                                 className="w-full py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-black   transition-all flex items-center justify-center gap-2"
                             >
-                                Confirm & Next
+                                {"Confirm & Next"}
                                 <span className="material-icons">arrow_forward</span>
                             </button>
                         )}

@@ -142,7 +142,7 @@ function RolesContent() {
                         className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all shadow-lg flex items-center gap-2"
                     >
                         <span className="material-symbols-rounded text-sm">security</span>
-                        Define New Role
+                        {"Define New Role"}
                     </button>
                 )}
             </div>
@@ -168,8 +168,9 @@ function RolesContent() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-6">
                                         <div>
-                                            <label className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Role Identity</label>
+                                            <label htmlFor="role-identity" className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Role Identity</label>
                                             <input
+                                                id="role-identity"
                                                 className="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-100 transition-all"
                                                 placeholder="e.g. REGIONAL_MANAGER"
                                                 value={name} onChange={e => setName(e.target.value.toUpperCase())} required
@@ -177,16 +178,18 @@ function RolesContent() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Rank Priority (Lower = higher auth)</label>
+                                            <label htmlFor="role-rank" className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Rank Priority (Lower = higher auth)</label>
                                             <input
+                                                id="role-rank"
                                                 className="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-100 transition-all"
                                                 type="number"
-                                                value={rank} onChange={e => setRank(parseInt(e.target.value))} required
+                                                value={rank} onChange={e => setRank(Number.parseInt(e.target.value))} required
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Capabilities Summary</label>
+                                            <label htmlFor="role-description" className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Capabilities Summary</label>
                                             <textarea
+                                                id="role-description"
                                                 className="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-100 transition-all resize-none min-h-[120px]"
                                                 placeholder="Describe what this role manages..."
                                                 value={description} onChange={e => setDescription(e.target.value)}
@@ -197,7 +200,7 @@ function RolesContent() {
                                     <div className="space-y-6">
                                         <div className="flex justify-between items-center mb-2">
                                             <label className="text-[10px] font-black text-slate-900  tracking-[0.2em] ml-1">
-                                                Assigned Permissions
+                                                {"Assigned Permissions"}
                                                 <span className="text-indigo-600 font-black ml-3">{selectedPermIds.length} Active</span>
                                             </label>
                                         </div>
@@ -219,9 +222,17 @@ function RolesContent() {
                                                     <h4 className="text-[9px] font-black text-slate-400   border-b border-slate-200 pb-1">{module} Module</h4>
                                                     <div className="grid grid-cols-1 gap-2">
                                                         {groupedPermissions[module].map((perm) => (
-                                                            <div 
+                                                            <div
                                                                 key={perm.id}
+                                                                role="button"
+                                                                tabIndex={0}
                                                                 onClick={() => togglePermission(perm.id)}
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === "Enter" || e.key === " ") {
+                                                                        e.preventDefault();
+                                                                        togglePermission(perm.id);
+                                                                    }
+                                                                }}
                                                                 className={`p-3 rounded-xl border text-[10px] font-black   cursor-pointer transition-all flex items-center justify-between ${selectedPermIds.includes(perm.id) ? 'bg-slate-900 text-white border-slate-900 shadow-lg' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'}`}
                                                             >
                                                                 <span>{perm.resource} : {perm.action}</span>
@@ -294,7 +305,7 @@ function RolesContent() {
                                             className="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl text-[10px] font-black   hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center gap-2"
                                         >
                                             <span className="material-icons-outlined text-sm">edit_note</span>
-                                            Configure
+                                            {"Configure"}
                                         </button>
                                         {!role.is_system && (
                                             <button 

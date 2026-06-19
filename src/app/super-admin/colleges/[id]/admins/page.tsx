@@ -127,36 +127,40 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                             <h2 className="text-sm font-black   mb-6 flex items-center gap-2">
                                 <span className="material-icons-outlined text-blue-500">person_add</span>
-                                Add New Admin
+                                {"Add New Admin"}
                             </h2>
                             <form onSubmit={handleCreate} className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400   ml-1">First Name</label>
+                                        <label htmlFor="admin-first-name" className="text-[10px] font-black text-slate-400   ml-1">First Name</label>
                                         <input
+                                            id="admin-first-name"
                                             className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                             value={firstName} onChange={e => setFirstName(e.target.value)} required
                                         />
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400   ml-1">Last Name</label>
+                                        <label htmlFor="admin-last-name" className="text-[10px] font-black text-slate-400   ml-1">Last Name</label>
                                         <input
+                                            id="admin-last-name"
                                             className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                             value={lastName} onChange={e => setLastName(e.target.value)} required
                                         />
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400   ml-1">Email / Username</label>
+                                    <label htmlFor="admin-email" className="text-[10px] font-black text-slate-400   ml-1">Email / Username</label>
                                     <input
+                                        id="admin-email"
                                         type="email"
                                         className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                         value={email} onChange={e => setEmail(e.target.value)} required
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400   ml-1">Secure Password</label>
+                                    <label htmlFor="admin-password" className="text-[10px] font-black text-slate-400   ml-1">Secure Password</label>
                                     <input
+                                        id="admin-password"
                                         type="password"
                                         className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                         value={password} onChange={e => setPassword(e.target.value)} required

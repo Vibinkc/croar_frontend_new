@@ -112,7 +112,7 @@ export default function TemplatesHubPage() {
                     className="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5 shrink-0"
                 >
                     <span className="material-symbols-rounded text-base">smart_toy</span>
-                    Open Croar Pilot
+                    {"Open Croar Pilot"}
                 </Link>
             </div>
         </div>

@@ -53,7 +53,7 @@ export default function X360CyclesList() {
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">Assessment Cycles</h1>
                     </div>
                     <p className="text-slate-400 font-black   text-[10px] flex items-center gap-2">
-                        <span className="material-symbols-rounded text-sm text-indigo-500">sync</span>
+                        <span className="material-symbols-rounded text-sm text-indigo-500">sync</span>{""}
                         Manage performance reviews and comprehensive feedback
                     </p>
                 </div>
@@ -115,7 +115,7 @@ export default function X360CyclesList() {
                                             onClick={() => router.push(`/enterprise/assessments-360/cycles/${cycle.id}`)}
                                             className="px-6 py-2.5 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[10px]   hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm flex items-center gap-2 ml-auto"
                                         >
-                                            Track Progress
+                                            Track Progress{""}
                                             <span className="material-symbols-rounded text-sm">trending_up</span>
                                         </button>
                                     </td>

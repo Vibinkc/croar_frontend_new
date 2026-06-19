@@ -606,9 +606,12 @@ export default function ProfileSourcingChatPage() {
                             </div>
                         ) : (
                             sessions.map((session) => (
-                                <div 
+                                <div
                                     key={session.session_id}
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={() => loadSession(session.session_id)}
+                                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { loadSession(session.session_id); } }}
                                     className={`group relative p-4 rounded-2xl border transition-all cursor-pointer ${
                                         currentSessionId === session.session_id
                                             ? "bg-white border-indigo-100 shadow-md shadow-indigo-500/5 ring-1 ring-indigo-500/10"
@@ -755,7 +758,7 @@ export default function ProfileSourcingChatPage() {
                             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/10 max-w-2xl w-full space-y-4">
                                 <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
                                     <span className="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse shadow-glow" />
-                                    I've mapped out targeted search rules matching your directives:
+                                    {" "}<span>I've mapped out targeted search rules matching your directives:</span>
                                 </p>
 
                                 <div className="flex flex-wrap items-center gap-2 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 shadow-inner">
@@ -1001,7 +1004,7 @@ export default function ProfileSourcingChatPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center self-end md:self-start" onClick={(e) => e.stopPropagation()}>
+                                            <div className="flex items-center self-end md:self-start" role="button" tabIndex={0} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); } }}>
                                                 <button
                                                     onClick={() => openShortlistModal(profile)}
                                                     className={`flex items-center rounded-xl border font-bold text-xs shadow-sm bg-white border-slate-200/80 transition-all hover:bg-slate-50`}
@@ -1122,26 +1125,28 @@ export default function ProfileSourcingChatPage() {
                         </div>
                         <div className="space-y-3">
                             <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-slate-400">Target Role</label>
-                                <input 
-                                    type="text" 
-                                    value={extractedFilters.title} 
+                                <label htmlFor="filter-target-role" className="text-[10px] font-black uppercase text-slate-400">Target Role</label>
+                                <input
+                                    id="filter-target-role"
+                                    type="text"
+                                    value={extractedFilters.title}
                                     onChange={(e) => setExtractedFilters({...extractedFilters, title: e.target.value})} 
                                     className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-xs font-semibold text-slate-700"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-slate-400">Location Area</label>
-                                <input 
-                                    type="text" 
-                                    value={extractedFilters.location} 
+                                <label htmlFor="filter-location-area" className="text-[10px] font-black uppercase text-slate-400">Location Area</label>
+                                <input
+                                    id="filter-location-area"
+                                    type="text"
+                                    value={extractedFilters.location}
                                     onChange={(e) => setExtractedFilters({...extractedFilters, location: e.target.value})} 
                                     className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-xs font-semibold text-slate-700"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-slate-400">Target Platform</label>
-                                <div className="max-h-60 overflow-y-auto p-2 border border-slate-100/80 rounded-2xl bg-slate-50/50 space-y-1 custom-scrollbar">
+                                <label htmlFor="filter-target-platform" className="text-[10px] font-black uppercase text-slate-400">Target Platform</label>
+                                <div id="filter-target-platform" className="max-h-60 overflow-y-auto p-2 border border-slate-100/80 rounded-2xl bg-slate-50/50 space-y-1 custom-scrollbar">
                                     <div className="grid grid-cols-2 gap-2">
                                         {[
                                             { id: "All", name: "All Platforms" },
@@ -1224,9 +1229,10 @@ export default function ProfileSourcingChatPage() {
                         </div>
                         <div className="overflow-y-auto space-y-4">
                             <div className="space-y-1">
-                                <label className="text-sm font-bold text-slate-800">Paste Job Description</label>
+                                <label htmlFor="job-description-textarea" className="text-sm font-bold text-slate-800">Paste Job Description</label>
                                 <p className="text-xs text-slate-400 font-medium mb-2">Don't worry about the formatting, we'll take care of that for you</p>
-                                <textarea 
+                                <textarea
+                                    id="job-description-textarea"
                                     rows={8}
                                     value={jobDescription}
                                     onChange={(e) => setJobDescription(e.target.value)}
@@ -1235,9 +1241,9 @@ export default function ProfileSourcingChatPage() {
                                 />
                             </div>
                             <div className="border-t border-slate-100 pt-3 space-y-2">
-                                <label className="text-sm font-bold text-slate-800 flex items-center gap-2">Upload Job Description</label>
+                                <label htmlFor="job-upload-button" className="text-sm font-bold text-slate-800 flex items-center gap-2">Upload Job Description</label>
                                 <p className="text-xs text-slate-400 font-medium">You can upload PDF or text documents like .docx, .txt, or formatted text</p>
-                                <button className="px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition-all shadow-sm">
+                                <button id="job-upload-button" className="px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition-all shadow-sm">
                                     Upload
                                 </button>
                             </div>
@@ -1330,7 +1336,7 @@ export default function ProfileSourcingChatPage() {
             {/* Sliding Drawer Panel */}
             {selectedProfile && (
                 <div className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setSelectedProfile(null)} />
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" role="button" tabIndex={0} onClick={() => setSelectedProfile(null)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setSelectedProfile(null); } }} />
                     <div className="relative bg-white w-full max-w-lg h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
                         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                             <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
@@ -1515,8 +1521,8 @@ export default function ProfileSourcingChatPage() {
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Choose Job Role</label>
-                                <div className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto no-scrollbar pr-1">
+                                <label htmlFor="shortlist-job-role" className="text-[10px] font-black uppercase text-slate-500 ml-1">Choose Job Role</label>
+                                <div id="shortlist-job-role" className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto no-scrollbar pr-1">
                                     {jobs.length === 0 ? (
                                         <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
                                             <p className="text-[10px] font-bold text-slate-500 italic">No active jobs found. Create one in Jobs hub first.</p>

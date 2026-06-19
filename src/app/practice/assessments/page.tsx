@@ -191,13 +191,13 @@ export default function AssessmentsListPage() {
                             <div className="mt-6">
                                 {a.is_completed ? (
                                     <button disabled className="w-full bg-slate-50 text-slate-400 font-black text-[9px] tracking-[0.2em]  py-3 rounded-2xl cursor-not-allowed flex items-center justify-center gap-2 border border-slate-100">
-                                        PROTOCOL_FINALIZED
+                                        <span>PROTOCOL_FINALIZED</span>
                                         <span className="material-symbols-rounded text-base">verified</span>
                                     </button>
                                 ) : isActive ? (
                                     <Link href={`/practice/assessments/${a.id}`}>
                                         <button className="w-full bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white font-black text-[9px] tracking-[0.2em]  py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-sm shadow-slate-100">
-                                            INITIATE_PROTOCOL
+                                            <span>INITIATE_PROTOCOL</span>
                                             <span className="material-symbols-rounded text-base">arrow_forward</span>
                                         </button>
                                     </Link>

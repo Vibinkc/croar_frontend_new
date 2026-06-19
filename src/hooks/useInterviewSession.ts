@@ -10,52 +10,7 @@ export interface UseInterviewSessionProps {
     interviewId: string;
 }
 
-// Polyfill types for Web Speech API
-interface SpeechRecognitionEvent extends Event {
-    results: SpeechRecognitionResultList;
-    resultIndex: number;
-}
-
-interface SpeechRecognitionResultList {
-    length: number;
-    item(index: number): SpeechRecognitionResult;
-    [index: number]: SpeechRecognitionResult;
-}
-
-interface SpeechRecognitionResult {
-    isFinal: boolean;
-    length: number;
-    item(index: number): SpeechRecognitionAlternative;
-    [index: number]: SpeechRecognitionAlternative;
-}
-
-interface SpeechRecognitionAlternative {
-    transcript: string;
-    confidence: number;
-}
-
-interface SpeechRecognition extends EventTarget {
-    continuous: boolean;
-    interimResults: boolean;
-    lang: string;
-    start(): void;
-    stop(): void;
-    abort(): void;
-    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void) | null;
-    onerror: ((this: SpeechRecognition, ev: { error: string }) => void) | null;
-    onend: ((this: SpeechRecognition, ev: Event) => void) | null;
-}
-
-declare global {
-    interface Window {
-        SpeechRecognition: {
-            new(): SpeechRecognition;
-        };
-        webkitSpeechRecognition: {
-            new(): SpeechRecognition;
-        };
-    }
-}
+// Web Speech API types are declared globally in src/types/speech.d.ts.
 
 interface BackendResults {
     overall_score?: number;

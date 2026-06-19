@@ -50,7 +50,13 @@ const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; o
     const details = candidate.parsed_data || {};
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm" onClick={onClose}>
+        <div
+            role="button"
+            tabIndex={0}
+            className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm"
+            onClick={onClose}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { onClose(); } }}
+        >
             <motion.div
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
@@ -204,7 +210,7 @@ export default function AllCandidatesPage() {
                         if (candidateEntry && !candidateEntry.applied_jobs?.some(j => j.id === jobId)) {
                             candidateEntry.applied_jobs?.push({
                                 id: jobId,
-                                title: jobInfo.title
+                                title: jobInfo!.title
                             });
                         }
                     }

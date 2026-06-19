@@ -223,9 +223,10 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-400   px-1">Survey Category</label>
+                                <label htmlFor="survey-category" className="text-[10px] font-bold text-slate-400   px-1">Survey Category</label>
                                 <div className="relative">
-                                    <select 
+                                    <select
+                                        id="survey-category"
                                         className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 appearance-none transition-all"
                                         value={formData.survey_type_id}
                                         onChange={(e) => setFormData({...formData, survey_type_id: e.target.value})}
@@ -238,8 +239,9 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-400   px-1">Framework Title</label>
-                                <input 
+                                <label htmlFor="framework-title" className="text-[10px] font-bold text-slate-400   px-1">Framework Title</label>
+                                <input
+                                    id="framework-title"
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 placeholder:text-slate-300 transition-all"
                                     value={formData.title}
                                     onChange={(e) => setFormData({...formData, title: e.target.value})}
@@ -248,8 +250,9 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                                 />
                             </div>
                             <div className="md:col-span-2 space-y-2">
-                                <label className="text-[10px] font-bold text-slate-400   px-1">Executive Instructions</label>
-                                <textarea 
+                                <label htmlFor="executive-instructions" className="text-[10px] font-bold text-slate-400   px-1">Executive Instructions</label>
+                                <textarea
+                                    id="executive-instructions"
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 placeholder:text-slate-300 min-h-[100px] transition-all leading-relaxed"
                                     value={formData.description}
                                     onChange={(e) => setFormData({...formData, description: e.target.value})}
@@ -276,7 +279,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                                     className="bg-slate-900 text-white text-[10px] font-bold   flex items-center gap-2 hover:bg-indigo-600 px-5 py-2.5 rounded-xl transition-all disabled:opacity-30"
                                 >
                                     <span className="material-symbols-rounded text-lg">psychology</span>
-                                    AI Wizard
+                                    <span>AI Wizard</span>
                                 </button>
                                 <button 
                                     type="button" 
@@ -284,7 +287,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                                     className="bg-white border border-slate-200 text-slate-900 text-[10px] font-bold   flex items-center gap-2 hover:bg-slate-50 px-5 py-2.5 rounded-xl transition-all"
                                 >
                                     <span className="material-symbols-rounded text-lg">add</span>
-                                    Add Question
+                                    <span>Add Question</span>
                                 </button>
                             </div>
                         </div>
@@ -332,7 +335,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {safeOptions(q.options).map((opt: string, optIdx: number) => (
                                                     <div key={optIdx} className="flex gap-2 items-center group/opt">
-                                                        <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-bold text-slate-300 group-hover/opt:bg-indigo-50 transition-colors shrink-0">{String.fromCharCode(65 + optIdx)}</div>
+                                                        <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-bold text-slate-300 group-hover/opt:bg-indigo-50 transition-colors shrink-0">{String.fromCodePoint(65 + optIdx)}</div>
                                                         <input 
                                                             className="flex-1 px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20"
                                                             value={opt}
@@ -354,7 +357,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                                                     className="px-6 py-2.5 border border-dashed border-slate-200 rounded-xl text-[10px] font-bold text-slate-400   hover:border-indigo-200 hover:text-indigo-600 transition-all flex items-center justify-center gap-2 bg-slate-50/20"
                                                 >
                                                     <span className="material-symbols-rounded text-lg">add_circle</span>
-                                                    Add Choice
+                                                    <span>Add Choice</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -391,8 +394,9 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                         </div>
                         <div className="p-8 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-400   px-1">Describe Your Industry</label>
-                                <input 
+                                <label htmlFor="industry-nature" className="text-[10px] font-bold text-slate-400   px-1">Describe Your Industry</label>
+                                <input
+                                    id="industry-nature"
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 transition-all"
                                     value={industryNature}
                                     onChange={(e) => setIndustryNature(e.target.value)}
@@ -414,7 +418,7 @@ export default function EditTemplate({ params }: { params: Promise<{ id: string 
                                 ) : (
                                     <>
                                         <span className="material-symbols-rounded text-lg">magic_button</span>
-                                        Generate Strategy
+                                        <span>Generate Strategy</span>
                                     </>
                                 )}
                             </button>

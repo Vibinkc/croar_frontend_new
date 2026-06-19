@@ -209,7 +209,7 @@ export default function GlobalTasksPage() {
                             className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-xl text-[10px] font-black text-slate-600   hover:bg-slate-50 transition-all"
                         >
                             <span className="material-symbols-rounded text-sm">refresh</span>
-                            Sync Board
+                            {"Sync Board"}
                         </button>
                     </div>
 

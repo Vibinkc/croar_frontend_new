@@ -377,7 +377,7 @@ export default function AIPracticePage() {
                                 className="h-16 px-8 bg-white text-slate-900 rounded-[1.25rem] font-black text-[11px]   hover:bg-slate-100 transition-all shadow-xl hover:-translate-y-1 active:scale-95 flex items-center gap-3"
                             >
                                 <span className="material-icons-outlined text-xl">add_circle</span>
-                                Initialize Session
+                                {"Initialize Session"}
                             </button>
                         )}
                     </div>
@@ -493,11 +493,11 @@ export default function AIPracticePage() {
                                 {analyzing ? (
                                     <>
                                         <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                                        Analyzing...
+                                        {"Analyzing..."}
                                     </>
                                 ) : (
                                     <>
-                                        Analyze & Detect Domains
+                                        {"Analyze & Detect Domains"}
                                         <span className="material-icons-outlined">arrow_forward</span>
                                     </>
                                 )}
@@ -570,13 +570,13 @@ export default function AIPracticePage() {
                                     <div>
                                         <h3 className="text-xs font-black text-slate-900  tracking-[0.2em] mb-6 flex items-center gap-2">
                                             <span className="w-2 h-4 bg-indigo-600 rounded-full"></span>
-                                            Configuration
+                                            {"Configuration"}
                                         </h3>
 
                                         <div className="space-y-6">
                                             <div>
-                                                <label className="text-[10px] font-bold text-slate-400   mb-3 block">Complexity Level</label>
-                                                <div className="flex gap-2 p-1.5 bg-slate-50 rounded-xl border border-slate-100">
+                                                <label htmlFor="difficulty-group" className="text-[10px] font-bold text-slate-400   mb-3 block">Complexity Level</label>
+                                                <div id="difficulty-group" className="flex gap-2 p-1.5 bg-slate-50 rounded-xl border border-slate-100">
                                                     {(["EASY", "MEDIUM", "HARD"] as const).map((d) => (
                                                         <button
                                                             key={d}
@@ -594,12 +594,13 @@ export default function AIPracticePage() {
 
                                             <div>
                                                 <div className="flex justify-between items-baseline mb-3">
-                                                    <label className="text-[10px] font-bold text-slate-400   block">
+                                                    <label htmlFor="total-questions-range" className="text-[10px] font-bold text-slate-400   block">
                                                         Neural Load
                                                     </label>
                                                     <span className="text-sm font-black text-indigo-600">{totalQuestions} Qs</span>
                                                 </div>
                                                 <input
+                                                    id="total-questions-range"
                                                     type="range"
                                                     min="0"
                                                     max="50"
@@ -636,10 +637,11 @@ export default function AIPracticePage() {
 
                                                         <div>
                                                             <div className="flex justify-between items-baseline mb-2.5">
-                                                                <label className="text-[8px] font-bold text-slate-400  tracking-[0.2em]">Intensity</label>
+                                                                <label htmlFor="coding-questions-range" className="text-[8px] font-bold text-slate-400  tracking-[0.2em]">Intensity</label>
                                                                 <span className="text-[10px] font-black text-indigo-400">{codingQuestions} TASKS</span>
                                                             </div>
                                                             <input
+                                                                id="coding-questions-range"
                                                                 type="range"
                                                                 min="1"
                                                                 max="5"
@@ -675,10 +677,11 @@ export default function AIPracticePage() {
 
                                                         <div>
                                                             <div className="flex justify-between items-baseline mb-2.5">
-                                                                <label className="text-[8px] font-bold text-slate-400  tracking-[0.2em]">Intensity</label>
+                                                                <label htmlFor="subjective-questions-range" className="text-[8px] font-bold text-slate-400  tracking-[0.2em]">Intensity</label>
                                                                 <span className="text-[10px] font-black text-rose-400">{subjectiveQuestions} MODULES</span>
                                                             </div>
                                                             <input
+                                                                id="subjective-questions-range"
                                                                 type="range"
                                                                 min="1"
                                                                 max="3"
@@ -702,7 +705,7 @@ export default function AIPracticePage() {
                                             onClick={handleGenerate}
                                             className="w-full py-4 bg-indigo-600 text-white font-black text-[10px]  tracking-[0.2em] rounded-xl hover:bg-indigo-700 transition-all shadow-[0_15px_30px_-10px_rgba(79,70,229,0.3)] flex items-center justify-center gap-2 active:scale-[0.98]"
                                         >
-                                            Initiate Generation
+                                            {"Initiate Generation"}
                                             <span className="material-icons-outlined text-sm">bolt</span>
                                         </button>
 
@@ -710,7 +713,7 @@ export default function AIPracticePage() {
                                             onClick={handleNormalize}
                                             className="w-full py-3 bg-slate-50 text-slate-500 font-black text-[9px]   rounded-xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
                                         >
-                                            Recalibrate Balance
+                                            {"Recalibrate Balance"}
                                             <span className="material-icons-outlined text-sm">refresh</span>
                                         </button>
                                     </div>
@@ -737,7 +740,15 @@ export default function AIPracticePage() {
                                 {protocols.map(p => (
                                     <div
                                         key={p.id}
+                                        role="button"
+                                        tabIndex={0}
                                         onClick={() => resumeProtocol(p)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                resumeProtocol(p);
+                                            }
+                                        }}
                                         className="group cursor-pointer relative bg-white border border-slate-100 rounded-[2.5rem] p-7 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 overflow-hidden flex flex-col justify-between min-h-[200px]"
                                     >
                                         {/* Hover Gradient Effect */}

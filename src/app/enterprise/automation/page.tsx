@@ -12,6 +12,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   MarkerType,
+  Position,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import AutomationNodeModal from "./AutomationNodeModal";
@@ -162,8 +163,8 @@ export default function AutomationCanvasPage() {
             boxShadow: '0 4px 14px 0 rgba(124, 58, 237, 0.1)',
             width: 180,
           },
-          sourcePosition: 'right' as const,
-          targetPosition: 'left' as const,
+          sourcePosition: 'right' as Position,
+          targetPosition: 'left' as Position,
         });
 
         // Connect to previous round
@@ -238,7 +239,7 @@ export default function AutomationCanvasPage() {
                   {auto.action_type === "mail" && auto.template_id && (
                     <div className="text-[9px] text-slate-500 font-medium flex items-center gap-1">
                         <span className="material-symbols-rounded text-[10px]">description</span>
-                        Template Action
+                        {"Template Action"}
                     </div>
                   )}
                 </div>
@@ -252,8 +253,8 @@ export default function AutomationCanvasPage() {
               opacity: auto.is_enabled ? 1 : 0.6,
               cursor: 'pointer',
             },
-            sourcePosition: 'bottom' as const,
-            targetPosition: 'top' as const,
+            sourcePosition: 'bottom' as Position,
+            targetPosition: 'top' as Position,
           });
 
           newEdges.push({
@@ -329,7 +330,7 @@ export default function AutomationCanvasPage() {
             className="flex items-center gap-2 px-5 h-11 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all font-black text-xs bg-white shadow-sm disabled:opacity-50 active:scale-95"
           >
             <span className={`material-symbols-rounded text-lg ${loading ? 'animate-spin' : ''}`}>refresh</span>
-            SYNC
+            {"SYNC"}
           </button>
 
           <div className="flex items-center gap-2 relative">
@@ -417,7 +418,7 @@ export default function AutomationCanvasPage() {
               jobs={jobs}
               type={activeNodeType}
               editingId={editingId}
-              initialData={initialData}
+              initialData={initialData as React.ComponentProps<typeof AutomationNodeModal>["initialData"]}
             />
           </>
         )}

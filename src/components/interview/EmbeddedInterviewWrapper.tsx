@@ -13,6 +13,9 @@ interface InterviewData {
     difficulty: string;
     duration: number;
     require_video: boolean;
+    avatar_config?: {
+        avatar?: string;
+    };
 }
 
 interface EmbeddedInterviewWrapperProps {

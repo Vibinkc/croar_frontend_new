@@ -109,10 +109,11 @@ function ResetPasswordContent() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 mb-2">New Password</label>
+                            <label htmlFor="new-password" className="block text-xs font-bold text-slate-500 mb-2">New Password</label>
                             <div className="relative">
                                 <span className="absolute left-4 top-3.5 text-slate-400 material-icons-outlined text-lg">lock</span>
                                 <input
+                                    id="new-password"
                                     className="w-full pl-12 pr-12 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-slate-900 dark:text-white"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="••••••••"
@@ -133,10 +134,11 @@ function ResetPasswordContent() {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 mb-2">Confirm Password</label>
+                            <label htmlFor="confirm-password" className="block text-xs font-bold text-slate-500 mb-2">Confirm Password</label>
                             <div className="relative">
                                 <span className="absolute left-4 top-3.5 text-slate-400 material-icons-outlined text-lg">lock</span>
                                 <input
+                                    id="confirm-password"
                                     className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-slate-900 dark:text-white"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="••••••••"

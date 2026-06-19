@@ -104,7 +104,17 @@ export default function GlobalUsersPage() {
     }
 
     return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-700" onClick={() => setActiveDropdown(null)}>
+        <div
+            role="button"
+            tabIndex={0}
+            className="p-8 space-y-6 animate-in fade-in duration-700"
+            onClick={() => setActiveDropdown(null)}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    setActiveDropdown(null);
+                }
+            }}
+        >
             {/* Header Area */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-4">

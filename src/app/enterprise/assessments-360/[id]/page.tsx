@@ -187,7 +187,7 @@ export default function X360FillAssessment() {
                         ) : (
                             <div className="pt-12 border-t border-slate-50 space-y-8">
                                 <p className="text-slate-400 font-bold   text-xs flex items-center justify-center gap-2">
-                                    <span className="material-symbols-rounded text-emerald-500">verified</span>
+                                    <span className="material-symbols-rounded text-emerald-500">verified</span>{""}
                                     All assignments complete for this cycle
                                 </p>
                                 <button

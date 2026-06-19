@@ -130,7 +130,7 @@ export default function StudentInterviewsPage() {
                         <div className="mt-4 pt-4 border-t border-slate-50">
                             <Link href={`/practice/interviews/${interview.id}`}>
                                 <button className="w-full bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white font-black text-[9px] tracking-[0.2em]  py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-sm shadow-slate-100">
-                                    INITIATE_INTERVIEW
+                                    <span>INITIATE_INTERVIEW</span>
                                     <span className="material-symbols-rounded text-base">arrow_forward</span>
                                 </button>
                             </Link>

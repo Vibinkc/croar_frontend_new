@@ -302,7 +302,7 @@ export default function StudentDashboard() {
                             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 dark:bg-slate-800/50 dark:border-slate-800 relative overflow-hidden group">
                                 <div className="absolute top-0 left-0 w-1 h-full bg-slate-200 dark:bg-slate-700 group-hover:bg-slate-500 transition-colors"></div>
                                 <p className="text-[10px] font-medium text-slate-500 leading-relaxed">
-                                    Profile telemetry indicates consistent growth. Maintain current training velocity to optimize the proficiency triad.
+                                    <span>Profile telemetry indicates consistent growth. Maintain current training velocity to optimize the proficiency triad.</span>
                                     <span className="block mt-2 text-slate-400 ">
                                         {`// Recommendation: prioritize under-indexed vectors for balanced skill acquisition.`}
                                     </span>

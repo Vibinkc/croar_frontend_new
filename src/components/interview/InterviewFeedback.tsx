@@ -28,7 +28,7 @@ interface InterviewFeedbackProps {
     transcript?: { role: 'ai' | 'user'; text: string }[];
     offTabCount?: number;
     isSaving?: boolean;
-    backendResults?: BackendResults;
+    backendResults?: BackendResults | null;
 }
 
 const DonutChart = ({ score, max, color = "text-slate-900", size = 60, strokeWidth = 6 }: { score: number, max: number, color?: string, size?: number, strokeWidth?: number }) => {

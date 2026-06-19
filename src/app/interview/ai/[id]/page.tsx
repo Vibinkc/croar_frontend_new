@@ -127,7 +127,7 @@ export default function AIInterviewPage() {
         };
 
         recognitionRef.current.onend = () => {
-          if (isListening) recognitionRef.current.start();
+          if (isListening) recognitionRef.current?.start();
         };
       }
     }

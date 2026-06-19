@@ -131,7 +131,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                             className="w-full py-3 bg-indigo-600 text-white rounded-xl font-black text-[10px]   hover:bg-slate-900 transition-all flex items-center justify-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-lg">play_circle</span>
-                            Engage Simulation
+                            {"Engage Simulation"}
                         </button>
                     </div>
                     <button 
@@ -139,14 +139,14 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                         className="text-slate-400 hover:text-slate-900 transition-colors font-black   text-[9px] flex items-center justify-center gap-2 mx-auto"
                     >
                         <span className="material-symbols-rounded text-lg">close</span>
-                        Close Portal
+                        {"Close Portal"}
                     </button>
                 </div>
             </div>
         </div>
     );
 
-    const questions = invite.instance.template.questions;
+    const questions = invite?.instance.template.questions ?? [];
 
     return (
         <div className="min-h-screen bg-slate-50/50 py-12 px-6 lg:py-24">
@@ -154,14 +154,14 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                 <header className="bg-white p-10 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/20 space-y-4">
                     <div className="flex justify-between items-start">
                         <span className="bg-indigo-600 text-white text-[9px] font-black px-4 py-1.5 rounded-full  ">
-                            {invite.instance.template.survey_type.name}
+                            {invite?.instance.template.survey_type.name}
                         </span>
                         <div className="text-right">
                             <p className="text-slate-300 text-[10px] font-black  ">Confidential Entry</p>
                         </div>
                     </div>
-                    <h1 className="text-4xl font-black text-slate-900 tracking-tight shrink-0">{invite.instance.name}</h1>
-                    <p className="text-slate-500 font-medium text-lg leading-relaxed pr-8">{invite.instance.template.description || "Every voice matters. Please provide your honest feedback across the following points."}</p>
+                    <h1 className="text-4xl font-black text-slate-900 tracking-tight shrink-0">{invite?.instance.name}</h1>
+                    <p className="text-slate-500 font-medium text-lg leading-relaxed pr-8">{invite?.instance.template.description || "Every voice matters. Please provide your honest feedback across the following points."}</p>
                 </header>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -189,10 +189,10 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                                             step="1"
                                             className="w-full h-3 bg-slate-100 rounded-full appearance-none cursor-pointer accent-indigo-600 outline-none"
                                             value={responses[i]?.answer_value || 3}
-                                            onChange={(e) => updateResponse(i, "answer_value", parseInt(e.target.value))}
+                                            onChange={(e) => updateResponse(i, "answer_value", Number.parseInt(e.target.value))}
                                         />
                                         <div className="flex justify-between mt-4 px-1">
-                                            {[...Array(q.scale_max - q.scale_min + 1)].map((_, idx) => (
+                                            {[...new Array(q.scale_max - q.scale_min + 1)].map((_, idx) => (
                                                 <div key={idx} className={`w-1 h-3 rounded-full transition-all ${responses[i]?.answer_value === idx + q.scale_min ? 'h-5 bg-indigo-600' : 'bg-slate-200'}`}></div>
                                             ))}
                                         </div>
@@ -239,7 +239,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                         </button>
                         <p className="text-slate-300 font-black   text-[9px] flex items-center gap-2">
                             <span className="material-symbols-rounded text-sm">lock_outline</span>
-                            End-to-End Encrypted Secure Submission
+                            {"End-to-End Encrypted Secure Submission"}
                         </p>
                     </div>
                 </form>

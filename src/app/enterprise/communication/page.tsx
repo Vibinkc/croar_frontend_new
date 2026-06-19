@@ -278,7 +278,10 @@ const MailboxPage = () => {
                     ) : filteredEmails.map((email: Email) => (
                         <div
                             key={email.id}
+                            role="button"
+                            tabIndex={0}
                             onClick={() => setSelectedEmail(email)}
+                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setSelectedEmail(email); } }}
                             className={`p-4 border-b border-slate-50 cursor-pointer transition-all hover:bg-indigo-50/30 ${selectedEmail?.id === email.id ? 'bg-indigo-50 border-l-4 border-l-indigo-500' : ''}`}
                         >
                             <div className="flex justify-between items-start mb-1">
@@ -464,8 +467,9 @@ const MailboxPage = () => {
 
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400   mb-1.5">Recipient Email</label>
+                                <label htmlFor="compose-recipient" className="block text-[10px] font-black text-slate-400   mb-1.5">Recipient Email</label>
                                 <Input
+                                    id="compose-recipient"
                                     placeholder="e.g. candidate@example.com"
                                     value={composeData.to}
                                     onChange={(e) => setComposeData({ ...composeData, to: e.target.value })}
@@ -474,8 +478,9 @@ const MailboxPage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400   mb-1.5">Subject</label>
+                                <label htmlFor="compose-subject" className="block text-[10px] font-black text-slate-400   mb-1.5">Subject</label>
                                 <Input
+                                    id="compose-subject"
                                     placeholder="Enter subject..."
                                     value={composeData.subject}
                                     onChange={(e) => setComposeData({ ...composeData, subject: e.target.value })}
@@ -484,8 +489,9 @@ const MailboxPage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-black text-slate-400   mb-1.5">Message Content</label>
+                                <label htmlFor="compose-body" className="block text-[10px] font-black text-slate-400   mb-1.5">Message Content</label>
                                 <textarea
+                                    id="compose-body"
                                     className="w-full h-64 p-4 rounded-xl border border-slate-100 bg-slate-50/50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all resize-none"
                                     placeholder="Type your message here..."
                                     value={composeData.body}

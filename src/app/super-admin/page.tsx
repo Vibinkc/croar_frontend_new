@@ -45,7 +45,7 @@ function SuperAdminDashboardContent() {
                 <h1 className="text-xs font-black text-slate-400  tracking-[0.2em]">Platform Overview</h1>
                 <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black   flex items-center gap-2 border border-emerald-100">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Live Platform Status
+                    {"Live Platform Status"}
                 </div>
             </div>
 

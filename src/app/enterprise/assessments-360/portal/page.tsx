@@ -81,6 +81,7 @@ export default function UnifiedEmployeePortal() {
     };
 
     const startSimulation = async (scenarioId: string, assignmentId: string) => {
+        if (!employee) return;  // only reachable after login (employee is set); guards the null type
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/sessions`, {
                 method: 'POST',
@@ -141,8 +142,9 @@ export default function UnifiedEmployeePortal() {
 
                         <form onSubmit={handleLogin} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-black text-slate-400   ml-1">Employee UUID / ID</label>
-                                <input 
+                                <label htmlFor="portal-employee-id" className="block text-[10px] font-black text-slate-400   ml-1">Employee UUID / ID</label>
+                                <input
+                                    id="portal-employee-id"
                                     className="w-full px-7 py-5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all text-sm"
                                     placeholder="Enter your unique ID..."
                                     value={credentials.employee_id}
@@ -152,8 +154,9 @@ export default function UnifiedEmployeePortal() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-black text-slate-400   ml-1">Corporate Email</label>
-                                <input 
+                                <label htmlFor="portal-corporate-email" className="block text-[10px] font-black text-slate-400   ml-1">Corporate Email</label>
+                                <input
+                                    id="portal-corporate-email"
                                     type="email"
                                     className="w-full px-7 py-5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all text-sm"
                                     placeholder="yourname@company.com"
@@ -223,8 +226,7 @@ export default function UnifiedEmployeePortal() {
                                 {/* 360 Section */}
                                 <section className="space-y-6">
                                     <h3 className="text-[10px] font-black text-indigo-600  tracking-[0.3em] flex items-center gap-3 px-2">
-                                        <span className="material-symbols-rounded">group</span>
-                                        360° Feedback
+                                        <span className="material-symbols-rounded">group</span>{"360° Feedback"}
                                     </h3>
                                     <div className="space-y-4">
                                         {assessments.length > 0 ? assessments.map((ass) => (
@@ -257,8 +259,7 @@ export default function UnifiedEmployeePortal() {
                                 {/* Surveys Section */}
                                 <section className="space-y-6">
                                     <h3 className="text-[10px] font-black text-emerald-600  tracking-[0.3em] flex items-center gap-3 px-2">
-                                        <span className="material-symbols-rounded">analytics</span>
-                                        Culture Surveys
+                                        <span className="material-symbols-rounded">analytics</span>{"Culture Surveys"}
                                     </h3>
                                     <div className="space-y-4">
                                         {surveys.length > 0 ? surveys.map((srv) => (
@@ -291,8 +292,7 @@ export default function UnifiedEmployeePortal() {
                                 {/* AI Lab Section */}
                                 <section className="space-y-6">
                                     <h3 className="text-[10px] font-black text-rose-600  tracking-[0.3em] flex items-center gap-3 px-2">
-                                        <span className="material-symbols-rounded font-black">neurology</span>
-                                        AI Practice Lab
+                                        <span className="material-symbols-rounded font-black">neurology</span>{"AI Practice Lab"}
                                     </h3>
                                     <div className="space-y-4">
                                         {simulationAssignments.length > 0 ? simulationAssignments.map((sim) => (
@@ -316,8 +316,7 @@ export default function UnifiedEmployeePortal() {
                                                         onClick={() => startSimulation(sim.scenario_id, sim.id)}
                                                         className="px-5 py-2.5 bg-slate-900 text-white rounded-xl font-black text-[9px]   hover:bg-rose-600 transition-all shadow-lg active:scale-95 flex items-center gap-2"
                                                     >
-                                                        Start Practice
-                                                        <span className="material-symbols-rounded text-sm">play_arrow</span>
+                                                        {"Start Practice"}<span className="material-symbols-rounded text-sm">play_arrow</span>
                                                     </button>
                                                 </div>
                                             </div>

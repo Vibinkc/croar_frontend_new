@@ -125,7 +125,7 @@ export default function AutomationHubPage() {
                                             href={module.path}
                                             className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-xs font-black hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all shadow-sm active:scale-95 group-hover:shadow-indigo-100 group-hover:shadow-md"
                                         >
-                                            OPEN MODULE
+                                            {"OPEN MODULE"}
                                             <span className="material-symbols-rounded text-base">arrow_forward</span>
                                         </Link>
                                     </td>

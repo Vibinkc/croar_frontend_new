@@ -346,16 +346,18 @@ function TeamManagementContent() {
                                 <form onSubmit={handleAddMember} className="space-y-6">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 ml-1">First Name</label>
-                                            <input 
+                                            <label htmlFor="member-first-name" className="text-xs font-bold text-slate-500 ml-1">First Name</label>
+                                            <input
+                                                id="member-first-name"
                                                 className="w-full bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all font-semibold"
                                                 placeholder="John"
                                                 value={memberFirstName} onChange={e => setMemberFirstName(e.target.value)} required
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 ml-1">Last Name</label>
-                                            <input 
+                                            <label htmlFor="member-last-name" className="text-xs font-bold text-slate-500 ml-1">Last Name</label>
+                                            <input
+                                                id="member-last-name"
                                                 className="w-full bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all font-semibold"
                                                 placeholder="Doe"
                                                 value={memberLastName} onChange={e => setMemberLastName(e.target.value)} required
@@ -364,9 +366,10 @@ function TeamManagementContent() {
                                     </div>
                                     
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-500 ml-1">Email Address</label>
+                                        <label htmlFor="member-email" className="text-xs font-bold text-slate-500 ml-1">Email Address</label>
                                         <div className="relative">
-                                            <input 
+                                            <input
+                                                id="member-email"
                                                 className="w-full bg-slate-50 border border-slate-100 p-4 pl-12 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all"
                                                 placeholder="john@example.com"
                                                 type="email"
@@ -377,9 +380,10 @@ function TeamManagementContent() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-500 ml-1">Temporary Password</label>
+                                        <label htmlFor="member-password" className="text-xs font-bold text-slate-500 ml-1">Temporary Password</label>
                                         <div className="relative">
-                                            <input 
+                                            <input
+                                                id="member-password"
                                                 className="w-full bg-slate-50 border border-slate-100 p-4 pl-12 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all"
                                                 placeholder="••••••••"
                                                 type="password"
@@ -390,8 +394,8 @@ function TeamManagementContent() {
                                     </div>
                                     
                                     <div className="space-y-4">
-                                        <label className="text-xs font-bold text-slate-900">Assign Roles</label>
-                                        <div className="flex flex-wrap gap-2">
+                                        <label id="assign-roles-label" htmlFor="assign-roles-group" className="text-xs font-bold text-slate-900">Assign Roles</label>
+                                        <div id="assign-roles-group" role="group" aria-labelledby="assign-roles-label" className="flex flex-wrap gap-2">
                                             {roles.map(role => (
                                                 <button 
                                                     key={role.id}
@@ -462,8 +466,8 @@ function TeamManagementContent() {
                                                 {p.module}
                                             </span>
                                         ))}
-                                        {role.permissions?.length > 3 && (
-                                            <span className="text-xs font-bold text-indigo-400 ml-1 self-center">+{role.permissions.length - 3} more</span>
+                                        {(role.permissions?.length ?? 0) > 3 && (
+                                            <span className="text-xs font-bold text-indigo-400 ml-1 self-center">+{(role.permissions?.length ?? 0) - 3} more</span>
                                         )}
                                     </div>
                                 </div>
@@ -487,16 +491,18 @@ function TeamManagementContent() {
                                 
                                 <form onSubmit={handleCreateRole} className="space-y-8">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-500 ml-1">Role Name</label>
-                                        <input 
+                                        <label htmlFor="role-name" className="text-xs font-bold text-slate-500 ml-1">Role Name</label>
+                                        <input
+                                            id="role-name"
                                             className="w-full bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all shadow-inner"
                                             placeholder="e.g. Marketing Manager"
                                             value={roleName} onChange={e => setRoleName(e.target.value)} required
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-500 ml-1">Description</label>
-                                        <textarea 
+                                        <label htmlFor="role-description" className="text-xs font-bold text-slate-500 ml-1">Description</label>
+                                        <textarea
+                                            id="role-description"
                                             className="w-full bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 transition-all min-h-[100px] shadow-inner"
                                             placeholder="Clearly define what this role can access..."
                                             value={roleDescription} onChange={e => setRoleDescription(e.target.value)}
@@ -504,8 +510,8 @@ function TeamManagementContent() {
                                     </div>
                                     
                                     <div className="space-y-4">
-                                        <label className="text-xs font-bold text-slate-900">Select Permissions</label>
-                                        <div className="bg-slate-50 rounded-xl border border-slate-100 p-4 max-h-[300px] overflow-y-auto custom-scrollbar space-y-2">
+                                        <label id="select-permissions-label" htmlFor="select-permissions-group" className="text-xs font-bold text-slate-900">Select Permissions</label>
+                                        <div id="select-permissions-group" role="group" aria-labelledby="select-permissions-label" className="bg-slate-50 rounded-xl border border-slate-100 p-4 max-h-[300px] overflow-y-auto custom-scrollbar space-y-2">
                                             {permissions.map(perm => (
                                                 <button 
                                                     key={perm.id}

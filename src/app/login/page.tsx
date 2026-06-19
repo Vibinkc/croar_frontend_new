@@ -105,7 +105,7 @@ export default function LoginPage() {
                                 className="w-full py-4 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold rounded-xl shadow-lg shadow-slate-200 transition-all active:scale-95 flex items-center justify-center gap-2"
                             >
                                 <span className="material-icons-outlined text-sm">arrow_back</span>
-                                Selection Portal
+                                {"Selection Portal"}
                             </button>
                         </div>
                     ) : (
@@ -183,7 +183,7 @@ export default function LoginPage() {
                                     type="submit"
                                     className="w-full py-5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold rounded-xl shadow-xl shadow-slate-200 transition-all active:scale-95 flex items-center justify-center gap-2"
                                 >
-                                    Login Portal
+                                    {"Login Portal"}
                                     <span className="material-icons-outlined text-sm">login</span>
                                 </button>
 
@@ -194,7 +194,7 @@ export default function LoginPage() {
                                         className="text-[12px] font-bold text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center gap-2 mx-auto"
                                     >
                                         <span className="material-icons-outlined text-xs">sync_alt</span>
-                                        Switch College Context
+                                        {"Switch College Context"}
                                     </button>
                                 </div>
                             </form>

@@ -329,8 +329,9 @@ export default function OrganizationProfilePage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-500 ml-1">Company Name</label>
-                                    <input 
+                                    <label htmlFor="company-name" className="text-xs font-bold text-slate-500 ml-1">Company Name</label>
+                                    <input
+                                        id="company-name"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
                                         readOnly={!canAccess("organization:moderate")}
@@ -339,8 +340,9 @@ export default function OrganizationProfilePage() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-500 ml-1">Industry</label>
-                                    <input 
+                                    <label htmlFor="company-industry" className="text-xs font-bold text-slate-500 ml-1">Industry</label>
+                                    <input
+                                        id="company-industry"
                                         value={industry}
                                         onChange={e => setIndustry(e.target.value)}
                                         readOnly={!canAccess("organization:moderate")}
@@ -351,9 +353,10 @@ export default function OrganizationProfilePage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-500 ml-1">Location / Headquarters</label>
+                                <label htmlFor="company-location" className="text-xs font-bold text-slate-500 ml-1">Location / Headquarters</label>
                                 <div className="relative">
-                                    <input 
+                                    <input
+                                        id="company-location"
                                         value={location}
                                         onChange={e => setLocation(e.target.value)}
                                         readOnly={!canAccess("organization:moderate")}
@@ -374,10 +377,11 @@ export default function OrganizationProfilePage() {
 
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-500 ml-1">Logo URL</label>
+                                    <label htmlFor="company-logo-url" className="text-xs font-bold text-slate-500 ml-1">Logo URL</label>
                                     <div className="flex gap-4">
                                         <div className="relative flex-1">
-                                            <input 
+                                            <input
+                                                id="company-logo-url"
                                                 value={logoUrl}
                                                 onChange={e => setLogoUrl(e.target.value)}
                                                 readOnly={!canAccess("organization:moderate")}

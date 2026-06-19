@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useState, useEffect, useRef } from "react";
+import type { ComponentProps } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/utils/api";
 import SpotOn from "@/components/games/SpotOn";
@@ -111,7 +112,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
 
     if (!test) return <div className="p-20 text-center font-bold text-slate-300">Loading Protocol...</div>;
 
-    if (result) return <PsychometricResult result={result} test={test} />;
+    if (result) return <PsychometricResult result={result as unknown as ComponentProps<typeof PsychometricResult>["result"]} test={test as unknown as ComponentProps<typeof PsychometricResult>["test"]} />;
 
     if (!isStarted) {
         return (
@@ -159,7 +160,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
                         onClick={() => setIsStarted(true)}
                         className="w-full py-6 bg-slate-100 text-slate-900 rounded-2xl text-[10px] font-black  tracking-[0.4em] shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:bg-white transition-all flex items-center justify-center gap-4 group active:scale-95"
                     >
-                        Execute_Analysis
+                        {"Execute_Analysis"}
                         <span className="material-icons-outlined group-hover:translate-x-2 transition-transform">bolt</span>
                     </button>
                 </motion.div>
@@ -174,7 +175,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
     if (test.test_type === 'SPOT_ON') {
         return (
             <SpotOn
-                questions={test.questions}
+                questions={test.questions as unknown as ComponentProps<typeof SpotOn>["questions"]}
                 onComplete={(res, time) => handleSubmit(res, time)}
             />
         );
@@ -183,7 +184,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
     if (test.test_type === 'FREE_TRANSPORT') {
         return (
             <FreeTransport
-                questions={test.questions}
+                questions={test.questions as unknown as ComponentProps<typeof FreeTransport>["questions"]}
                 onComplete={(score, answers) => handleSubmit({ score, answers }, 0)}
             />
         );
@@ -192,7 +193,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
     if (test.test_type === 'NUMERO') {
         return (
             <Numero
-                questions={test.questions}
+                questions={test.questions as unknown as ComponentProps<typeof Numero>["questions"]}
                 onComplete={(score, answers) => handleSubmit({ trait_score: score / 10, answers }, 0)}
             />
         );
@@ -201,7 +202,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
     if (test.test_type === 'LABYRINTH') {
         return (
             <Labyrinth
-                data={test.questions[0]}
+                data={test.questions[0] as unknown as ComponentProps<typeof Labyrinth>["data"]}
                 onComplete={(success, moves) => {
                     // For now, success = 10/10, fail = 0/10. Real logic can follow.
                     const score = success ? 10 : 0;
@@ -214,7 +215,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
     if (test.test_type === 'EMOTIONAL_INTELLIGENCE') {
         return (
             <EmpathyScanner
-                data={test.questions}
+                data={test.questions as unknown as ComponentProps<typeof EmpathyScanner>["data"]}
                 onComplete={(success, score) => {
                     handleSubmit({ trait_score: score / 10 }, 0);
                 }}
@@ -225,7 +226,7 @@ export default function PsychometricTestSessionPage({ params }: { params: Promis
     if (test.test_type === 'PIPELINE') {
         return (
             <PipelinePuzzle
-                level={test.questions[0]}
+                level={test.questions[0] as unknown as ComponentProps<typeof PipelinePuzzle>["level"]}
                 onComplete={(score) => {
                     handleSubmit({ trait_score: score }, 0);
                 }}

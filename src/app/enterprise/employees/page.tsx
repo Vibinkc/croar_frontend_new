@@ -99,7 +99,7 @@ export default function EmployeesPage() {
                                 className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
                             >
                                 <span className="material-symbols-rounded text-lg">add</span>
-                                ADD EMPLOYEE
+                                {"ADD EMPLOYEE"}
                             </Link>
                         )}
                     </div>

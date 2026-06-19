@@ -689,7 +689,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
 
 
     if (isSubmitted && scoreData) {
-        const percent = Math.round((scoreData.score / scoreData.total_questions) * 100);
+        const percent = Math.round(((scoreData.score as number) / (scoreData.total_questions as number)) * 100);
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
                 <div className="max-w-xl w-full bg-white border border-slate-100 rounded-[3rem] p-12 text-center shadow-2xl">
@@ -703,11 +703,11 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                     <div className="grid grid-cols-2 gap-6 mb-12">
                         <div className="bg-slate-50 p-6 rounded-3xl">
                             <span className="text-[8px] font-black text-slate-400   block mb-2">Final_Agility_Score</span>
-                            <span className={`text-4xl font-black ${percent >= 70 ? 'text-slate-900' : 'text-slate-900'}`}>{percent}%</span>
+                            <span className="text-4xl font-black text-slate-900">{percent}%</span>
                         </div>
                         <div className="bg-slate-50 p-6 rounded-3xl">
                             <span className="text-[8px] font-black text-slate-400   block mb-2">Questions_Processed</span>
-                            <span className="text-4xl font-black text-slate-900">{scoreData.score}/{scoreData.total_questions}</span>
+                            <span className="text-4xl font-black text-slate-900">{scoreData.score as number}/{scoreData.total_questions as number}</span>
                         </div>
                     </div>
 
@@ -716,7 +716,7 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                             onClick={() => router.push(`/practice/assessments/results/${scoreData.id}${assessment?.is_ai_generated ? '?from=ai' : ''}`)}
                             className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-[11px] tracking-[0.2em]  py-4 rounded-2xl transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2"
                         >
-                            View Detailed Analysis
+                            <span>View Detailed Analysis</span>
                             <span className="material-icons-outlined text-lg">assessment</span>
                         </button>
 
@@ -874,7 +874,15 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
                     {(currentQuestion.type?.toLowerCase() === 'code' || currentQuestion.type?.toLowerCase() === 'coding') && showConsole && (
                         <>
                             <div
+                                role="button"
+                                tabIndex={0}
+                                aria-label="Resize console panel"
                                 onMouseDown={handleLeftHorizontalMouseDown}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                    }
+                                }}
                                 className={`h-1 cursor-row-resize z-40 group flex items-center justify-center transition-colors hover:bg-indigo-500/20 ${isDark ? 'bg-[#2d2e32]' : 'bg-slate-100'}`}
                             >
                                 <div className={`h-[1px] w-full ${isDark ? 'bg-[#3f4147]' : 'bg-slate-200'} group-hover:bg-indigo-500/50`} />
@@ -927,7 +935,15 @@ export default function AssessmentExamPage({ params }: { params: Promise<{ id: s
 
                 {/* VERTICAL DRAG HANDLE */}
                 <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Resize panels"
                     onMouseDown={handleVerticalMouseDown}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                        }
+                    }}
                     className="absolute top-0 bottom-0 w-1 cursor-col-resize z-50 transition-colors group flex items-center justify-center hover:bg-indigo-500/20"
                     style={{ left: `calc(${leftPaneWidth}% - 1px)` }}
                 >

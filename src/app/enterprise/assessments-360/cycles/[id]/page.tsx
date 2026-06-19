@@ -71,7 +71,7 @@ export default function X360CycleProgress() {
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">Cycle Progress Tracker</h1>
                     </div>
                     <p className="text-slate-400 font-black   text-[10px] flex items-center gap-2">
-                        <span className="material-symbols-rounded text-sm text-indigo-500">monitoring</span>
+                        <span className="material-symbols-rounded text-sm text-indigo-500">monitoring</span>{""}
                         Detailed Breakdown by Employee
                     </p>
                 </div>
@@ -151,7 +151,7 @@ export default function X360CycleProgress() {
                                             onClick={() => router.push(`/enterprise/assessments-360/reports/${ratee.ratee_id}/${cycleId}`)}
                                             className="w-full py-3 bg-slate-900 text-white rounded-xl font-black text-[9px]   hover:bg-emerald-600 transition-all flex items-center justify-center gap-2"
                                         >
-                                            Full Insight Report
+                                            Full Insight Report{""}
                                             <span className="material-symbols-rounded text-base">analytics</span>
                                         </button>
                                     )}

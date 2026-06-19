@@ -89,21 +89,21 @@ export default function X360Dashboard() {
                                 href="/enterprise/assessments-360/questions" 
                                 className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
                             >
-                                <span className="material-symbols-rounded text-base">quiz</span>
+                                <span className="material-symbols-rounded text-base">quiz</span>{""}
                                 Question Bank
                             </Link>
                             <Link 
                                 href="/enterprise/assessments-360/templates" 
                                 className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
                             >
-                                <span className="material-symbols-rounded text-base">description</span>
+                                <span className="material-symbols-rounded text-base">description</span>{""}
                                 Templates
                             </Link>
                             <Link 
                                 href="/enterprise/assessments-360/new" 
                                 className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-[0.2em] flex items-center gap-2 shadow-xl shadow-indigo-100"
                             >
-                                <span className="material-symbols-rounded text-base">add</span>
+                                <span className="material-symbols-rounded text-base">add</span>{""}
                                 New Cycle
                             </Link>
                         </>
@@ -237,7 +237,7 @@ export default function X360Dashboard() {
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2">
                                                 <button className="px-4 py-1.5 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[8px] hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center gap-1.5">
-                                                    Manage
+                                                    Manage{""}
                                                     <span className="material-symbols-rounded text-[10px]">trending_up</span>
                                                 </button>
                                             </div>

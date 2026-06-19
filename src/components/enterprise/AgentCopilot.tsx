@@ -164,14 +164,14 @@ const AgentCopilot = () => {
                                                 className="text-left p-3 rounded-xl border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 transition-all text-sm font-medium text-slate-700 flex items-center gap-3 group"
                                             >
                                                 <span className="material-symbols-rounded text-slate-400 group-hover:text-indigo-600 transition-colors">person_search</span>
-                                                Shortlist candidates for React Role
+                                                <span>Shortlist candidates for React Role</span>
                                             </button>
                                             <button 
                                                 onClick={() => handleSendMessage("Check onboarding status for new hires")}
                                                 className="text-left p-3 rounded-xl border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 transition-all text-sm font-medium text-slate-700 flex items-center gap-3 group"
                                             >
                                                 <span className="material-symbols-rounded text-slate-400 group-hover:text-indigo-600 transition-colors">fact_check</span>
-                                                Check onboarding status
+                                                <span>Check onboarding status</span>
                                             </button>
                                         </div>
                                     </div>

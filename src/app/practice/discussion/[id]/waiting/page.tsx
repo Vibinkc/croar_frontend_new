@@ -39,13 +39,8 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                             await playPromise;
                         }
                         // Video playing successfully
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    } catch (playError: any) {
-                        if (playError.name === 'AbortError') {
-                            // Video play interrupted by load request.
-                        } else {
-                            // Silent failure for video play
-                        }
+                    } catch {
+                        // Silent failure for video play (e.g. AbortError when play interrupted by load request)
                     }
                     setHasMedia(true);
                 } else {
@@ -178,7 +173,7 @@ export default function GDWaitingRoom({ params }: { params: Promise<{ id: string
                                 }}
                                 className="w-full h-16 bg-slate-900 text-white rounded-2xl font-black   shadow-xl shadow-slate-200 hover:bg-black transition-all flex items-center justify-center gap-3 group"
                             >
-                                Enter Discussion Room
+                                {"Enter Discussion Room"}
                                 <span className="material-icons group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </button>
                             <p className="text-center text-[10px] font-black text-slate-400  ">Session will transition when the moderator gives the signal</p>

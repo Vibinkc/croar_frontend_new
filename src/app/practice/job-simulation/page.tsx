@@ -109,13 +109,13 @@ export default function StudentJobSimulationList() {
                                         <div className="flex justify-between items-center px-1">
                                             <span className="text-[8px] font-black text-slate-900   flex items-center gap-1">
                                                 <span className="material-icons-outlined text-[10px]">verified</span>
-                                                Completed
+                                                <span>Completed</span>
                                             </span>
                                             <span className="text-[10px] font-black text-slate-900 ">Score: {sim.user_attempt.overall_score}%</span>
                                         </div>
                                         <Link href={`/practice/job-simulation/${sim.id}`}>
                                             <button className={`w-full bg-slate-900 text-white font-black text-[9px]   py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
-                                                VIEW RESULTS
+                                                <span>VIEW RESULTS</span>
                                                 <span className="material-symbols-rounded text-base">analytics</span>
                                             </button>
                                         </Link>
@@ -123,7 +123,7 @@ export default function StudentJobSimulationList() {
                                 ) : (
                                     <Link href={`/practice/job-simulation/${sim.id}`}>
                                         <button className={`w-full ${colors.button} font-black text-[9px]   py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
-                                            START APPLICATION
+                                            <span>START APPLICATION</span>
                                             <span className="material-symbols-rounded text-base">arrow_forward</span>
                                         </button>
                                     </Link>

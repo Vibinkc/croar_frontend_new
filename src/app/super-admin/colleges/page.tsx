@@ -257,16 +257,18 @@ function SuperAdminCollegesContent() {
                         <form onSubmit={handleCreateOrUpdate} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Organization Name</label>
+                                    <label htmlFor="college-name" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Organization Name</label>
                                     <input
+                                        id="college-name"
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="e.g. Stanford University"
                                         value={name} onChange={e => setName(e.target.value)} required
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Url Slug</label>
+                                    <label htmlFor="college-slug" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Url Slug</label>
                                     <input
+                                        id="college-slug"
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="e.g. stanford"
                                         value={slug} onChange={e => setSlug(e.target.value)} required
@@ -275,8 +277,9 @@ function SuperAdminCollegesContent() {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Database Instance Name</label>
+                                <label htmlFor="college-db-name" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Database Instance Name</label>
                                 <input
+                                    id="college-db-name"
                                     className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300 font-mono"
                                     placeholder="e.g. talixo_stanford"
                                     value={dbName} onChange={e => setDbName(e.target.value)} required
@@ -286,8 +289,9 @@ function SuperAdminCollegesContent() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Email</label>
+                                    <label htmlFor="college-admin-email" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Email</label>
                                     <input
+                                        id="college-admin-email"
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="admin@college.com"
                                         type="email"
@@ -306,9 +310,10 @@ function SuperAdminCollegesContent() {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Profile Image</label>
+                                <label htmlFor="college-admin-profile-image" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Profile Image</label>
                                 <div className="flex gap-2">
                                     <input
+                                        id="college-admin-profile-image"
                                         className="flex-1 bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
                                         placeholder="https://example.com/avatar.jpg"
                                         type="url"

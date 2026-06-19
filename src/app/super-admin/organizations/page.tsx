@@ -112,16 +112,18 @@ function OrganizationsContent() {
                             <form onSubmit={handleCreateOrganization} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Company Name</label>
+                                        <label htmlFor="org-company-name" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Company Name</label>
                                         <input
+                                            id="org-company-name"
                                             className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                             placeholder="Acme Corp"
                                             value={name} onChange={e => setName(e.target.value)} required
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Contact Email</label>
+                                        <label htmlFor="org-contact-email" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Contact Email</label>
                                         <input
+                                            id="org-contact-email"
                                             className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                             placeholder="contact@acme.com"
                                             type="email"
@@ -131,8 +133,9 @@ function OrganizationsContent() {
                                 </div>
                                 
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Website</label>
+                                    <label htmlFor="org-website" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Website</label>
                                     <input
+                                        id="org-website"
                                         className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                         placeholder="https://acme.corp"
                                         type="url"
@@ -144,8 +147,9 @@ function OrganizationsContent() {
                                     <h3 className="text-[10px] font-black text-slate-900  tracking-[0.2em] mb-4">Organization Admin Account</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Admin Email</label>
+                                            <label htmlFor="org-admin-email" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Admin Email</label>
                                             <input
+                                                id="org-admin-email"
                                                 className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                                 placeholder="admin@acme.com"
                                                 type="email"
@@ -153,8 +157,9 @@ function OrganizationsContent() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Temp Password</label>
+                                            <label htmlFor="org-admin-password" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block text-left">Temp Password</label>
                                             <input
+                                                id="org-admin-password"
                                                 className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900"
                                                 placeholder="••••••••"
                                                 type="password"

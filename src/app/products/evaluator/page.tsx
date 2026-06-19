@@ -26,7 +26,7 @@ export default function EvaluatorProductPage() {
                             className="inline-flex mx-auto items-center gap-2 mb-2 border border-slate-600 bg-slate-800/50 px-3 py-1 rounded-full text-slate-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-indigo-400">edit_note</span>
-                            Automated Grading Assistant
+                            {"Automated Grading Assistant"}
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}

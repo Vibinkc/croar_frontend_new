@@ -25,7 +25,7 @@ export default function CommunicationProductPage() {
                             className="inline-flex mx-auto items-center gap-2 mb-2 border border-pink-400/30 bg-pink-500/10 px-3 py-1 rounded-full text-pink-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-pink-400">mic</span>
-                            AI Audio Analysis
+                            {"AI Audio Analysis"}
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}

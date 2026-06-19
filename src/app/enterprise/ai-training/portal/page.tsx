@@ -121,7 +121,7 @@ function SimulationPortalContent() {
                         <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1 ">Neural Coaching Lab</h1>
                         <p className="text-slate-500 font-bold   text-[9px] flex items-center gap-2">
                             <span className="material-symbols-rounded text-sm text-indigo-500">neurology</span>
-                            Active AI-Driven Practice Laboratory
+                            {"Active AI-Driven Practice Laboratory"}
                         </p>
                     </div>
                 </div>
@@ -153,7 +153,7 @@ function SimulationPortalContent() {
                                         className="flex-1 py-4 bg-white text-indigo-600 rounded-xl font-black text-[10px]   hover:bg-slate-900 hover:text-white transition-all shadow-xl flex items-center justify-center gap-2"
                                     >
                                         <span className="material-symbols-rounded text-lg">play_arrow</span>
-                                        Engage AI
+                                        {"Engage AI"}
                                     </button>
                                 </div>
                             </div>
@@ -184,7 +184,7 @@ function SimulationPortalContent() {
                                 className="w-full py-4 bg-slate-50 text-slate-900 border border-slate-100 rounded-xl font-black text-[10px]   hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
                             >
                                 <span className="material-symbols-rounded text-lg">forum</span>
-                                Practice Chat
+                                {"Practice Chat"}
                             </button>
                         </div>
                     ))}

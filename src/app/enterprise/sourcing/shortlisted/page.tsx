@@ -69,7 +69,7 @@ const PLATFORM_DOMAINS: Record<string, string> = {
 };
 
 const PlatformLogoRenderer = ({ platform, className }: { platform: string; className?: string }) => {
-    const pLower = (platform || "github").toLowerCase().replace(/[^a-z]/g, '');
+    const pLower = (platform || "github").toLowerCase().replaceAll(/[^a-z]/g, '');
     const domain = PLATFORM_DOMAINS[pLower] || `${pLower}.com`;
 
     if (pLower === "leetcode") {
@@ -460,7 +460,7 @@ export default function ShortlistedTalentPage() {
                 <button
                     onClick={() => {
                         setIsSelectionMode(!isSelectionMode);
-                        if (!isSelectionMode === false) setSelectedIds(new Set());
+                        if (isSelectionMode) setSelectedIds(new Set());
                     }}
                     className={`h-11 px-6 rounded-2xl flex items-center gap-2 text-xs font-black transition-all active:scale-95 border ${isSelectionMode
                         ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200'

@@ -28,6 +28,26 @@ interface Template {
   subject: string;
 }
 
+interface TemplateQuestion {
+  id: string;
+  question: string;
+  type: string;
+  expected_answer_points: string[];
+  difficulty: string;
+}
+
+interface InterviewTemplate {
+  id?: string;
+  title: string;
+  topic: string;
+  duration: number;
+  difficulty: string;
+  require_video: boolean;
+  plan: {
+    questions: TemplateQuestion[];
+  };
+}
+
 interface Automation {
   id: string;
   job_requirement_id: string;
@@ -115,9 +135,9 @@ export default function InterviewAutomationPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [automationToDelete, setAutomationToDelete] = useState<Automation | null>(null);
-  const [interviewTemplates, setInterviewTemplates] = useState<Template[]>([]);
+  const [interviewTemplates, setInterviewTemplates] = useState<InterviewTemplate[]>([]);
   const [showTemplateBuilder, setShowTemplateBuilder] = useState(false);
-  const [selectedTemplateForEdit, setSelectedTemplateForEdit] = useState<Template | null>(null);
+  const [selectedTemplateForEdit, setSelectedTemplateForEdit] = useState<InterviewTemplate | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   
   const [activeTab, setActiveTab] = useState<"config" | "times">("config");
@@ -247,7 +267,7 @@ export default function InterviewAutomationPage() {
       start_date: a.start_date ?? "",
       end_date: a.end_date ?? "",
       google_meet_link: a.google_meet_link ?? "",
-      interview_type: (a as Automation & { interview_type?: string }).interview_type || "GMEET",
+      interview_type: ((a as Automation & { interview_type?: string }).interview_type || "GMEET") as "GMEET" | "AI",
       interview_template_id: (a as Automation & { interview_template_id?: string }).interview_template_id || "",
     });
     setActiveTab("config");
@@ -478,7 +498,7 @@ export default function InterviewAutomationPage() {
                   className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
                 >
                   <span className="material-symbols-rounded text-lg">add</span>
-                  NEW AUTOMATION
+                  <span>NEW AUTOMATION</span>
                 </button>
               )}
           </div>
@@ -570,7 +590,7 @@ export default function InterviewAutomationPage() {
               className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-lg text-sm font-bold hover:bg-[#6d28d9] transition-colors"
             >
               <span className="material-symbols-rounded text-base">add</span>
-              Create Automation
+              <span>Create Automation</span>
             </button>
           )}
         </div>
@@ -621,7 +641,7 @@ export default function InterviewAutomationPage() {
                         {a.auto_move && (
                           <div className="flex items-center gap-1 text-[9px] font-black text-[#7C3AED] uppercase">
                             <span className="material-symbols-rounded text-xs">keyboard_double_arrow_right</span>
-                            Auto-Move Active
+                            <span>Auto-Move Active</span>
                           </div>
                         )}
                       </div>
@@ -663,7 +683,14 @@ export default function InterviewAutomationPage() {
 
       {/* ── Side Panel (Drawer) ───────────────────────────────────────────────── */}
       <div className={`fixed inset-0 z-[100] transition-opacity duration-300 ${showModal ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onClick={closeModal} />
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label="Close panel"
+          className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]"
+          onClick={closeModal}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { closeModal(); } }}
+        />
         <div className={`absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${showModal ? "translate-x-0" : "translate-x-full"}`}>
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 shrink-0">
@@ -715,10 +742,11 @@ export default function InterviewAutomationPage() {
              <div className="space-y-6">
             {/* Job */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="automation-job-requirement" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Job Requirement <span className="text-red-400">*</span>
               </label>
               <select
+                id="automation-job-requirement"
                 value={form.job_requirement_id}
                 onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
                 className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -732,11 +760,12 @@ export default function InterviewAutomationPage() {
 
             {/* Round */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="automation-hiring-round" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Hiring Round <span className="text-red-400">*</span>
               </label>
               {jobRounds.length > 0 ? (
                 <select
+                  id="automation-hiring-round"
                   onChange={handleRoundSelect}
                   defaultValue=""
                   className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -779,10 +808,11 @@ export default function InterviewAutomationPage() {
 
             {/* Criteria */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="automation-criteria" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Trigger Criteria <span className="text-red-400">*</span>
               </label>
               <textarea
+                id="automation-criteria"
                 rows={4}
                 value={form.criteria}
                 onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
@@ -797,10 +827,11 @@ export default function InterviewAutomationPage() {
             {/* Dates (Optional) */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                <label htmlFor="automation-start-date" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   Start Date (Optional)
                 </label>
                 <input
+                  id="automation-start-date"
                   type="date"
                   value={form.start_date || ""}
                   onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value }))}
@@ -808,10 +839,11 @@ export default function InterviewAutomationPage() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                <label htmlFor="automation-end-date" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   End Date (Optional)
                 </label>
                 <input
+                  id="automation-end-date"
                   type="date"
                   value={form.end_date || ""}
                   onChange={(e) => setForm((f) => ({ ...f, end_date: e.target.value }))}
@@ -823,10 +855,11 @@ export default function InterviewAutomationPage() {
             {/* Timings and Caps */}
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                <label htmlFor="automation-start-time" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   Start Time <span className="text-red-400">*</span>
                 </label>
                 <input
+                  id="automation-start-time"
                   type="time"
                   value={form.start_time}
                   onChange={(e) => setForm((f) => ({ ...f, start_time: e.target.value }))}
@@ -834,10 +867,11 @@ export default function InterviewAutomationPage() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                <label htmlFor="automation-end-time" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   End Time <span className="text-red-400">*</span>
                 </label>
                 <input
+                  id="automation-end-time"
                   type="time"
                   value={form.end_time}
                   onChange={(e) => setForm((f) => ({ ...f, end_time: e.target.value }))}
@@ -845,10 +879,11 @@ export default function InterviewAutomationPage() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                <label htmlFor="automation-duration" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                   Duration <span className="text-red-400">*</span>
                 </label>
                 <select
+                  id="automation-duration"
                   value={form.duration}
                   onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))}
                   className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -863,10 +898,11 @@ export default function InterviewAutomationPage() {
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="automation-daily-limit" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Daily Limit (Max Interviews/Day) <span className="text-red-400">*</span>
               </label>
               <input
+                id="automation-daily-limit"
                 type="number"
                 min={1}
                 value={form.daily_limit}
@@ -877,7 +913,7 @@ export default function InterviewAutomationPage() {
 
             {/* Template (Optional) */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+              <label htmlFor="automation-email-template" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                 Email Template (Optional)
               </label>
               {templates.length === 0 ? (
@@ -888,6 +924,7 @@ export default function InterviewAutomationPage() {
                 </div>
               ) : (
                 <select
+                  id="automation-email-template"
                   value={form.email_template_id}
                   onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
                   className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -902,11 +939,12 @@ export default function InterviewAutomationPage() {
 
             {/* Interview Type Selection */}
             <div>
-              <label className="block text-[10px] font-black text-slate-500   mb-3 ml-1">
+              <label htmlFor="automation-interview-type" className="block text-[10px] font-black text-slate-500   mb-3 ml-1">
                 Interview Type <span className="text-red-400">*</span>
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
+                  id="automation-interview-type"
                   onClick={() => setForm(f => ({ ...f, interview_type: "GMEET" }))}
                   className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
                     form.interview_type === "GMEET" 
@@ -935,7 +973,7 @@ export default function InterviewAutomationPage() {
               <div className="space-y-4 pt-2">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[10px] font-black text-slate-500   ml-1">
+                    <label htmlFor="automation-ai-template" className="text-[10px] font-black text-slate-500   ml-1">
                       AI Interview Template <span className="text-red-400">*</span>
                     </label>
                     <button 
@@ -946,7 +984,7 @@ export default function InterviewAutomationPage() {
                       className="text-[10px] font-bold text-[#7C3AED] hover:underline flex items-center gap-1"
                     >
                       <span className="material-symbols-rounded text-xs">add_circle</span>
-                      Create New
+                      <span>Create New</span>
                     </button>
                   </div>
                   {interviewTemplates.length === 0 ? (
@@ -957,6 +995,7 @@ export default function InterviewAutomationPage() {
                     </div>
                   ) : (
                     <select
+                      id="automation-ai-template"
                       value={form.interview_template_id || ""}
                       onChange={(e) => setForm(f => ({ ...f, interview_template_id: e.target.value }))}
                       className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -973,10 +1012,11 @@ export default function InterviewAutomationPage() {
               <div className="space-y-4 pt-2">
                 {/* Interviewer Email */}
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                  <label htmlFor="automation-interviewer-email" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Interviewer Email (Optional)
                   </label>
                   <input
+                    id="automation-interviewer-email"
                     type="email"
                     value={form.interviewer_email}
                     onChange={(e) => setForm((f) => ({ ...f, interviewer_email: e.target.value }))}
@@ -990,10 +1030,11 @@ export default function InterviewAutomationPage() {
 
                 {/* Google Meet Link */}
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                  <label htmlFor="automation-google-meet-link" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Personal Google Meet Link (Real Room)
                   </label>
                   <input
+                    id="automation-google-meet-link"
                     type="url"
                     value={form.google_meet_link}
                     onChange={(e) => setForm((f) => ({ ...f, google_meet_link: e.target.value }))}
@@ -1060,7 +1101,7 @@ export default function InterviewAutomationPage() {
                     className="flex-1 flex justify-center items-center gap-2 py-2.5 bg-white border border-[#7C3AED] text-[#7C3AED] rounded-lg text-sm font-bold hover:bg-[#7C3AED]/5 transition-colors"
                   >
                     <span className="material-symbols-rounded text-base">magic_button</span>
-                    Auto-Generate ({form.daily_limit} slots)
+                    <span>Auto-Generate ({form.daily_limit} slots)</span>
                   </button>
                   <button
                     onClick={() => setForm(f => ({ ...f, time_slots: [...f.time_slots, "12:00"] }))}
@@ -1094,7 +1135,7 @@ export default function InterviewAutomationPage() {
                           <span className="text-xs text-slate-400 font-medium px-2 shrink-0 border-l border-slate-200 flex items-center h-8">
                             End: {(() => {
                                const [h, m] = ts.split(':').map(Number);
-                               if (isNaN(h)) return "--:--";
+                               if (Number.isNaN(h)) return "--:--";
                                const total = h * 60 + m + (Number(form.duration) || 30);
                                const eh = Math.floor(total / 60).toString().padStart(2, '0');
                                const em = (total % 60).toString().padStart(2, '0');
@@ -1161,7 +1202,7 @@ export default function InterviewAutomationPage() {
               fetchInterviewTemplates();
               setShowTemplateBuilder(false);
               setSelectedTemplateForEdit(null);
-              setForm(f => ({ ...f, interview_template_id: newTemplate.id }));
+              setForm(f => ({ ...f, interview_template_id: newTemplate.id ?? null }));
               showToast("Interview template saved!");
             }}
           />

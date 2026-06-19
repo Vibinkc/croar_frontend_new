@@ -132,7 +132,7 @@ function InterviewTemplatesContent() {
                             className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
-                            New Template
+                            {"New Template"}
                         </button>
                     )}
                     <button 
@@ -341,7 +341,10 @@ function InterviewTemplatesContent() {
                     <TemplateBuilder
                         token={token || ""}
                         backendUrl={BACKEND_URL}
-                        initialData={editingTemplate}
+                        initialData={
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            editingTemplate as any
+                        }
                         onClose={() => {
                             setShowBuilder(false);
                             setEditingTemplate(null);

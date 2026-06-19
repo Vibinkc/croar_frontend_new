@@ -159,10 +159,10 @@ export default function CreateJobPage() {
         try {
             const payload = {
                 ...formData,
-                salary_min: formData.salary_min ? parseFloat(formData.salary_min) : null,
-                salary_max: formData.salary_max ? parseFloat(formData.salary_max) : null,
-                experience_min: parseInt(formData.experience_min),
-                experience_max: parseInt(formData.experience_max),
+                salary_min: formData.salary_min ? Number.parseFloat(formData.salary_min) : null,
+                salary_max: formData.salary_max ? Number.parseFloat(formData.salary_max) : null,
+                experience_min: Number.parseInt(formData.experience_min),
+                experience_max: Number.parseInt(formData.experience_max),
                 required_skills: formData.required_skills.split(",").map(s => s.trim()).filter(s => s)
             };
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/`, {
@@ -202,8 +202,8 @@ export default function CreateJobPage() {
         }
     };
 
-    const isExperienceInvalid = parseInt(formData.experience_max) < parseInt(formData.experience_min);
-    const isSalaryInvalid = formData.salary_min && formData.salary_max && parseFloat(formData.salary_max) < parseFloat(formData.salary_min);
+    const isExperienceInvalid = Number.parseInt(formData.experience_max) < Number.parseInt(formData.experience_min);
+    const isSalaryInvalid = formData.salary_min && formData.salary_max && Number.parseFloat(formData.salary_max) < Number.parseFloat(formData.salary_min);
 
     const STAGE_TYPES = [
         { name: 'Screening', icon: 'Search' },
@@ -276,14 +276,14 @@ export default function CreateJobPage() {
                                         
                                         <div className="space-y-4 pt-1">
                                             <div className="space-y-1.5 relative">
-                                                <label className="text-[11px] font-bold text-slate-500 ml-1">Job Title <span className="text-rose-500">*</span></label>
-                                                <input type="text" placeholder="e.g. Senior Frontend Engineer" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
+                                                <label htmlFor="job-title-input" className="text-[11px] font-bold text-slate-500 ml-1">Job Title <span className="text-rose-500">*</span></label>
+                                                <input id="job-title-input" type="text" placeholder="e.g. Senior Frontend Engineer" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
                                             </div>
 
                                             {companies.length > 0 && (
                                                 <div className="space-y-1.5 relative">
-                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Company</label>
-                                                    <select className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.company_id} onChange={e => setFormData({ ...formData, company_id: e.target.value })}>
+                                                    <label htmlFor="company-select" className="text-[11px] font-bold text-slate-500 ml-1">Company</label>
+                                                    <select id="company-select" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.company_id} onChange={e => setFormData({ ...formData, company_id: e.target.value })}>
                                                         {companies.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
                                                     </select>
                                                 </div>
@@ -306,21 +306,21 @@ export default function CreateJobPage() {
                                         <div className="space-y-4 pt-1">
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-1.5">
-                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Type</label>
-                                                    <select className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
+                                                    <label htmlFor="job-type-select" className="text-[11px] font-bold text-slate-500 ml-1">Type</label>
+                                                    <select id="job-type-select" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
                                                         <option>Full Time</option><option>Part Time</option><option>Contract</option>
                                                     </select>
                                                 </div>
                                                 <div className="space-y-1.5">
-                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Mode</label>
-                                                    <select className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
+                                                    <label htmlFor="work-mode-select" className="text-[11px] font-bold text-slate-500 ml-1">Mode</label>
+                                                    <select id="work-mode-select" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none cursor-pointer" value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
                                                         <option>On-Site</option><option>Remote</option><option>Hybrid</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div className="space-y-1.5 relative">
-                                                <label className="text-[11px] font-bold text-slate-500 ml-1">Location</label>
-                                                <input type="text" placeholder="e.g. San Francisco, CA" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
+                                                <label htmlFor="location-input" className="text-[11px] font-bold text-slate-500 ml-1">Location</label>
+                                                <input id="location-input" type="text" placeholder="e.g. San Francisco, CA" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
                                             </div>
                                         </div>
                                     </div>
@@ -340,22 +340,22 @@ export default function CreateJobPage() {
                                         <div className="space-y-4 pt-1">
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-1.5">
-                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Min Exp (Yrs)</label>
-                                                    <input type="number" min="0" className={`w-full px-4 py-3 rounded-xl border ${isExperienceInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none`} value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
+                                                    <label htmlFor="experience-min-input" className="text-[11px] font-bold text-slate-500 ml-1">Min Exp (Yrs)</label>
+                                                    <input id="experience-min-input" type="number" min="0" className={`w-full px-4 py-3 rounded-xl border ${isExperienceInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none`} value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
                                                 </div>
                                                 <div className="space-y-1.5">
-                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Max Exp (Yrs)</label>
-                                                    <input type="number" min="0" className={`w-full px-4 py-3 rounded-xl border ${isExperienceInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none`} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
+                                                    <label htmlFor="experience-max-input" className="text-[11px] font-bold text-slate-500 ml-1">Max Exp (Yrs)</label>
+                                                    <input id="experience-max-input" type="number" min="0" className={`w-full px-4 py-3 rounded-xl border ${isExperienceInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none`} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-1.5">
-                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Min Salary (LPA)</label>
-                                                    <input type="number" min="0" placeholder="5" className={`w-full px-4 py-3 rounded-xl border ${isSalaryInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300`} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
+                                                    <label htmlFor="salary-min-input" className="text-[11px] font-bold text-slate-500 ml-1">Min Salary (LPA)</label>
+                                                    <input id="salary-min-input" type="number" min="0" placeholder="5" className={`w-full px-4 py-3 rounded-xl border ${isSalaryInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300`} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
                                                 </div>
                                                 <div className="space-y-1.5">
-                                                    <label className="text-[11px] font-bold text-slate-500 ml-1">Max Salary (LPA)</label>
-                                                    <input type="number" min="0" placeholder="15" className={`w-full px-4 py-3 rounded-xl border ${isSalaryInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300`} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
+                                                    <label htmlFor="salary-max-input" className="text-[11px] font-bold text-slate-500 ml-1">Max Salary (LPA)</label>
+                                                    <input id="salary-max-input" type="number" min="0" placeholder="15" className={`w-full px-4 py-3 rounded-xl border ${isSalaryInvalid ? 'border-rose-300 bg-rose-50 text-rose-700' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white'} font-semibold text-slate-800 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none placeholder:text-slate-300`} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
                                                 </div>
                                             </div>
                                         </div>
@@ -386,12 +386,12 @@ export default function CreateJobPage() {
 
                                     <div className="p-6 bg-slate-50 shrink-0">
                                         <div className="space-y-2">
-                                            <label className="text-[11px] font-bold text-slate-500 ml-1">Required Tech Stack <span className="font-medium opacity-60">(Comma Separated)</span></label>
+                                            <label htmlFor="required-skills-input" className="text-[11px] font-bold text-slate-500 ml-1">Required Tech Stack <span className="font-medium opacity-60">(Comma Separated)</span></label>
                                             <div className="relative">
                                                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                                                     <AtSign className="w-4 h-4" />
                                                 </div>
-                                                <input type="text" className="w-full pl-11 pr-5 py-3 rounded-xl border border-slate-200/80 outline-none font-semibold text-slate-800 text-sm bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm placeholder:text-slate-300" placeholder="e.g. React, Node.js, Python, AWS" value={formData.required_skills} onChange={e => setFormData({ ...formData, required_skills: e.target.value })} />
+                                                <input id="required-skills-input" type="text" className="w-full pl-11 pr-5 py-3 rounded-xl border border-slate-200/80 outline-none font-semibold text-slate-800 text-sm bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm placeholder:text-slate-300" placeholder="e.g. React, Node.js, Python, AWS" value={formData.required_skills} onChange={e => setFormData({ ...formData, required_skills: e.target.value })} />
                                             </div>
                                         </div>
                                     </div>
@@ -484,7 +484,7 @@ export default function CreateJobPage() {
 
                                 {/* Add Stage Button */}
                                 <button onClick={() => {
-                                    const maxId = Math.max(0, ...formData.workflow_stages.map(s => parseInt(s.id) || 0));
+                                    const maxId = Math.max(0, ...formData.workflow_stages.map(s => Number.parseInt(s.id) || 0));
                                     const newStage: WorkflowStage = { id: (maxId + 1).toString(), name: `Stage ${maxId + 1}`, type: 'Technical Interview', icon: 'Zap' };
                                     setFormData(prev => ({ ...prev, workflow_stages: [...prev.workflow_stages, newStage] }));
                                 }} className="w-full py-3.5 rounded-xl bg-indigo-600 text-white text-[11px] font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 active:scale-95">

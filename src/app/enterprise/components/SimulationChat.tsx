@@ -163,7 +163,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none"></div>
                         <h3 className="text-xs font-black  tracking-[0.4em] flex items-center gap-3 opacity-70">
                             <span className="material-symbols-rounded">neurology</span>
-                            Executive Feedback
+                            {"Executive Feedback"}
                         </h3>
                         <p className="text-2xl font-bold leading-tight ">&quot;{session.feedback}&quot;</p>
                     </div>
@@ -207,7 +207,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                             className="px-16 py-6 bg-slate-900 text-white rounded-2xl font-black text-xs  tracking-[0.4em] hover:bg-indigo-600 transition-all shadow-2xl active:scale-95 group"
                         >
                             <span className="flex items-center gap-3">
-                                Return to Hub
+                                {"Return to Hub"}
                                 <span className="material-symbols-rounded group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </span>
                         </button>
@@ -230,15 +230,15 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                     className="flex items-center gap-3 w-full p-4 mb-8 border border-white/20 rounded-xl hover:bg-white/5 transition-colors text-sm font-bold text-white/50"
                 >
                     <span className="material-symbols-rounded">arrow_back</span>
-                    Exit Simulation
+                    {"Exit Simulation"}
                 </button>
 
                 <div className="flex-1 space-y-8 px-2">
                     <div>
                         <h3 className="text-[10px] font-black text-white/30  tracking-[0.3em] mb-4">Current Lab</h3>
                         <div className="p-4 bg-indigo-600/20 border border-indigo-500/30 rounded-xl">
-                            <h4 className="text-sm font-black text-indigo-400 mb-1 leading-tight">{session.scenario.title}</h4>
-                            <p className="text-[9px] font-bold text-white/40  ">{session.scenario.difficulty} LEVEL</p>
+                            <h4 className="text-sm font-black text-indigo-400 mb-1 leading-tight">{session?.scenario.title}</h4>
+                            <p className="text-[9px] font-bold text-white/40  ">{session?.scenario.difficulty} LEVEL</p>
                         </div>
                     </div>
 
@@ -250,8 +250,8 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                                     <span className="material-symbols-rounded">smart_toy</span>
                                 </div>
                                 <div>
-                                    <div className="text-xs font-black text-white">{session.scenario.character_name}</div>
-                                    <div className="text-[9px] font-bold text-white/40   leading-none mt-1">{session.scenario.character_role}</div>
+                                    <div className="text-xs font-black text-white">{session?.scenario.character_name}</div>
+                                    <div className="text-[9px] font-bold text-white/40   leading-none mt-1">{session?.scenario.character_role}</div>
                                 </div>
                             </div>
                         </div>
@@ -297,7 +297,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                                 </div>
                                 <div className="flex-1 pt-1">
                                     <div className="text-xs font-black text-slate-400   mb-3 flex items-center gap-3">
-                                        {m.role === 'assistant' ? session.scenario.character_name : 'You / Employee'}
+                                        {m.role === 'assistant' ? session?.scenario.character_name : 'You / Employee'}
                                         {m.role === 'assistant' && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-500 text-[8px] rounded  font-black">AI Persona</span>}
                                     </div>
                                     <div className="text-base font-bold text-slate-700 leading-relaxed whitespace-pre-wrap selection:bg-indigo-100 ">

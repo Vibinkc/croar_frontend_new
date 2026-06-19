@@ -327,7 +327,7 @@ export default function OnboardingAutomationPage() {
                   className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
                 >
                   <span className="material-symbols-rounded text-lg">add</span>
-                  NEW AUTOMATION
+                  {"NEW AUTOMATION"}
                 </button>
               )}
           </div>
@@ -418,7 +418,7 @@ export default function OnboardingAutomationPage() {
               className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-lg text-sm font-bold hover:bg-[#6d28d9] transition-colors"
             >
               <span className="material-symbols-rounded text-base">add</span>
-              Create Automation
+              {"Create Automation"}
             </button>
           )}
         </div>
@@ -450,7 +450,7 @@ export default function OnboardingAutomationPage() {
                         </div>
                         <p className="text-xs font-bold text-slate-800 line-clamp-1">
                           <span className="text-slate-400 font-medium italic mr-1">Trigger:</span>
-                          Move to stage
+                          {"Move to stage"}
                         </p>
                       </div>
                     </td>
@@ -469,7 +469,7 @@ export default function OnboardingAutomationPage() {
                         {a.email_template_id && (
                           <div className="flex items-center gap-1.5 text-[10px] font-medium text-[#7C3AED]">
                             <span className="material-symbols-rounded text-sm">mail</span>
-                            Welcome Email Active
+                            {"Welcome Email Active"}
                           </div>
                         )}
                       </div>
@@ -546,10 +546,11 @@ export default function OnboardingAutomationPage() {
               <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
                 {/* Job */}
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                  <label htmlFor="onboarding-job-requirement" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Job Requirement <span className="text-red-400">*</span>
                   </label>
                   <select
+                    id="onboarding-job-requirement"
                     value={form.job_requirement_id}
                     onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 0, stage_name: "" }))}
                     disabled={!!editingId}
@@ -564,11 +565,12 @@ export default function OnboardingAutomationPage() {
 
                 {/* Round */}
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                  <label htmlFor="onboarding-trigger-stage" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Trigger Stage <span className="text-red-400">*</span>
                   </label>
                   {jobRounds.length > 0 ? (
                     <select
+                      id="onboarding-trigger-stage"
                       onChange={(e) => {
                         const idx = Number(e.target.value);
                         if (idx === 0) {
@@ -611,10 +613,11 @@ export default function OnboardingAutomationPage() {
 
                 {/* Onboarding Template */}
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                  <label htmlFor="onboarding-template" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Onboarding Template <span className="text-red-400">*</span>
                   </label>
                   <select
+                    id="onboarding-template"
                     value={form.template_id}
                     onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}
                     className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
@@ -628,10 +631,11 @@ export default function OnboardingAutomationPage() {
 
                 {/* Email Template */}
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
+                  <label htmlFor="onboarding-email-template" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
                     Introduction Email Template
                   </label>
                   <select
+                    id="onboarding-email-template"
                     value={form.email_template_id}
                     onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
                     className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"

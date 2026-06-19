@@ -17,7 +17,7 @@ const getColorForTopic = (topic: string) => {
     const colors = ["slate"];
     let hash = 0;
     for (let i = 0; i < topic.length; i++) {
-        hash = topic.charCodeAt(i) + ((hash << 5) - hash);
+        hash = (topic.codePointAt(i) ?? 0) + ((hash << 5) - hash);
     }
     const index = Math.abs(hash) % colors.length;
     return colors[index];
@@ -181,7 +181,7 @@ export default function AptitudePage() {
                                     {isCompleted ? (
                                         <button className="w-full py-2 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 text-[9px] font-black   rounded-lg transition-all flex items-center justify-center gap-1.5">
                                             <span className="material-icons-outlined text-sm">check_circle</span>
-                                            COMPLETE
+                                            {"COMPLETE"}
                                         </button>
                                     ) : (
                                         <Link href={`/practice/aptitude/${topicName.toLowerCase()}`}>

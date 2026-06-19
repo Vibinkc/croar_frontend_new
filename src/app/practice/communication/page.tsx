@@ -150,7 +150,7 @@ export default function CommunicationPracticePage() {
                             <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/50">
                                 <Link href={`/practice/communication/${s.id}?title=${encodeURIComponent(s.title)}&prompt=${encodeURIComponent(s.prompt)}`}>
                                     <button className={`w-full ${colors.button} font-black text-[9px]   py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 active:scale-95`}>
-                                        INITIATE PROTOCOL
+                                        {"INITIATE PROTOCOL"}
                                         <span className="material-symbols-rounded text-base">arrow_forward</span>
                                     </button>
                                 </Link>

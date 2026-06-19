@@ -127,7 +127,7 @@ function PilotSetupForm({
         if (!step0Valid || !step1Valid) return; // guard against programmatic/invalid submits
         // Coerce numeric fields to sane values so the composed message is always clean.
         const num = (v: string, def: number, lo: number, hi: number) => {
-            const n = parseInt(v, 10);
+            const n = Number.parseInt(v, 10);
             return Math.min(hi, Math.max(lo, Number.isFinite(n) ? n : def));
         };
         const exp = SENIORITY.find((s) => s.label === seniority)?.exp || "";
@@ -294,7 +294,7 @@ function PilotSetupForm({
                     className="px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 border border-slate-200 hover:bg-white transition-all disabled:opacity-40 flex items-center gap-1"
                 >
                     <span className="material-symbols-rounded text-lg">chevron_left</span>
-                    Previous
+                    {"Previous"}
                 </button>
                 {isLast ? (
                     <button
@@ -303,7 +303,7 @@ function PilotSetupForm({
                         className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-black hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
                     >
                         <span className="material-symbols-rounded text-lg">rocket_launch</span>
-                        Build pipeline
+                        {"Build pipeline"}
                     </button>
                 ) : (
                     <button
@@ -311,7 +311,7 @@ function PilotSetupForm({
                         disabled={!stepValid}
                         className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-black hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-1"
                     >
-                        Next
+                        {"Next"}
                         <span className="material-symbols-rounded text-lg">chevron_right</span>
                     </button>
                 )}
@@ -661,7 +661,7 @@ export default function CroarPilotPage() {
         setThreadId(makeThreadId());
     };
 
-    const deleteSession = async (e: React.MouseEvent, id: string) => {
+    const deleteSession = async (e: React.MouseEvent | React.KeyboardEvent, id: string) => {
         e.stopPropagation();
         if (!token) return;
         try {
@@ -687,7 +687,7 @@ export default function CroarPilotPage() {
                         className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-indigo-600 text-white text-sm font-black hover:bg-indigo-700 transition-all"
                     >
                         <span className="material-symbols-rounded text-xl">add</span>
-                        New Chat
+                        {"New Chat"}
                     </button>
                 </div>
                 <p className="px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">History</p>
@@ -708,7 +708,14 @@ export default function CroarPilotPage() {
                             <span className="material-symbols-rounded text-base shrink-0 text-slate-400">forum</span>
                             <span className="truncate flex-1">{s.title || "Untitled"}</span>
                             <span
+                                role="button"
+                                tabIndex={0}
                                 onClick={(e) => deleteSession(e, s.session_id)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                        deleteSession(e, s.session_id);
+                                    }
+                                }}
                                 className="material-symbols-rounded text-base text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all"
                                 title="Delete"
                             >
@@ -844,7 +851,7 @@ export default function CroarPilotPage() {
                                 {wantsForm && setupDone.has(idx) && (
                                     <p className="pl-11 text-xs font-bold text-emerald-600 flex items-center gap-1">
                                         <span className="material-symbols-rounded text-base">check_circle</span>
-                                        Details submitted
+                                        {"Details submitted"}
                                     </p>
                                 )}
 

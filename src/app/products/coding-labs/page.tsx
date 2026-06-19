@@ -39,7 +39,7 @@ export default function CodingProductPage() {
                             className="inline-flex mx-auto items-center gap-2 mb-2 border border-green-400/30 bg-green-500/10 px-3 py-1 rounded-full text-green-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-green-400">code</span>
-                            Cloud IDE v3.0
+                            {"Cloud IDE v3.0"}
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}

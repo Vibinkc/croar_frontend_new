@@ -70,10 +70,12 @@ interface Question {
 interface AssessmentTemplate {
   id: string;
   name: string;
-  type?: string;
+  type?: AssessmentType;
   topic?: string;
   question_count?: number;
   test_duration?: number;
+  email_template_id?: string | null;
+  generated_questions?: Question[] | null;
 }
 
 interface FormState {
@@ -644,7 +646,7 @@ export default function AssessmentAutomationPage() {
                   className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
                 >
                   <span className="material-symbols-rounded text-lg">add</span>
-                  NEW AUTOMATION
+                  {"NEW AUTOMATION"}
                 </button>
               )}
           </div>
@@ -791,7 +793,7 @@ export default function AssessmentAutomationPage() {
                         {a.auto_move && (
                           <div className="flex items-center gap-1 text-[9px] font-black text-indigo-500 uppercase">
                             <span className="material-symbols-rounded text-xs">double_arrow</span>
-                            Auto-Move Active
+                            {"Auto-Move Active"}
                           </div>
                         )}
                       </div>
@@ -853,9 +855,13 @@ export default function AssessmentAutomationPage() {
       {/* ── Side Panel Drawer ─────────────────────────────────────────────────── */}
       {showModal && (
         <div className="fixed inset-0 z-[150] flex justify-end">
-          <div 
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Close panel"
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300"
             onClick={closeModal}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { closeModal(); } }}
           />
           <div className="relative w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col animate-slide-in-right">
             <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-white shrink-0">
@@ -898,8 +904,9 @@ export default function AssessmentAutomationPage() {
                 <div className="p-8 space-y-6 max-w-xl mx-auto">
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Target Job <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-target-job" className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Target Job <span className="text-red-400">*</span></label>
                         <select
+                          id="assessment-target-job"
                           value={form.job_requirement_id}
                           onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value }))}
                           className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
@@ -912,10 +919,11 @@ export default function AssessmentAutomationPage() {
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Hiring Round <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-hiring-round" className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Hiring Round <span className="text-red-400">*</span></label>
                         {jobRounds.length > 0 ? (
-                          <select 
-                            onChange={handleRoundSelect} 
+                          <select
+                            id="assessment-hiring-round"
+                            onChange={handleRoundSelect}
                             defaultValue={editingId ? `${form.stage_index}|${form.stage_name || ''}` : ""}
                             className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
                           >
@@ -926,7 +934,7 @@ export default function AssessmentAutomationPage() {
                           </select>
                         ) : (
                           <div className="grid grid-cols-2 gap-3">
-                            <input type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder="Index" className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold" />
+                            <input id="assessment-hiring-round" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder="Index" className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold" />
                             <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder="Name" className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold" />
                           </div>
                         )}
@@ -935,8 +943,9 @@ export default function AssessmentAutomationPage() {
 
                     <div className="bg-[#7C3AED]/5 rounded-lg p-5 space-y-4 border border-[#7C3AED]/10 mb-4">
                       <div>
-                        <label className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Use Assessment Template (Optional)</label>
+                        <label htmlFor="assessment-template-select" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Use Assessment Template (Optional)</label>
                         <select
+                          id="assessment-template-select"
                           onChange={(e) => {
                             const templateId = e.target.value;
                             if (templateId) {
@@ -945,10 +954,10 @@ export default function AssessmentAutomationPage() {
                                   setForm(f => ({
                                       ...f,
                                       template_id: templateId,
-                                      type: templ.type,
-                                      topic: templ.topic,
-                                      question_count: templ.question_count,
-                                      test_duration: templ.test_duration,
+                                      type: templ.type ?? f.type,
+                                      topic: templ.topic ?? f.topic,
+                                      question_count: templ.question_count ?? f.question_count,
+                                      test_duration: templ.test_duration ?? f.test_duration,
                                       email_template_id: templ.email_template_id || f.email_template_id,
                                       generated_questions: templ.generated_questions || null
                                   }));
@@ -969,8 +978,9 @@ export default function AssessmentAutomationPage() {
                     <div className="bg-[#7C3AED]/5 rounded-lg p-5 space-y-4 border border-[#7C3AED]/10">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Type <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-type" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Type <span className="text-red-400">*</span></label>
                           <select
+                            id="assessment-type"
                             value={form.type}
                             onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as AssessmentType }))}
                             className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
@@ -981,8 +991,9 @@ export default function AssessmentAutomationPage() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Topic <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-topic" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Topic <span className="text-red-400">*</span></label>
                           <input
+                            id="assessment-topic"
                             type="text"
                             value={form.topic}
                             onChange={(e) => setForm((f) => ({ ...f, topic: e.target.value }))}
@@ -994,8 +1005,9 @@ export default function AssessmentAutomationPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Questions <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-question-count" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Questions <span className="text-red-400">*</span></label>
                           <input
+                            id="assessment-question-count"
                             type="number"
                             min={1}
                             max={50}
@@ -1005,8 +1017,9 @@ export default function AssessmentAutomationPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Time (min) <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-test-duration" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Time (min) <span className="text-red-400">*</span></label>
                           <input
+                            id="assessment-test-duration"
                             type="number"
                             min={5}
                             value={form.test_duration}
@@ -1019,9 +1032,10 @@ export default function AssessmentAutomationPage() {
 
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Trigger Criteria <span className="text-red-400">*</span></label>
-                        <textarea 
-                          rows={2} 
+                        <label htmlFor="assessment-criteria" className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Trigger Criteria <span className="text-red-400">*</span></label>
+                        <textarea
+                          id="assessment-criteria"
+                          rows={2}
                           value={form.criteria} 
                           onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} 
                           className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 resize-none h-20" 
@@ -1030,8 +1044,9 @@ export default function AssessmentAutomationPage() {
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Email Template <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-email-template" className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Email Template <span className="text-red-400">*</span></label>
                         <select
+                          id="assessment-email-template"
                           value={form.email_template_id}
                           onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
                           className={`w-full bg-slate-50 border rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/20 appearance-none cursor-pointer ${!form.email_template_id ? 'border-amber-200' : 'border-none'}`}
@@ -1112,8 +1127,9 @@ export default function AssessmentAutomationPage() {
 
                       {!form.is_immediate && (
                         <div className="bg-amber-50 rounded-lg p-4 border border-amber-100 animate-in fade-in slide-in-from-top-2 duration-300">
-                          <label className="block text-[10px] font-black text-amber-600   mb-1.5 ml-1">Send At (Date & Time)</label>
+                          <label htmlFor="assessment-send-at" className="block text-[10px] font-black text-amber-600   mb-1.5 ml-1">Send At (Date & Time)</label>
                           <input
+                            id="assessment-send-at"
                             type="datetime-local"
                             value={form.send_at}
                             onChange={(e) => setForm(f => ({ ...f, send_at: e.target.value }))}
@@ -1154,7 +1170,7 @@ export default function AssessmentAutomationPage() {
                          className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-[10px] font-black   text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
                        >
                          <span className="material-symbols-rounded text-sm">add</span>
-                         Add Question
+                         {"Add Question"}
                        </button>
                     </div>
 
@@ -1175,9 +1191,10 @@ export default function AssessmentAutomationPage() {
                               {q.type === 'APTITUDE' ? (
                                 <>
                                   <div>
-                                    <label className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Question Text (Aptitude)</label>
-                                    <textarea 
-                                      value={q.question} 
+                                    <label htmlFor={`cfg-q-question-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Question Text (Aptitude)</label>
+                                    <textarea
+                                      id={`cfg-q-question-${q.id}`}
+                                      value={q.question}
                                       onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
                                       className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-20 resize-none"
                                     />
@@ -1188,7 +1205,7 @@ export default function AssessmentAutomationPage() {
                                         <input 
                                           value={opt} 
                                           onChange={(e) => {
-                                            const newOpts = [...q.options];
+                                            const newOpts = [...(q.options ?? [])];
                                             newOpts[oi] = e.target.value;
                                             handleUpdateQuestion(q.id, "options", newOpts);
                                           }}
@@ -1207,26 +1224,29 @@ export default function AssessmentAutomationPage() {
                               ) : (
                                 <>
                                   <div>
-                                    <label className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Title</label>
-                                    <input 
+                                    <label htmlFor={`cfg-q-title-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Title</label>
+                                    <input
+                                      id={`cfg-q-title-${q.id}`}
                                       type="text"
-                                      value={q.title} 
+                                      value={q.title}
                                       onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
                                       className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-black text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all"
                                     />
                                   </div>
                                   <div>
-                                    <label className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Description</label>
-                                    <textarea 
-                                      value={q.description} 
+                                    <label htmlFor={`cfg-q-description-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Description</label>
+                                    <textarea
+                                      id={`cfg-q-description-${q.id}`}
+                                      value={q.description}
                                       onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
                                       className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
                                     />
                                   </div>
                                   <div>
-                                    <label className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Statement</label>
-                                    <textarea 
-                                      value={q.problem_statement} 
+                                    <label htmlFor={`cfg-q-statement-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Statement</label>
+                                    <textarea
+                                      id={`cfg-q-statement-${q.id}`}
+                                      value={q.problem_statement}
                                       onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
                                       className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
                                     />
@@ -1296,7 +1316,14 @@ export default function AssessmentAutomationPage() {
       {/* ── Question Editor Modal ────────────────────────────────────────── */}
       {previewingAutomation && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setPreviewingAutomation(null)} />
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Close preview"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
+            onClick={() => setPreviewingAutomation(null)}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setPreviewingAutomation(null); } }}
+          />
           <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-white shrink-0">
               <div className="flex items-center gap-4">
@@ -1329,9 +1356,10 @@ export default function AssessmentAutomationPage() {
                     {q.type === 'APTITUDE' ? (
                       <>
                         <div>
-                          <label className="text-[10px] font-black text-slate-400   mb-1.5 block">Question Text (Aptitude)</label>
-                          <textarea 
-                            value={q.question} 
+                          <label htmlFor={`prev-q-question-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block">Question Text (Aptitude)</label>
+                          <textarea
+                            id={`prev-q-question-${q.id}`}
+                            value={q.question}
                             onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
                             className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-20 resize-none"
                           />
@@ -1342,7 +1370,7 @@ export default function AssessmentAutomationPage() {
                               <input 
                                 value={opt} 
                                 onChange={(e) => {
-                                  const newOpts = [...q.options];
+                                  const newOpts = [...(q.options ?? [])];
                                   newOpts[oi] = e.target.value;
                                   handleUpdateQuestion(q.id, "options", newOpts);
                                 }}
@@ -1361,18 +1389,20 @@ export default function AssessmentAutomationPage() {
                     ) : (
                       <>
                         <div>
-                          <label className="text-[10px] font-black text-slate-400   mb-1.5 block">Problem Title</label>
-                          <input 
+                          <label htmlFor={`prev-q-title-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block">Problem Title</label>
+                          <input
+                            id={`prev-q-title-${q.id}`}
                             type="text"
-                            value={q.title} 
+                            value={q.title}
                             onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
                             className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-black text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all"
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-black text-slate-400   mb-1.5 block">Problem Statement</label>
-                          <textarea 
-                            value={q.problem_statement} 
+                          <label htmlFor={`prev-q-statement-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block">Problem Statement</label>
+                          <textarea
+                            id={`prev-q-statement-${q.id}`}
+                            value={q.problem_statement}
                             onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
                             className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-40 resize-none"
                           />
@@ -1388,7 +1418,7 @@ export default function AssessmentAutomationPage() {
                 className="w-full py-4 border-2 border-dashed border-slate-200 rounded-lg text-slate-400 font-bold hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 transition-all flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-rounded">add_circle</span>
-                Add Manual Question
+                {"Add Manual Question"}
               </button>
             </div>
 

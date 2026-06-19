@@ -25,7 +25,7 @@ export default function AptitudeProductPage() {
                             className="inline-flex mx-auto items-center gap-2 mb-2 border border-blue-400/30 bg-blue-500/10 px-3 py-1 rounded-full text-blue-300 text-xs font-bold   backdrop-blur-md"
                         >
                             <span className="material-symbols-rounded text-sm text-blue-400">calculate</span>
-                            Cognitive Engine v2.0
+                            {"Cognitive Engine v2.0"}
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}

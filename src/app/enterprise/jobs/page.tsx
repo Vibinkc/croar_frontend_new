@@ -358,7 +358,7 @@ export default function EnterpriseJobsPage() {
                                 <p className="text-slate-500 max-w-xs mx-auto mb-8">Create your first job to start hiring — let AI set up the whole pipeline, or post one manually.</p>
                                 <div className="flex flex-wrap gap-3 justify-center">
                                     <Link href="/enterprise/croar-pilot" className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all flex items-center gap-2">
-                                        <span className="material-symbols-rounded text-lg">smart_toy</span>
+                                        <span className="material-symbols-rounded text-lg">smart_toy</span>{""}
                                         Hire with AI
                                     </Link>
                                     <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all">Post a job</Link>
@@ -408,17 +408,17 @@ export default function EnterpriseJobsPage() {
                                     <td className="px-6 py-5">
                                         {job.status_id === 2 ? (
                                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black border border-emerald-100">
-                                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>{""}
                                                 ACTIVE
                                             </span>
                                         ) : job.status_id === 1 ? (
                                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 text-slate-500 text-[10px] font-black border border-slate-200">
-                                                <span className="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>
+                                                <span className="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>{""}
                                                 DRAFT
                                             </span>
                                         ) : (
                                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-500 text-[10px] font-black border border-rose-100">
-                                                <span className="w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
+                                                <span className="w-1.5 h-1.5 bg-rose-500 rounded-full"></span>{""}
                                                 CLOSED
                                             </span>
                                         )}

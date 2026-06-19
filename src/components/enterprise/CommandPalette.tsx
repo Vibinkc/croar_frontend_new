@@ -79,12 +79,23 @@ export default function CommandPalette({
 
     return (
         <div
+            role="button"
+            tabIndex={0}
             className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-4 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => onOpenChange(false)}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onOpenChange(false);
+                }
+            }}
         >
             <div
+                role="button"
+                tabIndex={0}
                 className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
             >
                 <div className="flex items-center gap-3 px-4 border-b border-slate-100">
                     <span className="material-symbols-rounded text-slate-400">search</span>

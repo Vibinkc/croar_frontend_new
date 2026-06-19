@@ -312,7 +312,7 @@ export default function ScenarioManagement() {
                             className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
-                            New Scenario
+                            {"New Scenario"}
                         </button>
                     )}
                     <button 
@@ -490,8 +490,9 @@ export default function ScenarioManagement() {
                                 <form id="architect-form" onSubmit={handleAction} className="space-y-10">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-3 group">
-                                            <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Scenario Title</label>
-                                            <input 
+                                            <label htmlFor="scenario-title" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Scenario Title</label>
+                                            <input
+                                                id="scenario-title"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
                                                 placeholder="e.g. Crisis Negotiation Alpha"
                                                 value={form.title}
@@ -500,8 +501,9 @@ export default function ScenarioManagement() {
                                             />
                                         </div>
                                         <div className="space-y-3 group">
-                                            <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Difficulty Level</label>
-                                            <select 
+                                            <label htmlFor="scenario-difficulty" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Difficulty Level</label>
+                                            <select
+                                                id="scenario-difficulty"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-[10px] font-black text-slate-800   outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
                                                 value={form.difficulty}
                                                 onChange={e => setForm({...form, difficulty: e.target.value})}
@@ -514,9 +516,10 @@ export default function ScenarioManagement() {
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Participant Role & Persona</label>
+                                        <label htmlFor="scenario-character-name" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Participant Role & Persona</label>
                                         <div className="grid grid-cols-2 gap-4">
-                                            <input 
+                                            <input
+                                                id="scenario-character-name"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
                                                 placeholder="Name: Jordan X"
                                                 value={form.character_name}
@@ -534,8 +537,9 @@ export default function ScenarioManagement() {
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">System Prompt Instructions</label>
-                                        <textarea 
+                                        <label htmlFor="scenario-system-prompt" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">System Prompt Instructions</label>
+                                        <textarea
+                                            id="scenario-system-prompt"
                                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-6 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-slate-900 transition-all min-h-[150px] shadow-inner leading-relaxed"
                                             placeholder="Provide instructions for the AI character..."
                                             value={form.system_prompt}
@@ -545,8 +549,9 @@ export default function ScenarioManagement() {
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Initial Message</label>
-                                        <input 
+                                        <label htmlFor="scenario-initial-message" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Initial Message</label>
+                                        <input
+                                            id="scenario-initial-message"
                                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner "
                                             placeholder="'I don't think we have the capacity for this delay...'"
                                             value={form.initial_message}
@@ -604,9 +609,12 @@ export default function ScenarioManagement() {
                              </div>
                              <div className="flex-1 overflow-y-auto p-10 space-y-3 no-scrollbar">
                                 {employees.map(emp => (
-                                    <div 
-                                        key={emp.id} 
+                                    <div
+                                        key={emp.id}
+                                        role="button"
+                                        tabIndex={0}
                                         onClick={() => toggleEmployeeSelection(emp.id)}
+                                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { toggleEmployeeSelection(emp.id); } }}
                                         className={`group p-5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                                             selectedEmployees.includes(emp.id) 
                                             ? 'bg-slate-900 border-slate-900 text-white shadow-2xl scale-[1.02]' 

@@ -82,12 +82,13 @@ export default function SuperAdminLoginPage() {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-500   ml-1">Universal Identity</label>
+                                    <label htmlFor="super-admin-login-email" className="text-[10px] font-black text-slate-500   ml-1">Universal Identity</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <span className="material-icons-outlined text-sm text-slate-500 group-focus-within:text-blue-500 transition-colors">alternate_email</span>
                                         </div>
                                         <input
+                                            id="super-admin-login-email"
                                             type="email"
                                             required
                                             value={email}
@@ -99,12 +100,13 @@ export default function SuperAdminLoginPage() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-500   ml-1">Access Protocol</label>
+                                    <label htmlFor="super-admin-login-password" className="text-[10px] font-black text-slate-500   ml-1">Access Protocol</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <span className="material-icons-outlined text-sm text-slate-500 group-focus-within:text-blue-500 transition-colors">lock</span>
                                         </div>
                                         <input
+                                            id="super-admin-login-password"
                                             type="password"
                                             required
                                             value={password}
@@ -131,11 +133,11 @@ export default function SuperAdminLoginPage() {
                                 {isLoading ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        Authenticating...
+                                        {"Authenticating..."}
                                     </>
                                 ) : (
                                     <>
-                                        Establish Connection
+                                        {"Establish Connection"}
                                         <span className="material-icons-outlined text-sm">vpn_key</span>
                                     </>
                                 )}

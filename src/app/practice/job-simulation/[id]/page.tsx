@@ -95,7 +95,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
     }, [id]);
 
     const handleRunTest = async (testIndex: number) => {
-        const currentRound = simulation.rounds[currentRoundIndex];
+        const currentRound = simulation!.rounds[currentRoundIndex];
         const currentQuestion = currentRound.questions[currentQuestionIndex];
         const code = answers[currentQuestion.id];
 
@@ -137,7 +137,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
     };
 
     const handleRunAllTests = async () => {
-        const currentRound = simulation.rounds[currentRoundIndex];
+        const currentRound = simulation!.rounds[currentRoundIndex];
         const currentQuestion = currentRound.questions[currentQuestionIndex];
         const testCases = currentQuestion.test_cases || [];
 
@@ -148,7 +148,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
     };
 
     const handleRunCustomTest = async () => {
-        const currentRound = simulation.rounds[currentRoundIndex];
+        const currentRound = simulation!.rounds[currentRoundIndex];
         const currentQuestion = currentRound.questions[currentQuestionIndex];
         const code = answers[currentQuestion.id];
 
@@ -271,7 +271,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
             setIsTransitioning(true);
             setTimeout(() => {
                 const prevRoundIndex = currentRoundIndex - 1;
-                const prevRound = simulation.rounds[prevRoundIndex];
+                const prevRound = simulation!.rounds[prevRoundIndex];
                 setCurrentRoundIndex(prevRoundIndex);
                 setCurrentQuestionIndex(prevRound.questions.length - 1);
                 setIsTransitioning(false);
@@ -310,7 +310,7 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
     );
 
     if (completed || simulation.user_attempt) {
-        return <JobSimulationResult attempt={simulation.user_attempt} />;
+        return <JobSimulationResult attempt={simulation.user_attempt as unknown as React.ComponentProps<typeof JobSimulationResult>["attempt"]} />;
     }
 
     const currentRound = simulation.rounds[currentRoundIndex];
@@ -480,9 +480,9 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
                                             </h2>
                                         </div>
 
-                                        {(currentQuestion.examples || currentQuestion.test_cases?.length > 0) && (
+                                        {(currentQuestion.examples || (currentQuestion.test_cases?.length ?? 0) > 0) && (
                                             <div className="space-y-6">
-                                                {(currentQuestion.examples || currentQuestion.test_cases?.slice(0, 2)).map((ex: TestCase, i: number) => (
+                                                {(currentQuestion.examples || currentQuestion.test_cases?.slice(0, 2) || []).map((ex: TestCase, i: number) => (
                                                     <div key={i} className="space-y-3">
                                                         <span className="text-[10px] font-black  tracking-[0.2em] text-[#8e9297]">Example {i + 1}</span>
                                                         <div className={`rounded-xl border p-4 font-mono text-[12px] space-y-2 ${isDark ? 'bg-[#1e1f23]/30 border-[#2d2e32]' : 'bg-slate-50 border-slate-100'}`}>
@@ -526,7 +526,10 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
                             {/* HORIZONTAL DRAG HANDLE (LEFT) */}
                             {showConsole && (
                                 <div
+                                    role="button"
+                                    tabIndex={0}
                                     onMouseDown={handleLeftHorizontalMouseDown}
+                                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); } }}
                                     className={`h-1 cursor-row-resize z-40 group flex items-center justify-center transition-colors hover:bg-indigo-500/20 ${isDark ? 'bg-[#2d2e32]' : 'bg-slate-100'}`}
                                 >
                                     <div className={`h-[1px] w-full ${isDark ? 'bg-[#3f4147]' : 'bg-slate-200'} group-hover:bg-indigo-500/50`} />
@@ -604,7 +607,10 @@ export default function JobSimulationSessionPage({ params }: { params: Promise<{
 
                 {/* VERTICAL DRAG HANDLE */}
                 <div
+                    role="button"
+                    tabIndex={0}
                     onMouseDown={handleMouseDown}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); } }}
                     className="absolute top-0 bottom-0 w-1 cursor-col-resize z-50 transition-colors group flex items-center justify-center hover:bg-indigo-500/20"
                     style={{ left: `calc(${leftPaneWidth}% - 1px)` }}
                 >

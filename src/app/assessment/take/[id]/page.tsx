@@ -133,7 +133,7 @@ export default function CandidateAssessmentPage() {
   const handleStartTest = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/public/assessment/${attempt.id}`);
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/public/assessment/${attempt?.id}`);
       if (res.ok) {
         const data = await res.json();
         setTestData(data);
@@ -156,16 +156,6 @@ export default function CandidateAssessmentPage() {
     }
   };
 
-  // Timer logic
-  useEffect(() => {
-    if (status === "TESTING" && timeLeft > 0) {
-      const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
-      return () => clearInterval(timer);
-    } else if (status === "TESTING" && timeLeft === 0) {
-      handleComplete();
-    }
-  }, [status, timeLeft, handleComplete]);
-
   // 3. Submit
   const handleComplete = useCallback(async () => {
     if (!attempt) return;
@@ -187,6 +177,16 @@ export default function CandidateAssessmentPage() {
       setLoading(false);
     }
   }, [answers, attempt]);
+
+  // Timer logic
+  useEffect(() => {
+    if (status === "TESTING" && timeLeft > 0) {
+      const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
+      return () => clearInterval(timer);
+    } else if (status === "TESTING" && timeLeft === 0) {
+      handleComplete();
+    }
+  }, [status, timeLeft, handleComplete]);
 
   const runTests = async () => {
     setRunningTests(true);
@@ -237,9 +237,10 @@ export default function CandidateAssessmentPage() {
           
           <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500  tracking-[0.2em] ml-1">Email Address</label>
-              <input 
-                type="email" 
+              <label htmlFor="verify-email" className="text-[10px] font-black text-slate-500  tracking-[0.2em] ml-1">Email Address</label>
+              <input
+                id="verify-email"
+                type="email"
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-5 py-4 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50 transition-all font-medium"
@@ -482,7 +483,7 @@ export default function CandidateAssessmentPage() {
                     language={selectedLanguage}
                     theme="vs-dark"
                     value={answers[currentQuestion.id] || ""}
-                    onChange={(val) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: val }))}
+                    onChange={(val) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: val ?? "" }))}
                     options={{
                       fontSize: 14,
                       minimap: { enabled: false },

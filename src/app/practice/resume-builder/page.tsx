@@ -88,7 +88,7 @@ export default function ResumeBuilderStudent() {
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                         <span className="material-icons-outlined text-slate-600">history</span>
-                        My Resumes
+                        {"My Resumes"}
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {submissions.map((s: ResumeSubmission) => {
@@ -127,7 +127,7 @@ export default function ResumeBuilderStudent() {
             <div>
                 <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                     <span className="material-icons-outlined text-slate-600">add_circle_outline</span>
-                    Create New Resume
+                    {"Create New Resume"}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {templates.map((t: ResumeTemplate) => (

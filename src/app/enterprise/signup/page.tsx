@@ -269,8 +269,9 @@ export default function EnterpriseSignupPage() {
                             {/* ... (rest of the form remains the same) ... */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-500 mb-2">First Name</label>
+                                    <label htmlFor="first-name" className="block text-xs font-bold text-slate-500 mb-2">First Name</label>
                                     <input
+                                        id="first-name"
                                         className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dark:text-white"
                                         type="text"
                                         placeholder="John"
@@ -280,8 +281,9 @@ export default function EnterpriseSignupPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-500 mb-2">Last Name</label>
+                                    <label htmlFor="last-name" className="block text-xs font-bold text-slate-500 mb-2">Last Name</label>
                                     <input
+                                        id="last-name"
                                         className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dark:text-white"
                                         type="text"
                                         placeholder="Doe"
@@ -293,10 +295,11 @@ export default function EnterpriseSignupPage() {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-slate-500 mb-2">Company Name</label>
+                                <label htmlFor="company-name" className="block text-xs font-bold text-slate-500 mb-2">Company Name</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-3.5 text-slate-400 material-icons-outlined text-lg">corporate_fare</span>
                                     <input
+                                        id="company-name"
                                         className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dark:text-white"
                                         type="text"
                                         placeholder="Acme Corp"
@@ -308,10 +311,11 @@ export default function EnterpriseSignupPage() {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-slate-500 mb-2">Work Email</label>
+                                <label htmlFor="work-email" className="block text-xs font-bold text-slate-500 mb-2">Work Email</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-3.5 text-slate-400 material-icons-outlined text-lg">email</span>
                                     <input
+                                        id="work-email"
                                         className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dark:text-white"
                                         type="email"
                                         placeholder="john@company.com"
@@ -323,10 +327,11 @@ export default function EnterpriseSignupPage() {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-slate-500 mb-2">Password</label>
+                                <label htmlFor="password" className="block text-xs font-bold text-slate-500 mb-2">Password</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-3.5 text-slate-400 material-icons-outlined text-lg">lock</span>
                                     <input
+                                        id="password"
                                         className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dark:text-white"
                                         type="password"
                                         placeholder="••••••••"

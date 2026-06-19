@@ -234,7 +234,7 @@ export default function JobDetailPage() {
                             className="px-4 py-1.5 flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 text-white text-[11px] font-black hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-[14px]">edit</span>
-                            Edit
+                            {"Edit"}
                         </Link>
                     )}
                 </div>

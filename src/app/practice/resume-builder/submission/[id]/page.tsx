@@ -191,14 +191,14 @@ export default function ResumeViewer() {
                         className="flex items-center gap-2 bg-slate-100 text-slate-700 px-6 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition-colors"
                     >
                         <span className="material-icons-outlined">edit</span>
-                        Edit Data
+                        {"Edit Data"}
                     </Link>
                     <button
                         onClick={handlePrint}
                         className="flex items-center gap-2 bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg"
                     >
                         <span className="material-icons-outlined">print</span>
-                        Download / Print PDF
+                        {"Download / Print PDF"}
                     </button>
                 </div>
             </div>

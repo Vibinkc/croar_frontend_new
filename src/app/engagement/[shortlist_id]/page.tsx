@@ -214,10 +214,11 @@ export default function CandidateEngagementPage() {
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Total Experience (Years)</label>
+                                        <label htmlFor="total_experience" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Total Experience (Years)</label>
                                         <div className="relative">
                                             <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                            <input 
+                                            <input
+                                                id="total_experience"
                                                 required
                                                 type="number"
                                                 name="total_experience"
@@ -229,10 +230,11 @@ export default function CandidateEngagementPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Relevant Experience (Years)</label>
+                                        <label htmlFor="relevant_experience" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Relevant Experience (Years)</label>
                                         <div className="relative">
                                             <CheckCircle2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                            <input 
+                                            <input
+                                                id="relevant_experience"
                                                 required
                                                 type="number"
                                                 name="relevant_experience"
@@ -247,10 +249,11 @@ export default function CandidateEngagementPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Previous/Current Company</label>
+                                        <label htmlFor="previous_company" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Previous/Current Company</label>
                                         <div className="relative">
                                             <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                            <input 
+                                            <input
+                                                id="previous_company"
                                                 required
                                                 name="previous_company"
                                                 value={formData.previous_company}
@@ -262,10 +265,11 @@ export default function CandidateEngagementPage() {
                                     </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Notice Period</label>
+                                        <label htmlFor="notice_period" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Notice Period</label>
                                         <div className="relative">
                                             <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                            <select 
+                                            <select
+                                                id="notice_period"
                                                 required
                                                 name="notice_period"
                                                 value={formData.notice_period}
@@ -282,10 +286,11 @@ export default function CandidateEngagementPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Work Preference</label>
+                                        <label htmlFor="work_preference" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Work Preference</label>
                                         <div className="relative">
                                             <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                            <select 
+                                            <select
+                                                id="work_preference"
                                                 required
                                                 name="work_preference"
                                                 value={formData.work_preference}
@@ -301,10 +306,11 @@ export default function CandidateEngagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Top 3 Skills & Proficiency</label>
+                                    <label htmlFor="top_skills" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Top 3 Skills & Proficiency</label>
                                     <div className="relative">
                                         <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                        <input 
+                                        <input
+                                            id="top_skills"
                                             required
                                             name="top_skills"
                                             value={formData.top_skills}
@@ -318,10 +324,11 @@ export default function CandidateEngagementPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Current Salary (Annual)</label>
+                                        <label htmlFor="current_salary" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Current Salary (Annual)</label>
                                         <div className="relative">
                                             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                            <input 
+                                            <input
+                                                id="current_salary"
                                                 required
                                                 name="current_salary"
                                                 value={formData.current_salary}
@@ -332,10 +339,11 @@ export default function CandidateEngagementPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Expected Salary (Annual)</label>
+                                        <label htmlFor="expected_salary" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Expected Salary (Annual)</label>
                                         <div className="relative">
                                             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                            <input 
+                                            <input
+                                                id="expected_salary"
                                                 required
                                                 name="expected_salary"
                                                 value={formData.expected_salary}
@@ -348,8 +356,9 @@ export default function CandidateEngagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Reason for Change (Optional)</label>
-                                    <textarea 
+                                    <label htmlFor="reason_for_change" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Reason for Change (Optional)</label>
+                                    <textarea
+                                        id="reason_for_change"
                                         name="reason_for_change"
                                         value={formData.reason_for_change}
                                         onChange={handleInputChange}

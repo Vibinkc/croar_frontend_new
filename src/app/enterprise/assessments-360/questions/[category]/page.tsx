@@ -15,7 +15,7 @@ interface Question {
 
 export default function CategoryDedicatedView({ params }: { params: Promise<{ category: string }> }) {
     const { category: categorySlug } = use(params);
-    const category = categorySlug.toUpperCase().replace(/-/g, '_');
+    const category = categorySlug.toUpperCase().replaceAll('-', '_');
     const { token } = useAuth();
     const router = useRouter();
     const [questions, setQuestions] = useState<Question[]>([]);
@@ -101,7 +101,7 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                             <span className="material-symbols-rounded text-xl">{icon}</span>
                         </div>
                         <div>
-                            <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">{category.replace(/_/g, ' ')}</h1>
+                            <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">{category.replaceAll('_', ' ')}</h1>
                             <p className="text-slate-500 text-[10px] font-black  tracking-[0.2em] mt-1">Dedicated Competency View</p>
                         </div>
                     </div>
@@ -131,19 +131,21 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                             
                             <form onSubmit={handleAdd} className="space-y-8">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Evaluation Metric</label>
-                                    <textarea 
+                                    <label htmlFor="category-eval-metric" className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Evaluation Metric</label>
+                                    <textarea
+                                        id="category-eval-metric"
                                         className="w-full px-8 py-6 bg-slate-50 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all min-h-[160px] leading-relaxed"
                                         value={newQuestion.text}
                                         onChange={(e) => setNewQuestion({...newQuestion, text: e.target.value})}
                                         required
-                                        placeholder={`e.g. How effectively does the person demonstrate ${category.toLowerCase().replace(/_/g, ' ')}...`}
+                                        placeholder={`e.g. How effectively does the person demonstrate ${category.toLowerCase().replaceAll('_', ' ')}...`}
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Metric Architecture</label>
+                                    <label htmlFor="category-metric-type" className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Metric Architecture</label>
                                     <div className="relative">
-                                        <select 
+                                        <select
+                                            id="category-metric-type"
                                             className="w-full px-8 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white outline-none text-sm font-black text-slate-700 appearance-none cursor-pointer transition-all"
                                             value={newQuestion.type}
                                             onChange={(e) => setNewQuestion({...newQuestion, type: e.target.value})}
@@ -171,7 +173,7 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                         <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
                             <div>
                                 <h2 className="text-xl font-black text-slate-900 tracking-tight">Competency Inventory</h2>
-                                <p className="text-slate-400 text-[10px] font-bold  tracking-[0.2em] mt-1">Repository for {category.replace(/_/g, ' ')}</p>
+                                <p className="text-slate-400 text-[10px] font-bold  tracking-[0.2em] mt-1">Repository for {category.replaceAll('_', ' ')}</p>
                             </div>
                             <div className="flex items-center gap-3">
                                 <button className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all">

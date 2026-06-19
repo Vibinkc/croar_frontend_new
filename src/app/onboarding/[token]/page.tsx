@@ -183,10 +183,10 @@ export default function CandidateOnboardingPage() {
                     <h3 className="text-2xl font-black text-slate-900  tracking-tight">
                         {section.title}
                     </h3>
-                    {onboarding.rejected_fields?.length > 0 && (
+                    {(onboarding.rejected_fields?.length ?? 0) > 0 && (
                         <p className="text-[10px] font-bold text-rose-500   mt-1 flex items-center gap-1">
                             <span className="material-icons-outlined text-xs">info</span>
-                            Some fields in this section require correction.
+                            {"Some fields in this section require correction."}
                         </p>
                     )}
                 </div>
@@ -200,7 +200,7 @@ export default function CandidateOnboardingPage() {
                             
                             {(() => {
                                 const isRejected = onboarding.rejected_fields?.includes(field.name);
-                                const isCorrectionMode = onboarding.rejected_fields?.length > 0;
+                                const isCorrectionMode = (onboarding.rejected_fields?.length ?? 0) > 0;
                                 const isDisabled = isCorrectionMode && !isRejected;
 
                                 if (field.type === "select") {
@@ -208,7 +208,7 @@ export default function CandidateOnboardingPage() {
                                         <div className="relative">
                                             <select 
                                                 className={`w-full bg-white border ${isRejected ? 'border-rose-300 ring-4 ring-rose-500/5' : 'border-slate-200'} rounded-xl px-4 py-3 text-slate-700 font-bold text-sm outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/5 transition-all appearance-none cursor-pointer disabled:bg-slate-50 disabled:text-slate-400`}
-                                                value={formData[section.id]?.[field.name] || ""}
+                                                value={(formData[section.id]?.[field.name] as string) || ""}
                                                 onChange={(e) => handleUpdate(section.id, field.name, e.target.value)}
                                                 required={field.required}
                                                 disabled={isDisabled}
@@ -271,7 +271,7 @@ export default function CandidateOnboardingPage() {
                                             type={field.type === "phone" ? "tel" : field.type === "email" ? "email" : field.type === "number" ? "number" : field.type === "date" ? "date" : "text"} 
                                             className={`w-full bg-white border ${isRejected ? 'border-rose-300 ring-4 ring-rose-500/5' : 'border-slate-200'} rounded-xl px-4 py-3 text-slate-700 font-bold text-sm outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/5 transition-all placeholder:text-slate-300 disabled:bg-slate-50 disabled:text-slate-400/70`}
                                             placeholder={`e.g. ${field.label}...`}
-                                            value={formData[section.id]?.[field.name] || ""}
+                                            value={(formData[section.id]?.[field.name] as string) || ""}
                                             onChange={(e) => handleUpdate(section.id, field.name, e.target.value)}
                                             required={field.required}
                                             disabled={isDisabled}
@@ -399,8 +399,9 @@ export default function CandidateOnboardingPage() {
                                     
                                     <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
                                         <div className="flex flex-col gap-1.5">
-                                            <label className="text-[10px] font-black text-slate-500   ml-1">Candidate Email Address</label>
-                                            <input 
+                                            <label htmlFor="candidate-verification-email" className="text-[10px] font-black text-slate-500   ml-1">Candidate Email Address</label>
+                                            <input
+                                                id="candidate-verification-email"
                                                 type="email"
                                                 className={`w-full bg-white border ${verificationError ? 'border-red-500' : 'border-slate-200'} rounded-xl px-4 py-3 text-slate-700 font-bold text-sm outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all`}
                                                 placeholder="Enter your registered email..."

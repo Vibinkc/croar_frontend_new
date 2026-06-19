@@ -98,7 +98,7 @@ export default function X360NewCycle() {
                     <div>
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">Start New 360 Cycle</h1>
                         <p className="text-slate-400 font-black   text-[10px] flex items-center gap-2">
-                            <span className="material-symbols-rounded text-sm text-indigo-500">add_task</span>
+                            <span className="material-symbols-rounded text-sm text-indigo-500">add_task</span>{""}
                             Configure and launch a new feedback round
                         </p>
                     </div>
@@ -111,8 +111,9 @@ export default function X360NewCycle() {
                         <h3 className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Cycle Configuration</h3>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-[9px] font-black text-slate-400  mb-2  px-1">Cycle Name</label>
-                                <input 
+                                <label htmlFor="x360-cycle-name" className="block text-[9px] font-black text-slate-400  mb-2  px-1">Cycle Name</label>
+                                <input
+                                    id="x360-cycle-name"
                                     className="w-full px-5 py-3 bg-slate-50 border border-transparent rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all font-bold text-sm text-slate-700 placeholder:text-slate-300"
                                     value={formData.name}
                                     onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -122,8 +123,9 @@ export default function X360NewCycle() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-[9px] font-black text-slate-400  mb-2  px-1">Start Date</label>
-                                    <input 
+                                    <label htmlFor="x360-start-date" className="block text-[9px] font-black text-slate-400  mb-2  px-1">Start Date</label>
+                                    <input
+                                        id="x360-start-date"
                                         type="date"
                                         className="w-full px-4 py-3 bg-slate-50 border border-transparent rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all font-bold text-xs text-slate-600"
                                         value={formData.start_date}
@@ -132,8 +134,9 @@ export default function X360NewCycle() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[9px] font-black text-slate-400  mb-2  px-1">End Date</label>
-                                    <input 
+                                    <label htmlFor="x360-end-date" className="block text-[9px] font-black text-slate-400  mb-2  px-1">End Date</label>
+                                    <input
+                                        id="x360-end-date"
                                         type="date"
                                         className="w-full px-4 py-3 bg-slate-50 border border-transparent rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all font-bold text-xs text-slate-600"
                                         value={formData.end_date}
@@ -145,15 +148,20 @@ export default function X360NewCycle() {
                         </div>
 
                         <div className="pt-4 border-t border-slate-50">
-                            <label className="block text-[9px] font-black text-slate-400  mb-4  px-1">Select Template</label>
-                            <div className="space-y-3">
-                                {templates.map(tpl => (
-                                    <div 
+                            <label htmlFor="x360-template-list" className="block text-[9px] font-black text-slate-400  mb-4  px-1">Select Template</label>
+                            <div id="x360-template-list" className="space-y-3">
+                                {templates.map(tpl => {
+                                    const handleSelectTemplate = () => setFormData(prev => ({
+                                        ...prev,
+                                        template_id: prev.template_id === tpl.id ? "" : tpl.id
+                                    }));
+                                    return (
+                                    <div
                                         key={tpl.id}
-                                        onClick={() => setFormData(prev => ({
-                                            ...prev, 
-                                            template_id: prev.template_id === tpl.id ? "" : tpl.id
-                                        }))}
+                                        role="button"
+                                        tabIndex={0}
+                                        onClick={handleSelectTemplate}
+                                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { handleSelectTemplate(); } }}
                                         className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-4 ${formData.template_id === tpl.id ? 'border-indigo-600 bg-indigo-50/30' : 'border-slate-50 bg-slate-50 hover:border-slate-200'}`}
                                     >
                                         <div className="min-w-0">
@@ -166,11 +174,12 @@ export default function X360NewCycle() {
                                             </div>
                                         )}
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 
-                        <button 
+                        <button
                             type="submit"
                             disabled={submitting || !formData.template_id || formData.ratee_ids.length === 0}
                             className="w-full py-4 bg-slate-900 text-white rounded-xl font-black text-[10px]  tracking-[0.3em] shadow-xl shadow-slate-200 hover:bg-indigo-600 transition-all active:scale-[0.98] disabled:opacity-30 disabled:grayscale"
@@ -187,9 +196,12 @@ export default function X360NewCycle() {
                     </div>
                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                         {employees.map(emp => (
-                            <div 
+                            <div
                                 key={emp.id}
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => toggleRatee(emp.id)}
+                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { toggleRatee(emp.id); } }}
                                 className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-center gap-3 ${formData.ratee_ids.includes(emp.id) ? 'border-indigo-600 bg-indigo-50/30 shadow-lg shadow-indigo-100/50' : 'border-slate-50 bg-slate-50/50 hover:border-slate-200'}`}
                             >
                                 <div className={`shrink-0 w-8 h-8 rounded-xl flex items-center justify-center font-black text-[10px] transition-all ${formData.ratee_ids.includes(emp.id) ? 'bg-indigo-600 text-white' : 'bg-white text-slate-300 border border-slate-100'}`}>

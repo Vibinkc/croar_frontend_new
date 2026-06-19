@@ -150,11 +150,11 @@ export default function CommunicationDetail() {
                         className="group flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-all text-[9px] font-black tracking-[0.2em] "
                     >
                         <span className="material-icons-outlined text-[12px]">arrow_back</span>
-                        Leave Studio
+                        {"Leave Studio"}
                     </button>
                     <div className="flex items-center gap-1.5 text-[8px] font-black tracking-[0.2em]  text-slate-300">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
-                        Academik_OS // Node_Alpha
+                        {"Academik_OS // Node_Alpha"}
                     </div>
                 </div>
 
@@ -318,7 +318,18 @@ export default function CommunicationDetail() {
                             ) : audioURL && !isRecording ? (
                                 // AUDIO RECORDED - READY TO ANALYZE
                                 <div className="flex flex-col items-center justify-center space-y-8 animate-in fade-in zoom-in duration-500">
-                                    <div className="relative group cursor-pointer" onClick={submitRecording}>
+                                    <div
+                                        className="relative group cursor-pointer"
+                                        role="button"
+                                        tabIndex={0}
+                                        onClick={submitRecording}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                submitRecording();
+                                            }
+                                        }}
+                                    >
                                         <div className="absolute inset-0 bg-slate-200 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500 animate-pulse"></div>
                                         <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl shadow-slate-200 border-4 border-white relative z-10 group-hover:scale-105 transition-transform duration-300">
                                             <span className="material-icons-outlined text-5xl text-slate-900">check_circle</span>
