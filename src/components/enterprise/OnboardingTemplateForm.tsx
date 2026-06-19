@@ -159,9 +159,10 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                     {/* Basic Info */}
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400   ml-1">Template Name</label>
-                            <input 
-                                type="text" 
+                            <label htmlFor="otf-template-name" className="text-[10px] font-black text-slate-400   ml-1">Template Name</label>
+                            <input
+                                id="otf-template-name"
+                                type="text"
                                 className="w-full bg-slate-50 border border-slate-100 rounded-[20px] px-6 py-4 text-slate-900 font-bold text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm"
                                 placeholder="e.g. Executive Onboarding"
                                 value={name}
@@ -170,8 +171,9 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400   ml-1">Overall Description</label>
-                            <textarea 
+                            <label htmlFor="otf-template-description" className="text-[10px] font-black text-slate-400   ml-1">Overall Description</label>
+                            <textarea
+                                id="otf-template-description"
                                 className="w-full bg-slate-50 border border-slate-100 rounded-[20px] px-6 py-4 text-slate-900 font-bold text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm min-h-[120px]"
                                 placeholder="Purpose of this flow..."
                                 value={description}
@@ -183,12 +185,15 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
 
                     {/* Section Management */}
                     <div className="space-y-6">
-                        <label className="text-[10px] font-black text-slate-400   ml-1 block">Define Sections</label>
+                        <label htmlFor="otf-new-section-title" className="text-[10px] font-black text-slate-400   ml-1 block">Define Sections</label>
                         <div className="space-y-3">
                             {sections.map((s, idx) => (
-                                <div 
+                                <div
                                     key={s.id}
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={() => setActiveSectionId(s.id)}
+                                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setActiveSectionId(s.id); } }}
                                     className={`group flex items-center justify-between p-5 rounded-[24px] border transition-all cursor-pointer ${activeSectionId === s.id ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200" : "bg-white border-slate-100 text-slate-600 hover:border-indigo-200 hover:bg-indigo-50/30"}`}
                                 >
                                     <div className="flex items-center gap-4">
@@ -208,8 +213,9 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                         </div>
                          {canAccess("onboarding:moderate") && (
                             <div className="pt-4 flex gap-3">
-                                <input 
-                                    type="text" 
+                                <input
+                                    id="otf-new-section-title"
+                                    type="text"
                                     className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3 text-sm font-bold outline-none focus:border-indigo-500"
                                     placeholder="New Section Title..."
                                     value={newSectionTitle}
@@ -280,9 +286,10 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                     <h5 className="text-xs font-black   text-slate-400">Add New Field</h5>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-500   ml-1">Field Label (Display)</label>
-                                            <input 
-                                                type="text" 
+                                            <label htmlFor="otf-new-field-label" className="text-[9px] font-black text-slate-500   ml-1">Field Label (Display)</label>
+                                            <input
+                                                id="otf-new-field-label"
+                                                type="text"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
                                                 placeholder="e.g. Your Mobile Number"
                                                 value={newFieldLabel}
@@ -295,8 +302,9 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-500   ml-1">Field Type</label>
-                                            <select 
+                                            <label htmlFor="otf-new-field-type" className="text-[9px] font-black text-slate-500   ml-1">Field Type</label>
+                                            <select
+                                                id="otf-new-field-type"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
                                                 value={newFieldType}
                                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -312,9 +320,10 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             </select>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-500   ml-1">Unique Identifier</label>
-                                            <input 
-                                                type="text" 
+                                            <label htmlFor="otf-new-field-name" className="text-[9px] font-black text-slate-500   ml-1">Unique Identifier</label>
+                                            <input
+                                                id="otf-new-field-name"
+                                                type="text"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
                                                 placeholder="e.g. mobile_number"
                                                 value={newFieldName}
@@ -323,9 +332,10 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                         </div>
                                         {newFieldType === "select" && (
                                             <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-slate-500   ml-1">Options (Comma Separated)</label>
-                                                <input 
-                                                    type="text" 
+                                                <label htmlFor="otf-new-field-options" className="text-[9px] font-black text-slate-500   ml-1">Options (Comma Separated)</label>
+                                                <input
+                                                    id="otf-new-field-options"
+                                                    type="text"
                                                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
                                                     placeholder="e.g. Option 1, Option 2, Option 3"
                                                     value={newFieldOptions}
@@ -334,8 +344,11 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             </div>
                                         )}
                                         <div className="flex items-end pb-1 gap-3">
-                                            <div 
+                                            <div
+                                                role="button"
+                                                tabIndex={0}
                                                 onClick={() => setNewFieldRequired(!newFieldRequired)}
+                                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setNewFieldRequired(!newFieldRequired); } }}
                                                 className={`flex items-center gap-3 cursor-pointer p-3 rounded-xl border transition-all ${newFieldRequired ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-white border-slate-100 text-slate-400"}`}
                                             >
                                                 <span className="material-icons-outlined text-lg">{newFieldRequired ? "check_box" : "check_box_outline_blank"}</span>

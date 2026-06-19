@@ -99,7 +99,7 @@ export default function JobSimulationResult({ attempt, onClose, isModal = false 
                             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
                                 <h3 className="text-[10px] font-black text-slate-900   mb-2 flex items-center gap-2">
                                     <span className="material-icons-outlined text-slate-400 text-xs">psychology</span>
-                                    AI Analysis
+                                    {"AI Analysis"}
                                 </h3>
                                 <p className="text-xs text-slate-600 leading-relaxed font-medium ">
                                     &quot;{attempt.feedback.summary}&quot;

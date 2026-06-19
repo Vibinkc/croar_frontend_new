@@ -123,7 +123,7 @@ export default function PsychometricResult({ result, test, onClose, isModal = fa
                         onClick={() => router.push("/practice/psychometric")}
                         className="w-full py-5 bg-white text-[#050510] rounded-2xl text-[10px] font-black  tracking-[0.3em] hover:bg-slate-200 transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
-                        Return_to_Psychometric
+                        {"Return_to_Psychometric"}
                         <span className="material-icons-outlined text-sm">logout</span>
                     </button>
                 )}

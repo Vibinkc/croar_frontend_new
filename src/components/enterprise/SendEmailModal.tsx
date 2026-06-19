@@ -185,8 +185,24 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
-            <div className="bg-white rounded-2xl w-full max-w-2xl p-8 shadow-2xl flex flex-col max-h-[95vh]" onClick={e => e.stopPropagation()}>
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={onClose}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onClose();
+                }
+            }}
+        >
+            <div
+                className="bg-white rounded-2xl w-full max-w-2xl p-8 shadow-2xl flex flex-col max-h-[95vh]"
+                onClick={e => e.stopPropagation()}
+                role="presentation"
+                onKeyDown={e => e.stopPropagation()}
+            >
                 <div className="flex justify-between items-center mb-6 shrink-0">
                     <h2 className="text-2xl font-black text-slate-800">EMAIL CAMPAIGN ({candidateIds.length})</h2>
                     <button onClick={onClose} className="p-2 hover:bg-slate-50 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
@@ -198,8 +214,9 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
 
                     {/* Template Selection */}
                     <div className="mb-6">
-                        <label className="block text-xs font-bold   text-slate-500 mb-2">Load Template</label>
+                        <label htmlFor="email-load-template" className="block text-xs font-bold   text-slate-500 mb-2">Load Template</label>
                         <select
+                            id="email-load-template"
                             className="w-full p-3 border border-slate-200 rounded-xl text-slate-900 bg-white font-medium focus:ring-2 focus:ring-indigo-100 outline-none"
                             value={selectedTemplateId}
                             onChange={(e) => handleTemplateSelect(e.target.value)}
@@ -228,7 +245,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
                                 className="bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
                             >
                                 {isDrafting ? <span className="animate-spin material-icons text-sm">refresh</span> : <span className="material-icons text-sm">auto_awesome</span>}
-                                AI DRAFT
+                                {"AI DRAFT"}
                             </button>
                         </div>
                     )}
@@ -331,12 +348,12 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
                         {isSending ? (
                             <>
                                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                SENDING...
+                                {"SENDING..."}
                             </>
                         ) : (
                             <>
                                 <span className="material-icons text-sm">send</span>
-                                SEND EMAIL
+                                {"SEND EMAIL"}
                             </>
                         )}
                     </button>

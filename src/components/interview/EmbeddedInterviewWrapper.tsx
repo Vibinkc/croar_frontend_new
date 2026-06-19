@@ -200,6 +200,7 @@ export default function EmbeddedInterviewWrapper({ interviewId, onComplete }: Em
                     className="px-8 py-4 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs tracking-[0.2em]  rounded-xl transition-all shadow-lg hover:shadow-rose-500/30 flex items-center justify-center gap-3 mx-auto"
                 >
                     Start Final Round
+                    {""}
                     <span className="material-icons-outlined text-base">arrow_forward</span>
                 </button>
             </div>

@@ -73,8 +73,16 @@ export default function Header() {
                                 return (
                                     <div
                                         key={item}
+                                        role="button"
+                                        tabIndex={0}
                                         className="h-full flex items-center relative"
                                         onMouseEnter={() => item === 'Products' ? setActiveMegaMenu('Products') : setActiveMegaMenu(null)}
+                                        onFocus={() => item === 'Products' ? setActiveMegaMenu('Products') : setActiveMegaMenu(null)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                item === 'Products' ? setActiveMegaMenu('Products') : setActiveMegaMenu(null);
+                                            }
+                                        }}
                                     >
                                         <Link
                                             href={href}

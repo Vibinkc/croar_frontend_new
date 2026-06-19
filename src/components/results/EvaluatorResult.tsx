@@ -32,7 +32,7 @@ export default function EvaluatorResult({ result, problem, onClose, isModal = fa
                     <div className="flex items-center gap-4">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-[9px] font-black  ">
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                            Analysis_Complete
+                            {"Analysis_Complete"}
                         </div>
                         <h2 className="text-xl font-black text-white  tracking-tight">Neural Evaluation Report</h2>
                     </div>

@@ -57,7 +57,7 @@ export default function InterviewResult({ result, onClose, isModal = false }: In
                 <div className="md:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 className="text-sm font-black text-slate-800  tracking-wide mb-4 flex items-center gap-2">
                         <span className="material-icons text-slate-500 text-base">psychology</span>
-                        Tone Analysis
+                        {"Tone Analysis"}
                     </h3>
                     <p className="text-slate-600 leading-relaxed text-sm">
                         {result.tone_analysis || "No tone analysis available."}
@@ -71,7 +71,7 @@ export default function InterviewResult({ result, onClose, isModal = false }: In
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 className="text-sm font-black text-slate-700  tracking-wide mb-4 flex items-center gap-2">
                         <span className="material-icons text-slate-500 text-base">check_circle</span>
-                        Strengths detected
+                        {"Strengths detected"}
                     </h3>
                     <ul className="space-y-3">
                         {result.strengths?.map((str: string, i: number) => (
@@ -87,7 +87,7 @@ export default function InterviewResult({ result, onClose, isModal = false }: In
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 className="text-sm font-black text-slate-700  tracking-wide mb-4 flex items-center gap-2">
                         <span className="material-icons text-slate-500 text-base">warning</span>
-                        Areas for Improvement
+                        {"Areas for Improvement"}
                     </h3>
                     <ul className="space-y-3">
                         {result.weaknesses?.map((weak: string, i: number) => (

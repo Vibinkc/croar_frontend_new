@@ -45,7 +45,7 @@ export default function AssessmentResult({ result, test, questions, onClose }: A
         const stars = Math.round((percentage / 100) * 5);
         return (
             <div className="flex text-amber-400 text-lg">
-                {[...Array(5)].map((_, i) => (
+                {[...new Array(5)].map((_, i) => (
                     <span key={i} className="material-icons-outlined">
                         {i < stars ? "star" : "star_border"}
                     </span>

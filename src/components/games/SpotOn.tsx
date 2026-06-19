@@ -226,7 +226,7 @@ export default function SpotOn({ questions, onComplete }: SpotOnProps) {
             <AnimatePresence>
                 {showBlast && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none perspective-[1000px]">
-                        {[...Array(30)].map((_, i) => (
+                        {[...new Array(30)].map((_, i) => (
                             <StarParticle key={i} i={i} count={30} />
                         ))}
                         <motion.div

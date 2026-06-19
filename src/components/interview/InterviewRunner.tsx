@@ -87,7 +87,7 @@ export default function InterviewRunner({
                     <div className="absolute top-4 right-4">
                         {isAiSpeaking ? (
                             <div className="flex gap-1 h-4 items-end">
-                                {[...Array(3)].map((_, i) => (
+                                {[...new Array(3)].map((_, i) => (
                                     <div key={i} className="w-1 bg-slate-200 animate-bounce" style={{ animationDelay: `${i * 0.1}s` }}></div>
                                 ))}
                             </div>
@@ -136,6 +136,7 @@ export default function InterviewRunner({
 
                     <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg text-[10px] text-white font-black   border border-white/10 flex items-center gap-2">
                         <span className={`h-2 w-2 rounded-full ${mediaState.isMicEnabled ? 'bg-slate-200' : 'bg-slate-400'}`}></span>
+                        {""}
                         Candidate_Feed
                     </div>
                     <div className="absolute top-4 right-4 h-8 w-8 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/10">

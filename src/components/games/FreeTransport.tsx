@@ -270,7 +270,7 @@ export default function FreeTransport({ questions, onComplete }: FreeTransportPr
                                 className="w-full py-4 bg-indigo-600 text-white rounded-xl text-sm font-black  tracking-[0.2em] hover:bg-indigo-500 hover:-translate-y-1 active:translate-y-0 transition-all shadow-xl shadow-indigo-200 disabled:opacity-50 disabled:transform-none disabled:shadow-none flex items-center justify-center gap-3"
                             >
                                 <span className="material-icons-outlined text-xl">anchor</span>
-                                Approve for Departure
+                                {"Approve for Departure"}
                             </button>
                         </div>
 

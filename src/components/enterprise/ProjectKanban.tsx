@@ -121,11 +121,22 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
     return (
         <div className="flex gap-4 overflow-x-auto pb-4 min-h-[500px] custom-scrollbar">
             {columns.map((col) => (
-                <div 
-                    key={col} 
+                <div
+                    key={col}
+                    role="button"
+                    tabIndex={0}
                     className="flex-shrink-0 w-72 bg-slate-50/50 rounded-2xl border border-slate-100 flex flex-col"
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, col)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            if (draggedTaskId) {
+                                e.preventDefault();
+                                handleMoveTask(draggedTaskId, col);
+                                setDraggedTaskId(null);
+                            }
+                        }
+                    }}
                 >
                     {/* Column Header */}
                     <div className="p-4 flex items-center justify-between border-b border-slate-100 bg-white/50 rounded-t-2xl">
@@ -150,11 +161,18 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                         {tasks
                             .filter(t => t.column === col)
                             .map((task) => (
-                                <div 
-                                    key={task.id} 
+                                <div
+                                    key={task.id}
+                                    role="button"
+                                    tabIndex={0}
                                     draggable
                                     onDragStart={(e) => handleDragStart(e, task.id)}
                                     onDragEnd={handleDragEnd}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" || e.key === " ") {
+                                            setDraggedTaskId((prev) => (prev === task.id ? null : task.id));
+                                        }
+                                    }}
                                     className={`bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-[#7C3AED]/20 transition-all group active:scale-[0.98] cursor-grab ${draggedTaskId === task.id ? 'opacity-40 border-dashed border-[#7C3AED]/40' : ''}`}
                                 >
                                     <div className="flex items-start justify-between mb-2">
@@ -186,7 +204,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                         ) : (
                                             <div className="flex items-center gap-1 text-[9px] font-black text-slate-300  tracking-tight">
                                                 <span className="material-symbols-rounded text-[14px]">person_off</span>
-                                                Unassigned
+                                                <span>Unassigned</span>
                                             </div>
                                         )}
                                         {task.due_date && (
@@ -222,9 +240,18 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
             {isAddingTask.isOpen && (
                 <div className="fixed inset-0 z-[100] overflow-hidden">
                     {/* Backdrop */}
-                    <div 
-                        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in" 
+                    <div
+                        role="button"
+                        tabIndex={0}
+                        aria-label="Close"
+                        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in"
                         onClick={() => setIsAddingTask({ isOpen: false, column: "" })}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                setIsAddingTask({ isOpen: false, column: "" });
+                            }
+                        }}
                     />
                     
                     {/* Drawer Content */}
@@ -248,8 +275,9 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
 
                                 <form onSubmit={handleAddTask} id="add-task-form" className="space-y-6">
                                     <div className="space-y-1.5 px-1">
-                                        <label className="text-[10px] font-black text-slate-400   ml-1">Task Title*</label>
+                                        <label htmlFor="task-title" className="text-[10px] font-black text-slate-400   ml-1">Task Title*</label>
                                         <input
+                                            id="task-title"
                                             required
                                             value={newTaskData.title}
                                             onChange={(e) => setNewTaskData(prev => ({ ...prev, title: e.target.value }))}
@@ -259,10 +287,11 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     </div>
 
                                     <div className="space-y-1.5 px-1">
-                                        <label className="text-[10px] font-black text-slate-400   ml-1">Assign To</label>
+                                        <label htmlFor="task-assignee" className="text-[10px] font-black text-slate-400   ml-1">Assign To</label>
                                         <div className="relative">
                                             <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">person</span>
                                             <select
+                                                id="task-assignee"
                                                 value={newTaskData.employee_id}
                                                 onChange={(e) => setNewTaskData(prev => ({ ...prev, employee_id: e.target.value }))}
                                                 className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-5 py-4 text-sm font-bold focus:outline-none focus:ring-0 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
@@ -276,10 +305,11 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     </div>
 
                                     <div className="space-y-1.5 px-1">
-                                        <label className="text-[10px] font-black text-slate-400   ml-1">Due Date</label>
+                                        <label htmlFor="task-due-date" className="text-[10px] font-black text-slate-400   ml-1">Due Date</label>
                                         <div className="relative">
                                             <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">calendar_month</span>
                                             <input
+                                                id="task-due-date"
                                                 type="date"
                                                 value={newTaskData.due_date}
                                                 onChange={(e) => setNewTaskData(prev => ({ ...prev, due_date: e.target.value }))}
@@ -289,8 +319,9 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     </div>
 
                                     <div className="space-y-1.5 px-1">
-                                        <label className="text-[10px] font-black text-slate-400   ml-1">Description</label>
+                                        <label htmlFor="task-description" className="text-[10px] font-black text-slate-400   ml-1">Description</label>
                                         <textarea
+                                            id="task-description"
                                             rows={5}
                                             value={newTaskData.description}
                                             onChange={(e) => setNewTaskData(prev => ({ ...prev, description: e.target.value }))}
@@ -310,7 +341,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 className="w-full bg-[#7C3AED] text-white py-4 rounded-[20px] font-black text-xs  tracking-[0.2em] hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-md flex items-center justify-center gap-3"
                             >
                                 <span className="material-symbols-rounded text-lg">send</span>
-                                Assign & Notify Team
+                                <span>Assign &amp; Notify Team</span>
                             </button>
                         </div>
                     </div>

@@ -45,7 +45,7 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
             if (!data.grid || !Array.isArray(data.grid)) {
                 console.error("[Labyrinth] Invalid data structure - missing or invalid grid:", data);
                 // Provide a default empty grid
-                const emptyGrid = Array(64).fill(null).map(() => ({ type: 'EMPTY' as TileType, rot: 0 }));
+                const emptyGrid = new Array(64).fill(null).map(() => ({ type: 'EMPTY' as TileType, rot: 0 }));
                 setTimeout(() => {
                     setGrid(emptyGrid);
                     setInventory({ reflectors: 0, splitters: 0 });
@@ -117,7 +117,7 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
         }
     };
 
-    const handleRotate = (e: React.MouseEvent, idx: number) => {
+    const handleRotate = (e: React.MouseEvent | React.KeyboardEvent, idx: number) => {
         e.stopPropagation();
         if (isRunning || gameStatus !== 'PLAYING') return;
         const cell = grid[idx];
@@ -379,8 +379,16 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
                             return (
                                 <div
                                     key={idx}
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={() => handleCellClick(idx)}
-                                    className={`relative rounded flex items-center justify-center transition-colors 
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            handleCellClick(idx);
+                                        }
+                                    }}
+                                    className={`relative rounded flex items-center justify-center transition-colors
                                         ${isWall ? 'bg-transparent' : 'bg-slate-900/50 hover:bg-slate-800/80'}
                                         ${(isReflector || isSplitter) ? 'cursor-pointer hover:brightness-110' : ''}
                                     `}
@@ -415,8 +423,16 @@ export default function Labyrinth({ data, onComplete }: LabyrinthProps) {
 
                                     {(isReflector || isSplitter) && (
                                         <div
+                                            role="button"
+                                            tabIndex={0}
                                             className="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center shadow-lg relative"
                                             onClick={(e) => handleRotate(e, idx)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    handleRotate(e, idx);
+                                                }
+                                            }}
                                             style={{ transform: `rotate(${cell.rot}deg)`, transition: 'transform 0.2s' }}
                                         >
                                             <span className="material-icons-outlined text-white">

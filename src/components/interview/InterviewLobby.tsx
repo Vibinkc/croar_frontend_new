@@ -220,10 +220,12 @@ export default function InterviewLobby({ onJoin, mediaState }: InterviewLobbyPro
                     <div className="flex items-center gap-6 text-[9px] text-slate-400 font-bold   ml-2">
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
+                            {""}
                             Stable_Net
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            {""}
                             AI_Optimized
                         </div>
                     </div>

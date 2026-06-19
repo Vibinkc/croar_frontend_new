@@ -268,8 +268,9 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                             <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">General Information</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400   ml-1">Project Name*</label>
+                                    <label htmlFor="project-name" className="text-[10px] font-black text-slate-400   ml-1">Project Name*</label>
                                     <input
+                                        id="project-name"
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
@@ -279,8 +280,9 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400   ml-1">Company*</label>
+                                    <label htmlFor="project-company" className="text-[10px] font-black text-slate-400   ml-1">Company*</label>
                                     <select
+                                        id="project-company"
                                         name="company_id"
                                         value={formData.company_id}
                                         onChange={handleChange}
@@ -294,8 +296,9 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400   ml-1">Description</label>
+                                <label htmlFor="project-description" className="text-[10px] font-black text-slate-400   ml-1">Description</label>
                                 <textarea
+                                    id="project-description"
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
@@ -307,8 +310,9 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400   ml-1">Status</label>
+                                    <label htmlFor="project-status" className="text-[10px] font-black text-slate-400   ml-1">Status</label>
                                     <select
+                                        id="project-status"
                                         name="status"
                                         value={formData.status}
                                         onChange={handleChange}
@@ -320,8 +324,9 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400   ml-1">Start Date</label>
+                                    <label htmlFor="project-start-date" className="text-[10px] font-black text-slate-400   ml-1">Start Date</label>
                                     <input
+                                        id="project-start-date"
                                         type="date"
                                         name="start_date"
                                         value={formData.start_date}
@@ -330,8 +335,9 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400   ml-1">End Date</label>
+                                    <label htmlFor="project-end-date" className="text-[10px] font-black text-slate-400   ml-1">End Date</label>
                                     <input
+                                        id="project-end-date"
                                         type="date"
                                         name="end_date"
                                         value={formData.end_date}
