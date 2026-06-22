@@ -139,6 +139,21 @@ export default function EnterprisePortalLayout({
             ]
         },
         {
+            title: "Payroll",
+            items: [
+                { label: "Payroll Dashboard", icon: "space_dashboard", path: "/enterprise/payroll/dashboard", permission: "payroll:read" },
+                { label: "Payroll", icon: "payments", path: "/enterprise/payroll", permission: "payroll:read" },
+                { label: "Salary Templates", icon: "content_copy", path: "/enterprise/payroll/templates", permission: "payroll:read" },
+                { label: "Salary Structures", icon: "tune", path: "/enterprise/payroll/structures", permission: "payroll:read" },
+                { label: "Timesheets", icon: "schedule", path: "/enterprise/payroll/timesheets", permission: "payroll:read" },
+                { label: "Leave", icon: "event_available", path: "/enterprise/payroll/leave", permission: "payroll:read" },
+                { label: "Taxes & Forms", icon: "request_quote", path: "/enterprise/payroll/taxes", permission: "payroll:read" },
+                { label: "Payroll Reports", icon: "summarize", path: "/enterprise/payroll/reports", permission: "payroll:read" },
+                { label: "Payroll Activity", icon: "history", path: "/enterprise/payroll/activity", permission: "payroll:read" },
+                { label: "Payroll Settings", icon: "settings_applications", path: "/enterprise/payroll/settings", permission: "payroll:read" },
+            ]
+        },
+        {
             title: "AI & Training",
             items: [
                 { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios", permission: "ai_training:read" },

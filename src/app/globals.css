@@ -351,3 +351,176 @@ button, a, span, p, label {
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: 'liga';
 }
+
+/* =====================================================================
+   Payroll/HR module theme (ported, re-skinned to Croar's light palette)
+   All tokens + utility classes are scoped under .payroll-scope so they
+   never affect the rest of the Croar app. The payroll section layout adds
+   this class, and the Modal/Dialog portal roots carry it too so portaled
+   content (which mounts on <body>) still resolves these variables.
+   ===================================================================== */
+.payroll-scope {
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-card: #ffffff;
+  --color-hover: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-primary: #7c3aed; /* Croar enterprise violet (matches sidebar/core pages) */
+  --color-primary-hover: #6d28d9;
+  --color-accent: #10b981;
+  --color-danger: #ef4444;
+  --color-warn: #f59e0b;
+  --color-info: #0ea5e9;
+  --color-text: #0f172a;
+  --color-muted: #64748b;
+  --color-dim: #94a3b8;
+  color: var(--color-text);
+}
+
+.payroll-scope .lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+/* Inputs/selects/textareas — mirror Croar's <Input> component (h-11, rounded-xl,
+   slate-200 border, indigo focus ring). */
+.payroll-scope .input,
+.payroll-scope select.input,
+.payroll-scope textarea.input {
+  display: flex;
+  height: 2.75rem;
+  width: 100%;
+  border-radius: var(--radius-xl); /* match Croar's sharp input radius */
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  outline: none;
+  transition: all 0.15s ease;
+}
+.payroll-scope textarea.input {
+  height: auto;
+  min-height: 2.75rem;
+}
+.payroll-scope .input::placeholder {
+  color: #94a3b8;
+}
+.payroll-scope .input:focus,
+.payroll-scope .input:focus-visible {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #6366f1;
+}
+.payroll-scope .input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Buttons — mirror Croar's <Button> (rounded-xl, font-bold, active:scale-95).
+   .btn-primary = default (indigo), .btn-accent = emerald CTA, .btn-ghost = ghost. */
+.payroll-scope .btn-primary,
+.payroll-scope .btn-accent,
+.payroll-scope .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xl); /* match Croar's button radius */
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.payroll-scope .btn-primary:active,
+.payroll-scope .btn-accent:active,
+.payroll-scope .btn-ghost:active {
+  transform: scale(0.95);
+}
+.payroll-scope .btn-primary:disabled,
+.payroll-scope .btn-accent:disabled,
+.payroll-scope .btn-ghost:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.payroll-scope .btn-primary {
+  background-color: #7c3aed; /* Croar enterprise violet */
+  color: #fff;
+  box-shadow: 0 10px 15px -3px rgb(124 58 237 / 0.2), 0 4px 6px -4px rgb(124 58 237 / 0.2);
+}
+.payroll-scope .btn-primary:hover:not(:disabled) {
+  background-color: #6d28d9;
+}
+.payroll-scope .btn-accent {
+  background-color: #059669; /* emerald-600 */
+  color: #fff;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+.payroll-scope .btn-accent:hover:not(:disabled) {
+  background-color: #047857; /* emerald-700 */
+}
+.payroll-scope .btn-ghost {
+  background-color: transparent;
+  color: #64748b; /* slate-500 */
+}
+.payroll-scope .btn-ghost:hover:not(:disabled) {
+  background-color: #f1f5f9; /* slate-100 */
+  color: #1e293b; /* slate-800 */
+}
+
+/* Chip — mirror Croar's outline <Badge>. */
+.payroll-scope .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 0.15rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}
+
+@keyframes payroll-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.payroll-scope .animate-fade-in,
+.payroll-dialog.animate-fade-in {
+  animation: payroll-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* --- Align ported payroll pages with Croar's core enterprise page language:
+       heavier headings, slate-50 sticky table headers, subtle card hover. --- */
+.payroll-scope h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+.payroll-scope h2,
+.payroll-scope h3 {
+  font-weight: 700;
+  color: #0f172a;
+}
+.payroll-scope thead {
+  background-color: #f8fafc;
+}
+.payroll-scope thead th {
+  color: #64748b;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.payroll-scope table tbody tr {
+  transition: background-color 0.15s ease;
+}
+.payroll-scope table tbody tr:hover {
+  background-color: rgb(248 250 252 / 0.7);
+}
+/* Card-like containers (white rounded panels) get Croar's soft shadow + hover lift. */
+.payroll-scope .bg-\[var\(--color-card\)\] {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}

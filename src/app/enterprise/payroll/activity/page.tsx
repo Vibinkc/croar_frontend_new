@@ -1,0 +1,133 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { auditApi, type AuditEntry } from "@/utils/payroll/api";
+import { Banner, PageHeader } from "@/components/payroll/ui";
+
+const PAGE_SIZE = 10;
+
+function statusTone(code: number): string {
+  if (code < 300) return "bg-[var(--color-accent)]/15 text-[var(--color-accent)]";
+  if (code < 400) return "bg-[var(--color-info)]/15 text-[var(--color-info)]";
+  if (code < 500) return "bg-[var(--color-warn)]/15 text-[var(--color-warn)]";
+  return "bg-[var(--color-danger)]/15 text-[var(--color-danger)]";
+}
+
+function when(iso: string): string {
+  // Backend audit timestamps are naive server-LOCAL (Postgres now()), not UTC.
+  // A datetime string without a timezone is parsed as local time by JS, which
+  // matches how it was stored — so don't append "Z" (that shifted it by the
+  // local offset and showed the wrong time).
+  return new Date(iso).toLocaleString();
+}
+
+export default function ActivityPage() {
+  const [entries, setEntries] = useState<AuditEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    auditApi
+      .list(200)
+      .then(setEntries)
+      .catch((err) => setError((err as Error).message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const totalPages = Math.max(1, Math.ceil(entries.length / PAGE_SIZE));
+  // Clamp the page if the data shrinks (e.g. after a refetch).
+  const currentPage = Math.min(page, totalPages);
+  const pageEntries = useMemo(
+    () => entries.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [entries, currentPage]
+  );
+  const rangeStart = entries.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const rangeEnd = Math.min(currentPage * PAGE_SIZE, entries.length);
+
+  return (
+    <div className="animate-fade-in flex flex-col gap-6">
+      <PageHeader
+        icon="history"
+        title="Activity"
+        subtitle="Who did what, and when. The most recent actions across your organization."
+      />
+
+      {error && <Banner>{error}</Banner>}
+
+      {loading ? (
+        <p className="py-8 text-center text-[var(--color-muted)]">Loading…</p>
+      ) : entries.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-12 text-center">
+          <span className="material-symbols-rounded text-4xl text-[var(--color-dim)]">history</span>
+          <p className="text-[var(--color-muted)]">No activity recorded yet.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-muted)]">
+                  <th className="px-5 py-3 font-semibold">When</th>
+                  <th className="px-5 py-3 font-semibold">Who</th>
+                  <th className="px-5 py-3 font-semibold">Action</th>
+                  <th className="px-5 py-3 font-semibold">Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageEntries.map((e) => (
+                  <tr key={e.id} className="border-b border-[var(--color-border)] last:border-0">
+                    <td className="whitespace-nowrap px-5 py-3 text-[var(--color-muted)]">
+                      {when(e.created_at)}
+                    </td>
+                    <td className="px-5 py-3">{e.actor_email ?? "—"}</td>
+                    <td className="px-5 py-3 font-medium">{e.action}</td>
+                    <td className="px-5 py-3">
+                      <span
+                        className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${statusTone(
+                          e.status_code
+                        )}`}
+                      >
+                        {e.status_code}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-[var(--color-muted)]">
+              Showing {rangeStart}–{rangeEnd} of {entries.length}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage <= 1}
+                className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-3 py-1.5 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <span className="material-symbols-rounded text-[18px]">chevron_left</span>
+                Prev
+              </button>
+              <span className="text-sm text-[var(--color-muted)]">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage >= totalPages}
+                className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-3 py-1.5 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next
+                <span className="material-symbols-rounded text-[18px]">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
