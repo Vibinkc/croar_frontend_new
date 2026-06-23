@@ -116,7 +116,8 @@ function PilotSetupForm({
     const [step, setStep] = useState(0);
     const STEPS = ["Role", "Interview", "Assessment"];
 
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(interviewerEmail);
+    // Domain labels exclude '.', so the parts can't overlap -> linear matching (no backtracking).
+    const emailValid = /^[^\s@]+@[^\s.@]+(?:\.[^\s.@]+)+$/.test(interviewerEmail);
     const datesValid = !!startDate && !!endDate && endDate >= startDate;
     const step0Valid = role.trim().length > 1;
     const step1Valid = (interviewMode === "AI" || emailValid) && datesValid;
