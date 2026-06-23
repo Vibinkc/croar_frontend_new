@@ -17,6 +17,7 @@ export default function EnterprisePortalLayout({
     const pathname = usePathname();
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [paletteOpen, setPaletteOpen] = useState(false);
     const [isPaletteOpen, setIsPaletteOpen] = useState(false);
 
     // List of allowed roles for the Enterprise Portal
@@ -151,6 +152,7 @@ export default function EnterprisePortalLayout({
                 { label: "Payroll Reports", icon: "summarize", path: "/enterprise/payroll/reports", permission: "payroll:read" },
                 { label: "Payroll Activity", icon: "history", path: "/enterprise/payroll/activity", permission: "payroll:read" },
                 { label: "Payroll Settings", icon: "settings_applications", path: "/enterprise/payroll/settings", permission: "payroll:read" },
+                { label: "My Workspace", icon: "badge", path: "/employee/dashboard", permission: "payroll:read" },
             ]
         },
         {

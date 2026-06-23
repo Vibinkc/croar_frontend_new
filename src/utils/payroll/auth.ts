@@ -50,6 +50,15 @@ export function userCan(user: AuthUser | null, permission: Permission): boolean 
   return !!user && user.permissions.includes(permission);
 }
 
+// Whether a user may use the employee self-service portal (/employee).
+// In Croar there's no dedicated "self:read" permission — any authenticated user
+// can open the portal; the backend self-scopes every /me response to the
+// employee record linked (by email) to the signed-in user, and returns 404 if
+// none exists. So this is simply "is signed in".
+export function isSelfServiceUser(user: AuthUser | null): boolean {
+  return !!user;
+}
+
 // Single source of truth for which permission an enterprise route requires.
 // Checked in the enterprise layout so direct-URL navigation is gated, not just
 // the sidebar links (defense in depth — the API also returns 403). List the
