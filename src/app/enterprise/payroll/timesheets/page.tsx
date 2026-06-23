@@ -326,7 +326,7 @@ export default function TimesheetsPage() {
                 className="h-4 w-4"
               />
               <span>
-                Derive working days from the calendar
+                Derive working days from the calendar{" "}
                 <span className="ml-2 text-xs text-[var(--color-dim)]">
                   (off = fixed 30-day basis)
                 </span>
@@ -342,7 +342,7 @@ export default function TimesheetsPage() {
                 className="h-4 w-4"
               />
               <span>
-                Enforce segregation of duties
+                Enforce segregation of duties{" "}
                 <span className="ml-2 text-xs text-[var(--color-dim)]">
                   (the user who submits a timesheet/leave can’t approve it)
                 </span>

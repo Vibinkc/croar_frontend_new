@@ -289,7 +289,7 @@ export default function TaxesPage() {
               }}
               className="flex items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-3 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
             >
-              <span className="material-symbols-rounded text-[18px]">add</span>
+              <span className="material-symbols-rounded text-[18px]">add</span>{" "}
               Record Challan
             </button>
           )}

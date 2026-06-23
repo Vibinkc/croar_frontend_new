@@ -109,7 +109,7 @@ export default function ActivityPage() {
                 disabled={currentPage <= 1}
                 className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-3 py-1.5 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <span className="material-symbols-rounded text-[18px]">chevron_left</span>
+                <span className="material-symbols-rounded text-[18px]">chevron_left</span>{" "}
                 Prev
               </button>
               <span className="text-sm text-[var(--color-muted)]">
@@ -121,7 +121,7 @@ export default function ActivityPage() {
                 disabled={currentPage >= totalPages}
                 className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-3 py-1.5 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Next
+                Next{" "}
                 <span className="material-symbols-rounded text-[18px]">chevron_right</span>
               </button>
             </div>

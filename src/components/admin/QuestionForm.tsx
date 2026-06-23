@@ -256,8 +256,9 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {!lockType && (
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400   mb-1">Category</label>
+                            <label htmlFor="qf-category" className="block text-[10px] font-black text-gray-400   mb-1">Category</label>
                             <select
+                                id="qf-category"
                                 value={type}
                                 onChange={(e) => setType(e.target.value)}
                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black text-slate-900 focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all outline-none"
@@ -293,14 +294,15 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                 disabled={generating || !topic}
                                 className="mt-2 text-[10px] font-black   text-slate-600 hover:text-slate-700 flex items-center gap-1 disabled:opacity-50"
                             >
-                                <span className="material-icons-outlined text-sm">auto_awesome</span>
+                                <span className="material-icons-outlined text-sm">auto_awesome</span>{" "}
                                 Generate with AI
                             </button>
                         )}
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black text-gray-400   mb-1">Difficulty</label>
+                        <label htmlFor="qf-difficulty" className="block text-[10px] font-black text-gray-400   mb-1">Difficulty</label>
                         <select
+                            id="qf-difficulty"
                             value={difficulty}
                             onChange={(e) => setDifficulty(e.target.value)}
                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black text-slate-900 focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all outline-none"
@@ -329,12 +331,12 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 {type === "SUBJECTIVE" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in duration-700">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400   mb-1">Min Word Limit</label>
-                            <input name="min_words" type="number" value={minWords} onChange={e => setMinWords(parseInt(e.target.value))} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
+                            <label htmlFor="qf-min-words" className="block text-[10px] font-black text-gray-400   mb-1">Min Word Limit</label>
+                            <input id="qf-min-words" name="min_words" type="number" value={minWords} onChange={e => setMinWords(Number.parseInt(e.target.value, 10))} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400   mb-1">Max Word Limit</label>
-                            <input name="max_words" type="number" value={maxWords} onChange={e => setMaxWords(parseInt(e.target.value))} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
+                            <label htmlFor="qf-max-words" className="block text-[10px] font-black text-gray-400   mb-1">Max Word Limit</label>
+                            <input id="qf-max-words" name="max_words" type="number" value={maxWords} onChange={e => setMaxWords(Number.parseInt(e.target.value, 10))} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                         </div>
                     </div>
                 )}
@@ -343,26 +345,26 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400   mb-1">Option A</label>
-                                <input type="text" value={optionA} onChange={(e) => setOptionA(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
+                                <label htmlFor="qf-option-a" className="block text-[10px] font-black text-gray-400   mb-1">Option A</label>
+                                <input id="qf-option-a" type="text" value={optionA} onChange={(e) => setOptionA(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400   mb-1">Option B</label>
-                                <input type="text" value={optionB} onChange={(e) => setOptionB(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
+                                <label htmlFor="qf-option-b" className="block text-[10px] font-black text-gray-400   mb-1">Option B</label>
+                                <input id="qf-option-b" type="text" value={optionB} onChange={(e) => setOptionB(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400   mb-1">Option C</label>
-                                <input type="text" value={optionC} onChange={(e) => setOptionC(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
+                                <label htmlFor="qf-option-c" className="block text-[10px] font-black text-gray-400   mb-1">Option C</label>
+                                <input id="qf-option-c" type="text" value={optionC} onChange={(e) => setOptionC(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400   mb-1">Option D</label>
-                                <input type="text" value={optionD} onChange={(e) => setOptionD(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
+                                <label htmlFor="qf-option-d" className="block text-[10px] font-black text-gray-400   mb-1">Option D</label>
+                                <input id="qf-option-d" type="text" value={optionD} onChange={(e) => setOptionD(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400   mb-1">Correct Answer</label>
-                                <select value={correctOption} onChange={(e) => setCorrectOption(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-bold text-gray-900">
+                                <label htmlFor="qf-correct-option" className="block text-[10px] font-black text-gray-400   mb-1">Correct Answer</label>
+                                <select id="qf-correct-option" value={correctOption} onChange={(e) => setCorrectOption(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-bold text-gray-900">
                                     <option value="A">Option A</option>
                                     <option value="B">Option B</option>
                                     <option value="C">Option C</option>
@@ -376,8 +378,9 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 {type === "CODING" && (
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400   mb-1">Initial Code (Python)</label>
+                            <label htmlFor="qf-initial-code" className="block text-[10px] font-black text-gray-400   mb-1">Initial Code (Python)</label>
                             <textarea
+                                id="qf-initial-code"
                                 value={initialCode}
                                 onChange={(e) => setInitialCode(e.target.value)}
                                 className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-slate-50"
@@ -387,7 +390,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         </div>
                         <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                             <div className="flex justify-between items-center mb-3">
-                                <label className="block text-[10px] font-black text-gray-400  ">Test Cases</label>
+                                <span className="block text-[10px] font-black text-gray-400  ">Test Cases</span>
                                 <button
                                     type="button"
                                     onClick={() => setTestCases([...testCases, { input: "", output: "" }])}

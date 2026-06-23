@@ -134,14 +134,16 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
         dialog &&
         createPortal(
           <div
+            role="button"
+            tabIndex={-1}
             className="payroll-scope fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm"
-            onClick={() => close(dialog.kind === "alert")}
+            onClick={(e) => { if (e.target === e.currentTarget) close(dialog.kind === "alert"); }}
+            onKeyDown={(e) => { if (e.key === "Escape" || e.key === "Enter") close(dialog.kind === "alert"); }}
           >
             <div
               role="alertdialog"
               aria-modal="true"
               className="animate-fade-in w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start gap-4">
                 <div

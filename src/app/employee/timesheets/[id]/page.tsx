@@ -105,7 +105,7 @@ export default function MyTimesheetDetailPage({
         href="/employee/timesheets"
         className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]"
       >
-        <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+        <span className="material-symbols-rounded text-[18px]">arrow_back</span>{" "}
         My Timesheets
       </Link>
 

@@ -286,7 +286,7 @@ export default function StructuresPage() {
       >
         {canEdit && (
           <button onClick={openCreate} className="flex shrink-0 items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-            <span className="material-symbols-rounded text-[20px]">add</span>
+            <span className="material-symbols-rounded text-[20px]">add</span>{" "}
             Add Structure
           </button>
         )}
@@ -330,7 +330,7 @@ export default function StructuresPage() {
             </p>
             {canEdit && (
               <button onClick={openCreate} className="mt-1 flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-                <span className="material-symbols-rounded text-[20px]">add</span>
+                <span className="material-symbols-rounded text-[20px]">add</span>{" "}
                 Add your first structure
               </button>
             )}

@@ -122,7 +122,7 @@ export default function PayrollHome() {
             onClick={openModal}
             className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
           >
-            <span className="material-symbols-rounded text-[20px]">add</span>
+            <span className="material-symbols-rounded text-[20px]">add</span>{" "}
             New Cycle
           </button>
         )}

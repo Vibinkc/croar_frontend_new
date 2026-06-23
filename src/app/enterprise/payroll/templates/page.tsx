@@ -256,7 +256,7 @@ export default function TemplatesPage() {
       >
         {canEdit && (
           <button onClick={openCreate} className="flex shrink-0 items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-            <span className="material-symbols-rounded text-[20px]">add</span>
+            <span className="material-symbols-rounded text-[20px]">add</span>{" "}
             New Template
           </button>
         )}
@@ -279,7 +279,7 @@ export default function TemplatesPage() {
             </p>
             {canEdit && (
               <button onClick={openCreate} className="mt-1 flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-                <span className="material-symbols-rounded text-[20px]">add</span>
+                <span className="material-symbols-rounded text-[20px]">add</span>{" "}
                 Create your first template
               </button>
             )}

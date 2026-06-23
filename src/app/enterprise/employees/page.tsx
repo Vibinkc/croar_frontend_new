@@ -307,12 +307,14 @@ export default function EmployeesPage() {
 
             {accountEmp && (
                 <div
+                    role="button"
+                    tabIndex={-1}
                     className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-6 backdrop-blur-sm"
-                    onClick={() => setAccountEmp(null)}
+                    onClick={(e) => { if (e.target === e.currentTarget) setAccountEmp(null); }}
+                    onKeyDown={(e) => { if (e.key === "Escape" || e.key === "Enter") setAccountEmp(null); }}
                 >
                     <div
                         className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
-                        onClick={(e) => e.stopPropagation()}
                     >
                         <div className="mb-4 flex items-center gap-3">
                             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#7C3AED]/10 text-[#7C3AED]">

@@ -218,7 +218,7 @@ export default function LeavePage() {
                 checked={reqForm.half_day}
                 onChange={(e) => setReqForm({ ...reqForm, half_day: e.target.checked })}
                 className="h-4 w-4"
-              />
+              />{" "}
               Half day
             </label>
             <button
@@ -400,7 +400,7 @@ export default function LeavePage() {
                 checked={typeForm.is_paid}
                 onChange={(e) => setTypeForm({ ...typeForm, is_paid: e.target.checked })}
                 className="h-4 w-4"
-              />
+              />{" "}
               Paid
             </label>
             {typeForm.is_paid && (

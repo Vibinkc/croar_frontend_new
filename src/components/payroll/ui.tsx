@@ -101,12 +101,14 @@ export function Modal({
 
   return createPortal(
     <div
+      role="button"
+      tabIndex={-1}
       className="payroll-scope fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-6 backdrop-blur-sm"
-      onClick={onClose}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onKeyDown={(e) => { if (e.key === "Escape" || e.key === "Enter") onClose(); }}
     >
       <div
         className={`max-h-[calc(100vh-3rem)] w-full ${width} overflow-y-auto rounded-2xl border border-slate-200 bg-white p-7 shadow-2xl`}
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-900">{title}</h2>

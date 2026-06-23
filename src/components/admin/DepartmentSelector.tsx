@@ -106,7 +106,7 @@ export default function DepartmentSelector() {
                                 className={`w-full text-left px-4 py-2.5 text-xs font-bold hover:bg-slate-50 transition-colors flex items-center gap-2 ${!selectedDepartmentId ? "bg-slate-100 text-slate-900" : "text-slate-600"
                                     }`}
                             >
-                                <span className="material-icons-outlined text-sm">apps</span>
+                                <span className="material-icons-outlined text-sm">apps</span>{" "}
                                 All Departments
                             </button>
 
@@ -118,7 +118,7 @@ export default function DepartmentSelector() {
                                     className={`w-full text-left px-4 py-2.5 text-xs font-bold hover:bg-slate-50 transition-colors flex items-center gap-2 ${selectedDepartmentId === dept.id ? "bg-slate-100 text-slate-900" : "text-slate-600"
                                         }`}
                                 >
-                                    <span className="material-icons-outlined text-sm">school</span>
+                                    <span className="material-icons-outlined text-sm">school</span>{" "}
                                     {dept.name}
                                 </button>
                             ))}
@@ -129,7 +129,7 @@ export default function DepartmentSelector() {
                                     onClick={() => setShowAll(true)}
                                     className="w-full text-left px-4 py-2.5 text-xs font-black   text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
                                 >
-                                    <span className="material-icons-outlined text-sm">expand_more</span>
+                                    <span className="material-icons-outlined text-sm">expand_more</span>{" "}
                                     More ({departments.length - INITIAL_DISPLAY_COUNT} more)
                                 </button>
                             )}
@@ -140,7 +140,7 @@ export default function DepartmentSelector() {
                                     onClick={() => setShowAll(false)}
                                     className="w-full text-left px-4 py-2.5 text-xs font-black   text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
                                 >
-                                    <span className="material-icons-outlined text-sm">expand_less</span>
+                                    <span className="material-icons-outlined text-sm">expand_less</span>{" "}
                                     Show Less
                                 </button>
                             )}
