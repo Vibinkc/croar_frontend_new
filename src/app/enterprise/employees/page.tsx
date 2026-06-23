@@ -31,6 +31,11 @@ export default function EmployeesPage() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [employeeToDelete, setEmployeeToDelete] = useState<string | null>(null);
+    // Employee workspace login creation
+    const [accountEmp, setAccountEmp] = useState<Employee | null>(null);
+    const [accountPassword, setAccountPassword] = useState("");
+    const [accountBusy, setAccountBusy] = useState(false);
+    const [accountMsg, setAccountMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
     useEffect(() => {
         if (token) {
@@ -64,6 +69,32 @@ export default function EmployeesPage() {
         } finally {
             setIsConfirmModalOpen(false);
             setEmployeeToDelete(null);
+        }
+    };
+
+    const handleCreateAccount = async () => {
+        if (!accountEmp) return;
+        setAccountBusy(true);
+        setAccountMsg(null);
+        try {
+            const res = await apiClient.post(
+                `/api/v1/enterprise/employees/${accountEmp.id}/account`,
+                { password: accountPassword }
+            );
+            if (res.ok) {
+                setAccountMsg({
+                    ok: true,
+                    text: `Login created. ${accountEmp.email} can now sign in at the login page and will land on their own workspace.`,
+                });
+                setAccountPassword("");
+            } else {
+                const e = await res.json().catch(() => ({}));
+                setAccountMsg({ ok: false, text: e.detail || "Failed to create login." });
+            }
+        } catch {
+            setAccountMsg({ ok: false, text: "Network error. Please try again." });
+        } finally {
+            setAccountBusy(false);
         }
     };
 
@@ -228,6 +259,19 @@ export default function EmployeesPage() {
                                                         <span className="material-symbols-rounded text-lg">edit</span>
                                                     </Link>
                                                 )}
+                                                {canAccess("employees:moderate") && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setAccountEmp(emp);
+                                                            setAccountPassword("");
+                                                            setAccountMsg(null);
+                                                        }}
+                                                        className="w-8 h-8 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
+                                                        title="Create Workspace Login"
+                                                    >
+                                                        <span className="material-symbols-rounded text-lg">key</span>
+                                                    </button>
+                                                )}
                                                 {canAccess("employees:delete") && (
                                                     <button
                                                         onClick={() => {
@@ -260,6 +304,61 @@ export default function EmployeesPage() {
                 cancelLabel="No"
                 isDestructive={true}
             />
+
+            {accountEmp && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-6 backdrop-blur-sm"
+                    onClick={() => setAccountEmp(null)}
+                >
+                    <div
+                        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="mb-4 flex items-center gap-3">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#7C3AED]/10 text-[#7C3AED]">
+                                <span className="material-symbols-rounded">key</span>
+                            </div>
+                            <div className="min-w-0">
+                                <h2 className="text-lg font-black text-slate-900">Create Workspace Login</h2>
+                                <p className="truncate text-sm text-slate-500">
+                                    {accountEmp.first_name} {accountEmp.last_name} · {accountEmp.email}
+                                </p>
+                            </div>
+                        </div>
+                        <p className="mb-3 text-xs text-slate-500">
+                            The employee signs in with <b>{accountEmp.email}</b> and this password, and lands on
+                            their own workspace (timesheets, payslips, leave) — not the admin area.
+                        </p>
+                        <input
+                            type="text"
+                            value={accountPassword}
+                            onChange={(e) => setAccountPassword(e.target.value)}
+                            placeholder="Temporary password (min 6 characters)"
+                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-indigo-500/20"
+                        />
+                        {accountMsg && (
+                            <p className={`mt-3 text-sm ${accountMsg.ok ? "text-emerald-600" : "text-rose-600"}`}>
+                                {accountMsg.text}
+                            </p>
+                        )}
+                        <div className="mt-5 flex justify-end gap-3">
+                            <button
+                                onClick={() => setAccountEmp(null)}
+                                className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50"
+                            >
+                                Close
+                            </button>
+                            <button
+                                onClick={handleCreateAccount}
+                                disabled={accountBusy || accountPassword.length < 6}
+                                className="rounded-xl bg-[#7C3AED] px-5 py-2 text-sm font-bold text-white hover:bg-[#6d28d9] disabled:opacity-50"
+                            >
+                                {accountBusy ? "Creating…" : "Create Login"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -87,7 +87,7 @@ function EnterpriseLoginContent() {
 
             const data = await res.json();
             login(data.access_token, data.role);
-            router.push("/enterprise/dashboard");
+            router.push(data.role === "EMPLOYEE" ? "/employee/dashboard" : "/enterprise/dashboard");
         } catch (err: any) {
             setError(err.message);
         }
@@ -119,7 +119,7 @@ function EnterpriseLoginContent() {
                     if (res.ok) {
                         const data = await res.json();
                         login(data.access_token, data.role);
-                        router.push("/enterprise/dashboard");
+                        router.push(data.role === "EMPLOYEE" ? "/employee/dashboard" : "/enterprise/dashboard");
                     } else {
                         setMsRedirecting(false);
                     }
@@ -179,7 +179,7 @@ function EnterpriseLoginContent() {
             login(data.access_token, data.role);
 
             // Redirect to enterprise dashboard
-            router.push("/enterprise/dashboard");
+            router.push(data.role === "EMPLOYEE" ? "/employee/dashboard" : "/enterprise/dashboard");
 
         } catch (err) {
             const error = err as Error;

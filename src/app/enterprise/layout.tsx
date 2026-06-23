@@ -42,6 +42,12 @@ export default function EnterprisePortalLayout({
                 return;
             } 
             
+            // 2a. Employee self-service users belong in their own workspace, not the admin area.
+            if (role === "EMPLOYEE") {
+                router.replace("/employee/dashboard");
+                return;
+            }
+
             // 2. Check Role Whitelist
             if (!ALLOWED_ENTERPRISE_ROLES.includes(role)) {
                 console.warn(`[AUTH] Unauthorized access attempt. Role: "${role}" is not in whitelist:`, ALLOWED_ENTERPRISE_ROLES);
