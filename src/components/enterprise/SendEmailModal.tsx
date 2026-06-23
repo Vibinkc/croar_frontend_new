@@ -48,7 +48,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
     // Extract variables
     useEffect(() => {
         const text = subject + " " + body;
-        const regex = /\{\{([^}]+)\}\}/g;
+        const regex = /\{\{([^}]{1,200})\}\}/g;
         const found = new Set<string>();
         let match;
         while ((match = regex.exec(text)) !== null) {

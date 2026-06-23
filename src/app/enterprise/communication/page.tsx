@@ -300,7 +300,7 @@ const MailboxPage = () => {
                                 {email.subject}
                             </h3>
                             <p className="text-xs text-slate-400 line-clamp-2">
-                                {(email.body || '').replace(/<[^>]*>/g, '')}
+                                {(email.body || '').replace(/<[^>]{0,4096}>/g, '')}
                             </p>
                         </div>
                     ))}

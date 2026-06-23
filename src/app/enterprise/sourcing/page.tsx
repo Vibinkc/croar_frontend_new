@@ -325,7 +325,7 @@ export default function ProfileSourcingPage() {
                 extractedLoc = "Dallas, TX";
             }
 
-            const expMatch = textLower.match(/(\d+)\+?\s*years?/);
+            const expMatch = textLower.match(/(\d{1,4})\+?\s{0,4}years?/);
             if (expMatch && expMatch[1]) {
                 extractedExp = expMatch[1];
             }
