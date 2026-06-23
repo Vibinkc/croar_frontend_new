@@ -158,7 +158,6 @@ export default function EnterprisePortalLayout({
                 { label: "Payroll Reports", icon: "summarize", path: "/enterprise/payroll/reports", permission: "payroll:read" },
                 { label: "Payroll Activity", icon: "history", path: "/enterprise/payroll/activity", permission: "payroll:read" },
                 { label: "Payroll Settings", icon: "settings_applications", path: "/enterprise/payroll/settings", permission: "payroll:read" },
-                { label: "My Workspace", icon: "badge", path: "/employee/dashboard", permission: "payroll:read" },
             ]
         },
         {
