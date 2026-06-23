@@ -3,101 +3,119 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { DialogProvider } from "@/components/payroll/DialogProvider";
 import { isSelfServiceUser } from "@/utils/payroll/auth";
 
 const NAV = [
-  { label: "Dashboard", icon: "dashboard", path: "/employee/dashboard" },
-  { label: "Timesheets", icon: "schedule", path: "/employee/timesheets" },
-  { label: "Leave", icon: "event_available", path: "/employee/leave" },
-  { label: "Payslips", icon: "receipt_long", path: "/employee/payslips" },
+    { label: "Dashboard", icon: "space_dashboard", path: "/employee/dashboard" },
+    { label: "Timesheets", icon: "schedule", path: "/employee/timesheets" },
+    { label: "Leave", icon: "event_available", path: "/employee/leave" },
+    { label: "Payslips", icon: "receipt_long", path: "/employee/payslips" },
 ];
 
 export default function EmployeeLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { user, loading, logout } = useAuth();
+    const router = useRouter();
+    const pathname = usePathname();
+    const { user, loading, logout } = useAuth();
 
-  // Guard: unauthenticated -> login; non-self-service (admin/HR/viewer) ->
-  // the enterprise app (this area is only for linked employees).
-  useEffect(() => {
-    if (loading) return;
-    if (!user) router.replace("/login");
-    else if (!isSelfServiceUser(user)) router.replace("/enterprise/dashboard");
-  }, [loading, user, router]);
+    // Guard: unauthenticated -> enterprise login; non-self-service (admin/HR) ->
+    // the enterprise app (this area is only for linked employees).
+    useEffect(() => {
+        if (loading) return;
+        if (!user) router.replace("/enterprise/login");
+        else if (!isSelfServiceUser(user)) router.replace("/enterprise/dashboard");
+    }, [loading, user, router]);
 
-  if (loading || !user || !isSelfServiceUser(user)) {
+    if (loading || !user || !isSelfServiceUser(user)) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC] font-sans text-slate-500">
+                Loading…
+            </div>
+        );
+    }
+
+    const initials =
+        (user.full_name || user.email || "?")
+            .split(" ")
+            .map((p) => p[0])
+            .filter(Boolean)
+            .slice(0, 2)
+            .join("")
+            .toUpperCase() || "?";
+
+    const navLinkClass = (path: string) => {
+        const active = pathname === path || pathname.startsWith(path + "/");
+        return `group flex items-center gap-3 px-3 py-1.5 rounded-lg transition-all duration-200 ${
+            active
+                ? "bg-[#7C3AED]/10 text-[#7C3AED]"
+                : "text-slate-500 hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]"
+        }`;
+    };
+
     return (
-      <div className="payroll-scope flex min-h-screen items-center justify-center bg-[var(--color-bg)] text-[var(--color-muted)]">
-        Loading…
-      </div>
+        <DialogProvider>
+            <div className="flex w-full h-screen bg-[#F8FAFC] overflow-hidden font-sans">
+                {/* Sidebar — matches the enterprise admin portal */}
+                <aside className="sticky top-0 h-screen w-52 shrink-0 bg-white border-r border-slate-100 flex flex-col">
+                    <div className="p-2 flex-1 overflow-y-auto no-scrollbar flex flex-col">
+                        {/* Logo */}
+                        <div className="p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50">
+                            <Link href="/employee/dashboard" className="flex items-center gap-2 tracking-tighter">
+                                <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent">
+                                    Croar.ai
+                                </span>
+                            </Link>
+                        </div>
+
+                        {/* Navigation */}
+                        <nav className="space-y-4 px-1">
+                            <div>
+                                <p className="text-[11px] font-bold text-slate-400 mb-2 px-3">My Workspace</p>
+                                <div className="space-y-0.5">
+                                    {NAV.map((item) => (
+                                        <Link key={item.path} href={item.path} className={navLinkClass(item.path)}>
+                                            <span className="material-symbols-rounded text-xl">{item.icon}</span>
+                                            <span className="text-[10px] font-bold whitespace-nowrap">{item.label}</span>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+
+                    {/* Footer: user + logout */}
+                    <div className="p-3 border-t border-slate-50 shrink-0">
+                        <div className="flex items-center gap-2 mb-4 px-2">
+                            <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md shrink-0">
+                                {initials}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-[10px] font-bold text-slate-700 truncate">
+                                    {user.full_name || user.email}
+                                </p>
+                                <p className="text-[10px] font-medium text-slate-400">Employee</p>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={logout}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all duration-200 group"
+                        >
+                            <span className="material-symbols-rounded text-slate-500 text-[20px]">logout</span>
+                            <span className="text-[10px] font-bold">Logout</span>
+                        </button>
+                    </div>
+                </aside>
+
+                {/* Main content */}
+                <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden w-full">
+                    <main className="flex-1 w-full overflow-y-auto bg-[#F8FAFC] custom-scrollbar">
+                        <div className="payroll-scope p-6 md:p-8">{children}</div>
+                    </main>
+                </div>
+            </div>
+        </DialogProvider>
     );
-  }
-
-  const initials =
-    user.full_name
-      .split(" ")
-      .map((p) => p[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() || user.email[0]?.toUpperCase() || "?";
-
-  return (
-    <DialogProvider>
-    <div className="payroll-scope flex min-h-screen bg-[var(--color-bg)]">
-      <aside className="fixed inset-y-0 left-0 z-30 flex w-64 flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)] p-5">
-        <div className="mb-8 flex items-center gap-2 px-2">
-          <span className="material-symbols-rounded text-[var(--color-primary)]">payments</span>
-          <span className="text-xl font-bold tracking-tight">Croar</span>
-          <span className="rounded bg-[var(--color-primary)]/15 px-2 py-0.5 text-xs font-semibold text-[var(--color-primary)]">
-            My Workspace
-          </span>
-        </div>
-
-        <nav className="flex flex-col gap-1">
-          {NAV.map((item) => {
-            const active = pathname.startsWith(item.path);
-            return (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-[var(--color-primary)] text-white"
-                    : "text-[var(--color-muted)] hover:bg-[var(--color-hover)] hover:text-[var(--color-text)]"
-                }`}
-              >
-                <span className="material-symbols-rounded text-[20px]">{item.icon}</span>
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="mt-auto border-t border-[var(--color-border)] pt-4">
-          <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-purple-400 text-sm font-bold text-white">
-              {initials}
-            </div>
-            <div className="flex min-w-0 flex-col leading-tight">
-              <span className="truncate text-sm font-semibold">{user.full_name || user.email}</span>
-              <span className="text-xs text-[var(--color-dim)]">Employee</span>
-            </div>
-          </div>
-          <button
-            onClick={logout}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)]"
-          >
-            <span className="material-symbols-rounded text-[18px]">logout</span>
-            Sign Out
-          </button>
-        </div>
-      </aside>
-
-      <main className="ml-64 flex-1 bg-[var(--color-bg)] p-8">{children}</main>
-    </div>
-    </DialogProvider>
-  );
 }

@@ -160,7 +160,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const logout = async () => {
-        const isEnterprise = window.location.pathname.startsWith('/enterprise');
+        // Employee self-service (/employee) shares the enterprise login, so log out
+        // back to /enterprise/login (not the student /login).
+        const path = window.location.pathname;
+        const isEnterprise = path.startsWith('/enterprise') || path.startsWith('/employee');
         const currentSso = ssoProvider;
         
         Cookies.remove("auth_");
