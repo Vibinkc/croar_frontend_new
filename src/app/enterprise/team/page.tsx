@@ -18,6 +18,7 @@ import {
     Key,
     UserCircle
 } from "lucide-react";
+import { jetbrainsMono } from "@/components/ds";
 
 interface Permission {
     id: string;
@@ -141,123 +142,80 @@ function TeamManagementContent() {
 
     return (
         <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
-                <div className="flex items-center gap-3 px-2">
-                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
-                        <span className="material-symbols-rounded">groups</span>
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]/80">
+                        <span className="material-symbols-rounded text-[18px] text-[#5B53E0]">groups</span>
                     </div>
                     <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight">Team Management</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest mt-0.5">Organization personnel &amp; access</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Team Management</h1>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Organization personnel &amp; access</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <div className="flex bg-slate-50 border border-slate-100 rounded-xl p-1">
+                <div className="flex items-center gap-2.5 shrink-0">
+                    <div className="flex bg-[#E8EAED] rounded-[10px] p-0.5 border border-[#E8EAED]">
                         <button 
                             onClick={() => setActiveTab("members")}
-                            className={`px-4 py-1.5 rounded-xl text-[10px] font-bold transition-all ${activeTab === "members" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+                            className={`h-8 px-4 rounded-[8px] text-[13px] font-semibold transition-all ${activeTab === "members" ? "bg-white text-[#15171C] shadow-sm" : "text-[#6B6F76] hover:text-[#374151]"}`}
                         >
                             Members
                         </button>
                         {canAccess("employees:moderate") && (
                             <button 
                                 onClick={() => setActiveTab("roles")}
-                                className={`px-4 py-1.5 rounded-xl text-[10px] font-bold transition-all ${activeTab === "roles" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+                                className={`h-8 px-4 rounded-[8px] text-[13px] font-semibold transition-all ${activeTab === "roles" ? "bg-white text-[#15171C] shadow-sm" : "text-[#6B6F76] hover:text-[#374151]"}`}
                             >
                                 Roles
                             </button>
                         )}
                     </div>
                 </div>
-            </div>
+            </header>
 
             {/* Stat Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
-                >
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-[#7C3AED]">Total Members</span>
-                        <div className="w-12 h-12 rounded-xl bg-violet-50 text-[#7C3AED] flex items-center justify-center transition-all group-hover:scale-110">
-                            <Users className="w-6 h-6" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                {[
+                    { label: "Total Members", value: members.length, Icon: Users, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+                    { label: "Active Roles", value: roles.length, Icon: ShieldCheck, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: "System Roles", value: roles.filter(r => r.is_system).length, Icon: Lock, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: "Global Permissions", value: permissions.length || "—", Icon: Shield, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                ].map((s) => (
+                    <div
+                        key={s.label}
+                        className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden flex flex-col justify-between min-h-[110px]"
+                    >
+                        <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
+                                <div className={`text-[26px] font-semibold tracking-[-1px] text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>{s.value}</div>
+                            </div>
+                            <span className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                                <s.Icon className="w-4.5 h-4.5" />
+                            </span>
                         </div>
                     </div>
-                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                        {members.length}
-                    </div>
-                </motion.div>
-
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
-                >
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-emerald-500">Active Roles</span>
-                        <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center transition-all group-hover:scale-110">
-                            <ShieldCheck className="w-6 h-6" />
-                        </div>
-                    </div>
-                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                        {roles.length}
-                    </div>
-                </motion.div>
-
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
-                >
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-indigo-500">System Roles</span>
-                        <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center transition-all group-hover:scale-110">
-                            <Lock className="w-6 h-6" />
-                        </div>
-                    </div>
-                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                        {roles.filter(r => r.is_system).length}
-                    </div>
-                </motion.div>
-
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
-                >
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-amber-500">Global Permissions</span>
-                        <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center transition-all group-hover:scale-110">
-                            <Shield className="w-6 h-6" />
-                        </div>
-                    </div>
-                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                        {permissions.length || "..."}
-                    </div>
-                </motion.div>
+                ))}
             </div>
 
             {/* Search and Filter Bar */}
             <div className="flex flex-col md:flex-row items-center gap-4">
                 <div className="relative flex-1 group">
-                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors">search</span>
+                    <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                     <input 
                         type="text"
                         placeholder="Search members by name or email..."
-                        className="w-full h-12 pl-12 pr-6 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50 transition-all font-medium text-sm"
+                        className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
-                <div className="flex items-center gap-2 bg-white border border-slate-200 p-1.5 rounded-xl shadow-sm">
-                    <span className="material-symbols-rounded text-slate-400 pl-2">filter_list</span>
+                <div className="flex items-center gap-2 bg-white border border-[#E1E4E8] px-3 h-10 rounded-[10px] shadow-sm">
+                    <span className="material-symbols-rounded text-[#9AA3AF] text-[20px]">filter_list</span>
                     <select 
-                        className="bg-transparent text-[10px] font-black uppercase tracking-widest text-slate-600 outline-none pr-4 cursor-pointer"
+                        className="bg-transparent text-[12px] font-bold text-[#374151] outline-none pr-2 cursor-pointer"
                         value={selectedRoleFilter}
                         onChange={(e) => setSelectedRoleFilter(e.target.value)}
                     >
@@ -269,9 +227,9 @@ function TeamManagementContent() {
                 </div>
                 <button 
                     onClick={fetchData}
-                    className="w-12 h-12 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 transition-all flex items-center justify-center shadow-sm"
+                    className="w-9 h-9 bg-white border border-[#E1E4E8] rounded-[10px] text-[#6B6F76] hover:text-[#374151] hover:bg-[#F4F5F7] transition-all flex items-center justify-center shadow-sm"
                 >
-                    <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    <RefreshCcw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
                 </button>
             </div>
 
@@ -279,12 +237,12 @@ function TeamManagementContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Members List */}
                     <div className={canAccess("employees:moderate") ? "lg:col-span-7 space-y-6" : "lg:col-span-12 space-y-6"}>
-                        <div className="flex items-center justify-between px-2">
-                            <h2 className="text-xl font-bold text-slate-900 tracking-tight">Active Members</h2>
-                            <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-4 py-1.5 rounded-full">{members.length} team members</span>
+                        <div className="flex items-center justify-between px-1">
+                            <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">Active Members</h2>
+                            <span className="text-[12px] font-semibold text-[#8A929E] bg-[#E8EAED]/50 px-3 py-1 rounded-full">{members.length} team members</span>
                         </div>
                         
-                        <div className={`grid gap-6 ${canAccess("employees:moderate") ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
+                        <div className={`grid gap-4 ${canAccess("employees:moderate") ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
                             <AnimatePresence mode="popLayout">
                                 {members.filter(m => {
                                     const matchesSearch = (m.first_name + " " + m.last_name + m.email).toLowerCase().includes(searchQuery.toLowerCase());
@@ -295,30 +253,30 @@ function TeamManagementContent() {
                                         layout
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: i * 0.05 }}
+                                        transition={{ delay: i * 0.03 }}
                                         key={member.id} 
-                                        className="bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all group flex flex-col justify-between min-h-[160px]"
+                                        className="bg-white border border-[#E8EAED] rounded-[14px] p-5 shadow-sm hover:border-[#5B53E0]/40 transition-all flex flex-col justify-between min-h-[145px]"
                                     >
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <div className="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center font-bold text-xl group-hover:bg-indigo-600 group-hover:text-white transition-all border border-slate-100 group-hover:border-indigo-600 shadow-inner shrink-0">
-                                                <UserCircle className="w-6 h-6 stroke-[1.5]" />
+                                        <div className="flex items-center gap-3.5 mb-3">
+                                            <div className="w-11 h-11 rounded-[10px] bg-[#F4F5F7] text-[#8A929E] flex items-center justify-center font-bold text-[18px] border border-[#E8EAED] shrink-0">
+                                                <UserCircle className="w-5.5 h-5.5 stroke-[1.5]" />
                                             </div>
                                             <div className="overflow-hidden">
-                                                <h3 className="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
+                                                <h3 className="text-[14.5px] font-bold text-[#15171C] truncate">
                                                     {member.first_name} {member.last_name}
                                                 </h3>
-                                                <p className="text-xs text-slate-400 font-medium group-hover:text-slate-500 transition-colors truncate">{member.email}</p>
+                                                <p className="text-[12.5px] text-[#8A929E] leading-none truncate mt-0.5">{member.email}</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-50 mt-auto">
+                                        <div className="flex flex-wrap gap-1.5 pt-3.5 border-t border-[#F4F5F7] mt-auto">
                                             {member.roles?.map((r: Role) => (
-                                                <span key={r.id} className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-bold   border border-indigo-100/30">
+                                                <span key={r.id} className="px-2.5 py-0.5 bg-[#ECEBFB] text-[#5B53E0] rounded-[8px] text-[10px] font-bold border border-[#DAD7F6]/60">
                                                     {r.name}
                                                 </span>
                                             ))}
                                             {(!member.roles || member.roles.length === 0) && (
-                                                <span className="px-3 py-1 bg-slate-50 text-slate-400 rounded-xl text-[10px] font-bold   border border-slate-100">
+                                                <span className="px-2.5 py-0.5 bg-[#F4F5F7] text-[#8A929E] rounded-[8px] text-[10px] font-bold border border-[#E8EAED]">
                                                     Unassigned
                                                 </span>
                                             )}
@@ -332,70 +290,70 @@ function TeamManagementContent() {
                     {/* Add Member Form */}
                     {canAccess("employees:moderate") && (
                         <div className="lg:col-span-5">
-                            <div className="bg-white p-8 md:p-10 rounded-xl border border-slate-200/60 shadow-2xl shadow-slate-200/50 sticky top-8">
-                                <div className="space-y-2 mb-10">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-                                            <UserPlus className="w-5 h-5" />
+                            <div className="bg-white p-6 sm:p-8 rounded-[14px] border border-[#E8EAED] shadow-sm sticky top-6 space-y-6">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <div className="p-1.5 bg-[#ECEBFB] text-[#5B53E0] rounded-[8px]">
+                                            <UserPlus className="w-4 h-4" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-slate-900">Invite Member</h3>
+                                        <h3 className="text-[15px] font-bold text-[#15171C]">Invite Member</h3>
                                     </div>
-                                    <p className="text-sm text-slate-400 font-medium">Add a new collaborator to the organization</p>
+                                    <p className="text-[12.5px] text-[#8A929E]">Add a new collaborator to the organization</p>
                                 </div>
                                 
-                                <form onSubmit={handleAddMember} className="space-y-6">
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label htmlFor="member-first-name" className="text-xs font-bold text-slate-500 ml-1">First Name</label>
+                                <form onSubmit={handleAddMember} className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-1.5">
+                                            <label htmlFor="member-first-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">First Name</label>
                                             <input
                                                 id="member-first-name"
-                                                className="w-full bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all font-semibold"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                 placeholder="John"
                                                 value={memberFirstName} onChange={e => setMemberFirstName(e.target.value)} required
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label htmlFor="member-last-name" className="text-xs font-bold text-slate-500 ml-1">Last Name</label>
+                                        <div className="space-y-1.5">
+                                            <label htmlFor="member-last-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Last Name</label>
                                             <input
                                                 id="member-last-name"
-                                                className="w-full bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all font-semibold"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                 placeholder="Doe"
                                                 value={memberLastName} onChange={e => setMemberLastName(e.target.value)} required
                                             />
                                         </div>
                                     </div>
                                     
-                                    <div className="space-y-2">
-                                        <label htmlFor="member-email" className="text-xs font-bold text-slate-500 ml-1">Email Address</label>
+                                    <div className="space-y-1.5">
+                                        <label htmlFor="member-email" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Email Address</label>
                                         <div className="relative">
                                             <input
                                                 id="member-email"
-                                                className="w-full bg-slate-50 border border-slate-100 p-4 pl-12 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                 placeholder="john@example.com"
                                                 type="email"
                                                 value={memberEmail} onChange={e => setMemberEmail(e.target.value)} required
                                             />
-                                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label htmlFor="member-password" className="text-xs font-bold text-slate-500 ml-1">Temporary Password</label>
+                                    <div className="space-y-1.5">
+                                        <label htmlFor="member-password" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Temporary Password</label>
                                         <div className="relative">
                                             <input
                                                 id="member-password"
-                                                className="w-full bg-slate-50 border border-slate-100 p-4 pl-12 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                 placeholder="••••••••"
                                                 type="password"
                                                 value={memberPassword} onChange={e => setMemberPassword(e.target.value)} required
                                             />
-                                            <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                            <Key className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                                         </div>
                                     </div>
                                     
-                                    <div className="space-y-4">
-                                        <label id="assign-roles-label" htmlFor="assign-roles-group" className="text-xs font-bold text-slate-900">Assign Roles</label>
-                                        <div id="assign-roles-group" role="group" aria-labelledby="assign-roles-label" className="flex flex-wrap gap-2">
+                                    <div className="space-y-3">
+                                        <label id="assign-roles-label" htmlFor="assign-roles-group" className="text-[12px] font-bold text-[#15171C]">Assign Roles</label>
+                                        <div id="assign-roles-group" role="group" aria-labelledby="assign-roles-label" className="flex flex-wrap gap-1.5">
                                             {roles.map(role => (
                                                 <button 
                                                     key={role.id}
@@ -407,7 +365,7 @@ function TeamManagementContent() {
                                                             setSelectedRoleIds([...selectedRoleIds, role.id]);
                                                         }
                                                     }}
-                                                    className={`px-4 py-2 rounded-xl text-[10px] font-bold   transition-all border ${selectedRoleIds.includes(role.id) ? "bg-slate-900 border-slate-900 text-white shadow-lg" : "bg-white border-slate-200 text-slate-400 hover:border-slate-400"}`}
+                                                    className={`px-3 py-1.5 rounded-[8px] text-[11px] font-bold transition-all border ${selectedRoleIds.includes(role.id) ? "bg-[#15171C] border-[#15171C] text-white shadow-sm" : "bg-white border-[#E1E4E8] text-[#8A929E] hover:border-[#9AA3AF]"}`}
                                                 >
                                                     {role.name}
                                                 </button>
@@ -418,10 +376,10 @@ function TeamManagementContent() {
                                     <button 
                                         type="submit"
                                         disabled={isLoading}
-                                        className="w-full bg-indigo-600 text-white h-14 rounded-xl text-sm font-bold mt-6 hover:bg-slate-900 transition-all active:scale-[0.98] shadow-lg shadow-indigo-100 flex items-center justify-center gap-3 overflow-hidden group"
+                                        className="w-full bg-[#5B53E0] text-white h-10 rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all shadow-[0_4px_12px_rgba(91,83,224,0.28)] flex items-center justify-center gap-2 mt-4 disabled:opacity-40"
                                     >
-                                        {isLoading ? <RefreshCcw className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5 group-hover:scale-110 transition-transform" />}
-                                        {isLoading ? "Processing..." : "Invite Member"}
+                                        {isLoading ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+                                        {isLoading ? "Inviting..." : "Invite Member"}
                                     </button>
                                 </form>
                             </div>
@@ -432,42 +390,42 @@ function TeamManagementContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Roles List */}
                     <div className={canAccess("employees:moderate") ? "lg:col-span-7 space-y-6" : "lg:col-span-12 space-y-6"}>
-                        <div className="flex items-center justify-between px-2">
-                            <h2 className="text-xl font-bold text-slate-900 tracking-tight">Access Control</h2>
-                            <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-4 py-1.5 rounded-full">{roles.length} available roles</span>
+                        <div className="flex items-center justify-between px-1">
+                            <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">Access Control</h2>
+                            <span className="text-[12px] font-semibold text-[#8A929E] bg-[#E8EAED]/50 px-3 py-1 rounded-full">{roles.length} available roles</span>
                         </div>
 
-                        <div className={`grid gap-6 ${canAccess("employees:moderate") ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
+                        <div className={`grid gap-4 ${canAccess("employees:moderate") ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}`}>
                             {roles.map(role => (
-                                <div key={role.id} className="bg-white p-8 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col">
-                                    <div className="flex justify-between items-start mb-8">
-                                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-inner border border-slate-100 ${role.is_system ? 'bg-slate-900 text-white' : 'bg-indigo-50 text-indigo-600'}`}>
-                                            <Shield className="w-7 h-7 stroke-[1.5]" />
+                                <div key={role.id} className="bg-white p-5 rounded-[14px] border border-[#E8EAED] shadow-sm hover:border-[#5B53E0]/40 transition-all flex flex-col">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className={`w-11 h-11 rounded-[10px] flex items-center justify-center border border-[#E8EAED] ${role.is_system ? 'bg-[#15171C] text-white' : 'bg-[#ECEBFB] text-[#5B53E0]'}`}>
+                                            <Shield className="w-5.5 h-5.5 stroke-[1.5]" />
                                         </div>
                                         {role.is_system ? (
-                                            <span className="p-2 bg-slate-100 text-slate-400 rounded-xl">
-                                                <Lock className="w-4 h-4" />
+                                            <span className="p-2 bg-[#F4F5F7] text-[#8A929E] rounded-[8px] border border-[#E8EAED]">
+                                                <Lock className="w-3.5 h-3.5" />
                                             </span>
                                         ) : (
                                             canAccess("employees:moderate") && (
-                                                <button className="p-2 bg-rose-50 text-rose-300 hover:bg-rose-500 hover:text-white transition-all rounded-xl">
-                                                    <Trash2 className="w-4 h-4" />
+                                                <button className="p-2 bg-rose-50 border border-rose-100/50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all rounded-[8px]">
+                                                    <Trash2 className="w-3.5 h-3.5" />
                                                 </button>
                                             )
                                         )}
                                     </div>
 
-                                    <h3 className="text-lg font-bold text-slate-900 mb-2">{role.name}</h3>
-                                    <p className="text-sm text-slate-400 font-medium mb-8 leading-relaxed line-clamp-2 h-10">{role.description || "Standard organizational access control permissions."}</p>
+                                    <h3 className="text-[15px] font-bold text-[#15171C] mb-1.5">{role.name}</h3>
+                                    <p className="text-[12.5px] text-[#8A929E] leading-relaxed line-clamp-2 h-10 mb-6">{role.description || "Standard organizational access control permissions."}</p>
                                     
-                                    <div className="flex flex-wrap gap-2 pt-6 border-t border-slate-50 mt-auto">
+                                    <div className="flex flex-wrap gap-1.5 pt-5 border-t border-[#F4F5F7] mt-auto">
                                         {role.permissions?.slice(0, 3).map((p: Permission) => (
-                                            <span key={p.id} className="px-2.5 py-1 bg-slate-50 text-slate-500 rounded-xl text-[10px] font-bold   border border-slate-100">
+                                            <span key={p.id} className="px-2 py-0.5 bg-[#F4F5F7] text-[#8A929E] rounded-[6px] text-[10px] font-semibold border border-[#E8EAED]">
                                                 {p.module}
                                             </span>
                                         ))}
                                         {(role.permissions?.length ?? 0) > 3 && (
-                                            <span className="text-xs font-bold text-indigo-400 ml-1 self-center">+{(role.permissions?.length ?? 0) - 3} more</span>
+                                            <span className="text-[11px] font-bold text-[#5B53E0] ml-1 self-center">+{(role.permissions?.length ?? 0) - 3} more</span>
                                         )}
                                     </div>
                                 </div>
@@ -478,40 +436,40 @@ function TeamManagementContent() {
                     {/* Create Role Form */}
                     {canAccess("employees:moderate") && (
                         <div className="lg:col-span-5">
-                            <div className="bg-white p-8 md:p-10 rounded-xl border border-slate-200/60 shadow-2xl shadow-slate-200/50 sticky top-8">
-                                <div className="space-y-2 mb-10">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-                                            <ShieldPlus className="w-5 h-5" />
+                            <div className="bg-white p-6 sm:p-8 rounded-[14px] border border-[#E8EAED] shadow-sm sticky top-6 space-y-6">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <div className="p-1.5 bg-[#ECEBFB] text-[#5B53E0] rounded-[8px]">
+                                            <ShieldPlus className="w-4 h-4" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-slate-900">Create Custom Role</h3>
+                                        <h3 className="text-[15px] font-bold text-[#15171C]">Create Custom Role</h3>
                                     </div>
-                                    <p className="text-sm text-slate-400 font-medium">Define custom access policies and permissions</p>
+                                    <p className="text-[12.5px] text-[#8A929E]">Define custom access policies and permissions</p>
                                 </div>
                                 
-                                <form onSubmit={handleCreateRole} className="space-y-8">
-                                    <div className="space-y-2">
-                                        <label htmlFor="role-name" className="text-xs font-bold text-slate-500 ml-1">Role Name</label>
+                                <form onSubmit={handleCreateRole} className="space-y-4">
+                                    <div className="space-y-1.5">
+                                        <label htmlFor="role-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Name</label>
                                         <input
                                             id="role-name"
-                                            className="w-full bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 transition-all shadow-inner"
+                                            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                             placeholder="e.g. Marketing Manager"
                                             value={roleName} onChange={e => setRoleName(e.target.value)} required
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label htmlFor="role-description" className="text-xs font-bold text-slate-500 ml-1">Description</label>
+                                    <div className="space-y-1.5">
+                                        <label htmlFor="role-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Description</label>
                                         <textarea
                                             id="role-description"
-                                            className="w-full bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 transition-all min-h-[100px] shadow-inner"
+                                            className="w-full bg-white border border-[#E1E4E8] rounded-[10px] p-3 text-[13.5px] text-[#374151] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all min-h-[90px]"
                                             placeholder="Clearly define what this role can access..."
                                             value={roleDescription} onChange={e => setRoleDescription(e.target.value)}
                                         />
                                     </div>
                                     
-                                    <div className="space-y-4">
-                                        <label id="select-permissions-label" htmlFor="select-permissions-group" className="text-xs font-bold text-slate-900">Select Permissions</label>
-                                        <div id="select-permissions-group" role="group" aria-labelledby="select-permissions-label" className="bg-slate-50 rounded-xl border border-slate-100 p-4 max-h-[300px] overflow-y-auto custom-scrollbar space-y-2">
+                                    <div className="space-y-3">
+                                        <label id="select-permissions-label" htmlFor="select-permissions-group" className="text-[12px] font-bold text-[#15171C]">Select Permissions</label>
+                                        <div id="select-permissions-group" role="group" aria-labelledby="select-permissions-label" className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-3 max-h-[250px] overflow-y-auto custom-scrollbar space-y-1.5">
                                             {permissions.map(perm => (
                                                 <button 
                                                     key={perm.id}
@@ -523,13 +481,13 @@ function TeamManagementContent() {
                                                             setSelectedPermissionIds([...selectedPermissionIds, perm.id]);
                                                         }
                                                     }}
-                                                    className={`w-full flex items-center justify-between p-4 rounded-xl border text-[11px] font-bold transition-all ${selectedPermissionIds.includes(perm.id) ? "bg-slate-900 border-slate-900 text-white shadow-xl" : "bg-white border-slate-200 text-slate-400 hover:border-slate-400"}`}
+                                                    className={`w-full flex items-center justify-between p-2.5 rounded-[8px] border text-[11px] font-bold transition-all ${selectedPermissionIds.includes(perm.id) ? "bg-[#15171C] border-[#15171C] text-white shadow-md" : "bg-white border-[#E1E4E8] text-[#8A929E] hover:border-[#9AA3AF]"}`}
                                                 >
-                                                    <div className="flex items-center gap-3">
-                                                        <div className={`w-2 h-2 rounded-full ${selectedPermissionIds.includes(perm.id) ? "bg-indigo-400" : "bg-slate-200"}`} />
-                                                        <span className=" ">{perm.module}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className={`w-1.5 h-1.5 rounded-full ${selectedPermissionIds.includes(perm.id) ? "bg-indigo-400" : "bg-slate-300"}`} />
+                                                        <span>{perm.module}</span>
                                                     </div>
-                                                    <span className="opacity-40 ">{perm.action}</span>
+                                                    <span className="opacity-60">{perm.action}</span>
                                                 </button>
                                             ))}
                                         </div>
@@ -538,9 +496,9 @@ function TeamManagementContent() {
                                     <button 
                                         type="submit"
                                         disabled={isLoading}
-                                        className="w-full bg-indigo-600 text-white h-14 rounded-xl text-sm font-bold hover:bg-slate-900 transition-all active:scale-[0.98] shadow-lg shadow-indigo-100 flex items-center justify-center gap-4 group"
+                                        className="w-full bg-[#5B53E0] text-white h-10 rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all shadow-[0_4px_12px_rgba(91,83,224,0.28)] flex items-center justify-center gap-2 mt-4 disabled:opacity-40"
                                     >
-                                        {isLoading ? <RefreshCcw className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />}
+                                        {isLoading ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                                         {isLoading ? "Saving..." : "Create Role"}
                                     </button>
                                 </form>

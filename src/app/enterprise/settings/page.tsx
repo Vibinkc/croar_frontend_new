@@ -19,6 +19,7 @@ import {
     RefreshCcw,
     Activity
 } from "lucide-react";
+import { jetbrainsMono } from "@/components/ds";
 
 interface CompanyProfile {
     id: string;
@@ -191,28 +192,29 @@ export default function OrganizationProfilePage() {
                 )}
             </AnimatePresence>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
-                <div className="flex items-center gap-3 px-2">
-                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
-                        <span className="material-symbols-rounded">business</span>
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]/80">
+                        <span className="material-symbols-rounded text-[18px] text-[#5B53E0]">business</span>
                     </div>
                     <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight">Organization Profile</h1>
-                        <p className="text-slate-500 text-[10px] font-medium   ">Manage your global brand presence</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Organization Profile</h1>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your global brand presence</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 shrink-0">
                     {canAccess("organization:moderate") && (
                         <button
                             onClick={handleSave}
                             disabled={isSaving || !hasChanges}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all disabled:opacity-40"
                         >
                             {isSaving ? (
-                                <RefreshCcw className="w-3 h-3 animate-spin" />
+                                <RefreshCcw className="w-3.5 h-3.5 animate-spin" />
                             ) : (
-                                <Save className="w-3 h-3" />
+                                <Save className="w-3.5 h-3.5" />
                             )}
                             Update Profile
                         </button>
@@ -220,12 +222,12 @@ export default function OrganizationProfilePage() {
                     
                     <button 
                         onClick={fetchProfile}
-                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 hover:border-violet-100 transition-all flex items-center justify-center shadow-sm"
+                        className="w-9 h-9 rounded-[10px] hover:bg-[#E8EAED] flex items-center justify-center text-[#6B6F76] transition-colors border border-transparent hover:border-[#E8EAED]"
                     >
                         <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
-            </div>
+            </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Left Side: Brand Preview */}
@@ -235,76 +237,76 @@ export default function OrganizationProfilePage() {
                     transition={{ delay: 0.1 }}
                     className="lg:col-span-4 space-y-6"
                 >
-                    <div className="bg-white rounded-xl p-8 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-500 overflow-hidden relative group">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="bg-white border border-[#E8EAED] rounded-[14px] p-8 shadow-sm hover:shadow-md transition-all duration-350 overflow-hidden relative group">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#5B53E0] to-[#8B7DFF] opacity-0 group-hover:opacity-100 transition-opacity" />
                         
-                        <div className="text-center space-y-8">
-                            <div className="relative w-40 h-40 mx-auto group/logo">
-                                <div className="absolute inset-0 bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden flex items-center justify-center p-8 shadow-inner transition-transform group-hover/logo:scale-95">
+                        <div className="text-center space-y-6">
+                            <div className="relative w-36 h-36 mx-auto group/logo">
+                                <div className="absolute inset-0 bg-[#F4F5F7]/50 rounded-[14px] border border-[#E8EAED] overflow-hidden flex items-center justify-center p-6 shadow-inner transition-transform group-hover/logo:scale-95">
                                     {logoUrl ? (
                                         <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                                     ) : (
-                                        <Building2 className="w-16 h-16 text-slate-200" />
+                                        <Building2 className="w-12 h-12 text-[#9AA3AF]" />
                                     )}
                                 </div>
                                 {canAccess("organization:moderate") && (
                                     <button 
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="absolute -bottom-2 -right-2 w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-2xl hover:bg-indigo-600 transition-all scale-0 group-hover/logo:scale-100"
+                                        className="absolute -bottom-1 -right-1 w-10 h-10 bg-[#15171C] text-white rounded-[10px] flex items-center justify-center shadow-lg hover:bg-[#5B53E0] transition-all scale-0 group-hover/logo:scale-100"
                                     >
-                                        <Camera className="w-5 h-5" />
+                                        <Camera className="w-4 h-4" />
                                     </button>
                                 )}
                                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoUpload} accept="image/*" />
                                 {isUploading && (
-                                    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-2">
-                                         <RefreshCcw className="w-6 h-6 text-indigo-600 animate-spin" />
-                                         <span className="text-[10px] font-bold text-slate-500 ">Updating</span>
+                                    <div className="absolute inset-0 bg-white/85 backdrop-blur-sm rounded-[14px] flex flex-col items-center justify-center gap-1.5">
+                                         <RefreshCcw className="w-5 h-5 text-[#5B53E0] animate-spin" />
+                                         <span className="text-[9.5px] font-bold text-[#8A929E]">Updating</span>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="space-y-4">
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-indigo-600  ">{industry || "Brand Identity"}</p>
-                                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-tight  truncate">{name || "Your Company"}</h2>
+                            <div className="space-y-3">
+                                <div className="space-y-0.5">
+                                    <p className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider">{industry || "Brand Identity"}</p>
+                                    <h2 className="text-xl font-extrabold text-[#15171C] tracking-[-0.3px] leading-tight truncate">{name || "Your Company"}</h2>
                                 </div>
-                                <div className="flex items-center justify-center gap-2 text-slate-400">
-                                    <MapPin className="w-4 h-4" />
-                                    <span className="text-sm font-medium">{location || "Location not set"}</span>
+                                <div className="flex items-center justify-center gap-1.5 text-[#8A929E]">
+                                    <MapPin className="w-3.5 h-3.5" />
+                                    <span className="text-[12.5px] font-semibold">{location || "Location not set"}</span>
                                 </div>
                             </div>
 
-                            <div className="pt-4 grid grid-cols-2 gap-3">
-                                <div className="px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center gap-1.5">
-                                    <Shield className="w-4 h-4 text-emerald-500" />
-                                    <span className="text-[10px] font-bold text-slate-500">Verified</span>
+                            <div className="pt-2 grid grid-cols-2 gap-3">
+                                <div className="px-3 py-2.5 bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
+                                    <Shield className="w-4 h-4 text-[#15803D]" />
+                                    <span className="text-[9.5px] font-bold text-[#8A929E]">Verified</span>
                                 </div>
-                                <div className="px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center gap-1.5">
-                                    <Zap className="w-4 h-4 text-indigo-500" />
-                                    <span className="text-[10px] font-bold text-slate-500">Premium</span>
+                                <div className="px-3 py-2.5 bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
+                                    <Zap className="w-4 h-4 text-[#5B53E0]" />
+                                    <span className="text-[9.5px] font-bold text-[#8A929E]">Premium</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-slate-50/50 border border-slate-100 p-8 rounded-xl space-y-6">
+                    <div className="bg-white border border-[#E8EAED] p-6 rounded-[14px] shadow-sm space-y-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-xs font-bold text-slate-900  ">Health Status</h3>
-                            <Activity className="w-4 h-4 text-indigo-500" />
+                            <h3 className="text-[12px] font-bold text-[#15171C]">Health Status</h3>
+                            <Activity className="w-4 h-4 text-[#5B53E0]" />
                         </div>
-                        <div className="space-y-5">
+                        <div className="space-y-4">
                             {[
                                 { label: "Candidate Portals", status: "Optimal" },
                                 { label: "Brand Propagation", status: "Syncing" }
                             ].map((item, idx) => (
-                                <div key={idx} className="space-y-2">
-                                    <div className="flex justify-between text-[10px] font-bold ">
-                                        <span className="text-slate-500">{item.label}</span>
-                                        <span className="text-indigo-600">{item.status}</span>
+                                <div key={idx} className="space-y-1.5">
+                                    <div className="flex justify-between text-[11px] font-bold">
+                                        <span className="text-[#8A929E]">{item.label}</span>
+                                        <span className="text-[#5B53E0]">{item.status}</span>
                                     </div>
-                                    <div className="h-1 bg-slate-200 rounded-full overflow-hidden">
-                                        <div className="h-full bg-indigo-500 w-full animate-pulse" />
+                                    <div className="h-1 bg-[#F1F2F5] rounded-full overflow-hidden">
+                                        <div className="h-full bg-[#5B53E0] w-full animate-pulse" />
                                     </div>
                                 </div>
                             ))}
@@ -319,91 +321,91 @@ export default function OrganizationProfilePage() {
                     transition={{ delay: 0.2 }}
                     className="lg:col-span-8"
                 >
-                    <div className="bg-white border border-slate-100 rounded-xl shadow-sm p-8 lg:p-12 space-y-12">
+                    <div className="bg-white border border-[#E8EAED] rounded-[14px] shadow-sm p-6 sm:p-8 space-y-8">
                         {/* Section: Basic Information */}
-                        <section className="space-y-8">
-                            <div className="flex items-center gap-4">
-                                <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
-                                <h3 className="text-lg font-bold text-slate-900">Basic Information</h3>
+                        <section className="space-y-6">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-1 h-5 bg-[#5B53E0] rounded-full" />
+                                <h3 className="text-[15px] font-bold text-[#15171C]">Basic Information</h3>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-2">
-                                    <label htmlFor="company-name" className="text-xs font-bold text-slate-500 ml-1">Company Name</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div className="space-y-1.5">
+                                    <label htmlFor="company-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Company Name</label>
                                     <input
                                         id="company-name"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
                                         readOnly={!canAccess("organization:moderate")}
-                                        className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-slate-900 font-semibold focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all outline-none"
+                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                         placeholder="Enter your legal company name"
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="company-industry" className="text-xs font-bold text-slate-500 ml-1">Industry</label>
+                                <div className="space-y-1.5">
+                                    <label htmlFor="company-industry" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Industry</label>
                                     <input
                                         id="company-industry"
                                         value={industry}
                                         onChange={e => setIndustry(e.target.value)}
                                         readOnly={!canAccess("organization:moderate")}
-                                        className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-slate-900 font-semibold focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all outline-none"
+                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                         placeholder="e.g. Technology, Healthcare"
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label htmlFor="company-location" className="text-xs font-bold text-slate-500 ml-1">Location / Headquarters</label>
+                            <div className="space-y-1.5">
+                                <label htmlFor="company-location" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Location / Headquarters</label>
                                 <div className="relative">
                                     <input
                                         id="company-location"
                                         value={location}
                                         onChange={e => setLocation(e.target.value)}
                                         readOnly={!canAccess("organization:moderate")}
-                                        className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-12 text-slate-900 font-semibold focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all outline-none"
+                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                         placeholder="e.g. London, United Kingdom"
                                     />
-                                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                                    <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                                 </div>
                             </div>
                         </section>
 
                         {/* Section: Brand Assets */}
-                        <section className="space-y-8">
-                            <div className="flex items-center gap-4">
-                                <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
-                                <h3 className="text-lg font-bold text-slate-900">Brand Assets</h3>
+                        <section className="space-y-6">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-1 h-5 bg-[#5B53E0] rounded-full" />
+                                <h3 className="text-[15px] font-bold text-[#15171C]">Brand Assets</h3>
                             </div>
 
                             <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <label htmlFor="company-logo-url" className="text-xs font-bold text-slate-500 ml-1">Logo URL</label>
-                                    <div className="flex gap-4">
+                                <div className="space-y-1.5">
+                                    <label htmlFor="company-logo-url" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Logo URL</label>
+                                    <div className="flex gap-3">
                                         <div className="relative flex-1">
                                             <input
                                                 id="company-logo-url"
                                                 value={logoUrl}
                                                 onChange={e => setLogoUrl(e.target.value)}
                                                 readOnly={!canAccess("organization:moderate")}
-                                                className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-slate-700 font-medium focus:bg-white focus:border-indigo-600 transition-all outline-none text-sm"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[13.5px] text-[#374151] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                 placeholder="https://your-domain.com/logo.png"
                                             />
                                         </div>
                                         {canAccess("organization:moderate") && (
                                             <button 
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className="h-12 px-6 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-all flex items-center gap-2 shadow-lg"
+                                                className="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] bg-[#15171C] text-white text-[13px] font-semibold hover:bg-[#252830] transition-all whitespace-nowrap shadow-sm"
                                             >
-                                                <Upload className="w-4 h-4" />
+                                                <Upload className="w-3.5 h-3.5" />
                                                 Upload
                                             </button>
                                         )}
                                     </div>
                                 </div>
                                 
-                                <div className="p-6 bg-indigo-50/50 border border-indigo-100 rounded-xl flex gap-4">
-                                    <Shield className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
-                                    <p className="text-sm text-indigo-900/70 leading-relaxed font-medium">
+                                <div className="p-4 bg-[#ECEBFB]/50 border border-[#DAD7F6] rounded-[10px] flex gap-3">
+                                    <Shield className="w-4 h-4 text-[#5B53E0] shrink-0 mt-0.5" />
+                                    <p className="text-[13px] text-[#5B53E0] leading-relaxed font-semibold">
                                         Your logo will be used across all candidate-facing materials, including job boards, email templates, and career portals.
                                     </p>
                                 </div>

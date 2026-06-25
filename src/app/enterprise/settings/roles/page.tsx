@@ -5,19 +5,15 @@ import { apiClient } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
     ShieldHalf, 
-    Plus, 
     Settings2, 
-    Search, 
     X, 
-    Trash2, 
     Lock, 
     ShieldCheck, 
-    ChevronRight,
     RefreshCcw,
-    Zap,
     LayoutGrid,
     Shield
 } from "lucide-react";
+import { jetbrainsMono } from "@/components/ds";
 
 interface Permission {
     id: string;
@@ -147,124 +143,81 @@ function EnterpriseRolesContent() {
 
     return (
         <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
-                <div className="flex items-center gap-3 px-2">
-                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
-                        <span className="material-symbols-rounded">security</span>
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]/80">
+                        <span className="material-symbols-rounded text-[18px] text-[#5B53E0]">security</span>
                     </div>
                     <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight">Roles & Permissions</h1>
-                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest mt-0.5">Define access policies and roles</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Roles & Permissions</h1>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Define access policies and roles</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 shrink-0">
                     {!isEditing && (
                         <button 
                             onClick={handleOpenCreate}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            className="h-8 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
                         >
-                            <span className="material-symbols-rounded text-base">add</span>
-                            {"Create Role"}
+                            <span className="material-symbols-rounded text-[16px]">add</span>
+                            Create Role
                         </button>
                     )}
                     <button 
                         onClick={fetchData}
-                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 transition-all flex items-center justify-center shadow-sm"
+                        className="w-8 h-8 bg-white border border-[#E1E4E8] rounded-[10px] text-[#6B6F76] hover:text-[#374151] hover:bg-[#F4F5F7] transition-all flex items-center justify-center shadow-sm"
                     >
-                        <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                        <RefreshCcw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
-            </div>
+            </header>
 
             {!isEditing && (
                 <>
                     {/* Stat Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
-                        >
-                            <div className="flex justify-between items-start">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-[#7C3AED]">Total Roles</span>
-                                <div className="w-12 h-12 rounded-xl bg-violet-50 text-[#7C3AED] flex items-center justify-center transition-all group-hover:scale-110">
-                                    <Shield className="w-6 h-6" />
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                        {[
+                            { label: "Total Roles", value: roles.length, Icon: Shield, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+                            { label: "System Roles", value: roles.filter(r => r.is_system).length, Icon: Lock, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                            { label: "Total Permissions", value: permissions.length, Icon: ShieldCheck, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                            { label: "Security Health", value: "100%", Icon: ShieldHalf, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                        ].map((s) => (
+                            <div
+                                key={s.label}
+                                className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden flex flex-col justify-between min-h-[110px]"
+                            >
+                                <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
+                                        <div className={`text-[26px] font-semibold tracking-[-1px] text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>{s.value}</div>
+                                    </div>
+                                    <span className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                                        <s.Icon className="w-4.5 h-4.5" />
+                                    </span>
                                 </div>
                             </div>
-                            <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                                {roles.length}
-                            </div>
-                        </motion.div>
-
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
-                        >
-                            <div className="flex justify-between items-start">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-blue-500">System Roles</span>
-                                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center transition-all group-hover:scale-110">
-                                    <Lock className="w-6 h-6" />
-                                </div>
-                            </div>
-                            <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                                {roles.filter(r => r.is_system).length}
-                            </div>
-                        </motion.div>
-
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                            className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
-                        >
-                            <div className="flex justify-between items-start">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-emerald-500">Total Permissions</span>
-                                <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center transition-all group-hover:scale-110">
-                                    <ShieldCheck className="w-6 h-6" />
-                                </div>
-                            </div>
-                            <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                                {permissions.length}
-                            </div>
-                        </motion.div>
-
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
-                        >
-                            <div className="flex justify-between items-start">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-amber-500">Security Health</span>
-                                <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center transition-all group-hover:scale-110">
-                                    <ShieldHalf className="w-6 h-6" />
-                                </div>
-                            </div>
-                            <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                                100%
-                            </div>
-                        </motion.div>
+                        ))}
                     </div>
 
                     {/* Search and Filter Bar */}
                     <div className="flex flex-col md:flex-row items-center gap-4">
                         <div className="relative flex-1 group">
-                            <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors">search</span>
+                            <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                             <input 
                                 type="text"
                                 placeholder="Search roles by name or description..."
-                                className="w-full h-12 pl-12 pr-6 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50 transition-all font-medium text-sm"
+                                className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                                 value={roleSearch}
                                 onChange={(e) => setRoleSearch(e.target.value)}
                             />
                         </div>
-                        <div className="flex items-center gap-2 bg-white border border-slate-200 p-1.5 rounded-xl shadow-sm">
-                            <span className="material-symbols-rounded text-slate-400 pl-2">filter_list</span>
+                        <div className="flex items-center gap-2 bg-white border border-[#E1E4E8] px-3 h-10 rounded-[10px] shadow-sm">
+                            <span className="material-symbols-rounded text-[#9AA3AF] text-[20px]">filter_list</span>
                             <select 
-                                className="bg-transparent text-[10px] font-black uppercase tracking-widest text-slate-600 outline-none pr-4 cursor-pointer"
+                                className="bg-transparent text-[12px] font-bold text-[#374151] outline-none pr-2 cursor-pointer"
                                 value={typeFilter}
                                 onChange={(e) => setTypeFilter(e.target.value)}
                             >
@@ -285,104 +238,97 @@ function EnterpriseRolesContent() {
                         exit={{ opacity: 0, scale: 0.98 }}
                         className="max-w-6xl mx-auto pb-20"
                     >
-                        <div className="bg-white p-10 rounded-xl border border-slate-200/60 shadow-2xl relative overflow-hidden">
-                            <div className="flex items-center justify-between mb-12">
-                                <div className="flex items-center gap-6">
-                                    <div className="w-16 h-16 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg">
-                                        <Settings2 className="w-8 h-8" />
+                        <div className="bg-white p-6 sm:p-8 rounded-[14px] border border-[#E8EAED] shadow-sm relative overflow-hidden">
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center border border-[#DAD7F6]/80 shrink-0">
+                                        <span className="material-symbols-rounded text-[22px] text-[#5B53E0]">security</span>
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-none">{selectedRole ? "Configure Role" : "Create New Role"}</h2>
-                                        <p className="text-sm text-slate-400 font-medium mt-2">{selectedRole ? "Modify existing access permissions" : "Set up a new organizational access profile"}</p>
+                                        <h2 className="text-[17px] font-bold text-[#15171C] tracking-tight leading-tight">{selectedRole ? "Configure Role" : "Create New Role"}</h2>
+                                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{selectedRole ? "Modify existing access permissions" : "Set up a new organizational access profile"}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setIsEditing(false)} className="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center">
-                                    <X className="w-6 h-6" />
+                                <button onClick={() => setIsEditing(false)} className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#6B6F76] hover:bg-[#F4F5F7] hover:text-[#374151] transition-all flex items-center justify-center shadow-sm">
+                                    <X className="w-4 h-4" />
                                 </button>
                             </div>
 
                             <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                                <div className="lg:col-span-4 space-y-6">
-                                    <div className="space-y-2 group">
-                                        <label htmlFor="role-name" className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors ml-1">Role Name</label>
+                                <div className="lg:col-span-4 space-y-5">
+                                    <div className="space-y-1.5 group">
+                                        <label htmlFor="role-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Name</label>
                                         <input
                                             id="role-name"
-                                            className="w-full h-14 bg-slate-50 border border-slate-100 px-6 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner"
+                                            className="w-full h-10 bg-white border border-[#E1E4E8] px-3.5 rounded-[10px] text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                             placeholder="e.g. Finance Lead"
                                             value={name} onChange={e => setName(e.target.value)} required
                                             disabled={selectedRole?.is_system}
                                         />
                                     </div>
-                                    <div className="space-y-2 group">
-                                        <label htmlFor="role-description" className="text-xs font-bold text-slate-500 group-focus-within:text-indigo-600 transition-colors ml-1">Role Description</label>
+                                    <div className="space-y-1.5 group">
+                                        <label htmlFor="role-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Description</label>
                                         <textarea
                                             id="role-description"
-                                            className="w-full bg-slate-50 border border-slate-100 p-6 rounded-xl text-sm font-medium text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all resize-none min-h-[160px] shadow-inner leading-relaxed"
+                                            className="w-full bg-white border border-[#E1E4E8] p-3.5 rounded-[10px] text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none min-h-[120px] leading-relaxed"
                                             placeholder="What can this role do?"
                                             value={description} onChange={e => setDescription(e.target.value)}
                                         />
                                     </div>
 
-                                    <div className="pt-8">
+                                    <div className="pt-4">
                                         <button
                                             type="submit"
                                             disabled={isLoading}
-                                            className="w-full bg-slate-900 text-white h-16 rounded-xl font-bold text-sm tracking-wide hover:bg-indigo-600 transition-all active:scale-[0.98] shadow-2xl flex items-center justify-center gap-4 group overflow-hidden"
+                                            className="w-full bg-[#5B53E0] text-white h-10 rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all flex items-center justify-center gap-2 disabled:opacity-40"
                                         >
-                                            {isLoading ? <RefreshCcw className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />}
+                                            {isLoading ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                                             {isLoading ? "Saving..." : (selectedRole ? "Update Permissions" : "Create Role")}
                                         </button>
                                     </div>
                                 </div>
 
-                                <div className="lg:col-span-8 space-y-8">
-                                    <div className="flex justify-between items-center px-2">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
-                                            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Permissions & Actions</h3>
+                                <div className="lg:col-span-8 space-y-6">
+                                    <div className="flex justify-between items-center px-1">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-1.5 h-4 bg-[#5B53E0] rounded-full" />
+                                            <h3 className="text-[15px] font-bold text-[#15171C] tracking-tight">Permissions & Actions</h3>
                                         </div>
-                                        <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-100/50">{selectedPermIds.length} actions selected</span>
+                                        <span className="text-[11.5px] font-bold text-[#5B53E0] bg-[#ECEBFB] px-3 py-1 rounded-full border border-[#DAD7F6]/60">{selectedPermIds.length} actions selected</span>
                                     </div>
                                     
                                     <div className="relative group">
-                                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5 group-focus-within:text-indigo-500 transition-colors" />
+                                        <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                                         <input 
                                             type="text"
                                             placeholder="Search by module or resource..."
-                                            className="w-full h-14 bg-slate-50 border border-slate-100 pl-14 pr-6 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner"
+                                            className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                                             value={permSearch}
                                             onChange={(e) => setPermSearch(e.target.value)}
                                         />
                                     </div>
                                     
-                                    <div className="bg-slate-50 rounded-xl border border-slate-200/50 p-6 max-h-[600px] overflow-y-auto custom-scrollbar space-y-10">
+                                    <div className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-4 max-h-[450px] overflow-y-auto custom-scrollbar space-y-6">
                                         {Object.keys(groupedPermissions).map(module => (
-                                            <div key={module} className="space-y-6">
-                                                <div className="flex items-center gap-3">
-                                                    <LayoutGrid className="w-4 h-4 text-slate-400" />
-                                                    <h4 className="text-xs font-bold text-slate-400  ">{module} Module</h4>
+                                            <div key={module} className="space-y-3">
+                                                <div className="flex items-center gap-2">
+                                                    <LayoutGrid className="w-3.5 h-3.5 text-[#8A929E]" />
+                                                    <h4 className="text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider">{module} Module</h4>
                                                 </div>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                                     {groupedPermissions[module].map((perm: Permission) => (
-                                                        <div
+                                                        <button
                                                             key={perm.id}
-                                                            role="button"
-                                                            tabIndex={0}
+                                                            type="button"
                                                             onClick={() => togglePermission(perm.id)}
-                                                            onKeyDown={(e) => {
-                                                                if (e.key === 'Enter' || e.key === ' ') {
-                                                                    e.preventDefault();
-                                                                    togglePermission(perm.id);
-                                                                }
-                                                            }}
-                                                            className={`p-5 rounded-xl border cursor-pointer transition-all flex items-center justify-between group/node ${selectedPermIds.includes(perm.id) ? 'bg-slate-900 border-slate-900 text-white shadow-xl' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'}`}
+                                                            className={`p-3.5 rounded-[10px] border text-left transition-all flex items-center justify-between group/node ${selectedPermIds.includes(perm.id) ? 'bg-[#15171C] border-[#15171C] text-white shadow-sm' : 'bg-white text-[#374151] border-[#E1E4E8] hover:border-[#9AA3AF]'}`}
                                                         >
-                                                            <div className="space-y-1">
-                                                                <p className="text-[10px] font-bold   opacity-50">{perm.resource}</p>
-                                                                <p className="text-xs font-bold capitalize">{perm.action}</p>
+                                                            <div className="space-y-0.5">
+                                                                <p className="text-[10px] font-bold opacity-50 uppercase tracking-wider">{perm.resource}</p>
+                                                                <p className="text-[12.5px] font-bold capitalize">{perm.action}</p>
                                                             </div>
-                                                            <div className={`w-2 h-2 rounded-full transition-all ${selectedPermIds.includes(perm.id) ? 'bg-indigo-400 ring-4 ring-indigo-400/20' : 'bg-slate-200 group-hover/node:bg-slate-300'}`} />
-                                                        </div>
+                                                            <div className={`w-2 h-2 rounded-full transition-all shrink-0 ml-2 ${selectedPermIds.includes(perm.id) ? 'bg-[#5B53E0] ring-4 ring-[#5B53E0]/20' : 'bg-[#E1E4E8] group-hover/node:bg-[#DAD7F6]'}`} />
+                                                        </button>
                                                     ))}
                                                 </div>
                                             </div>
@@ -396,19 +342,19 @@ function EnterpriseRolesContent() {
                     <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden"
+                        className="bg-white rounded-[14px] border border-[#E8EAED] shadow-sm overflow-hidden"
                     >
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-50/50 border-b border-slate-200">
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Role Name</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Description</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Permissions</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Type</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Actions</th>
+                                <tr className="bg-[#F4F5F7] border-b border-[#E8EAED]">
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Role Name</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Description</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Permissions</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Type</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-[#E8EAED]">
                                 {roles.filter(role => {
                                     const matchesSearch = (role.name + (role.description || "")).toLowerCase().includes(roleSearch.toLowerCase());
                                     const matchesType = typeFilter === "ALL" || (typeFilter === "SYSTEM" ? role.is_system : !role.is_system);
@@ -416,54 +362,52 @@ function EnterpriseRolesContent() {
                                 }).map((role) => (
                                     <motion.tr 
                                         key={role.id}
-                                        className="hover:bg-slate-50/50 transition-colors group"
+                                        className="hover:bg-[#F4F5F7]/30 transition-colors group"
                                     >
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center gap-4">
-                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${role.is_system ? 'bg-slate-900 border-slate-900 text-white' : 'bg-violet-50 border-violet-100 text-[#7C3AED]'}`}>
-                                                    <Shield className="w-5 h-5 stroke-[1.5]" />
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-9 h-9 rounded-[8px] flex items-center justify-center border ${role.is_system ? 'bg-[#15171C] border-[#15171C] text-white' : 'bg-[#ECEBFB] border-[#DAD7F6]/80 text-[#5B53E0]'}`}>
+                                                    <Shield className="w-4.5 h-4.5 stroke-[1.5]" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-slate-900">{role.name}</p>
-                                                    <p className="text-[10px] text-slate-400 font-medium tracking-tight">Policy ID: {role.id.slice(0, 8)}</p>
+                                                    <p className="text-[13.5px] font-bold text-[#15171C]">{role.name}</p>
+                                                    <p className={`text-[10px] text-[#8A929E] mt-0.5 ${jetbrainsMono.className}`}>ID: {role.id.slice(0, 8)}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-5">
-                                            <p className="text-sm text-slate-500 font-medium line-clamp-1 max-w-xs">{role.description || "Standard policy."}</p>
+                                        <td className="px-6 py-4">
+                                            <p className="text-[13px] text-[#6B6F76] line-clamp-1 max-w-xs">{role.description || "Standard policy."}</p>
                                         </td>
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center gap-2">
-                                                <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold">
-                                                    {role.permissions?.length || 0} Actions
-                                                </span>
-                                            </div>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-2 py-0.5 bg-[#E8EAED]/60 text-[#6B6F76] rounded-[6px] text-[10px] font-bold border border-[#E8EAED] ${jetbrainsMono.className}`}>
+                                                {role.permissions?.length || 0} Actions
+                                            </span>
                                         </td>
-                                        <td className="px-8 py-5">
+                                        <td className="px-6 py-4">
                                             {role.is_system ? (
-                                                <span className="px-2.5 py-1 bg-slate-900 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 w-fit">
-                                                    <Lock className="w-3 h-3" />
+                                                <span className="px-2 py-0.5 bg-[#15171C] text-white rounded-[6px] text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit border border-[#15171C]">
+                                                    <Lock className="w-2.5 h-2.5" />
                                                     System
                                                 </span>
                                             ) : (
-                                                <span className="px-2.5 py-1 bg-violet-50 text-[#7C3AED] border border-violet-100 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 w-fit">
-                                                    <Settings2 className="w-3 h-3" />
+                                                <span className="px-2 py-0.5 bg-[#ECEBFB] text-[#5B53E0] border border-[#DAD7F6]/60 rounded-[6px] text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit">
+                                                    <Settings2 className="w-2.5 h-2.5" />
                                                     Custom
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center justify-end gap-2">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center justify-end gap-1.5">
                                                 <button 
                                                     onClick={() => handleOpenEdit(role)}
-                                                    className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-[#7C3AED] hover:bg-violet-50 rounded-xl transition-all"
+                                                    className="w-8 h-8 flex items-center justify-center text-[#8A929E] hover:text-[#5B53E0] hover:bg-[#ECEBFB] rounded-[8px] border border-transparent hover:border-[#DAD7F6]/60 transition-all"
                                                 >
                                                     <span className="material-symbols-rounded text-lg">edit</span>
                                                 </button>
                                                 {!role.is_system && (
                                                     <button 
                                                         onClick={() => handleDelete(role.id)}
-                                                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                                                        className="w-8 h-8 flex items-center justify-center text-[#8A929E] hover:text-rose-500 hover:bg-rose-50 rounded-[8px] border border-transparent hover:border-rose-100 transition-all"
                                                     >
                                                         <span className="material-symbols-rounded text-lg">delete</span>
                                                     </button>
@@ -488,3 +432,4 @@ export default function EnterpriseRolesPage() {
         </Suspense>
     );
 }
+
