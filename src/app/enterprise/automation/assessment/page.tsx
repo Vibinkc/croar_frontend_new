@@ -1,4 +1,27 @@
 "use client";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Brain,
+  Plus,
+  Zap,
+  CheckCircle2,
+  Clock,
+  ChevronRight,
+  Search,
+  Briefcase,
+  ChevronDown,
+  Trash2,
+  Edit2,
+  X,
+  Save,
+  Eye,
+  EyeOff,
+  Sparkles,
+  AlertCircle,
+  Check,
+  Circle
+} from "lucide-react";
+
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -609,191 +632,216 @@ export default function AssessmentAutomationPage() {
   // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 animate-in fade-in duration-500">
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
-            toast.type === "success" ? "bg-[#7C3AED] text-white" : "bg-red-500 text-white"
+          className={`fixed top-5 right-5 z-[200] flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
+            toast.type === "success" ? "bg-[#5B53E0] text-white" : "bg-rose-600 text-white"
           }`}
         >
-          <span className="material-symbols-rounded text-base">
-            {toast.type === "success" ? "check_circle" : "error"}
-          </span>
+          {toast.type === "success" ? (
+            <CheckCircle2 className="w-5 h-5 text-white" />
+          ) : (
+            <AlertCircle className="w-5 h-5 text-white" />
+          )}
           {String(toast.msg)}
         </div>
       )}
 
-      {/* Header */}
-      <div className="mb-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
-              <span className="material-symbols-rounded text-[#7C3AED] text-2xl">psychology</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Assessment Automation</h1>
-              <p className="text-slate-500 text-[13px] font-medium mt-1">
-                Generate AI-powered assessments for candidates reaching specific hiring rounds.
-              </p>
-            </div>
-          </div>
+      {/* Header (sticky) */}
+      <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
+            <span className="w-8 h-8 rounded-[8px] bg-[#FEF3E2] flex items-center justify-center shrink-0 border border-[#FCE1BF]/80">
+              <Brain className="w-4 h-4 text-[#D97706]" />
+            </span>
+            Assessment Automation
+          </h1>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Generate AI-powered assessments for candidates reaching specific hiring rounds.</p>
+        </div>
+        <div className="flex items-center gap-2.5 shrink-0">
+          {canAccess("automation:moderate") && (
+            <button
+              onClick={openCreate}
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              New Automation
+            </button>
+          )}
+        </div>
+      </header>
 
-          <div className="flex items-center gap-3">
-             {canAccess("automation:moderate") && (
-                <button
-                  onClick={openCreate}
-                  className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
-                >
-                  <span className="material-symbols-rounded text-lg">add</span>
-                  {"NEW AUTOMATION"}
-                </button>
-              )}
-          </div>
+      {/* Stats Section */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        {[
+          { label: "Total Rules", value: automations.length, Icon: Briefcase, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+          { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#059669)", glow: "rgba(5,150,105,0.25)" },
+          { label: "Ready Assessments", value: automations.filter(a => a.generated_questions?.length).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+          { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, Icon: Brain, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" }
+        ].map((s, i) => (
+          <motion.div
+            key={s.label}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.06 }}
+            className="relative bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[14px] p-5 overflow-hidden transition-all duration-300 hover:shadow-sm"
+          >
+            <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
+            <div className="flex items-start justify-between">
+              <div>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
+                <div className="text-[30px] font-semibold tracking-[-1px] text-[#15171C] mt-2">{s.value}</div>
+              </div>
+              <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                <s.Icon className="w-[18px] h-[18px]" />
+              </span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Filter Bar */}
+      <div className="flex flex-col md:flex-row md:items-center gap-3">
+        <div className="flex-1 relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by topic, round name, or criteria..."
+            className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-11 pr-4 text-sm font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+          />
         </div>
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { label: "Total Rules", value: automations.length, icon: "rule", color: "indigo" },
-            { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, icon: "bolt", color: "emerald" },
-            { label: "Ready Assessments", value: automations.filter(a => a.generated_questions?.length).length, icon: "task_alt", color: "amber" },
-            { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, icon: "double_arrow", color: "purple" }
-          ].map((stat, i) => (
-            <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${
-                  stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
-                  stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
-                  stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
-                  'bg-purple-50 text-purple-600'
-                }`}>
-                  <span className="material-symbols-rounded text-xl">{stat.icon}</span>
-                </div>
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
-              </div>
-              <p className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{stat.value}</p>
-              <p className="text-[11px] font-bold text-slate-400 capitalize">{stat.label}</p>
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          {(searchQuery || selectedJobId) && (
+            <button
+              onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
+              className="text-[12.5px] font-bold text-[#5B53E0] hover:underline px-2 tracking-tight"
+            >
+              Reset Filters
+            </button>
+          )}
+          <div className="relative w-full md:w-64">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF]">
+              <Briefcase className="w-4 h-4" />
             </div>
-          ))}
-        </div>
-
-        {/* Interaction Bar */}
-        <div className="mt-8 flex flex-col md:flex-row items-center gap-4">
-           <div className="flex-1 relative w-full">
-              <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-              <input 
-                type="text"
-                placeholder="Search by topic, round name, or criteria..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-11 bg-white border border-slate-200 rounded-lg pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
-              />
-           </div>
-
-           <div className="flex items-center gap-3 w-full md:w-auto">
-              {(searchQuery || selectedJobId) && (
-                <button 
-                  onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
-                  className="text-[11px] font-black text-[#7C3AED] hover:underline px-2 tracking-tight"
-                >
-                  RESET FILTERS
-                </button>
-              )}
-              <div className="relative w-full md:w-64">
-                <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">work</span>
-                <select
-                  value={selectedJobId}
-                  onChange={(e) => setSelectedJobId(e.target.value)}
-                  className="w-full h-11 border border-slate-200 rounded-lg pl-10 pr-10 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
-                >
-                  <option value="">All Job Requirements</option>
-                  {jobs.map((j) => (
-                    <option key={j.id} value={j.id}>{j.title}</option>
-                  ))}
-                </select>
-                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">expand_more</span>
-              </div>
-           </div>
+            <select
+              value={selectedJobId}
+              onChange={(e) => setSelectedJobId(e.target.value)}
+              className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-9 pr-9 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+            >
+              <option value="">All Job Requirements</option>
+              {jobs.map((j) => (
+                <option key={j.id} value={j.id}>{j.title}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          </div>
         </div>
       </div>
 
       {/* List */}
       {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
+        <div className="flex justify-center py-20 bg-white border border-[#E8EAED] rounded-[14px] min-h-[300px] items-center">
+          <div className="w-8 h-8 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredAutomations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-lg bg-[#7C3AED]/5 flex items-center justify-center mb-4">
-            <span className="material-symbols-rounded text-[#7C3AED] text-4xl">psychology</span>
+        <div className="flex flex-col items-center justify-center p-20 text-center bg-white border border-[#E8EAED] rounded-[14px] min-h-[300px]">
+          <div className="relative mb-6">
+            <div className="absolute -inset-3 rounded-full bg-[#FEF3E2] blur-2xl" />
+            <div className="relative w-16 h-16 rounded-[18px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#FBBF24,#D97706)", boxShadow: "0 12px 30px rgba(217,119,6,0.3)" }}>
+              <Brain className="w-7 h-7" />
+            </div>
           </div>
-          <p className="text-slate-700 font-bold text-lg">{searchQuery ? 'No matching assessments' : 'No assessment automations yet'}</p>
-          <p className="text-slate-400 text-sm mt-1 max-w-xs">
-            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Generate your first assessment automation using the "NEW AUTOMATION" button.'}
+          <h3 className="text-[18px] font-bold text-[#15171C] mb-1.5">
+            {searchQuery ? 'No matching assessments' : 'No assessment automations yet'}
+          </h3>
+          <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-6">
+            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Generate your first assessment automation using the "New Automation" button.'}
           </p>
+          {searchQuery && (
+            <button
+              onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
+              className="px-6 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all"
+            >
+              Clear Search Filters
+            </button>
+          )}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[14px] border border-[#E8EAED] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100">
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Rule Configuration</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Job & Assessment Topic</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Readiness</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Trigger/Schedule</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Rule Configuration</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Job & Assessment Topic</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Readiness</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Trigger/Schedule</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Status</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em] text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-[#E8EAED]">
                 {filteredAutomations.map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50/50 transition-all group">
+                  <tr key={a.id} className="hover:bg-[#F7F8FA]/50 transition-all group">
                     <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-black uppercase tracking-tight">
+                          <span className="px-2 py-0.5 bg-[#ECEBFB] text-[#5B53E0] rounded-[6px] text-[10px] font-bold uppercase tracking-wide">
                             Round {a.stage_index}
                           </span>
                           {a.stage_name && (
-                            <span className="text-[10px] font-bold text-slate-400 tracking-tight">{a.stage_name}</span>
+                            <span className="text-[12px] font-semibold text-[#8A929E] tracking-tight">{a.stage_name}</span>
                           )}
                         </div>
-                        <p className="text-xs font-bold text-slate-800 line-clamp-1">
-                          <span className="text-slate-400 font-medium italic mr-1">If:</span>
+                        <p className="text-sm font-semibold text-[#374151] line-clamp-1">
+                          <span className="text-[#8A929E] font-normal italic mr-1">If:</span>
                           {a.criteria}
                         </p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                          <span className="material-symbols-rounded text-sm text-slate-400">work</span>
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
+                          <Briefcase className="w-3.5 h-3.5 text-[#8A929E]" />
                           {jobTitle(a.job_requirement_id)}
                         </div>
-                        <div className="flex items-center gap-1.5 text-[10px] font-black text-[#7C3AED] uppercase">
-                          <span className="material-symbols-rounded text-sm">psychology</span>
+                        <div className="flex items-center gap-1.5 text-[11.5px] font-bold text-[#D97706] uppercase">
+                          <Brain className="w-3.5 h-3.5 text-[#D97706]" />
                           {a.type}: {a.topic}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase ${a.generated_questions ? "text-emerald-500" : "text-amber-500"}`}>
-                        <span className="material-symbols-rounded text-sm">{a.generated_questions ? "check_circle" : "warning"}</span>
-                        {a.generated_questions ? `${a.generated_questions.length} QUESTIONS READY` : "NO QUESTIONS YET"}
-                      </div>
+                      {a.generated_questions && a.generated_questions.length > 0 ? (
+                        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#0E8A6E]">
+                          <CheckCircle2 className="w-4 h-4 text-[#0E8A6E]" />
+                          <span>{a.generated_questions.length} Questions Ready</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#D97706]">
+                          <AlertCircle className="w-4 h-4 text-[#D97706]" />
+                          <span>No questions yet</span>
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                          <span className="material-symbols-rounded text-sm text-slate-400">{a.is_immediate ? "flash_on" : "schedule"}</span>
-                          {a.is_immediate ? "Immediate" : new Date(a.send_at!.endsWith('Z') ? a.send_at! : a.send_at! + 'Z').toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
+                          {a.is_immediate ? <Zap className="w-3.5 h-3.5 text-[#D97706]" /> : <Clock className="w-3.5 h-3.5 text-[#8A929E]" />}
+                          <span>
+                            {a.is_immediate 
+                              ? "Immediate" 
+                              : new Date(a.send_at!.endsWith('Z') ? a.send_at! : a.send_at! + 'Z').toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                          </span>
                         </div>
                         {a.auto_move && (
-                          <div className="flex items-center gap-1 text-[9px] font-black text-indigo-500 uppercase">
-                            <span className="material-symbols-rounded text-xs">double_arrow</span>
-                            {"Auto-Move Active"}
+                          <div className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wide">
+                            Auto-Move Active
                           </div>
                         )}
                       </div>
@@ -802,7 +850,7 @@ export default function AssessmentAutomationPage() {
                       <button
                         onClick={() => handleToggle(a)}
                         disabled={togglingId === a.id || !canAccess("automation:moderate")}
-                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       >
                         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                       </button>
@@ -813,13 +861,17 @@ export default function AssessmentAutomationPage() {
                           <button
                             onClick={() => handleGenerateQuestions(a.id)}
                             disabled={generatingId === a.id}
-                            className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all ${a.generated_questions ? "bg-slate-50 text-slate-400 hover:bg-[#7C3AED]/10 hover:text-[#7C3AED]" : "bg-[#7C3AED]/10 text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white shadow-lg shadow-indigo-100"}`}
+                            className={`w-8 h-8 flex items-center justify-center rounded-[8px] transition-all ${
+                              a.generated_questions 
+                                ? "bg-[#F4F5F7] text-[#8A929E] hover:bg-[#ECEBFB] hover:text-[#5B53E0]" 
+                                : "bg-[#FEF3E2] text-[#D97706] hover:bg-[#D97706] hover:text-white"
+                            }`}
                             title={a.generated_questions ? "Regenerate AI Questions" : "Generate AI Questions"}
                           >
                             {generatingId === a.id ? (
-                              <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                             ) : (
-                              <span className="material-symbols-rounded text-lg">auto_awesome</span>
+                              <Sparkles className="w-4 h-4" />
                             )}
                           </button>
                         )}
@@ -829,17 +881,25 @@ export default function AssessmentAutomationPage() {
                               setPreviewingAutomation(a);
                               setOriginalQuestions(a.generated_questions);
                             }}
-                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm shadow-emerald-100"
+                            className="w-8 h-8 flex items-center justify-center rounded-[8px] bg-[#E3F4EF] text-[#0E8A6E] hover:bg-[#0E8A6E] hover:text-white transition-all"
                             title="Preview Questions"
                           >
-                            <span className="material-symbols-rounded text-lg">visibility</span>
+                            <Eye className="w-4 h-4" />
                           </button>
                         )}
-                        <button onClick={() => openEdit(a)} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-all">
-                          <span className="material-symbols-rounded text-lg">edit</span>
+                        <button
+                          onClick={() => openEdit(a)}
+                          className="w-8 h-8 flex items-center justify-center rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#1F2127] transition-all"
+                          title="Edit Rule"
+                        >
+                          <Edit2 className="w-4 h-4" />
                         </button>
-                        <button onClick={() => { setAutomationToDelete(a); setIsDeleteModalOpen(true); }} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-all">
-                          <span className="material-symbols-rounded text-lg">delete</span>
+                        <button
+                          onClick={() => { setAutomationToDelete(a); setIsDeleteModalOpen(true); }}
+                          className="w-8 h-8 flex items-center justify-center rounded-[8px] hover:bg-rose-50 text-[#8A929E] hover:text-rose-600 transition-all"
+                          title="Delete Rule"
+                        >
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -849,7 +909,6 @@ export default function AssessmentAutomationPage() {
             </table>
           </div>
         </div>
-
       )}
 
       {/* ── Side Panel Drawer ─────────────────────────────────────────────────── */}
@@ -859,41 +918,41 @@ export default function AssessmentAutomationPage() {
             role="button"
             tabIndex={0}
             aria-label="Close panel"
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300"
+            className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm transition-opacity duration-300"
             onClick={closeModal}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { closeModal(); } }}
           />
           <div className="relative w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col animate-slide-in-right">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-white shrink-0">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#7C3AED]/10 flex items-center justify-center">
-                  <span className="material-symbols-rounded text-[#7C3AED] text-2xl">psychology</span>
+            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED] bg-white shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[8px] bg-[#FEF3E2] flex items-center justify-center border border-[#FCE1BF]/80 shadow-sm">
+                  <Brain className="w-5 h-5 text-[#D97706]" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-slate-900">
+                  <h2 className="text-[16px] font-bold text-[#15171C]">
                     {editingId ? "Edit Automation" : "Create Automation"}
                   </h2>
-                  <p className="text-[10px] font-bold text-slate-400  ">Configure AI Assessment</p>
+                  <p className="text-[12px] text-[#8A929E] font-medium">Configure AI Assessment</p>
                 </div>
               </div>
               <button 
                 onClick={closeModal} 
-                className="w-10 h-10 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all"
+                className="w-8 h-8 rounded-[8px] hover:bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] hover:text-[#1F2127] transition-all"
               >
-                <span className="material-symbols-rounded text-xl">close</span>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex border-b border-slate-100 bg-white px-6">
+            <div className="flex border-b border-[#E8EAED] bg-white px-6">
               <button 
                 onClick={() => setActiveTab('config')} 
-                className={`px-6 py-3 text-[10px] font-black   transition-all border-b-2 ${activeTab === 'config' ? 'border-[#7C3AED] text-[#7C3AED]' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                className={`px-5 py-3 text-[13px] font-semibold transition-all border-b-2 -mb-px ${activeTab === 'config' ? 'border-[#5B53E0] text-[#5B53E0]' : 'border-transparent text-[#8A929E] hover:text-[#4B5563]'}`}
               >
                 1. Configuration
               </button>
               <button 
                 onClick={() => setActiveTab('questions')} 
-                className={`px-6 py-3 text-[10px] font-black   transition-all border-b-2 ${activeTab === 'questions' ? 'border-[#7C3AED] text-[#7C3AED]' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                className={`px-5 py-3 text-[13px] font-semibold transition-all border-b-2 -mb-px ${activeTab === 'questions' ? 'border-[#5B53E0] text-[#5B53E0]' : 'border-transparent text-[#8A929E] hover:text-[#4B5563]'}`}
               >
                 2. Questions {form.generated_questions?.length ? `(${form.generated_questions.length})` : ''}
               </button>
@@ -901,15 +960,15 @@ export default function AssessmentAutomationPage() {
 
             <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
               {activeTab === 'config' ? (
-                <div className="p-8 space-y-6 max-w-xl mx-auto">
+                <div className="p-6 space-y-5 max-w-xl mx-auto">
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="assessment-target-job" className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Target Job <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-target-job" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">Target Job <span className="text-red-400">*</span></label>
                         <select
                           id="assessment-target-job"
                           value={form.job_requirement_id}
                           onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value }))}
-                          className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
+                          className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all cursor-pointer"
                         >
                           <option value="">Select a job...</option>
                           {jobs.map((j) => (
@@ -919,13 +978,13 @@ export default function AssessmentAutomationPage() {
                       </div>
 
                       <div>
-                        <label htmlFor="assessment-hiring-round" className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Hiring Round <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-hiring-round" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">Hiring Round <span className="text-red-400">*</span></label>
                         {jobRounds.length > 0 ? (
                           <select
                             id="assessment-hiring-round"
                             onChange={handleRoundSelect}
                             defaultValue={editingId ? `${form.stage_index}|${form.stage_name || ''}` : ""}
-                            className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
+                            className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all cursor-pointer"
                           >
                             <option value="">Pick a round...</option>
                             {jobRounds.map((r, i) => (
@@ -934,18 +993,19 @@ export default function AssessmentAutomationPage() {
                           </select>
                         ) : (
                           <div className="grid grid-cols-2 gap-3">
-                            <input id="assessment-hiring-round" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder="Index" className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold" />
-                            <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder="Name" className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold" />
+                            <input id="assessment-hiring-round" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder="Index" className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all" />
+                            <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder="Name" className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all" />
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="bg-[#7C3AED]/5 rounded-lg p-5 space-y-4 border border-[#7C3AED]/10 mb-4">
+                    <div className="bg-[#FEF3E2]/40 rounded-[12px] p-5 space-y-4 border border-[#FCE1BF] mb-4">
                       <div>
-                        <label htmlFor="assessment-template-select" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Use Assessment Template (Optional)</label>
+                        <label htmlFor="assessment-template-select" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Use Assessment Template (Optional)</label>
                         <select
                           id="assessment-template-select"
+                          value={form.template_id || ""}
                           onChange={(e) => {
                             const templateId = e.target.value;
                             if (templateId) {
@@ -962,28 +1022,33 @@ export default function AssessmentAutomationPage() {
                                       generated_questions: templ.generated_questions || null
                                   }));
                                }
+                            } else {
+                               setForm(f => ({
+                                  ...f,
+                                  template_id: "",
+                               }));
                             }
                           }}
-                          className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm transition-all cursor-pointer"
+                          className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all cursor-pointer"
                         >
                           <option value="">-- Custom Assessment Configuration --</option>
                           {assessmentTemplates.map(t => (
                               <option key={t.id} value={t.id}>{t.name} ({t.type} - {t.topic})</option>
                           ))}
                         </select>
-                        <p className="text-[10px] text-slate-400 mt-1.5 ml-1 ">Selecting a template will auto-fill the assessment configuration and questions.</p>
+                        <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1 leading-relaxed">Selecting a template will auto-fill the assessment configuration and questions.</p>
                       </div>
                     </div>
 
-                    <div className="bg-[#7C3AED]/5 rounded-lg p-5 space-y-4 border border-[#7C3AED]/10">
+                    <div className="bg-[#FEF3E2]/20 rounded-[12px] p-5 space-y-4 border border-[#FCE1BF]/50">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="assessment-type" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Type <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-type" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Type <span className="text-red-400">*</span></label>
                           <select
                             id="assessment-type"
                             value={form.type}
                             onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as AssessmentType }))}
-                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
+                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all cursor-pointer"
                           >
                             {Object.values(AssessmentType).map((p) => (
                               <option key={p} value={p}>{p}</option>
@@ -991,13 +1056,13 @@ export default function AssessmentAutomationPage() {
                           </select>
                         </div>
                         <div>
-                          <label htmlFor="assessment-topic" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Topic <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-topic" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Topic <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-topic"
                             type="text"
                             value={form.topic}
                             onChange={(e) => setForm((f) => ({ ...f, topic: e.target.value }))}
-                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
+                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all"
                             placeholder="e.g. SQL, Python..."
                           />
                         </div>
@@ -1005,7 +1070,7 @@ export default function AssessmentAutomationPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="assessment-question-count" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Questions <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-question-count" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Questions <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-question-count"
                             type="number"
@@ -1013,18 +1078,18 @@ export default function AssessmentAutomationPage() {
                             max={50}
                             value={form.question_count}
                             onChange={(e) => setForm((f) => ({ ...f, question_count: Number(e.target.value) }))}
-                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
+                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all"
                           />
                         </div>
                         <div>
-                          <label htmlFor="assessment-test-duration" className="block text-[10px] font-black text-[#7C3AED]   mb-1.5 ml-1">Time (min) <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-test-duration" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Time (min) <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-test-duration"
                             type="number"
                             min={5}
                             value={form.test_duration}
                             onChange={(e) => setForm((f) => ({ ...f, test_duration: Number(e.target.value) }))}
-                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 shadow-sm"
+                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all"
                           />
                         </div>
                       </div>
@@ -1032,92 +1097,91 @@ export default function AssessmentAutomationPage() {
 
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="assessment-criteria" className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Trigger Criteria <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-criteria" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">Trigger Criteria <span className="text-red-400">*</span></label>
                         <textarea
                           id="assessment-criteria"
                           rows={2}
                           value={form.criteria} 
                           onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} 
-                          className="w-full bg-slate-50 border-none rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#7C3AED]/20 resize-none h-20" 
+                          className="w-full bg-white border border-[#E1E4E8] rounded-[12px] px-4 py-3 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all resize-none h-20" 
                           placeholder="e.g. 'Match score > 80' or 'Background includes React'..." 
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="assessment-email-template" className="block text-[10px] font-black text-slate-400   mb-1.5 ml-1">Email Template <span className="text-red-400">*</span></label>
-                        <select
-                          id="assessment-email-template"
-                          value={form.email_template_id}
-                          onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
-                          className={`w-full bg-slate-50 border rounded-lg px-4 py-3 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/20 appearance-none cursor-pointer ${!form.email_template_id ? 'border-amber-200' : 'border-none'}`}
-                        >
-                          <option value="">Select Email Template...</option>
-                          {emailTemplates.map((t) => (
-                            <option key={t.id} value={t.id}>{t.name}</option>
-                          ))}
-                        </select>
+                        <label htmlFor="assessment-email-template" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">Email Template <span className="text-red-400">*</span></label>
+                        <div className="relative">
+                          <select
+                            id="assessment-email-template"
+                            value={form.email_template_id || ""}
+                            onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
+                            className={`w-full bg-white border rounded-[12px] h-11 pl-4 pr-9 text-[13.5px] font-semibold text-[#374151] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all ${!form.email_template_id ? 'border-amber-300' : 'border-[#E1E4E8]'}`}
+                          >
+                            <option value="">Select Email Template...</option>
+                            {emailTemplates.map((t) => (
+                              <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                          </select>
+                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
-                      <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-lg transition-all hover:border-slate-200">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center">
-                            <span className={`material-symbols-rounded text-lg ${form.is_enabled ? "text-[#7C3AED]" : "text-slate-400"}`}>
-                              {form.is_enabled ? "check_circle" : "pause_circle"}
-                            </span>
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#E8EAED]">
+                      <div className="flex items-center justify-between p-3.5 bg-[#F7F8FA] border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]/60">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-[8px] bg-white border border-[#E8EAED] flex items-center justify-center shadow-sm">
+                            <CheckCircle2 className={`w-4 h-4 ${form.is_enabled ? "text-[#5B53E0]" : "text-[#8A929E]"}`} />
                           </div>
                           <div>
-                            <p className="text-[10px] font-black text-slate-800  ">Active</p>
+                            <p className="text-[11px] font-bold text-[#1F2127]">Active</p>
                           </div>
                         </div>
                         <button
                           onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))}
-                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"}`}
+                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
                         >
                           <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${form.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-lg transition-all hover:border-slate-200">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center">
-                            <span className={`material-symbols-rounded text-lg ${form.auto_move ? "text-[#7C3AED]" : "text-slate-400"}`}>
-                              double_arrow
-                            </span>
+                      <div className="flex items-center justify-between p-3.5 bg-[#F7F8FA] border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]/60">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-[8px] bg-white border border-[#E8EAED] flex items-center justify-center shadow-sm">
+                            <ChevronRight className={`w-4 h-4 ${form.auto_move ? "text-[#5B53E0]" : "text-[#8A929E]"}`} />
                           </div>
                           <div>
-                            <p className="text-[10px] font-black text-slate-800  ">Auto-Move</p>
+                            <p className="text-[11px] font-bold text-[#1F2127]">Auto-Move</p>
                           </div>
                         </div>
                         <button
                           onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))}
-                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#7C3AED]" : "bg-slate-200"}`}
+                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
                         >
                           <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${form.auto_move ? "translate-x-4" : "translate-x-0"}`} />
                         </button>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-slate-100">
+                    <div className="pt-4 border-t border-[#E8EAED]">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                          <span className="material-symbols-rounded text-slate-400 text-lg">schedule</span>
-                          <span className="text-sm font-black text-slate-700   text-[10px]">Scheduling</span>
+                          <Clock className="text-[#8A929E] w-4 h-4" />
+                          <span className="text-[12px] font-bold text-[#374151]">Scheduling</span>
                         </div>
-                        <div className="flex bg-slate-100 p-1 rounded-lg">
+                        <div className="flex bg-[#F4F5F7] p-1 rounded-[10px]">
                           <button
                             onClick={() => setForm(f => ({ ...f, is_immediate: true }))}
-                            className={`px-3 py-1 rounded-lg text-[10px] font-black   transition-all ${
-                              form.is_immediate ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-400 hover:text-slate-600"
+                            className={`px-3.5 py-1.5 rounded-[8px] text-[12px] font-bold transition-all ${
+                              form.is_immediate ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#8A929E] hover:text-[#4B5563]"
                             }`}
                           >
                             Immediate
                           </button>
                           <button
                             onClick={() => setForm(f => ({ ...f, is_immediate: false }))}
-                            className={`px-3 py-1 rounded-lg text-[10px] font-black   transition-all ${
-                              !form.is_immediate ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-400 hover:text-slate-600"
+                            className={`px-3.5 py-1.5 rounded-[8px] text-[12px] font-bold transition-all ${
+                              !form.is_immediate ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#8A929E] hover:text-[#4B5563]"
                             }`}
                           >
                             Scheduled
@@ -1126,144 +1190,144 @@ export default function AssessmentAutomationPage() {
                       </div>
 
                       {!form.is_immediate && (
-                        <div className="bg-amber-50 rounded-lg p-4 border border-amber-100 animate-in fade-in slide-in-from-top-2 duration-300">
-                          <label htmlFor="assessment-send-at" className="block text-[10px] font-black text-amber-600   mb-1.5 ml-1">Send At (Date & Time)</label>
+                        <div className="bg-[#FEF3E2]/50 rounded-[12px] p-4 border border-[#FCE1BF] animate-in fade-in slide-in-from-top-2 duration-300">
+                          <label htmlFor="assessment-send-at" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Send At (Date & Time)</label>
                           <input
                             id="assessment-send-at"
                             type="datetime-local"
                             value={form.send_at}
                             onChange={(e) => setForm(f => ({ ...f, send_at: e.target.value }))}
-                            className="w-full bg-white border-none rounded-lg px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-amber-200 shadow-sm"
+                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] shadow-sm"
                           />
-                          <p className="mt-2 text-[10px] text-amber-500 font-medium leading-relaxed">
+                          <p className="mt-2 text-[11.5px] text-[#D97706] font-medium leading-relaxed">
                             The assessment invitation will be queued and sent at the specified time if the criteria are met.
                           </p>
                         </div>
                       )}
 
-                      <div className="pt-4 mt-6 border-t border-slate-100">
+                      <div className="pt-4 mt-6 border-t border-[#E8EAED]">
                         <button
                           onClick={handleGeneratePreview}
                           disabled={saving || !form.job_requirement_id || !form.topic}
-                          className="w-full py-4 bg-[#7C3AED] text-white rounded-lg text-[10px] font-black   hover:bg-[#6d28d9] shadow-xl shadow-[#7C3AED]/20 active:scale-95 transition-all flex items-center justify-center gap-3 border border-[#7C3AED]/20 disabled:opacity-50"
+                          className="w-full h-12 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[12px] text-[13.5px] font-bold shadow-[0_6px_16px_rgba(91,83,224,0.25)] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                           {saving ? (
-                            <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
-                            <span className="material-symbols-rounded text-xl">auto_awesome</span>
+                            <Sparkles className="w-4 h-4" />
                           )}
                           {form.generated_questions?.length ? "Regenerate Draft with AI" : "Draft Questions with AI"}
                         </button>
-                        <p className="text-[10px] text-slate-400 mt-3 text-center font-bold   opacity-60">Step 1: Configure & Draft</p>
+                        <p className="text-[11px] text-[#8A929E] mt-3 text-center font-semibold opacity-60">Step 1: Configure & Draft</p>
                       </div>
                     </div>
                 </div>
               ) : (
-                <div className="p-8 space-y-8 max-w-3xl mx-auto">
+                <div className="p-6 space-y-6 max-w-3xl mx-auto">
                    <div className="flex items-center justify-between mb-2">
                        <div>
-                         <h3 className="text-sm font-black text-slate-900  ">Assessment Preview</h3>
-                         <p className="text-[10px] font-bold text-slate-400  ">Review and edit the AI-generated questions</p>
+                         <h3 className="text-[14px] font-bold text-[#15171C]">Assessment Preview</h3>
+                         <p className="text-[12px] text-[#8A929E] font-medium">Review and edit the AI-generated questions</p>
                        </div>
                        <button 
                          onClick={handleAddQuestion}
-                         className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-[10px] font-black   text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
+                         className="flex items-center gap-2 h-9 px-3 bg-white border border-[#E1E4E8] rounded-[10px] text-[12px] font-semibold text-[#5B53E0] hover:bg-[#F4F5F7] hover:border-[#DAD7F6] transition-all shadow-sm"
                        >
-                         <span className="material-symbols-rounded text-sm">add</span>
-                         {"Add Question"}
+                         <Plus className="w-4 h-4" />
+                         <span>Add Question</span>
                        </button>
                     </div>
 
                     {form.generated_questions && form.generated_questions.length > 0 ? (
-                      <div className="space-y-6">
-                        {form.generated_questions.map((q: Question, idx: number) => (
-                          <div key={q.id} className="bg-white border border-slate-100 rounded-lg p-6 shadow-sm hover:shadow-md transition-all relative group">
-                            <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#7C3AED] text-white rounded-lg flex items-center justify-center font-black  shadow-lg">#{idx + 1}</div>
-                            
-                            <button 
-                              onClick={() => handleDeleteQuestion(q.id)}
-                              className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-red-50 text-red-500 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white"
-                            >
-                              <span className="material-symbols-rounded text-base">delete</span>
-                            </button>
+                       <div className="space-y-6">
+                         {form.generated_questions.map((q: Question, idx: number) => (
+                           <div key={q.id} className="bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[12px] p-6 shadow-sm hover:shadow-md transition-all relative group">
+                             <div className="absolute -top-3 -left-3 w-7 h-7 bg-[#5B53E0] text-white rounded-[8px] flex items-center justify-center text-[12px] font-bold shadow-sm">#{idx + 1}</div>
+                             
+                             <button 
+                               onClick={() => handleDeleteQuestion(q.id)}
+                               className="absolute top-4 right-4 w-8 h-8 rounded-[8px] bg-rose-50 text-rose-600 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-rose-600 hover:text-white"
+                             >
+                               <Trash2 className="w-4 h-4" />
+                             </button>
 
-                            <div className="space-y-4">
-                              {q.type === 'APTITUDE' ? (
-                                <>
-                                  <div>
-                                    <label htmlFor={`cfg-q-question-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Question Text (Aptitude)</label>
-                                    <textarea
-                                      id={`cfg-q-question-${q.id}`}
-                                      value={q.question}
-                                      onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                                      className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-20 resize-none"
-                                    />
-                                  </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {(q.options || []).map((opt: string, oi: number) => (
-                                      <div key={oi} className="relative">
-                                        <input 
-                                          value={opt} 
-                                          onChange={(e) => {
-                                            const newOpts = [...(q.options ?? [])];
-                                            newOpts[oi] = e.target.value;
-                                            handleUpdateQuestion(q.id, "options", newOpts);
-                                          }}
-                                          className={`w-full bg-slate-50 border-2 rounded-lg pl-12 pr-4 py-3 text-xs font-bold transition-all ${q.correct_answer === opt ? "border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]" : "border-transparent text-slate-600"}`}
-                                        />
-                                        <button 
-                                          onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
-                                          className={`absolute left-3 top-3 w-6 h-6 rounded-lg flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
-                                        >
-                                          <span className="material-symbols-rounded text-sm">{q.correct_answer === opt ? "check" : "circle"}</span>
-                                        </button>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  <div>
-                                    <label htmlFor={`cfg-q-title-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Title</label>
-                                    <input
-                                      id={`cfg-q-title-${q.id}`}
-                                      type="text"
-                                      value={q.title}
-                                      onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
-                                      className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-black text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all"
-                                    />
-                                  </div>
-                                  <div>
-                                    <label htmlFor={`cfg-q-description-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Description</label>
-                                    <textarea
-                                      id={`cfg-q-description-${q.id}`}
-                                      value={q.description}
-                                      onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
-                                      className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
-                                    />
-                                  </div>
-                                  <div>
-                                    <label htmlFor={`cfg-q-statement-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block ml-1">Problem Statement</label>
-                                    <textarea
-                                      id={`cfg-q-statement-${q.id}`}
-                                      value={q.problem_statement}
-                                      onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
-                                      className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-32 resize-none"
-                                    />
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                             <div className="space-y-4">
+                               {q.type === 'APTITUDE' ? (
+                                 <>
+                                   <div>
+                                     <label htmlFor={`cfg-q-question-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Question Text (Aptitude)</label>
+                                     <textarea
+                                       id={`cfg-q-question-${q.id}`}
+                                       value={q.question || ""}
+                                       onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
+                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2.5 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-20 resize-none"
+                                     />
+                                   </div>
+                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                     {(q.options || []).map((opt: string, oi: number) => (
+                                       <div key={oi} className="relative">
+                                         <input 
+                                           value={opt} 
+                                           onChange={(e) => {
+                                             const newOpts = [...(q.options ?? [])];
+                                             newOpts[oi] = e.target.value;
+                                             handleUpdateQuestion(q.id, "options", newOpts);
+                                           }}
+                                           className={`w-full bg-[#F7F8FA] border-2 rounded-[10px] pl-12 pr-4 py-2.5 text-xs font-semibold transition-all ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" : "border-transparent text-[#4B5563]"}`}
+                                         />
+                                         <button 
+                                           onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
+                                           className={`absolute left-3 top-2.5 w-6 h-6 rounded-[6px] flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#5B53E0] text-white" : "bg-[#E1E4E8] text-[#8A929E] hover:bg-[#D4D7DC]"}`}
+                                         >
+                                           {q.correct_answer === opt ? <Check className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+                                         </button>
+                                       </div>
+                                     ))}
+                                   </div>
+                                 </>
+                               ) : (
+                                 <>
+                                   <div>
+                                     <label htmlFor={`cfg-q-title-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Title</label>
+                                     <input
+                                       id={`cfg-q-title-${q.id}`}
+                                       type="text"
+                                       value={q.title || ""}
+                                       onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
+                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all"
+                                     />
+                                   </div>
+                                   <div>
+                                     <label htmlFor={`cfg-q-description-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Description</label>
+                                     <textarea
+                                       id={`cfg-q-description-${q.id}`}
+                                       value={q.description || ""}
+                                       onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
+                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
+                                     />
+                                   </div>
+                                   <div>
+                                     <label htmlFor={`cfg-q-statement-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Statement</label>
+                                     <textarea
+                                       id={`cfg-q-statement-${q.id}`}
+                                       value={q.problem_statement || ""}
+                                       onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
+                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-xs font-mono text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
+                                     />
+                                   </div>
+                                 </>
+                               )}
+                             </div>
+                           </div>
+                         ))}
+                       </div>
                     ) : (
                       <div className="h-full flex flex-col items-center justify-center p-12 text-center opacity-60">
-                        <div className="w-20 h-20 rounded-lg bg-white flex items-center justify-center mb-6 shadow-sm">
-                          <span className="material-symbols-rounded text-slate-300 text-4xl">visibility_off</span>
+                        <div className="w-16 h-16 rounded-[14px] bg-white border border-[#E8EAED] flex items-center justify-center mb-4 shadow-sm">
+                          <EyeOff className="text-[#8A929E] w-6 h-6" />
                         </div>
-                        <h3 className="text-sm font-black text-slate-400  ">No Preview Yet</h3>
-                        <p className="max-w-[240px] text-[10px] font-bold text-slate-300   leading-relaxed mt-2">
+                        <h3 className="text-[14px] font-bold text-[#15171C]">No Preview Yet</h3>
+                        <p className="max-w-[240px] text-[12px] text-[#8A929E] font-medium leading-relaxed mt-1.5">
                           Click &quot;Generate AI Questions&quot; in the configuration tab to see AI-generated questions here.
                         </p>
                       </div>
@@ -1272,11 +1336,11 @@ export default function AssessmentAutomationPage() {
               )}
             </div>
 
-            <div className="px-6 py-6 border-t border-slate-100 bg-white shrink-0">
+            <div className="px-6 py-4 border-t border-[#E8EAED] bg-white shrink-0">
               <div className="flex items-center gap-3">
                 <button 
                   onClick={closeModal} 
-                  className="flex-1 px-4 py-3 rounded-lg text-sm font-black   text-slate-400 hover:bg-slate-50 transition-all border border-slate-100"
+                  className="flex-1 h-11 bg-white border border-[#E1E4E8] rounded-[10px] text-[13.5px] font-semibold text-[#4B5563] hover:bg-[#F4F5F7] transition-all"
                 >
                   Cancel
                 </button>
@@ -1284,28 +1348,40 @@ export default function AssessmentAutomationPage() {
                   <button
                     onClick={handleUpdate}
                     disabled={saving || !hasFormChanged}
-                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-lg text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                    className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50"
                   >
-                    {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">save</span>}
-                    Save Changes
+                    {saving ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    <span>Save Changes</span>
                   </button>
                 ) : form.generated_questions ? (
                   <button
                     onClick={handleFinalCreate}
                     disabled={saving}
-                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-lg text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
+                    className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50"
                   >
-                    {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">rocket_launch</span>}
-                    Confirm & Create
+                    {saving ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Zap className="w-4 h-4" />
+                    )}
+                    <span>Confirm & Create</span>
                   </button>
                 ) : (
                   <button
                     onClick={handleGeneratePreview}
                     disabled={saving || !form.job_requirement_id || !form.topic || !form.email_template_id}
-                    className="flex-[2] flex items-center justify-center gap-2 px-6 py-3 bg-[#7C3AED] text-white rounded-lg text-sm font-black   hover:bg-[#6d28d9] shadow-lg shadow-[#7C3AED]/20 active:scale-95 transition-all disabled:opacity-50"
+                    className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50"
                   >
-                    {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">auto_awesome</span>}
-                    Generate Draft with AI
+                    {saving ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4" />
+                    )}
+                    <span>Generate Draft with AI</span>
                   </button>
                 )}
               </div>
@@ -1313,55 +1389,59 @@ export default function AssessmentAutomationPage() {
           </div>
         </div>
       )}
+
       {/* ── Question Editor Modal ────────────────────────────────────────── */}
       {previewingAutomation && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[160] flex items-center justify-center p-4">
           <div
             role="button"
             tabIndex={0}
             aria-label="Close preview"
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
-            onClick={() => setPreviewingAutomation(null)}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setPreviewingAutomation(null); } }}
+            className="absolute inset-0 bg-[#15171C]/50 backdrop-blur-sm transition-opacity duration-300"
+            onClick={() => { setPreviewingAutomation(null); setOriginalQuestions(null); }}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setPreviewingAutomation(null); setOriginalQuestions(null); } }}
           />
-          <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-white shrink-0">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#7C3AED]/10 flex items-center justify-center">
-                  <span className="material-symbols-rounded text-[#7C3AED] text-2xl">visibility</span>
+          <div className="relative bg-white rounded-[16px] shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED] bg-white shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[8px] bg-[#FEF3E2] flex items-center justify-center border border-[#FCE1BF]/80 shadow-sm">
+                  <Brain className="w-5 h-5 text-[#D97706]" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-slate-900">Preview & Edit Questions</h2>
-                  <p className="text-[10px] font-bold text-slate-400  ">{previewingAutomation.topic} • {previewingAutomation.type}</p>
+                  <h2 className="text-[16px] font-bold text-[#15171C]">Preview & Edit Questions</h2>
+                  <p className="text-[12px] text-[#8A929E] font-medium">{previewingAutomation.topic} • {previewingAutomation.type}</p>
                 </div>
               </div>
-              <button onClick={() => { setPreviewingAutomation(null); setOriginalQuestions(null); }} className="w-10 h-10 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all">
-                <span className="material-symbols-rounded text-xl">close</span>
+              <button 
+                onClick={() => { setPreviewingAutomation(null); setOriginalQuestions(null); }} 
+                className="w-8 h-8 rounded-[8px] hover:bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] hover:text-[#1F2127] transition-all"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-8 space-y-8 overflow-y-auto pr-4 custom-scrollbar flex-1 bg-slate-50/30">
+            <div className="p-6 space-y-6 overflow-y-auto pr-4 custom-scrollbar flex-1 bg-slate-50/30">
               {(previewingAutomation.generated_questions || []).map((q: Question, idx: number) => (
-                <div key={q.id} className="bg-white border border-slate-100 rounded-lg p-6 shadow-sm hover:shadow-md transition-all relative group">
-                  <div className="absolute -top-3 -left-3 w-8 h-8 bg-[#7C3AED] text-white rounded-lg flex items-center justify-center font-black  shadow-lg">#{idx + 1}</div>
+                <div key={q.id} className="bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[12px] p-6 shadow-sm hover:shadow-md transition-all relative group">
+                  <div className="absolute -top-3 -left-3 w-7 h-7 bg-[#5B53E0] text-white rounded-[8px] flex items-center justify-center text-[12px] font-bold shadow-sm">#{idx + 1}</div>
                   
                   <button 
                     onClick={() => handleDeleteQuestion(q.id)}
-                    className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-red-50 text-red-500 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-red-500 hover:text-white"
+                    className="absolute top-4 right-4 w-8 h-8 rounded-[8px] bg-rose-50 text-rose-600 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-rose-600 hover:text-white"
                   >
-                    <span className="material-symbols-rounded text-base">delete</span>
+                    <Trash2 className="w-4 h-4" />
                   </button>
 
                   <div className="space-y-4">
                     {q.type === 'APTITUDE' ? (
                       <>
                         <div>
-                          <label htmlFor={`prev-q-question-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block">Question Text (Aptitude)</label>
+                          <label htmlFor={`prev-q-question-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Question Text (Aptitude)</label>
                           <textarea
                             id={`prev-q-question-${q.id}`}
-                            value={q.question}
+                            value={q.question || ""}
                             onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                            className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-20 resize-none"
+                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2.5 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-20 resize-none"
                           />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1374,13 +1454,13 @@ export default function AssessmentAutomationPage() {
                                   newOpts[oi] = e.target.value;
                                   handleUpdateQuestion(q.id, "options", newOpts);
                                 }}
-                                className={`w-full bg-slate-50 border-2 rounded-lg pl-12 pr-4 py-3 text-xs font-bold transition-all ${q.correct_answer === opt ? "border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]" : "border-transparent text-slate-600"}`}
+                                className={`w-full bg-[#F7F8FA] border-2 rounded-[10px] pl-12 pr-4 py-2.5 text-xs font-semibold transition-all ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" : "border-transparent text-[#4B5563]"}`}
                               />
                               <button 
                                 onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
-                                className={`absolute left-3 top-3 w-6 h-6 rounded-lg flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#7C3AED] text-white" : "bg-slate-200 text-slate-400 hover:bg-slate-300"}`}
+                                className={`absolute left-3 top-2.5 w-6 h-6 rounded-[6px] flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#5B53E0] text-white" : "bg-[#E1E4E8] text-[#8A929E] hover:bg-[#D4D7DC]"}`}
                               >
-                                <span className="material-symbols-rounded text-sm">{q.correct_answer === opt ? "check" : "circle"}</span>
+                                {q.correct_answer === opt ? <Check className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
                               </button>
                             </div>
                           ))}
@@ -1389,22 +1469,31 @@ export default function AssessmentAutomationPage() {
                     ) : (
                       <>
                         <div>
-                          <label htmlFor={`prev-q-title-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block">Problem Title</label>
+                          <label htmlFor={`prev-q-title-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Title</label>
                           <input
                             id={`prev-q-title-${q.id}`}
                             type="text"
-                            value={q.title}
+                            value={q.title || ""}
                             onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
-                            className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-sm font-black text-slate-800 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all"
+                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all"
                           />
                         </div>
                         <div>
-                          <label htmlFor={`prev-q-statement-${q.id}`} className="text-[10px] font-black text-slate-400   mb-1.5 block">Problem Statement</label>
+                          <label htmlFor={`prev-q-description-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Description</label>
+                          <textarea
+                            id={`prev-q-description-${q.id}`}
+                            value={q.description || ""}
+                            onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
+                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor={`prev-q-statement-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Statement</label>
                           <textarea
                             id={`prev-q-statement-${q.id}`}
-                            value={q.problem_statement}
+                            value={q.problem_statement || ""}
                             onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
-                            className="w-full bg-slate-50 border-none rounded-lg px-5 py-3 text-xs font-mono text-slate-700 focus:ring-4 focus:ring-[#7C3AED]/10 transition-all h-40 resize-none"
+                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-xs font-mono text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
                           />
                         </div>
                       </>
@@ -1415,15 +1504,15 @@ export default function AssessmentAutomationPage() {
 
               <button 
                 onClick={handleAddQuestion}
-                className="w-full py-4 border-2 border-dashed border-slate-200 rounded-lg text-slate-400 font-bold hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 border-2 border-dashed border-[#E1E4E8] rounded-[12px] text-[#8A929E] font-semibold hover:border-[#D97706] hover:text-[#D97706] hover:bg-[#FEF3E2]/30 transition-all flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-rounded">add_circle</span>
-                {"Add Manual Question"}
+                <Plus className="w-4 h-4" />
+                <span>Add Manual Question</span>
               </button>
             </div>
 
-            <div className="px-8 py-6 border-t border-slate-100 bg-white flex items-center justify-between shrink-0">
-              <p className="text-[10px] font-black text-slate-400  ">
+            <div className="px-6 py-5 border-t border-[#E8EAED] bg-white flex items-center justify-between shrink-0">
+              <p className="text-[12.5px] font-bold text-[#8A929E]">
                 {(previewingAutomation.generated_questions || []).length} Total Questions
               </p>
               <div className="flex gap-3">
@@ -1433,23 +1522,28 @@ export default function AssessmentAutomationPage() {
                     setIsPreviewingNew(false);
                     setOriginalQuestions(null);
                   }} 
-                  className="px-6 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:bg-slate-100 transition-all"
+                  className="px-4 py-2 border border-[#E1E4E8] bg-white hover:bg-[#F4F5F7] text-[13px] font-semibold text-[#374151] rounded-[9px] transition-all"
                 >
                   Discard
                 </button>
                 <button 
                    onClick={isPreviewingNew ? handleFinalCreate : handleSaveQuestions}
                    disabled={saving || (!isPreviewingNew && !hasQuestionsChanged)}
-                   className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-lg text-sm font-black   hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 flex items-center gap-2 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                   className="px-6 h-11 bg-[#5B53E0] text-white rounded-[9px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-rounded text-base">{isPreviewingNew ? "rocket_launch" : "cloud_done"}</span>}
-                  {isPreviewingNew ? "Confirm & Create Automation" : "Save Question Set"}
+                  {saving ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
+                  <span>{isPreviewingNew ? "Confirm & Create Automation" : "Save Question Set"}</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
+
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => {

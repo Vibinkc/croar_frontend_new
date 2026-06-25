@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     Search, 
     Sparkles, 
@@ -123,6 +123,7 @@ export default function ProfileSourcingChatPage() {
     const [loading, setLoading] = useState(false);
     const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const itemsPerPage = 10;
 
@@ -573,126 +574,89 @@ export default function ProfileSourcingChatPage() {
     }, [currentPage]);
 
     return (
-        <div className="bg-white p-4 md:p-8 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500">
+        <div className="flex flex-col h-full bg-[#F4F5F7] overflow-hidden animate-in fade-in duration-500">
             <style dangerouslySetInnerHTML={{ __html: `
                 main {
                     background-color: white !important;
                 }
             ` }} />
 
-            <div className="flex gap-6 h-[calc(100vh-180px)] min-h-[650px]">
-                {/* Chat History Sidebar */}
-                <div className="w-72 shrink-0 bg-slate-50/50 rounded-2xl border border-slate-100 flex flex-col overflow-hidden shadow-sm">
-                    <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-                        <h3 className="text-sm font-black text-slate-800 flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-indigo-500" /> History
-                        </h3>
-                        <button 
-                            onClick={createNewChat}
-                            className="p-2 hover:bg-white hover:shadow-sm rounded-xl text-indigo-600 transition-all"
-                            title="New Chat"
-                        >
-                            <Edit className="w-4 h-4" />
-                        </button>
-                    </div>
-                    
-                    <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
-                        {sessions.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-10 text-center px-4">
-                                <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-300 mb-3">
-                                    <Bookmark className="w-5 h-5" />
-                                </div>
-                                <p className="text-[10px] font-bold text-slate-400">No chat history yet</p>
-                            </div>
-                        ) : (
-                            sessions.map((session) => (
-                                <div
-                                    key={session.session_id}
-                                    role="button"
-                                    tabIndex={0}
-                                    onClick={() => loadSession(session.session_id)}
-                                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { loadSession(session.session_id); } }}
-                                    className={`group relative p-4 rounded-2xl border transition-all cursor-pointer ${
-                                        currentSessionId === session.session_id
-                                            ? "bg-white border-indigo-100 shadow-md shadow-indigo-500/5 ring-1 ring-indigo-500/10"
-                                            : "bg-transparent border-transparent hover:bg-white hover:border-slate-100"
-                                    }`}
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${currentSessionId === session.session_id ? 'bg-indigo-500 animate-pulse' : 'bg-slate-200'}`} />
-                                        <div className="flex-1 min-w-0">
-                                            <p className={`text-[11px] font-bold truncate ${currentSessionId === session.session_id ? 'text-slate-900' : 'text-slate-600'}`}>
-                                                {session.title || "Untitled Search"}
-                                            </p>
-                                            <p className="text-[9px] font-medium text-slate-400 mt-0.5">
-                                                {new Date(session.updated_at).toLocaleDateString()}
-                                            </p>
-                                        </div>
-                                        <button 
-                                            onClick={(e) => deleteSession(e, session.session_id)}
-                                            title="Delete History"
-                                            className="p-1.5 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition-all"
-                                        >
-                                            <Trash2 className="w-3.5 h-3.5" />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                    
-                    <div className="p-4 bg-white/50 border-t border-slate-100">
-                        <div className="bg-indigo-50/50 rounded-2xl p-3 border border-indigo-100/50">
-                            <p className="text-[10px] font-bold text-indigo-700 flex items-center gap-2">
-                                <Zap className="w-3 h-3" /> Pro Sourcing Active
-                            </p>
-                        </div>
-                    </div>
+            {/* Page header */}
+            <header className="px-6 py-4 bg-white border-b border-[#E8EAED] flex items-center justify-between gap-3 shrink-0">
+                <div>
+                    <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
+                        AI Sourcing
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>Beta</span>
+                    </h1>
+                    <p className="text-[13.5px] text-[#8A929E] mt-0.5">Search across 30+ public sources to discover the best talent</p>
                 </div>
+                <div className="flex items-center gap-3 shrink-0">
+                    <button
+                        onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+                        className={`inline-flex items-center gap-2 h-11 px-4 rounded-[10px] text-[13.5px] font-semibold transition-all border shadow-sm ${
+                            isHistoryOpen 
+                                ? "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]" 
+                                : "bg-white text-[#4B5563] border-[#E8EAED] hover:bg-[#F7F8FA]"
+                        }`}
+                    >
+                        <Bookmark className="w-4 h-4" /> History
+                    </button>
+                    <button
+                        onClick={createNewChat}
+                        className="inline-flex items-center gap-2 h-11 px-4 bg-[#5B53E0] text-white rounded-[10px] text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors shrink-0"
+                    >
+                        <Edit className="w-4 h-4" /> New Search
+                    </button>
+                </div>
+            </header>
+
+            {/* Workspace */}
+            <div className="flex-1 min-h-0 p-4 md:p-6">
+            <div className="flex gap-6 h-full max-w-[1600px] mx-auto w-full">
 
                 {/* Main Chat Area */}
-                <div className="flex-1 bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/5 flex flex-col relative overflow-hidden">
+                <div className="flex-1 flex flex-col relative overflow-hidden">
 
                 {/* Subtle tech grid tile background */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M0 30 L30 30 L30 0 M0 0 L0 30' fill='none' stroke='%237C3AED' stroke-width='1'/%3E%3C/svg%3E")` }} />
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M0 30 L30 30 L30 0 M0 0 L0 30' fill='none' stroke='%235B53E0' stroke-width='1'/%3E%3C/svg%3E")` }} />
                 
                 {searchPhase === "initial" && (
                     <div className="space-y-6 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500 flex-1 flex flex-col justify-center relative z-10">
                         <div className="text-center max-w-xl mx-auto py-4">
-                            <h2 className="text-2xl font-bold text-center text-slate-800 mb-6">Hey VIBIN, who are you looking for?</h2>
+                            <h2 className="text-[26px] font-extrabold text-center text-[#15171C] tracking-[-0.5px] mb-8">Hey VIBIN, who are you looking for?</h2>
                         </div>
 
                         <div className="flex items-center justify-center gap-3 mb-4 flex-wrap">
                             <button 
                                 onClick={() => setIsJobModalOpen(true)} 
-                                className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition-all shadow-sm"
+                                className="flex items-center gap-2 px-4 py-2 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
-                                <FileText className="w-3.5 h-3.5 text-red-500" /> Job Description
+                                <FileText className="w-3.5 h-3.5 text-[#EF4444]" /> Job Description
                             </button>
                             <button 
                                 onClick={() => setIsBooleanModalOpen(true)} 
-                                className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition-all shadow-sm"
+                                className="flex items-center gap-2 px-4 py-2 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
-                                <span className="text-green-600 font-bold text-xs">Σ</span> Boolean
+                                <span className="text-[#15803D] font-bold text-xs">Σ</span> Boolean
                             </button>
                             <button 
                                 onClick={() => setIsCompetitorModalOpen(true)} 
-                                className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition-all shadow-sm"
+                                className="flex items-center gap-2 px-4 py-2 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
-                                <Target className="w-3.5 h-3.5 text-indigo-500" /> Skill Mapping
+                                <Target className="w-3.5 h-3.5 text-[#5B53E0]" /> Skill Mapping
                             </button>
 
                             <button 
                                 onClick={() => setIsFilterModalOpen(true)} 
-                                className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition-all shadow-sm"
+                                className="flex items-center gap-2 px-4 py-2 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
-                                <Wrench className="w-3.5 h-3.5 text-slate-400" /> Select Manually
+                                <Wrench className="w-3.5 h-3.5 text-[#8A929E]" /> Select Manually
                             </button>
                         </div>
 
                         <form onSubmit={(e) => { e.preventDefault(); if (query.trim()) handleChatSend(query); }} className="max-w-3xl mx-auto w-full pt-2">
                             {showSuggestions && (
-                                <div className="bg-white border border-slate-100 rounded-3xl p-3 shadow-md mb-4 space-y-1 animate-in fade-in duration-500">
+                                <div className="bg-white border border-[#E8EAED] rounded-[14px] p-3 shadow-md mb-4 space-y-1 animate-in fade-in duration-500">
                                     {[
                                         "Software Engineers in SF working at Series B companies, skilled in Python and Node.js",
                                         "Marketing Manager in Europe, German-speaking, working at a large enterprise",
@@ -704,7 +668,7 @@ export default function ProfileSourcingChatPage() {
                                             key={rIdx}
                                             type="button"
                                             onClick={() => { setQuery(rec); handleChatSend(rec); setShowSuggestions(false); }}
-                                            className={`w-full text-left px-4 py-3 hover:bg-slate-50 text-xs font-bold text-slate-700 rounded-xl transition-all ${query === rec ? 'bg-slate-50 border border-slate-100/50' : ''}`}
+                                            className={`w-full text-left px-4 py-2.5 hover:bg-[#F4F5F7] text-[13px] font-semibold text-[#374151] rounded-[9px] transition-colors ${query === rec ? 'bg-[#F4F5F7]' : ''}`}
                                         >
                                             {rec}
                                         </button>
@@ -712,7 +676,7 @@ export default function ProfileSourcingChatPage() {
                                 </div>
                             )}
 
-                            <div className="relative flex flex-col bg-white border-2 border-[#7C3AED] rounded-[30px] px-6 py-5 shadow-lg animate-in fade-in duration-300">
+                            <div className="relative flex flex-col bg-white border border-[#E1E4E8] focus-within:border-[#5B53E0] focus-within:ring-2 focus-within:ring-[#5B53E0]/20 rounded-[14px] px-5 py-4 shadow-sm transition-all duration-300 animate-in fade-in duration-300">
                                 <input 
                                     type="text"
                                     value={query}
@@ -720,21 +684,21 @@ export default function ProfileSourcingChatPage() {
                                     onFocus={() => setShowSuggestions(true)}
                                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                                     placeholder="Software Engineers with 5+ yrs of experience at fintech companies in the Bay Area"
-                                    className="w-full bg-transparent border-none focus:outline-none text-base font-semibold text-slate-700 placeholder:text-slate-300/80 mb-4"
+                                    className="w-full bg-transparent border-none focus:outline-none text-[15px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] mb-4"
                                 />
-                                <div className="flex items-center justify-between mt-2">
+                                <div className="flex items-center justify-between mt-1">
                                     <button
                                         type="button"
                                         onClick={toggleSpeechRecognition}
-                                        className={`p-2 rounded-full border transition-all flex items-center justify-center ${isListening ? 'bg-red-50 text-red-600 border-red-200 animate-pulse' : 'bg-slate-50 border-slate-100 text-slate-400 hover:text-slate-600 shadow-sm'}`}
+                                        className={`w-9 h-9 rounded-[9px] border transition-all flex items-center justify-center ${isListening ? 'bg-[#FDECEC] border-[#FDECEC] text-[#C0383C] animate-pulse' : 'bg-[#F4F5F7] border-[#E8EAED] text-[#9AA3AF] hover:text-[#374151] hover:bg-[#E8EAED] shadow-sm'}`}
                                     >
                                         {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                                     </button>
                                     
-                                    <button 
+                                    <button
                                         type="submit"
                                         disabled={!query.trim()}
-                                        className="p-3 bg-slate-50 hover:bg-slate-100 text-[#7C3AED] border border-slate-100 rounded-full font-black transition-all flex items-center justify-center shadow-md disabled:opacity-50"
+                                        className="w-9 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] font-semibold transition-all flex items-center justify-center shadow-[0_4px_12px_rgba(91,83,224,0.24)] disabled:opacity-40 disabled:shadow-none"
                                     >
                                         <ArrowRight className="w-4 h-4" />
                                     </button>
@@ -747,36 +711,36 @@ export default function ProfileSourcingChatPage() {
                 {searchPhase === "filters" && (
                     <div className="space-y-6 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500 flex-1 flex flex-col justify-center">
                         <div className="flex justify-end">
-                            <div className="bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white p-5 rounded-2xl text-sm font-bold shadow-xl shadow-indigo-100 max-w-xl flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center font-black text-xs text-white">ME</div>
+                            <div className="bg-gradient-to-r from-[#5B53E0] to-[#4A43C9] text-white p-5 rounded-2xl text-sm font-bold shadow-xl shadow-indigo-100 max-w-xl flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center font-bold text-xs text-white">ME</div>
                                 <p>{query}</p>
                             </div>
                         </div>
 
                         <div className="flex justify-start gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center text-white shrink-0 font-black text-xs shadow-lg border border-slate-700">AI</div>
-                            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/10 max-w-2xl w-full space-y-4">
-                                <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                                    <span className="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse shadow-glow" />
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1B1D24] to-[#0E1014] flex items-center justify-center text-white shrink-0 font-bold text-xs shadow-lg border border-[#2A2D35]">AI</div>
+                            <div className="bg-white p-6 rounded-3xl border border-[#E8EAED] shadow-xl shadow-slate-200/10 max-w-2xl w-full space-y-4">
+                                <p className="text-sm font-bold text-[#374151] flex items-center gap-2">
+                                    <span className="w-2.5 h-2.5 bg-[#5B53E0] rounded-full animate-pulse shadow-glow" />
                                     {" "}<span>I've mapped out targeted search rules matching your directives:</span>
                                 </p>
 
-                                <div className="flex flex-wrap items-center gap-2 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 shadow-inner">
-                                    <span className="px-3 py-1.5 bg-purple-50 text-purple-700 font-bold text-xs rounded-xl border border-purple-100 shadow-sm flex items-center gap-1.5">
+                                <div className="flex flex-wrap items-center gap-2 p-4 bg-[#F7F8FA]/80 rounded-2xl border border-[#E8EAED]/50 shadow-inner">
+                                    <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
                                         <Briefcase className="w-3.5 h-3.5" /> {extractedFilters.title}
                                     </span>
-                                    <span className="text-slate-300 font-black text-xs">&middot;</span>
-                                    <span className="px-3 py-1.5 bg-purple-50 text-purple-700 font-bold text-xs rounded-xl border border-purple-100 shadow-sm flex items-center gap-1.5">
+                                    <span className="text-[#C4C9D0] font-bold text-xs">&middot;</span>
+                                    <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
                                         <MapPin className="w-3.5 h-3.5" /> {extractedFilters.location}
                                     </span>
-                                    <span className="text-slate-300 font-black text-xs">&middot;</span>
-                                    <span className="px-3 py-1.5 bg-purple-50 text-purple-700 font-bold text-xs rounded-xl border border-purple-100 shadow-sm flex items-center gap-1.5">
+                                    <span className="text-[#C4C9D0] font-bold text-xs">&middot;</span>
+                                    <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
                                         <Zap className="w-3.5 h-3.5" /> {extractedFilters.minExp}+ years
                                     </span>
 
                                     <button
                                         onClick={() => setIsFilterModalOpen(true)}
-                                        className="ml-auto px-4 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-indigo-600 text-xs font-black rounded-xl cursor-pointer shadow-sm transition-all"
+                                        className="ml-auto px-4 py-1.5 bg-white hover:bg-[#F7F8FA] border border-[#E1E4E8] text-[#5B53E0] text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-all"
                                     >
                                         Edit Rule
                                     </button>
@@ -784,16 +748,16 @@ export default function ProfileSourcingChatPage() {
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-3 mt-6 border-t border-slate-50 pt-4">
+                        <div className="flex justify-end gap-3 mt-6 border-t border-[#F0F0F1] pt-4">
                             <button
                                 onClick={() => setSearchPhase("initial")}
-                                className="px-6 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-600 text-sm font-black rounded-xl transition-all"
+                                className="px-6 py-3 bg-[#F7F8FA] hover:bg-[#F0F0F1] border border-[#E8EAED] text-[#4B5563] text-sm font-bold rounded-xl transition-all"
                             >
                                 Reset Search
                             </button>
                             <button
                                 onClick={runSearch}
-                                className="px-8 py-3 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-black rounded-xl transition-all shadow-lg shadow-indigo-200"
+                                className="px-8 py-3 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-indigo-200"
                             >
                                 Run Search
                             </button>
@@ -804,27 +768,23 @@ export default function ProfileSourcingChatPage() {
                 {loading && (
                     <div className="flex flex-col items-center justify-center py-20 animate-in fade-in duration-300">
                         <div className="relative w-20 h-20 mb-6">
-                            <div className="absolute inset-0 border-4 border-indigo-100 rounded-full animate-pulse" />
-                            <div className="absolute inset-0 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
-                            <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-[#7C3AED] animate-pulse" />
+                            <div className="absolute inset-0 border-4 border-[#DAD7F6] rounded-full animate-pulse" />
+                            <div className="absolute inset-0 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
+                            <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-[#5B53E0] animate-pulse" />
                         </div>
-                        <h3 className="text-base font-black text-slate-800 tracking-tight">Gathering Talent Intel...</h3>
-                        <p className="text-xs text-slate-400 font-bold mt-1">Cross-referencing indexed MongoDB structures.</p>
+                        <h3 className="text-base font-bold text-[#1F2127] tracking-tight">Gathering Talent Intel...</h3>
+                        <p className="text-xs text-[#9AA3AF] font-bold mt-1">Cross-referencing indexed MongoDB structures.</p>
                     </div>
                 )}
 
                 {searchPhase === "results" && !loading && (
                     <div className="flex-1 overflow-y-auto no-scrollbar space-y-6 max-w-full w-full animate-in fade-in duration-500 pr-1">
                         {/* Search Input bar */}
-                        <div className="flex flex-col md:flex-row md:items-center gap-4 py-2">
-                            <div className="flex-1 flex items-center gap-3 bg-white border border-slate-200/80 rounded-2xl px-4 py-3 shadow-sm">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" 
-                                    alt="User Profile" 
-                                    className="w-8 h-8 rounded-full object-cover shadow-sm border border-slate-100" 
-                                />
-                                <input 
-                                    type="text" 
+                        <div className="flex flex-col md:flex-row md:items-center gap-3 py-1">
+                            <div className="flex-1 relative">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF]" />
+                                <input
+                                    type="text"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     onKeyDown={(e) => {
@@ -832,15 +792,16 @@ export default function ProfileSourcingChatPage() {
                                             runSearch();
                                         }
                                     }}
-                                    className="flex-1 bg-transparent border-none focus:outline-none text-sm font-bold text-slate-800"
+                                    placeholder="Refine your search..."
+                                    className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-11 pr-4 text-sm font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] transition-all shadow-sm"
                                 />
                             </div>
-                            <div className="flex items-center gap-3 self-end md:self-center">
-                                <button onClick={() => setIsFilterModalOpen(true)} className="px-4 py-3 bg-white border border-slate-200/80 rounded-2xl text-xs font-black text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
-                                    <Filter className="w-4 h-4 text-[#7C3AED]" /> Filters <span className="bg-purple-100 text-[#7C3AED] px-1.5 py-0.5 rounded-lg text-[10px] font-black">2</span>
+                            <div className="flex items-center gap-2.5 self-end md:self-center">
+                                <button onClick={() => setIsFilterModalOpen(true)} className="h-11 px-4 bg-white border border-[#E1E4E8] rounded-[12px] text-[13px] font-semibold text-[#4B5563] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm">
+                                    <Filter className="w-4 h-4 text-[#5B53E0]" /> Filters <span className="bg-[#ECEBFB] text-[#5B53E0] px-1.5 py-0.5 rounded-md text-[10px] font-bold">2</span>
                                 </button>
-                                <button className="px-4 py-3 bg-white border border-slate-200/80 rounded-2xl text-xs font-black text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
-                                    <Sparkles className="w-4 h-4 text-[#7C3AED]" /> Criteria
+                                <button className="h-11 px-4 bg-white border border-[#E1E4E8] rounded-[12px] text-[13px] font-semibold text-[#4B5563] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm">
+                                    <Sparkles className="w-4 h-4 text-[#5B53E0]" /> Criteria
                                 </button>
                             </div>
                         </div>
@@ -848,78 +809,77 @@ export default function ProfileSourcingChatPage() {
 
 
                         {results.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-50 rounded-3xl border border-slate-100">
-                                <h3 className="text-md font-black text-slate-800 mb-1">No matching profiles indexed</h3>
-                                <p className="text-slate-400 text-xs font-medium max-w-xs">
+                            <div className="flex flex-col items-center justify-center p-12 text-center bg-[#F7F8FA] rounded-3xl border border-[#E8EAED]">
+                                <h3 className="text-md font-bold text-[#1F2127] mb-1">No matching profiles indexed</h3>
+                                <p className="text-[#9AA3AF] text-xs font-medium max-w-xs">
                                     Trigger background automated scrapers or loosen standard keyword bindings.
                                 </p>
                             </div>
                         ) : (
                             <>
-                                <div className="flex items-center justify-between py-2 border-b border-slate-100/50">
+                                <div className="flex items-center justify-between py-2 border-b border-[#E8EAED]/50">
                                     <div className="flex items-center gap-6">
                                         <button 
                                             onClick={() => setResultsTab("profiles")}
-                                            className={`pb-3 text-sm font-black transition-all relative ${resultsTab === 'profiles' ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'}`}
+                                            className={`pb-3 text-sm font-bold transition-all relative ${resultsTab === 'profiles' ? 'text-[#5B53E0]' : 'text-[#9AA3AF] hover:text-[#4B5563]'}`}
                                         >
                                             <div className="flex items-center gap-2">
                                                 <Users className="w-4 h-4" /> Profiles ({totalCount || results.length})
                                             </div>
-                                            {resultsTab === 'profiles' && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-full" />}
+                                            {resultsTab === 'profiles' && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B53E0] rounded-full" />}
                                         </button>
                                         <button 
                                             onClick={() => setResultsTab("insights")}
-                                            className={`pb-3 text-sm font-black transition-all relative ${resultsTab === 'insights' ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'}`}
+                                            className={`pb-3 text-sm font-bold transition-all relative ${resultsTab === 'insights' ? 'text-[#5B53E0]' : 'text-[#9AA3AF] hover:text-[#4B5563]'}`}
                                         >
                                             <div className="flex items-center gap-2">
                                                 <Globe className="w-4 h-4" /> Global Insights
                                             </div>
-                                            {resultsTab === 'insights' && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-full" />}
+                                            {resultsTab === 'insights' && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B53E0] rounded-full" />}
                                         </button>
                                     </div>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-full border border-slate-100">Live Intel</span>
+                                    <span className="text-[10px] font-bold text-[#9AA3AF] uppercase tracking-widest bg-[#F7F8FA] px-3 py-1 rounded-full border border-[#E8EAED]">Live Intel</span>
                                 </div>
-
                                 {resultsTab === "insights" ? (
                                     <motion.div 
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         className="py-4 space-y-6"
                                     >
-                                        <div className="bg-slate-50/40 rounded-3xl border border-slate-100 p-6 shadow-inner overflow-hidden">
+                                        <div className="bg-white rounded-[14px] border border-[#E8EAED] p-6 shadow-sm overflow-hidden">
                                             <div className="flex flex-col gap-6">
                                                 <div className="text-center max-w-2xl mx-auto space-y-1">
-                                                    <h3 className="text-xl font-black text-slate-900 tracking-tight">Geospatial Distribution</h3>
-                                                    <p className="text-slate-500 text-xs font-medium">
+                                                    <h3 className="text-xl font-bold text-[#15171C] tracking-tight">Geospatial Distribution</h3>
+                                                    <p className="text-[#6B6F76] text-xs font-medium">
                                                         Deep-dive into your global talent clusters. Every color on the map represents a high-density candidate market.
                                                     </p>
                                                 </div>
-
+ 
                                                 {/* Color Synchronized Legend at Top */}
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
                                                     {mapData.slice(1).sort((a, b) => b[1] - a[1]).slice(0, 12).map((item, idx) => (
                                                         <div 
                                                             key={idx} 
-                                                            className="bg-white px-3 py-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2 group hover:scale-105 transition-all duration-300"
+                                                            className="bg-white px-3 py-2.5 rounded-xl border border-[#E8EAED] shadow-sm flex items-center gap-2 group hover:scale-105 transition-all duration-300"
                                                         >
                                                             <div 
                                                                 className="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm" 
                                                                 style={{ backgroundColor: COUNTRY_COLORS[item[0]] || "#CBD5E1" }}
                                                             />
                                                             <div className="flex flex-col min-w-0">
-                                                                <span className="text-[9px] font-black text-slate-800 truncate uppercase tracking-tighter">
+                                                                <span className="text-[9px] font-bold text-[#1F2127] truncate uppercase tracking-tighter">
                                                                     {COUNTRY_NAMES[item[0]] || item[0]}
                                                                 </span>
-                                                                <span className="text-[8px] font-bold text-slate-400">
+                                                                <span className="text-[8px] font-bold text-[#9AA3AF]">
                                                                     {item[1]} Candidates
                                                                 </span>
                                                             </div>
                                                         </div>
                                                     ))}
                                                 </div>
-
-                                                <div className="w-full min-h-[500px] bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden flex items-center justify-center relative group">
-                                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-50/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+ 
+                                                <div className="w-full min-h-[500px] bg-[#F7F8FA]/60 rounded-xl border border-[#E8EAED] overflow-hidden flex items-center justify-center relative group">
+                                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#ECEBFB]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
                                                     <Chart
                                                         chartType="GeoChart"
                                                         width="100%"
@@ -928,7 +888,7 @@ export default function ProfileSourcingChatPage() {
                                                         loader={
                                                             <div className="flex flex-col items-center justify-center gap-4">
                                                                 <div className="w-8 h-8 border-4 border-indigo-50 border-t-indigo-600 rounded-full animate-spin"></div>
-                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Generating Global Map...</span>
+                                                                <span className="text-[10px] font-bold text-[#9AA3AF] uppercase tracking-widest">Generating Global Map...</span>
                                                             </div>
                                                         }
                                                         options={{
@@ -951,7 +911,7 @@ export default function ProfileSourcingChatPage() {
                                         </div>
                                     </motion.div>
                                 ) : (
-                                    <div className="flex flex-col w-full animate-in fade-in duration-500 bg-white">
+                                    <div className="flex flex-col w-full animate-in fade-in duration-500 bg-white rounded-[14px] border border-[#E8EAED] shadow-sm overflow-hidden">
                                         {results
                                             .filter(profile => extractedFilters.platform === "All" || (profile.platform && profile.platform.toLowerCase().includes(extractedFilters.platform.toLowerCase())))
                                             .map((profile, index) => (
@@ -960,7 +920,7 @@ export default function ProfileSourcingChatPage() {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.05 }}
-                                        className="p-6 border-b border-slate-100 hover:bg-slate-50/40 transition-all flex flex-col gap-4 relative cursor-pointer"
+                                        className="p-6 border-b border-[#E8EAED] last:border-b-0 hover:bg-[#F7F8FA]/40 transition-all flex flex-col gap-4 relative cursor-pointer"
                                         onClick={() => setSelectedProfile(profile)}
                                     >
                                         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -968,18 +928,18 @@ export default function ProfileSourcingChatPage() {
                                                 <input
                                                     type="checkbox"
                                                     onClick={(e) => e.stopPropagation()}
-                                                    className="w-4 h-4 rounded border-slate-300 text-[#7C3AED] focus:ring-[#7C3AED] mt-1"
+                                                    className="w-4 h-4 rounded border-[#D4D7DC] text-[#5B53E0] focus:ring-[#5B53E0] mt-1"
                                                 />
                                                 <div className="space-y-1">
                                                     <div className="flex items-center gap-2">
-                                                        <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                                                        <h3 className="text-base font-bold text-[#15171C] flex items-center gap-2">
                                                             {profile.full_name}
                                                         </h3>
-                                                        <a href={profile.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-indigo-500 hover:text-indigo-700">
+                                                        <a href={profile.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#5B53E0] hover:text-[#4A43C9]">
                                                             <ExternalLink className="w-4 h-4" />
                                                         </a>
                                                         {profile.platform && (
-                                                            <div className="flex items-center gap-1.5 shrink-0 text-slate-500 font-bold text-[10px]">
+                                                            <div className="flex items-center gap-1.5 shrink-0 text-[#6B6F76] font-bold text-[10px]">
                                                                 <img 
                                                                     src={`https://www.google.com/s2/favicons?sz=64&domain=${getPlatformDomain(profile.platform)}`} 
                                                                     alt={profile.platform} 
@@ -993,12 +953,12 @@ export default function ProfileSourcingChatPage() {
                                                         )}
                                                     </div>
                                                     
-                                                    <p className="text-xs font-bold text-slate-600 flex items-center gap-2">
-                                                        <Building className="w-4 h-4 text-slate-400" /> {profile.headline || "Professional Role"} {profile.company ? ` at ${profile.company}` : ""}
+                                                    <p className="text-xs font-bold text-[#4B5563] flex items-center gap-2">
+                                                        <Building className="w-4 h-4 text-[#9AA3AF]" /> {profile.headline || "Professional Role"} {profile.company ? ` at ${profile.company}` : ""}
                                                     </p>
                                                     {profile.location && (
-                                                        <span className="text-[10px] font-bold text-slate-400 flex items-center gap-2">
-                                                            <MapPin className="w-4 h-4 text-slate-300" /> {profile.location}
+                                                        <span className="text-[10px] font-bold text-[#9AA3AF] flex items-center gap-2">
+                                                            <MapPin className="w-4 h-4 text-[#C4C9D0]" /> {profile.location}
                                                         </span>
                                                     )}
                                                 </div>
@@ -1007,24 +967,24 @@ export default function ProfileSourcingChatPage() {
                                             <div className="flex items-center self-end md:self-start" role="button" tabIndex={0} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); } }}>
                                                 <button
                                                     onClick={() => openShortlistModal(profile)}
-                                                    className={`flex items-center rounded-xl border font-bold text-xs shadow-sm bg-white border-slate-200/80 transition-all hover:bg-slate-50`}
+                                                    className={`flex items-center rounded-xl border font-bold text-xs shadow-sm bg-white border-[#E1E4E8]/80 transition-all hover:bg-[#F7F8FA]`}
                                                 >
-                                                    <div className="flex items-center gap-2 px-3 py-2 text-slate-800 font-bold">
-                                                        <Bookmark className={`w-4 h-4 text-slate-400`} /> 
+                                                    <div className="flex items-center gap-2 px-3 py-2 text-[#1F2127] font-bold">
+                                                        <Bookmark className={`w-4 h-4 text-[#9AA3AF]`} /> 
                                                         <span>
                                                             Shortlist
                                                         </span>
                                                     </div>
-                                                    <div className="border-l border-slate-200/80 h-full py-3 px-2 flex items-center justify-center">
-                                                        <ChevronDown className="w-3.5 h-3.5 text-slate-800" />
+                                                    <div className="border-l border-[#E1E4E8]/80 h-full py-3 px-2 flex items-center justify-center">
+                                                        <ChevronDown className="w-3.5 h-3.5 text-[#1F2127]" />
                                                     </div>
                                                 </button>
                                             </div>
                                         </div>
 
                                         {profile.ai_summary && (
-                                            <div className="pl-8 text-xs font-medium text-slate-600 leading-relaxed flex items-start gap-3">
-                                                <Sparkles className="w-4 h-4 text-purple-500 mt-0.5 shrink-0 animate-pulse" />
+                                            <div className="pl-8 text-xs font-medium text-[#4B5563] leading-relaxed flex items-start gap-3">
+                                                <Sparkles className="w-4 h-4 text-[#5B53E0] mt-0.5 shrink-0 animate-pulse" />
                                                 <p>
                                                     {profile.ai_summary}
                                                 </p>
@@ -1036,11 +996,11 @@ export default function ProfileSourcingChatPage() {
                                 )}
 
                             {Math.ceil(totalCount / itemsPerPage) > 1 && (
-                                <div className="flex justify-center items-center gap-2 mt-8 py-4 border-t border-slate-50">
+                                <div className="flex justify-center items-center gap-2 mt-8 py-4 border-t border-[#F0F0F1]">
                                     <button 
                                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                         disabled={currentPage === 1}
-                                        className={`px-3 py-1.5 rounded-xl border text-xs font-black transition-all ${currentPage === 1 ? 'text-slate-300 bg-slate-50 border-slate-100 cursor-not-allowed' : 'text-slate-600 bg-white border-slate-200 hover:bg-slate-50'}`}
+                                        className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${currentPage === 1 ? 'text-[#C4C9D0] bg-[#F7F8FA] border-[#E8EAED] cursor-not-allowed' : 'text-[#4B5563] bg-white border-[#E1E4E8] hover:bg-[#F7F8FA]'}`}
                                     >
                                         Prev
                                     </button>
@@ -1066,11 +1026,11 @@ export default function ProfileSourcingChatPage() {
                                                     <>
                                                         <button 
                                                             onClick={() => setCurrentPage(1)}
-                                                            className={`w-8 h-8 rounded-xl text-xs font-black border transition-all bg-white text-slate-500 border-slate-200 hover:border-indigo-300 hover:text-indigo-600`}
+                                                            className={`w-8 h-8 rounded-xl text-xs font-bold border transition-all bg-white text-[#6B6F76] border-[#E1E4E8] hover:border-[#DAD7F6] hover:text-[#5B53E0]`}
                                                         >
                                                             1
                                                         </button>
-                                                        {startPage > 2 && <span className="text-slate-300 text-xs px-1">...</span>}
+                                                        {startPage > 2 && <span className="text-[#C4C9D0] text-xs px-1">...</span>}
                                                     </>
                                                 )}
 
@@ -1078,7 +1038,7 @@ export default function ProfileSourcingChatPage() {
                                                     <button 
                                                         key={pageIndex}
                                                         onClick={() => setCurrentPage(pageIndex)}
-                                                        className={`w-8 h-8 rounded-xl text-xs font-black border transition-all ${currentPage === pageIndex ? 'bg-[#7C3AED] text-white border-[#7C3AED] shadow-sm' : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-300 hover:text-indigo-600'}`}
+                                                        className={`w-8 h-8 rounded-xl text-xs font-bold border transition-all ${currentPage === pageIndex ? 'bg-[#5B53E0] text-white border-[#5B53E0] shadow-sm' : 'bg-white text-[#6B6F76] border-[#E1E4E8] hover:border-[#DAD7F6] hover:text-[#5B53E0]'}`}
                                                     >
                                                         {pageIndex}
                                                     </button>
@@ -1086,10 +1046,10 @@ export default function ProfileSourcingChatPage() {
 
                                                 {endPage < totalPages && (
                                                     <>
-                                                        {endPage < totalPages - 1 && <span className="text-slate-300 text-xs px-1">...</span>}
+                                                        {endPage < totalPages - 1 && <span className="text-[#C4C9D0] text-xs px-1">...</span>}
                                                         <button 
                                                             onClick={() => setCurrentPage(totalPages)}
-                                                            className={`w-8 h-8 rounded-xl text-xs font-black border transition-all bg-white text-slate-500 border-slate-200 hover:border-indigo-300 hover:text-indigo-600`}
+                                                            className={`w-8 h-8 rounded-xl text-xs font-bold border transition-all bg-white text-[#6B6F76] border-[#E1E4E8] hover:border-[#DAD7F6] hover:text-[#5B53E0]`}
                                                         >
                                                             {totalPages}
                                                         </button>
@@ -1102,7 +1062,7 @@ export default function ProfileSourcingChatPage() {
                                     <button 
                                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(totalCount / itemsPerPage)))}
                                         disabled={currentPage === Math.ceil(totalCount / itemsPerPage)}
-                                        className={`px-3 py-1.5 rounded-xl border text-xs font-black transition-all ${currentPage === Math.ceil(totalCount / itemsPerPage) ? 'text-slate-300 bg-slate-50 border-slate-100 cursor-not-allowed' : 'text-slate-600 bg-white border-slate-200 hover:bg-slate-50'}`}
+                                        className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${currentPage === Math.ceil(totalCount / itemsPerPage) ? 'text-[#C4C9D0] bg-[#F7F8FA] border-[#E8EAED] cursor-not-allowed' : 'text-[#4B5563] bg-white border-[#E1E4E8] hover:bg-[#F7F8FA]'}`}
                                     >
                                         Next
                                     </button>
@@ -1114,39 +1074,40 @@ export default function ProfileSourcingChatPage() {
                 )}
                 </div>
             </div>
+            </div>
 
             {/* Edit Rule Filter Modal */}
             {isFilterModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
-                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-2xl max-w-md w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200">
+                <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
+                    <div className="bg-white p-6 rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-md w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2"><Filter className="w-4 h-4 text-indigo-600" /> Refine Constraints</h3>
-                            <button onClick={() => setIsFilterModalOpen(false)} className="p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 rounded-lg"><X className="w-4 h-4" /></button>
+                            <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2"><Filter className="w-4 h-4 text-[#5B53E0]" /> Refine Constraints</h3>
+                            <button onClick={() => setIsFilterModalOpen(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg"><X className="w-4 h-4" /></button>
                         </div>
                         <div className="space-y-3">
                             <div className="space-y-1">
-                                <label htmlFor="filter-target-role" className="text-[10px] font-black uppercase text-slate-400">Target Role</label>
+                                <label htmlFor="filter-target-role" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">Target Role</label>
                                 <input
                                     id="filter-target-role"
                                     type="text"
                                     value={extractedFilters.title}
                                     onChange={(e) => setExtractedFilters({...extractedFilters, title: e.target.value})} 
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-xs font-semibold text-slate-700"
+                                    className="w-full bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 py-2 text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label htmlFor="filter-location-area" className="text-[10px] font-black uppercase text-slate-400">Location Area</label>
+                                <label htmlFor="filter-location-area" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">Location Area</label>
                                 <input
                                     id="filter-location-area"
                                     type="text"
                                     value={extractedFilters.location}
                                     onChange={(e) => setExtractedFilters({...extractedFilters, location: e.target.value})} 
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-xs font-semibold text-slate-700"
+                                    className="w-full bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 py-2 text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label htmlFor="filter-target-platform" className="text-[10px] font-black uppercase text-slate-400">Target Platform</label>
-                                <div id="filter-target-platform" className="max-h-60 overflow-y-auto p-2 border border-slate-100/80 rounded-2xl bg-slate-50/50 space-y-1 custom-scrollbar">
+                                <label htmlFor="filter-target-platform" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">Target Platform</label>
+                                <div id="filter-target-platform" className="max-h-60 overflow-y-auto p-2 border border-[#E8EAED]/80 rounded-[10px] bg-[#F7F8FA]/50 space-y-1 custom-scrollbar">
                                     <div className="grid grid-cols-2 gap-2">
                                         {[
                                             { id: "All", name: "All Platforms" },
@@ -1182,13 +1143,13 @@ export default function ProfileSourcingChatPage() {
                                                 key={plat.id}
                                                 type="button"
                                                 onClick={() => setExtractedFilters({...extractedFilters, platform: plat.id})}
-                                                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-bold border transition-all ${
+                                                className={`flex items-center gap-2 px-3 py-2 rounded-[8px] text-[11px] font-semibold border transition-all ${
                                                     extractedFilters.platform === plat.id
-                                                        ? "bg-[#7C3AED]/10 text-[#7C3AED] border-[#7C3AED]"
-                                                        : "bg-white border-slate-200/50 text-slate-600 hover:bg-slate-50"
+                                                        ? "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]"
+                                                        : "bg-white border-[#E1E4E8]/50 text-[#4B5563] hover:bg-[#F7F8FA]"
                                                 }`}
                                             >
-                                                <div className={`w-1.5 h-1.5 rounded-full ${extractedFilters.platform === plat.id ? "bg-[#7C3AED] animate-pulse" : "bg-slate-300"}`} />
+                                                <div className={`w-1.5 h-1.5 rounded-full ${extractedFilters.platform === plat.id ? "bg-[#5B53E0] animate-pulse" : "bg-[#C4C9D0]"}`} />
                                                 <span className="truncate">{plat.name}</span>
                                             </button>
                                         ))}
@@ -1201,7 +1162,7 @@ export default function ProfileSourcingChatPage() {
                                 setIsFilterModalOpen(false);
                                 runSearch();
                             }} 
-                            className="w-full py-3 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black rounded-xl transition-all shadow-md"
+                            className="w-full h-10 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-[13px] font-semibold rounded-[9px] transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)]"
                         >
                             Save Rule Adjustments
                         </button>
@@ -1209,11 +1170,11 @@ export default function ProfileSourcingChatPage() {
                 </div>
             )}
             {isJobModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl p-6 max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col space-y-4 max-h-[90vh]">
+                <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-[14px] p-6 max-w-2xl w-full shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] flex flex-col space-y-4 max-h-[90vh]">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-red-500" /> Search by Job Description
+                            <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2">
+                                <FileText className="w-5 h-5 text-[#EF4444]" /> Search by Job Description
                             </h3>
                             <button 
                                 onClick={() => {
@@ -1222,35 +1183,35 @@ export default function ProfileSourcingChatPage() {
                                     }
                                     setIsJobModalOpen(false);
                                 }}
-                                className="px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-2"
+                                className="h-10 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)] flex items-center gap-1.5"
                             >
-                                Save & Search <ArrowRight className="w-3.5 h-3.5" />
+                                Save & Search <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
                         <div className="overflow-y-auto space-y-4">
                             <div className="space-y-1">
-                                <label htmlFor="job-description-textarea" className="text-sm font-bold text-slate-800">Paste Job Description</label>
-                                <p className="text-xs text-slate-400 font-medium mb-2">Don't worry about the formatting, we'll take care of that for you</p>
+                                <label htmlFor="job-description-textarea" className="text-[13px] font-semibold text-[#15171C]">Paste Job Description</label>
+                                <p className="text-xs text-[#9AA3AF] font-medium mb-2">Don't worry about the formatting, we'll take care of that for you</p>
                                 <textarea
                                     id="job-description-textarea"
                                     rows={8}
                                     value={jobDescription}
                                     onChange={(e) => setJobDescription(e.target.value)}
                                     placeholder="Paste job details here..."
-                                    className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-[#7C3AED]"
+                                    className="w-full bg-white border border-[#E1E4E8] rounded-[10px] px-4 py-3 text-[13.5px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                 />
                             </div>
-                            <div className="border-t border-slate-100 pt-3 space-y-2">
-                                <label htmlFor="job-upload-button" className="text-sm font-bold text-slate-800 flex items-center gap-2">Upload Job Description</label>
-                                <p className="text-xs text-slate-400 font-medium">You can upload PDF or text documents like .docx, .txt, or formatted text</p>
-                                <button id="job-upload-button" className="px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition-all shadow-sm">
+                            <div className="border-t border-[#E8EAED] pt-3 space-y-2">
+                                <label htmlFor="job-upload-button" className="text-[13px] font-semibold text-[#15171C] flex items-center gap-2">Upload Job Description</label>
+                                <p className="text-xs text-[#9AA3AF] font-medium">You can upload PDF or text documents like .docx, .txt, or formatted text</p>
+                                <button id="job-upload-button" className="h-9 px-4 border border-[#E1E4E8] rounded-[9px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm">
                                     Upload
                                 </button>
                             </div>
                         </div>
                         <button 
                             onClick={() => setIsJobModalOpen(false)} 
-                            className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition-all"
+                            className="w-full h-10 bg-[#F4F5F7] hover:bg-[#E8EAED] text-[#4B5563] text-[13px] font-semibold rounded-[9px] transition-colors border border-[#E8EAED]"
                         >
                             Cancel
                         </button>
@@ -1259,11 +1220,11 @@ export default function ProfileSourcingChatPage() {
             )}
 
             {isBooleanModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl p-6 max-w-xl w-full shadow-2xl border border-slate-100 flex flex-col space-y-4">
+                <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-[14px] p-6 max-w-xl w-full shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] flex flex-col space-y-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                                <span className="text-green-600 font-bold text-xl">Σ</span> Search by Boolean Expression
+                            <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2">
+                                <span className="text-[#15803D] font-bold text-xl">Σ</span> Search by Boolean Expression
                             </h3>
                             <button 
                                 onClick={() => {
@@ -1272,22 +1233,22 @@ export default function ProfileSourcingChatPage() {
                                     }
                                     setIsBooleanModalOpen(false);
                                 }}
-                                className="px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-2"
+                                className="h-10 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)] flex items-center gap-1.5"
                             >
-                                Save & Search <ArrowRight className="w-3.5 h-3.5" />
+                                Save & Search <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
-                        <p className="text-xs text-slate-500 font-bold">Enter a boolean expression to search for candidates.</p>
+                        <p className="text-xs text-[#6B6F76] font-bold">Enter a boolean expression to search for candidates.</p>
                         <textarea 
                             rows={5}
                             value={booleanExpression}
                             onChange={(e) => setBooleanExpression(e.target.value)}
                             placeholder="(software OR engineer) AND (python OR java)"
-                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-[#7C3AED]"
+                            className="w-full bg-white border border-[#E1E4E8] rounded-[10px] px-4 py-3 text-[13.5px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                         />
                         <button 
                             onClick={() => setIsBooleanModalOpen(false)} 
-                            className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition-all"
+                            className="w-full h-10 bg-[#F4F5F7] hover:bg-[#E8EAED] text-[#4B5563] text-[13px] font-semibold rounded-[9px] transition-colors border border-[#E8EAED]"
                         >
                             Cancel
                         </button>
@@ -1296,11 +1257,11 @@ export default function ProfileSourcingChatPage() {
             )}
 
             {isCompetitorModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl p-6 max-w-xl w-full shadow-2xl border border-slate-100 flex flex-col space-y-4">
+                <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-[14px] p-6 max-w-xl w-full shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] flex flex-col space-y-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                                <Target className="w-5 h-5 text-indigo-500" /> Skill Mapping
+                            <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2">
+                                <Target className="w-5 h-5 text-[#5B53E0]" /> Skill Mapping
                             </h3>
                             <button 
                                 onClick={() => {
@@ -1309,22 +1270,22 @@ export default function ProfileSourcingChatPage() {
                                     }
                                     setIsCompetitorModalOpen(false);
                                 }}
-                                className="px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center gap-2"
+                                className="h-10 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)] flex items-center gap-1.5"
                             >
-                                Save & Search <ArrowRight className="w-3.5 h-3.5" />
+                                Save & Search <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
-                        <p className="text-xs text-slate-500 font-bold">Search candidates by providing specific technical skills or domain expertise.</p>
+                        <p className="text-xs text-[#6B6F76] font-bold">Search candidates by providing specific technical skills or domain expertise.</p>
                         <textarea 
                             rows={3}
                             value={competitors}
                             onChange={(e) => setCompetitors(e.target.value)}
                             placeholder="e.g., Python, React, AWS, Docker, Machine Learning"
-                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-[#7C3AED]"
+                            className="w-full bg-white border border-[#E1E4E8] rounded-[10px] px-4 py-3 text-[13.5px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                         />
                         <button 
                             onClick={() => setIsCompetitorModalOpen(false)} 
-                            className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition-all"
+                            className="w-full h-10 bg-[#F4F5F7] hover:bg-[#E8EAED] text-[#4B5563] text-[13px] font-semibold rounded-[9px] transition-colors border border-[#E8EAED]"
                         >
                             Cancel
                         </button>
@@ -1336,15 +1297,15 @@ export default function ProfileSourcingChatPage() {
             {/* Sliding Drawer Panel */}
             {selectedProfile && (
                 <div className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" role="button" tabIndex={0} onClick={() => setSelectedProfile(null)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setSelectedProfile(null); } }} />
+                    <div className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm" role="button" tabIndex={0} onClick={() => setSelectedProfile(null)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setSelectedProfile(null); } }} />
                     <div className="relative bg-white w-full max-w-lg h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-                        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                            <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                                <User className="w-5 h-5 text-indigo-600" /> Candidate Dossier
+                        <div className="p-6 border-b border-[#E8EAED] flex items-center justify-between">
+                            <h3 className="text-base font-bold text-[#15171C] flex items-center gap-2">
+                                <User className="w-5 h-5 text-[#5B53E0]" /> Candidate Dossier
                             </h3>
                             <button 
                                 onClick={() => setSelectedProfile(null)} 
-                                className="p-2 hover:bg-slate-50 text-slate-400 hover:text-slate-600 rounded-xl transition-all"
+                                className="p-2 hover:bg-[#F7F8FA] text-[#9AA3AF] hover:text-[#4B5563] rounded-xl transition-all"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -1355,102 +1316,102 @@ export default function ProfileSourcingChatPage() {
                                 <img 
                                     src={selectedProfile.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedProfile.full_name)}&background=random&color=fff&size=128`} 
                                     alt={selectedProfile.full_name} 
-                                    className="w-20 h-20 rounded-3xl object-cover border-4 border-slate-50 shadow-md"
+                                    className="w-16 h-16 rounded-[18px] object-cover border-2 border-[#E8EAED] shadow-sm"
                                     onError={(e) => {
                                         (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedProfile.full_name)}&background=random&color=fff&size=128`;
                                     }}
                                 />
                                 <div>
-                                    <h2 className="text-xl font-black text-slate-900">{selectedProfile.full_name}</h2>
-                                    <p className="text-xs font-bold text-indigo-600 mt-1 uppercase tracking-wide flex items-center gap-1">
+                                    <h2 className="text-lg font-extrabold text-[#15171C]">{selectedProfile.full_name}</h2>
+                                    <p className="text-[11px] font-bold text-[#5B53E0] mt-1 uppercase tracking-wider flex items-center gap-1">
                                         {selectedProfile.platform} Sourced
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="space-y-4 pt-4 border-t border-slate-50">
+                            <div className="space-y-4 pt-4 border-t border-[#E8EAED]">
                                 <div className="space-y-1">
-                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Professional Role</span>
-                                    <p className="text-sm font-bold text-slate-800">{selectedProfile.headline || "Unspecified Specialty"}</p>
+                                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">Professional Role</span>
+                                    <p className="text-[14px] font-semibold text-[#15171C]">{selectedProfile.headline || "Unspecified Specialty"}</p>
                                 </div>
 
                                 {selectedProfile.location && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Geography</span>
-                                        <p className="text-xs font-bold text-slate-600 flex items-center gap-1">
-                                            <MapPin className="w-4 h-4 text-slate-300" /> {selectedProfile.location}
+                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">Geography</span>
+                                        <p className="text-[13px] font-medium text-[#374151] flex items-center gap-2">
+                                            <MapPin className="w-4 h-4 text-[#9AA3AF]" /> {selectedProfile.location}
                                         </p>
                                     </div>
                                 )}
 
                                 {selectedProfile.company && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Organization</span>
-                                        <p className="text-xs font-bold text-slate-600 flex items-center gap-1">
-                                            <Building className="w-4 h-4 text-slate-300" /> {selectedProfile.company}
+                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">Organization</span>
+                                        <p className="text-[13px] font-medium text-[#374151] flex items-center gap-2">
+                                            <Building className="w-4 h-4 text-[#9AA3AF]" /> {selectedProfile.company}
                                         </p>
                                     </div>
                                 )}
 
                                 {selectedProfile.email && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Contact Email</span>
-                                        <p className="text-xs font-bold text-slate-600 flex items-center gap-1">
-                                            <Mail className="w-4 h-4 text-slate-300" /> {selectedProfile.email}
+                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">Contact Email</span>
+                                        <p className="text-[13px] font-medium text-[#374151] flex items-center gap-2">
+                                            <Mail className="w-4 h-4 text-[#9AA3AF]" /> {selectedProfile.email}
                                         </p>
                                     </div>
                                 )}
 
                                 {selectedProfile.raw_data && selectedProfile.raw_data.phone && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Phone Number</span>
-                                        <p className="text-xs font-bold text-slate-600 flex items-center gap-1">
-                                            <Phone className="w-4 h-4 text-slate-300" /> {selectedProfile.raw_data.phone}
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Phone Number</span>
+                                        <p className="text-xs font-bold text-[#4B5563] flex items-center gap-1">
+                                            <Phone className="w-4 h-4 text-[#C4C9D0]" /> {selectedProfile.raw_data.phone}
                                         </p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Detailed Statistics Grid */}
-                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-50">
+                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#F0F0F1]">
                                 {selectedProfile.followers !== undefined && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Followers</span>
-                                        <p className="text-xs font-bold text-slate-700">{selectedProfile.followers}</p>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Followers</span>
+                                        <p className="text-xs font-bold text-[#374151]">{selectedProfile.followers}</p>
                                     </div>
                                 )}
                                 {selectedProfile.following !== undefined && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Following</span>
-                                        <p className="text-xs font-bold text-slate-700">{selectedProfile.following}</p>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Following</span>
+                                        <p className="text-xs font-bold text-[#374151]">{selectedProfile.following}</p>
                                     </div>
                                 )}
                                 {selectedProfile.public_repos !== undefined && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Public Repos</span>
-                                        <p className="text-xs font-bold text-slate-700">{selectedProfile.public_repos}</p>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Public Repos</span>
+                                        <p className="text-xs font-bold text-[#374151]">{selectedProfile.public_repos}</p>
                                     </div>
                                 )}
                                 {selectedProfile.blog && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Website / Blog</span>
-                                        <a href={selectedProfile.blog} target="_blank" rel="noreferrer" className="text-xs font-bold text-indigo-600 hover:underline block truncate">
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Website / Blog</span>
+                                        <a href={selectedProfile.blog} target="_blank" rel="noreferrer" className="text-xs font-bold text-[#5B53E0] hover:underline block truncate">
                                             {selectedProfile.blog}
                                         </a>
                                     </div>
                                 )}
                                 {selectedProfile.hireable !== undefined && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Open to Work</span>
-                                        <p className="text-xs font-bold text-slate-700">{selectedProfile.hireable ? "Yes ✅" : "No ❌"}</p>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Open to Work</span>
+                                        <p className="text-xs font-bold text-[#374151]">{selectedProfile.hireable ? "Yes ✅" : "No ❌"}</p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Social Links */}
                             {selectedProfile.social_links && selectedProfile.social_links.length > 0 && (
-                                <div className="space-y-2 pt-4 border-t border-slate-50">
-                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Associated Profiles</span>
+                                <div className="space-y-2 pt-4 border-t border-[#F0F0F1]">
+                                    <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Associated Profiles</span>
                                     <div className="flex flex-wrap gap-2">
                                         {selectedProfile.social_links.map((link: any, lIdx: number) => (
                                             <a 
@@ -1458,7 +1419,7 @@ export default function ProfileSourcingChatPage() {
                                                 href={link.url} 
                                                 target="_blank" 
                                                 rel="noreferrer" 
-                                                className="px-2.5 py-1 bg-slate-50 text-slate-600 hover:text-indigo-600 text-[10px] font-bold rounded-lg border border-slate-100 hover:border-indigo-300 transition-all flex items-center gap-1"
+                                                className="px-2.5 py-1 bg-[#F7F8FA] text-[#4B5563] hover:text-[#5B53E0] text-[10px] font-bold rounded-lg border border-[#E8EAED] hover:border-[#DAD7F6] transition-all flex items-center gap-1"
                                             >
                                                 <ExternalLink className="w-3 h-3" /> {link.provider || "Link"}
                                             </a>
@@ -1468,22 +1429,22 @@ export default function ProfileSourcingChatPage() {
                             )}
 
                             {selectedProfile.ai_summary && (
-                                <div className="space-y-2 pt-4 border-t border-slate-50">
-                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1">
-                                        <Zap className="w-3.5 h-3.5 text-indigo-600" /> AI Summary Assessment
+                                <div className="space-y-2 pt-4 border-t border-[#F0F0F1]">
+                                    <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider flex items-center gap-1">
+                                        <Zap className="w-3.5 h-3.5 text-[#5B53E0]" /> AI Summary Assessment
                                     </span>
-                                    <div className="bg-slate-50/80 p-4 rounded-2xl text-xs font-semibold text-slate-600 leading-relaxed border border-slate-100/30 shadow-inner">
+                                    <div className="bg-[#F7F8FA]/80 p-4 rounded-2xl text-xs font-semibold text-[#4B5563] leading-relaxed border border-[#E8EAED]/30 shadow-inner">
                                         {selectedProfile.ai_summary}
                                     </div>
                                 </div>
                             )}
 
                             {selectedProfile.skills && selectedProfile.skills.length > 0 && (
-                                <div className="space-y-2 pt-4 border-t border-slate-50">
-                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Key proficiencies</span>
+                                <div className="space-y-2 pt-4 border-t border-[#F0F0F1]">
+                                    <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Key proficiencies</span>
                                     <div className="flex flex-wrap gap-1.5">
                                         {selectedProfile.skills.map((skill, sIdx) => (
-                                            <span key={sIdx} className="px-2.5 py-1 bg-slate-50 text-slate-600 text-[10px] font-bold rounded-lg border border-slate-100">
+                                            <span key={sIdx} className="px-2.5 py-1 bg-[#F7F8FA] text-[#4B5563] text-[10px] font-bold rounded-lg border border-[#E8EAED]">
                                                 {skill}
                                             </span>
                                         ))}
@@ -1492,12 +1453,12 @@ export default function ProfileSourcingChatPage() {
                             )}
                         </div>
 
-                        <div className="p-6 border-t border-slate-50 flex gap-3">
+                        <div className="p-6 border-t border-[#E8EAED] flex gap-3">
                             <a 
                                 href={selectedProfile.profile_url} 
                                 target="_blank" 
                                 rel="noreferrer" 
-                                className="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
+                                className="flex-1 h-[42px] bg-[#15171C] hover:bg-[#1F2127] text-white rounded-[9px] text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
                             >
                                 Visit Source Profile <ExternalLink className="w-4 h-4" />
                             </a>
@@ -1507,39 +1468,39 @@ export default function ProfileSourcingChatPage() {
             )}
             {/* Shortlist Job Modal */}
             {isShortlistModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
-                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-2xl max-w-md w-full mx-4 space-y-6 animate-in zoom-in-95 duration-200">
+                <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
+                    <div className="bg-white p-6 rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-md w-full mx-4 space-y-6 animate-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                                    <Bookmark className="w-4 h-4 text-indigo-600" /> Shortlist to Job Role
+                                <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2">
+                                    <Bookmark className="w-4 h-4 text-[#5B53E0]" /> Shortlist to Job Role
                                 </h3>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Assigning {profileToShortlist?.full_name}</p>
+                                <p className="text-[11px] font-bold text-[#9AA3AF] uppercase tracking-wider">Assigning {profileToShortlist?.full_name}</p>
                             </div>
-                            <button onClick={() => setIsShortlistModalOpen(false)} className="p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 rounded-lg"><X className="w-4 h-4" /></button>
+                            <button onClick={() => setIsShortlistModalOpen(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg"><X className="w-4 h-4" /></button>
                         </div>
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label htmlFor="shortlist-job-role" className="text-[10px] font-black uppercase text-slate-500 ml-1">Choose Job Role</label>
+                                <label htmlFor="shortlist-job-role" className="text-[11px] font-bold uppercase tracking-wider text-[#6B6F76] ml-1">Choose Job Role</label>
                                 <div id="shortlist-job-role" className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto no-scrollbar pr-1">
                                     {jobs.length === 0 ? (
-                                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-                                            <p className="text-[10px] font-bold text-slate-500 italic">No active jobs found. Create one in Jobs hub first.</p>
+                                        <div className="p-4 bg-[#F7F8FA] rounded-[10px] border border-[#E8EAED] text-center">
+                                            <p className="text-[12px] font-bold text-[#6B6F76] italic">No active jobs found. Create one in Jobs hub first.</p>
                                         </div>
                                     ) : (
                                         jobs.map(job => (
                                             <button
                                                 key={job.id}
                                                 onClick={() => setSelectedJobId(job.id)}
-                                                className={`flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-left ${
+                                                className={`flex items-center justify-between px-4 py-3 rounded-[10px] border transition-all text-left ${
                                                     selectedJobId === job.id 
-                                                        ? 'bg-indigo-50 border-indigo-200 text-indigo-700 ring-1 ring-indigo-200' 
-                                                        : 'bg-white border-slate-100 text-slate-600 hover:border-slate-200'
+                                                        ? 'bg-[#ECEBFB] border-[#DAD7F6] text-[#4A43C9] ring-1 ring-[#DAD7F6]' 
+                                                        : 'bg-white border-[#E8EAED] text-[#4B5563] hover:border-[#E1E4E8]'
                                                 }`}
                                             >
-                                                <span className="text-xs font-black">{job.title}</span>
-                                                {selectedJobId === job.id && <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-glow animate-pulse" />}
+                                                <span className="text-xs font-bold">{job.title}</span>
+                                                {selectedJobId === job.id && <div className="w-2 h-2 rounded-full bg-[#5B53E0] shadow-glow animate-pulse" />}
                                             </button>
                                         ))
                                     )}
@@ -1550,14 +1511,14 @@ export default function ProfileSourcingChatPage() {
                         <div className="flex gap-3 pt-2">
                             <button
                                 onClick={() => setIsShortlistModalOpen(false)}
-                                className="flex-1 px-4 py-3 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-black rounded-xl border border-slate-100 transition-all"
+                                className="flex-1 h-10 px-4 bg-[#F4F5F7] border border-[#E8EAED] text-[#4B5563] text-[13px] font-semibold rounded-[9px] transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleShortlistConfirm}
                                 disabled={!selectedJobId || isShortlisting}
-                                className="flex-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl shadow-lg shadow-indigo-100 transition-all disabled:opacity-50"
+                                className="flex-2 h-10 px-5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-[13px] font-semibold rounded-[9px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors disabled:opacity-50"
                             >
                                 {isShortlisting ? "Adding..." : "Confirm Shortlist"}
                             </button>
@@ -1565,7 +1526,114 @@ export default function ProfileSourcingChatPage() {
                     </div>
                 </div>
             )}
-
+            {/* Chat History Sidebar Overlay */}
+            <AnimatePresence>
+                {isHistoryOpen && (
+                    <>
+                        {/* Backdrop */}
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsHistoryOpen(false)}
+                            className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50"
+                        />
+                        
+                        {/* Right-Side Sidebar Drawer */}
+                        <motion.div 
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col border-l border-[#E8EAED]"
+                        >
+                            {/* Header */}
+                            <div className="px-6 py-4 bg-white border-b border-[#E8EAED] flex items-center justify-between gap-3 shrink-0">
+                                <div>
+                                    <h2 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2">
+                                        <Sparkles className="w-4 h-4 text-[#5B53E0]" /> History
+                                    </h2>
+                                    <p className="text-[13px] text-[#8A929E] mt-0.5">Your past search sessions & queries</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <button 
+                                        onClick={createNewChat}
+                                        className="p-2 hover:bg-[#F4F5F7] rounded-[10px] text-[#5B53E0] transition-colors animate-in fade-in"
+                                        title="New Chat"
+                                    >
+                                        <Edit className="w-4.5 h-4.5" />
+                                    </button>
+                                    <button 
+                                        onClick={() => setIsHistoryOpen(false)} 
+                                        className="w-9 h-9 rounded-[10px] hover:bg-[#F4F5F7] flex items-center justify-center text-[#9AA3AF] hover:text-[#374151] transition-colors border border-transparent hover:border-[#E8EAED]"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {/* History List Content */}
+                            <div className="flex-1 overflow-y-auto p-4 space-y-2.5 custom-scrollbar bg-[#F7F8FA]/30">
+                                {sessions.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center py-20 text-center px-4">
+                                        <div className="w-12 h-12 rounded-[14px] bg-[#ECEBFB] flex items-center justify-center text-[#5B53E0] mb-3">
+                                            <Bookmark className="w-6 h-6" />
+                                        </div>
+                                        <p className="text-[13px] font-semibold text-[#15171C]">No chat history yet</p>
+                                        <p className="text-[11.5px] text-[#8A929E] mt-1">Start a search to save history</p>
+                                    </div>
+                                ) : (
+                                    sessions.map((session) => (
+                                        <div
+                                            key={session.session_id}
+                                            role="button"
+                                            tabIndex={0}
+                                            onClick={() => {
+                                                loadSession(session.session_id);
+                                                setIsHistoryOpen(false);
+                                            }}
+                                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { loadSession(session.session_id); setIsHistoryOpen(false); } }}
+                                            className={`group relative p-4 rounded-[10px] border transition-all cursor-pointer ${
+                                                currentSessionId === session.session_id
+                                                    ? "bg-white border-[#DAD7F6] shadow-md shadow-indigo-500/5 ring-1 ring-[#5B53E0]/15"
+                                                    : "bg-white border-[#E8EAED] hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/50 shadow-sm"
+                                            }`}
+                                        >
+                                            <div className="flex items-start gap-3">
+                                                <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${currentSessionId === session.session_id ? 'bg-[#5B53E0] animate-pulse' : 'bg-[#E1E4E8]'}`} />
+                                                <div className="flex-1 min-w-0">
+                                                    <p className={`text-[12.5px] font-semibold truncate ${currentSessionId === session.session_id ? 'text-[#15171C]' : 'text-[#374151]'}`}>
+                                                        {session.title || "Untitled Search"}
+                                                    </p>
+                                                    <p className="text-[9px] font-medium text-[#9AA3AF] mt-0.5">
+                                                        {new Date(session.updated_at).toLocaleDateString()}
+                                                    </p>
+                                                </div>
+                                                <button 
+                                                    onClick={(e) => deleteSession(e, session.session_id)}
+                                                    title="Delete History"
+                                                    className="p-1.5 hover:bg-red-50 text-[#9AA3AF] hover:text-[#C0383C] rounded-lg transition-all"
+                                                >
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                            
+                            {/* Pro Sourcing Active Footer */}
+                            <div className="p-4 bg-white border-t border-[#E8EAED] shrink-0">
+                                <div className="bg-[#ECEBFB]/60 rounded-[10px] p-3 border border-[#DAD7F6]/85">
+                                    <p className="text-[12px] font-bold text-[#5B53E0] flex items-center gap-2">
+                                        <Zap className="w-3.5 h-3.5 text-[#5B53E0]" /> Pro Sourcing Active
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

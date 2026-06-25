@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { BACKEND_URL } from "@/utils/api";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
+const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export default function StudentRegisterPage() {
     const [fullName, setFullName] = useState("");
@@ -56,25 +56,25 @@ export default function StudentRegisterPage() {
     };
 
     return (
-        <div className={`flex min-h-screen transition-colors duration-300 bg-white dark:bg-slate-950 ${plusJakartaSans.className}`}>
+        <div className={`flex min-h-screen transition-colors duration-300 bg-[#F4F5F7] text-[#15171C] ${hankenGrotesk.className}`}>
             <div className="hidden lg:flex lg:w-[50%] relative overflow-hidden">
                 <img
                     alt="Education"
                     className="absolute inset-0 w-full h-full object-cover"
                     src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80"
                 />
-                <div className="absolute inset-0 bg-indigo-600/90 flex flex-col justify-center px-16">
+                <div className="absolute inset-0 flex flex-col justify-center px-16" style={{ background: "linear-gradient(135deg,rgba(14,16,20,0.92),rgba(91,83,224,0.82))" }}>
                     <div className="max-w-md text-white">
-                        <h2 className="text-4xl font-bold mb-6">Join Academik Student Portal</h2>
-                        <ul className="space-y-4">
+                        <h2 className="text-[36px] font-extrabold tracking-[-0.8px] leading-[1.1] mb-6">Join Academik Student Portal</h2>
+                        <ul className="space-y-3.5">
                             {[
                                 "Access personalized learning paths",
                                 "Track your progress in real-time",
                                 "Prepare for corporate placements",
                                 "AI-driven mock interviews"
                             ].map((text, i) => (
-                                <li key={i} className="flex items-center gap-3">
-                                    <span className="material-icons-outlined text-indigo-300">check_circle</span>
+                                <li key={i} className="flex items-center gap-3 text-[15px] text-white/85">
+                                    <span className="material-icons-outlined text-[#A7A0EE]">check_circle</span>
                                     <span>{text}</span>
                                 </li>
                             ))}
@@ -83,33 +83,33 @@ export default function StudentRegisterPage() {
                 </div>
             </div>
 
-            <div className="w-full lg:w-[50%] flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-950">
-                <div className="max-w-md w-full">
-                    <div className="mb-8">
-                        <Link href="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors mb-8">
-                            <span className="material-icons-outlined text-sm">arrow_back</span>
-                            <span className="text-xs font-bold  ">Back to Home</span>
+            <div className="w-full lg:w-[50%] flex flex-col items-center justify-center p-8 bg-[#F4F5F7]">
+                <div className="max-w-md w-full bg-white border border-[#E8EAED] p-9 rounded-[14px] shadow-[0_4px_14px_rgba(15,23,42,0.05)]">
+                    <div className="mb-7">
+                        <Link href="/" className="inline-flex items-center gap-1.5 text-[#8A929E] hover:text-[#5B53E0] transition-colors mb-7">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+                            <span className="text-[12.5px] font-semibold">Back to Home</span>
                         </Link>
-                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Create Account</h1>
-                        <p className="text-slate-500 dark:text-slate-400">Join the next generation of students.</p>
+                        <h1 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-1.5">Create account</h1>
+                        <p className="text-[#8A929E] text-sm">Join the next generation of students.</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-4">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-500  ">Full Name</label>
+                            <div>
+                                <label className="block text-[12.5px] font-semibold text-[#374151] mb-1.5">Full name</label>
                                 <input
-                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:border-indigo-600 outline-none transition-all"
+                                    className="w-full h-11 px-3.5 text-[14px] text-[#15171C] bg-white border border-[#E1E4E8] rounded-[10px] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                     placeholder="Enter your full name"
                                     required
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
                                 />
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-500  ">Email Address</label>
+                            <div>
+                                <label className="block text-[12.5px] font-semibold text-[#374151] mb-1.5">Email address</label>
                                 <input
-                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:border-indigo-600 outline-none transition-all"
+                                    className="w-full h-11 px-3.5 text-[14px] text-[#15171C] bg-white border border-[#E1E4E8] rounded-[10px] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                     type="email"
                                     placeholder="your@email.com"
                                     required
@@ -118,10 +118,10 @@ export default function StudentRegisterPage() {
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-500  ">Password</label>
+                                <div>
+                                    <label className="block text-[12.5px] font-semibold text-[#374151] mb-1.5">Password</label>
                                     <input
-                                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:border-indigo-600 outline-none transition-all"
+                                        className="w-full h-11 px-3.5 text-[14px] text-[#15171C] bg-white border border-[#E1E4E8] rounded-[10px] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                         type="password"
                                         placeholder="Min. 8 chars"
                                         required
@@ -129,10 +129,10 @@ export default function StudentRegisterPage() {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-500  ">Confirm</label>
+                                <div>
+                                    <label className="block text-[12.5px] font-semibold text-[#374151] mb-1.5">Confirm</label>
                                     <input
-                                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:border-indigo-600 outline-none transition-all"
+                                        className="w-full h-11 px-3.5 text-[14px] text-[#15171C] bg-white border border-[#E1E4E8] rounded-[10px] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                         type="password"
                                         placeholder="Repeat password"
                                         required
@@ -144,8 +144,8 @@ export default function StudentRegisterPage() {
                         </div>
 
                         {error && (
-                            <div className="text-rose-500 text-xs font-bold bg-rose-50 p-3 rounded-lg flex items-center gap-2">
-                                <span className="material-icons-outlined text-sm">error</span>
+                            <div className="text-[#C0383C] text-[13px] font-medium bg-[#FDECEC] border border-[#EF4444]/20 p-3.5 rounded-[10px] flex items-center gap-2.5">
+                                <span className="material-icons-outlined text-[#EF4444] text-[20px]">error</span>
                                 {error}
                             </div>
                         )}
@@ -153,15 +153,15 @@ export default function StudentRegisterPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50"
+                            className="w-full h-[46px] bg-[#5B53E0] hover:bg-[#4A43C9] text-white font-bold text-[14.5px] rounded-[10px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors disabled:opacity-50"
                         >
-                            {isLoading ? "Creating Account..." : "Create Account"}
+                            {isLoading ? "Creating account…" : "Create account"}
                         </button>
 
                         <div className="text-center pt-4">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-[#8A929E]">
                                 Already have an account?{" "}
-                                <Link href="/student/login" className="text-indigo-600 font-bold hover:underline">
+                                <Link href="/student/login" className="text-[#5B53E0] font-semibold hover:underline">
                                     Login instead
                                 </Link>
                             </p>

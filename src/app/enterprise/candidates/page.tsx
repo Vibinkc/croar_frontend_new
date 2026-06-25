@@ -5,23 +5,23 @@ import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { 
-    Search, 
-    FileText, 
-    ArrowRight, 
-    Users, 
-    Zap, 
-    Star, 
-    CheckCircle2, 
-    ChevronDown, 
+import {
+    Search,
+    FileText,
+    ArrowRight,
+    Users,
+    Zap,
+    Star,
+    CheckCircle2,
+    ChevronDown,
     Building2,
     X,
-    Filter,
     LayoutGrid,
-    List,
-    Download,
-    Mail
+    Mail,
+    Phone,
+    Briefcase,
 } from "lucide-react";
+import { jetbrainsMono } from "@/components/ds";
 
 interface Job {
     id: string;
@@ -46,14 +46,21 @@ interface Application {
     candidate: Candidate;
 }
 
-const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; onClose: () => void }) => {
-    const details = candidate.parsed_data || {};
+const AVATAR_PALETTE = [
+    "bg-[#ECEBFB] text-[#5B53E0]",
+    "bg-[#E3F4EF] text-[#0E8A6E]",
+    "bg-[#FEF3E2] text-[#D97706]",
+    "bg-[#E7ECFB] text-[#3559C7]",
+    "bg-[#FDECEC] text-[#C0383C]",
+];
+const avatarFor = (name: string) => AVATAR_PALETTE[(name?.charCodeAt(0) || 0) % AVATAR_PALETTE.length];
 
+const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; onClose: () => void }) => {
     return (
         <div
             role="button"
             tabIndex={0}
-            className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-end bg-[#15171C]/40 backdrop-blur-sm"
             onClick={onClose}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { onClose(); } }}
         >
@@ -65,44 +72,51 @@ const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; o
                 className="w-full max-w-xl h-full bg-white shadow-2xl overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="sticky top-0 bg-white z-10 border-b border-slate-100 px-6 py-5 flex items-start justify-between">
-                    <div>
-                        <h2 className="text-xl font-black text-slate-900 tracking-tight">{candidate.full_name}</h2>
-                        <div className="flex flex-col gap-1.5 mt-2 text-xs text-slate-500">
-                            <div className="flex items-center gap-2">
-                                <Mail className="w-4 h-4 text-slate-400" />
-                                {candidate.email}
-                            </div>
-                            {candidate.phone && (
-                                <div className="flex items-center gap-2">
-                                    <Zap className="w-4 h-4 text-slate-400" />
-                                    {candidate.phone}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
+                {/* Header */}
+                <div className="relative px-6 pt-7 pb-6 text-white overflow-hidden" style={{ background: "linear-gradient(135deg,#1B1D24,#0E1014)" }}>
+                    <div className="absolute -top-12 -right-10 w-48 h-48 rounded-full" style={{ background: "radial-gradient(circle,rgba(91,83,224,0.5),transparent 70%)" }} />
+                    <button onClick={onClose} className="absolute top-5 right-5 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors">
                         <X className="w-5 h-5" />
                     </button>
+                    <div className="relative flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-[18px] flex items-center justify-center font-extrabold text-[22px] text-white shrink-0" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 10px 24px rgba(91,83,224,0.45)" }}>
+                            {candidate.full_name?.charAt(0)?.toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                            <h2 className="text-[22px] font-extrabold tracking-[-0.4px] truncate">{candidate.full_name}</h2>
+                            <div className="flex flex-col gap-1 mt-1.5 text-[13px] text-white/65">
+                                <div className="flex items-center gap-2">
+                                    <Mail className="w-4 h-4 shrink-0" />
+                                    <span className="truncate">{candidate.email}</span>
+                                </div>
+                                {candidate.phone && (
+                                    <div className="flex items-center gap-2">
+                                        <Phone className="w-4 h-4 shrink-0" />
+                                        {candidate.phone}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Body */}
-                <div className="p-6 space-y-8">
+                <div className="p-6 space-y-7">
                     {/* Resume Action */}
                     {candidate.resume_url && (
-                        <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/60 flex items-center justify-between">
+                        <div className="bg-[#F7F8FA] rounded-[14px] p-5 border border-[#E8EAED] flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-rose-500 shadow-sm">
+                                <div className="w-12 h-12 rounded-[12px] bg-white border border-[#E8EAED] flex items-center justify-center text-[#C0383C] shadow-sm">
                                     <FileText className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-black text-slate-900">Resume Document</h3>
-                                    <p className="text-xs font-medium text-slate-400 mt-0.5">Uploaded {new Date(candidate.created_at).toLocaleDateString()}</p>
+                                    <h3 className="text-[14px] font-bold text-[#15171C]">Resume Document</h3>
+                                    <p className="text-[12px] font-medium text-[#8A929E] mt-0.5">Uploaded {new Date(candidate.created_at).toLocaleDateString()}</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => window.open(candidate.resume_url, '_blank')}
-                                className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm"
+                                className="px-5 h-10 bg-white border border-[#E8EAED] rounded-[10px] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] hover:border-[#DAD7F6] transition-colors shadow-sm"
                             >
                                 View Resume
                             </button>
@@ -111,21 +125,20 @@ const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; o
 
                     {/* Applied Jobs */}
                     <div>
-                        <h3 className="font-black text-slate-900 text-sm mb-4 flex items-center gap-2">
-                            <LayoutGrid className="w-4 h-4 text-indigo-500" />
+                        <h3 className="font-bold text-[#15171C] text-[14px] mb-3.5 flex items-center gap-2">
+                            <span className="w-7 h-7 rounded-[9px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center"><Briefcase className="w-4 h-4" /></span>
                             Target Positions
                         </h3>
                         {candidate.applied_jobs && candidate.applied_jobs.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
                                 {candidate.applied_jobs.map((job, idx) => (
-                                    <span key={idx} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 text-[10px] font-black border border-indigo-100">
+                                    <span key={idx} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[10px] bg-[#ECEBFB]/70 text-[#5B53E0] text-[12px] font-semibold border border-[#DAD7F6]">
                                         {job.title}
-                                        <div className="w-1 h-1 rounded-full bg-indigo-400"></div>
                                     </span>
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-4 rounded-xl border border-dashed border-slate-200 text-slate-400 text-[11px] font-medium">
+                            <div className="p-4 rounded-[12px] border border-dashed border-[#E1E4E8] text-[#9AA3AF] text-[13px] font-medium">
                                 No specific jobs linked (General Talent Pool)
                             </div>
                         )}
@@ -134,13 +147,13 @@ const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; o
                     {/* Skills */}
                     {candidate.skills && candidate.skills.length > 0 && (
                         <div>
-                            <h3 className="font-black text-slate-900 text-sm mb-4 flex items-center gap-2">
-                                <Zap className="w-4 h-4 text-emerald-500" />
-                                Verified Skills
+                            <h3 className="font-bold text-[#15171C] text-[14px] mb-3.5 flex items-center gap-2">
+                                <span className="w-7 h-7 rounded-[9px] bg-[#E3F4EF] text-[#0E8A6E] flex items-center justify-center"><Zap className="w-4 h-4" /></span>
+                                Skills
                             </h3>
                             <div className="flex flex-wrap gap-2">
                                 {candidate.skills.map((skill, i) => (
-                                    <span key={i} className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[10px] text-slate-600 font-black shadow-sm uppercase tracking-wider">
+                                    <span key={i} className="px-3 py-1.5 bg-white border border-[#E8EAED] rounded-[10px] text-[12px] text-[#374151] font-semibold shadow-sm">
                                         {skill}
                                     </span>
                                 ))}
@@ -242,164 +255,157 @@ export default function AllCandidatesPage() {
         qualified: candidates.filter((c: Candidate) => c.resume_url).length
     };
 
-    return (
-        <div className="p-8 space-y-8 animate-in fade-in duration-500">
-            {/* Header Section */}
-            <div className="flex items-start justify-between">
-                <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">Candidate Bank</h1>
-                    <p className="text-sm font-medium text-slate-400">Discover and manage qualified talent across your organization</p>
-                </div>
-            </div>
+    const statCards = [
+        { label: "Total Profiles", value: stats.total, Icon: Users, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.3)" },
+        { label: "Active Pipeline", value: stats.fastTrack, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.3)" },
+        { label: "Highly Skilled", value: stats.topTalent, Icon: Star, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.3)" },
+        { label: "With Resume", value: stats.qualified, Icon: CheckCircle2, grad: "linear-gradient(135deg,#60A5FA,#3559C7)", glow: "rgba(53,89,199,0.3)" },
+    ];
 
-            {/* Stat Cards Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                    { label: "Total Profiles", value: stats.total, icon: Users, color: "text-indigo-500", bg: "bg-indigo-50/50", hoverBg: "bg-indigo-50" },
-                    { label: "Active Pipeline", value: stats.fastTrack, icon: Zap, color: "text-emerald-500", bg: "bg-emerald-50/50", hoverBg: "bg-emerald-50" },
-                    { label: "Highly Skilled", value: stats.topTalent, icon: Star, color: "text-amber-500", bg: "bg-amber-50/50", hoverBg: "bg-amber-50" },
-                    { label: "Qualified Repos", value: stats.qualified, icon: CheckCircle2, color: "text-rose-500", bg: "bg-rose-50/50", hoverBg: "bg-rose-50" },
-                ].map((card, i) => (
-                    <motion.div 
-                        key={i}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between min-h-[140px]"
+    return (
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Candidate Bank</h1>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Discover &amp; manage qualified talent across your organization</p>
+                </div>
+            </header>
+
+            {/* Stat cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                {statCards.map((s) => (
+                    <div
+                        key={s.label}
+                        className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden"
                     >
-                        <div className="flex justify-between items-start">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{card.label}</span>
-                            <div className={`w-12 h-12 rounded-xl ${card.bg} ${card.color} flex items-center justify-center transition-all group-hover:scale-110 group-hover:${card.hoverBg}`}>
-                                <card.icon className="w-6 h-6" />
+                        <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
+                                <div className={`text-[28px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{s.value}</div>
                             </div>
+                            <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                                <s.Icon className="w-[18px] h-[18px]" />
+                            </span>
                         </div>
-                        <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                            {card.value}
-                        </div>
-                    </motion.div>
+                    </div>
                 ))}
             </div>
 
             {/* Filter Bar */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div className="flex-1 relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors" />
-                    <input 
-                        type="text" 
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
+                    <input
+                        type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search by name, email, or skills..."
-                        className="w-full bg-white border border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-[#7C3AED] transition-all shadow-sm"
+                        className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-11 pr-4 text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] transition-all"
                     />
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                            <Building2 className="w-4 h-4" />
-                        </div>
-                        <select 
-                            value={selectedJobId}
-                            onChange={(e) => setSelectedJobId(e.target.value)}
-                            className="bg-slate-50 border border-slate-100 rounded-2xl py-3 pl-9 pr-10 text-xs font-bold text-slate-600 outline-none appearance-none cursor-pointer hover:bg-white transition-all shadow-sm min-w-[160px]"
-                        >
-                            <option value="ALL">All Applications</option>
-                            {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    </div>
-
-                    <div className="flex items-center p-1.5 bg-slate-50 border border-slate-100 rounded-2xl">
-                        <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-[#7C3AED] shadow-sm">
-                            <LayoutGrid className="w-5 h-5" />
-                        </div>
-                    </div>
+                <div className="relative">
+                    <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                    <select
+                        value={selectedJobId}
+                        onChange={(e) => setSelectedJobId(e.target.value)}
+                        className="bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-10 pr-10 text-[13.5px] font-semibold text-[#374151] outline-none appearance-none cursor-pointer hover:border-[#DAD7F6] focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] transition-all w-full sm:min-w-[200px]"
+                    >
+                        <option value="ALL">All Applications</option>
+                        {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                 </div>
             </div>
 
             {/* Main Content Area */}
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/10 overflow-hidden min-h-[500px]">
+            <div className="bg-white rounded-[16px] border border-[#E8EAED] overflow-hidden min-h-[480px]">
                 {isLoading ? (
-                    <div className="p-8 space-y-4">
+                    <div className="p-6 space-y-3">
                         {[1, 2, 3, 4, 5].map(i => (
-                            <div key={i} className="h-16 bg-slate-50 rounded-2xl animate-pulse" />
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
                         ))}
                     </div>
                 ) : filteredCandidates.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-20 text-center">
-                        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
-                            <Users className="w-10 h-10 text-slate-300" />
+                        <div className="relative mb-6">
+                            <div className="absolute -inset-3 rounded-full bg-[#5B53E0]/12 blur-2xl" />
+                            <div className="relative w-16 h-16 rounded-[18px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 12px 30px rgba(91,83,224,0.4)" }}>
+                                <Users className="w-7 h-7" />
+                            </div>
                         </div>
-                        <h3 className="text-xl font-black text-slate-900 mb-2">No candidates matched</h3>
-                        <p className="text-slate-500 max-w-xs mx-auto mb-8">Refine your search parameters to discover other talent in your pool.</p>
-                        <button onClick={() => { setSearchQuery(""); setSelectedJobId("ALL"); }} className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm">Reset Search</button>
+                        <h3 className="text-[18px] font-bold text-[#15171C] mb-1.5">No candidates matched</h3>
+                        <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-6">Refine your search parameters to discover other talent in your pool.</p>
+                        <button onClick={() => { setSearchQuery(""); setSelectedJobId("ALL"); }} className="px-6 h-11 bg-[#5B53E0] text-white rounded-[10px] font-semibold text-[13.5px] hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors">Reset Search</button>
                     </div>
                 ) : (
                     <table className="w-full border-collapse">
                         <thead>
-                            <tr className="bg-slate-50/50">
-                                <th className="px-6 py-4 text-left text-[11px] font-black text-slate-400 uppercase tracking-wider">Candidate</th>
-                                <th className="px-6 py-4 text-left text-[11px] font-black text-slate-400 uppercase tracking-wider">Target Pipeline</th>
-                                <th className="px-6 py-4 text-left text-[11px] font-black text-slate-400 uppercase tracking-wider">Top Skills</th>
-                                <th className="px-6 py-4 text-right text-[11px] font-black text-slate-400 uppercase tracking-wider">Actions</th>
+                            <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
+                                <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Candidate</th>
+                                <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Target Pipeline</th>
+                                <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Top Skills</th>
+                                <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-50">
-                            {filteredCandidates.map((candidate, index) => (
-                                <tr key={candidate.id} className="hover:bg-slate-50/30 transition-all group">
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-slate-50 text-[#7C3AED] flex items-center justify-center font-black text-xs border border-indigo-100 shadow-sm">
-                                                {candidate.full_name?.charAt(0)}
+                        <tbody className="divide-y divide-[#F0F0F1]">
+                            {filteredCandidates.map((candidate) => (
+                                <tr key={candidate.id} className="hover:bg-[#F7F8FA] transition-colors group">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3.5">
+                                            <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center font-semibold text-[14px] shrink-0 ${avatarFor(candidate.full_name)}`}>
+                                                {candidate.full_name?.charAt(0)?.toUpperCase()}
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-black text-slate-900 group-hover:text-[#7C3AED] transition-colors">{candidate.full_name}</span>
-                                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{candidate.email}</span>
+                                            <div className="flex flex-col min-w-0">
+                                                <span className="text-[14px] font-semibold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{candidate.full_name}</span>
+                                                <span className="text-[12px] text-[#9AA3AF] truncate">{candidate.email}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-5">
+                                    <td className="px-6 py-4">
                                         {candidate.applied_jobs && candidate.applied_jobs.length > 0 ? (
                                             <div className="flex flex-wrap gap-1.5">
                                                 {candidate.applied_jobs.slice(0, 2).map((job, idx) => (
-                                                    <span key={idx} className="inline-flex items-center px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 text-[10px] font-black border border-slate-200">
+                                                    <span key={idx} className="inline-flex items-center px-2.5 py-1 rounded-[8px] bg-[#F4F5F7] text-[#4B5563] text-[11px] font-semibold border border-[#E8EAED]">
                                                         {job.title}
                                                     </span>
                                                 ))}
                                                 {candidate.applied_jobs.length > 2 && (
-                                                    <span className="text-[10px] font-black text-slate-300">+{candidate.applied_jobs.length - 2}</span>
+                                                    <span className="text-[11px] font-semibold text-[#9AA3AF] self-center">+{candidate.applied_jobs.length - 2}</span>
                                                 )}
                                             </div>
                                         ) : (
-                                            <span className="text-[10px] font-black text-slate-400 uppercase italic">General Pool</span>
+                                            <span className="text-[12px] font-medium text-[#9AA3AF] italic">General Pool</span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-5">
+                                    <td className="px-6 py-4">
                                         <div className="flex flex-wrap gap-1.5">
                                             {candidate.skills?.slice(0, 3).map((s, idx) => (
-                                                <span key={idx} className="inline-flex items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-[9px] font-black border border-indigo-100 uppercase tracking-wider">
+                                                <span key={idx} className="inline-flex items-center px-2.5 py-1 rounded-[8px] bg-[#ECEBFB]/70 text-[#5B53E0] text-[11px] font-semibold border border-[#DAD7F6]">
                                                     {s}
                                                 </span>
                                             ))}
                                             {candidate.skills && candidate.skills.length > 3 && (
-                                                <span className="text-[10px] font-black text-slate-300">+{candidate.skills.length - 3}</span>
+                                                <span className="text-[11px] font-semibold text-[#9AA3AF] self-center">+{candidate.skills.length - 3}</span>
                                             )}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-5 text-right">
-                                        <div className="flex items-center justify-end gap-3">
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex items-center justify-end gap-2.5">
                                             {candidate.resume_url && (
                                                 <button
                                                     onClick={() => window.open(candidate.resume_url, '_blank')}
-                                                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 transition-all border border-transparent shadow-sm"
+                                                    className="w-9 h-9 flex items-center justify-center rounded-[9px] bg-[#F4F5F7] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors border border-[#E8EAED]"
                                                     title="View Resume"
                                                 >
-                                                    <FileText className="w-5 h-5" />
+                                                    <FileText className="w-[18px] h-[18px]" />
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => setViewCandidate(candidate)}
-                                                className="h-10 px-4 rounded-xl bg-[#7C3AED]/10 text-[#7C3AED] text-[11px] font-black hover:bg-[#7C3AED] hover:text-white transition-all flex items-center gap-2 active:scale-95 shadow-sm"
+                                                className="h-9 px-4 rounded-[9px] bg-[#ECEBFB] text-[#5B53E0] text-[12.5px] font-semibold hover:bg-[#5B53E0] hover:text-white transition-colors flex items-center gap-1.5"
                                             >
                                                 Open Profile
                                                 <ArrowRight className="w-4 h-4" />
@@ -412,7 +418,7 @@ export default function AllCandidatesPage() {
                     </table>
                 )}
             </div>
-            
+
             <AnimatePresence>
                 {viewCandidate && (
                     <CandidateProfileModal candidate={viewCandidate} onClose={() => setViewCandidate(null)} />

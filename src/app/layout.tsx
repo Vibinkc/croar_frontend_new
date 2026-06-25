@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
+import { hankenGrotesk, jetbrainsMono } from "@/components/ds/fonts";
 import { AuthProvider } from "@/context/AuthContext";
 // import AgentCopilot from "@/components/enterprise/AgentCopilot";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "Croar AI Portal",
@@ -40,7 +35,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${hankenGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         <AuthProvider>
           {children}
           {/* <AgentCopilot /> */}

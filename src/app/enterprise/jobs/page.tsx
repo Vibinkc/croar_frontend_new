@@ -4,29 +4,27 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
-import { 
-    Briefcase, 
-    CheckCircle2, 
-    FileEdit, 
-    Archive, 
-    LayoutGrid,
+import {
+    Briefcase,
+    Zap,
+    Clock,
+    CheckCircle2,
     Search,
     Building2,
-    MapPin,
-    Tag,
     Filter,
-    Plus,
-    Clock,
-    Zap,
-    List,
     ChevronDown,
-    Building,
+    Plus,
+    MapPin,
     Copy,
-    Check
+    Check,
+    FileEdit,
+    Archive,
+    MoreHorizontal,
+    Sparkles,
+    Globe as GlobeIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import PublishJobModal from "@/components/enterprise/PublishJobModal";
-import { Globe as GlobeIcon } from "lucide-react";
+import { Badge, jetbrainsMono } from "@/components/ds";
 
 interface JobPosting {
     platform: string;
@@ -175,329 +173,275 @@ export default function EnterpriseJobsPage() {
     const locations = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)));
     const jobTypes = Array.from(new Set(jobs.map(j => j.job_type).filter(Boolean)));
 
-    const tabs: { id: TabStatus, label: string, count: number }[] = [
-        { id: "ALL", label: "All Jobs", count: stats.total },
-        { id: "ACTIVE", label: "Active", count: stats.active },
-        { id: "DRAFTS", label: "Drafts", count: stats.drafts },
-        { id: "CLOSED", label: "Closed", count: stats.closed },
+    const statCards = [
+        { tab: "ALL" as TabStatus, label: "Total Positions", value: stats.total, Icon: Briefcase, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
+        { tab: "ACTIVE" as TabStatus, label: "Active Jobs", value: stats.active, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+        { tab: "DRAFTS" as TabStatus, label: "Drafts", value: stats.drafts, Icon: Clock, grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+        { tab: "CLOSED" as TabStatus, label: "Closed / Filled", value: stats.closed, Icon: CheckCircle2, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
     ];
 
+    const selectCls =
+        "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+
+    const copyLink = async (jobId: string) => {
+        const url = `${window.location.origin}/jobs/${jobId}?source=Direct Link`;
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(url);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                textArea.remove();
+            }
+            setCopiedJobId(jobId);
+            setTimeout(() => setCopiedJobId(null), 2000);
+        } catch (err) {
+            console.error("Failed to copy: ", err);
+        }
+    };
+
+    const statusBadge = (statusId: number) =>
+        statusId === 2 ? (
+            <Badge tone="success" dot>Active</Badge>
+        ) : statusId === 1 ? (
+            <Badge tone="neutral" dot>Draft</Badge>
+        ) : (
+            <Badge tone="danger" dot>Closed</Badge>
+        );
+
     return (
-        <div className="p-8 space-y-8 animate-in fade-in duration-500 bg-[#F8FAFC] min-h-screen">
-            {/* Header Section */}
-            <div className="flex items-start justify-between">
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">Job Board</h1>
-                    <p className="text-sm font-medium text-slate-400">Manage your pipeline & open positions</p>
+                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Jobs</h1>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your pipeline &amp; open positions</p>
                 </div>
-                {canAccess("jobs:create") && (
-                    <Link
-                        href="/enterprise/jobs/create"
-                        className="bg-[#7C3AED] text-white px-6 py-3 rounded-xl font-black text-xs hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95"
+                <div className="flex items-center gap-2.5 shrink-0">
+                    {canAccess("jobs:create") && (
+                        <>
+                            <Link
+                                href="/enterprise/croar-pilot"
+                                className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
+                            >
+                                <Sparkles className="w-3.5 h-3.5 text-[#5B53E0]" /> Hire with AI
+                            </Link>
+                            <Link
+                                href="/enterprise/jobs/create"
+                                className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
+                            >
+                                <Plus className="w-3.5 h-3.5" /> New Position
+                            </Link>
+                        </>
+                    )}
+                </div>
+            </header>
+
+            {/* Stat cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                {statCards.map((s) => (
+                    <div
+                        key={s.tab}
+                        className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden"
                     >
-                        <Plus className="w-4 h-4" />
-                        Create New Position
-                    </Link>
-                )}
+                        <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
+                                <div className={`text-[28px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{s.value}</div>
+                            </div>
+                            <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                                <s.Icon className="w-[18px] h-[18px]" />
+                            </span>
+                        </div>
+                    </div>
+                ))}
             </div>
 
-            {/* Stat Cards Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Total Positions */}
-                <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    onClick={() => setActiveTab("ALL")}
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between min-h-[140px]"
-                >
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-indigo-400">Total Positions</span>
-                        <div className="w-12 h-12 rounded-xl bg-indigo-50/50 text-indigo-500 flex items-center justify-center transition-all group-hover:scale-110 group-hover:bg-indigo-50">
-                            <Briefcase className="w-6 h-6" />
-                        </div>
-                    </div>
-                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                        {stats.total}
-                    </div>
-                </motion.div>
-
-                {/* Active Jobs */}
-                <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.1 }}
-                    onClick={() => setActiveTab("ACTIVE")}
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between min-h-[140px]"
-                >
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-emerald-500">Active Jobs</span>
-                        <div className="w-12 h-12 rounded-xl bg-emerald-50/50 text-emerald-500 flex items-center justify-center transition-all group-hover:scale-110 group-hover:bg-emerald-50">
-                            <Zap className="w-6 h-6" />
-                        </div>
-                    </div>
-                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                        {stats.active}
-                    </div>
-                </motion.div>
-
-                {/* Draft Postings */}
-                <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2 }}
-                    onClick={() => setActiveTab("DRAFTS")}
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between min-h-[140px]"
-                >
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-amber-500">Draft Postings</span>
-                        <div className="w-12 h-12 rounded-xl bg-amber-50/50 text-amber-500 flex items-center justify-center transition-all group-hover:scale-110 group-hover:bg-amber-50">
-                            <Clock className="w-6 h-6" />
-                        </div>
-                    </div>
-                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                        {stats.drafts}
-                    </div>
-                </motion.div>
-
-                {/* Closed/Filled */}
-                <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 }}
-                    onClick={() => setActiveTab("CLOSED")}
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between min-h-[140px]"
-                >
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors group-hover:text-rose-500">Closed/Filled</span>
-                        <div className="w-12 h-12 rounded-xl bg-rose-50/50 text-rose-500 flex items-center justify-center transition-all group-hover:scale-110 group-hover:bg-rose-50">
-                            <CheckCircle2 className="w-6 h-6" />
-                        </div>
-                    </div>
-                    <div className="text-4xl font-black text-slate-900 mt-auto leading-none">
-                        {stats.closed}
-                    </div>
-                </motion.div>
-            </div>
-
-            {/* Filter Bar */}
-            <div className="flex items-center gap-4">
-                {/* Search Bar */}
-                <div className="flex-1 relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors" />
-                    <input 
-                        type="text" 
+            {/* Toolbar: search + filters */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+                    <input
+                        type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by title, location or keywords..."
-                        className="w-full bg-white border border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-[#7C3AED] transition-all shadow-sm"
+                        placeholder="Search by title, location or keywords…"
+                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
 
-                {/* Grid/List Toggle */}
-                <div className="flex items-center p-1.5 bg-slate-50 border border-slate-100 rounded-2xl">
-                    <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-[#7C3AED] shadow-sm">
-                        <LayoutGrid className="w-5 h-5" />
-                    </button>
-                    <button className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:bg-white/50 transition-all">
-                        <List className="w-5 h-5" />
-                    </button>
-                </div>
-
-                {/* Dropdowns */}
-                <div className="flex items-center gap-2">
-                    <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                            <Building2 className="w-4 h-4" />
-                        </div>
-                        <select 
+                <div className="flex items-center gap-2.5">
+                    <div className="relative flex-1 md:flex-none">
+                        <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        <select
                             value={selectedCompanyId}
                             onChange={(e) => setSelectedCompanyId(e.target.value)}
-                            className="bg-slate-50 border border-slate-100 rounded-2xl py-3 pl-9 pr-10 text-xs font-bold text-slate-600 outline-none appearance-none cursor-pointer hover:bg-white transition-all shadow-sm min-w-[140px]"
+                            className={`${selectCls} w-full md:min-w-[150px]`}
                         >
-                            <option value="ALL">All Clients</option>
+                            <option value="ALL">All clients</option>
                             {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
 
-                    <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                            <Filter className="w-4 h-4" />
-                        </div>
-                        <select 
+                    <div className="relative flex-1 md:flex-none">
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        <select
                             value={activeTab}
                             onChange={(e) => setActiveTab(e.target.value as TabStatus)}
-                            className="bg-slate-50 border border-slate-100 rounded-2xl py-3 pl-9 pr-10 text-xs font-bold text-slate-600 outline-none appearance-none cursor-pointer hover:bg-white transition-all shadow-sm min-w-[140px]"
+                            className={`${selectCls} w-full md:min-w-[150px]`}
                         >
-                            <option value="ALL">Any Status</option>
+                            <option value="ALL">Any status</option>
                             <option value="ACTIVE">Active</option>
                             <option value="DRAFTS">Draft</option>
                             <option value="CLOSED">Closed</option>
                         </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
                 </div>
             </div>
 
-            {/* Content Table */}
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden min-h-[500px]">
+            {/* Job list */}
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
                 {isLoading ? (
-                    <div className="p-8 space-y-4">
+                    <div className="p-4 space-y-2.5">
                         {[1, 2, 3, 4, 5].map(i => (
-                            <div key={i} className="h-16 bg-slate-50 rounded-2xl animate-pulse" />
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
                         ))}
                     </div>
                 ) : filteredJobs.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center p-20 text-center">
-                        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
-                            <Briefcase className="w-10 h-10 text-slate-300" />
+                    <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
+                        <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
+                            <Briefcase className="w-8 h-8 text-[#C7CCD4]" />
                         </div>
                         {jobs.length === 0 ? (
                             <>
-                                <h3 className="text-xl font-black text-slate-900 mb-2">No jobs yet</h3>
-                                <p className="text-slate-500 max-w-xs mx-auto mb-8">Create your first job to start hiring — let AI set up the whole pipeline, or post one manually.</p>
-                                <div className="flex flex-wrap gap-3 justify-center">
-                                    <Link href="/enterprise/croar-pilot" className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all flex items-center gap-2">
-                                        <span className="material-symbols-rounded text-lg">smart_toy</span>{""}
-                                        Hire with AI
+                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No jobs yet</h3>
+                                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Create your first job to start hiring — let AI set up the whole pipeline, or post one manually.</p>
+                                <div className="flex flex-wrap gap-2.5 justify-center">
+                                    <Link href="/enterprise/croar-pilot" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors">
+                                        <Sparkles className="w-4 h-4" /> Hire with AI
                                     </Link>
-                                    <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all">Post a job</Link>
+                                    <Link href="/enterprise/jobs/create" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13.5px] font-semibold hover:bg-[#F4F5F7] transition-colors">
+                                        <Plus className="w-4 h-4" /> Post a job
+                                    </Link>
                                 </div>
                             </>
                         ) : (
                             <>
-                                <h3 className="text-xl font-black text-slate-900 mb-2">No jobs match your filters</h3>
-                                <p className="text-slate-500 max-w-xs mx-auto mb-8">Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
-                                <button onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); }} className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm">Clear All Filters</button>
+                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No jobs match your filters</h3>
+                                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
+                                <button onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); }} className="inline-flex items-center h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] transition-colors">Clear all filters</button>
                             </>
                         )}
                     </div>
                 ) : (
-                    <table className="w-full border-collapse">
-                        <thead>
-                            <tr className="bg-slate-50/50">
-                                <th className="px-6 py-4 text-left text-[11px] font-black text-slate-400 uppercase tracking-wider">Position Name</th>
-                                <th className="px-6 py-4 text-left text-[11px] font-black text-slate-400 uppercase tracking-wider">Location</th>
-                                <th className="px-6 py-4 text-left text-[11px] font-black text-slate-400 uppercase tracking-wider">Experience</th>
-                                <th className="px-6 py-4 text-left text-[11px] font-black text-slate-400 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-4 text-right text-[11px] font-black text-slate-400 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                            {filteredJobs.map((job, index) => (
-                                <tr key={job.id} className="hover:bg-slate-50/30 transition-all group">
-                                    <td className="px-6 py-5">
-                                        <Link href={`/enterprise/jobs/${job.id}`}>
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-black text-slate-900 group-hover:text-[#7C3AED] transition-all cursor-pointer">{job.title}</span>
-                                                <span className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-tight">#{job.id.substring(0, 8)}</span>
-                                            </div>
-                                        </Link>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-2 text-slate-500">
-                                            <MapPin className="w-4 h-4" />
-                                            <span className="text-xs font-bold">{job.location || "Remote"}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        <span className="text-[11px] font-black text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-                                            {job.experience_min || 0}-{job.experience_max || '5'} YRS
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        {job.status_id === 2 ? (
-                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black border border-emerald-100">
-                                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>{""}
-                                                ACTIVE
-                                            </span>
-                                        ) : job.status_id === 1 ? (
-                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 text-slate-500 text-[10px] font-black border border-slate-200">
-                                                <span className="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>{""}
-                                                DRAFT
-                                            </span>
-                                        ) : (
-                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-500 text-[10px] font-black border border-rose-100">
-                                                <span className="w-1.5 h-1.5 bg-rose-500 rounded-full"></span>{""}
-                                                CLOSED
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-5 text-right">
-                                        <div className="flex items-center justify-end gap-3">
-                                            {/* Copy Link Button */}
-                                            <button 
-                                                onClick={async () => {
-                                                    const url = `${window.location.origin}/jobs/${job.id}?source=Direct Link`;
-                                                    try {
-                                                        if (navigator.clipboard && window.isSecureContext) {
-                                                            await navigator.clipboard.writeText(url);
-                                                        } else {
-                                                            const textArea = document.createElement("textarea");
-                                                            textArea.value = url;
-                                                            textArea.style.position = "fixed";
-                                                            textArea.style.left = "-9999px";
-                                                            document.body.appendChild(textArea);
-                                                            textArea.select();
-                                                            document.execCommand("copy");
-                                                            textArea.remove();
-                                                        }
-                                                        setCopiedJobId(job.id);
-                                                        setTimeout(() => setCopiedJobId(null), 2000);
-                                                    } catch (err) {
-                                                        console.error("Failed to copy: ", err);
-                                                    }
-                                                }}
-                                                className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all border border-transparent ${copiedJobId === job.id ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600 hover:border-slate-200"}`}
-                                                title="Copy JD Link"
-                                            >
-                                                {copiedJobId === job.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                                            </button>
+                    <>
+                        {/* Column header (desktop) */}
+                        <div className="hidden md:grid grid-cols-[2.4fr_1.2fr_0.9fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Position</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Location</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Experience</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                        </div>
 
-                                            {canAccess("jobs:update") && (
-                                                <Link href={`/enterprise/jobs/${job.id}/edit`} className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-[#7C3AED]/5 hover:text-[#7C3AED] transition-all border border-transparent hover:border-indigo-100" title="Edit Job">
-                                                    <FileEdit className="w-4 h-4" />
-                                                </Link>
-                                            )}
-                                            
-                                            <div className="relative group/menu">
-                                                <button className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
-                                                    <Tag className="w-4 h-4" />
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {filteredJobs.map((job, index) => (
+                                <div
+                                    key={job.id}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_1.2fr_0.9fr_1fr_120px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                                >
+                                    {/* Position */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                            <Briefcase className="w-[17px] h-[17px]" />
+                                        </span>
+                                        <div className="min-w-0">
+                                            <Link href={`/enterprise/jobs/${job.id}`} className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">
+                                                {job.title}
+                                            </Link>
+                                            {/* mobile-only meta */}
+                                            <div className="flex items-center gap-2.5 mt-0.5 text-[12px] text-[#8A929E] md:hidden">
+                                                <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {job.location || "Remote"}</span>
+                                                <span className={jetbrainsMono.className}>{job.experience_min || 0}–{job.experience_max || 5}y</span>
+                                            </div>
+                                            <span className="hidden md:block text-[11px] text-[#C7CCD4] mt-0.5">#{job.id.substring(0, 8)}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Location (desktop) */}
+                                    <div className="hidden md:flex items-center gap-1.5 text-[13px] text-[#374151] min-w-0">
+                                        <MapPin className="w-4 h-4 text-[#9AA3AF] shrink-0" />
+                                        <span className="truncate">{job.location || "Remote"}</span>
+                                    </div>
+
+                                    {/* Experience (desktop) */}
+                                    <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
+                                        {job.experience_min || 0}–{job.experience_max || 5} yrs
+                                    </div>
+
+                                    {/* Status */}
+                                    <div className="hidden md:flex items-center">{statusBadge(job.status_id)}</div>
+
+                                    {/* Status + actions (single cell on mobile, actions cell on desktop) */}
+                                    <div className="flex items-center gap-1 justify-end">
+                                        <div className="md:hidden mr-1">{statusBadge(job.status_id)}</div>
+
+                                        <button
+                                            onClick={() => copyLink(job.id)}
+                                            className={`w-9 h-9 flex items-center justify-center rounded-[9px] transition-colors border border-transparent ${copiedJobId === job.id ? "bg-[#E6F4EA] text-[#15803D]" : "text-[#9AA3AF] hover:bg-[#F1F2F5] hover:text-[#374151]"}`}
+                                            title="Copy JD link"
+                                        >
+                                            {copiedJobId === job.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                        </button>
+
+                                        {canAccess("jobs:update") && (
+                                            <Link href={`/enterprise/jobs/${job.id}/edit`} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title="Edit job">
+                                                <FileEdit className="w-4 h-4" />
+                                            </Link>
+                                        )}
+
+                                        <div className="relative group/menu">
+                                            <button className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#F1F2F5] hover:text-[#374151] transition-colors" title="More">
+                                                <MoreHorizontal className="w-4 h-4" />
+                                            </button>
+                                            <div className={`absolute right-0 w-48 bg-white rounded-[12px] shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] py-1.5 z-50 invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100 transition-all ${index >= filteredJobs.length - 2 ? "bottom-full mb-2" : "top-full mt-2"}`}>
+                                                <button
+                                                    onClick={() => setPublishModal({ isOpen: true, jobId: job.id, jobTitle: job.title })}
+                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#5B53E0] hover:bg-[#ECEBFB] transition-colors"
+                                                >
+                                                    <GlobeIcon className="w-4 h-4" /> Publish job
                                                 </button>
-                                                <div className={`absolute right-0 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100 transition-all scale-95 group-hover/menu:scale-100 flex flex-col ${index >= filteredJobs.length - 2 ? "bottom-full mb-2 origin-bottom-right" : "top-full mt-2 origin-top-right"}`}>
-                                                    <button 
-                                                        onClick={() => setPublishModal({ isOpen: true, jobId: job.id, jobTitle: job.title })} 
-                                                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black text-indigo-600 hover:bg-indigo-50 transition-all"
+                                                <button onClick={() => {}} className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors">
+                                                    <Plus className="w-4 h-4" /> Post template
+                                                </button>
+                                                {canAccess("jobs:delete") && (
+                                                    <button
+                                                        onClick={() => handleDeleteJob(job.id)}
+                                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
                                                     >
-                                                        <GlobeIcon className="w-4 h-4" />
-                                                        Publish Job
+                                                        <Archive className="w-4 h-4" /> Delete job
                                                     </button>
-                                                    <button onClick={() => {}} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black text-slate-600 hover:bg-slate-50 hover:text-[#7C3AED] transition-all">
-                                                        <Plus className="w-4 h-4" />
-                                                        Post Template
-                                                    </button>
-                                                    {canAccess("jobs:delete") && (
-                                                        <button 
-                                                            onClick={() => handleDeleteJob(job.id)} 
-                                                            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black text-rose-500 hover:bg-rose-50 transition-all"
-                                                        >
-                                                            <Archive className="w-4 h-4" />
-                                                            Delete Job
-                                                        </button>
-                                                    )}
-                                                </div>
+                                                )}
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             ))}
-                        </tbody>
-                    </table>
+                        </div>
+                    </>
                 )}
             </div>
 
             {/* Publish Modal */}
-            <PublishJobModal 
+            <PublishJobModal
                 isOpen={publishModal.isOpen}
                 onClose={() => setPublishModal({ ...publishModal, isOpen: false })}
                 jobId={publishModal.jobId}

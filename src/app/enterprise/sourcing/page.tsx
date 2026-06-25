@@ -103,13 +103,13 @@ const PLATFORM_LOGOS: Record<string, React.FC<{ className?: string }>> = {
         </svg>
     ),
     arxiv: ({ className }) => (
-        <div className={`${className} font-black text-[10px] bg-red-600 text-white flex items-center justify-center rounded-lg px-2 py-1`}>arXiv</div>
+        <div className={`${className} font-bold text-[10px] bg-red-600 text-white flex items-center justify-center rounded-lg px-2 py-1`}>arXiv</div>
     ),
     researchgate: ({ className }) => (
-        <div className={`${className} font-black text-[10px] bg-[#00ccbb] text-white flex items-center justify-center rounded-lg px-2 py-1`}>RG</div>
+        <div className={`${className} font-bold text-[10px] bg-[#00ccbb] text-white flex items-center justify-center rounded-lg px-2 py-1`}>RG</div>
     ),
     crunchbase: ({ className }) => (
-        <div className={`${className} font-black text-[10px] bg-[#0284c7] text-white flex items-center justify-center rounded-lg px-2 py-1`}>CB</div>
+        <div className={`${className} font-bold text-[10px] bg-[#0284c7] text-white flex items-center justify-center rounded-lg px-2 py-1`}>CB</div>
     ),
     dribbble: ({ className }) => (
         <svg className={className} viewBox="0 0 24 24" fill="#ea4c89">
@@ -117,19 +117,19 @@ const PLATFORM_LOGOS: Record<string, React.FC<{ className?: string }>> = {
         </svg>
     ),
     levelsfyi: ({ className }) => (
-        <div className={`${className} font-black text-[9px] bg-black text-yellow-500 flex items-center justify-center rounded-lg px-1.5 py-1`}>Levels.fyi</div>
+        <div className={`${className} font-bold text-[9px] bg-black text-yellow-500 flex items-center justify-center rounded-lg px-1.5 py-1`}>Levels.fyi</div>
     ),
     kaggle: ({ className }) => (
-        <div className={`${className} font-black text-[10px] bg-[#20beff] text-white flex items-center justify-center rounded-lg px-2 py-1`}>Kaggle</div>
+        <div className={`${className} font-bold text-[10px] bg-[#20beff] text-white flex items-center justify-center rounded-lg px-2 py-1`}>Kaggle</div>
     ),
     hackerrank: ({ className }) => (
-        <div className={`${className} font-black text-[10px] bg-[#2ec866] text-white flex items-center justify-center rounded-lg px-2 py-1`}>HR</div>
+        <div className={`${className} font-bold text-[10px] bg-[#2ec866] text-white flex items-center justify-center rounded-lg px-2 py-1`}>HR</div>
     ),
     leetcode: ({ className }) => (
-        <div className={`${className} font-black text-[10px] bg-[#ffa116] text-white flex items-center justify-center rounded-lg px-2 py-1`}>LC</div>
+        <div className={`${className} font-bold text-[10px] bg-[#ffa116] text-white flex items-center justify-center rounded-lg px-2 py-1`}>LC</div>
     ),
     openstreetmap: ({ className }) => (
-        <div className={`${className} font-black text-[10px] bg-[#7eb900] text-white flex items-center justify-center rounded-lg px-2 py-1`}>OSM</div>
+        <div className={`${className} font-bold text-[10px] bg-[#7eb900] text-white flex items-center justify-center rounded-lg px-2 py-1`}>OSM</div>
     )
 };
 
@@ -343,27 +343,27 @@ export default function ProfileSourcingPage() {
     };
 
     return (
-        <div className="p-8 space-y-8 animate-in fade-in duration-500">
-            {/* Header Section */}
-            <div className="flex items-start justify-between">
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 pt-4 sm:pt-5 md:pt-6 pb-4 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2 flex items-center gap-3">
-                        {"Profile Sourcing"}
-                        <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-full border border-indigo-100">
-                            New Feature
+                    <h1 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.6px] text-[#15171C] leading-tight flex items-center gap-3">
+                        Profile Sourcing
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>
+                            New
                         </span>
                     </h1>
-                    <p className="text-sm font-medium text-slate-400">
+                    <p className="text-[14px] text-[#8A929E] mt-1">
                         Search across 30+ public sources including GitHub and LinkedIn to find the best talent.
                     </p>
                 </div>
 
-                <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200/50 shadow-sm">
+                <div className="flex bg-white p-1.5 rounded-[12px] border border-[#E1E4E8] shadow-sm self-start sm:self-auto">
                     <button
                         onClick={() => setViewMode("search")}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all ${viewMode === "search"
-                                ? "bg-white text-slate-900 shadow-md border border-slate-100"
-                                : "text-slate-500 hover:text-slate-800"
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${viewMode === "search"
+                                ? "bg-white text-[#15171C] shadow-md border border-[#E8EAED]"
+                                : "text-[#6B6F76] hover:text-[#1F2127]"
                             }`}
                     >
                         <Search className="w-4 h-4" />
@@ -371,37 +371,37 @@ export default function ProfileSourcingPage() {
                     </button>
                     <button
                         onClick={() => setViewMode("chat")}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all ${viewMode === "chat"
-                                ? "bg-white text-slate-900 shadow-md border border-slate-100"
-                                : "text-slate-500 hover:text-slate-800"
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${viewMode === "chat"
+                                ? "bg-white text-[#15171C] shadow-md border border-[#E8EAED]"
+                                : "text-[#6B6F76] hover:text-[#1F2127]"
                             }`}
                     >
                         <MessageSquare className="w-4 h-4" />
                         AI Chat
                     </button>
                 </div>
-            </div>
+            </header>
 
             {viewMode === "search" ? (
                 <>
-                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/10 space-y-6">
+                    <div className="bg-white p-6 rounded-3xl border border-[#E8EAED] shadow-xl shadow-slate-200/10 space-y-6">
                         <form onSubmit={(e) => handleSearch(e, 1)} className="flex flex-col md:flex-row gap-4">
                             <div className="flex-1 relative group">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors" />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
                                 <input
                                     placeholder="e.g. Senior Frontend Engineer with WebGL experience..."
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-[#7C3AED] transition-all"
+                                    className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-4 focus:ring-[#5B53E0]/10 focus:border-[#5B53E0] transition-all"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     required
                                 />
                             </div>
                             <div className="md:w-64 relative group">
-                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#7C3AED] transition-colors" />
+                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Location (optional)"
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-[#7C3AED] transition-all"
+                                    className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-4 focus:ring-[#5B53E0]/10 focus:border-[#5B53E0] transition-all"
                                     value={location}
                                     onChange={(e) => setLocation(e.target.value)}
                                 />
@@ -409,7 +409,7 @@ export default function ProfileSourcingPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-black py-4 px-8 rounded-2xl transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-indigo-200 flex items-center justify-center min-w-[140px]"
+                                className="bg-[#5B53E0] hover:bg-[#4A43C9] text-white font-bold py-4 px-8 rounded-2xl transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-indigo-200 flex items-center justify-center min-w-[140px]"
                             >
                                 {loading ? (
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -419,8 +419,8 @@ export default function ProfileSourcingPage() {
                             </button>
                         </form>
 
-                        <div className="flex flex-col gap-4 border-t border-slate-50 pt-4">
-                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Sourcing From:</p>
+                        <div className="flex flex-col gap-4 border-t border-[#F0F0F1] pt-4">
+                            <p className="text-[11px] font-bold text-[#9AA3AF] uppercase tracking-widest">Sourcing From:</p>
                             <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
                                 {[
                                     { id: "all", label: "All Platforms", icon: Globe },
@@ -459,9 +459,9 @@ export default function ProfileSourcingPage() {
                                             setSelectedPlatform(platform.id);
                                             setResults([]); // Clear results when switching
                                         }}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black transition-all border ${selectedPlatform === platform.id
-                                                ? "bg-[#7C3AED] text-white border-[#7C3AED] shadow-md"
-                                                : "bg-white text-slate-500 border-slate-100 hover:border-slate-300"
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold transition-all border ${selectedPlatform === platform.id
+                                                ? "bg-[#5B53E0] text-white border-[#5B53E0] shadow-md"
+                                                : "bg-white text-[#6B6F76] border-[#E8EAED] hover:border-[#D4D7DC]"
                                             }`}
                                     >
                                         <PlatformLogoRenderer platform={platform.id} className="w-4 h-4 shrink-0" />
@@ -475,9 +475,9 @@ export default function ProfileSourcingPage() {
                                     type="checkbox"
                                     checked={hasContactOnly}
                                     onChange={(e) => setHasContactOnly(e.target.checked)}
-                                    className="w-4 h-4 rounded accent-[#7C3AED]"
+                                    className="w-4 h-4 rounded accent-[#5B53E0]"
                                 />
-                                <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest">
+                                <span className="text-[11px] font-bold text-[#6B6F76] uppercase tracking-widest">
                                     Has contact info only
                                 </span>
                             </label>
@@ -487,26 +487,26 @@ export default function ProfileSourcingPage() {
                     {/* Results Section */}
                     <div className="space-y-6">
                         {!hasSearched ? (
-                            <div className="flex flex-col items-center justify-center p-20 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
-                                <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center mb-6">
-                                    <SearchCode className="w-10 h-10 text-indigo-500" />
+                            <div className="flex flex-col items-center justify-center p-20 text-center bg-white rounded-3xl border border-[#E8EAED] shadow-sm">
+                                <div className="w-20 h-20 bg-[#ECEBFB] rounded-3xl flex items-center justify-center mb-6">
+                                    <SearchCode className="w-10 h-10 text-[#5B53E0]" />
                                 </div>
-                                <h3 className="text-xl font-black text-slate-900 mb-2">Ready to Source Talent?</h3>
-                                <p className="text-slate-500 max-w-xs mx-auto">
+                                <h3 className="text-xl font-bold text-[#15171C] mb-2">Ready to Source Talent?</h3>
+                                <p className="text-[#6B6F76] max-w-xs mx-auto">
                                     Enter a search query to discover professional profiles from across the web.
                                 </p>
                             </div>
                         ) : loading && results.length === 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                                    <div key={i} className="h-64 bg-slate-50 rounded-3xl animate-pulse" />
+                                    <div key={i} className="h-64 bg-[#F7F8FA] rounded-3xl animate-pulse" />
                                 ))}
                             </div>
                         ) : results.length > 0 ? (
                             <>
                                 {pinnedProfiles.length > 0 && (
                                     <div className="bg-amber-50/40 border border-amber-100 p-6 rounded-3xl space-y-4">
-                                        <p className="text-[11px] font-black text-amber-600 uppercase tracking-widest flex items-center gap-2">
+                                        <p className="text-[11px] font-bold text-amber-600 uppercase tracking-widest flex items-center gap-2">
                                             <Pin className="w-3.5 h-3.5" /> Pinned Candidates ({pinnedProfiles.length})
                                         </p>
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -516,9 +516,9 @@ export default function ProfileSourcingPage() {
                                                         <div className="flex justify-between items-start mb-4">
                                                             <div className="flex gap-2 items-center">
                                                                 {profile.avatar_url ? (
-                                                                    <img src={profile.avatar_url} alt={profile.full_name} className="w-12 h-12 rounded-2xl object-cover border-2 border-slate-50 shadow-sm" />
+                                                                    <img src={profile.avatar_url} alt={profile.full_name} className="w-12 h-12 rounded-2xl object-cover border-2 border-[#F0F0F1] shadow-sm" />
                                                                 ) : (
-                                                                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400">
+                                                                    <div className="w-12 h-12 rounded-2xl bg-[#F7F8FA] flex items-center justify-center text-[#9AA3AF]">
                                                                         <User className="w-6 h-6" />
                                                                     </div>
                                                                 )}
@@ -529,12 +529,12 @@ export default function ProfileSourcingPage() {
                                                                     <Pin className="w-3.5 h-3.5" />
                                                                 </button>
                                                             </div>
-                                                            <span className="px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border bg-indigo-50 text-indigo-600 border-indigo-100">
+                                                            <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]">
                                                                 {profile.platform}
                                                             </span>
                                                         </div>
-                                                        <h3 className="text-lg font-black text-slate-900 line-clamp-1">{profile.full_name}</h3>
-                                                        {profile.headline && <p className="text-xs font-bold text-slate-400 mt-1 line-clamp-2 min-h-[32px]">{profile.headline}</p>}
+                                                        <h3 className="text-lg font-bold text-[#15171C] line-clamp-1">{profile.full_name}</h3>
+                                                        {profile.headline && <p className="text-xs font-bold text-[#9AA3AF] mt-1 line-clamp-2 min-h-[32px]">{profile.headline}</p>}
                                                     </div>
                                                 </div>
                                             ))}
@@ -551,7 +551,7 @@ export default function ProfileSourcingPage() {
                                             transition={{ delay: index * 0.05 }}
                                             className={`bg-white p-6 rounded-3xl border transition-all group flex flex-col justify-between ${pinnedProfiles.some(p => p.profile_url === profile.profile_url)
                                                     ? 'border-amber-400 shadow-lg ring-1 ring-amber-400'
-                                                    : 'border-slate-100 shadow-sm hover:shadow-xl'
+                                                    : 'border-[#E8EAED] shadow-sm hover:shadow-xl'
                                                 }`}
                                         >
                                             <div>
@@ -561,10 +561,10 @@ export default function ProfileSourcingPage() {
                                                             <img
                                                                 src={profile.avatar_url}
                                                                 alt={profile.full_name}
-                                                                className="w-12 h-12 rounded-2xl object-cover border-2 border-slate-50 shadow-sm transition-transform group-hover:scale-105"
+                                                                className="w-12 h-12 rounded-2xl object-cover border-2 border-[#F0F0F1] shadow-sm transition-transform group-hover:scale-105"
                                                             />
                                                         ) : (
-                                                            <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors">
+                                                            <div className="w-12 h-12 rounded-2xl bg-[#F7F8FA] flex items-center justify-center text-[#9AA3AF] group-hover:bg-[#ECEBFB] group-hover:text-[#5B53E0] transition-colors">
                                                                 <User className="w-6 h-6" />
                                                             </div>
                                                         )}
@@ -579,7 +579,7 @@ export default function ProfileSourcingPage() {
                                                             }}
                                                             className={`p-2 rounded-xl border transition-all ${pinnedProfiles.some(p => p.profile_url === profile.profile_url)
                                                                     ? 'bg-amber-500 text-white border-amber-500'
-                                                                    : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'
+                                                                    : 'bg-white text-[#9AA3AF] border-[#E8EAED] hover:border-[#D4D7DC]'
                                                                 }`}
                                                         >
                                                             <Pin className="w-3.5 h-3.5" />
@@ -587,25 +587,25 @@ export default function ProfileSourcingPage() {
                                                     </div>
                                                     <PlatformLogoRenderer platform={profile.platform} className="w-5 h-5 shrink-0" />
                                                 </div>
-                                                <h3 className="text-lg font-black text-slate-900 group-hover:text-[#7C3AED] transition-colors line-clamp-1">
+                                                <h3 className="text-lg font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors line-clamp-1">
                                                     {profile.full_name || "Anonymous Profile"}
                                                 </h3>
                                                 {profile.headline && (
-                                                    <p className="text-xs font-bold text-slate-400 mt-1 line-clamp-2 min-h-[32px]">
+                                                    <p className="text-xs font-bold text-[#9AA3AF] mt-1 line-clamp-2 min-h-[32px]">
                                                         {profile.headline}
                                                     </p>
                                                 )}
 
                                                 <div className="space-y-2 mt-4">
                                                     {profile.company && (
-                                                        <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
-                                                            <Building className="w-3.5 h-3.5 text-slate-400" />
+                                                        <div className="flex items-center gap-2 text-[11px] font-bold text-[#6B6F76]">
+                                                            <Building className="w-3.5 h-3.5 text-[#9AA3AF]" />
                                                             {profile.company}
                                                         </div>
                                                     )}
                                                     {profile.location && (
-                                                        <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
-                                                            <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                                                        <div className="flex items-center gap-2 text-[11px] font-bold text-[#6B6F76]">
+                                                            <MapPin className="w-3.5 h-3.5 text-[#9AA3AF]" />
                                                             {profile.location}
                                                         </div>
                                                     )}
@@ -613,7 +613,7 @@ export default function ProfileSourcingPage() {
 
                                                 {profile.hireable && (
                                                     <div className="mt-4 flex justify-end">
-                                                        <span className="px-2 py-0.5 bg-green-50 text-green-600 text-[8px] font-black uppercase rounded-full border border-green-100">
+                                                        <span className="px-2 py-0.5 bg-green-50 text-green-600 text-[8px] font-bold uppercase rounded-full border border-green-100">
                                                             Available
                                                         </span>
                                                     </div>
@@ -638,7 +638,7 @@ export default function ProfileSourcingPage() {
                                                                     href={social.url}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition-all border border-transparent hover:border-indigo-100 shadow-sm"
+                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F7F8FA] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-all border border-transparent hover:border-[#DAD7F6] shadow-sm"
                                                                     title={social.provider}
                                                                 >
                                                                     <Icon className="w-4 h-4" />
@@ -650,8 +650,8 @@ export default function ProfileSourcingPage() {
 
                                                 {/* Dynamic API Metadata for non-GitHub platforms */}
                                                 {profile.platform !== 'github' && profile.raw_data && (
-                                                    <div className="mt-4 pt-4 border-t border-slate-50">
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Platform Metadata</p>
+                                                    <div className="mt-4 pt-4 border-t border-[#F0F0F1]">
+                                                        <p className="text-[9px] font-bold text-[#9AA3AF] uppercase tracking-widest mb-3">Platform Metadata</p>
                                                         <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
                                                             {Object.entries(profile.raw_data).map(([key, value]) => {
                                                                 // Skip complex types and display-only fields
@@ -660,11 +660,11 @@ export default function ProfileSourcingPage() {
                                                                 if (value === null || value === undefined || value === '') return null;
 
                                                                 return (
-                                                                    <div key={key} className="flex flex-col bg-slate-50/50 p-2 rounded-xl border border-slate-100/50 hover:bg-white hover:border-indigo-100 transition-all">
-                                                                        <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter truncate opacity-70">
+                                                                    <div key={key} className="flex flex-col bg-[#F7F8FA]/50 p-2 rounded-xl border border-[#E8EAED]/50 hover:bg-white hover:border-[#DAD7F6] transition-all">
+                                                                        <span className="text-[7px] font-bold text-[#9AA3AF] uppercase tracking-tighter truncate opacity-70">
                                                                             {key.replaceAll(/([A-Z])/g, ' $1').replaceAll('_', ' ').trim()}
                                                                         </span>
-                                                                        <span className="text-[10px] font-bold text-slate-700 truncate" title={String(value)}>
+                                                                        <span className="text-[10px] font-bold text-[#374151] truncate" title={String(value)}>
                                                                             {String(value)}
                                                                         </span>
                                                                     </div>
@@ -676,16 +676,16 @@ export default function ProfileSourcingPage() {
 
                                                 {/* Real Contact Info */}
                                                 {(profile.email || (profile.raw_data && profile.raw_data.phone)) && (
-                                                    <div className="mt-4 pt-4 border-t border-slate-50 space-y-2">
+                                                    <div className="mt-4 pt-4 border-t border-[#F0F0F1] space-y-2">
                                                         {profile.email && (
-                                                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">
-                                                                <Mail className="w-3.5 h-3.5 text-indigo-500" />
+                                                            <div className="flex items-center gap-2 text-[10px] font-bold text-[#9AA3AF] group-hover:text-[#4B5563] transition-colors">
+                                                                <Mail className="w-3.5 h-3.5 text-[#5B53E0]" />
                                                                 {profile.email}
                                                             </div>
                                                         )}
                                                         {profile.raw_data && profile.raw_data.phone && (
-                                                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">
-                                                                <Phone className="w-3.5 h-3.5 text-indigo-500" />
+                                                            <div className="flex items-center gap-2 text-[10px] font-bold text-[#9AA3AF] group-hover:text-[#4B5563] transition-colors">
+                                                                <Phone className="w-3.5 h-3.5 text-[#5B53E0]" />
                                                                 {profile.raw_data.phone}
                                                             </div>
                                                         )}
@@ -697,7 +697,7 @@ export default function ProfileSourcingPage() {
                                                     <button
                                                         onClick={() => fetchDetails(profile.profile_url)}
                                                         disabled={fetchingDetails}
-                                                        className="flex-1 h-11 flex items-center justify-center gap-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-black transition-all active:scale-95 border border-slate-200 disabled:opacity-50 w-full"
+                                                        className="flex-1 h-11 flex items-center justify-center gap-2 rounded-xl bg-[#F0F0F1] hover:bg-[#E1E4E8] text-[#1F2127] text-[11px] font-bold transition-all active:scale-95 border border-[#E1E4E8] disabled:opacity-50 w-full"
                                                     >
                                                         {fetchingDetails ? "Scraping Details..." : "View Profile Info"}
                                                     </button>
@@ -705,7 +705,7 @@ export default function ProfileSourcingPage() {
                                                         href={profile.profile_url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="flex-1 h-11 flex items-center justify-center gap-2 rounded-xl bg-[#7C3AED] text-white text-[11px] font-black hover:bg-[#6D28D9] transition-all active:scale-95 shadow-lg shadow-indigo-200"
+                                                        className="flex-1 h-11 flex items-center justify-center gap-2 rounded-xl bg-[#5B53E0] text-white text-[11px] font-bold hover:bg-[#4A43C9] transition-all active:scale-95 shadow-lg shadow-indigo-200"
                                                     >
                                                         View Profile
                                                         <ExternalLink className="w-3.5 h-3.5" />
@@ -721,7 +721,7 @@ export default function ProfileSourcingPage() {
                                     <button
                                         onClick={() => handleSearch(null, page - 1)}
                                         disabled={page === 1 || loading}
-                                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-[#7C3AED] hover:border-[#7C3AED] disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#E8EAED] text-[#9AA3AF] hover:text-[#5B53E0] hover:border-[#5B53E0] disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                                     >
                                         <ChevronLeft className="w-5 h-5" />
                                     </button>
@@ -741,9 +741,9 @@ export default function ProfileSourcingPage() {
                                                 <button
                                                     key={pageNum}
                                                     onClick={() => handleSearch(null, pageNum)}
-                                                    className={`w-10 h-10 rounded-xl text-xs font-black transition-all border ${page === pageNum
-                                                            ? "bg-[#7C3AED] text-white border-[#7C3AED] shadow-lg scale-110"
-                                                            : "bg-white text-slate-500 border-slate-100 hover:border-slate-300"
+                                                    className={`w-10 h-10 rounded-xl text-xs font-bold transition-all border ${page === pageNum
+                                                            ? "bg-[#5B53E0] text-white border-[#5B53E0] shadow-lg scale-110"
+                                                            : "bg-white text-[#6B6F76] border-[#E8EAED] hover:border-[#D4D7DC]"
                                                         }`}
                                                 >
                                                     {pageNum}
@@ -755,19 +755,19 @@ export default function ProfileSourcingPage() {
                                     <button
                                         onClick={() => handleSearch(null, page + 1)}
                                         disabled={loading || results.length < 15}
-                                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-[#7C3AED] hover:border-[#7C3AED] disabled:opacity-30 transition-all shadow-sm"
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#E8EAED] text-[#9AA3AF] hover:text-[#5B53E0] hover:border-[#5B53E0] disabled:opacity-30 transition-all shadow-sm"
                                     >
                                         <ChevronRight className="w-5 h-5" />
                                     </button>
                                 </div>
                             </>
                         ) : (
-                            <div className="flex flex-col items-center justify-center p-20 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
-                                <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
-                                    <Users className="w-10 h-10 text-slate-300" />
+                            <div className="flex flex-col items-center justify-center p-20 text-center bg-white rounded-3xl border border-[#E8EAED] shadow-sm">
+                                <div className="w-20 h-20 bg-[#F7F8FA] rounded-3xl flex items-center justify-center mb-6">
+                                    <Users className="w-10 h-10 text-[#C4C9D0]" />
                                 </div>
-                                <h3 className="text-xl font-black text-slate-900 mb-2">No profiles found</h3>
-                                <p className="text-slate-500 max-w-xs mx-auto mb-8">
+                                <h3 className="text-xl font-bold text-[#15171C] mb-2">No profiles found</h3>
+                                <p className="text-[#6B6F76] max-w-xs mx-auto mb-8">
                                     Try adjusting your search query or location to find more results.
                                 </p>
                                 <button
@@ -776,7 +776,7 @@ export default function ProfileSourcingPage() {
                                         setLocation("");
                                         setHasSearched(false);
                                     }}
-                                    className="px-8 py-3 bg-slate-900 text-white rounded-2xl font-black text-sm shadow-lg shadow-slate-200"
+                                    className="px-8 py-3 bg-[#15171C] text-white rounded-2xl font-bold text-sm shadow-lg shadow-slate-200"
                                 >
                                     Reset Search
                                 </button>
@@ -785,14 +785,14 @@ export default function ProfileSourcingPage() {
                     </div>
                 </>
             ) : (
-                <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/5 flex flex-col min-h-[550px]">
+                <div className="bg-white p-8 rounded-3xl border border-[#E8EAED] shadow-xl shadow-slate-200/5 flex flex-col min-h-[550px]">
                     {/* Chat History / Filters / Results */}
                     <div className="flex-1 space-y-6 max-w-4xl mx-auto w-full mb-8">
                         {searchPhase === "initial" && (
                             <div className="space-y-6">
                                 <div className="text-center max-w-xl mx-auto py-8">
-                                    <h2 className="text-2xl font-black text-slate-800 tracking-tight mb-2">How can I help you build your team?</h2>
-                                    <p className="text-sm text-slate-400 font-bold">Describe your ideal candidate constraints below or get started with a recommendation.</p>
+                                    <h2 className="text-2xl font-bold text-[#1F2127] tracking-tight mb-2">How can I help you build your team?</h2>
+                                    <p className="text-sm text-[#9AA3AF] font-bold">Describe your ideal candidate constraints below or get started with a recommendation.</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {[
@@ -804,13 +804,13 @@ export default function ProfileSourcingPage() {
                                         <button
                                             key={exIdx}
                                             onClick={() => handleChatSend(ex.text)}
-                                            className="p-6 bg-white rounded-2xl text-left border border-slate-100 hover:border-[#7C3AED]/40 hover:shadow-xl hover:shadow-indigo-50/50 transition-all group flex flex-col justify-between h-32"
+                                            className="p-6 bg-white rounded-2xl text-left border border-[#E8EAED] hover:border-[#5B53E0]/40 hover:shadow-xl hover:shadow-indigo-50/50 transition-all group flex flex-col justify-between h-32"
                                         >
                                             <div className="space-y-1">
-                                                <h4 className="text-sm font-black text-slate-800 group-hover:text-[#7C3AED] transition-colors">{ex.title}</h4>
-                                                <p className="text-xs text-slate-400 font-bold leading-normal">{ex.desc}</p>
+                                                <h4 className="text-sm font-bold text-[#1F2127] group-hover:text-[#5B53E0] transition-colors">{ex.title}</h4>
+                                                <p className="text-xs text-[#9AA3AF] font-bold leading-normal">{ex.desc}</p>
                                             </div>
-                                            <div className="flex items-center gap-1 text-[10px] text-[#7C3AED] font-black opacity-0 group-hover:opacity-100 transition-all pt-2 mt-auto">
+                                            <div className="flex items-center gap-1 text-[10px] text-[#5B53E0] font-bold opacity-0 group-hover:opacity-100 transition-all pt-2 mt-auto">
                                                 Generate Workflow <ArrowRight className="w-3 h-3" />
                                             </div>
                                         </button>
@@ -823,37 +823,37 @@ export default function ProfileSourcingPage() {
                             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 {/* User bubble representation */}
                                 <div className="flex justify-end">
-                                    <div className="bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] text-white p-5 rounded-2xl text-sm font-bold shadow-xl shadow-indigo-100 max-w-xl flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center font-black text-xs text-white">ME</div>
+                                    <div className="bg-gradient-to-r from-[#5B53E0] to-[#4A43C9] text-white p-5 rounded-2xl text-sm font-bold shadow-xl shadow-indigo-100 max-w-xl flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center font-bold text-xs text-white">ME</div>
                                         <p>{chatMessages[chatMessages.length - 1]?.text}</p>
                                     </div>
                                 </div>
 
                                 {/* AI response bubble & filters */}
                                 <div className="flex justify-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center text-white shrink-0 font-black text-xs shadow-lg border border-slate-700">AI</div>
-                                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/10 max-w-2xl w-full space-y-4">
-                                        <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                                            <span className="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse shadow-glow" />
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1B1D24] to-[#0E1014] flex items-center justify-center text-white shrink-0 font-bold text-xs shadow-lg border border-[#2A2D35]">AI</div>
+                                    <div className="bg-white p-6 rounded-3xl border border-[#E8EAED] shadow-xl shadow-slate-200/10 max-w-2xl w-full space-y-4">
+                                        <p className="text-sm font-bold text-[#374151] flex items-center gap-2">
+                                            <span className="w-2.5 h-2.5 bg-[#5B53E0] rounded-full animate-pulse shadow-glow" />
                                             {"I've mapped out targeted search rules matching your directives:"}
                                         </p>
 
-                                        <div className="flex flex-wrap items-center gap-2 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 shadow-inner">
-                                            <span className="px-3 py-1.5 bg-purple-50 text-purple-700 font-bold text-xs rounded-xl border border-purple-100 shadow-sm flex items-center gap-1.5">
+                                        <div className="flex flex-wrap items-center gap-2 p-4 bg-[#F7F8FA]/80 rounded-2xl border border-[#E8EAED]/50 shadow-inner">
+                                            <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
                                                 <Briefcase className="w-3.5 h-3.5" /> {extractedFilters.title}
                                             </span>
-                                            <span className="text-slate-300 font-black text-xs">&middot;</span>
-                                            <span className="px-3 py-1.5 bg-purple-50 text-purple-700 font-bold text-xs rounded-xl border border-purple-100 shadow-sm flex items-center gap-1.5">
+                                            <span className="text-[#C4C9D0] font-bold text-xs">&middot;</span>
+                                            <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
                                                 <MapPin className="w-3.5 h-3.5" /> {extractedFilters.location}
                                             </span>
-                                            <span className="text-slate-300 font-black text-xs">&middot;</span>
-                                            <span className="px-3 py-1.5 bg-purple-50 text-purple-700 font-bold text-xs rounded-xl border border-purple-100 shadow-sm flex items-center gap-1.5">
+                                            <span className="text-[#C4C9D0] font-bold text-xs">&middot;</span>
+                                            <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
                                                 <Zap className="w-3.5 h-3.5" /> {extractedFilters.minExp}+ years
                                             </span>
 
                                             <button
                                                 onClick={() => setIsFilterModalOpen(true)}
-                                                className="ml-auto px-4 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-indigo-600 text-xs font-black rounded-xl cursor-pointer shadow-sm transition-all"
+                                                className="ml-auto px-4 py-1.5 bg-white hover:bg-[#F7F8FA] border border-[#E1E4E8] text-[#5B53E0] text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-all"
                                             >
                                                 Edit Rule
                                             </button>
@@ -865,7 +865,7 @@ export default function ProfileSourcingPage() {
                                 <div className="flex justify-end gap-3 mt-6">
                                     <button
                                         onClick={() => setSearchPhase("initial")}
-                                        className="px-6 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-600 text-sm font-black rounded-xl transition-all"
+                                        className="px-6 py-3 bg-[#F7F8FA] hover:bg-[#F0F0F1] border border-[#E8EAED] text-[#4B5563] text-sm font-bold rounded-xl transition-all"
                                     >
                                         Reset Search
                                     </button>
@@ -885,7 +885,7 @@ export default function ProfileSourcingPage() {
                                                 setLoading(false);
                                             }
                                         }}
-                                        className="px-8 py-3 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-black rounded-xl transition-all shadow-lg shadow-indigo-200"
+                                        className="px-8 py-3 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-indigo-200"
                                     >
                                         Run Search
                                     </button>
@@ -896,28 +896,28 @@ export default function ProfileSourcingPage() {
                         {loading && (
                             <div className="flex flex-col items-center justify-center py-20 animate-in fade-in duration-300">
                                 <div className="relative w-20 h-20 mb-6">
-                                    <div className="absolute inset-0 border-4 border-indigo-100 rounded-full animate-pulse" />
-                                    <div className="absolute inset-0 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
-                                    <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-[#7C3AED] animate-pulse" />
+                                    <div className="absolute inset-0 border-4 border-[#DAD7F6] rounded-full animate-pulse" />
+                                    <div className="absolute inset-0 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
+                                    <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-[#5B53E0] animate-pulse" />
                                 </div>
-                                <h3 className="text-base font-black text-slate-800 tracking-tight">Gathering Talent Intel...</h3>
-                                <p className="text-xs text-slate-400 font-bold mt-1">Cross-referencing global platforms in parallel.</p>
+                                <h3 className="text-base font-bold text-[#1F2127] tracking-tight">Gathering Talent Intel...</h3>
+                                <p className="text-xs text-[#9AA3AF] font-bold mt-1">Cross-referencing global platforms in parallel.</p>
                             </div>
                         )}
 
                         {searchPhase === "results" && !loading && (
                             <div className="space-y-6">
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                                <p className="text-xs font-bold text-[#9AA3AF] uppercase tracking-widest flex items-center gap-2 mb-4">
                                     <Users className="w-4 h-4" /> AI Generated Results ({results.length})
                                 </p>
                                 <div className="flex flex-col gap-6 max-w-5xl mx-auto w-full">
                                     {results.map((profile, index) => (
-                                        <div key={index} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/5 transition-all flex flex-col gap-4 animate-in slide-in-from-bottom-2 duration-300">
+                                        <div key={index} className="bg-white p-6 rounded-2xl border border-[#E8EAED] shadow-xl shadow-slate-200/5 transition-all flex flex-col gap-4 animate-in slide-in-from-bottom-2 duration-300">
                                             {/* Candidate Top Header row */}
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
-                                                    <input type="checkbox" className="rounded text-[#7C3AED] border-slate-200 focus:ring-[#7C3AED]" />
-                                                    <h3 className="text-base font-black text-slate-800 flex items-center gap-2">
+                                                    <input type="checkbox" className="rounded text-[#5B53E0] border-[#E1E4E8] focus:ring-[#5B53E0]" />
+                                                    <h3 className="text-base font-bold text-[#1F2127] flex items-center gap-2">
                                                         {profile.full_name || "Anonymous"}
                                                         {profile.platform && (
                                                             <PlatformLogoRenderer platform={profile.platform} className="w-4 h-4" />
@@ -928,7 +928,7 @@ export default function ProfileSourcingPage() {
                                                 <div className="flex items-center gap-2">
                                                     <button
                                                         onClick={() => fetchDetails(profile.profile_url)}
-                                                        className="p-2 bg-slate-50 hover:bg-slate-100 border border-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition-all shadow-sm flex items-center justify-center w-9 h-9"
+                                                        className="p-2 bg-[#F7F8FA] hover:bg-[#F0F0F1] border border-[#E8EAED] rounded-xl text-[#9AA3AF] hover:text-[#4B5563] transition-all shadow-sm flex items-center justify-center w-9 h-9"
                                                     >
                                                         <Eye className="w-4 h-4" />
                                                     </button>
@@ -940,9 +940,9 @@ export default function ProfileSourcingPage() {
                                                                 setPinnedProfiles([...pinnedProfiles, profile]);
                                                             }
                                                         }}
-                                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black border transition-all ${pinnedProfiles.some(p => p.profile_url === profile.profile_url)
-                                                                ? 'bg-[#7C3AED] text-white border-[#7C3AED] shadow-sm'
-                                                                : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${pinnedProfiles.some(p => p.profile_url === profile.profile_url)
+                                                                ? 'bg-[#5B53E0] text-white border-[#5B53E0] shadow-sm'
+                                                                : 'bg-white text-[#6B6F76] border-[#E1E4E8] hover:border-[#D4D7DC]'
                                                             }`}
                                                     >
                                                         <Pin className="w-3.5 h-3.5" />
@@ -954,27 +954,27 @@ export default function ProfileSourcingPage() {
                                             {/* Profile core data row */}
                                             <div className="flex items-start gap-3 pl-7">
                                                 {profile.avatar_url ? (
-                                                    <img src={profile.avatar_url} alt={profile.full_name} className="w-10 h-10 rounded-xl object-cover border border-slate-100 shadow-sm" />
+                                                    <img src={profile.avatar_url} alt={profile.full_name} className="w-10 h-10 rounded-xl object-cover border border-[#E8EAED] shadow-sm" />
                                                 ) : (
-                                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100 shadow-sm">
+                                                    <div className="w-10 h-10 rounded-xl bg-[#F7F8FA] flex items-center justify-center text-[#9AA3AF] border border-[#E8EAED] shadow-sm">
                                                         <User className="w-5 h-5" />
                                                     </div>
                                                 )}
                                                 <div className="space-y-1">
-                                                    <p className="text-sm font-bold text-slate-700">{profile.headline || "Professional Profile"}</p>
-                                                    <p className="text-xs text-slate-400 font-bold flex items-center gap-1">
-                                                        <MapPin className="w-3 h-3 text-slate-300" /> {profile.location || "Global"}
+                                                    <p className="text-sm font-bold text-[#374151]">{profile.headline || "Professional Profile"}</p>
+                                                    <p className="text-xs text-[#9AA3AF] font-bold flex items-center gap-1">
+                                                        <MapPin className="w-3 h-3 text-[#C4C9D0]" /> {profile.location || "Global"}
                                                     </p>
                                                 </div>
                                             </div>
 
                                             {/* AI Summary paragraph */}
-                                            <div className="pl-7 pt-2 border-t border-slate-50 flex items-start gap-3 bg-indigo-50/20 p-4 rounded-xl border border-indigo-100/10">
-                                                <Zap className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
-                                                <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                                            <div className="pl-7 pt-2 border-t border-[#F0F0F1] flex items-start gap-3 bg-[#ECEBFB]/20 p-4 rounded-xl border border-[#DAD7F6]/10">
+                                                <Zap className="w-4 h-4 text-[#5B53E0] shrink-0 mt-0.5" />
+                                                <p className="text-xs text-[#4B5563] font-medium leading-relaxed">
                                                     {profile.ai_summary || (
                                                         <>
-                                                            <strong className="text-slate-800">{profile.full_name}</strong>, based in <span className="px-1.5 py-0.5 bg-purple-50 text-purple-700 font-bold text-[10px] rounded border border-purple-100">{profile.location || "Global"}</span>, is an accomplished expert with core platform experience in <span className="px-1.5 py-0.5 bg-purple-50 text-purple-700 font-bold text-[10px] rounded border border-purple-100">{profile.platform}</span>.
+                                                            <strong className="text-[#1F2127]">{profile.full_name}</strong>, based in <span className="px-1.5 py-0.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-[10px] rounded border border-[#DAD7F6]">{profile.location || "Global"}</span>, is an accomplished expert with core platform experience in <span className="px-1.5 py-0.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-[10px] rounded border border-[#DAD7F6]">{profile.platform}</span>.
                                                         </>
                                                     )}
                                                 </p>
@@ -984,10 +984,10 @@ export default function ProfileSourcingPage() {
                                 </div>
                                 {chatLoading && (
                                     <div className="flex justify-start">
-                                        <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-2 text-xs font-bold text-slate-500">
-                                            <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                                            <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                                            <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                                        <div className="bg-[#F7F8FA] p-4 rounded-2xl flex items-center gap-2 text-xs font-bold text-[#6B6F76]">
+                                            <div className="w-2 h-2 bg-[#9AA3AF] rounded-full animate-bounce"></div>
+                                            <div className="w-2 h-2 bg-[#9AA3AF] rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                                            <div className="w-2 h-2 bg-[#9AA3AF] rounded-full animate-bounce [animation-delay:0.4s]"></div>
                                         </div>
                                     </div>
                                 )}
@@ -998,10 +998,10 @@ export default function ProfileSourcingPage() {
                     {/* Chat Prompt Layout */}
                     {searchPhase === "initial" && (
                         <form onSubmit={handleChatSend} className="max-w-4xl mx-auto relative group w-full">
-                            <div className="border-2 border-[#7C3AED]/20 group-focus-within:border-[#7C3AED] rounded-2xl bg-white shadow-xl shadow-slate-200/5 p-6 transition-all">
+                            <div className="border-2 border-[#5B53E0]/20 group-focus-within:border-[#5B53E0] rounded-2xl bg-white shadow-xl shadow-slate-200/5 p-6 transition-all">
                                 <textarea
                                     placeholder="Software Engineers with 5+ yrs of experience at fintech companies in the Bay Area"
-                                    className="w-full bg-transparent border-0 focus:outline-none focus:ring-0 text-slate-700 font-bold text-base placeholder:text-slate-300 resize-none h-16"
+                                    className="w-full bg-transparent border-0 focus:outline-none focus:ring-0 text-[#374151] font-bold text-base placeholder:text-[#C4C9D0] resize-none h-16"
                                     value={chatInput}
                                     onChange={(e) => setChatInput(e.target.value)}
                                     onKeyDown={(e) => {
@@ -1016,7 +1016,7 @@ export default function ProfileSourcingPage() {
                                     <button
                                         type="submit"
                                         disabled={chatLoading || !chatInput.trim()}
-                                        className="w-11 h-11 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center justify-center transition-all disabled:opacity-30 disabled:scale-95 shadow-lg shadow-indigo-200"
+                                        className="w-11 h-11 rounded-full bg-[#5B53E0] hover:bg-[#4A43C9] text-white flex items-center justify-center transition-all disabled:opacity-30 disabled:scale-95 shadow-lg shadow-indigo-200"
                                     >
                                         {chatLoading ? (
                                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -1033,16 +1033,16 @@ export default function ProfileSourcingPage() {
 
             {isFilterModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[24px] shadow-2xl border border-slate-100 max-w-4xl w-full flex flex-col h-[600px] overflow-hidden animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-[24px] shadow-2xl border border-[#E8EAED] max-w-4xl w-full flex flex-col h-[600px] overflow-hidden animate-in zoom-in-95 duration-200">
                         {/* Modal Header */}
-                        <div className="flex justify-between items-center p-6 border-b border-slate-100">
+                        <div className="flex justify-between items-center p-6 border-b border-[#E8EAED]">
                             <div>
-                                <h3 className="text-lg font-black text-slate-900">Edit Your Search Filters</h3>
-                                <p className="text-xs text-slate-400 font-bold mt-0.5">approx. 6.1k matches</p>
+                                <h3 className="text-lg font-bold text-[#15171C]">Edit Your Search Filters</h3>
+                                <p className="text-xs text-[#9AA3AF] font-bold mt-0.5">approx. 6.1k matches</p>
                             </div>
                             <button
                                 onClick={() => setIsFilterModalOpen(false)}
-                                className="px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black flex items-center gap-1 transition-all"
+                                className="px-5 py-2 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-xl text-xs font-bold flex items-center gap-1 transition-all"
                             >
                                 Save Changes
                             </button>
@@ -1051,7 +1051,7 @@ export default function ProfileSourcingPage() {
                         {/* Modal Body */}
                         <div className="flex-1 flex overflow-hidden">
                             {/* Left Sidebar */}
-                            <div className="w-56 bg-slate-50 border-r border-slate-100 p-4 space-y-1">
+                            <div className="w-56 bg-[#F7F8FA] border-r border-[#E8EAED] p-4 space-y-1">
                                 {[
                                     { id: "general", label: "General", icon: Users },
                                     { id: "location", label: "Locations", icon: MapPin },
@@ -1065,11 +1065,11 @@ export default function ProfileSourcingPage() {
                                     <button
                                         key={tab.id}
                                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition-all ${tab.id === "general"
-                                                ? "bg-white text-indigo-600 shadow-sm border border-slate-100/80"
-                                                : "text-slate-500 hover:text-slate-800"
+                                                ? "bg-white text-[#5B53E0] shadow-sm border border-[#E8EAED]/80"
+                                                : "text-[#6B6F76] hover:text-[#1F2127]"
                                             }`}
                                     >
-                                        <tab.icon className={`w-4 h-4 ${tab.id === "general" ? "text-indigo-600" : "text-slate-400"}`} />
+                                        <tab.icon className={`w-4 h-4 ${tab.id === "general" ? "text-[#5B53E0]" : "text-[#9AA3AF]"}`} />
                                         {tab.label}
                                     </button>
                                 ))}
@@ -1079,45 +1079,45 @@ export default function ProfileSourcingPage() {
                             <div className="flex-1 p-8 space-y-6 overflow-y-auto custom-scrollbar">
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label htmlFor="sourcing-min-exp" className="text-xs font-black text-slate-600 uppercase tracking-wider">Min Experience (Years)</label>
+                                        <label htmlFor="sourcing-min-exp" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Min Experience (Years)</label>
                                         <input
                                             id="sourcing-min-exp"
                                             type="number"
                                             value={extractedFilters.minExp}
                                             onChange={(e) => setExtractedFilters({ ...extractedFilters, minExp: e.target.value })}
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 text-sm font-semibold text-slate-700 focus:outline-none focus:border-indigo-500"
+                                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-xl py-3 px-4 text-sm font-semibold text-[#374151] focus:outline-none focus:border-indigo-500"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="sourcing-max-exp" className="text-xs font-black text-slate-600 uppercase tracking-wider">Max Experience (Years)</label>
+                                        <label htmlFor="sourcing-max-exp" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Max Experience (Years)</label>
                                         <input
                                             id="sourcing-max-exp"
                                             type="text"
                                             placeholder="Example: 10 years"
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 text-sm font-semibold text-slate-700 focus:outline-none focus:border-indigo-500"
+                                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-xl py-3 px-4 text-sm font-semibold text-[#374151] focus:outline-none focus:border-indigo-500"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="sourcing-job-title" className="text-xs font-black text-slate-600 uppercase tracking-wider">Job Title</label>
+                                    <label htmlFor="sourcing-job-title" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Job Title</label>
                                     <input
                                         id="sourcing-job-title"
                                         type="text"
                                         value={extractedFilters.title}
                                         onChange={(e) => setExtractedFilters({ ...extractedFilters, title: e.target.value })}
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 text-sm font-semibold text-slate-700 focus:outline-none focus:border-indigo-500"
+                                        className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-xl py-3 px-4 text-sm font-semibold text-[#374151] focus:outline-none focus:border-indigo-500"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="sourcing-location" className="text-xs font-black text-slate-600 uppercase tracking-wider">Location</label>
+                                    <label htmlFor="sourcing-location" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Location</label>
                                     <input
                                         id="sourcing-location"
                                         type="text"
                                         value={extractedFilters.location}
                                         onChange={(e) => setExtractedFilters({ ...extractedFilters, location: e.target.value })}
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 text-sm font-semibold text-slate-700 focus:outline-none focus:border-indigo-500"
+                                        className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-xl py-3 px-4 text-sm font-semibold text-[#374151] focus:outline-none focus:border-indigo-500"
                                     />
                                 </div>
                             </div>
@@ -1142,18 +1142,18 @@ export default function ProfileSourcingPage() {
                         exit={{ x: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="bg-white h-full w-full max-w-lg shadow-2xl p-6 overflow-y-auto border-l border-slate-100 flex flex-col relative animate-in slide-in-from-right duration-300"
+                        className="bg-white h-full w-full max-w-lg shadow-2xl p-6 overflow-y-auto border-l border-[#E8EAED] flex flex-col relative animate-in slide-in-from-right duration-300"
                     >
                         <div className="flex justify-between items-start mb-6">
                             <div>
-                                <h2 className="text-lg font-black text-slate-900 tracking-tight">
+                                <h2 className="text-lg font-bold text-[#15171C] tracking-tight">
                                     {selectedProfileDetails.title || "Scraped Profile"}
                                 </h2>
                                 <a
                                     href={selectedProfileDetails.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[10px] text-indigo-600 hover:underline font-black mt-1 inline-flex items-center gap-1 uppercase tracking-wider"
+                                    className="text-[10px] text-[#5B53E0] hover:underline font-bold mt-1 inline-flex items-center gap-1 uppercase tracking-wider"
                                 >
                                     View Original
                                     <ExternalLink className="w-2.5 h-2.5" />
@@ -1161,9 +1161,9 @@ export default function ProfileSourcingPage() {
                             </div>
                             <button
                                 onClick={() => setSelectedProfileDetails(null)}
-                                className="w-9 h-9 flex items-center justify-center bg-slate-50 hover:bg-slate-100 rounded-xl transition-all border border-slate-100"
+                                className="w-9 h-9 flex items-center justify-center bg-[#F7F8FA] hover:bg-[#F0F0F1] rounded-xl transition-all border border-[#E8EAED]"
                             >
-                                <X className="w-4 h-4 text-slate-500" />
+                                <X className="w-4 h-4 text-[#6B6F76]" />
                             </button>
                         </div>
 
@@ -1182,7 +1182,7 @@ export default function ProfileSourcingPage() {
                                     const title = isCategory ? firstLine : "INFO";
                                     const content = isCategory ? lines.slice(1).join("\n") : sec;
 
-                                    let titleColor = "text-indigo-600";
+                                    let titleColor = "text-[#5B53E0]";
                                     if (title === "EXPERIENCE") titleColor = "text-emerald-600";
                                     if (title === "EDUCATION") titleColor = "text-blue-600";
                                     if (title === "SKILLS") titleColor = "text-purple-600";
@@ -1190,10 +1190,10 @@ export default function ProfileSourcingPage() {
                                     return (
                                         <div
                                             key={idx}
-                                            className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100/70 hover:bg-white hover:border-slate-200 transition-all group"
+                                            className="p-4 bg-[#F7F8FA]/50 rounded-2xl border border-[#E8EAED]/70 hover:bg-white hover:border-[#E1E4E8] transition-all group"
                                         >
                                             <div className="flex items-center gap-1.5 mb-2">
-                                                <span className={`text-[9px] font-black tracking-widest ${titleColor} uppercase`}>
+                                                <span className={`text-[9px] font-bold tracking-widest ${titleColor} uppercase`}>
                                                     {title}
                                                 </span>
                                             </div>
@@ -1206,8 +1206,8 @@ export default function ProfileSourcingPage() {
 
                                                     if (isDate) {
                                                         return (
-                                                            <p key={lIdx} className="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 mt-1.5 mb-1 bg-slate-100/50 w-fit px-2 py-0.5 rounded-md border border-slate-200/40">
-                                                                <Calendar className="w-3 h-3 text-slate-400" />
+                                                            <p key={lIdx} className="text-[10px] font-bold text-[#9AA3AF] flex items-center gap-1.5 mt-1.5 mb-1 bg-[#F0F0F1]/50 w-fit px-2 py-0.5 rounded-md border border-[#E1E4E8]/40">
+                                                                <Calendar className="w-3 h-3 text-[#9AA3AF]" />
                                                                 {text}
                                                             </p>
                                                         );
@@ -1217,14 +1217,14 @@ export default function ProfileSourcingPage() {
 
                                                     if (isShortTitle) {
                                                         return (
-                                                            <p key={lIdx} className="text-[11px] font-black text-slate-800 mt-4 first:mt-0 tracking-tight leading-snug">
+                                                            <p key={lIdx} className="text-[11px] font-bold text-[#1F2127] mt-4 first:mt-0 tracking-tight leading-snug">
                                                                 {text}
                                                             </p>
                                                         );
                                                     }
 
                                                     return (
-                                                        <p key={lIdx} className="text-[11px] font-medium text-slate-600 leading-relaxed pl-2 border-l border-slate-200 hover:border-indigo-400 transition-colors">
+                                                        <p key={lIdx} className="text-[11px] font-medium text-[#4B5563] leading-relaxed pl-2 border-l border-[#E1E4E8] hover:border-indigo-400 transition-colors">
                                                             {text}
                                                         </p>
                                                     );
@@ -1236,10 +1236,10 @@ export default function ProfileSourcingPage() {
                             </div>
                         )}
 
-                        <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+                        <div className="mt-6 pt-4 border-t border-[#E8EAED] flex justify-end">
                             <button
                                 onClick={() => setSelectedProfileDetails(null)}
-                                className="w-full py-3.5 bg-slate-950 text-white rounded-xl font-black text-xs hover:bg-slate-800 transition-all active:scale-98 shadow-lg shadow-slate-200 uppercase tracking-widest"
+                                className="w-full py-3.5 bg-slate-950 text-white rounded-xl font-bold text-xs hover:bg-[#1F2127] transition-all active:scale-98 shadow-lg shadow-slate-200 uppercase tracking-widest"
                             >
                                 Dismiss
                             </button>

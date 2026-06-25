@@ -21,7 +21,7 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
-                    class: 'text-indigo-600 underline',
+                    class: 'text-[#5B53E0] underline',
                 },
             }),
             Placeholder.configure({
@@ -35,7 +35,7 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
         },
         editorProps: {
             attributes: {
-                class: 'prose-custom focus:outline-none min-h-[400px] p-10 selection:bg-indigo-100',
+                class: 'prose-custom focus:outline-none min-h-[400px] p-10 selection:bg-[#ECEBFB]',
             },
         },
     });
@@ -56,18 +56,18 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
     return (
         <div className="flex flex-col w-full h-full bg-white">
             {/* Toolbar - Integrated top bar */}
-            <div className="px-6 py-3 border-b border-slate-100 bg-slate-50/50 flex items-center gap-1 overflow-x-auto no-scrollbar shrink-0 z-10">
+            <div className="px-6 py-3 border-b border-[#E8EAED] bg-[#F7F8FA] flex items-center gap-1 overflow-x-auto no-scrollbar shrink-0 z-10">
                 <div className="flex items-center gap-1 mr-2">
                     <button
                         onClick={() => editor.chain().focus().undo().run()}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-white hover:text-indigo-600 transition-all shadow-sm"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9AA3AF] hover:bg-white hover:text-[#5B53E0] transition-all shadow-sm"
                         title="Undo"
                     >
                         <span className="material-symbols-rounded text-xl">undo</span>
                     </button>
                     <button
                         onClick={() => editor.chain().focus().redo().run()}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-white hover:text-indigo-600 transition-all shadow-sm"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9AA3AF] hover:bg-white hover:text-[#5B53E0] transition-all shadow-sm"
                         title="Redo"
                     >
                         <span className="material-symbols-rounded text-xl">redo</span>
@@ -75,47 +75,47 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                 </div>
 
 
-                <div className="w-px h-6 bg-slate-200 mx-2"></div>
+                <div className="w-px h-6 bg-[#E8EAED] mx-2"></div>
 
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => editor.chain().focus().toggleBold().run()}
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('bold') ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:text-indigo-600'}`}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('bold') ? 'bg-[#5B53E0] text-white' : 'bg-white text-[#374151] hover:text-[#5B53E0]'}`}
                     >
                         <span className="material-symbols-rounded text-xl">format_bold</span>
                     </button>
                     <button
                         onClick={() => editor.chain().focus().toggleItalic().run()}
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('') ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:text-indigo-600'}`}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('') ? 'bg-[#5B53E0] text-white' : 'bg-white text-[#374151] hover:text-[#5B53E0]'}`}
                     >
                         <span className="material-symbols-rounded text-xl">format_italic</span>
                     </button>
                     <button
                         onClick={() => editor.chain().focus().toggleUnderline().run()}
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('underline') ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:text-indigo-600'}`}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('underline') ? 'bg-[#5B53E0] text-white' : 'bg-white text-[#374151] hover:text-[#5B53E0]'}`}
                     >
                         <span className="material-symbols-rounded text-xl">format_underlined</span>
                     </button>
                 </div>
 
-                <div className="w-px h-6 bg-slate-200 mx-2"></div>
+                <div className="w-px h-6 bg-[#E8EAED] mx-2"></div>
 
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => editor.chain().focus().toggleBulletList().run()}
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('bulletList') ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:text-indigo-600'}`}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('bulletList') ? 'bg-[#5B53E0] text-white' : 'bg-white text-[#374151] hover:text-[#5B53E0]'}`}
                     >
                         <span className="material-symbols-rounded text-xl">format_list_bulleted</span>
                     </button>
                     <button
                         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('orderedList') ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:text-indigo-600'}`}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('orderedList') ? 'bg-[#5B53E0] text-white' : 'bg-white text-[#374151] hover:text-[#5B53E0]'}`}
                     >
                         <span className="material-symbols-rounded text-xl">format_list_numbered</span>
                     </button>
                 </div>
 
-                <div className="w-px h-6 bg-slate-200 mx-2"></div>
+                <div className="w-px h-6 bg-[#E8EAED] mx-2"></div>
 
                 <button
                     onClick={() => {
@@ -126,7 +126,7 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                             editor.chain().focus().unsetLink().run();
                         }
                     }}
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('link') ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:text-indigo-600'}`}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('link') ? 'bg-[#5B53E0] text-white' : 'bg-white text-[#374151] hover:text-[#5B53E0]'}`}
                 >
                     <span className="material-symbols-rounded text-xl">link</span>
                 </button>

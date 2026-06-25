@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { BACKEND_URL } from "@/utils/api";
 
 interface ApplicationField {
@@ -139,25 +141,25 @@ export default function PublicJobPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6">
-                <div className="animate-spin material-icons-outlined text-indigo-600 text-4xl">sync</div>
+            <div className="min-h-screen bg-[#F4F5F7] flex items-center justify-center p-6">
+                <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
 
     if (!job) {
         return (
-            <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center mb-6 text-slate-300">
-                    <span className="material-icons-outlined text-4xl">search_off</span>
+            <div className="min-h-screen bg-[#F4F5F7] flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-16 h-16 bg-white border border-[#E8EAED] rounded-[16px] flex items-center justify-center mb-6 text-[#C7CCD4]">
+                    <span className="material-icons-outlined text-3xl">search_off</span>
                 </div>
-                <h1 className="text-2xl font-black text-slate-900 mb-2">Job Not Found</h1>
-                <p className="text-slate-500 max-w-sm mb-8">The requisition you are looking for may have been closed or moved.</p>
+                <h1 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-2">Job not found</h1>
+                <p className="text-[#8A929E] max-w-sm mb-7">The role you are looking for may have been closed or moved.</p>
                 <button
                     onClick={() => router.push("/")}
-                    className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg shadow-indigo-100"
+                    className="bg-[#5B53E0] hover:bg-[#4A43C9] text-white px-6 h-[46px] rounded-[10px] font-semibold text-[14px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
                 >
-                    Back to Homepage
+                    Back to homepage
                 </button>
             </div>
         );
@@ -226,7 +228,7 @@ export default function PublicJobPage() {
     } : null;
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] font-sans">
+        <div className="min-h-screen bg-[#F4F5F7]">
             {/* Google Jobs Structured Data */}
             {jsonLd && (
                 <script
@@ -235,72 +237,82 @@ export default function PublicJobPage() {
                 />
             )}
             {/* Top Navigation / Brand */}
-            <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-100 z-50">
-                <div className="max-w-[95%] mx-auto px-6 h-20 flex items-center justify-between">
+            <nav className="sticky top-0 left-0 right-0 bg-white/85 backdrop-blur-md border-b border-[#E8EAED] z-50">
+                <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl overflow-hidden">
+                        <div className="w-10 h-10 rounded-[11px] bg-[#5B53E0] flex items-center justify-center text-white font-semibold text-lg overflow-hidden shrink-0">
                             {(typeof orgName === 'object' && orgName.logo_url) ? (
                                 <img src={orgName.logo_url} alt="Logo" className="w-full h-full object-contain" />
                             ) : (
                                 ((typeof orgName === 'object' ? orgName.name?.[0] : orgName?.[0]) || 'A').toUpperCase()
                             )}
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-sm font-black text-slate-900 leading-tight">Career Portal</span>
-                            <span className="text-[10px] font-black text-slate-400  ">
-                                {typeof orgName === 'object' ? orgName.name : orgName} 
+                        <div className="flex flex-col leading-tight">
+                            <span className="text-[14px] font-bold text-[#15171C]">Career Portal</span>
+                            <span className="text-[11px] font-medium text-[#9AA3AF]">
+                                {typeof orgName === 'object' ? orgName.name : orgName}
                             </span>
                         </div>
                     </div>
                 </div>
             </nav>
 
-            <main className="max-w-[95%] mx-auto px-6 pt-32 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* Hero band */}
+            <header
+                className="relative overflow-hidden text-white"
+                style={{
+                    background: "#0E1014",
+                    backgroundImage:
+                        "radial-gradient(900px 420px at 88% -30%,rgba(91,83,224,0.5),transparent 60%),radial-gradient(700px 400px at 0% 130%,rgba(139,125,255,0.25),transparent 60%)",
+                }}
+            >
+                <div className="pointer-events-none absolute -right-20 -top-24 w-80 h-80 rounded-full border border-[#8B7DFF]/20" />
+                <div className="pointer-events-none absolute -right-2 -top-10 w-48 h-48 rounded-full border border-[#8B7DFF]/15" />
+                <div className="relative z-10 max-w-6xl mx-auto px-6 pt-10 pb-20">
+                    {(typeof orgName === 'object' && orgName.logo_url) && (
+                        <img src={orgName.logo_url} className="h-8 object-contain mb-5 block" alt="Company Logo" />
+                    )}
+                    <div className="flex flex-wrap items-center gap-2 mb-5">
+                        <span className="inline-flex items-center px-2.5 py-1 bg-white/[0.1] border border-white/15 text-white text-[12px] font-semibold rounded-[20px]">
+                            {job.job_type || "Full Time"}
+                        </span>
+                        <span className="inline-flex items-center px-2.5 py-1 bg-white/[0.1] border border-white/15 text-[#C7CCD4] text-[12px] font-semibold rounded-[20px]">
+                            {job.work_mode || "On-Site"}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#34D399]/15 border border-[#34D399]/30 text-[#34D399] text-[12px] font-semibold rounded-[20px]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
+                            {"Currently hiring"}
+                        </span>
+                    </div>
+
+                    <h1 className="text-[34px] md:text-[42px] font-extrabold tracking-[-1px] leading-[1.05] mb-5 max-w-3xl">{job.title}</h1>
+
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[#A8AEB8] font-medium text-[14px]">
+                        <div className="flex items-center gap-2">
+                            <span className="material-icons-outlined text-[#8B7DFF] text-[20px]">location_on</span>
+                            {job.location || "Remote"}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="material-icons-outlined text-[#8B7DFF] text-[20px]">work</span>
+                            {job.experience_min || 0}-{job.experience_max || '5+'} yrs exp
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="material-icons-outlined text-[#8B7DFF] text-[20px]">payments</span>
+                            {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : 'Competitive'}
+                            {job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : ''}
+                            <span className="text-[12px] text-white/40">/ {job.salary_frequency || 'yr'}</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main className="max-w-6xl mx-auto px-6 -mt-8 pb-10 grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
                 {/* Left Column: Job Details */}
-                <div className="lg:col-span-8 space-y-10">
-                    <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-
-                        <div className="relative z-10 flex flex-wrap items-center gap-3 mb-6">
-                            {(typeof orgName === 'object' && orgName.logo_url) && (
-                                <img src={orgName.logo_url} className="h-8 object-contain mb-2 block" alt="Company Logo" />
-                            )}
-                            <div className="w-full"></div>
-                            <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black   rounded-lg">
-                                {job.job_type || "Full Time"}
-                            </span>
-                            <span className="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-black   rounded-lg">
-                                {job.work_mode || "On-Site"}
-                            </span>
-                            <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black   rounded-lg flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                {"Currently Hiring"}
-                            </span>
-                        </div>
-
-                        <h1 className="relative z-10 text-4xl font-black text-slate-900 tracking-tight mb-4 leading-[1.1]">{job.title}</h1>
-
-                        <div className="relative z-10 flex flex-wrap items-center gap-6 text-slate-500 font-bold text-sm mb-10">
-                            <div className="flex items-center gap-2">
-                                <span className="material-icons-outlined text-slate-300">location_on</span>
-                                {job.location || "Remote"}
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="material-icons-outlined text-slate-300">work</span>
-                                {job.experience_min || 0}-{job.experience_max || '5+'} Yrs Exp
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="material-icons-outlined text-slate-300">payments</span>
-                                {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : 'Competitive'}
-                                {job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : ''}
-                                <span className="text-[10px] text-slate-400">/ {job.salary_frequency || 'yr'}</span>
-                            </div>
-                        </div>
-
-                        <div className="relative z-10 border-t border-slate-50 pt-10 space-y-10">
+                <div className="lg:col-span-8">
+                    <div className="bg-white rounded-[16px] border border-[#E8EAED] p-7 md:p-9 space-y-8">
                             <div>
-                                <h3 className="text-[11px] font-black text-indigo-600  tracking-[0.2em] mb-4">About the Role</h3>
-                                <div className="text-slate-600 font-medium leading-[1.7] max-w-none">
+                                <h3 className="text-[11px] font-bold text-[#5B53E0] uppercase tracking-[0.1em] mb-3">About the role</h3>
+                                <div className="text-[#374151] text-[14.5px] leading-[1.7] max-w-none">
                                     <style jsx global>{`
                                         .prose-custom ul {
                                             list-style-type: disc !important;
@@ -320,55 +332,58 @@ export default function PublicJobPage() {
                                             margin-bottom: 1rem !important;
                                         }
                                     `}</style>
-                                    <div
-                                        className="prose-custom"
-                                        dangerouslySetInnerHTML={{ __html: job.description }}
-                                    />
+                                    {/<\/?[a-z][^>]*>/i.test(job.description || "") ? (
+                                        // Description authored in the rich-text editor → already HTML.
+                                        <div
+                                            className="prose-custom"
+                                            dangerouslySetInnerHTML={{ __html: job.description }}
+                                        />
+                                    ) : (
+                                        // Plain / AI-generated description → render Markdown.
+                                        <div className="prose-custom [&_h1]:text-[18px] [&_h1]:font-bold [&_h1]:text-[#15171C] [&_h1]:mt-5 [&_h1]:mb-2 [&_h2]:text-[16px] [&_h2]:font-bold [&_h2]:text-[#15171C] [&_h2]:mt-5 [&_h2]:mb-2 [&_h3]:text-[15px] [&_h3]:font-semibold [&_h3]:text-[#15171C] [&_h3]:mt-4 [&_h3]:mb-1.5 [&_strong]:font-semibold [&_strong]:text-[#15171C] [&_a]:text-[#5B53E0] [&_a]:underline [&_code]:bg-[#ECEBFB] [&_code]:text-[#4A43C9] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-[13px]">
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{job.description}</ReactMarkdown>
+                                        </div>
+                                    )}
                                 </div>
 
                             </div>
 
                             {job.required_skills && job.required_skills.length > 0 && (
                                 <div>
-                                    <h3 className="text-[11px] font-black text-indigo-600  tracking-[0.2em] mb-4">Required Competencies</h3>
+                                    <h3 className="text-[11px] font-bold text-[#5B53E0] uppercase tracking-[0.1em] mb-3">Required competencies</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {job.required_skills.map((skill: string, idx: number) => (
-                                            <span key={idx} className="px-4 py-2 bg-slate-50 text-slate-700 rounded-xl border border-slate-100 font-bold text-xs  ">
+                                            <span key={idx} className="px-3 py-1.5 bg-[#F4F5F7] text-[#374151] rounded-[8px] border border-[#E8EAED] font-medium text-[12px]">
                                                 {skill}
                                             </span>
                                         ))}
                                     </div>
                                 </div>
                             )}
-                        </div>
                     </div>
                 </div>
 
                 {/* Right Column: Application Form */}
-                <div className="lg:col-span-4 space-y-8">
-                    <div className="bg-slate-900 rounded-[40px] p-10 shadow-xl shadow-slate-200/50 sticky top-32 group overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/20 transition-all duration-1000"></div>
-
+                <div className="lg:col-span-4">
+                    <div className="bg-white rounded-[16px] border border-[#E8EAED] p-7 sticky top-24 shadow-[0_4px_14px_rgba(15,23,42,0.05)]">
                         {applied ? (
-                            <div className="relative z-10 text-center py-10 animate-in fade-in zoom-in duration-500">
-                                <div className="w-20 h-20 bg-emerald-500 text-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/20">
-                                    <span className="material-icons-outlined text-4xl">check</span>
+                            <div className="text-center py-8 animate-in fade-in zoom-in duration-500">
+                                <div className="w-16 h-16 bg-[#E6F4EA] text-[#15803D] rounded-[16px] flex items-center justify-center mx-auto mb-5">
+                                    <span className="material-icons-outlined text-[34px]">check</span>
                                 </div>
-                                <h3 className="text-2xl font-black text-white mb-3">Application Sent!</h3>
-                                <p className="text-slate-400 font-medium text-sm leading-relaxed">
+                                <h3 className="text-[22px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">Application sent</h3>
+                                <p className="text-[#8A929E] text-[14px] leading-relaxed">
                                     Thank you for your interest. The recruiting team at {typeof orgName === 'object' ? orgName.name : (orgName || "our team")} has received your profile and will be in touch shortly.
                                 </p>
                             </div>
                         ) : (
                             <>
-                                <div className="relative z-10 mb-8">
-                                    <h2 className="text-2xl font-black text-white tracking-tight mb-2">Apply Now</h2>
-                                    <p className="text-indigo-300 font-bold text-[10px]   leading-relaxed">
-                                        Fast-track your application today
-                                    </p>
+                                <div className="mb-6">
+                                    <h2 className="text-[22px] font-extrabold text-[#15171C] tracking-[-0.3px]">Apply now</h2>
+                                    <p className="text-[#8A929E] text-[13px] mt-1">Fast-track your application today</p>
                                 </div>
 
-                                <form onSubmit={handleApply} className="relative z-10 space-y-4">
+                                <form onSubmit={handleApply} className="space-y-4">
                                     {(job.application_fields && job.application_fields.length > 0 ? job.application_fields : [
                                         { id: '1', label: 'Full Name', type: 'text', icon: 'person', is_required: true },
                                         { id: '2', label: 'Email Address', type: 'email', icon: 'alternate_email', is_required: true },
@@ -379,9 +394,9 @@ export default function PublicJobPage() {
 
                                         if (field.type === 'file') {
                                             return (
-                                                <div key={field.id} className="space-y-1">
-                                                    <label className="text-[10px] font-black text-slate-400   ml-1">
-                                                        {field.label} {field.is_required && <span className="text-rose-500">*</span>}
+                                                <div key={field.id}>
+                                                    <label className="block text-[12px] font-semibold text-[#374151] mb-1.5">
+                                                        {field.label} {field.is_required && <span className="text-[#EF4444]">*</span>}
                                                     </label>
                                                     <div className="relative group">
                                                         <input
@@ -394,18 +409,18 @@ export default function PublicJobPage() {
                                                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                                                             required={field.is_required}
                                                         />
-                                                        <div className={`w-full px-4 py-3 rounded-xl border border-dashed transition-all flex items-center gap-3 ${resumeFile
-                                                            ? "bg-indigo-500/20 border-indigo-500/50"
-                                                            : "bg-white/5 border-white/10 group-hover:bg-white/10 group-hover:border-white/20"
+                                                        <div className={`w-full px-3.5 py-3 rounded-[10px] border-2 border-dashed transition-colors flex items-center gap-3 ${resumeFile
+                                                            ? "bg-[#ECEBFB]/50 border-[#5B53E0]/40"
+                                                            : "bg-white border-[#E1E4E8] group-hover:border-[#5B53E0]/40"
                                                             }`}>
-                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${resumeFile ? "bg-indigo-500 text-white" : "bg-slate-700 text-slate-400"
+                                                            <div className={`w-9 h-9 rounded-[9px] flex items-center justify-center ${resumeFile ? "bg-[#5B53E0] text-white" : "bg-[#F4F5F7] text-[#9AA3AF]"
                                                                 }`}>
                                                                 <span className="material-icons-outlined text-[18px]">
                                                                     {resumeFile ? "description" : "upload_file"}
                                                                 </span>
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <p className={`text-xs font-bold truncate ${resumeFile ? "text-white" : "text-slate-400"}`}>
+                                                                <p className={`text-[13px] font-medium truncate ${resumeFile ? "text-[#15171C]" : "text-[#8A929E]"}`}>
                                                                     {resumeFile ? resumeFile.name : `Upload ${field.label}`}
                                                                 </p>
                                                             </div>
@@ -418,43 +433,41 @@ export default function PublicJobPage() {
                                         if (field.type === 'boolean') {
                                             const isChecked = formData[fieldKey] === "Yes";
                                             return (
-                                                <div key={field.id} className="p-5 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isChecked ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-500'}`}>
-                                                            <span className="material-icons-outlined text-xl">{getIcon(field.icon) || 'check_circle'}</span>
+                                                <div key={field.id} className="p-3.5 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] flex items-center justify-between">
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <div className={`w-9 h-9 rounded-[9px] flex items-center justify-center shrink-0 ${isChecked ? 'bg-[#15803D] text-white' : 'bg-[#F4F5F7] text-[#9AA3AF]'}`}>
+                                                            <span className="material-icons-outlined text-[18px]">{getIcon(field.icon) || 'check_circle'}</span>
                                                         </div>
-                                                        <div className="flex flex-col">
-                                                            <label className="text-[10px] font-black text-slate-400  ">
-                                                                {field.label} {field.is_required && <span className="text-rose-500">*</span>}
+                                                        <div className="flex flex-col min-w-0">
+                                                            <label className="text-[12.5px] font-semibold text-[#374151] truncate">
+                                                                {field.label} {field.is_required && <span className="text-[#EF4444]">*</span>}
                                                             </label>
-                                                            <span className={`text-[11px] font-bold ${isChecked ? 'text-emerald-400' : 'text-slate-500'}`}>{isChecked ? 'Selected: Yes' : 'Selected: No'}</span>
+                                                            <span className={`text-[11px] font-medium ${isChecked ? 'text-[#15803D]' : 'text-[#9AA3AF]'}`}>{isChecked ? 'Yes' : 'No'}</span>
                                                         </div>
                                                     </div>
-                                                    <button 
+                                                    <button
                                                         type="button"
                                                         onClick={() => setFormData({ ...formData, [fieldKey]: isChecked ? "No" : "Yes" })}
-                                                        className={`w-12 h-6 rounded-full flex items-center px-1 transition-all shadow-lg ${isChecked ? 'bg-emerald-500 shadow-emerald-500/20' : 'bg-slate-700'}`}
+                                                        className={`w-11 h-6 rounded-full flex items-center px-0.5 transition-colors shrink-0 ${isChecked ? 'bg-[#15803D]' : 'bg-[#D4D7DC]'}`}
                                                     >
-                                                        <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${isChecked ? 'translate-x-6' : 'translate-x-0'}`} />
+                                                        <div className={`w-5 h-5 bg-white rounded-full transition-transform duration-300 ${isChecked ? 'translate-x-5' : 'translate-x-0'}`} />
                                                     </button>
                                                 </div>
                                             );
                                         }
 
                                         return (
-                                            <div key={field.id} className="space-y-1">
-                                                <label className="text-[10px] font-black text-slate-400   ml-1">
-                                                    {field.label} {field.is_required && <span className="text-rose-500">*</span>}
+                                            <div key={field.id}>
+                                                <label className="block text-[12px] font-semibold text-[#374151] mb-1.5">
+                                                    {field.label} {field.is_required && <span className="text-[#EF4444]">*</span>}
                                                 </label>
                                                 <div className="relative">
-                                                    <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg pointer-events-none">{getIcon(field.icon)}</span>
+                                                    <span className="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[19px] pointer-events-none">{getIcon(field.icon)}</span>
                                                     <input
                                                         type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : 'text'}
                                                         step="any"
-                                                        placeholder={`Enter ${field.label}`}
-                                                        className={`w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-indigo-500 focus:bg-white/10 outline-none transition-all text-white font-bold text-sm placeholder:text-slate-600 ${
-                                                            (field.type === 'email' || fieldKey === 'email' || fieldKey === 'email_address') && prefilledEmail ? "opacity-60 cursor-not-allowed bg-slate-800" : ""
-                                                        }`}
+                                                        placeholder={`Enter ${field.label.toLowerCase()}`}
+                                                        className="w-full h-11 pl-10 pr-4 rounded-[10px] bg-white border border-[#E1E4E8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 outline-none transition-all text-[#15171C] font-medium text-[14px] placeholder:text-[#9AA3AF] read-only:bg-[#F4F5F7] read-only:text-[#8A929E] read-only:cursor-not-allowed"
                                                         value={formData[fieldKey] || ""}
                                                         onChange={e => setFormData({ ...formData, [fieldKey]: e.target.value })}
                                                         required={field.is_required}
@@ -468,18 +481,18 @@ export default function PublicJobPage() {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full bg-indigo-600 text-white py-4 rounded-xl font-black text-xs   hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-900/40 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
+                                        className="w-full h-12 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[14px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
                                     >
                                         {isSubmitting ? (
                                             <span className="animate-spin material-icons-outlined text-[18px]">sync</span>
                                         ) : (
                                             <span className="material-icons-outlined text-[18px]">send</span>
                                         )}
-                                        {isSubmitting ? "Sending..." : "Submit Application"}
+                                        {isSubmitting ? "Sending…" : "Submit application"}
                                     </button>
                                 </form>
 
-                                <p className="relative z-10 text-[10px] text-slate-500 text-center mt-8 font-medium">
+                                <p className="text-[11px] text-[#9AA3AF] text-center mt-5 leading-relaxed">
                                     By submitting, you agree to share your profile details with {typeof orgName === 'object' ? orgName.name : (orgName || "our organization")}.
                                 </p>
                             </>
@@ -488,15 +501,15 @@ export default function PublicJobPage() {
                 </div>
             </main>
 
-            <footer className="border-t border-slate-100 py-12 mt-12 bg-white">
-                <div className="max-w-[95%] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p className="text-slate-400 text-xs font-bold  ">
-                        Powered by <span className="text-indigo-600">Academik.ai</span> Corporate Excellence
+            <footer className="border-t border-[#E8EAED] py-8 mt-4 bg-white">
+                <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p className="text-[#9AA3AF] text-[12.5px] font-medium">
+                        Powered by <span className="text-[#5B53E0] font-semibold">Croar</span>
                     </p>
-                    <div className="flex items-center gap-6 text-slate-400 text-xs font-bold  ">
-                        <button type="button" className="hover:text-indigo-600 transition-colors">Privacy</button>
-                        <button type="button" className="hover:text-indigo-600 transition-colors">Terms</button>
-                        <button type="button" className="hover:text-indigo-600 transition-colors">Contact</button>
+                    <div className="flex items-center gap-6 text-[#9AA3AF] text-[12.5px] font-medium">
+                        <button type="button" className="hover:text-[#5B53E0] transition-colors">Privacy</button>
+                        <button type="button" className="hover:text-[#5B53E0] transition-colors">Terms</button>
+                        <button type="button" className="hover:text-[#5B53E0] transition-colors">Contact</button>
                     </div>
                 </div>
             </footer>

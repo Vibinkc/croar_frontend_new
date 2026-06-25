@@ -55,10 +55,10 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
         <button
             type="button"
             onClick={onClick}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
+            className={`px-3.5 py-2 rounded-[9px] text-[12.5px] font-semibold border transition-colors ${
                 active
-                    ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                    : "bg-white text-slate-600 border-slate-200 hover:border-indigo-400"
+                    ? "bg-[#5B53E0] text-white border-[#5B53E0]"
+                    : "bg-white text-[#374151] border-[#E1E4E8] hover:border-[#5B53E0]/50"
             }`}
         >
             {children}
@@ -69,14 +69,14 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <div>
-            <label className="block text-[11px] font-black uppercase tracking-wider text-slate-500 mb-1.5">{label}</label>
+            <label className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] mb-1.5">{label}</label>
             {children}
         </div>
     );
 }
 
 const inputCls =
-    "w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-indigo-500 transition-colors";
+    "w-full bg-white border border-[#E1E4E8] rounded-[10px] px-3 h-10 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
 
 const toISO = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -149,46 +149,46 @@ function PilotSetupForm({
     };
 
     return (
-        <div className="mb-3 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
-            <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-black uppercase tracking-widest text-indigo-600">Quick setup</p>
+        <div className="mb-3 rounded-[14px] border border-[#E8EAED] bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between mb-4">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#5B53E0]">Quick setup</p>
                 {onClose && (
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600" title="Close">
+                    <button onClick={onClose} className="text-[#9AA3AF] hover:text-[#374151] transition-colors" title="Close">
                         <span className="material-symbols-rounded text-lg">close</span>
                     </button>
                 )}
             </div>
 
             {/* Step indicator */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-5">
                 {STEPS.map((label, i) => (
                     <div key={label} className="flex items-center gap-2 flex-1">
                         <div
-                            className={`flex items-center gap-1.5 text-[11px] font-bold ${
-                                i === step ? "text-indigo-600" : i < step ? "text-emerald-600" : "text-slate-400"
+                            className={`flex items-center gap-1.5 text-[11px] font-semibold ${
+                                i === step ? "text-[#5B53E0]" : i < step ? "text-[#15803D]" : "text-[#9AA3AF]"
                             }`}
                         >
                             <span
-                                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
+                                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                                     i === step
-                                        ? "bg-indigo-600 text-white"
+                                        ? "bg-[#5B53E0] text-white"
                                         : i < step
-                                          ? "bg-emerald-500 text-white"
-                                          : "bg-slate-200 text-slate-500"
+                                          ? "bg-[#15803D] text-white"
+                                          : "bg-[#F1F2F5] text-[#8A929E]"
                                 }`}
                             >
                                 {i < step ? "✓" : i + 1}
                             </span>
                             {label}
                         </div>
-                        {i < STEPS.length - 1 && <div className="flex-1 h-px bg-slate-200" />}
+                        {i < STEPS.length - 1 && <div className="flex-1 h-px bg-[#E8EAED]" />}
                     </div>
                 ))}
             </div>
 
             {/* Step 1 — Role */}
             {step === 0 && (
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <Field label="Role title">
                             <input value={role} onChange={(e) => setRole(e.target.value)} placeholder="e.g. Java Developer" className={inputCls} />
@@ -219,7 +219,7 @@ function PilotSetupForm({
 
             {/* Step 2 — Interview */}
             {step === 1 && (
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                     <Field label="Interview mode">
                         <div className="flex gap-2">
                             <Chip active={interviewMode === "AI"} onClick={() => setInterviewMode("AI")}>AI-conducted</Chip>
@@ -232,7 +232,7 @@ function PilotSetupForm({
                                 value={interviewerEmail}
                                 onChange={(e) => setInterviewerEmail(e.target.value)}
                                 placeholder="interviewer@company.com"
-                                className={`${inputCls} ${interviewerEmail && !emailValid ? "!border-rose-300" : ""}`}
+                                className={`${inputCls} ${interviewerEmail && !emailValid ? "!border-[#EF4444]" : ""}`}
                             />
                         </Field>
                     )}
@@ -257,7 +257,7 @@ function PilotSetupForm({
                                 value={endDate}
                                 min={startDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className={`${inputCls} ${endDate && endDate < startDate ? "!border-rose-300" : ""}`}
+                                className={`${inputCls} ${endDate && endDate < startDate ? "!border-[#EF4444]" : ""}`}
                             />
                         </Field>
                     </div>
@@ -266,7 +266,7 @@ function PilotSetupForm({
 
             {/* Step 3 — Assessment */}
             {step === 2 && (
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                     <Field label="Assessment type">
                         <div className="flex gap-2">
                             {["Coding", "Aptitude", "Both"].map((a) => (
@@ -292,7 +292,7 @@ function PilotSetupForm({
                 <button
                     onClick={() => setStep((s) => Math.max(0, s - 1))}
                     disabled={step === 0}
-                    className="px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 border border-slate-200 hover:bg-white transition-all disabled:opacity-40 flex items-center gap-1"
+                    className="px-4 h-10 rounded-[10px] text-[13px] font-semibold text-[#374151] border border-[#E1E4E8] hover:bg-[#F4F5F7] transition-colors disabled:opacity-40 flex items-center gap-1"
                 >
                     <span className="material-symbols-rounded text-lg">chevron_left</span>
                     {"Previous"}
@@ -301,7 +301,7 @@ function PilotSetupForm({
                     <button
                         onClick={build}
                         disabled={!step0Valid || !step1Valid}
-                        className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-black hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                        className="px-5 h-10 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
                         <span className="material-symbols-rounded text-lg">rocket_launch</span>
                         {"Build pipeline"}
@@ -310,7 +310,7 @@ function PilotSetupForm({
                     <button
                         onClick={() => setStep((s) => Math.min(STEPS.length - 1, s + 1))}
                         disabled={!stepValid}
-                        className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-black hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-1"
+                        className="px-5 h-10 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] transition-colors disabled:opacity-50 flex items-center gap-1"
                     >
                         {"Next"}
                         <span className="material-symbols-rounded text-lg">chevron_right</span>
@@ -341,24 +341,24 @@ interface PilotAction {
 // Actionable result card shown after the agent builds a pipeline.
 function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource: () => void }) {
     return (
-        <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50/60 to-white p-5">
+        <div className="rounded-[14px] border border-[#CDEAD7] bg-[#E6F4EA]/40 p-5">
             <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0">
-                    <span className="material-symbols-rounded">check_circle</span>
+                <div className="w-9 h-9 rounded-[10px] bg-[#15803D] text-white flex items-center justify-center shrink-0">
+                    <span className="material-symbols-rounded text-[20px]">check_circle</span>
                 </div>
                 <div className="min-w-0">
-                    <p className="text-sm font-black text-slate-900 truncate">
+                    <p className="text-[14px] font-bold text-[#15171C] truncate">
                         Pipeline ready{action.role ? ` · ${action.role}` : ""}
                     </p>
-                    <p className="text-[11px] text-slate-500 font-semibold">Live job created and the full pipeline armed.</p>
+                    <p className="text-[12px] text-[#8A929E]">Live job created and the full pipeline armed.</p>
                 </div>
             </div>
 
             {action.armed && action.armed.length > 0 && (
                 <ul className="space-y-1.5 mb-4">
                     {action.armed.map((a, i) => (
-                        <li key={i} className="flex items-start gap-2 text-[13px] text-slate-700">
-                            <span className="material-symbols-rounded text-emerald-500 text-base mt-0.5">check</span>
+                        <li key={i} className="flex items-start gap-2 text-[13px] text-[#374151]">
+                            <span className="material-symbols-rounded text-[#15803D] text-base mt-0.5">check</span>
                             <span>{a}</span>
                         </li>
                     ))}
@@ -369,22 +369,22 @@ function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource
                 {action.job_id && (
                     <Link
                         href={`/enterprise/jobs/${action.job_id}`}
-                        className="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5"
+                        className="px-3.5 h-9 rounded-[9px] bg-[#5B53E0] text-white text-[12.5px] font-semibold hover:bg-[#4A43C9] transition-colors flex items-center gap-1.5"
                     >
-                        <span className="material-symbols-rounded text-base">business_center</span> View job
+                        <span className="material-symbols-rounded text-base">work</span> View job
                     </Link>
                 )}
                 <button
                     onClick={onSource}
-                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5"
+                    className="px-3.5 h-9 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5"
                 >
                     <span className="material-symbols-rounded text-base">person_search</span> Source candidates
                 </button>
                 <Link
                     href="/enterprise/candidates/kanban"
-                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5"
+                    className="px-3.5 h-9 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5"
                 >
-                    <span className="material-symbols-rounded text-base">filter_list</span> View pipeline
+                    <span className="material-symbols-rounded text-base">view_kanban</span> View pipeline
                 </Link>
             </div>
         </div>
@@ -452,56 +452,56 @@ function CandidatePicker({
 
     if (result) {
         return (
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 text-sm font-bold text-emerald-700">
+            <div className="rounded-[14px] border border-[#CDEAD7] bg-[#E6F4EA]/50 p-4 text-[13px] font-semibold text-[#15803D]">
                 {result}
             </div>
         );
     }
 
     return (
-        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+        <div className="rounded-[14px] border border-[#E8EAED] bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-black uppercase tracking-widest text-indigo-600">Candidates</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#5B53E0]">Candidates</p>
                 {candidates.length > 0 && (
-                    <button onClick={toggleAll} className="text-[11px] font-bold text-indigo-600 hover:underline">
+                    <button onClick={toggleAll} className="text-[11px] font-semibold text-[#5B53E0] hover:underline">
                         {allSelected ? "Clear all" : "Select all"}
                     </button>
                 )}
             </div>
 
             {candidates.length === 0 ? (
-                <p className="text-sm text-slate-500 py-4 text-center">No candidates found for this role.</p>
+                <p className="text-[13px] text-[#8A929E] py-4 text-center">No candidates found for this role.</p>
             ) : (
                 <>
                     <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
                         {candidates.map((c, i) => (
                             <label
                                 key={i}
-                                className={`flex items-start gap-3 p-2.5 rounded-xl border cursor-pointer transition-all ${
-                                    selected.has(i) ? "border-indigo-400 bg-white" : "border-slate-200 bg-white/60 hover:border-indigo-200"
+                                className={`flex items-start gap-3 p-2.5 rounded-[10px] border cursor-pointer transition-colors ${
+                                    selected.has(i) ? "border-[#5B53E0]/50 bg-[#ECEBFB]/40" : "border-[#E8EAED] bg-white hover:border-[#5B53E0]/30"
                                 }`}
                             >
                                 <input
                                     type="checkbox"
                                     checked={selected.has(i)}
                                     onChange={() => toggle(i)}
-                                    className="mt-1 accent-indigo-600"
+                                    className="mt-1 accent-[#5B53E0]"
                                 />
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-bold text-slate-800 text-sm truncate">{c.full_name || "Unknown"}</span>
+                                        <span className="font-semibold text-[#15171C] text-[13.5px] truncate">{c.full_name || "Unknown"}</span>
                                         {c.platform && (
-                                            <span className="text-[9px] font-black uppercase tracking-wide text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                                            <span className="text-[9px] font-bold uppercase tracking-wide text-[#8A929E] bg-[#F1F2F5] px-1.5 py-0.5 rounded">
                                                 {c.platform}
                                             </span>
                                         )}
                                     </div>
-                                    {c.headline && <p className="text-xs text-slate-500 truncate">{c.headline}</p>}
+                                    {c.headline && <p className="text-[12px] text-[#8A929E] truncate">{c.headline}</p>}
                                     <div className="flex items-center gap-2 mt-0.5">
                                         {c.email ? (
-                                            <span className="text-[11px] text-emerald-600 font-semibold truncate">{c.email}</span>
+                                            <span className="text-[11px] text-[#15803D] font-semibold truncate">{c.email}</span>
                                         ) : (
-                                            <span className="text-[11px] text-slate-400">no email found</span>
+                                            <span className="text-[11px] text-[#9AA3AF]">no email found</span>
                                         )}
                                         {c.profile_url && (
                                             <a
@@ -509,7 +509,7 @@ function CandidatePicker({
                                                 target="_blank"
                                                 rel="noreferrer"
                                                 onClick={(e) => e.stopPropagation()}
-                                                className="text-[11px] text-indigo-600 hover:underline"
+                                                className="text-[11px] text-[#5B53E0] hover:underline"
                                             >
                                                 profile ↗
                                             </a>
@@ -520,17 +520,17 @@ function CandidatePicker({
                         ))}
                     </div>
 
-                    {error && <p className="text-xs text-rose-500 mt-2">{error}</p>}
+                    {error && <p className="text-[12px] text-[#C0383C] mt-2">{error}</p>}
 
                     <button
                         onClick={send}
                         disabled={sending || selected.size === 0}
-                        className="mt-4 w-full py-3 rounded-xl bg-indigo-600 text-white text-sm font-black hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="mt-4 w-full h-11 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                         <span className="material-symbols-rounded text-lg">mark_email_read</span>
                         {sending ? "Sending…" : `Send invites to ${selected.size} selected`}
                     </button>
-                    <p className="mt-2 text-[10px] text-center text-amber-600 font-semibold">
+                    <p className="mt-2 text-[10px] text-center text-[#D97706] font-semibold">
                         🧪 Testing — invites are redirected to vibi@appxcess.com, not real candidates.
                     </p>
                 </>
@@ -678,35 +678,62 @@ export default function CroarPilotPage() {
     };
 
     return (
-        <div className="flex h-[calc(100vh-2rem)] w-full">
-            {/* History sidebar (toggled) */}
+        <div className="relative flex flex-col h-[calc(100vh-2rem)] w-full bg-[#F4F5F7]">
+            {/* Soft indigo glow behind the top of the page */}
+            <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-72 z-0"
+                style={{ background: "radial-gradient(680px 220px at 50% -45%, rgba(91,83,224,0.12), transparent 70%)" }}
+            />
+
+            {/* History backdrop */}
             {showHistory && (
-            <aside className="w-64 shrink-0 border-r border-slate-100 flex flex-col">
-                <div className="p-4">
-                    <button
-                        onClick={newChat}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-indigo-600 text-white text-sm font-black hover:bg-indigo-700 transition-all"
-                    >
-                        <span className="material-symbols-rounded text-xl">add</span>
-                        {"New Chat"}
+                <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Close history"
+                    onClick={() => setShowHistory(false)}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setShowHistory(false); }}
+                    className="fixed inset-0 z-40 bg-[#0E1014]/40 backdrop-blur-sm"
+                />
+            )}
+
+            {/* History drawer (slides in) */}
+            <aside
+                className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-[#E8EAED] flex flex-col transition-transform duration-300 ease-in-out ${
+                    showHistory ? "translate-x-0" : "-translate-x-full"
+                }`}
+            >
+                <div className="flex items-center justify-between px-4 pt-4 pb-2">
+                    <span className="text-[13px] font-bold text-[#15171C]">Conversations</span>
+                    <button onClick={() => setShowHistory(false)} className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#9AA3AF] hover:bg-[#F4F5F7] transition-colors">
+                        <span className="material-symbols-rounded text-[20px]">close</span>
                     </button>
                 </div>
-                <p className="px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">History</p>
-                <div className="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar">
+                <div className="px-3 pb-2">
+                    <button
+                        onClick={newChat}
+                        className="w-full flex items-center justify-center gap-2 h-11 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
+                    >
+                        <span className="material-symbols-rounded text-[20px]">add</span>
+                        {"New chat"}
+                    </button>
+                </div>
+                <p className="px-5 pt-1 text-[10px] font-bold text-[#8A929E] uppercase tracking-[0.1em]">History</p>
+                <div className="flex-1 overflow-y-auto p-2.5 space-y-1 custom-scrollbar">
                     {sessions.length === 0 && (
-                        <p className="text-xs text-slate-400 px-2 py-3">No conversations yet.</p>
+                        <p className="text-[12px] text-[#9AA3AF] px-2 py-3">No conversations yet.</p>
                     )}
                     {sessions.map((s) => (
                         <button
                             key={s.session_id}
                             onClick={() => loadSession(s.session_id)}
-                            className={`group w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-all ${
+                            className={`group w-full text-left px-3 py-2.5 rounded-[10px] text-[13px] flex items-center gap-2 transition-colors ${
                                 s.session_id === currentSessionId
-                                    ? "bg-indigo-50 text-indigo-700 font-bold"
-                                    : "text-slate-600 hover:bg-slate-50"
+                                    ? "bg-[#ECEBFB] text-[#4A43C9] font-semibold"
+                                    : "text-[#374151] hover:bg-[#F4F5F7]"
                             }`}
                         >
-                            <span className="material-symbols-rounded text-base shrink-0 text-slate-400">forum</span>
+                            <span className="material-symbols-rounded text-base shrink-0 text-[#9AA3AF]">forum</span>
                             <span className="truncate flex-1">{s.title || "Untitled"}</span>
                             <span
                                 role="button"
@@ -717,7 +744,7 @@ export default function CroarPilotPage() {
                                         deleteSession(e, s.session_id);
                                     }
                                 }}
-                                className="material-symbols-rounded text-base text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all"
+                                className="material-symbols-rounded text-base text-[#C7CCD4] hover:text-[#EF4444] opacity-0 group-hover:opacity-100 transition-all"
                                 title="Delete"
                             >
                                 delete
@@ -726,51 +753,67 @@ export default function CroarPilotPage() {
                     ))}
                 </div>
             </aside>
-            )}
 
-            {/* Chat */}
-            <div className="flex-1 flex flex-col min-w-0">
-                <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-100">
-                    <button
-                        onClick={() => setShowHistory((v) => !v)}
-                        title={showHistory ? "Hide history" : "Show history"}
-                        className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-all shrink-0"
-                    >
-                        <span className="material-symbols-rounded">{showHistory ? "menu_open" : "history"}</span>
-                    </button>
-                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-                        <span className="material-symbols-rounded">smart_toy</span>
-                    </div>
-                    <div>
-                        <h1 className="text-base font-black text-slate-900">Croar Pilot</h1>
-                        <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">
-                            Autonomous hiring orchestrator
-                        </p>
-                    </div>
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4 px-4 sm:px-5 md:px-7 shrink-0">
+                <div>
+                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
+                        <span className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]/80">
+                            <span className="material-symbols-rounded text-[18px] text-[#5B53E0]">smart_toy</span>
+                        </span>
+                        Croar Pilot
+                    </h1>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Autonomous AI recruiting companion for sourcing &amp; hiring</p>
                 </div>
+                <div className="flex items-center gap-2.5 shrink-0">
+                    <button
+                        onClick={() => setShowHistory(true)}
+                        className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
+                    >
+                        <span className="material-symbols-rounded text-[18px] text-[#6B6F76]">history</span>
+                        History
+                    </button>
+                    <button
+                        onClick={newChat}
+                        className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
+                    >
+                        <span className="material-symbols-rounded text-[18px]">edit_square</span>
+                        New Chat
+                    </button>
+                </div>
+            </header>
 
-                <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
+            {/* Messages */}
+            <div ref={scrollRef} className="relative z-10 flex-1 overflow-y-auto custom-scrollbar">
+                <div className="max-w-3xl mx-auto w-full px-4 md:px-6 py-6 space-y-7">
                     {messages.length === 0 && (
-                        <div className="max-w-2xl mx-auto text-center mt-8">
-                            <div className="w-16 h-16 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-5">
-                                <span className="material-symbols-rounded text-3xl">auto_awesome</span>
+                        <div className="max-w-2xl mx-auto text-center pt-8 md:pt-16">
+                            <div className="relative inline-flex mb-7">
+                                <div className="absolute -inset-4 rounded-full bg-[#5B53E0]/20 blur-2xl" />
+                                <div
+                                    className="relative w-[68px] h-[68px] rounded-[22px] flex items-center justify-center text-white shadow-[0_14px_34px_rgba(91,83,224,0.5)]"
+                                    style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
+                                >
+                                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12l1-9z" /></svg>
+                                </div>
                             </div>
-                            <h2 className="text-xl font-black text-slate-900 mb-2">Describe the role you want to hire</h2>
-                            <p className="text-slate-500 text-sm max-w-md mx-auto mb-8">
-                                Tell me the role, seniority, key skills and location. I&apos;ll create the live job and
-                                arm the full pipeline &mdash; assessment, interview and onboarding.
+                            <h2 className="text-[28px] md:text-[34px] font-extrabold tracking-[-0.9px] text-[#15171C] leading-[1.1] mb-3">How can I help you hire?</h2>
+                            <p className="text-[#6B6F76] text-[15px] leading-relaxed max-w-md mx-auto mb-7">
+                                Describe the role — seniority, key skills, openings and location — and I&apos;ll create the live job and arm the full pipeline: assessment, interview and onboarding.
                             </p>
-                            <div className="grid gap-2 max-w-lg mx-auto">
+
+                            <div className="grid gap-2.5 max-w-xl mx-auto">
                                 {EXAMPLES.map((ex) => (
                                     <button
                                         key={ex}
                                         onClick={() => send(ex)}
-                                        className="text-left p-3.5 rounded-2xl border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 transition-all text-sm font-semibold text-slate-700 flex items-center gap-3 group"
+                                        className="text-left p-4 rounded-[14px] bg-white border border-[#E8EAED] hover:border-[#5B53E0]/50 hover:shadow-[0_6px_18px_rgba(15,23,42,0.06)] transition-all text-[14px] font-medium text-[#374151] flex items-center gap-3 group"
                                     >
-                                        <span className="material-symbols-rounded text-slate-400 group-hover:text-indigo-600 transition-colors">
-                                            bolt
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                            <span className="material-symbols-rounded text-[19px]">bolt</span>
                                         </span>
-                                        {ex}
+                                        <span className="flex-1">{ex}</span>
+                                        <span className="material-symbols-rounded text-[#C7CCD4] group-hover:text-[#5B53E0] group-hover:translate-x-0.5 transition-all">arrow_forward</span>
                                     </button>
                                 ))}
                             </div>
@@ -811,25 +854,26 @@ export default function CroarPilotPage() {
                             <div key={idx} className="space-y-3">
                                 <div className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                                     <div
-                                        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                                        className={`w-8 h-8 rounded-[9px] flex items-center justify-center shrink-0 ${
                                             msg.role === "agent"
-                                                ? "bg-indigo-100 text-indigo-600"
-                                                : "bg-slate-100 text-slate-600"
+                                                ? "text-white"
+                                                : "bg-[#F1F2F5] text-[#6B6F76]"
                                         }`}
+                                        style={msg.role === "agent" ? { background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" } : undefined}
                                     >
-                                        <span className="material-symbols-rounded text-xl">
+                                        <span className="material-symbols-rounded text-[19px]">
                                             {msg.role === "agent" ? "smart_toy" : "person"}
                                         </span>
                                     </div>
                                     <div
-                                        className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed ${
+                                        className={`max-w-[80%] p-4 text-[14px] leading-relaxed ${
                                             msg.role === "agent"
-                                                ? "bg-slate-50 border border-slate-100 text-slate-700 rounded-tl-none"
-                                                : "bg-indigo-600 text-white rounded-tr-none shadow-md shadow-indigo-100 whitespace-pre-wrap"
+                                                ? "bg-white border border-[#E8EAED] text-[#374151] rounded-[14px] rounded-tl-[4px]"
+                                                : "bg-[#5B53E0] text-white rounded-[14px] rounded-tr-[4px] whitespace-pre-wrap"
                                         }`}
                                     >
                                         {msg.role === "agent" ? (
-                                            <div className="[&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_ol]:space-y-1 [&_li]:leading-relaxed [&_strong]:font-bold [&_strong]:text-slate-900 [&_a]:text-indigo-600 [&_a]:underline [&_code]:bg-slate-100 [&_code]:text-indigo-700 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-[13px] [&_code]:font-mono [&_h1]:font-black [&_h1]:text-base [&_h1]:mb-2 [&_h2]:font-black [&_h2]:text-base [&_h2]:mb-2 [&_h3]:font-bold [&_h3]:mb-1">
+                                            <div className="[&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_ol]:space-y-1 [&_li]:leading-relaxed [&_strong]:font-bold [&_strong]:text-[#15171C] [&_a]:text-[#5B53E0] [&_a]:underline [&_code]:bg-[#ECEBFB] [&_code]:text-[#4A43C9] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-[13px] [&_code]:font-mono [&_h1]:font-extrabold [&_h1]:text-base [&_h1]:mb-2 [&_h2]:font-extrabold [&_h2]:text-base [&_h2]:mb-2 [&_h3]:font-bold [&_h3]:mb-1">
                                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
                                             </div>
                                         ) : (
@@ -850,7 +894,7 @@ export default function CroarPilotPage() {
                                     </div>
                                 )}
                                 {wantsForm && setupDone.has(idx) && (
-                                    <p className="pl-11 text-xs font-bold text-emerald-600 flex items-center gap-1">
+                                    <p className="pl-11 text-[12px] font-semibold text-[#15803D] flex items-center gap-1">
                                         <span className="material-symbols-rounded text-base">check_circle</span>
                                         {"Details submitted"}
                                     </p>
@@ -882,40 +926,47 @@ export default function CroarPilotPage() {
 
                     {isLoading && (
                         <div className="flex gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 animate-pulse">
-                                <span className="material-symbols-rounded text-xl">bolt</span>
+                            <div
+                                className="w-8 h-8 rounded-[9px] flex items-center justify-center text-white animate-pulse"
+                                style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
+                            >
+                                <span className="material-symbols-rounded text-[19px]">bolt</span>
                             </div>
-                            <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl rounded-tl-none">
-                                <p className="text-xs font-bold text-slate-400">Building your pipeline&hellip;</p>
+                            <div className="bg-white border border-[#E8EAED] p-4 rounded-[14px] rounded-tl-[4px]">
+                                <p className="text-[12px] font-semibold text-[#8A929E]">Building your pipeline&hellip;</p>
                             </div>
                         </div>
                     )}
+                    </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-slate-100">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && send()}
-                            placeholder="e.g. I need a senior backend engineer, Go, remote, 1 opening"
-                            disabled={isLoading}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-4 pr-14 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 outline-none transition-all disabled:opacity-50"
-                        />
-                        <button
-                            onClick={() => send()}
-                            disabled={isLoading || !input.trim()}
-                            className="absolute right-2 top-2 w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
-                        >
-                            <span className="material-symbols-rounded">send</span>
-                        </button>
+                {/* Composer */}
+                <div className="relative z-10 px-3 md:px-6 pb-5 pt-2 shrink-0">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="flex items-center gap-2 rounded-[16px] border border-[#E1E4E8] bg-white shadow-[0_4px_18px_rgba(15,23,42,0.06)] px-2.5 py-2 transition-all focus-within:border-[#5B53E0] focus-within:ring-2 focus-within:ring-[#5B53E0]/15">
+                            <input
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && send()}
+                                placeholder="Describe the role you want to hire…"
+                                disabled={isLoading}
+                                className="flex-1 bg-transparent px-2 h-9 text-[14.5px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none disabled:opacity-50"
+                            />
+                            <button
+                                onClick={() => send()}
+                                disabled={isLoading || !input.trim()}
+                                className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white shrink-0 transition-all active:scale-95 disabled:opacity-40"
+                                style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
+                            >
+                                <span className="material-symbols-rounded text-[20px]">arrow_upward</span>
+                            </button>
+                        </div>
+                        <p className="mt-2 text-[10px] text-center text-[#9AA3AF] font-medium">
+                            Croar Pilot creates a live job and arms the full hiring pipeline.
+                        </p>
                     </div>
-                    <p className="mt-2 text-[10px] text-center text-slate-400 font-medium">
-                        Croar Pilot creates a live job and arms the full hiring pipeline.
-                    </p>
                 </div>
-            </div>
         </div>
     );
 }

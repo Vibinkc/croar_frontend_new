@@ -2,9 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { JetBrains_Mono } from "next/font/google";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { useCachedFetch } from "@/hooks/useCachedFetch";
+import ThemeToggle from "@/components/enterprise/ThemeToggle";
+
+// JetBrains Mono — the design system's numeric/data typeface for stats & counts.
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 const DEFAULT_STATS: Stats = {
     active_jobs: 0,
@@ -46,7 +52,7 @@ export default function EnterpriseDashboard() {
     const modules = [
         {
             title: "Manage Jobs",
-            description: "Create and track job openings for your team.",
+            description: "Create and track all job openings for your team.",
             icon: "business_center",
             path: "/enterprise/jobs",
             badge: "Active",
@@ -95,93 +101,129 @@ export default function EnterpriseDashboard() {
 
     const getColorClasses = (color: string): ColorClasses => {
         const colors: Record<string, ColorClasses> = {
-            indigo: { border: "border-indigo-100", bg: "bg-indigo-50/30", text: "text-indigo-600", dot: "bg-indigo-400" },
-            purple: { border: "border-[#7C3AED]/10", bg: "bg-[#7C3AED]/5", text: "text-[#7C3AED]", dot: "bg-[#7C3AED]" },
-            rose: { border: "border-rose-100", bg: "bg-rose-50/30", text: "text-rose-600", dot: "bg-rose-400" },
-            emerald: { border: "border-emerald-100", bg: "bg-emerald-50/30", text: "text-emerald-600", dot: "bg-emerald-400" },
+            indigo: { border: "border-[#DAD7F6]", bg: "bg-[#ECEBFB]", text: "text-[#5B53E0]", dot: "bg-[#5B53E0]" },
+            purple: { border: "border-[#DAD7F6]", bg: "bg-[#ECEBFB]", text: "text-[#5B53E0]", dot: "bg-[#5B53E0]" },
+            rose: { border: "border-[#FBD5D5]", bg: "bg-[#FDECEC]", text: "text-[#EF4444]", dot: "bg-[#EF4444]" },
+            emerald: { border: "border-[#CDEAD7]", bg: "bg-[#E6F4EA]", text: "text-[#15803D]", dot: "bg-[#15803D]" },
         };
-        return colors[color] || { border: "border-slate-100", bg: "bg-slate-50", text: "text-slate-600", dot: "bg-slate-400" };
+        return colors[color] || { border: "border-[#E8EAED]", bg: "bg-[#F4F5F7]", text: "text-[#374151]", dot: "bg-[#8A929E]" };
     };
 
+    // Pipeline composition for the donut chart (real, live values).
+    const pipeline = [
+        { name: "Candidates", value: stats.total_candidates, color: "#5B53E0" },
+        { name: "Applications", value: stats.total_applications, color: "#8B7DFF" },
+        { name: "Interviews", value: stats.interviews_scheduled, color: "#A7A0EE" },
+        { name: "Recommended", value: stats.high_value_matches, color: "#15803D" },
+    ];
+    const pipelineTotal = pipeline.reduce((sum, p) => sum + p.value, 0);
+
+    const statCards = [
+        { label: "Active Jobs", value: stats.active_jobs, icon: "work", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
+        { label: "Total Candidates", value: stats.total_candidates, icon: "groups", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+        { label: "Applications", value: stats.total_applications, icon: "conversion_path", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+        { label: "Interviews", value: stats.interviews_scheduled, icon: "videocam", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+    ];
+
     return (
-        <div className="p-4 space-y-4 animate-in fade-in duration-500 overflow-hidden">
-            {/* Tactical Command Header */}
-            <section className="bg-slate-900 rounded-2xl p-6 md:p-8 text-white flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl">
-                <div className="relative z-10 flex-1 space-y-6">
-                    <div>
-                        <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black   mb-4">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            {"Dashboard"}
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+                {/* Left: title + live status */}
+                <div>
+                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Dashboard</h1>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Hiring command centre — overview at a glance</p>
+                </div>
+
+                {/* Right: search + theme toggle */}
+                <div className="flex items-center gap-2.5 shrink-0">
+                    <button
+                        onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true }))}
+                        className="flex items-center gap-2.5 h-9 px-3.5 min-w-[180px] rounded-[10px] border border-[#E1E4E8] bg-white text-[#9CA3AF] hover:text-[#374151] hover:border-[#5B53E0]/40 hover:bg-[#F7F8FA] transition-all text-[13px] font-medium shadow-sm"
+                    >
+                        <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                        </svg>
+                        <span className="flex-1 text-left">Search…</span>
+                        <kbd className="inline-flex items-center text-[9.5px] font-bold bg-[#F4F5F7] border border-[#E1E4E8] rounded-[4px] px-1.5 h-5 text-[#9CA3AF]">⌘K</kbd>
+                    </button>
+                    <ThemeToggle />
+                </div>
+            </header>
+
+            {/* Hero band */}
+            <section
+                className="relative overflow-hidden rounded-[18px] p-7 md:p-9 text-white"
+                style={{
+                    background: "#0E1014",
+                    backgroundImage:
+                        "radial-gradient(1000px 460px at 90% -45%,rgba(91,83,224,0.55),transparent 60%),radial-gradient(760px 420px at -5% 135%,rgba(139,125,255,0.28),transparent 60%)",
+                }}
+            >
+                {/* Decorative rings */}
+                <div className="pointer-events-none absolute -right-20 -top-24 w-80 h-80 rounded-full border border-white/[0.06]" />
+                <div className="pointer-events-none absolute -right-2 -top-10 w-48 h-48 rounded-full border border-white/[0.05]" />
+
+                <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-7">
+                    <div className="max-w-xl">
+                        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[20px] bg-white/[0.08] border border-white/10 text-[10px] font-semibold text-[#C7CCD4] mb-4">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
+                            Live overview
                         </div>
-                        <h2 className="text-2xl md:text-4xl font-black tracking-tighter leading-none mb-3 ">
-                            {greeting}, <span className="text-indigo-400">{isLoading ? 'COMMANDER' : stats.agent_name}</span>.
-                        </h2>
-                        <p className="text-slate-400 text-[11px] max-w-sm font-bold   leading-relaxed opacity-70">
-                            AI found <span className="text-white bg-indigo-500/50 px-1 rounded">{isLoading ? '---' : stats.high_value_matches}</span> recommended candidates for you. Take a look at them now.
+                        <h1 className="text-[30px] md:text-[38px] font-extrabold tracking-[-1px] leading-[1.05]">
+                            {greeting}, <span className="text-[#8B7DFF]">{isLoading ? 'there' : stats.agent_name}</span>
+                        </h1>
+                        <p className="text-[#A8AEB8] text-[14.5px] leading-relaxed mt-3 max-w-md">
+                            {isLoading ? (
+                                "Loading your hiring snapshot…"
+                            ) : (
+                                <>You have <span className={`text-white font-semibold ${jetbrainsMono.className}`}>{stats.high_value_matches}</span> AI-recommended candidates ready to review.</>
+                            )}
                         </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-3">
-                        {canAccess("jobs:read") && (
-                            <Link href="/enterprise/croar-pilot" className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-xl text-[10px] font-black hover:from-indigo-400 hover:to-violet-400 transition-all shadow-xl shadow-indigo-900/30 active:scale-95 flex items-center gap-2">
-                                <span className="material-symbols-rounded text-lg">smart_toy</span>
-                                {"Hire with AI"}
-                            </Link>
-                        )}
-                        {canAccess("jobs:create") && (
-                            <Link href="/enterprise/jobs/create" className="px-6 py-3 bg-white text-slate-900 rounded-xl text-[10px] font-black   hover:bg-indigo-400 hover:text-white transition-all shadow-xl active:scale-95 flex items-center gap-2">
-                                <span className="material-symbols-rounded text-lg">add_box</span>
-                                {"Post New Job"}
-                            </Link>
-                        )}
-                        {canAccess("candidates:read") && (
-                            <Link href="/enterprise/candidates/kanban" className="px-6 py-3 bg-white/10 border border-white/10 text-white rounded-xl text-[10px] font-black   hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2">
-                                <span className="material-symbols-rounded text-lg">grid_goldenratio</span>
-                                {"Manage Pipeline"}
-                            </Link>
-                        )}
-                    </div>
-                </div>
-
-                {/* Performance HUD Elements */}
-                <div className="relative z-10 grid grid-cols-2 gap-4 w-full lg:w-auto">
-                    {[
-                        { label: "Active Jobs", value: stats.active_jobs, icon: "rocket_launch", color: "text-indigo-400", bg: "bg-indigo-500/10" },
-                        { label: "Total Candidates", value: stats.total_candidates, icon: "sensor_occupied", color: "text-emerald-400", bg: "bg-emerald-500/10" },
-                        { label: "Total Applications", value: stats.total_applications, icon: "conversion_path", color: "text-rose-400", bg: "bg-rose-500/10" },
-                        { label: "Scheduled Interviews", value: stats.interviews_scheduled, icon: "videocam", color: "text-amber-400", bg: "bg-amber-500/10" },
-                    ].map((stat) => (
-                        <div key={stat.label} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 min-w-[140px] flex flex-col gap-2 group hover:bg-white/10 transition-all border-b-4 border-b-transparent hover:border-b-white/20">
-                            <div className="flex items-center justify-between">
-                                <span className={`material-symbols-rounded text-xl ${stat.color}`}>{stat.icon}</span>
-                                <div className="flex flex-col items-end">
-                                    <span className="text-[7px] font-black text-white/30  tracking-[0.2em]">Live Feed</span>
-                                    <div className="w-4 h-1 bg-white/10 rounded-full overflow-hidden mt-1">
-                                        <div className="h-full bg-emerald-400 w-2/3 animate-[shimmer_2s_infinite]"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <span className="text-[9px] font-black text-white/40   block mb-1">{stat.label}</span>
-                                <span className="text-2xl font-black tracking-tighter leading-none">
-                                    {isLoading ? '---' : stat.value}
-                                </span>
-                            </div>
+                        <div className="flex flex-wrap gap-2.5 mt-6">
+                            {canAccess("jobs:read") && (
+                                <Link href="/enterprise/croar-pilot" className="h-[44px] px-5 bg-[#5B53E0] text-white rounded-[10px] text-[14px] font-semibold hover:bg-[#4A43C9] transition-colors shadow-[0_8px_20px_rgba(91,83,224,0.4)] flex items-center gap-2">
+                                    <span className="material-symbols-rounded text-[19px]">smart_toy</span>
+                                    {"Hire with AI"}
+                                </Link>
+                            )}
+                            {canAccess("jobs:create") && (
+                                <Link href="/enterprise/jobs/create" className="h-[44px] px-5 bg-white/[0.08] border border-white/15 text-white rounded-[10px] text-[14px] font-semibold hover:bg-white/[0.14] transition-colors flex items-center gap-2">
+                                    <span className="material-symbols-rounded text-[19px]">add_box</span>
+                                    {"Post New Job"}
+                                </Link>
+                            )}
                         </div>
-                    ))}
-                </div>
+                    </div>
 
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] -mr-64 -mt-64"></div>
+                    {/* Stat cards (inside the hero, right side) */}
+                    <div className="relative z-10 w-full lg:w-[360px] shrink-0 grid grid-cols-2 gap-3">
+                        {statCards.map((s) => (
+                            <div key={s.label} className="rounded-[12px] bg-white/[0.06] border border-white/10 p-4 backdrop-blur-sm hover:bg-white/[0.09] transition-colors">
+                                <span
+                                    className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white mb-3"
+                                    style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}
+                                >
+                                    <span className="material-symbols-rounded text-[19px]">{s.icon}</span>
+                                </span>
+                                <div className={`text-[26px] font-semibold tracking-[-1px] text-white leading-none ${jetbrainsMono.className}`}>
+                                    {isLoading ? '—' : s.value}
+                                </div>
+                                <span className="block text-[10.5px] font-semibold uppercase tracking-[0.04em] text-white/45 mt-1.5">{s.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </section>
 
             {/* Getting Started checklist — guides a new user; hides once set up */}
             {!isLoading && !(stats.active_jobs > 0 && stats.total_candidates > 0) && (
-                <section className="bg-white border border-indigo-100 rounded-2xl p-6 shadow-sm">
+                <section className="bg-white border border-[#E8EAED] rounded-[14px] p-6">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="material-symbols-rounded text-indigo-600">rocket_launch</span>
-                        <h3 className="text-sm font-black text-slate-900">Getting started</h3>
+                        <span className="material-symbols-rounded text-[#5B53E0]">rocket_launch</span>
+                        <h3 className="text-[15px] font-bold text-[#15171C]">Getting started</h3>
                     </div>
-                    <p className="text-xs text-slate-500 font-semibold mb-5">A few steps to get your first hire moving.</p>
+                    <p className="text-[13px] text-[#8A929E] mb-5">A few steps to get your first hire moving.</p>
                     <div className="grid gap-3 md:grid-cols-3">
                         {[
                             {
@@ -211,18 +253,18 @@ export default function EnterpriseDashboard() {
                                 ],
                             },
                         ].map((step, i) => (
-                            <div key={i} className={`rounded-xl border p-4 ${step.done ? "border-emerald-200 bg-emerald-50/40" : "border-slate-200 bg-slate-50/50"}`}>
+                            <div key={i} className={`rounded-[12px] border p-4 ${step.done ? "border-[#CDEAD7] bg-[#E6F4EA]/50" : "border-[#E8EAED] bg-[#F4F5F7]/60"}`}>
                                 <div className="flex items-center gap-2 mb-2">
-                                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black ${step.done ? "bg-emerald-500 text-white" : "bg-indigo-100 text-indigo-600"}`}>
+                                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step.done ? "bg-[#15803D] text-white" : "bg-[#ECEBFB] text-[#5B53E0]"}`}>
                                         {step.done ? "✓" : i + 1}
                                     </span>
-                                    <span className="text-xs font-black text-slate-800">{step.title}</span>
+                                    <span className="text-[13px] font-bold text-[#15171C]">{step.title}</span>
                                 </div>
-                                <p className="text-[11px] text-slate-500 font-semibold mb-3 leading-relaxed">{step.desc}</p>
+                                <p className="text-[12px] text-[#8A929E] mb-3 leading-relaxed">{step.desc}</p>
                                 {!step.done && (
                                     <div className="flex flex-wrap gap-2">
                                         {step.actions.filter((a) => canAccess(a.perm)).map((a) => (
-                                            <Link key={a.label} href={a.href} className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all ${a.primary ? "bg-indigo-600 text-white hover:bg-indigo-700" : "bg-white border border-slate-200 text-slate-600 hover:border-indigo-300"}`}>
+                                            <Link key={a.label} href={a.href} className={`px-3 py-1.5 rounded-[9px] text-[12px] font-semibold transition-colors ${a.primary ? "bg-[#5B53E0] text-white hover:bg-[#4A43C9]" : "bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7]"}`}>
                                                 {a.label}
                                             </Link>
                                         ))}
@@ -234,23 +276,132 @@ export default function EnterpriseDashboard() {
                 </section>
             )}
 
-            {/* Tactical Grid Modules */}
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
-                {/* Core Modules List */}
-                <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Insights row: hiring funnel + pipeline composition */}
+            {canAccess("candidates:read") && (
+                <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-1 items-stretch">
+                    {/* Hiring funnel — built from live stats */}
+                    {(() => {
+                        const rows = [
+                            { label: "Candidates", value: stats.total_candidates, color: "#5B53E0", light: "#8B7DFF" },
+                            { label: "Applications", value: stats.total_applications, color: "#6E63E6", light: "#A7A0EE" },
+                            { label: "Interviews", value: stats.interviews_scheduled, color: "#8B7DFF", light: "#C4BFF2" },
+                            { label: "Recommended", value: stats.high_value_matches, color: "#15803D", light: "#34D399" },
+                        ];
+                        const max = Math.max(...rows.map((r) => r.value), 1);
+                        return (
+                            <div className="lg:col-span-8 bg-white border border-[#E8EAED] rounded-[14px] p-6">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div>
+                                        <h3 className="text-[15px] font-bold text-[#15171C]">Hiring funnel</h3>
+                                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Stage-to-stage conversion</p>
+                                    </div>
+                                    <Link href="/enterprise/candidates/kanban" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">View pipeline</Link>
+                                </div>
+                                <div className="flex flex-col gap-4">
+                                    {rows.map((r, idx) => {
+                                        const widthPct = isLoading ? 0 : Math.max((r.value / max) * 100, r.value > 0 ? 8 : 2);
+                                        const prev = rows[idx - 1];
+                                        const conv = idx > 0 && prev.value > 0 ? Math.round((r.value / prev.value) * 100) : null;
+                                        return (
+                                            <div key={r.label}>
+                                                <div className="flex items-center justify-between mb-1.5">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: r.color }} />
+                                                        <span className="text-[12.5px] font-semibold text-[#374151]">{r.label}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2.5">
+                                                        {conv !== null && (
+                                                            <span className="text-[10.5px] font-semibold text-[#8A929E] bg-[#F1F2F5] px-1.5 py-0.5 rounded-[6px]">{conv}%</span>
+                                                        )}
+                                                        <span className={`text-[13.5px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{isLoading ? '—' : r.value}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="h-[10px] bg-[#F1F2F5] rounded-[6px] overflow-hidden">
+                                                    <div className="h-full rounded-[6px] transition-all duration-700" style={{ width: `${widthPct}%`, background: `linear-gradient(90deg, ${r.light}, ${r.color})` }} />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="mt-5 pt-4 border-t border-[#E8EAED] grid grid-cols-3 gap-3">
+                                    <div className="bg-[#F8FAFC] border border-[#E8EAED]/60 rounded-[10px] p-2.5 text-center">
+                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">Active Jobs</p>
+                                        <p className={`text-[17px] font-extrabold text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>{isLoading ? '—' : stats.active_jobs}</p>
+                                    </div>
+                                    <div className="bg-[#F8FAFC] border border-[#E8EAED]/60 rounded-[10px] p-2.5 text-center">
+                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">AI Matches</p>
+                                        <p className={`text-[17px] font-extrabold text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>{isLoading ? '—' : stats.high_value_matches}</p>
+                                    </div>
+                                    <div className="bg-[#F8FAFC] border border-[#E8EAED]/60 rounded-[10px] p-2.5 text-center">
+                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">Conversion</p>
+                                        <p className={`text-[17px] font-extrabold text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>
+                                            {isLoading ? '—' : (stats.total_candidates > 0 ? `${Math.round((stats.high_value_matches / stats.total_candidates) * 100)}%` : "0%")}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
+
+                    {/* Pipeline composition donut */}
+                    <div className="lg:col-span-4 bg-white border border-[#E8EAED] p-6 rounded-[14px]">
+                            <h3 className="text-[15px] font-bold text-[#15171C]">Pipeline composition</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-3">Distribution across stages</p>
+                            {pipelineTotal === 0 ? (
+                                <div className="flex flex-col items-center justify-center text-center py-10">
+                                    <div className="w-12 h-12 rounded-[12px] bg-[#F4F5F7] text-[#8A929E] flex items-center justify-center mb-3">
+                                        <span className="material-symbols-rounded text-2xl">donut_large</span>
+                                    </div>
+                                    <p className="text-[13px] text-[#8A929E]">No pipeline data yet</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="relative h-[176px]">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <PieChart>
+                                                <Pie data={pipeline} dataKey="value" nameKey="name" innerRadius={56} outerRadius={80} paddingAngle={2} stroke="none">
+                                                    {pipeline.map((p) => <Cell key={p.name} fill={p.color} />)}
+                                                </Pie>
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                            <span className={`text-[26px] font-semibold text-[#15171C] leading-none ${jetbrainsMono.className}`}>{pipelineTotal}</span>
+                                            <span className="text-[11px] text-[#8A929E] mt-1">total</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 space-y-2">
+                                        {pipeline.map((p) => (
+                                            <div key={p.name} className="flex items-center gap-2">
+                                                <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: p.color }} />
+                                                <span className="text-[12.5px] text-[#374151] flex-1">{p.name}</span>
+                                                <span className={`text-[12.5px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{p.value}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                </section>
+            )}
+
+            {/* Modules + needs-attention row */}
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                {/* Module quick-access */}
+                <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                     {modules.filter(m => canAccess(m.permission)).map((module) => (
-                        <Link href={module.path} key={module.title} className="group">
-                            <div className={`relative ${getColorClasses(module.color).bg} border ${getColorClasses(module.color).border} p-5 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden flex flex-col`}>
-                                <div className={`w-11 h-11 rounded-xl bg-white border border-slate-50 ${getColorClasses(module.color).text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 shadow-sm mb-4`}>
+                        <Link href={module.path} key={module.title} className="group h-full">
+                            <div className="relative bg-white border border-[#E8EAED] p-5 rounded-[14px] hover:border-[#5B53E0]/40 transition-colors duration-150 h-full overflow-hidden flex flex-col">
+                                <div className={`w-11 h-11 rounded-[11px] ${getColorClasses(module.color).bg} ${getColorClasses(module.color).text} flex items-center justify-center mb-4`}>
                                     <span className="material-symbols-rounded text-xl">{module.icon}</span>
                                 </div>
-                                <h3 className="text-sm font-black text-slate-900 tracking-tight group-hover:text-[#7C3AED] transition-colors">
+                                <h3 className="text-[15px] font-bold text-[#15171C] tracking-[-0.2px] group-hover:text-[#5B53E0] transition-colors">
                                     {module.title}
                                 </h3>
-                                <p className="text-[11px] text-slate-500 font-bold leading-relaxed opacity-70 mt-1 mb-4 flex-1">
+                                <p className="text-[13px] text-[#8A929E] leading-relaxed mt-1 mb-4 flex-1">
                                     {module.description}
                                 </p>
-                                <div className={`flex items-center gap-1 text-[10px] font-black ${getColorClasses(module.color).text}`}>
+                                <div className="flex items-center gap-1 text-[12px] font-semibold text-[#5B53E0]">
                                     {"Open"}
                                     <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                 </div>
@@ -260,45 +411,44 @@ export default function EnterpriseDashboard() {
                 </div>
 
                 {/* Needs your attention — real, clickable items from your live stats */}
-                <div className="lg:col-span-4">
-                    <div className="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm h-full flex flex-col">
+                <div className="lg:col-span-4 h-full bg-white border border-[#E8EAED] p-6 rounded-[14px] flex flex-col">
                         <div className="flex items-center justify-between mb-5">
-                            <span className="text-sm font-black text-slate-900">Needs your attention</span>
-                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse border-4 border-emerald-50"></div>
+                            <span className="text-[15px] font-bold text-[#15171C]">Needs your attention</span>
+                            <div className="w-2.5 h-2.5 rounded-full bg-[#34D399] border-4 border-[#E6F4EA]"></div>
                         </div>
 
                         {isLoading ? (
-                            <div className="flex-1 flex items-center justify-center text-slate-300 text-sm py-10">Loading…</div>
+                            <div className="flex-1 flex items-center justify-center text-[#C7CCD4] text-sm py-10">Loading…</div>
                         ) : (() => {
                             const items = [
-                                { show: stats.high_value_matches > 0, count: stats.high_value_matches, label: "recommended candidates to review", icon: "stars", color: "text-indigo-600 bg-indigo-50" },
-                                { show: stats.interviews_scheduled > 0, count: stats.interviews_scheduled, label: "interviews scheduled", icon: "videocam", color: "text-amber-600 bg-amber-50" },
-                                { show: stats.total_applications > 0, count: stats.total_applications, label: "applications in your pipeline", icon: "conversion_path", color: "text-emerald-600 bg-emerald-50" },
+                                { show: stats.high_value_matches > 0, count: stats.high_value_matches, label: "recommended candidates to review", icon: "stars", color: "text-[#5B53E0] bg-[#ECEBFB]" },
+                                { show: stats.interviews_scheduled > 0, count: stats.interviews_scheduled, label: "interviews scheduled", icon: "videocam", color: "text-[#D97706] bg-[#FEF3E2]" },
+                                { show: stats.total_applications > 0, count: stats.total_applications, label: "applications in your pipeline", icon: "conversion_path", color: "text-[#15803D] bg-[#E6F4EA]" },
                             ].filter((i) => i.show && canAccess("candidates:read"));
 
                             if (items.length === 0) {
                                 return (
                                     <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-                                        <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center mb-3">
+                                        <div className="w-12 h-12 rounded-[12px] bg-[#E6F4EA] text-[#15803D] flex items-center justify-center mb-3">
                                             <span className="material-symbols-rounded text-2xl">task_alt</span>
                                         </div>
-                                        <p className="text-sm font-bold text-slate-700">You&apos;re all caught up</p>
-                                        <p className="text-xs text-slate-400 font-semibold mt-1">New candidates and interviews will show up here.</p>
+                                        <p className="text-[14px] font-semibold text-[#15171C]">You&apos;re all caught up</p>
+                                        <p className="text-[12px] text-[#8A929E] mt-1">New candidates and interviews will show up here.</p>
                                     </div>
                                 );
                             }
                             return (
                                 <div className="space-y-2.5 flex-1">
                                     {items.map((i) => (
-                                        <Link key={i.label} href="/enterprise/candidates/kanban" className="flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-slate-50/50 transition-all group">
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${i.color}`}>
+                                        <Link key={i.label} href="/enterprise/candidates/kanban" className="flex items-center gap-3 p-3 rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/40 hover:bg-[#F4F5F7]/60 transition-colors group">
+                                            <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 ${i.color}`}>
                                                 <span className="material-symbols-rounded text-xl">{i.icon}</span>
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <span className="text-lg font-black text-slate-900 leading-none">{i.count}</span>
-                                                <p className="text-[11px] text-slate-500 font-semibold leading-tight mt-0.5">{i.label}</p>
+                                                <span className={`text-[19px] font-semibold text-[#15171C] leading-none ${jetbrainsMono.className}`}>{i.count}</span>
+                                                <p className="text-[12px] text-[#8A929E] leading-tight mt-1">{i.label}</p>
                                             </div>
-                                            <span className="material-symbols-rounded text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all">chevron_right</span>
+                                            <span className="material-symbols-rounded text-[#C7CCD4] group-hover:text-[#5B53E0] group-hover:translate-x-0.5 transition-all">chevron_right</span>
                                         </Link>
                                     ))}
                                 </div>
@@ -306,23 +456,22 @@ export default function EnterpriseDashboard() {
                         })()}
 
                         {/* Quick actions */}
-                        <div className="mt-5 pt-4 border-t border-slate-100">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Quick actions</p>
+                        <div className="mt-5 pt-4 border-t border-[#E8EAED]">
+                            <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-[0.08em] mb-2.5">Quick actions</p>
                             <div className="flex flex-wrap gap-2">
                                 {canAccess("jobs:read") && (
-                                    <Link href="/enterprise/croar-pilot" className="px-3 py-2 rounded-xl bg-indigo-600 text-white text-[11px] font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5">
+                                    <Link href="/enterprise/croar-pilot" className="px-3 py-2 rounded-[9px] bg-[#5B53E0] text-white text-[12px] font-semibold hover:bg-[#4A43C9] transition-colors flex items-center gap-1.5">
                                         <span className="material-symbols-rounded text-base">smart_toy</span> Hire with AI
                                     </Link>
                                 )}
                                 {canAccess("candidates:read") && (
-                                    <Link href="/enterprise/sourcing/chat" className="px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 text-[11px] font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5">
+                                    <Link href="/enterprise/sourcing/chat" className="px-3 py-2 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5">
                                         <span className="material-symbols-rounded text-base">person_search</span> Source
                                     </Link>
                                 )}
                             </div>
                         </div>
                     </div>
-                </div>
             </section>
         </div>
     );

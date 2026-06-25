@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation"; // Added
 import { BACKEND_URL } from "@/utils/api";
@@ -71,7 +71,7 @@ interface OnboardingTemplate {
 
 // --- Helpers ---
 const STAGE_COLORS = [
-    'border-indigo-500',
+    'border-[#5B53E0]',
     'border-purple-500',
     'border-pink-500',
     'border-rose-500',
@@ -115,7 +115,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
             role="button"
             tabIndex={0}
             aria-label="Close panel"
-            className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-end bg-[#0E1014]/40 backdrop-blur-sm"
             onClick={onClose}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { onClose(); } }}
         >
@@ -128,40 +128,43 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="sticky top-0 bg-white z-10 border-b border-slate-100 px-6 py-5 flex items-start justify-between">
-                    <div>
-                        <h2 className="text-lg font-bold text-slate-900">{candidate.full_name}</h2>
-                        <div className="flex flex-col gap-1 mt-1 text-xs text-slate-500">
-                            {/* ... existing info ... */}
+                <div className="sticky top-0 bg-white z-10 border-b border-[#E8EAED] px-6 py-4 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-11 h-11 rounded-[12px] bg-[#5B53E0] text-white flex items-center justify-center font-semibold text-[15px] shrink-0">
+                            {(candidate.full_name || "?").split(" ").map(p => p[0]).filter(Boolean).slice(0, 2).join("").toUpperCase() || "?"}
+                        </div>
+                        <div className="min-w-0">
+                            <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C] truncate">{candidate.full_name}</h2>
+                            {candidate.email && <p className="text-[12.5px] text-[#8A929E] truncate">{candidate.email}</p>}
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                         {application.onboarding_id ? (
                             canAccess("onboarding:read") && (
-                                <button 
+                                <button
                                     onClick={() => {
                                         window.location.href = `/enterprise/onboarding/${application.onboarding_id}`;
                                     }}
-                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold  tracking-wide transition-all shadow-md shadow-emerald-100 flex items-center gap-2"
+                                    className="h-9 px-3 bg-[#15803D] hover:bg-[#136a33] text-white rounded-[9px] text-[12px] font-semibold transition-colors flex items-center gap-1.5"
                                 >
                                     <span className="material-icons-outlined text-[16px]">visibility</span>
-                                    {"View Onboarding"}
+                                    {"View onboarding"}
                                 </button>
                             )
                         ) : (
                             canAccess("onboarding:moderate") && (
                                 <div className="flex items-center gap-2">
-                                    <select 
-                                        className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-[10px] font-bold text-slate-600 outline-none focus:border-indigo-500"
+                                    <select
+                                        className="h-9 bg-white border border-[#E1E4E8] rounded-[9px] px-2.5 text-[12px] font-medium text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all max-w-[150px]"
                                         value={selectedTemplate}
                                         onChange={(e) => setSelectedTemplate(e.target.value)}
                                     >
-                                        <option value="">Select Template</option>
+                                        <option value="">Select template</option>
                                         {onboardingTemplates.map(t => (
                                             <option key={t.id} value={t.id}>{t.name}</option>
                                         ))}
                                     </select>
-                                    <button 
+                                    <button
                                         onClick={async () => {
                                             if (!selectedTemplate) {
                                                 alert("Please select an onboarding template first.");
@@ -178,7 +181,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                                         "Content-Type": "application/json",
                                                         "Authorization": `Bearer ${token}`
                                                     },
-                                                    body: JSON.stringify({ 
+                                                    body: JSON.stringify({
                                                         application_id: application.id,
                                                         template_id: selectedTemplate
                                                     })
@@ -196,7 +199,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                                 alert("Error initiating onboarding");
                                             }
                                         }}
-                                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-bold  tracking-wide transition-all shadow-md shadow-indigo-100 flex items-center gap-2"
+                                        className="h-9 px-3 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[12px] font-semibold transition-colors flex items-center gap-1.5"
                                     >
                                         <span className="material-icons-outlined text-[16px]">person_add</span>
                                         {"Initiate"}
@@ -204,61 +207,61 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                 </div>
                             )
                         )}
-                        <button onClick={onClose} className="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
-                            <span className="material-icons-outlined">close</span>
+                        <button onClick={onClose} className="w-9 h-9 flex items-center justify-center hover:bg-[#F4F5F7] rounded-[9px] text-[#9AA3AF] hover:text-[#4B5563] transition-colors shrink-0">
+                            <span className="material-icons-outlined text-[20px]">close</span>
                         </button>
                     </div>
                 </div>
 
                 {/* Body */}
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-5">
                     {/* Score Section */}
                     {ai_match_score !== undefined && (
-                        <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
-                            <div className="flex items-center justify-between mb-3">
-                                <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                    <span className="material-icons-outlined text-indigo-600 text-lg">psychology</span>
+                        <div className="bg-white rounded-[14px] p-5 border border-[#E8EAED]">
+                            <div className="flex items-center justify-between gap-3 mb-4">
+                                <h3 className="text-[14px] font-bold text-[#15171C] flex items-center gap-2">
+                                    <span className="w-7 h-7 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">psychology</span></span>
                                     {"AI Fit Analysis"}
                                 </h3>
-                                <div className={`px-2.5 py-1 rounded-md text-xs font-bold border ${getScoreStyles(ai_match_score)}`}>
-                                    Score: {ai_match_score}/100
+                                <div className={`px-2.5 py-1 rounded-[8px] text-[12px] font-semibold border ${getScoreStyles(ai_match_score)}`}>
+                                    Score {ai_match_score}/100
                                 </div>
                             </div>
-                            
+
                             {( (application.aptitude_score != null && application.aptitude_score > 0) || (application.coding_score != null && application.coding_score > 0) || (application.ai_interview_score != null && application.ai_interview_score > 0) ) && (
                                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
                                     {application.aptitude_score != null && application.aptitude_score > 0 && (
-                                        <div className="bg-white border border-slate-200 p-2.5 rounded-lg">
-                                            <h4 className="text-[9px] font-black text-slate-400   mb-1">Aptitude</h4>
-                                            <div className="text-sm font-bold text-slate-900">{application.aptitude_score}%</div>
+                                        <div className="bg-[#F7F8FA] border border-[#E8EAED] p-3 rounded-[10px]">
+                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">Aptitude</h4>
+                                            <div className="text-[16px] font-semibold text-[#15171C]">{application.aptitude_score}%</div>
                                         </div>
                                     )}
                                     {application.coding_score != null && application.coding_score > 0 && (
-                                        <div className="bg-white border border-slate-200 p-2.5 rounded-lg">
-                                            <h4 className="text-[9px] font-black text-slate-400   mb-1">Coding</h4>
-                                            <div className="text-sm font-bold text-slate-900">{application.coding_score}%</div>
+                                        <div className="bg-[#F7F8FA] border border-[#E8EAED] p-3 rounded-[10px]">
+                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">Coding</h4>
+                                            <div className="text-[16px] font-semibold text-[#15171C]">{application.coding_score}%</div>
                                         </div>
                                     )}
                                     {application.ai_interview_score != null && application.ai_interview_score > 0 && (
-                                        <div className="bg-white border border-slate-200 p-2.5 rounded-lg">
-                                            <h4 className="text-[9px] font-black text-slate-400   mb-1">AI Interview</h4>
-                                            <div className="text-sm font-bold text-slate-900">{Math.round(application.ai_interview_score)}%</div>
+                                        <div className="bg-[#F7F8FA] border border-[#E8EAED] p-3 rounded-[10px]">
+                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">AI Interview</h4>
+                                            <div className="text-[16px] font-semibold text-[#15171C]">{Math.round(application.ai_interview_score)}%</div>
                                         </div>
                                     )}
                                 </div>
                             )}
 
-                            <div className="space-y-3">
+                            <div className="space-y-2.5">
                                 {feedback.fit_reason && (
-                                    <div className="bg-white border border-emerald-100 p-3 rounded-lg">
-                                        <h4 className="text-[10px] font-bold text-emerald-700  tracking-wide mb-1">Why Fit</h4>
-                                        <p className="text-xs text-slate-600 leading-relaxed">{feedback.fit_reason}</p>
+                                    <div className="bg-[#E6F4EA]/50 border border-[#CDEAD7] p-3.5 rounded-[10px]">
+                                        <h4 className="text-[11px] font-bold text-[#15803D] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><span className="material-icons-outlined text-[15px]">check_circle</span>Why fit</h4>
+                                        <p className="text-[13px] text-[#4B5563] leading-relaxed">{feedback.fit_reason}</p>
                                     </div>
                                 )}
                                 {feedback.not_fit_reason && (
-                                    <div className="bg-white border border-red-100 p-3 rounded-lg">
-                                        <h4 className="text-[10px] font-bold text-red-700  tracking-wide mb-1">Gap Analysis</h4>
-                                        <p className="text-xs text-slate-600 leading-relaxed">{feedback.not_fit_reason}</p>
+                                    <div className="bg-[#FDECEC]/50 border border-[#F5C9C9] p-3.5 rounded-[10px]">
+                                        <h4 className="text-[11px] font-bold text-[#C0383C] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><span className="material-icons-outlined text-[15px]">error</span>Gap analysis</h4>
+                                        <p className="text-[13px] text-[#4B5563] leading-relaxed">{feedback.not_fit_reason}</p>
                                     </div>
                                 )}
                             </div>
@@ -268,14 +271,14 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                     {/* Highlights */}
                     {feedback.highlights && feedback.highlights.length > 0 && (
                         <div>
-                            <h3 className="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-                                <span className="material-icons-outlined text-amber-500 text-lg">star</span>
+                            <h3 className="text-[14px] font-bold text-[#15171C] mb-3 flex items-center gap-2">
+                                <span className="w-7 h-7 rounded-[8px] bg-[#FEF3E2] text-[#D97706] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">star</span></span>
                                 {"Key Highlights"}
                             </h3>
-                            <ul className="space-y-2">
+                            <ul className="space-y-2.5">
                                 {feedback.highlights.map((h: string, i: number) => (
-                                    <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
-                                        <span className="material-icons-outlined text-emerald-500 text-[16px] mt-0.5">check_circle</span>
+                                    <li key={i} className="flex items-start gap-2 text-[13px] text-[#4B5563] leading-relaxed">
+                                        <span className="material-icons-outlined text-[#15803D] text-[18px] mt-0.5 shrink-0">check_circle</span>
                                         {h}
                                     </li>
                                 ))}
@@ -286,13 +289,13 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                     {/* Skills */}
                     {candidate.skills && candidate.skills.length > 0 && (
                         <div>
-                            <h3 className="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-                                <span className="material-icons-outlined text-blue-500 text-lg">code</span>
+                            <h3 className="text-[14px] font-bold text-[#15171C] mb-3 flex items-center gap-2">
+                                <span className="w-7 h-7 rounded-[8px] bg-[#E7ECFB] text-[#3559C7] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">code</span></span>
                                 {"Skills"}
                             </h3>
                             <div className="flex flex-wrap gap-1.5">
                                 {candidate.skills.map((skill, i) => (
-                                    <span key={i} className="px-2.5 py-1 bg-white border border-slate-200 rounded-md text-xs text-slate-600 font-medium shadow-sm">
+                                    <span key={i} className="px-2.5 py-1 bg-[#F4F5F7] border border-[#E8EAED] rounded-[8px] text-[12px] text-[#374151] font-medium">
                                         {skill}
                                     </span>
                                 ))}
@@ -334,6 +337,14 @@ export default function KanbanBoardPage() {
     const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
     const [isAssessmentModalOpen, setIsAssessmentModalOpen] = useState(false);
     const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
+
+    // Horizontal carousel for the pipeline columns (shows 4, arrows slide to the rest).
+    const boardRef = useRef<HTMLDivElement>(null);
+    const scrollBoard = (dir: number) => {
+        const el = boardRef.current;
+        if (!el) return;
+        el.scrollBy({ left: dir * (el.clientWidth / 2), behavior: "smooth" });
+    };
 
     // --- Fetch Data ---
     useEffect(() => {
@@ -637,7 +648,7 @@ export default function KanbanBoardPage() {
     if (isLoading && stages.length === 0) {
         return (
             <div className="flex items-center justify-center h-screen bg-white">
-                <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -652,58 +663,40 @@ export default function KanbanBoardPage() {
     ].filter(Boolean).length;
 
     return (
-        <div className="h-screen flex flex-col bg-white font-sans text-slate-800">
+        <div className="relative h-screen flex flex-col bg-white font-sans text-[#1F2127]">
             {/* NEW: Dual-Line Command Center */}
-            <div className="flex flex-col bg-white border-b border-slate-100 z-30 transition-all duration-300">
+            <div className="flex flex-col bg-white border-b border-[#E8EAED] z-30 transition-all duration-300">
 
-                {/* Line 1: Main Controls */}
-                <header className="px-6 py-5 flex items-center gap-4">
-                    <div className="flex items-center gap-3 mr-4">
+                {/* Header row: title + controls */}
+                <div className="px-6 py-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between border-b border-[#F0F0F1]">
+                    <div className="min-w-0">
+                        <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Pipeline</h1>
+                        <p className="text-[14px] text-[#8A929E] mt-1 truncate">
+                            {selectedJobId && selectedJobId !== "ALL" ? selectedJobTitle : "Track candidates through every stage"}
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                        <div className="relative group flex-1 lg:flex-none lg:w-80">
+                            <span className="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-lg group-focus-within:text-[#5B53E0] transition-colors">search</span>
+                            <input
+                                type="text"
+                                placeholder="Search candidates, emails, skills…"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full h-11 bg-[#F7F8FA] border border-[#E1E4E8] rounded-[10px] pl-11 pr-4 text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] focus:bg-white focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all outline-none"
+                            />
+                        </div>
                         <button
                             onClick={() => setIsFilterExpanded(!isFilterExpanded)}
                             title="Toggle Filters"
-                            className={`flex items-center gap-2 px-4 h-11 rounded-xl transition-all ${isFilterExpanded ? 'bg-[#7C3AED] text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+                            className={`flex items-center gap-2 px-4 h-11 rounded-[10px] transition-colors shrink-0 ${isFilterExpanded ? 'bg-[#5B53E0] text-white' : 'bg-[#F7F8FA] border border-[#E1E4E8] text-[#6B6F76] hover:bg-[#E8EAED]'}`}
                         >
                             <span className="material-icons-outlined text-xl">{isFilterExpanded ? 'filter_list_off' : 'filter_list'}</span>
-                            <span className="text-[11px] font-black tracking-tight">Filters</span>
+                            <span className="text-[12px] font-semibold tracking-tight">Filters</span>
                         </button>
-                        <div className="hidden xl:flex flex-col">
-                            <h1 className="text-lg font-black text-slate-900 tracking-tighter leading-none">Pipeline</h1>
-                            <span className="text-[10px] text-indigo-600 font-bold mt-1 truncate max-w-[250px]">
-                                {selectedJobId && selectedJobId !== "ALL" ? selectedJobTitle : "All Job Requirements"}
-                            </span>
-                        </div>
                     </div>
-
-                    {/* Global Search - Wide Anchor */}
-                    <div className="relative group flex-1 max-w-2xl">
-                        <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-indigo-500 transition-colors">search</span>
-                        <input
-                            type="text"
-                            placeholder="Search candidates, emails, skills..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
-                        />
-                    </div>
-
-                    <div className="flex-1 flex justify-end items-center gap-4">
-                        <Link
-                            href="/enterprise/sourcing/chat"
-                            className="flex items-center gap-2 px-5 h-11 bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] hover:shadow-indigo-500/20 text-white rounded-xl text-[10px] font-black shadow-lg shadow-indigo-100 transition-all active:scale-95 whitespace-nowrap"
-                        >
-                            <span className="material-icons-outlined text-[16px]">auto_awesome</span>
-                            {"SOURCE TALENT"}
-                        </Link>
-
-                        <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
-
-                        <div className="flex items-center gap-2 px-4 h-11 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black border border-emerald-100 shadow-sm shadow-emerald-50">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            {"Live Analytics"}
-                        </div>
-                    </div>
-                </header>
+                </div>
 
                 {/* Line 2: Advanced Filters (Expandable) */}
                 <AnimatePresence>
@@ -712,20 +705,20 @@ export default function KanbanBoardPage() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden bg-slate-50/50"
+                            className="overflow-hidden bg-[#F7F8FA]/50"
                         >
-                            <div className="px-6 py-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 items-end">
+                            <div className="px-6 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
 
                                 {/* Company Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-company" className="text-[9px] font-black text-slate-400   ml-1">Enterprise Client</label>
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
-                                        <span className="material-icons-outlined text-slate-400 text-lg">corporate_fare</span>
+                                    <label htmlFor="filter-company" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Enterprise Client</label>
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
+                                        <span className="material-icons-outlined text-[#9AA3AF] text-lg">corporate_fare</span>
                                         <select
                                             id="filter-company"
                                             value={selectedCompanyId}
                                             onChange={(e) => setSelectedCompanyId(e.target.value)}
-                                            className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
+                                            className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
                                             <option value="">All Clients</option>
                                             {companies.length === 0 ? (
@@ -739,14 +732,14 @@ export default function KanbanBoardPage() {
 
                                 {/* Role Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-job" className="text-[9px] font-black text-slate-400   ml-1">Target Requisition</label>
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
-                                        <span className="material-icons-outlined text-slate-400 text-lg">work</span>
+                                    <label htmlFor="filter-job" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Target Requisition</label>
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
+                                        <span className="material-icons-outlined text-[#9AA3AF] text-lg">work</span>
                                         <select
                                             id="filter-job"
                                             value={selectedJobId}
                                             onChange={(e) => setSelectedJobId(e.target.value)}
-                                            className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer truncate"
+                                            className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer truncate"
                                         >
                                             <option value="">All Job Requirements</option>
                                             {jobs.length === 0 ? (
@@ -760,14 +753,14 @@ export default function KanbanBoardPage() {
 
                                 {/* Location Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-location" className="text-[9px] font-black text-slate-400   ml-1">Geographic Focus</label>
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
-                                        <span className="material-icons-outlined text-slate-400 text-lg">location_on</span>
+                                    <label htmlFor="filter-location" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Geographic Focus</label>
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
+                                        <span className="material-icons-outlined text-[#9AA3AF] text-lg">location_on</span>
                                         <select
                                             id="filter-location"
                                             value={selectedLocation}
                                             onChange={(e) => setSelectedLocation(e.target.value)}
-                                            className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
+                                            className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
                                             <option value="ALL">Global Workforce</option>
                                             {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
@@ -777,14 +770,14 @@ export default function KanbanBoardPage() {
 
                                 {/* Match Score Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-score" className="text-[9px] font-black text-slate-400   ml-1">AI Match Accuracy</label>
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
-                                        <span className="material-icons text-indigo-500 text-lg">bolt</span>
+                                    <label htmlFor="filter-score" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">AI Match Accuracy</label>
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
+                                        <span className="material-icons text-[#5B53E0] text-lg">bolt</span>
                                         <select
                                             id="filter-score"
                                             value={minMatchScore}
                                             onChange={(e) => setMinMatchScore(Number(e.target.value))}
-                                            className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer font-sans"
+                                            className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer font-sans"
                                         >
                                             <option value={0}>Any Score</option>
                                             <option value={60}>High Match (60%+)</option>
@@ -795,14 +788,14 @@ export default function KanbanBoardPage() {
 
                                 {/* Application Period */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-period" className="text-[9px] font-black text-slate-400   ml-1">Application Recency</label>
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
-                                        <span className="material-icons-outlined text-slate-400 text-lg">calendar_today</span>
+                                    <label htmlFor="filter-period" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Application Recency</label>
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
+                                        <span className="material-icons-outlined text-[#9AA3AF] text-lg">calendar_today</span>
                                         <select
                                             id="filter-period"
                                             value={appliedPeriod}
                                             onChange={(e) => setAppliedPeriod(e.target.value)}
-                                            className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
+                                            className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
                                             <option value="ALL">Lifetime Activity</option>
                                             <option value="TODAY">Joined Today</option>
@@ -814,14 +807,14 @@ export default function KanbanBoardPage() {
 
                                 {/* Source Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-source" className="text-[9px] font-black text-slate-400   ml-1">Origin Source</label>
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all">
-                                        <span className="material-icons-outlined text-slate-400 text-lg">share</span>
+                                    <label htmlFor="filter-source" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Origin Source</label>
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
+                                        <span className="material-icons-outlined text-[#9AA3AF] text-lg">share</span>
                                         <select
                                             id="filter-source"
                                             value={selectedSource}
                                             onChange={(e) => setSelectedSource(e.target.value)}
-                                            className="bg-transparent text-[11px] font-bold text-slate-700 outline-none w-full cursor-pointer"
+                                            className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
                                             <option value="ALL">All Sources</option>
                                             <option value="AI Sourcing">AI Sourcing</option>
@@ -837,60 +830,79 @@ export default function KanbanBoardPage() {
             </div>
 
             {/* Board */}
-            <div className="flex-1 overflow-x-auto overflow-y-hidden bg-white p-6">
+            <div className="flex-1 overflow-hidden bg-[#F7F8FA] p-6 flex flex-col">
                 {!isLoading && applications.length === 0 && stages.length > 0 && (
-                    <div className="mb-4 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-5 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+                    <div className="mb-4 rounded-[14px] border border-[#DAD7F6] bg-[#ECEBFB]/50 p-5 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
                         <div>
-                            <p className="text-sm font-black text-slate-900">No candidates in this pipeline yet</p>
-                            <p className="text-xs text-slate-500 font-semibold mt-0.5">Source candidates with AI, or share the job&apos;s apply link so people can apply.</p>
+                            <p className="text-sm font-bold text-[#15171C]">No candidates in this pipeline yet</p>
+                            <p className="text-xs text-[#6B6F76] font-semibold mt-0.5">Source candidates with AI, or share the job&apos;s apply link so people can apply.</p>
                         </div>
                         <div className="flex flex-wrap gap-2 shrink-0">
-                            <Link href="/enterprise/sourcing/chat" className="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5">
+                            <Link href="/enterprise/sourcing/chat" className="px-4 py-2.5 rounded-[10px] bg-[#5B53E0] text-white text-xs font-bold hover:bg-[#4A43C9] transition-all flex items-center gap-1.5">
                                 <span className="material-symbols-rounded text-base">person_search</span>
                                 {"Source candidates"}
                             </Link>
-                            <Link href="/enterprise/croar-pilot" className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:border-indigo-300 transition-all flex items-center gap-1.5">
+                            <Link href="/enterprise/croar-pilot" className="px-4 py-2.5 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-xs font-bold hover:border-[#5B53E0]/40 transition-all flex items-center gap-1.5">
                                 <span className="material-symbols-rounded text-base">smart_toy</span>
                                 {"Ask Croar Pilot"}
                             </Link>
                         </div>
                     </div>
                 )}
-                <div
-                    className={`flex h-full gap-2 ${stages.length <= 6 ? 'w-full' : 'min-w-max'}`}
-                    style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: `repeat(${stages.length}, minmax(${stages.length <= 6 ? '0' : '320px'}, 1fr))` 
-                    }}
-                >
+                <div className="relative flex-1 min-h-0">
+                    {stages.length > 4 && (
+                        <>
+                            <button
+                                onClick={() => scrollBoard(-1)}
+                                title="Previous rounds"
+                                className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-[#E8EAED] shadow-[0_4px_14px_rgba(15,23,42,0.12)] flex items-center justify-center text-[#4B5563] hover:text-[#5B53E0] hover:border-[#5B53E0]/40 transition-colors"
+                            >
+                                <span className="material-symbols-rounded text-[20px]">chevron_left</span>
+                            </button>
+                            <button
+                                onClick={() => scrollBoard(1)}
+                                title="More rounds"
+                                className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-[#E8EAED] shadow-[0_4px_14px_rgba(15,23,42,0.12)] flex items-center justify-center text-[#4B5563] hover:text-[#5B53E0] hover:border-[#5B53E0]/40 transition-colors"
+                            >
+                                <span className="material-symbols-rounded text-[20px]">chevron_right</span>
+                            </button>
+                        </>
+                    )}
+                    <div
+                        ref={boardRef}
+                        className="h-full flex gap-4 overflow-x-auto overflow-y-hidden scroll-smooth snap-x [&::-webkit-scrollbar]:hidden"
+                    >
                     {stages.map((stage, index) => {
                         const stageApps = getStageApps(stage.id);
                         const isAllSelected = stageApps.length > 0 && stageApps.every(app => selectedApps.has(app.id));
                         const borderColor = STAGE_COLORS[index % STAGE_COLORS.length];
                         const headerColor = borderColor.replace('border-', 'text-');
+                        const accentBar = borderColor.replace('border-', 'bg-');
 
                         return (
                             <div
                                 key={stage.id}
                                 role="group"
-                                className="relative flex flex-col h-full rounded-xl border border-slate-200 bg-slate-50/50 min-w-0"
+                                style={stages.length > 4 ? { width: "calc((100% - 3rem) / 4)" } : undefined}
+                                className={`relative flex flex-col h-full rounded-[14px] border bg-white overflow-hidden transition-colors snap-start ${stages.length > 4 ? "shrink-0" : "flex-1 min-w-0"} ${dragOverStageId === stage.id ? 'border-[#5B53E0] ring-2 ring-[#5B53E0]/15' : 'border-[#E8EAED]'}`}
                                 onDragOver={(e) => handleDragOver(e, stage.id)}
                                 onDrop={(e) => handleDrop(e, stage.id)}
                             >
-
+                                {/* Colored stage accent */}
+                                <div className={`h-1 w-full shrink-0 ${accentBar}`} />
 
                                 {/* Column Header */}
-                                <div className="px-4 pt-5 pb-3 flex flex-col gap-2">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2 overflow-hidden">
-                                            <h3 className="text-[13px] font-bold text-slate-800  tracking-wide truncate">
+                                <div className="px-4 pt-4 pb-3 flex flex-col gap-2 border-b border-[#F0F0F1]">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <span className={`w-2 h-2 rounded-full shrink-0 ${accentBar}`} />
+                                            <h3 className="text-[13.5px] font-bold text-[#15171C] truncate">
                                                 {stage.name}
                                             </h3>
-                                            <span className="bg-white border border-slate-200 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
-                                                {stageApps.length}
-                                            </span>
                                         </div>
-
+                                        <span className="bg-[#F4F5F7] text-[#4B5563] text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 min-w-[24px] text-center">
+                                            {stageApps.length}
+                                        </span>
                                     </div>
 
                                     {/* Selection Tool */}
@@ -900,9 +912,9 @@ export default function KanbanBoardPage() {
                                                 type="checkbox"
                                                 checked={isAllSelected}
                                                 onChange={(e) => handleSelectAllInStage(stage.id, e.target.checked)}
-                                                className={`w-3.5 h-3.5 rounded border-slate-300 focus:ring-0 cursor-pointer ${headerColor}`}
+                                                className={`w-3.5 h-3.5 rounded border-[#D4D7DC] focus:ring-0 cursor-pointer ${headerColor}`}
                                             />
-                                            <span className="text-xs font-bold text-slate-500">
+                                            <span className="text-xs font-bold text-[#6B6F76]">
                                                 SELECT ALL
                                             </span>
                                         </div>
@@ -910,7 +922,7 @@ export default function KanbanBoardPage() {
                                 </div>
 
                                 {/* Cards Container */}
-                                <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+                                <div className="flex-1 overflow-y-auto px-3 pt-3 pb-4 space-y-2.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                                     <AnimatePresence>
                                         {stageApps.map((app) => (
                                             <motion.div
@@ -928,9 +940,9 @@ export default function KanbanBoardPage() {
                                                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setViewApplication(app); } }}
                                                 whileHover={{ y: -2 }}
                                                 className={`
-                                                    group relative bg-white border p-3.5 cursor-grab active:cursor-grabbing transition-all shadow-sm
-                                                    ${selectedApps.has(app.id) ? `border-indigo-500 shadow-indigo-100 ring-1 ring-indigo-500` : `border-slate-200/60 hover:border-indigo-300 hover:shadow-md`}
-                                                    ${draggedAppId === app.id ? 'opacity-40 grayscale border-dashed border-slate-400' : ''}
+                                                    group relative bg-white border rounded-[12px] p-3.5 cursor-grab active:cursor-grabbing transition-all shadow-sm
+                                                    ${selectedApps.has(app.id) ? `border-[#5B53E0] shadow-sm ring-1 ring-[#5B53E0]` : `border-[#E1E4E8]/60 hover:border-[#5B53E0]/40 hover:shadow-md`}
+                                                    ${draggedAppId === app.id ? 'opacity-40 grayscale border-dashed border-[#9AA3AF]' : ''}
                                                 `}
                                             >
 
@@ -943,12 +955,12 @@ export default function KanbanBoardPage() {
                                                                 handleSelection(app.id);
                                                             }}
                                                             onClick={(e) => e.stopPropagation()}
-                                                            className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer pointer-events-auto transition-all"
+                                                            className="w-4 h-4 rounded border-[#D4D7DC] text-[#5B53E0] focus:ring-0 cursor-pointer pointer-events-auto transition-all"
                                                         />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex justify-between items-start mb-1.5">
-                                                            <h4 className="text-[13px] font-bold text-slate-800 leading-snug truncate pr-2 group-hover:text-indigo-700 transition-colors">
+                                                            <h4 className="text-[13px] font-bold text-[#1F2127] leading-snug truncate pr-2 group-hover:text-[#4A43C9] transition-colors">
                                                                 {app.candidate.full_name}
                                                             </h4>
                                                             <div className="flex flex-col gap-1 items-end shrink-0">
@@ -977,7 +989,7 @@ export default function KanbanBoardPage() {
                                                                     </div>
                                                                 )}
                                                                 {app.assessment_score != null && app.aptitude_score == null && app.coding_score == null && (
-                                                                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-sm">
+                                                                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-[#ECEBFB] text-[#4A43C9] border border-[#DAD7F6] shadow-sm">
                                                                         <span className="material-icons text-[10px]">quiz</span>
                                                                         Test: {app.assessment_score}%
                                                                     </div>
@@ -987,7 +999,7 @@ export default function KanbanBoardPage() {
 
                                                         {/* Candidate Details Snippet */}
                                                         <div className="flex flex-col gap-1">
-                                                            <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                                                            <div className="flex items-center gap-1.5 text-[11px] text-[#6B6F76]">
 
                                                                 {app.applied_at ? formatDistanceToNow(new Date(app.applied_at), { addSuffix: true })
                                                                     .replace("about ", "") : "Recently"}
@@ -1002,15 +1014,16 @@ export default function KanbanBoardPage() {
                                     </AnimatePresence>
 
                                     {stageApps.length === 0 && (
-                                        <div className="h-32 rounded-xl bg-slate-100/50 border border-dashed border-slate-200 flex flex-col gap-2 items-center justify-center text-slate-400">
-                                            <span className="material-icons-outlined text-2xl opacity-20">inbox</span>
-                                            <span className="text-[11px] font-bold   opacity-60">No Candidates</span>
+                                        <div className="mt-1 rounded-[12px] border border-dashed border-[#E1E4E8] py-10 flex flex-col gap-2 items-center justify-center text-[#9AA3AF]">
+                                            <span className="material-icons-outlined text-[26px] text-[#C7CCD4]">inbox</span>
+                                            <span className="text-[12px] font-medium">No candidates yet</span>
                                         </div>
                                     )}
                                 </div>
                             </div>
                         );
                     })}
+                    </div>
                 </div>
             </div>
 
@@ -1030,66 +1043,55 @@ export default function KanbanBoardPage() {
 
             <AnimatePresence>
                 {selectedApps.size > 0 && (
-                    <div className="fixed bottom-10 left-[calc(50%+60px)] -translate-x-1/2 z-50">
+                    <div className="absolute bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
                         <motion.div
-                            initial={{ y: 50, opacity: 0, scale: 0.95 }}
-                            animate={{ y: 0, opacity: 1, scale: 1 }}
-                            exit={{ y: 50, opacity: 0, scale: 0.95 }}
-                            className="bg-white shadow-xl rounded-xl p-2 flex items-center gap-2 border border-slate-100 ring-4 ring-slate-50/50"
+                            initial={{ y: 40, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 40, opacity: 0 }}
+                            className="pointer-events-auto bg-white shadow-[0_14px_34px_rgba(15,23,42,0.16)] rounded-[14px] p-1.5 flex items-center gap-1.5 border border-[#E8EAED] max-w-[calc(100vw-2rem)] overflow-x-auto [&::-webkit-scrollbar]:hidden"
                         >
+                            <span className="px-3 text-[12.5px] text-[#6B6F76] shrink-0 whitespace-nowrap">
+                                <span className="font-bold text-[#15171C]">{selectedApps.size}</span> selected
+                            </span>
+                            <div className="w-px h-6 bg-[#E8EAED] shrink-0" />
+
                             {canAccess("candidates:update") && (
-                                <button
-                                    onClick={handleBulkMove}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold  tracking-wide transition-all shadow-lg shadow-indigo-200"
-                                >
-                                    <span className="material-icons text-[16px]">arrow_forward</span>
-                                    {"Move to Next Round"}
+                                <button onClick={handleBulkMove} className="flex items-center gap-1.5 h-10 px-3.5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
+                                    <span className="material-icons text-[18px]">arrow_forward</span>
+                                    Move to next round
                                 </button>
                             )}
 
                             {canAccess("communications:read") && (
-                                <button
-                                    onClick={() => setIsEmailModalOpen(true)}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[11px] font-bold  tracking-wide transition-all shadow-lg shadow-slate-200"
-                                >
-                                    <span className="material-icons text-[16px]">email</span>
-                                    {"Send Email"}
+                                <button onClick={() => setIsEmailModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
+                                    <span className="material-icons text-[18px]">email</span>
+                                    Send email
                                 </button>
                             )}
 
                             {canAccess("assessments:moderate") && (
-                                <button
-                                    onClick={() => setIsAssessmentModalOpen(true)}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold  tracking-wide transition-all shadow-lg shadow-indigo-200"
-                                >
-                                    <span className="material-icons text-[16px]">psychology</span>
-                                    {"Send Assessment"}
-                                </button>
-                            )}
-
-                            {canAccess("candidates:delete") && (
-                                <button
-                                    onClick={handleBulkDelete}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-white border border-rose-100 hover:bg-rose-50 text-rose-600 rounded-xl text-[11px] font-bold  tracking-wide transition-all"
-                                >
-                                    <span className="material-icons text-[16px]">delete</span>
-                                    {"Delete"}
+                                <button onClick={() => setIsAssessmentModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
+                                    <span className="material-icons text-[18px]">psychology</span>
+                                    Send assessment
                                 </button>
                             )}
 
                             {canAccess("onboarding:moderate") && (
-                                <button
-                                    onClick={() => setIsOnboardingModalOpen(true)}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 rounded-xl text-[11px] font-bold  tracking-wide transition-all shadow-sm"
-                                >
-                                    <span className="material-icons-outlined text-[16px]">person_add</span>
-                                    {"Initiate Onboarding"}
+                                <button onClick={() => setIsOnboardingModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
+                                    <span className="material-icons-outlined text-[18px]">person_add</span>
+                                    Initiate onboarding
                                 </button>
                             )}
 
-                            <div className="px-3 text-xs font-bold text-slate-400 border-l border-slate-100 ml-1">
-                                {selectedApps.size} Selected
-                            </div>
+                            {canAccess("candidates:delete") && (
+                                <>
+                                    <div className="w-px h-6 bg-[#E8EAED] shrink-0" />
+                                    <button onClick={handleBulkDelete} className="flex items-center gap-1.5 h-10 px-3 text-[#C0383C] hover:bg-[#FDECEC] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
+                                        <span className="material-icons text-[18px]">delete</span>
+                                        Delete
+                                    </button>
+                                </>
+                            )}
                         </motion.div>
                     </div>
                 )}

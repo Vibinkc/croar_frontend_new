@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import { BACKEND_URL, FRONTEND_DOMAIN } from "@/utils/api";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
+const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export default function SuperAdminLoginPage() {
     const [email, setEmail] = useState("");
@@ -56,36 +56,39 @@ export default function SuperAdminLoginPage() {
     };
 
     return (
-        <div className={`flex min-h-screen bg-[#020617] text-slate-200 ${plusJakartaSans.className}`}>
+        <div className={`flex min-h-screen text-[#C7CCD4] ${hankenGrotesk.className}`} style={{ background: "#0E1014" }}>
             {/* Ambient Background Elements */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[120px] rounded-full"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-900/20 blur-[120px] rounded-full"></div>
-                <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] bg-purple-900/10 blur-[80px] rounded-full"></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#5B53E0]/15 blur-[120px] rounded-full"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#8B7DFF]/12 blur-[120px] rounded-full"></div>
+                <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] bg-[#5B53E0]/10 blur-[80px] rounded-full"></div>
             </div>
 
             <div className="w-full flex flex-col items-center justify-center p-6 relative z-10">
                 <div className="max-w-md w-full">
                     {/* Brand/Logo */}
-                    <div className="text-center mb-12">
-                        <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-900 border border-slate-800 rounded-3xl mb-6 shadow-2xl shadow-blue-500/10">
-                            <span className="material-icons-outlined text-4xl text-blue-500">terminal</span>
+                    <div className="text-center mb-10">
+                        <div
+                            className="inline-flex items-center justify-center w-14 h-14 rounded-[14px] mb-6 shadow-[0_6px_18px_rgba(91,83,224,0.45)]"
+                            style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
+                        >
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12l1-9z"/></svg>
                         </div>
-                        <h1 className="text-4xl font-black tracking-tighter  mb-2">
-                            {FRONTEND_DOMAIN.split('.').slice(0, 2).join('.')}.<span className="text-blue-600">{FRONTEND_DOMAIN.split('.').slice(2).join('.')}</span>
+                        <h1 className="text-[28px] font-extrabold tracking-[-0.6px] text-white mb-2">
+                            {FRONTEND_DOMAIN.split('.').slice(0, 2).join('.')}.<span className="text-[#8B7DFF]">{FRONTEND_DOMAIN.split('.').slice(2).join('.')}</span>
                         </h1>
-                        <p className="text-slate-500 text-[10px] font-black  tracking-[0.3em]">Institutional Platform Architecture</p>
+                        <p className="text-[#565E6B] text-[10px] font-bold uppercase tracking-[0.2em]">Institutional Platform Architecture</p>
                     </div>
 
                     {/* Login Card */}
-                    <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-black/50">
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="border border-[#252A33] p-8 md:p-9 rounded-[14px] shadow-[0_14px_34px_rgba(0,0,0,0.4)]" style={{ background: "#1A1E25" }}>
+                        <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="super-admin-login-email" className="text-[10px] font-black text-slate-500   ml-1">Universal Identity</label>
+                                    <label htmlFor="super-admin-login-email" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#565E6B] ml-0.5">Universal Identity</label>
                                     <div className="relative group">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <span className="material-icons-outlined text-sm text-slate-500 group-focus-within:text-blue-500 transition-colors">alternate_email</span>
+                                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                            <span className="material-icons-outlined text-[18px] text-[#565E6B] group-focus-within:text-[#8B7DFF] transition-colors">alternate_email</span>
                                         </div>
                                         <input
                                             id="super-admin-login-email"
@@ -93,17 +96,17 @@ export default function SuperAdminLoginPage() {
                                             required
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full bg-slate-950 border border-slate-800 p-4 pl-11 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/50 outline-none transition-all placeholder:text-slate-700"
+                                            className="w-full h-11 bg-[#0E1014] border border-[#252A33] pl-11 pr-4 rounded-[10px] text-sm text-white outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/30 transition-all placeholder:text-[#565E6B]"
                                             placeholder={`root@${FRONTEND_DOMAIN}`}
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="super-admin-login-password" className="text-[10px] font-black text-slate-500   ml-1">Access Protocol</label>
+                                    <label htmlFor="super-admin-login-password" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#565E6B] ml-0.5">Access Protocol</label>
                                     <div className="relative group">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <span className="material-icons-outlined text-sm text-slate-500 group-focus-within:text-blue-500 transition-colors">lock</span>
+                                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                            <span className="material-icons-outlined text-[18px] text-[#565E6B] group-focus-within:text-[#8B7DFF] transition-colors">lock</span>
                                         </div>
                                         <input
                                             id="super-admin-login-password"
@@ -111,7 +114,7 @@ export default function SuperAdminLoginPage() {
                                             required
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full bg-slate-950 border border-slate-800 p-4 pl-11 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/50 outline-none transition-all placeholder:text-slate-700"
+                                            className="w-full h-11 bg-[#0E1014] border border-[#252A33] pl-11 pr-4 rounded-[10px] text-sm text-white outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/30 transition-all placeholder:text-[#565E6B]"
                                             placeholder="••••••••••••"
                                         />
                                     </div>
@@ -119,26 +122,26 @@ export default function SuperAdminLoginPage() {
                             </div>
 
                             {error && (
-                                <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-2xl flex items-center gap-3 animate-shake">
-                                    <span className="material-icons-outlined text-rose-500 text-lg">security_update_warning</span>
-                                    <span className="text-xs font-bold text-rose-500">{error}</span>
+                                <div className="bg-[#EF4444]/10 border border-[#EF4444]/25 p-3.5 rounded-[10px] flex items-center gap-2.5 animate-shake">
+                                    <span className="material-icons-outlined text-[#EF4444] text-[20px]">security_update_warning</span>
+                                    <span className="text-[13px] font-semibold text-[#F08C8C]">{error}</span>
                                 </div>
                             )}
 
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-black  text-xs  rounded-3xl shadow-xl shadow-blue-600/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                className="w-full h-[46px] bg-[#5B53E0] hover:bg-[#4A43C9] disabled:opacity-50 text-white font-bold text-[14.5px] rounded-[10px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors flex items-center justify-center gap-2"
                             >
                                 {isLoading ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        {"Authenticating..."}
+                                        {"Authenticating…"}
                                     </>
                                 ) : (
                                     <>
                                         {"Establish Connection"}
-                                        <span className="material-icons-outlined text-sm">vpn_key</span>
+                                        <span className="material-icons-outlined text-[18px]">vpn_key</span>
                                     </>
                                 )}
                             </button>
@@ -146,8 +149,8 @@ export default function SuperAdminLoginPage() {
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-12 text-center">
-                        <p className="text-slate-600 text-[10px] font-bold  ">
+                    <div className="mt-10 text-center">
+                        <p className="text-[#565E6B] text-[10px] font-semibold uppercase tracking-[0.1em]">
                             Authorized Access Only. All operations are logged.
                         </p>
                     </div>

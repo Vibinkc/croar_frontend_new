@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { BACKEND_URL } from "@/utils/api";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
+const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export default function StudentLoginPage() {
     const [email, setEmail] = useState("");
@@ -56,47 +56,47 @@ export default function StudentLoginPage() {
     };
 
     return (
-        <div className={`flex min-h-screen transition-colors duration-300 bg-white dark:bg-slate-950 ${plusJakartaSans.className}`}>
+        <div className={`flex min-h-screen transition-colors duration-300 bg-[#F4F5F7] text-[#15171C] ${hankenGrotesk.className}`}>
             <div className="hidden lg:flex lg:w-[60%] relative overflow-hidden">
                 <img
                     alt="Student education"
                     className="absolute inset-0 w-full h-full object-cover"
                     src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80"
                 />
-                <div className="absolute inset-0 bg-indigo-600/90 flex flex-col justify-center px-20">
+                <div className="absolute inset-0 flex flex-col justify-center px-20" style={{ background: "linear-gradient(135deg,rgba(14,16,20,0.92),rgba(91,83,224,0.82))" }}>
                     <div className="max-w-lg">
-                        <div className="w-16 h-1 w-24 bg-white/30 mb-8 rounded-full"></div>
-                        <h2 className="text-5xl font-extrabold text-white leading-tight mb-6">
+                        <div className="w-24 h-1 bg-white/30 mb-8 rounded-full"></div>
+                        <h2 className="text-[44px] font-extrabold tracking-[-1px] text-white leading-[1.08] mb-5">
                             Start your learning journey today.
                         </h2>
-                        <p className="text-white/80 text-lg font-light tracking-wide ">
+                        <p className="text-white/75 text-[15px] leading-[1.6]">
                             Dedicated portal for students to excel and grow.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className="w-full lg:w-[40%] flex flex-col items-center justify-center p-8 md:p-12 lg:p-16 bg-white dark:bg-slate-950">
-                <div className="max-w-md w-full">
-                    <div className="mb-10 text-center lg:text-left">
-                        <div className="flex items-center justify-center lg:justify-start gap-3 mb-10">
-                            <img src="/Academik_logo.png" alt="Academik.ai" className="h-10 object-contain" />
-                            <span className="bg-indigo-50 dark:bg-indigo-900/30 text-[10px] font-black px-2 py-1 rounded-lg text-indigo-500  border border-indigo-100 dark:border-indigo-800">STUDENT</span>
+            <div className="w-full lg:w-[40%] flex flex-col items-center justify-center p-8 md:p-12 lg:p-16 bg-[#F4F5F7]">
+                <div className="max-w-md w-full bg-white border border-[#E8EAED] p-9 rounded-[14px] shadow-[0_4px_14px_rgba(15,23,42,0.05)]">
+                    <div className="mb-8">
+                        <div className="flex items-center gap-3 mb-8">
+                            <img src="/Academik_logo.png" alt="Academik.ai" className="h-9 object-contain" />
+                            <span className="bg-[#ECEBFB] text-[10px] font-bold px-2 py-1 rounded-md text-[#5B53E0] border border-[#DAD7F6]">STUDENT</span>
                         </div>
-                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Student Login</h1>
-                        <p className="text-slate-500 dark:text-slate-400">
+                        <h1 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-1.5">Student login</h1>
+                        <p className="text-[#8A929E] text-sm">
                             Access your personalized student dashboard
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="email">
-                                    Student Email
+                            <div>
+                                <label className="block text-[12.5px] font-semibold text-[#374151] mb-1.5" htmlFor="email">
+                                    Student email
                                 </label>
                                 <input
-                                    className="block w-full px-4 py-3 text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-xl focus:border-indigo-600 focus:ring-0 transition-all outline-none"
+                                    className="block w-full h-11 px-3.5 text-[14px] text-[#15171C] bg-white border border-[#E1E4E8] rounded-[10px] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                     id="email"
                                     placeholder="Enter your email"
                                     required
@@ -105,13 +105,13 @@ export default function StudentLoginPage() {
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="password">
+                            <div>
+                                <label className="block text-[12.5px] font-semibold text-[#374151] mb-1.5" htmlFor="password">
                                     Password
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="block w-full px-4 py-3 text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-xl focus:border-indigo-600 focus:ring-0 transition-all outline-none"
+                                        className="block w-full h-11 pl-3.5 pr-11 text-[14px] text-[#15171C] bg-white border border-[#E1E4E8] rounded-[10px] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                         id="password"
                                         placeholder="Enter your password"
                                         required
@@ -122,9 +122,9 @@ export default function StudentLoginPage() {
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] hover:text-[#374151] transition-colors"
                                     >
-                                        <span className="material-icons-outlined text-xl">
+                                        <span className="material-icons-outlined text-[19px]">
                                             {showPassword ? "visibility_off" : "visibility"}
                                         </span>
                                     </button>
@@ -133,26 +133,26 @@ export default function StudentLoginPage() {
                         </div>
 
                         {error && (
-                            <div className="p-3 rounded-lg bg-rose-50 border border-rose-100 flex items-center gap-2 text-rose-600">
-                                <span className="material-icons-outlined text-lg">error_outline</span>
-                                <span className="text-xs font-bold">{error}</span>
+                            <div className="p-3.5 rounded-[10px] bg-[#FDECEC] border border-[#EF4444]/20 flex items-center gap-2.5 text-[#C0383C]">
+                                <span className="material-icons-outlined text-[#EF4444] text-[20px]">error_outline</span>
+                                <span className="text-[13px] font-medium">{error}</span>
                             </div>
                         )}
 
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold  text-xs  rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95 flex items-center justify-center gap-2"
+                            className="w-full h-[46px] bg-[#5B53E0] hover:bg-[#4A43C9] disabled:opacity-50 text-white font-bold text-[14.5px] rounded-[10px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors flex items-center justify-center gap-2"
                         >
-                            {isLoading ? "Signing in..." : "Login to Dashboard"}
-                            <span className="material-icons-outlined text-sm">login</span>
+                            {isLoading ? "Signing in…" : "Login to dashboard"}
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                         </button>
 
-                        <div className="text-center pt-6">
-                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <div className="text-center pt-5">
+                            <p className="text-sm text-[#8A929E]">
                                 Don&apos;t have a student account?{" "}
-                                <Link href="/student/register" className="text-indigo-600 font-bold hover:underline">
-                                    Register Now
+                                <Link href="/student/register" className="text-[#5B53E0] font-semibold hover:underline">
+                                    Register now
                                 </Link>
                             </p>
                         </div>

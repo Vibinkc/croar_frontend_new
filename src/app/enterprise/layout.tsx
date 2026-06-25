@@ -5,7 +5,36 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Hanken_Grotesk } from "next/font/google";
 import CommandPalette from "@/components/enterprise/CommandPalette";
+
+const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+
+// Croar lightning brand mark (indigo gradient chip).
+function CroarMark({ size = 36 }: { size?: number }) {
+    const inner = Math.round(size * 0.58);
+    return (
+        <div
+            className="flex items-center justify-center rounded-[10px] shrink-0 shadow-[0_6px_18px_rgba(91,83,224,0.4)]"
+            style={{ width: size, height: size, background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
+        >
+            <svg width={inner} height={inner} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12l1-9z"/></svg>
+        </div>
+    );
+}
+
+function getCollapsedGroupTitle(title: string) {
+    const map: Record<string, string> = {
+        "Hiring Hub": "Hiring",
+        "Talent Search": "Talent",
+        "Automation": "Auto",
+        "Post Onboarding": "Post",
+        "Payroll": "Payroll",
+        "AI & Training": "AI",
+        "General": "General"
+    };
+    return map[title] || title;
+}
 
 export default function EnterprisePortalLayout({
     children,
@@ -17,8 +46,9 @@ export default function EnterprisePortalLayout({
     const pathname = usePathname();
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [paletteOpen, setPaletteOpen] = useState(false);
     const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+    // Accordion state for the nav groups (collapsible sections keep the long menu scannable).
+    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
     // List of allowed roles for the Enterprise Portal
     const ALLOWED_ENTERPRISE_ROLES = ["ADMIN", "RECRUITER", "SUPER_ADMIN", "CONSULTANCY", "RESTRICTED_ACCESS"];
@@ -56,7 +86,6 @@ export default function EnterprisePortalLayout({
             }
 
             // 3. Granular Route Guard
-            // Define mapping of route prefixes to required permissions
             const routePermissions: Record<string, string> = {
                 "/enterprise/croar-pilot": "jobs:read",
                 "/enterprise/jobs": "jobs:read",
@@ -85,7 +114,6 @@ export default function EnterprisePortalLayout({
     }, [role, token, isLoading, router, pathname, isLoginPage, canAccess]);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsMobileMenuOpen(prev => prev ? false : prev);
     }, [pathname]);
 
@@ -95,51 +123,54 @@ export default function EnterprisePortalLayout({
 
     if (isLoading || !role) {
         return (
-            <div className="flex justify-center items-center h-screen bg-slate-50">
+            <div className={`flex justify-center items-center h-screen bg-[#F4F5F7] ${hankenGrotesk.className}`}>
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-slate-500 font-medium">Loading Enterprise Portal...</p>
+                    <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-[#8A929E] text-sm font-medium">Loading Enterprise Portal…</p>
                 </div>
             </div>
         );
     }
 
-
     const navGroups = [
         {
             title: "Hiring Hub",
+            icon: "grid_view",
             items: [
-                { label: "Dashboard", icon: "grid_view", path: "/enterprise/dashboard", permission: "organization:read" },
+                { label: "Dashboard", icon: "dashboard", path: "/enterprise/dashboard", permission: "organization:read" },
                 { label: "Croar Pilot", icon: "smart_toy", path: "/enterprise/croar-pilot", permission: "jobs:read" },
-                { label: "Jobs", icon: "business_center", path: "/enterprise/jobs", permission: "jobs:read" },
-                { label: "Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
-                { label: "Mail", icon: "alternate_email", path: "/enterprise/communication", permission: "communications:read" },
-                { label: "Job Portals", icon: "rocket_launch", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
+                { label: "Jobs", icon: "work", path: "/enterprise/jobs", permission: "jobs:read" },
+                { label: "Pipeline", icon: "view_kanban", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
+                { label: "Mail", icon: "mail", path: "/enterprise/communication", permission: "communications:read" },
+                { label: "Job Portals", icon: "share", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
             ]
         },
         {
             title: "Talent Search",
+            icon: "groups",
             items: [
                 { label: "Candidate Search", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
-                { label: "Profile Sourcing", icon: "share_location", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
+                { label: "Profile Sourcing", icon: "travel_explore", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
                 { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
             ]
         },
         {
             title: "Automation",
+            icon: "bolt",
             items: [
                 { label: "Automation Canvas", icon: "account_tree", path: "/enterprise/automation", permission: "automation:read" },
-                { label: "Mail Automation", icon: "mark_email_unread", path: "/enterprise/automation/mail", permission: "communications:moderate" },
+                { label: "Mail Automation", icon: "forward_to_inbox", path: "/enterprise/automation/mail", permission: "communications:moderate" },
                 { label: "Assessment Automation", icon: "psychology", path: "/enterprise/automation/assessment", permission: "assessments:moderate" },
-                { label: "Interview Automation", icon: "event_available", path: "/enterprise/automation/interview", permission: "interviews:moderate" },
+                { label: "Interview Automation", icon: "co_present", path: "/enterprise/automation/interview", permission: "interviews:moderate" },
                 { label: "Onboarding Automation", icon: "person_add", path: "/enterprise/automation/onboarding", permission: "onboarding:moderate" },
             ]
         },
         {
             title: "Post Onboarding",
+            icon: "folder",
             items: [
                 { label: "Employees", icon: "badge", path: "/enterprise/employees", permission: "employees:read" },
-                { label: "Projects", icon: "account_tree", path: "/enterprise/projects", permission: "projects:read" },
+                { label: "Projects", icon: "workspaces", path: "/enterprise/projects", permission: "projects:read" },
                 { label: "Tasks", icon: "checklist", path: "/enterprise/tasks", permission: "tasks:read" },
                 { label: "360 Assessments", icon: "360", path: "/enterprise/assessments-360", permission: "assessments:read" },
                 { label: "HR Surveys", icon: "poll", path: "/enterprise/surveys", permission: "surveys:read" },
@@ -147,10 +178,11 @@ export default function EnterprisePortalLayout({
         },
         {
             title: "Payroll",
+            icon: "payments",
             items: [
                 { label: "Payroll Dashboard", icon: "space_dashboard", path: "/enterprise/payroll/dashboard", permission: "payroll:read" },
                 { label: "Payroll", icon: "payments", path: "/enterprise/payroll", permission: "payroll:read" },
-                { label: "Salary Templates", icon: "content_copy", path: "/enterprise/payroll/templates", permission: "payroll:read" },
+                { label: "Salary Templates", icon: "description", path: "/enterprise/payroll/templates", permission: "payroll:read" },
                 { label: "Salary Structures", icon: "tune", path: "/enterprise/payroll/structures", permission: "payroll:read" },
                 { label: "Timesheets", icon: "schedule", path: "/enterprise/payroll/timesheets", permission: "payroll:read" },
                 { label: "Leave", icon: "event_available", path: "/enterprise/payroll/leave", permission: "payroll:read" },
@@ -162,19 +194,21 @@ export default function EnterprisePortalLayout({
         },
         {
             title: "AI & Training",
+            icon: "architecture",
             items: [
                 { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios", permission: "ai_training:read" },
             ]
         },
         {
             title: "General",
+            icon: "settings",
             items: [
-                { label: "Settings", icon: "business", path: "/enterprise/settings", permission: "organization:read" },
+                { label: "Settings", icon: "settings", path: "/enterprise/settings", permission: "organization:read" },
                 { label: "Team", icon: "groups", path: "/enterprise/team", permission: "organization:moderate" },
-                { label: "Permissions", icon: "security", path: "/enterprise/settings/roles", permission: "organization:moderate" },
+                { label: "Permissions", icon: "admin_panel_settings", path: "/enterprise/settings/roles", permission: "organization:moderate" },
                 { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
                 { label: "Templates", icon: "dashboard_customize", path: "/enterprise/templates", permission: "organization:read" },
-                { label: "Onboarding Hub", icon: "person_add", path: "/enterprise/onboarding", permission: "onboarding:read" },
+                { label: "Onboarding Hub", icon: "hub", path: "/enterprise/onboarding", permission: "onboarding:read" },
             ]
         }
     ];
@@ -192,13 +226,9 @@ export default function EnterprisePortalLayout({
         g.items.map(i => ({ label: i.label, icon: i.icon, path: i.path, group: g.title }))
     );
 
-    const navLinkClass = (path: string) => {
-        // Collect all possible navigation paths to find the most specific match
+    // True when the given path is the best (most specific) match for the current route.
+    const isItemActive = (path: string) => {
         const allPaths = accessibleNavGroups.flatMap(g => g.items.map(i => i.path));
-
-        // A path is active if:
-        // 1. It's an exact match
-        // 2. The current pathname starts with this path AND there isn't a more specific registered path that also matches
         let isActive = pathname === path;
 
         if (!isActive && pathname.startsWith(path + "/")) {
@@ -217,106 +247,194 @@ export default function EnterprisePortalLayout({
             isActive = false;
         }
 
-        return `group flex items-center gap-3 px-3 py-1.5 rounded-lg transition-all duration-200 ${isActive
-            ? "bg-[#7C3AED]/10 text-[#7C3AED]"
-            : "text-slate-500 hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]"
-            } ${isSidebarCollapsed ? 'justify-center px-0' : ''}`;
+        return isActive;
     };
 
+    const navLinkClass = (path: string) => {
+        const isActive = isItemActive(path);
+        return `group flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] transition-all duration-150 text-[12.5px] ${
+            isActive
+                ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.25)] font-semibold"
+                : "text-[#BAC1CC] hover:bg-white/[0.04] hover:text-white font-medium"
+        } ${isSidebarCollapsed ? 'justify-center px-0' : ''}`;
+    };
+
+    const activeGroupTitle = accessibleNavGroups.find(g => g.items.some(i => isItemActive(i.path)))?.title;
+    const isGroupOpen = (title: string) => openGroups[title] ?? (title === activeGroupTitle);
+    const toggleGroup = (title: string) =>
+        setOpenGroups(prev => ({ ...prev, [title]: !(prev[title] ?? (title === activeGroupTitle)) }));
+
     return (
-        <div className="flex w-full h-screen bg-[#F8FAFC] overflow-hidden font-sans">
+        <div className={`flex w-full h-screen bg-[#F4F5F7] overflow-hidden ${hankenGrotesk.className}`}>
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
                 <div
                     role="button"
                     tabIndex={0}
-                    className="fixed inset-0 bg-slate-900/40 z-40 md:hidden backdrop-blur-sm"
+                    className="fixed inset-0 bg-[#0E1014]/50 z-40 md:hidden backdrop-blur-sm"
                     onClick={() => setIsMobileMenuOpen(false)}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setIsMobileMenuOpen(false); } }}
                 />
             )}
 
             {/* Sidebar */}
-            <aside className={`
-                fixed inset-y-0 left-0 z-50 ${isSidebarCollapsed ? 'w-16' : 'w-52'} bg-white border-r border-slate-100 flex flex-col transition-all duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 md:h-screen
+            <aside
+                className={`
+                fixed inset-y-0 left-0 z-50 ${isSidebarCollapsed ? 'w-[90px]' : 'w-[236px]'} flex flex-col transition-all duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 md:h-screen border-r border-[#1C1F26]
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-            `}>
-                <div className="p-2 flex-1 overflow-y-auto no-scrollbar flex flex-col">
-                    {/* Logo Section (Standard Student Portal Logo) */}
-                    <div className={`p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50 ${isSidebarCollapsed ? 'px-2 flex-col gap-4' : ''}`}>
-                        {!isSidebarCollapsed && (
-                            <Link href="/enterprise/dashboard" className="flex items-center gap-2 tracking-tighter">
-                                <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent">Croar.ai</span>
-                            </Link>
-                        )}
-                        
-                        {/* Toggle Button Positioned on Edge */}
-                        <div className={`absolute -right-4 top-8 z-50 transition-all duration-300`}>
-                            <button 
-                                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                                className="w-8 h-8 rounded-full border border-slate-100 bg-white hover:bg-slate-50 text-slate-400 hover:text-indigo-600 transition-all shadow-sm flex items-center justify-center"
-                            >
-                                <span className="material-symbols-rounded text-xl">
-                                    {isSidebarCollapsed ? 'chevron_right' : 'chevron_left'}
+            `}
+                style={{ background: "#090A0C" }}
+            >
+                <div className="p-3 flex-1 overflow-y-auto no-scrollbar flex flex-col">
+                    {/* Logo Section */}
+                    <div className={`px-2 pt-2.5 pb-4 flex items-center justify-between shrink-0 mb-3 border-b border-[#1C1F26] relative ${isSidebarCollapsed ? 'px-0 flex-col gap-4 justify-center' : ''}`}>
+                        <Link href="/enterprise/dashboard" className="flex items-center gap-2.5">
+                            <CroarMark size={32} />
+                            {!isSidebarCollapsed && (
+                                <span className="flex flex-col leading-none">
+                                    <span className="text-[17px] font-extrabold tracking-[-0.3px] text-white">Croar</span>
+                                    <span className="text-[9.5px] text-[#4F5564] font-semibold uppercase mt-0.5 tracking-wider">HR Cloud</span>
                                 </span>
+                            )}
+                        </Link>
+
+                        {/* Toggle Button Positioned on Edge */}
+                        {!isSidebarCollapsed && (
+                            <button
+                                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                                className="w-6 h-6 rounded-full border border-[#252A33] bg-[#1A1E25] hover:bg-[#23272F] text-[#8A929E] hover:text-white transition-colors flex items-center justify-center cursor-pointer absolute -right-3 top-6 shadow-sm"
+                            >
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M15 18l-6-6 6-6"/>
+                                </svg>
                             </button>
-                        </div>
+                        )}
+                        {isSidebarCollapsed && (
+                            <button
+                                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                                className="w-6 h-6 rounded-full border border-[#252A33] bg-[#1A1E25] hover:bg-[#23272F] text-[#8A929E] hover:text-white transition-colors flex items-center justify-center cursor-pointer shadow-sm"
+                            >
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M9 18l6-6-6-6"/>
+                                </svg>
+                            </button>
+                        )}
                     </div>
 
                     {/* Quick search (opens the ⌘K command palette) */}
                     <button
                         onClick={() => setIsPaletteOpen(true)}
                         title="Search (Ctrl/Cmd + K)"
-                        className={`flex items-center gap-2 mb-4 mx-1 px-3 py-2 rounded-lg border border-slate-100 bg-slate-50/60 text-slate-400 hover:border-indigo-200 hover:text-indigo-600 transition-all ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
+                        className={`flex items-center gap-2 mb-4 mx-1 px-3.5 h-10 rounded-[10px] border border-[#1F242E] bg-[#13161C]/50 text-[#6B7280] hover:text-[#9CA3AF] hover:border-[#5B53E0]/50 hover:bg-[#161A22] transition-all duration-200 cursor-pointer shrink-0 ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
                     >
-                        <span className="material-symbols-rounded text-xl">search</span>
+                        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                        </svg>
                         {!isSidebarCollapsed && (
                             <>
-                                <span className="text-[10px] font-bold flex-1 text-left">Search…</span>
-                                <kbd className="text-[9px] font-bold bg-white border border-slate-200 rounded px-1 py-0.5">⌘K</kbd>
+                                <span className="text-[12.5px] font-medium flex-1 text-left">Search…</span>
+                                <span className="text-[10px] font-bold bg-[#1E2330]/60 border border-[#2B3142]/60 text-[#5B6376] rounded-[5px] px-1.5 h-5 leading-none shrink-0 inline-flex items-center justify-center">⌘K</span>
                             </>
                         )}
                     </button>
 
-                    {/* Navigation Groups */}
-                    <nav className="space-y-4 px-1">
-                        {accessibleNavGroups.map((group) => (
-                            <div key={group.title}>
-                                {!isSidebarCollapsed && <p className="text-[11px] font-bold text-slate-400 mb-2 px-3">{group.title}</p>}
-                                <div className="space-y-0.5">
-                                    {group.items.map((item) => (
-                                        <Link key={item.path} href={item.path} className={navLinkClass(item.path)} title={isSidebarCollapsed ? item.label : ''}>
-                                            <span className="material-symbols-rounded text-xl">{item.icon}</span>
-                                            {!isSidebarCollapsed && <span className="text-[10px] font-bold whitespace-nowrap">{item.label}</span>}
-                                        </Link>
-                                    ))}
+                    {/* Navigation Groups — collapsible accordion (keeps the long menu scannable) */}
+                    <nav className={isSidebarCollapsed ? "space-y-4 px-1" : "space-y-1 px-1"}>
+                        {accessibleNavGroups.map((group) => {
+                            const open = isSidebarCollapsed ? true : isGroupOpen(group.title);
+                            const hasActive = group.items.some((i) => isItemActive(i.path));
+                            return (
+                                <div key={group.title} className={isSidebarCollapsed ? "" : "mb-2"}>
+                                    {isSidebarCollapsed && (
+                                        <div className="text-center mt-4 mb-2 px-1 select-none">
+                                            <span className="text-[11px] font-bold tracking-widest uppercase text-[#5C6370] block whitespace-nowrap truncate">
+                                                {getCollapsedGroupTitle(group.title)}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {!isSidebarCollapsed && (
+                                        <button
+                                            onClick={() => toggleGroup(group.title)}
+                                            className={`group/hdr flex items-center justify-between w-full px-3.5 py-2.5 rounded-[10px] transition-all duration-150 text-[12.5px] cursor-pointer ${
+                                                hasActive
+                                                    ? "text-[#8B7DFF] font-semibold bg-white/[0.02]"
+                                                    : "text-[#BAC1CC] hover:bg-white/[0.04] hover:text-white font-medium"
+                                            }`}
+                                        >
+                                            <span className="flex items-center gap-3">
+                                                <span className={`material-symbols-rounded text-[18px] ${hasActive ? 'text-[#8B7DFF]' : 'text-[#656D7A] group-hover/hdr:text-white transition-colors'}`}>{group.icon}</span>
+                                                <span className="whitespace-nowrap">{group.title}</span>
+                                            </span>
+                                            <svg className={`w-3.5 h-3.5 ${hasActive ? 'text-[#8B7DFF]' : 'text-[#656D7A] group-hover/hdr:text-white'} transition-transform duration-200 ${open ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="m6 9 6 6 6-6"/>
+                                            </svg>
+                                        </button>
+                                    )}
+                                    {open && (
+                                        isSidebarCollapsed ? (
+                                            <div className="space-y-0.5">
+                                                {group.items.map((item) => {
+                                                    const isActive = isItemActive(item.path);
+                                                    return (
+                                                        <Link
+                                                            key={item.path}
+                                                            href={item.path}
+                                                            className={navLinkClass(item.path)}
+                                                            title={item.label}
+                                                        >
+                                                            <span className={`material-symbols-rounded text-[18px] ${isActive ? 'text-white' : 'text-[#656D7A] group-hover:text-white transition-colors'}`}>{item.icon}</span>
+                                                        </Link>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <div className="relative pl-5 ml-[22px] border-l border-white/10 mt-1 mb-2 space-y-1">
+                                                {group.items.map((item) => {
+                                                    const isActive = isItemActive(item.path);
+                                                    return (
+                                                        <Link
+                                                            key={item.path}
+                                                            href={item.path}
+                                                            className={`block px-3 py-1.5 rounded-[8px] text-[12.5px] transition-all duration-150 ${
+                                                                isActive
+                                                                    ? "bg-[#5B53E0]/15 border border-[#5B53E0]/30 text-[#8B7DFF] font-bold"
+                                                                    : "text-[#BAC1CC] hover:text-white hover:bg-white/[0.02] border border-transparent font-medium"
+                                                            }`}
+                                                        >
+                                                            {item.label}
+                                                        </Link>
+                                                    );
+                                                })}
+                                            </div>
+                                        )
+                                    )}
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </nav>
                 </div>
 
-                {/* Sidebar Footer User Info (Student Portal Style) */}
-                <div className={`p-3 border-t border-slate-50 shrink-0 ${isSidebarCollapsed ? 'px-1' : ''}`}>
-                    <div className={`flex items-center gap-2 mb-4 px-2 ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}>
-                        <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md shrink-0">
+                {/* Sidebar Footer User Info */}
+                <div className={`p-3 border-t border-[#1C1F26] shrink-0 ${isSidebarCollapsed ? 'px-1' : ''}`}>
+                    <div className={`flex items-center gap-2.5 mb-3 px-2 ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}>
+                        <div className="w-8 h-8 rounded-[8px] bg-[#5B53E0] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_8px_rgba(91,83,224,0.3)]">
                             {user ? user.charAt(0).toUpperCase() : 'R'}
                         </div>
                         {!isSidebarCollapsed && (
                             <div className="flex-1 min-w-0">
-                                <p className="text-[10px] font-bold text-slate-700 truncate">{user || "recruiter@techcorp.com"}</p>
-                                <p className="text-[10px] font-medium text-slate-400">{role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Recruiter'}</p>
+                                <p className="text-[12px] font-semibold text-[#C7CCD4] truncate">{user || "recruiter@techcorp.com"}</p>
+                                <p className="text-[10px] font-medium text-[#525969]">{role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Recruiter'}</p>
                             </div>
                         )}
                     </div>
 
                     <button
                         onClick={logout}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all duration-200 group ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}
+                        className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#8A929E] hover:bg-white/[0.04] hover:text-rose-400 rounded-[10px] transition-colors duration-150 group cursor-pointer ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}
                         title={isSidebarCollapsed ? 'Logout' : ''}
                     >
-                        <span className="material-symbols-rounded text-slate-500 text-[20px]">logout</span>
-                        {!isSidebarCollapsed && <span className="text-[10px] font-bold">Logout</span>}
+                        <span className="material-symbols-rounded text-[18px] text-[#525969] group-hover:text-rose-400">logout</span>
+                        {!isSidebarCollapsed && <span className="text-[12.5px] font-medium">Logout</span>}
                     </button>
                 </div>
             </aside>
@@ -324,20 +442,23 @@ export default function EnterprisePortalLayout({
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden w-full">
                 {/* Mobile Top Bar */}
-                <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 md:hidden shrink-0">
+                <header className="h-16 bg-white border-b border-[#E8EAED] flex items-center justify-between px-6 md:hidden shrink-0">
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
-                            className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center transition-colors"
+                            className="w-10 h-10 rounded-[10px] hover:bg-[#F4F5F7] flex items-center justify-center transition-colors"
                         >
-                            <span className="material-icons-outlined text-slate-600">menu</span>
+                            <span className="material-icons-outlined text-[#374151]">menu</span>
                         </button>
-                        <span className="text-xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent tracking-tighter">Croar.ai</span>
+                        <span className="flex items-center gap-2">
+                            <CroarMark size={28} />
+                            <span className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">Croar</span>
+                        </span>
                     </div>
                 </header>
 
                 {/* Content */}
-                <main className="flex-1 w-full overflow-y-auto bg-[#F8FAFC] custom-scrollbar">
+                <main className="flex-1 w-full overflow-y-auto bg-[#F4F5F7] custom-scrollbar">
                     {children}
                 </main>
             </div>

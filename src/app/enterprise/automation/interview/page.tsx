@@ -3,10 +3,32 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { format } from "date-fns";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { BACKEND_URL } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import TemplateBuilder from "./TemplateBuilder";
+import { 
+  Calendar, 
+  Plus, 
+  Trash2, 
+  Edit2, 
+  Clock, 
+  Briefcase, 
+  ChevronDown, 
+  X, 
+  Search, 
+  Video, 
+  Brain, 
+  PlusCircle, 
+  Check, 
+  Wand2, 
+  Sparkles,
+  Layers,
+  Activity,
+  CheckCircle2,
+  AlertCircle,
+  HelpCircle
+} from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -155,10 +177,10 @@ export default function InterviewAutomationPage() {
       finalMsg = String(msg || "An error occurred");
     }
     setToast({ msg: finalMsg, type });
-    setTimeout(() => setToast(null), 5000); // Increased duration for complex errors
+    setTimeout(() => setToast(null), 5000);
   };
 
-  // Fetch jobs & templates on mount (wait for token)
+  // Fetch jobs & templates on mount
   useEffect(() => {
     if (!token) return;
     const fetchMeta = async () => {
@@ -176,8 +198,7 @@ export default function InterviewAutomationPage() {
       }
     };
     fetchMeta();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, authHeaders]);
 
   // Fetch automations when job selection changes
   const fetchAutomations = useCallback(async (jobId?: string) => {
@@ -195,8 +216,7 @@ export default function InterviewAutomationPage() {
     } finally {
       setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, authHeaders]);
 
   const fetchInterviewTemplates = useCallback(async () => {
     try {
@@ -408,7 +428,6 @@ export default function InterviewAutomationPage() {
   const jobTitle = (id: string) => jobs.find((j) => j.id === id)?.title ?? "—";
   const templateName = (id: string) => templates.find((t) => t.id === id)?.name ?? "—";
 
-  // ── When user picks a round from dropdown, auto-fill stage_index + stage_name
   const handleRoundSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     if (val === "") return;
@@ -449,7 +468,6 @@ export default function InterviewAutomationPage() {
     setForm(f => ({ ...f, time_slots: slots }));
   };
 
-  // ─── Computed ───────────────────────────────────────────────────────────────
   const filteredAutomations = automations.filter(a => {
     const term = searchQuery.toLowerCase();
     return a.criteria.toLowerCase().includes(term) ||
@@ -458,21 +476,21 @@ export default function InterviewAutomationPage() {
            (a.interviewer_email && a.interviewer_email.toLowerCase().includes(term));
   });
 
-  // ─── Render ────────────────────────────────────────────────────────────────
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-6 animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
-            toast.type === "success" ? "bg-[#7C3AED] text-white" : "bg-red-500 text-white"
+          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-[10px] shadow-lg text-[13.5px] font-semibold transition-all duration-300 ${
+            toast.type === "success" ? "bg-[#5B53E0] text-white" : "bg-rose-600 text-white"
           }`}
         >
-          <span className="material-symbols-rounded text-base">
-            {toast.type === "success" ? "check_circle" : "error"}
-          </span>
-          {String(toast.msg)}
+          {toast.type === "success" ? (
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+          ) : (
+            <AlertCircle className="w-4 h-4 shrink-0" />
+          )}
+          <span>{String(toast.msg)}</span>
         </div>
       )}
 
@@ -480,12 +498,12 @@ export default function InterviewAutomationPage() {
       <div className="mb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
-              <span className="material-symbols-rounded text-[#7C3AED] text-2xl">event_available</span>
+            <div className="w-12 h-12 rounded-[12px] bg-[#E3F4EF] flex items-center justify-center shrink-0 border border-[#BFF0E2] shadow-sm">
+              <Calendar className="w-6 h-6 text-[#0E8A6E]" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Interview Automation</h1>
-              <p className="text-slate-500 text-[13px] font-medium mt-1">
+              <h1 className="text-[22px] font-extrabold text-slate-900 tracking-tight leading-tight">Interview Automation</h1>
+              <p className="text-[#8A929E] text-[13px] font-medium mt-1">
                 Automatically schedule AI or human technical interviews based on your hiring criteria.
               </p>
             </div>
@@ -495,9 +513,9 @@ export default function InterviewAutomationPage() {
              {canAccess("automation:moderate") && (
                 <button
                   onClick={openCreate}
-                  className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
+                  className="flex items-center gap-2 px-5 h-11 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-bold hover:bg-[#4A43C9] transition-all shadow-[0_4px_12px_rgba(91,83,224,0.25)] hover:shadow-[0_6px_16px_rgba(91,83,224,0.35)] active:scale-95 cursor-pointer"
                 >
-                  <span className="material-symbols-rounded text-lg">add</span>
+                  <Plus className="w-4 h-4" />
                   <span>NEW AUTOMATION</span>
                 </button>
               )}
@@ -505,41 +523,44 @@ export default function InterviewAutomationPage() {
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {[
-            { label: "Total Rules", value: automations.length, icon: "rule", color: "indigo" },
-            { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, icon: "bolt", color: "emerald" },
-            { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, icon: "double_arrow", color: "amber" },
-            { label: "Configured Slots", value: automations.reduce((acc, a) => acc + (a.time_slots?.length || 0), 0), icon: "event_upcoming", color: "purple" }
-          ].map((stat, i) => (
-            <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${
-                  stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
-                  stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
-                  stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
-                  'bg-purple-50 text-purple-600'
-                }`}>
-                  <span className="material-symbols-rounded text-xl">{stat.icon}</span>
+            { label: "Total Rules", value: automations.length, Icon: Layers, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+            { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, Icon: Activity, grad: "linear-gradient(135deg,#00C49F,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+            { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, Icon: Sparkles, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" },
+            { label: "Configured Slots", value: automations.reduce((acc, a) => acc + (a.time_slots?.length || 0), 0), Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" }
+          ].map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+              className="relative bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[14px] p-5 overflow-hidden transition-all duration-300 hover:shadow-sm"
+            >
+              <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
+                  <div className="text-[30px] font-semibold tracking-[-1px] text-[#15171C] mt-2">{s.value}</div>
                 </div>
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
+                <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                  <s.Icon className="w-[18px] h-[18px]" />
+                </span>
               </div>
-              <p className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{stat.value}</p>
-              <p className="text-[11px] font-bold text-slate-400 capitalize">{stat.label}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* Interaction Bar */}
         <div className="mt-8 flex flex-col md:flex-row items-center gap-4">
            <div className="flex-1 relative w-full">
-              <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input 
                 type="text"
                 placeholder="Search by rules, jobs, or interviewers..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-11 bg-white border border-slate-200 rounded-lg pl-11 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none"
+                className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-10 pr-4 text-[13.5px] font-semibold text-slate-700 placeholder:text-slate-400 focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all outline-none shadow-sm"
               />
            </div>
 
@@ -547,24 +568,24 @@ export default function InterviewAutomationPage() {
               {(searchQuery || selectedJobId) && (
                 <button 
                   onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
-                  className="text-[11px] font-black text-[#7C3AED] hover:underline px-2 tracking-tight"
+                  className="text-[11px] font-extrabold text-[#5B53E0] hover:underline px-2 tracking-wider cursor-pointer"
                 >
                   RESET FILTERS
                 </button>
               )}
               <div className="relative w-full md:w-64">
-                <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">work</span>
+                <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                 <select
                   value={selectedJobId}
                   onChange={(e) => setSelectedJobId(e.target.value)}
-                  className="w-full h-11 border border-slate-200 rounded-lg pl-10 pr-10 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/5 focus:border-[#7C3AED] shadow-sm appearance-none cursor-pointer"
+                  className="w-full h-11 border border-[#E1E4E8] rounded-[12px] pl-10 pr-10 text-[13px] font-semibold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] shadow-sm appearance-none cursor-pointer"
                 >
                   <option value="">All Job Requirements</option>
                   {jobs.map((j) => (
                     <option key={j.id} value={j.id}>{j.title}</option>
                   ))}
                 </select>
-                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">expand_more</span>
+                <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
            </div>
         </div>
@@ -573,75 +594,75 @@ export default function InterviewAutomationPage() {
       {/* List */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-[3px] border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredAutomations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-lg bg-[#7C3AED]/5 flex items-center justify-center mb-4">
-            <span className="material-symbols-rounded text-[#7C3AED] text-4xl">event_available</span>
+        <div className="bg-white rounded-[14px] border border-[#E1E4E8] p-16 flex flex-col items-center justify-center text-center shadow-sm">
+          <div className="w-16 h-16 rounded-[12px] bg-[#E3F4EF] flex items-center justify-center mb-4 border border-[#BFF0E2]">
+            <Calendar className="w-8 h-8 text-[#0E8A6E]" />
           </div>
-          <p className="text-slate-700 font-bold text-lg">{searchQuery ? 'No matching rules' : 'No automations yet'}</p>
-          <p className="text-slate-400 text-sm mt-1 max-w-xs">
-            {searchQuery ? `We couldn&apos;t find any results for &quot;${searchQuery}&quot;` : 'Create your first interview automation to auto-schedule interviews.'}
+          <p className="text-slate-800 font-bold text-[16px]">{searchQuery ? 'No matching rules' : 'No automations yet'}</p>
+          <p className="text-slate-400 text-[13px] mt-1 max-w-sm font-medium">
+            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Create your first interview automation to auto-schedule interviews.'}
           </p>
-          {!searchQuery && (
+          {!searchQuery && canAccess("automation:moderate") && (
             <button
               onClick={openCreate}
-              className="mt-5 flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-lg text-sm font-bold hover:bg-[#6d28d9] transition-colors"
+              className="mt-5 px-5 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-bold shadow-[0_4px_12px_rgba(91,83,224,0.25)] transition-all active:scale-95 cursor-pointer"
             >
-              <span className="material-symbols-rounded text-base">add</span>
-              <span>Create Automation</span>
+              Create Automation
             </button>
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[14px] border border-[#E1E4E8] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100">
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Rule Configuration</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Target Job</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Schedule Logic</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                <tr className="bg-[#F7F8FA] border-b border-[#E1E4E8]">
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Rule Configuration</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Target Job</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Schedule Logic</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Status</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-[#F0F0F1]">
                 {filteredAutomations.map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50/50 transition-all group">
+                  <tr key={a.id} className="hover:bg-[#F7F8FA]/60 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-black uppercase">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-[6px] bg-[#E3F4EF] text-[#0E8A6E] text-[10px] font-bold border border-[#BFF0E2]/60 uppercase">
                             Round {a.stage_index}
                           </span>
                           {a.stage_name && (
-                            <span className="text-[10px] font-bold text-slate-400">{a.stage_name}</span>
+                            <span className="text-[12px] font-semibold text-[#8A929E]">{a.stage_name}</span>
                           )}
                         </div>
-                        <p className="text-xs font-bold text-slate-800 line-clamp-1">
-                          <span className="text-slate-400 font-medium italic mr-1">If:</span>
+                        <p className="text-[13.5px] font-semibold text-[#374151] line-clamp-1">
+                          <span className="text-[#8A929E] font-medium italic mr-1">If:</span>
                           {a.criteria}
                         </p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                        <span className="material-symbols-rounded text-sm text-slate-400">work</span>
-                        {jobTitle(a.job_requirement_id)}
+                      <div className="flex items-center gap-1.5 text-[13.5px] font-semibold text-[#374151]">
+                        <Briefcase className="w-4 h-4 text-slate-400 shrink-0" />
+                        <span>{jobTitle(a.job_requirement_id)}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700">
-                          <span className="material-symbols-rounded text-sm text-slate-400">schedule</span>
-                          {a.start_time} - {a.end_time} ({a.duration}m)
+                        <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#374151]">
+                          <Clock className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span>{a.start_time} - {a.end_time} ({a.duration}m)</span>
                         </div>
                         {a.auto_move && (
-                          <div className="flex items-center gap-1 text-[9px] font-black text-[#7C3AED] uppercase">
-                            <span className="material-symbols-rounded text-xs">keyboard_double_arrow_right</span>
-                            <span>Auto-Move Active</span>
+                          <div className="flex items-center gap-1 text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider mt-1">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold border border-[#DAD7F6]/60 uppercase tracking-wider">
+                              Auto-Move
+                            </span>
                           </div>
                         )}
                       </div>
@@ -650,7 +671,7 @@ export default function InterviewAutomationPage() {
                       <button
                         onClick={() => handleToggle(a)}
                         disabled={togglingId === a.id || !canAccess("automation:moderate")}
-                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"} ${togglingId === a.id || !canAccess("automation:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#0E8A6E]" : "bg-[#E1E4E8]"} ${togglingId === a.id || !canAccess("automation:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       >
                         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                       </button>
@@ -658,16 +679,23 @@ export default function InterviewAutomationPage() {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         {canAccess("automation:moderate") && (
-                          <button onClick={() => openEdit(a)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#7C3AED] transition-colors">
-                            <span className="material-symbols-rounded text-base">edit</span>
+                          <button 
+                            onClick={() => openEdit(a)} 
+                            className="w-8 h-8 flex items-center justify-center rounded-[8px] border border-transparent hover:border-[#E1E4E8] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#5B53E0] transition-colors cursor-pointer"
+                          >
+                            <Edit2 className="w-4 h-4" />
                           </button>
                         )}
                         {canAccess("automation:moderate") && (
-                          <button onClick={() => {
-                            setAutomationToDelete(a);
-                            setIsDeleteModalOpen(true);
-                          }} disabled={deletingId === a.id} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors">
-                            <span className="material-symbols-rounded text-base">delete</span>
+                          <button 
+                            onClick={() => {
+                              setAutomationToDelete(a);
+                              setIsDeleteModalOpen(true);
+                            }} 
+                            disabled={deletingId === a.id} 
+                            className="w-8 h-8 flex items-center justify-center rounded-[8px] border border-transparent hover:border-[#E1E4E8] hover:bg-rose-50 text-[#8A929E] hover:text-rose-600 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         )}
                       </div>
@@ -678,514 +706,545 @@ export default function InterviewAutomationPage() {
             </table>
           </div>
         </div>
-
       )}
 
       {/* ── Side Panel (Drawer) ───────────────────────────────────────────────── */}
-      <div className={`fixed inset-0 z-[100] transition-opacity duration-300 ${showModal ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-        <div
-          role="button"
-          tabIndex={0}
-          aria-label="Close panel"
-          className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]"
-          onClick={closeModal}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { closeModal(); } }}
-        />
-        <div className={`absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${showModal ? "translate-x-0" : "translate-x-full"}`}>
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#7C3AED]/10 flex items-center justify-center">
-                <span className="material-symbols-rounded text-[#7C3AED] text-xl">event_available</span>
-              </div>
-              <div>
-                <h2 className="text-lg font-black text-slate-800 leading-tight">
-                  {editingId ? "Edit Automation" : "New Automation"}
-                </h2>
-                <p className="text-[10px] font-bold text-slate-400   mt-0.5">Interview Configuration</p>
-              </div>
-            </div>
-            <button onClick={closeModal} className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
-              <span className="material-symbols-rounded text-xl">close</span>
-            </button>
-          </div>
-          
-          {/* Tabs */}
-          <div className="flex border-b border-slate-100 shrink-0">
-            <button
-              onClick={() => setActiveTab("config")}
-              className={`flex-1 py-3 text-xs font-bold   relative transition-colors ${
-                activeTab === "config" ? "text-[#7C3AED]" : "text-slate-400 hover:text-slate-600"
-              }`}
+      <AnimatePresence>
+        {showModal && (
+          <div className="fixed inset-0 z-[100] flex justify-end">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm"
+              onClick={closeModal}
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E1E4E8]"
             >
-              Config
-              {activeTab === "config" && (
-                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#7C3AED]" />
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab("times")}
-              className={`flex-1 py-3 text-xs font-bold   relative transition-colors ${
-                activeTab === "times" ? "text-[#7C3AED]" : "text-slate-400 hover:text-slate-600"
-              }`}
-            >
-              Time Slots
-              {activeTab === "times" && (
-                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#7C3AED]" />
-              )}
-            </button>
-          </div>
-
-          {/* Body */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
-            {activeTab === "config" ? (
-             <div className="space-y-6">
-            {/* Job */}
-            <div>
-              <label htmlFor="automation-job-requirement" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                Job Requirement <span className="text-red-400">*</span>
-              </label>
-              <select
-                id="automation-job-requirement"
-                value={form.job_requirement_id}
-                onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
-                className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-              >
-                <option value="">Select job…</option>
-                {jobs.map((j) => (
-                  <option key={j.id} value={j.id}>{j.title}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Round */}
-            <div>
-              <label htmlFor="automation-hiring-round" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                Hiring Round <span className="text-red-400">*</span>
-              </label>
-              {jobRounds.length > 0 ? (
-                <select
-                  id="automation-hiring-round"
-                  onChange={handleRoundSelect}
-                  defaultValue=""
-                  className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                >
-                  <option value="">Pick round…</option>
-                  {jobRounds.map((r, i) => (
-                    <option key={i} value={`${i + 1}|${r.name}`}>
-                      Round {i + 1}: {r.name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <div className="grid grid-cols-5 gap-3">
-                  <input
-                    type="number"
-                    min={1}
-                    value={form.stage_index}
-                    onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
-                    className="col-span-2 border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                    placeholder="No."
-                  />
-                  <input
-                    type="text"
-                    value={form.stage_name}
-                    onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
-                    className="col-span-3 border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                    placeholder="Label"
-                  />
-                </div>
-              )}
-              {jobRounds.length > 0 && (form.stage_name || Number(form.stage_index) > 1) && (
-                <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#7C3AED]/5 rounded-lg border border-[#7C3AED]/10">
-                  <span className="material-symbols-rounded text-xs text-[#7C3AED]">check_circle</span>
-                  <p className="text-[10px] text-[#7C3AED] font-bold  tracking-tight">
-                    Selected: Round {form.stage_index} — {form.stage_name}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Criteria */}
-            <div>
-              <label htmlFor="automation-criteria" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                Trigger Criteria <span className="text-red-400">*</span>
-              </label>
-              <textarea
-                id="automation-criteria"
-                rows={4}
-                value={form.criteria}
-                onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
-                className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all resize-none"
-                placeholder="Describe the condition, e.g. 'AI score > 80' or 'Interview cleared'…"
-              />
-              <p className="text-[10px] text-slate-400 mt-2 px-1">
-                Set conditions for when this interview should be scheduled.
-              </p>
-            </div>
-
-            {/* Dates (Optional) */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="automation-start-date" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                  Start Date (Optional)
-                </label>
-                <input
-                  id="automation-start-date"
-                  type="date"
-                  value={form.start_date || ""}
-                  onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value }))}
-                  className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                />
-              </div>
-              <div>
-                <label htmlFor="automation-end-date" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                  End Date (Optional)
-                </label>
-                <input
-                  id="automation-end-date"
-                  type="date"
-                  value={form.end_date || ""}
-                  onChange={(e) => setForm((f) => ({ ...f, end_date: e.target.value }))}
-                  className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                />
-              </div>
-            </div>
-
-            {/* Timings and Caps */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label htmlFor="automation-start-time" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                  Start Time <span className="text-red-400">*</span>
-                </label>
-                <input
-                  id="automation-start-time"
-                  type="time"
-                  value={form.start_time}
-                  onChange={(e) => setForm((f) => ({ ...f, start_time: e.target.value }))}
-                  className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                />
-              </div>
-              <div>
-                <label htmlFor="automation-end-time" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                  End Time <span className="text-red-400">*</span>
-                </label>
-                <input
-                  id="automation-end-time"
-                  type="time"
-                  value={form.end_time}
-                  onChange={(e) => setForm((f) => ({ ...f, end_time: e.target.value }))}
-                  className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                />
-              </div>
-              <div>
-                <label htmlFor="automation-duration" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                  Duration <span className="text-red-400">*</span>
-                </label>
-                <select
-                  id="automation-duration"
-                  value={form.duration}
-                  onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))}
-                  className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                >
-                  <option value="15">15 mins</option>
-                  <option value="30">30 mins</option>
-                  <option value="45">45 mins</option>
-                  <option value="60">60 mins</option>
-                  <option value="90">90 mins</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="automation-daily-limit" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                Daily Limit (Max Interviews/Day) <span className="text-red-400">*</span>
-              </label>
-              <input
-                id="automation-daily-limit"
-                type="number"
-                min={1}
-                value={form.daily_limit}
-                onChange={(e) => setForm((f) => ({ ...f, daily_limit: e.target.value }))}
-                className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-              />
-            </div>
-
-            {/* Template (Optional) */}
-            <div>
-              <label htmlFor="automation-email-template" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                Email Template (Optional)
-              </label>
-              {templates.length === 0 ? (
-                <div className="bg-slate-50 rounded-lg p-4 border border-dashed border-slate-200">
-                  <p className="text-xs text-slate-400 text-center">
-                    No templates found. <a href="/enterprise/settings/templates" className="text-[#7C3AED] font-bold hover:underline" target="_blank">Create one</a> first.
-                  </p>
-                </div>
-              ) : (
-                <select
-                  id="automation-email-template"
-                  value={form.email_template_id}
-                  onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
-                  className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                >
-                  <option value="">No template (use default invite)</option>
-                  {templates.map((t) => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
-                  ))}
-                </select>
-              )}
-            </div>
-
-            {/* Interview Type Selection */}
-            <div>
-              <label htmlFor="automation-interview-type" className="block text-[10px] font-black text-slate-500   mb-3 ml-1">
-                Interview Type <span className="text-red-400">*</span>
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  id="automation-interview-type"
-                  onClick={() => setForm(f => ({ ...f, interview_type: "GMEET" }))}
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                    form.interview_type === "GMEET" 
-                      ? "border-[#7C3AED] bg-[#7C3AED]/5" 
-                      : "border-slate-100 bg-white hover:border-slate-200"
-                  }`}
-                >
-                  <span className={`material-symbols-rounded ${form.interview_type === "GMEET" ? "text-[#7C3AED]" : "text-slate-400"}`}>videocam</span>
-                  <span className={`text-[11px] font-bold   ${form.interview_type === "GMEET" ? "text-[#7C3AED]" : "text-slate-500"}`}>Google Meet</span>
-                </button>
-                <button
-                  onClick={() => setForm(f => ({ ...f, interview_type: "AI" }))}
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                    form.interview_type === "AI" 
-                      ? "border-[#7C3AED] bg-[#7C3AED]/5" 
-                      : "border-slate-100 bg-white hover:border-slate-200"
-                  }`}
-                >
-                  <span className={`material-symbols-rounded ${form.interview_type === "AI" ? "text-[#7C3AED]" : "text-slate-400"}`}>psychology</span>
-                  <span className={`text-[11px] font-bold   ${form.interview_type === "AI" ? "text-[#7C3AED]" : "text-slate-500"}`}>AI Interview</span>
-                </button>
-              </div>
-            </div>
-
-            {form.interview_type === "AI" ? (
-              <div className="space-y-4 pt-2">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label htmlFor="automation-ai-template" className="text-[10px] font-black text-slate-500   ml-1">
-                      AI Interview Template <span className="text-red-400">*</span>
-                    </label>
-                    <button 
-                      onClick={() => {
-                        setSelectedTemplateForEdit(null);
-                        setShowTemplateBuilder(true);
-                      }}
-                      className="text-[10px] font-bold text-[#7C3AED] hover:underline flex items-center gap-1"
-                    >
-                      <span className="material-symbols-rounded text-xs">add_circle</span>
-                      <span>Create New</span>
-                    </button>
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED] shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-[10px] bg-[#E3F4EF] flex items-center justify-center border border-[#BFF0E2] shadow-sm">
+                    <Video className="w-5 h-5 text-[#0E8A6E]" />
                   </div>
-                  {interviewTemplates.length === 0 ? (
-                    <div className="bg-slate-50 rounded-lg p-4 border border-dashed border-slate-200">
-                      <p className="text-xs text-slate-400 text-center">
-                        No AI templates found. 
+                  <div>
+                    <h2 className="text-[16px] font-extrabold text-[#15171C] leading-tight">
+                      {editingId ? "Edit Automation" : "New Automation"}
+                    </h2>
+                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">Interview Configuration</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={closeModal} 
+                  className="p-1.5 hover:bg-[#F4F5F7] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg transition-all cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              {/* Tabs */}
+              <div className="flex border-b border-[#E8EAED] shrink-0">
+                <button
+                  onClick={() => setActiveTab("config")}
+                  className={`flex-1 py-3 text-[13px] font-bold relative transition-colors cursor-pointer ${
+                    activeTab === "config" ? "text-[#5B53E0]" : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  <span>Config</span>
+                  {activeTab === "config" && (
+                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#5B53E0]" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setActiveTab("times")}
+                  className={`flex-1 py-3 text-[13px] font-bold relative transition-colors cursor-pointer ${
+                    activeTab === "times" ? "text-[#5B53E0]" : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  <span>Time Slots</span>
+                  {activeTab === "times" && (
+                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#5B53E0]" />
+                  )}
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="flex-1 overflow-y-auto px-6 py-6 custom-scrollbar">
+                {activeTab === "config" ? (
+                  <div className="space-y-6">
+                    {/* Job */}
+                    <div>
+                      <label htmlFor="automation-job-requirement" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        Job Requirement <span className="text-rose-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <select
+                          id="automation-job-requirement"
+                          value={form.job_requirement_id}
+                          onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
+                          className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                        >
+                          <option value="">Select job…</option>
+                          {jobs.map((j) => (
+                            <option key={j.id} value={j.id}>{j.title}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* Round */}
+                    <div>
+                      <label htmlFor="automation-hiring-round" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        Hiring Round <span className="text-rose-500">*</span>
+                      </label>
+                      {jobRounds.length > 0 ? (
+                        <div className="relative">
+                          <select
+                            id="automation-hiring-round"
+                            onChange={handleRoundSelect}
+                            value={form.stage_name ? `${form.stage_index}|${form.stage_name}` : ""}
+                            className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                          >
+                            <option value="">Pick round…</option>
+                            {jobRounds.map((r, i) => (
+                              <option key={i} value={`${i + 1}|${r.name}`}>
+                                Round {i + 1}: {r.name}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-5 gap-3">
+                          <input
+                            type="number"
+                            min={1}
+                            value={form.stage_index}
+                            onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
+                            className="col-span-2 border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                            placeholder="No."
+                          />
+                          <input
+                            type="text"
+                            value={form.stage_name}
+                            onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
+                            className="col-span-3 border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                            placeholder="Label"
+                          />
+                        </div>
+                      )}
+                      {jobRounds.length > 0 && (form.stage_name || Number(form.stage_index) > 1) && (
+                        <div className="mt-2.5 flex items-center gap-2 px-3 py-2 bg-[#E3F4EF]/50 rounded-[8px] border border-[#BFF0E2]/60">
+                          <Check className="w-3.5 h-3.5 text-[#0E8A6E]" />
+                          <p className="text-[12px] text-[#0E8A6E] font-bold tracking-tight">
+                            Selected: Round {form.stage_index} — {form.stage_name}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Criteria */}
+                    <div>
+                      <label htmlFor="automation-criteria" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        Trigger Criteria <span className="text-rose-500">*</span>
+                      </label>
+                      <textarea
+                        id="automation-criteria"
+                        rows={3}
+                        value={form.criteria}
+                        onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
+                        className="w-full border border-[#E1E4E8] rounded-[12px] px-4 py-3 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all resize-none"
+                        placeholder="Describe the condition, e.g. 'AI score > 80' or 'Interview cleared'…"
+                      />
+                      <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
+                        Set conditions for when this interview should be scheduled.
                       </p>
                     </div>
-                  ) : (
-                    <select
-                      id="automation-ai-template"
-                      value={form.interview_template_id || ""}
-                      onChange={(e) => setForm(f => ({ ...f, interview_template_id: e.target.value }))}
-                      className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                    >
-                      <option value="">Select template…</option>
-                      {interviewTemplates.map((t) => (
-                        <option key={t.id} value={t.id}>{t.title}</option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4 pt-2">
-                {/* Interviewer Email */}
-                <div>
-                  <label htmlFor="automation-interviewer-email" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                    Interviewer Email (Optional)
-                  </label>
-                  <input
-                    id="automation-interviewer-email"
-                    type="email"
-                    value={form.interviewer_email}
-                    onChange={(e) => setForm((f) => ({ ...f, interviewer_email: e.target.value }))}
-                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                    placeholder="e.g. recruiter@company.com"
-                  />
-                  <p className="text-[10px] text-slate-400 mt-2 px-1">
-                    If blank, system sends to your account email.
-                  </p>
-                </div>
 
-                {/* Google Meet Link */}
-                <div>
-                  <label htmlFor="automation-google-meet-link" className="block text-[10px] font-black text-slate-500   mb-2 ml-1">
-                    Personal Google Meet Link (Real Room)
-                  </label>
-                  <input
-                    id="automation-google-meet-link"
-                    type="url"
-                    value={form.google_meet_link}
-                    onChange={(e) => setForm((f) => ({ ...f, google_meet_link: e.target.value }))}
-                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-4 focus:ring-[#7C3AED]/10 focus:border-[#7C3AED] transition-all"
-                    placeholder="e.g. https://meet.google.com/abc-defg-hij"
-                  />
-                  <p className="text-[10px] text-slate-400 mt-2 px-1">
-                    Paste your own real link here to skip automated generation.
-                  </p>
-                </div>
-              </div>
-            )}
+                    {/* Dates */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="automation-start-date" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                          Start Date (Optional)
+                        </label>
+                        <input
+                          id="automation-start-date"
+                          type="date"
+                          value={form.start_date || ""}
+                          onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value }))}
+                          className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="automation-end-date" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                          End Date (Optional)
+                        </label>
+                        <input
+                          id="automation-end-date"
+                          type="date"
+                          value={form.end_date || ""}
+                          onChange={(e) => setForm((f) => ({ ...f, end_date: e.target.value }))}
+                          className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                        />
+                      </div>
+                    </div>
 
-            {/* Toggles Group */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-lg transition-all hover:border-slate-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center">
-                    <span className="material-symbols-rounded text-emerald-500 text-lg">check_circle</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">Enable Automation</p>
-                    <p className="text-[10px] text-slate-400 font-medium">Turn rules on/off</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#7C3AED]" : "bg-slate-200"}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-lg transition-all hover:border-slate-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center">
-                    <span className="material-symbols-rounded text-slate-600 text-lg">double_arrow</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">Auto-Move</p>
-                    <p className="text-[10px] text-slate-400 font-medium">Advance to next round</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#7C3AED]" : "bg-slate-200"}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.auto_move ? "translate-x-5" : "translate-x-0"}`} />
-                </button>
-              </div>
-            </div>
-          </div>
-          ) : (
-            // TIME SLOTS TAB
-            <div className="space-y-6">
-              <div className="bg-slate-50 border border-slate-100 rounded-lg p-4">
-                <p className="text-sm font-bold text-slate-800 mb-1">Pre-Generated Time Slots</p>
-                <p className="text-xs text-slate-500 mb-4">
-                  Instead of automatic scheduling, explicitly define exactly which {form.daily_limit} times per day the scheduler should use.
-                </p>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleGenerateTimeSlots}
-                    className="flex-1 flex justify-center items-center gap-2 py-2.5 bg-white border border-[#7C3AED] text-[#7C3AED] rounded-lg text-sm font-bold hover:bg-[#7C3AED]/5 transition-colors"
-                  >
-                    <span className="material-symbols-rounded text-base">magic_button</span>
-                    <span>Auto-Generate ({form.daily_limit} slots)</span>
-                  </button>
-                  <button
-                    onClick={() => setForm(f => ({ ...f, time_slots: [...f.time_slots, "12:00"] }))}
-                    className="w-10 h-10 flex border border-slate-200 items-center justify-center rounded-lg hover:bg-slate-200 text-slate-400 transition-colors"
-                    title="Add Slot manually"
-                  >
-                    <span className="material-symbols-rounded text-lg text-slate-600">add</span>
-                  </button>
-                </div>
-              </div>
-
-              {form.time_slots.length > 0 && (
-                <div className="space-y-2">
-                  {form.time_slots.map((ts, idx) => (
-                    <div key={idx} className="flex flex-col mb-4">
-                      <div className="flex items-center gap-2 relative">
-                        <span className="absolute left-3 text-[10px] font-black  text-slate-400  leading-none pt-0.5 pointer-events-none">
-                          Slot {idx + 1}
-                        </span>
-                        <div className="flex-1 flex items-center bg-slate-50 border border-slate-200 rounded-lg px-2 focus-within:ring-2 focus-within:ring-[#7C3AED]/50 transition-all">
-                          <input
-                            type="time"
-                            value={ts}
-                            onChange={(e) => {
-                              const newSlots = [...form.time_slots];
-                              newSlots[idx] = e.target.value;
-                              setForm((f) => ({ ...f, time_slots: newSlots }));
-                            }}
-                            className="w-full bg-transparent pl-12 pr-2 py-3 text-sm font-bold text-slate-700 focus:outline-none font-mono"
-                          />
-                          <span className="text-xs text-slate-400 font-medium px-2 shrink-0 border-l border-slate-200 flex items-center h-8">
-                            End: {(() => {
-                               const [h, m] = ts.split(':').map(Number);
-                               if (Number.isNaN(h)) return "--:--";
-                               const total = h * 60 + m + (Number(form.duration) || 30);
-                               const eh = Math.floor(total / 60).toString().padStart(2, '0');
-                               const em = (total % 60).toString().padStart(2, '0');
-                               return `${eh}:${em}`;
-                            })()}
-                          </span>
+                    {/* Timings and Caps */}
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label htmlFor="automation-start-time" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                          Start Time <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                          id="automation-start-time"
+                          type="time"
+                          value={form.start_time}
+                          onChange={(e) => setForm((f) => ({ ...f, start_time: e.target.value }))}
+                          className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-3 text-[13px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="automation-end-time" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                          End Time <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                          id="automation-end-time"
+                          type="time"
+                          value={form.end_time}
+                          onChange={(e) => setForm((f) => ({ ...f, end_time: e.target.value }))}
+                          className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-3 text-[13px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="automation-duration" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                          Duration <span className="text-rose-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <select
+                            id="automation-duration"
+                            value={form.duration}
+                            onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))}
+                            className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-3 pr-8 text-[13px] font-semibold text-[#374151] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                          >
+                            <option value="15">15m</option>
+                            <option value="30">30m</option>
+                            <option value="45">45m</option>
+                            <option value="60">60m</option>
+                            <option value="90">90m</option>
+                          </select>
+                          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                         </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="automation-daily-limit" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        Daily Limit (Max/Day) <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        id="automation-daily-limit"
+                        type="number"
+                        min={1}
+                        value={form.daily_limit}
+                        onChange={(e) => setForm((f) => ({ ...f, daily_limit: e.target.value }))}
+                        className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                      />
+                    </div>
+
+                    {/* Email Template */}
+                    <div>
+                      <label htmlFor="automation-email-template" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        Email Template (Optional)
+                      </label>
+                      {templates.length === 0 ? (
+                        <div className="bg-[#F7F8FA] rounded-[12px] p-4 border border-dashed border-[#E1E4E8] text-center">
+                          <p className="text-[12.5px] text-[#8A929E] font-medium">
+                            No templates found. <a href="/enterprise/settings/templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank">Create one</a> first.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          <select
+                            id="automation-email-template"
+                            value={form.email_template_id}
+                            onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
+                            className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                          >
+                            <option value="">No template (use default invite)</option>
+                            {templates.map((t) => (
+                              <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                          </select>
+                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Interview Type Selection */}
+                    <div>
+                      <label className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-3 ml-1">
+                        Interview Type <span className="text-rose-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
                         <button
-                          onClick={() => {
-                            const newSlots = form.time_slots.filter((_, i) => i !== idx);
-                            setForm((f) => ({ ...f, time_slots: newSlots }));
-                          }}
-                          className="w-11 h-11 shrink-0 bg-red-50 text-red-500 rounded-lg flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors border border-red-100"
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, interview_type: "GMEET" }))}
+                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[12px] border-2 transition-all cursor-pointer ${
+                            form.interview_type === "GMEET" 
+                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" 
+                              : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6] text-[#4B5563]"
+                          }`}
                         >
-                          <span className="material-symbols-rounded text-[20px]">delete</span>
+                          <Video className="w-5 h-5 shrink-0" />
+                          <span className="text-[12.5px] font-bold">Google Meet</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, interview_type: "AI" }))}
+                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[12px] border-2 transition-all cursor-pointer ${
+                            form.interview_type === "AI" 
+                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" 
+                              : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6] text-[#4B5563]"
+                          }`}
+                        >
+                          <Brain className="w-5 h-5 shrink-0" />
+                          <span className="text-[12.5px] font-bold">AI Interview</span>
                         </button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-          </div>
 
-          {/* Footer */}
-          <div className="p-6 border-t border-slate-100 bg-slate-50/50 shrink-0">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="w-full flex items-center justify-center gap-2 h-12 bg-[#7C3AED] text-white rounded-lg text-sm font-black hover:bg-[#6d28d9] transition-all active:scale-[0.98] disabled:opacity-60 shadow-lg shadow-[#7C3AED]/20"
-            >
-              {saving ? (
-                <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>
-                  <span className="material-symbols-rounded text-lg">save</span>
-                  {editingId ? "SAVE CHANGES" : "CREATE AUTOMATION"}
-                </>
-              )}
-            </button>
-            <button 
-              onClick={closeModal}
-              className="w-full mt-3 h-10 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors  "
-            >
-              Cancel
-            </button>
+                    {form.interview_type === "AI" ? (
+                      <div className="space-y-4 pt-2">
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="automation-ai-template" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider ml-1">
+                              AI Interview Template <span className="text-rose-500">*</span>
+                            </label>
+                            <button 
+                              type="button"
+                              onClick={() => {
+                                setSelectedTemplateForEdit(null);
+                                setShowTemplateBuilder(true);
+                              }}
+                              className="text-[11px] font-bold text-[#5B53E0] hover:text-[#4A43C9] hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                              <PlusCircle className="w-3.5 h-3.5" />
+                              <span>Create New</span>
+                            </button>
+                          </div>
+                          {interviewTemplates.length === 0 ? (
+                            <div className="bg-[#F7F8FA] rounded-[12px] p-4 border border-dashed border-[#E1E4E8] text-center">
+                              <p className="text-[12.5px] text-[#8A929E] font-medium">
+                                No AI templates found. 
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="relative">
+                              <select
+                                id="automation-ai-template"
+                                value={form.interview_template_id || ""}
+                                onChange={(e) => setForm(f => ({ ...f, interview_template_id: e.target.value }))}
+                                className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                              >
+                                <option value="">Select template…</option>
+                                {interviewTemplates.map((t) => (
+                                  <option key={t.id} value={t.id}>{t.title}</option>
+                                ))}
+                              </select>
+                              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4 pt-2">
+                        {/* Interviewer Email */}
+                        <div>
+                          <label htmlFor="automation-interviewer-email" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                            Interviewer Email (Optional)
+                          </label>
+                          <input
+                            id="automation-interviewer-email"
+                            type="email"
+                            value={form.interviewer_email}
+                            onChange={(e) => setForm((f) => ({ ...f, interviewer_email: e.target.value }))}
+                            className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                            placeholder="e.g. recruiter@company.com"
+                          />
+                          <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
+                            If blank, system sends to your account email.
+                          </p>
+                        </div>
+
+                        {/* Google Meet Link */}
+                        <div>
+                          <label htmlFor="automation-google-meet-link" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                            Personal Google Meet Link (Real Room)
+                          </label>
+                          <input
+                            id="automation-google-meet-link"
+                            type="url"
+                            value={form.google_meet_link}
+                            onChange={(e) => setForm((f) => ({ ...f, google_meet_link: e.target.value }))}
+                            className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                            placeholder="e.g. https://meet.google.com/abc-defg-hij"
+                          />
+                          <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
+                            Paste your own real link here to skip automated generation.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Toggles Group */}
+                    <div className="space-y-3 pt-2">
+                      <div className="flex items-center justify-between p-4 bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-[8px] bg-white border border-[#E1E4E8] flex items-center justify-center shadow-sm">
+                            <Check className="w-4 h-4 text-emerald-600" />
+                          </div>
+                          <div>
+                            <p className="text-[13.5px] font-bold text-[#15171C]">Enable Automation</p>
+                            <p className="text-[11.5px] text-[#8A929E] font-semibold">Turn rules on/off</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))}
+                          className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                        >
+                          <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-[8px] bg-white border border-[#E1E4E8] flex items-center justify-center shadow-sm">
+                            <Sparkles className="w-4 h-4 text-[#5B53E0]" />
+                          </div>
+                          <div>
+                            <p className="text-[13.5px] font-bold text-[#15171C]">Auto-Move</p>
+                            <p className="text-[11.5px] text-[#8A929E] font-semibold">Advance to next round</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))}
+                          className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                        >
+                          <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.auto_move ? "translate-x-5" : "translate-x-0"}`} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // TIME SLOTS TAB
+                  <div className="space-y-6">
+                    <div className="bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] p-4">
+                      <p className="text-[13.5px] font-bold text-[#15171C] mb-1">Pre-Generated Time Slots</p>
+                      <p className="text-[12.5px] text-[#8A929E] font-semibold mb-4 leading-relaxed">
+                        Instead of automatic scheduling, explicitly define exactly which {form.daily_limit} times per day the scheduler should use.
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={handleGenerateTimeSlots}
+                          className="flex-1 flex justify-center items-center gap-2 h-11 bg-white border border-[#5B53E0] text-[#5B53E0] hover:bg-[#ECEBFB] rounded-[12px] text-[13px] font-bold transition-all cursor-pointer"
+                        >
+                          <Wand2 className="w-4 h-4" />
+                          <span>Auto-Generate ({form.daily_limit} slots)</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, time_slots: [...f.time_slots, "12:00"] }))}
+                          className="w-11 h-11 flex border border-[#E1E4E8] hover:border-[#DAD7F6] items-center justify-center rounded-[12px] hover:bg-slate-50 text-slate-500 transition-colors cursor-pointer"
+                          title="Add Slot manually"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {form.time_slots.length > 0 && (
+                      <div className="space-y-3">
+                        {form.time_slots.map((ts, idx) => (
+                          <div key={idx} className="flex items-center gap-2 relative">
+                            <span className="absolute left-4 text-[10px] font-bold text-[#8A929E] tracking-wider uppercase leading-none pointer-events-none">
+                              Slot {idx + 1}
+                            </span>
+                            <div className="flex-1 flex items-center bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] px-2 focus-within:ring-2 focus-within:ring-[#5B53E0]/20 focus-within:border-[#5B53E0] transition-all">
+                              <input
+                                type="time"
+                                value={ts}
+                                onChange={(e) => {
+                                  const newSlots = [...form.time_slots];
+                                  newSlots[idx] = e.target.value;
+                                  setForm((f) => ({ ...f, time_slots: newSlots }));
+                                }}
+                                className="w-full bg-transparent pl-14 pr-2 h-11 text-[13.5px] font-bold text-[#374151] focus:outline-none font-mono"
+                              />
+                              <span className="text-[11.5px] text-[#8A929E] font-bold px-3 border-l border-[#E1E4E8] flex items-center h-7 shrink-0">
+                                End: {(() => {
+                                   const [h, m] = ts.split(':').map(Number);
+                                   if (Number.isNaN(h)) return "--:--";
+                                   const total = h * 60 + m + (Number(form.duration) || 30);
+                                   const eh = Math.floor(total / 60).toString().padStart(2, '0');
+                                   const em = (total % 60).toString().padStart(2, '0');
+                                   return `${eh}:${em}`;
+                                })()}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newSlots = form.time_slots.filter((_, i) => i !== idx);
+                                  setForm((f) => ({ ...f, time_slots: newSlots }));
+                              }}
+                              className="w-11 h-11 shrink-0 bg-rose-50 text-rose-600 rounded-[12px] flex items-center justify-center hover:bg-rose-600 hover:text-white transition-colors border border-rose-100 cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="p-6 border-t border-[#E8EAED] bg-[#F7F8FA] shrink-0">
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full flex items-center justify-center gap-2 h-12 bg-[#5B53E0] text-white rounded-[12px] text-[13.5px] font-bold hover:bg-[#4A43C9] transition-all active:scale-[0.98] disabled:opacity-60 shadow-[0_4px_12px_rgba(91,83,224,0.25)] cursor-pointer"
+                >
+                  {saving ? (
+                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>{editingId ? "SAVE CHANGES" : "CREATE AUTOMATION"}</span>
+                    </>
+                  )}
+                </button>
+                <button 
+                  onClick={closeModal}
+                  className="w-full mt-3 h-10 text-[12.5px] font-semibold text-[#8A929E] hover:text-[#4B5563] transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      </div>
+        )}
+      </AnimatePresence>
 
       {/* Template Builder Modal */}
       <AnimatePresence>
@@ -1208,6 +1267,7 @@ export default function InterviewAutomationPage() {
           />
         )}
       </AnimatePresence>
+      
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => {
