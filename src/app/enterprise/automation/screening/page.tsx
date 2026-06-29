@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { AnimatePresence, motion } from "framer-motion";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { PageHelp } from "@/components/ds";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -278,7 +279,12 @@ export default function ScreeningAutomationPage() {
             <span className="material-symbols-rounded text-indigo-600 text-xl">fact_check</span>
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Screening Automation</h1>
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Screening Automation</h1>
+              <PageHelp title="Screening Automation">
+                <p>Automatically screen incoming applicants against the role.</p>
+              </PageHelp>
+            </div>
             <p className="text-[10px] font-black text-indigo-500   mt-0.5">Rules-Based Candidate Filtering</p>
           </div>
         </div>

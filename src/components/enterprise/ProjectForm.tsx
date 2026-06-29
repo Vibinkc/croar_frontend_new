@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
 import ProjectKanban from "./ProjectKanban";
 import { Reorder } from "framer-motion";
+import { Button, Card, CardHeader, Input, Textarea, Select, Field, PageHeader, jetbrainsMono } from "@/components/ds";
 
 interface Employee {
     id: string;
@@ -212,276 +213,263 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
     };
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto pb-20">
-            <div className="flex items-center justify-between mb-2">
-                <div>
-                    <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                        {projectId ? "Project Console" : "New Project"}
-                    </h2>
-                    <p className="text-xs font-bold text-slate-400  ">
-                        {projectId ? formData.name : "Fill in the basic project information"}
-                    </p>
-                </div>
-                <div className="flex gap-2">
-                    <button
+        <div className="max-w-[1100px] mx-auto w-full px-4 sm:px-5 md:px-7 pb-10 space-y-6 animate-in fade-in duration-500">
+            <PageHeader
+                help={<><p>Name the project, set up its board columns and add team members.</p><p>Save to create it, then add and track tasks from the board.</p></>}
+                title={projectId ? "Project Console" : "New Project"}
+                subtitle={projectId ? (formData.name || "Manage project settings, team & board") : "Fill in the basic project information"}
+                onBack={() => router.push("/enterprise/projects")}
+                actions={
+                    <Button
+                        type="button"
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-[#7C3AED] text-white px-8 py-3 rounded-2xl font-black text-[11px]   hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50"
+                        icon={projectId ? "save" : "add"}
                     >
                         {isLoading ? "Saving..." : projectId ? "Save Changes" : "Create Project"}
-                    </button>
-                </div>
-            </div>
+                    </Button>
+                }
+            />
 
             {/* Tabs */}
-            <div className="flex gap-4 p-1.5 bg-slate-100/50 rounded-2xl w-fit">
+            <div className="flex gap-1.5 p-1.5 bg-white border border-[#E8EAED] rounded-[14px] w-fit">
                 <button
                     type="button"
                     onClick={() => setActiveTab("basic")}
-                    className={`px-6 py-2.5 rounded-xl font-black text-[10px]   transition-all ${
-                        activeTab === "basic" ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
+                        activeTab === "basic" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
                     }`}
                 >Settings</button>
                 <button
                     type="button"
                     onClick={() => setActiveTab("members")}
-                    className={`px-6 py-2.5 rounded-xl font-black text-[10px]   transition-all ${
-                        activeTab === "members" ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
+                        activeTab === "members" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
                     }`}
                 >Team</button>
                 {projectId && (
                     <button
                         type="button"
                         onClick={() => setActiveTab("tasks")}
-                        className={`px-6 py-2.5 rounded-xl font-black text-[10px]   transition-all ${
-                            activeTab === "tasks" ? "bg-white text-[#7C3AED] shadow-sm" : "text-slate-500 hover:text-slate-700"
+                        className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
+                            activeTab === "tasks" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
                         }`}
-                    >Tasks & Board</button>
+                    >Tasks &amp; Board</button>
                 )}
             </div>
 
-            <div className="bg-white rounded-[20px] p-10 border border-slate-100 shadow-sm border-t-4 border-t-[#7C3AED] animate-in fade-in slide-in-from-bottom-4 duration-500 min-h-[600px]">
-                {activeTab === "basic" && (
-                    <div className="space-y-10 animate-in fade-in zoom-in-95 duration-300">
-                        {/* Basic Info Section */}
-                        <div className="space-y-6">
-                            <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">General Information</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-2">
-                                    <label htmlFor="project-name" className="text-[10px] font-black text-slate-400   ml-1">Project Name*</label>
-                                    <input
+            {activeTab === "basic" && (
+                <div className="space-y-6 animate-in fade-in duration-300">
+                    {/* General Information */}
+                    <Card padding="lg">
+                        <CardHeader title="General Information" subtitle="Core details that describe this project." />
+                        <div className="space-y-5">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <Field label="Project Name" htmlFor="project-name" required>
+                                    <Input
                                         id="project-name"
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
                                         required
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all"
                                         placeholder="Enter project name"
                                     />
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="project-company" className="text-[10px] font-black text-slate-400   ml-1">Company*</label>
-                                    <select
+                                </Field>
+                                <Field label="Company" htmlFor="project-company" required>
+                                    <Select
                                         id="project-company"
                                         name="company_id"
                                         value={formData.company_id}
                                         onChange={handleChange}
                                         required
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all"
                                     >
                                         <option value="">Select Company</option>
                                         {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                                    </select>
-                                </div>
+                                    </Select>
+                                </Field>
                             </div>
 
-                            <div className="space-y-2">
-                                <label htmlFor="project-description" className="text-[10px] font-black text-slate-400   ml-1">Description</label>
-                                <textarea
+                            <Field label="Description" htmlFor="project-description">
+                                <Textarea
                                     id="project-description"
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
                                     rows={3}
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all resize-none"
                                     placeholder="Describe the project goals..."
+                                    className="resize-none"
                                 />
-                            </div>
+                            </Field>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="space-y-2">
-                                    <label htmlFor="project-status" className="text-[10px] font-black text-slate-400   ml-1">Status</label>
-                                    <select
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                <Field label="Status" htmlFor="project-status">
+                                    <Select
                                         id="project-status"
                                         name="status"
                                         value={formData.status}
                                         onChange={handleChange}
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all"
                                     >
                                         <option value="Active">Active</option>
                                         <option value="Completed">Completed</option>
                                         <option value="On Hold">On Hold</option>
-                                    </select>
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="project-start-date" className="text-[10px] font-black text-slate-400   ml-1">Start Date</label>
-                                    <input
+                                    </Select>
+                                </Field>
+                                <Field label="Start Date" htmlFor="project-start-date">
+                                    <Input
                                         id="project-start-date"
                                         type="date"
                                         name="start_date"
                                         value={formData.start_date}
                                         onChange={handleChange}
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all"
+                                        className={jetbrainsMono.className}
                                     />
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="project-end-date" className="text-[10px] font-black text-slate-400   ml-1">End Date</label>
-                                    <input
+                                </Field>
+                                <Field label="End Date" htmlFor="project-end-date">
+                                    <Input
                                         id="project-end-date"
                                         type="date"
                                         name="end_date"
                                         value={formData.end_date}
                                         onChange={handleChange}
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all"
+                                        className={jetbrainsMono.className}
                                     />
-                                </div>
+                                </Field>
                             </div>
                         </div>
+                    </Card>
 
-                        {/* Kanban Workflow Configuration */}
-                        <div className="space-y-6 pt-6 border-t border-slate-100">
-                            <div>
-                                <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Kanban Workflow</h4>
-                                <p className="text-[10px] text-slate-400 font-bold ml-1 mt-1">Define the custom stages for your project&apos;s task board.</p>
-                            </div>
-                            <div className="flex flex-wrap gap-3">
-                                <Reorder.Group 
-                                    axis="x" 
-                                    values={formData.kanban_columns} 
-                                    onReorder={(newOrder) => setFormData((prev) => ({ ...prev, kanban_columns: newOrder }))}
-                                    className="flex flex-wrap gap-3"
-                                >
-                                    {formData.kanban_columns?.map((col: string, idx: number) => (
-                                        <Reorder.Item 
-                                            key={col} 
-                                            value={col}
-                                            className="flex items-center gap-2 bg-indigo-50/50 border border-indigo-100/50 px-4 py-2 rounded-xl group cursor-grab active:cursor-grabbing hover:bg-indigo-100/50 transition-colors animate-in fade-in slide-in-from-left-2 duration-300"
-                                            style={{ animationDelay: `${idx * 50}ms` }}
-                                        >
-                                            <span className="material-symbols-rounded text-slate-400 text-sm">drag_indicator</span>
-                                            <span className="text-xs font-black text-indigo-600  ">{col}</span>
-                                            <button 
-                                                type="button" 
-                                                onClick={() => handleRemoveColumn(col)}
-                                                className="text-indigo-300 hover:text-rose-500 transition-colors"
-                                            >
-                                                <span className="material-symbols-rounded text-base font-black">close</span>
-                                            </button>
-                                        </Reorder.Item>
-                                    ))}
-                                </Reorder.Group>
-                                <div className="flex gap-2">
-                                    <input
-                                        value={newColumnName}
-                                        onChange={(e) => setNewColumnName(e.target.value)}
-                                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddColumn())}
-                                        placeholder="Add new stage..."
-                                        className="bg-slate-50 border border-dashed border-slate-200 rounded-xl px-4 py-2 text-xs font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all w-40"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={handleAddColumn}
-                                        className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 hover:bg-[#7C3AED] hover:text-white transition-all flex items-center justify-center"
-                                    >
-                                        <span className="material-symbols-rounded">add</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === "members" && (
-                    <div className="space-y-8 animate-in fade-in zoom-in-95 duration-300">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                            {/* Current Members */}
-                            <div className="space-y-4">
-                                <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Project Team</h4>
-                                <div className="grid gap-3">
-                                    {(formData.members || []).length === 0 ? (
-                                        <div className="p-10 border-2 border-dashed border-slate-100 rounded-[20px] text-center">
-                                            <p className="text-xs font-bold text-slate-400">No members assigned yet.</p>
-                                        </div>
-                                    ) : (
-                                        formData.members.map((m) => (
-                                            <div key={m.id} className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xs  shadow-sm uppercase">
-                                                        {m.first_name[0]}{m.last_name[0]}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm font-black text-slate-800 tracking-tight capitalize">{m.first_name} {m.last_name}</p>
-                                                        <p className="text-[9px] font-black text-slate-400  ">{m.designation || "Project Member"}</p>
-                                                    </div>
-                                                </div>
-                                                <button 
-                                                    type="button"
-                                                    onClick={() => handleRemoveMember(m.id)}
-                                                    className="w-9 h-9 rounded-xl text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all flex items-center justify-center"
-                                                >
-                                                    <span className="material-symbols-rounded text-xl">delete</span>
-                                                </button>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Add Members */}
-                            <div className="space-y-4">
-                                <h4 className="text-[10px] font-black text-slate-400   ml-1 bg-slate-50 w-fit px-3 py-1 rounded-full">Assign Talent</h4>
-                                <div className="max-h-[500px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-                                    {employees
-                                        .filter(emp => !(formData.members || []).some((m) => m.id === emp.id))
-                                        .map((emp) => (
-                                            <div key={emp.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#7C3AED]/20 hover:bg-slate-50/50 transition-all group">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 group-hover:bg-[#7C3AED]/10 group-hover:text-[#7C3AED] flex items-center justify-center font-black text-xs  transition-all shadow-sm uppercase">
-                                                        {emp.first_name[0]}{emp.last_name[0]}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm font-black text-slate-800 tracking-tight capitalize">{emp.first_name} {emp.last_name}</p>
-                                                        <p className="text-[9px] font-black text-slate-400  ">{emp.designation || "Available"}</p>
-                                                    </div>
-                                                </div>
-                                                <button 
-                                                    type="button"
-                                                    onClick={() => handleAddMember(emp.id)}
-                                                    className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-[9px] font-black   text-slate-500 hover:text-[#7C3AED] hover:border-[#7C3AED] hover:bg-white transition-all shadow-sm"
-                                                >
-                                                    Assign
-                                                </button>
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === "tasks" && (
-                    <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                        <ProjectKanban 
-                            projectId={projectId!}
-                            columns={formData.kanban_columns}
-                            tasks={formData.tasks || []}
-                            members={formData.members || []}
-                            onRefresh={fetchProjectData}
+                    {/* Kanban Workflow Configuration */}
+                    <Card padding="lg">
+                        <CardHeader
+                            title="Kanban Workflow"
+                            subtitle="Define the custom stages for your project's task board."
                         />
-                    </div>
-                )}
-            </div>
+                        <div className="flex flex-wrap gap-3">
+                            <Reorder.Group
+                                axis="x"
+                                values={formData.kanban_columns}
+                                onReorder={(newOrder) => setFormData((prev) => ({ ...prev, kanban_columns: newOrder }))}
+                                className="flex flex-wrap gap-3"
+                            >
+                                {formData.kanban_columns?.map((col: string, idx: number) => (
+                                    <Reorder.Item
+                                        key={col}
+                                        value={col}
+                                        className="flex items-center gap-2 bg-[#ECEBFB] border border-[#5B53E0]/15 pl-2.5 pr-2 py-2 rounded-[10px] group cursor-grab active:cursor-grabbing hover:bg-[#E3E1F9] transition-colors animate-in fade-in slide-in-from-left-2 duration-300"
+                                        style={{ animationDelay: `${idx * 50}ms` }}
+                                    >
+                                        <span className="material-symbols-rounded text-[#8A929E] text-[18px]">drag_indicator</span>
+                                        <span className="text-[13px] font-semibold text-[#5B53E0]">{col}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveColumn(col)}
+                                            className="text-[#5B53E0]/50 hover:text-[#EF4444] transition-colors flex items-center"
+                                        >
+                                            <span className="material-symbols-rounded text-[18px]">close</span>
+                                        </button>
+                                    </Reorder.Item>
+                                ))}
+                            </Reorder.Group>
+                            <div className="flex gap-2">
+                                <input
+                                    value={newColumnName}
+                                    onChange={(e) => setNewColumnName(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddColumn())}
+                                    placeholder="Add new stage..."
+                                    className="h-10 bg-white border border-dashed border-[#E1E4E8] rounded-[10px] px-3.5 text-[13px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all w-44"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleAddColumn}
+                                    className="w-10 h-10 rounded-[10px] bg-[#F1F2F5] text-[#8A929E] hover:bg-[#5B53E0] hover:text-white transition-colors flex items-center justify-center"
+                                >
+                                    <span className="material-symbols-rounded text-[20px]">add</span>
+                                </button>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            )}
+
+            {activeTab === "members" && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in duration-300">
+                    {/* Current Members */}
+                    <Card padding="lg">
+                        <CardHeader title="Project Team" subtitle="People currently assigned to this project." />
+                        <div className="grid gap-3">
+                            {(formData.members || []).length === 0 ? (
+                                <div className="p-10 border border-dashed border-[#E1E4E8] rounded-[12px] text-center">
+                                    <p className="text-[13px] font-medium text-[#8A929E]">No members assigned yet.</p>
+                                </div>
+                            ) : (
+                                formData.members.map((m) => (
+                                    <div key={m.id} className="flex items-center justify-between p-3.5 bg-[#F7F8FA] rounded-[12px] border border-[#E8EAED] animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-[#15171C] text-white flex items-center justify-center font-semibold text-[13px] uppercase">
+                                                {m.first_name[0]}{m.last_name[0]}
+                                            </div>
+                                            <div>
+                                                <p className="text-[14px] font-bold text-[#15171C] capitalize">{m.first_name} {m.last_name}</p>
+                                                <p className="text-[12px] font-medium text-[#8A929E]">{m.designation || "Project Member"}</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveMember(m.id)}
+                                            className="w-9 h-9 rounded-[9px] text-[#9AA3AF] hover:text-[#EF4444] hover:bg-[#FDECEC] transition-colors flex items-center justify-center"
+                                        >
+                                            <span className="material-symbols-rounded text-[20px]">delete</span>
+                                        </button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </Card>
+
+                    {/* Add Members */}
+                    <Card padding="lg">
+                        <CardHeader title="Assign Talent" subtitle="Add available employees to the project." />
+                        <div className="max-h-[500px] overflow-y-auto pr-1 space-y-3 custom-scrollbar">
+                            {employees
+                                .filter(emp => !(formData.members || []).some((m) => m.id === emp.id))
+                                .map((emp) => (
+                                    <div key={emp.id} className="flex items-center justify-between p-3.5 bg-white border border-[#E8EAED] rounded-[12px] hover:border-[#5B53E0]/30 hover:bg-[#F7F8FA] transition-colors group">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-[#F1F2F5] text-[#8A929E] group-hover:bg-[#ECEBFB] group-hover:text-[#5B53E0] flex items-center justify-center font-semibold text-[13px] transition-colors uppercase">
+                                                {emp.first_name[0]}{emp.last_name[0]}
+                                            </div>
+                                            <div>
+                                                <p className="text-[14px] font-bold text-[#15171C] capitalize">{emp.first_name} {emp.last_name}</p>
+                                                <p className="text-[12px] font-medium text-[#8A929E]">{emp.designation || "Available"}</p>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            type="button"
+                                            onClick={() => handleAddMember(emp.id)}
+                                        >
+                                            Assign
+                                        </Button>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </Card>
+                </div>
+            )}
+
+            {activeTab === "tasks" && (
+                <div className="animate-in fade-in duration-300">
+                    <ProjectKanban
+                        projectId={projectId!}
+                        columns={formData.kanban_columns}
+                        tasks={formData.tasks || []}
+                        members={formData.members || []}
+                        onRefresh={fetchProjectData}
+                    />
+                </div>
+            )}
         </div>
     );
 }

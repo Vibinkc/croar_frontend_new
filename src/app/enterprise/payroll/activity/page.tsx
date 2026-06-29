@@ -2,15 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { auditApi, type AuditEntry } from "@/utils/payroll/api";
-import { Banner, PageHeader } from "@/components/payroll/ui";
+import { Banner } from "@/components/payroll/ui";
+import { Badge, Card, PageHeader, jetbrainsMono } from "@/components/ds";
+import { Activity, ChevronLeft, ChevronRight, History } from "lucide-react";
 
 const PAGE_SIZE = 10;
 
-function statusTone(code: number): string {
-  if (code < 300) return "bg-[var(--color-accent)]/15 text-[var(--color-accent)]";
-  if (code < 400) return "bg-[var(--color-info)]/15 text-[var(--color-info)]";
-  if (code < 500) return "bg-[var(--color-warn)]/15 text-[var(--color-warn)]";
-  return "bg-[var(--color-danger)]/15 text-[var(--color-danger)]";
+type StatusTone = "success" | "info" | "warning" | "danger";
+
+function statusTone(code: number): StatusTone {
+  if (code < 300) return "success";
+  if (code < 400) return "info";
+  if (code < 500) return "warning";
+  return "danger";
 }
 
 function when(iso: string): string {
@@ -46,83 +50,98 @@ export default function ActivityPage() {
   const rangeEnd = Math.min(currentPage * PAGE_SIZE, entries.length);
 
   return (
-    <div className="animate-fade-in flex flex-col gap-6">
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        icon="history"
         title="Activity"
         subtitle="Who did what, and when. The most recent actions across your organization."
+        help={<><p>An audit log of every payroll action — who did what, and when.</p></>}
       />
 
       {error && <Banner>{error}</Banner>}
 
       {loading ? (
-        <p className="py-8 text-center text-[var(--color-muted)]">Loading…</p>
-      ) : entries.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-12 text-center">
-          <span className="material-symbols-rounded text-4xl text-[var(--color-dim)]">history</span>
-          <p className="text-[var(--color-muted)]">No activity recorded yet.</p>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-muted)]">
-                  <th className="px-5 py-3 font-semibold">When</th>
-                  <th className="px-5 py-3 font-semibold">Who</th>
-                  <th className="px-5 py-3 font-semibold">Action</th>
-                  <th className="px-5 py-3 font-semibold">Result</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pageEntries.map((e) => (
-                  <tr key={e.id} className="border-b border-[var(--color-border)] last:border-0">
-                    <td className="whitespace-nowrap px-5 py-3 text-[var(--color-muted)]">
-                      {when(e.created_at)}
-                    </td>
-                    <td className="px-5 py-3">{e.actor_email ?? "—"}</td>
-                    <td className="px-5 py-3 font-medium">{e.action}</td>
-                    <td className="px-5 py-3">
-                      <span
-                        className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${statusTone(
-                          e.status_code
-                        )}`}
-                      >
-                        {e.status_code}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <Card padding="none" className="overflow-hidden">
+          <div className="p-4 space-y-2.5">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-14 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+            ))}
           </div>
+        </Card>
+      ) : entries.length === 0 ? (
+        <Card padding="none">
+          <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
+            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
+              <History className="w-8 h-8 text-[#C7CCD4]" />
+            </div>
+            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
+              No activity yet
+            </h3>
+            <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">
+              Actions taken across your organization will show up here as they happen.
+            </p>
+          </div>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          <Card padding="none" className="overflow-hidden">
+            <div className="divide-y divide-[#F0F0F1]">
+              {pageEntries.map((e) => {
+                const tone = statusTone(e.status_code);
+                return (
+                  <div
+                    key={e.id}
+                    className="flex items-start gap-3.5 px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                  >
+                    {/* Icon chip / timeline rail */}
+                    <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 mt-0.5">
+                      <Activity className="w-[17px] h-[17px]" />
+                    </span>
+
+                    {/* Actor + action */}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className="text-[14px] font-bold text-[#15171C] truncate">
+                          {e.actor_email ?? "Unknown"}
+                        </span>
+                        <Badge tone={tone}>{e.status_code}</Badge>
+                      </div>
+                      <p className="text-[13px] text-[#374151] mt-0.5 break-words">{e.action}</p>
+                      <span
+                        className={`block text-[11.5px] text-[#8A929E] mt-1 ${jetbrainsMono.className}`}
+                      >
+                        {when(e.created_at)}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--color-muted)]">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span className="text-[13px] text-[#8A929E]">
               Showing {rangeStart}–{rangeEnd} of {entries.length}
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <button
                 type="button"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage <= 1}
-                className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-3 py-1.5 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-1 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <span className="material-symbols-rounded text-[18px]">chevron_left</span>{" "}
-                Prev
+                <ChevronLeft className="w-4 h-4" /> Prev
               </button>
-              <span className="text-sm text-[var(--color-muted)]">
-                Page {currentPage} of {totalPages}
+              <span className={`text-[12.5px] text-[#8A929E] ${jetbrainsMono.className}`}>
+                {currentPage} / {totalPages}
               </span>
               <button
                 type="button"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage >= totalPages}
-                className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-3 py-1.5 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-1 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Next{" "}
-                <span className="material-symbols-rounded text-[18px]">chevron_right</span>
+                Next <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>

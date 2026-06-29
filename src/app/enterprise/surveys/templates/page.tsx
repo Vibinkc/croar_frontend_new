@@ -1,9 +1,21 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
+import {
+    ArrowLeft,
+    Search,
+    Plus,
+    FileText,
+    ListChecks,
+    Pencil,
+    Trash2,
+    LayoutTemplate,
+} from "lucide-react";
+import { StatGrid, StatCard, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface Template {
     id: string;
@@ -18,8 +30,10 @@ interface Template {
 
 export default function SurveyTemplates() {
     const router = useRouter();
+    const { canAccess } = useAuth();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchTemplates = useCallback(async () => {
         try {
@@ -46,106 +60,151 @@ export default function SurveyTemplates() {
         }
     };
 
-    if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        </div>
+    const filteredTemplates = templates.filter((tpl) =>
+        tpl.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tpl.survey_type?.name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const totalQuestions = templates.reduce((sum, t) => sum + (t.questions?.length || 0), 0);
+    const categoryCount = new Set(templates.map((t) => t.survey_type?.name).filter(Boolean)).size;
+
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 pb-20">
-            <header className="flex justify-between items-center pb-8 border-b border-slate-200">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/enterprise/surveys')} className="p-2 text-slate-400 hover:text-slate-900 transition-colors">
-                        <span className="material-symbols-rounded">arrow_back</span>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button
+                        onClick={() => router.push('/enterprise/surveys')}
+                        className="w-9 h-9 shrink-0 flex items-center justify-center rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] hover:text-[#15171C] transition-colors shadow-sm"
+                        aria-label="Back to surveys"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
                     </button>
-                    <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight leading-none mb-1">Survey Frameworks</h1>
-                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest opacity-70">Manage and deploy specialized organizational pulse frameworks</p>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Survey Frameworks</h1>
+                            <PageHelp title="Survey Frameworks">Your survey question sets. Create one, then launch a campaign from HR Surveys.</PageHelp>
+                        </div>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5 truncate">Manage and deploy specialized organizational pulse frameworks</p>
                     </div>
                 </div>
-                <button 
-                    onClick={() => router.push('/enterprise/surveys/templates/new')}
-                    className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
-                >
-                    <span className="material-symbols-rounded text-lg">add_box</span>
-                    <span>Launch New Framework</span>
-                </button>
+                {canAccess("surveys:moderate") && (
+                    <Link
+                        href="/enterprise/surveys/templates/new"
+                        className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors shrink-0 self-start sm:self-auto"
+                    >
+                        <Plus className="w-3.5 h-3.5" /> New Template
+                    </Link>
+                )}
             </header>
 
-            <div className="bg-white rounded-xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden">
-                <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                    <div className="flex items-center gap-3">
-                        <span className="material-symbols-rounded text-[#7C3AED] text-lg">description</span>
-                        <h2 className="font-black text-slate-900 text-[10px] uppercase tracking-widest">Survey Frameworks</h2>
-                    </div>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-slate-50/20">
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Framework Title</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-center">Category</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-center">Items</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Strategic Description</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                            {templates.length > 0 ? templates.map((tpl) => (
-                                <tr key={tpl.id} className="group hover:bg-slate-50/50 transition-all">
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-9 h-9 rounded-xl bg-violet-50 text-[#7C3AED] flex items-center justify-center group-hover:bg-[#7C3AED] group-hover:text-white transition-all">
-                                                <span className="material-symbols-rounded text-lg">description</span>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-black text-slate-900 tracking-tight leading-tight">{tpl.title}</p>
-                                                <p className="text-[9px] font-bold text-slate-400 mt-0.5">ID: {tpl.id.slice(0, 8)}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className="inline-block bg-violet-50 text-[#7C3AED] text-[9px] font-black px-3 py-1 rounded-full border border-violet-100 uppercase tracking-tighter">
-                                            {tpl.survey_type.name}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className="text-[11px] font-bold text-slate-600 tabular-nums">
-                                            {tpl.questions?.length || 0} Questions
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <p className="text-[11px] text-slate-500 font-medium line-clamp-1 max-w-sm">{tpl.description || "Engagement analytics framework."}</p>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1">
-                                            <button 
-                                                onClick={() => router.push(`/enterprise/surveys/templates/edit/${tpl.id}`)}
-                                                className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors"
-                                            >
-                                                <span className="material-symbols-rounded text-[20px]">edit</span>
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(tpl.id)}
-                                                className="p-1.5 text-slate-400 hover:text-rose-600 transition-colors"
-                                            >
-                                                <span className="material-symbols-rounded text-[20px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )) : (
-                                <tr>
-                                    <td colSpan={5} className="py-20 text-center">
-                                        <p className="text-slate-300 font-black text-[10px] uppercase tracking-widest">Library Empty</p>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+            {/* Stat cards */}
+            <StatGrid>
+                <StatCard label="Frameworks" value={templates.length} icon="poll" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
+                <StatCard label="Categories" value={categoryCount} icon="category" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label="Total Questions" value={totalQuestions} icon="quiz" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label="Showing" value={filteredTemplates.length} icon="description" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+            </StatGrid>
+
+            {/* Toolbar: search */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search frameworks by title or category…"
+                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                    />
                 </div>
             </div>
+
+            {/* Templates grid */}
+            {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="h-[164px] bg-[#F4F5F7] border border-[#E8EAED] rounded-[14px] animate-pulse" />
+                    ))}
+                </div>
+            ) : filteredTemplates.length === 0 ? (
+                <div className="bg-white rounded-[14px] border border-[#E8EAED] min-h-[420px] flex flex-col items-center justify-center p-16 md:p-20 text-center">
+                    <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
+                        <LayoutTemplate className="w-8 h-8 text-[#C7CCD4]" />
+                    </div>
+                    <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
+                        {templates.length === 0 ? "No frameworks yet" : "No frameworks match your search"}
+                    </h3>
+                    <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
+                        {templates.length === 0
+                            ? "Create your first survey framework to start measuring engagement and culture."
+                            : "Try adjusting your search terms to find the framework you're looking for."}
+                    </p>
+                    {templates.length === 0 ? (
+                        canAccess("surveys:moderate") && (
+                            <Link href="/enterprise/surveys/templates/new" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors">
+                                <Plus className="w-4 h-4" /> New Template
+                            </Link>
+                        )
+                    ) : (
+                        <button onClick={() => setSearchQuery("")} className="inline-flex items-center h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] transition-colors">
+                            Clear search
+                        </button>
+                    )}
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredTemplates.map((tpl) => (
+                        <div
+                            key={tpl.id}
+                            onClick={() => router.push(`/enterprise/surveys/templates/edit/${tpl.id}`)}
+                            className="group bg-white border border-[#E8EAED] rounded-[14px] p-5 flex flex-col transition-colors hover:border-[#D4D7DC] cursor-pointer"
+                        >
+                            <div className="flex items-start justify-between gap-3">
+                                <span className="w-10 h-10 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 group-hover:bg-[#5B53E0] group-hover:text-white transition-colors">
+                                    <FileText className="w-[18px] h-[18px]" />
+                                </span>
+                                <Badge tone="indigo">{tpl.survey_type.name}</Badge>
+                            </div>
+
+                            <div className="mt-4 min-w-0">
+                                <h3 className="text-[15px] font-bold text-[#15171C] tracking-[-0.2px] leading-snug group-hover:text-[#5B53E0] transition-colors line-clamp-1">{tpl.title}</h3>
+                                <p className="text-[10px] font-semibold text-[#C7CCD4] uppercase tracking-[0.04em] mt-1">ID: {tpl.id.slice(0, 8)}</p>
+                                <p className="text-[13px] text-[#8A929E] mt-2 line-clamp-2 leading-relaxed">{tpl.description || "Engagement analytics framework."}</p>
+                            </div>
+
+                            <div className="mt-auto pt-4 flex items-center justify-between border-t border-[#F0F0F1]">
+                                <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[#374151]">
+                                    <ListChecks className="w-3.5 h-3.5 text-[#9AA3AF]" />
+                                    <span className={jetbrainsMono.className}>{tpl.questions?.length || 0}</span> questions
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            router.push(`/enterprise/surveys/templates/edit/${tpl.id}`);
+                                        }}
+                                        className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                                        title="Edit framework"
+                                    >
+                                        <Pencil className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDelete(tpl.id);
+                                        }}
+                                        className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                                        title="Delete framework"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

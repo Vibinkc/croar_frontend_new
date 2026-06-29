@@ -12,7 +12,33 @@ import {
   type SalaryStructure,
   type StructurePreviewOut,
 } from "@/utils/payroll/api";
-import { Banner, Modal, PageHeader, StatCard } from "@/components/payroll/ui";
+import { Banner, Modal } from "@/components/payroll/ui";
+import {
+  Button,
+  Card,
+  Input,
+  Select,
+  Field,
+  Badge,
+  StatCard,
+  StatGrid,
+  PageHeader,
+  jetbrainsMono,
+} from "@/components/ds";
+import {
+  Search,
+  Filter,
+  ChevronDown,
+  Plus,
+  Trash2,
+  Calculator,
+  ShieldCheck,
+  PiggyBank,
+  HeartPulse,
+  Wallet,
+  Landmark,
+  SlidersHorizontal,
+} from "lucide-react";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { useDialog } from "@/components/payroll/DialogProvider";
 
@@ -61,6 +87,9 @@ function fromMoneyLines(lines: MoneyLine[]): LineDraft[] {
   }));
 }
 
+const selectCls =
+  "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+
 export default function StructuresPage() {
   const { can } = useAuth();
   const { confirm, alert } = useDialog();
@@ -69,6 +98,9 @@ export default function StructuresPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statutoryFilter, setStatutoryFilter] = useState("ALL");
 
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -277,133 +309,252 @@ export default function StructuresPage() {
     }
   }
 
+  const filteredStructures = structures.filter((s) => {
+    const e = empOf(s.employee_id);
+    const haystack = `${empName(s.employee_id)} ${e?.email ?? ""}`.toLowerCase();
+    const matchesSearch = haystack.includes(searchQuery.toLowerCase());
+    const matchesStatutory =
+      statutoryFilter === "ALL" ||
+      (statutoryFilter === "EPF" && s.pf_enabled) ||
+      (statutoryFilter === "ESI" && s.esi_enabled) ||
+      (statutoryFilter === "PT" && s.pt_enabled) ||
+      (statutoryFilter === "TDS" && s.tds_enabled) ||
+      (statutoryFilter === "NONE" &&
+        !s.pf_enabled &&
+        !s.esi_enabled &&
+        !s.pt_enabled &&
+        !s.tds_enabled);
+    return matchesSearch && matchesStatutory;
+  });
+
   return (
-    <div className="animate-fade-in flex flex-col gap-6">
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        icon="tune"
         title="Salary Structures"
         subtitle="Define each employee's earnings, deductions & statutory setup."
-      >
-        {canEdit && (
-          <button onClick={openCreate} className="flex shrink-0 items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-            <span className="material-symbols-rounded text-[20px]">add</span>{" "}
-            Add Structure
-          </button>
-        )}
-      </PageHeader>
+        help={<><p>Set each employee&apos;s salary breakdown.</p><p>Add a structure, apply a template and set the CTC; the live estimate shows take-home. Do this before running payroll.</p></>}
+        actions={
+          canEdit && (
+            <Button size="sm" icon="add" onClick={openCreate}>
+              Add Structure
+            </Button>
+          )
+        }
+      />
 
       {error && <Banner>{error}</Banner>}
 
-      {/* Summary strip */}
+      {/* Stat cards */}
       {!loading && structures.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard icon="groups" label="Structures" value={String(structures.length)} />
+        <StatGrid>
           <StatCard
-            icon="savings"
+            label="Structures"
+            value={structures.length}
+            icon="group"
+            gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
+            glow="rgba(91,83,224,0.25)"
+          />
+          <StatCard
             label="EPF enabled"
-            value={String(structures.filter((s) => s.pf_enabled).length)}
+            value={structures.filter((s) => s.pf_enabled).length}
+            icon="savings"
+            gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
+            glow="rgba(14,138,110,0.25)"
           />
           <StatCard
-            icon="health_and_safety"
             label="ESI enabled"
-            value={String(structures.filter((s) => s.esi_enabled).length)}
+            value={structures.filter((s) => s.esi_enabled).length}
+            icon="health_and_safety"
+            gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
+            glow="rgba(53,89,199,0.25)"
           />
           <StatCard
-            icon="account_balance"
             label="TDS enabled"
-            value={String(structures.filter((s) => s.tds_enabled).length)}
+            value={structures.filter((s) => s.tds_enabled).length}
+            icon="account_balance"
+            gradient="linear-gradient(135deg,#FBBF24,#D97706)"
+            glow="rgba(217,119,6,0.25)"
           />
-        </div>
+        </StatGrid>
       )}
 
-      <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
+      {/* Toolbar: search + filter */}
+      <div className="flex flex-col md:flex-row md:items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by employee name or email…"
+            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+          />
+        </div>
+        <div className="relative flex-1 md:flex-none">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          <select
+            value={statutoryFilter}
+            onChange={(e) => setStatutoryFilter(e.target.value)}
+            className={`${selectCls} w-full md:min-w-[170px]`}
+          >
+            <option value="ALL">All structures</option>
+            <option value="EPF">EPF enabled</option>
+            <option value="ESI">ESI enabled</option>
+            <option value="PT">PT enabled</option>
+            <option value="TDS">TDS enabled</option>
+            <option value="NONE">No statutory</option>
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+        </div>
+      </div>
+
+      {/* Structures list */}
+      <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
         {loading ? (
-          <p className="p-8 text-center text-[var(--color-muted)]">Loading…</p>
-        ) : structures.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 p-12 text-center">
-            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-hover)] text-[var(--color-dim)]">
-              <span className="material-symbols-rounded text-3xl">tune</span>
-            </span>
-            <p className="font-medium">No salary structures yet</p>
-            <p className="max-w-sm text-sm text-[var(--color-muted)]">
-              Create a structure to define an employee&apos;s earnings and statutory deductions.
-            </p>
-            {canEdit && (
-              <button onClick={openCreate} className="mt-1 flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-                <span className="material-symbols-rounded text-[20px]">add</span>{" "}
-                Add your first structure
-              </button>
+          <div className="p-4 space-y-2.5">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+            ))}
+          </div>
+        ) : filteredStructures.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
+            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
+              <SlidersHorizontal className="w-8 h-8 text-[#C7CCD4]" />
+            </div>
+            {structures.length === 0 ? (
+              <>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
+                  No salary structures yet
+                </h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
+                  Create a structure to define an employee&apos;s earnings and statutory deductions.
+                </p>
+                {canEdit && (
+                  <Button icon="add" onClick={openCreate}>
+                    Add your first structure
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
+                  No structures match your filters
+                </h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
+                  Try adjusting your search or statutory filter to find what you&apos;re looking for.
+                </p>
+                <Button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setStatutoryFilter("ALL");
+                  }}
+                >
+                  Clear all filters
+                </Button>
+              </>
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="text-xs uppercase tracking-wide text-[var(--color-muted)]">
-                <tr className="border-b border-[var(--color-border)] bg-[var(--color-bg)]/40">
-                  <th className="px-6 py-3 font-semibold">Employee</th>
-                  <th className="px-6 py-3 text-right font-semibold">CTC (annual)</th>
-                  <th className="px-6 py-3 font-semibold">Statutory</th>
-                  <th className="px-6 py-3 font-semibold">Effective</th>
-                  {canEdit && <th className="px-6 py-3 text-right font-semibold">Actions</th>}
-                </tr>
-              </thead>
-              <tbody>
-                {structures.map((s) => {
-                  const e = empOf(s.employee_id);
-                  const initials = e
-                    ? `${e.first_name?.[0] ?? ""}${e.last_name?.[0] ?? ""}`.toUpperCase()
-                    : "—";
-                  return (
-                    <tr key={s.id} className="border-b border-[var(--color-border)] transition-colors last:border-0 hover:bg-[var(--color-hover)]/30">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/15 text-xs font-bold text-[var(--color-primary)]">
-                            {initials}
+          <>
+            {/* Column header (desktop) */}
+            <div
+              className={`hidden md:grid ${canEdit ? "grid-cols-[2.4fr_1.2fr_1.4fr_1fr_120px]" : "grid-cols-[2.4fr_1.2fr_1.4fr_1fr]"} gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]`}
+            >
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">CTC (annual)</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Statutory</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Effective</span>
+              {canEdit && (
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+              )}
+            </div>
+
+            <div className="divide-y divide-[#F0F0F1]">
+              {filteredStructures.map((s) => {
+                const e = empOf(s.employee_id);
+                const initials = e
+                  ? `${e.first_name?.[0] ?? ""}${e.last_name?.[0] ?? ""}`.toUpperCase()
+                  : "—";
+                const hasStatutory = s.pf_enabled || s.esi_enabled || s.pt_enabled || s.tds_enabled;
+                return (
+                  <div
+                    key={s.id}
+                    className={`grid grid-cols-[1fr_auto] ${canEdit ? "md:grid-cols-[2.4fr_1.2fr_1.4fr_1fr_120px]" : "md:grid-cols-[2.4fr_1.2fr_1.4fr_1fr]"} gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group`}
+                  >
+                    {/* Employee */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 text-[12px] font-extrabold uppercase">
+                        {initials}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-[14px] font-bold text-[#15171C] truncate">{empName(s.employee_id)}</div>
+                        {e?.email && <div className="truncate text-[12px] text-[#8A929E]">{e.email}</div>}
+                        {/* mobile-only meta */}
+                        <div className="flex items-center gap-2 mt-1 md:hidden">
+                          <span className={`text-[12.5px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>
+                            {inr(s.ctc, s.currency)}
                           </span>
-                          <div className="min-w-0">
-                            <div className="font-medium">{empName(s.employee_id)}</div>
-                            {e?.email && (
-                              <div className="truncate text-xs text-[var(--color-muted)]">{e.email}</div>
-                            )}
-                          </div>
+                          <span className="text-[11px] text-[#8A929E]">{s.effective_from}</span>
                         </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="font-semibold">{inr(s.ctc, s.currency)}</div>
-                        <div className="text-xs text-[var(--color-muted)]">{s.pay_frequency.toLowerCase()}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-wrap gap-1.5">
-                          {s.pf_enabled && <StatChip>EPF</StatChip>}
-                          {s.esi_enabled && <StatChip>ESI</StatChip>}
-                          {s.pt_enabled && <StatChip>PT</StatChip>}
-                          {s.tds_enabled && <StatChip>TDS</StatChip>}
-                          {!s.pf_enabled && !s.esi_enabled && !s.pt_enabled && !s.tds_enabled && (
-                            <span className="text-xs text-[var(--color-dim)]">None</span>
-                          )}
+                      </div>
+                    </div>
+
+                    {/* CTC (desktop) */}
+                    <div className="hidden md:block text-right">
+                      <div className={`text-[14px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>
+                        {inr(s.ctc, s.currency)}
+                      </div>
+                      <div className="text-[11px] text-[#8A929E] lowercase">{s.pay_frequency.toLowerCase()}</div>
+                    </div>
+
+                    {/* Statutory */}
+                    <div className="hidden md:flex flex-wrap items-center gap-1.5">
+                      {s.pf_enabled && <Badge tone="indigo">EPF</Badge>}
+                      {s.esi_enabled && <Badge tone="indigo">ESI</Badge>}
+                      {s.pt_enabled && <Badge tone="indigo">PT</Badge>}
+                      {s.tds_enabled && <Badge tone="indigo">TDS</Badge>}
+                      {!hasStatutory && <Badge tone="neutral">None</Badge>}
+                    </div>
+
+                    {/* Effective (desktop) */}
+                    <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
+                      {s.effective_from}
+                    </div>
+
+                    {/* Actions */}
+                    {canEdit && (
+                      <div className="flex items-center gap-1 justify-end">
+                        {/* mobile statutory chips */}
+                        <div className="md:hidden flex flex-wrap gap-1 mr-1">
+                          {s.pf_enabled && <Badge tone="indigo">EPF</Badge>}
+                          {s.esi_enabled && <Badge tone="indigo">ESI</Badge>}
+                          {s.pt_enabled && <Badge tone="indigo">PT</Badge>}
+                          {s.tds_enabled && <Badge tone="indigo">TDS</Badge>}
+                          {!hasStatutory && <Badge tone="neutral">None</Badge>}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 text-[var(--color-muted)]">{s.effective_from}</td>
-                      {canEdit && (
-                        <td className="px-6 py-4">
-                          <div className="flex items-center justify-end gap-2">
-                            <button onClick={() => openEdit(s)} className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs hover:bg-[var(--color-hover)]">
-                              Edit
-                            </button>
-                            <button onClick={() => remove(s.id)} className="rounded-md px-2.5 py-1 text-xs text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10">
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      )}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        <button
+                          onClick={() => openEdit(s)}
+                          className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                          title="Edit structure"
+                        >
+                          <span className="material-symbols-rounded text-[18px]">edit</span>
+                        </button>
+                        <button
+                          onClick={() => remove(s.id)}
+                          className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                          title="Delete structure"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
-      </section>
+      </div>
 
       {open && (
         <Modal
@@ -418,10 +569,8 @@ export default function StructuresPage() {
               {/* Left column — the editable structure */}
               <div className="flex min-w-0 flex-col gap-5">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <label className="flex flex-col gap-1.5">
-                    <span className="lbl">Employee</span>
-                    <select
-                      className="input"
+                  <Field label="Employee">
+                    <Select
                       value={employeeId}
                       disabled={!!editingId}
                       onChange={(e) => setEmployeeId(e.target.value)}
@@ -432,45 +581,45 @@ export default function StructuresPage() {
                           {e.first_name} {e.last_name}
                         </option>
                       ))}
-                    </select>
-                  </label>
-                  <label className="flex flex-col gap-1.5">
-                    <span className="lbl">Annual CTC</span>
-                    <input type="number" className="input" value={ctc} onChange={(e) => setCtc(e.target.value)} required />
-                  </label>
-                  <label className="flex flex-col gap-1.5">
-                    <span className="lbl">Currency</span>
-                    <input className="input" value={currency} onChange={(e) => setCurrency(e.target.value)} />
-                  </label>
-                  <label className="flex flex-col gap-1.5">
-                    <span className="lbl">Pay Frequency</span>
-                    <select className="input" value={payFrequency} onChange={(e) => setPayFrequency(e.target.value as PayFrequency)}>
+                    </Select>
+                  </Field>
+                  <Field label="Annual CTC">
+                    <Input
+                      type="number"
+                      className={jetbrainsMono.className}
+                      value={ctc}
+                      onChange={(e) => setCtc(e.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="Currency">
+                    <Input value={currency} onChange={(e) => setCurrency(e.target.value)} />
+                  </Field>
+                  <Field label="Pay Frequency">
+                    <Select value={payFrequency} onChange={(e) => setPayFrequency(e.target.value as PayFrequency)}>
                       <option value="MONTHLY">MONTHLY</option>
                       <option value="WEEKLY">WEEKLY</option>
                       <option value="HOURLY">HOURLY</option>
-                    </select>
-                  </label>
-                  <label className="flex flex-col gap-1.5">
-                    <span className="lbl">Effective From</span>
-                    <input type="date" className="input" value={effectiveFrom} onChange={(e) => setEffectiveFrom(e.target.value)} required />
-                  </label>
+                    </Select>
+                  </Field>
+                  <Field label="Effective From">
+                    <Input type="date" value={effectiveFrom} onChange={(e) => setEffectiveFrom(e.target.value)} required />
+                  </Field>
                   {payFrequency === "HOURLY" && (
-                    <label className="flex flex-col gap-1.5">
-                      <span className="lbl">Hourly Rate</span>
-                      <input
+                    <Field
+                      label="Hourly Rate"
+                      hint="Gross = approved timesheet hours × rate. Earnings below are ignored for hourly staff."
+                    >
+                      <Input
                         type="number"
                         min={0}
                         step="0.01"
-                        className="input"
+                        className={jetbrainsMono.className}
                         value={hourlyRate}
                         onChange={(e) => setHourlyRate(e.target.value)}
                         placeholder="e.g. 500"
                       />
-                      <span className="text-xs text-[var(--color-dim)]">
-                        Gross = approved timesheet hours × rate. Earnings below are ignored for
-                        hourly staff.
-                      </span>
-                    </label>
+                    </Field>
                   )}
                 </div>
 
@@ -486,122 +635,119 @@ export default function StructuresPage() {
                   setRows={setDeductions}
                   earningCodes={earningCodes}
                   footer={
-                    <label className="flex flex-col gap-1.5 border-t border-[var(--color-border)] pt-3">
-                      <span className="lbl">Loss of Pay (LOP days)</span>
-                      <input
+                    <Field
+                      label="Loss of Pay (LOP days)"
+                      className="border-t border-[#E8EAED] pt-3"
+                      hint="Unpaid days for this employee. Earnings are pro-rated over 30 days when payroll runs."
+                    >
+                      <Input
                         type="number"
                         min="0"
                         step="0.5"
-                        className="input w-40"
+                        className={`w-40 ${jetbrainsMono.className}`}
                         value={lopDays}
                         onChange={(e) => setLopDays(e.target.value)}
                       />
-                      <span className="text-xs text-[var(--color-muted)]">
-                        Unpaid days for this employee. Earnings are pro-rated over {/* working-days basis */}
-                        30 days when payroll runs.
-                      </span>
-                    </label>
+                    </Field>
                   }
                 />
 
                 {/* Statutory compliance (Phase 1: PF / ESI / PT / TDS) */}
-                <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
-              <div className="mb-3 flex items-center gap-2">
-                <span className="material-symbols-rounded text-[20px] text-[var(--color-primary)]">verified_user</span>
-                <span className="font-semibold">Statutory Compliance</span>
-                <span className="ml-auto text-xs text-[var(--color-muted)]">auto-computed when on</span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <ToggleRow
-                  icon="savings"
-                  title="Provident Fund (EPF)"
-                  desc="12% employee + employer contribution."
-                  checked={pfEnabled}
-                  onChange={setPfEnabled}
-                >
-                  {pfEnabled && (
-                    <label className="mt-2 flex items-center gap-2 text-xs text-[var(--color-muted)]">
-                      <input type="checkbox" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
-                      <span>Cap PF wage at the ₹15,000 statutory ceiling</span>
-                    </label>
-                  )}
-                </ToggleRow>
-                <ToggleRow
-                  icon="health_and_safety"
-                  title="ESI"
-                  desc="0.75% employee + 3.25% employer (gross ≤ ₹21,000)."
-                  checked={esiEnabled}
-                  onChange={setEsiEnabled}
-                />
-                <ToggleRow
-                  icon="account_balance_wallet"
-                  title="Professional Tax"
-                  desc="Computed by the employee's state slab."
-                  checked={ptEnabled}
-                  onChange={setPtEnabled}
-                />
-                <ToggleRow
-                  icon="account_balance"
-                  title="Income Tax (TDS)"
-                  desc="Estimated from the employee's IT declaration."
-                  checked={tdsEnabled}
-                  onChange={setTdsEnabled}
-                >
-                  {tdsEnabled && (
-                    <p className="mt-2 text-xs text-[var(--color-muted)]">
-                      Set the employee&apos;s regime &amp; declarations under Taxes &amp; Forms. TDS is an
-                      estimate, not filing-grade.
-                    </p>
-                  )}
-                </ToggleRow>
-              </div>
-                  <p className="mt-3 text-xs text-[var(--color-muted)]">
+                <Card padding="sm" className="bg-[#FAFBFC]">
+                  <div className="mb-3 flex items-center gap-2">
+                    <ShieldCheck className="w-[18px] h-[18px] text-[#5B53E0]" />
+                    <span className="text-[14px] font-bold text-[#15171C]">Statutory Compliance</span>
+                    <span className="ml-auto text-[11.5px] text-[#8A929E]">auto-computed when on</span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <ToggleRow
+                      Icon={PiggyBank}
+                      title="Provident Fund (EPF)"
+                      desc="12% employee + employer contribution."
+                      checked={pfEnabled}
+                      onChange={setPfEnabled}
+                    >
+                      {pfEnabled && (
+                        <label className="mt-2 flex items-center gap-2 text-[12px] text-[#8A929E]">
+                          <input type="checkbox" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
+                          <span>Cap PF wage at the ₹15,000 statutory ceiling</span>
+                        </label>
+                      )}
+                    </ToggleRow>
+                    <ToggleRow
+                      Icon={HeartPulse}
+                      title="ESI"
+                      desc="0.75% employee + 3.25% employer (gross ≤ ₹21,000)."
+                      checked={esiEnabled}
+                      onChange={setEsiEnabled}
+                    />
+                    <ToggleRow
+                      Icon={Wallet}
+                      title="Professional Tax"
+                      desc="Computed by the employee's state slab."
+                      checked={ptEnabled}
+                      onChange={setPtEnabled}
+                    />
+                    <ToggleRow
+                      Icon={Landmark}
+                      title="Income Tax (TDS)"
+                      desc="Estimated from the employee's IT declaration."
+                      checked={tdsEnabled}
+                      onChange={setTdsEnabled}
+                    >
+                      {tdsEnabled && (
+                        <p className="mt-2 text-[12px] text-[#8A929E]">
+                          Set the employee&apos;s regime &amp; declarations under Taxes &amp; Forms. TDS is an
+                          estimate, not filing-grade.
+                        </p>
+                      )}
+                    </ToggleRow>
+                  </div>
+                  <p className="mt-3 text-[12px] text-[#8A929E]">
                     Statutory amounts are calculated automatically and shown as locked lines on the
                     payslip — don&apos;t also add them as manual deduction lines above. The live
                     estimate alongside already includes them.
                   </p>
-                </div>
+                </Card>
               </div>
 
               {/* Right column — live estimate (server-computed; sticky) */}
               <div className="lg:sticky lg:top-0 lg:self-start">
-                <div className="overflow-hidden rounded-xl border border-[var(--color-primary)]/30 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-bg)]">
-              <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-2.5">
-                <span className="flex items-center gap-2 text-sm font-semibold">
-                  <span className="material-symbols-rounded text-[18px] text-[var(--color-primary)]">calculate</span>
-                  Estimated Monthly Salary
-                  {previewing && (
-                    <span className="text-xs font-normal text-[var(--color-muted)]">updating…</span>
-                  )}
-                </span>
-                <span className="text-xs text-[var(--color-muted)]">
-                  {Number(lopDays) > 0 ? `after ${Number(lopDays)} LOP day(s) · 30-day basis` : "full month · no LOP"}
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-4 p-4">
-                <Stat label="Gross" value={inr(gross, currency)} />
-                <Stat label="Deductions" value={`- ${inr(totalDeductions, currency)}`} tone="text-[var(--color-danger)]" />
-                <Stat label="Net Pay" value={inr(net, currency)} tone="text-[var(--color-accent)]" big />
-              </div>
-              {deductionLines.length > 0 && (
-                <div className="border-t border-[var(--color-border)] px-4 py-3">
-                  <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted)]">
-                    Deduction breakdown
+                <div className="overflow-hidden rounded-[14px] border border-[#DAD7F6] bg-gradient-to-br from-[#ECEBFB] to-white">
+                  <div className="flex items-center justify-between border-b border-[#E8EAED] px-4 py-2.5">
+                    <span className="flex items-center gap-2 text-[13.5px] font-bold text-[#15171C]">
+                      <Calculator className="w-[16px] h-[16px] text-[#5B53E0]" />
+                      Estimated Monthly Salary
+                      {previewing && <span className="text-[11.5px] font-normal text-[#8A929E]">updating…</span>}
+                    </span>
+                    <span className="text-[11.5px] text-[#8A929E]">
+                      {Number(lopDays) > 0 ? `after ${Number(lopDays)} LOP day(s) · 30-day basis` : "full month · no LOP"}
+                    </span>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    {deductionLines.map((l) => (
-                      <div key={l.code} className="flex justify-between text-sm">
-                        <span className="text-[var(--color-muted)]">{l.label}</span>
-                        <span className="font-medium text-[var(--color-danger)]">
-                          - {inr(l.amount, currency)}
-                        </span>
+                  <div className="grid grid-cols-3 gap-4 p-4">
+                    <Stat label="Gross" value={inr(gross, currency)} />
+                    <Stat label="Deductions" value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C0383C]" />
+                    <Stat label="Net Pay" value={inr(net, currency)} tone="text-[#0E8A6E]" big />
+                  </div>
+                  {deductionLines.length > 0 && (
+                    <div className="border-t border-[#E8EAED] px-4 py-3">
+                      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
+                        Deduction breakdown
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                      <div className="flex flex-col gap-1">
+                        {deductionLines.map((l) => (
+                          <div key={l.code} className="flex justify-between text-[13px]">
+                            <span className="text-[#8A929E]">{l.label}</span>
+                            <span className={`font-semibold text-[#C0383C] ${jetbrainsMono.className}`}>
+                              - {inr(l.amount, currency)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {!preview && !previewing && (
-                    <p className="px-4 pb-3 text-xs text-[var(--color-muted)]">
+                    <p className="px-4 pb-3 text-[12px] text-[#8A929E]">
                       Showing a local estimate (manual lines only) — statutory figures appear once
                       the live preview loads.
                     </p>
@@ -610,13 +756,13 @@ export default function StructuresPage() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 border-t border-[var(--color-border)] pt-4">
-              <button type="button" onClick={() => setOpen(false)} className="btn-ghost px-8">
+            <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
+              <Button type="button" variant="secondary" onClick={() => setOpen(false)} className="px-8">
                 Cancel
-              </button>
-              <button type="submit" disabled={saving} style={{ width: "auto" }} className="btn-primary px-8">
+              </Button>
+              <Button type="submit" disabled={saving} className="px-8">
                 {saving ? "Saving…" : editingId ? "Update Structure" : "Save Structure"}
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>
@@ -625,24 +771,16 @@ export default function StructuresPage() {
   );
 }
 
-function Stat({ label, value, tone = "text-[var(--color-text)]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
+function Stat({ label, value, tone = "text-[#15171C]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
   return (
     <div className="min-w-0">
-      <div className="text-xs text-[var(--color-muted)]">{label}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{label}</div>
       <div
-        className={`font-bold tabular-nums leading-tight break-words ${tone} ${big ? "text-base" : "text-sm"}`}
+        className={`font-bold leading-tight break-words ${tone} ${jetbrainsMono.className} ${big ? "text-[16px]" : "text-[14px]"}`}
       >
         {value}
       </div>
     </div>
-  );
-}
-
-function StatChip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-md bg-[var(--color-primary)]/15 px-2 py-0.5 text-xs font-semibold text-[var(--color-primary)]">
-      {children}
-    </span>
   );
 }
 
@@ -654,7 +792,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
-        checked ? "bg-[var(--color-primary)]" : "bg-[var(--color-hover)]"
+        checked ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"
       }`}
     >
       <span
@@ -667,14 +805,14 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 }
 
 function ToggleRow({
-  icon,
+  Icon,
   title,
   desc,
   checked,
   onChange,
   children,
 }: {
-  icon: string;
+  Icon: React.ComponentType<{ className?: string }>;
   title: string;
   desc: string;
   checked: boolean;
@@ -683,25 +821,21 @@ function ToggleRow({
 }) {
   return (
     <div
-      className={`rounded-lg border p-3 transition-colors ${
-        checked
-          ? "border-[var(--color-primary)]/40 bg-[var(--color-primary)]/5"
-          : "border-[var(--color-border)] bg-[var(--color-card)]"
+      className={`rounded-[10px] border p-3 transition-colors ${
+        checked ? "border-[#DAD7F6] bg-[#ECEBFB]/50" : "border-[#E8EAED] bg-white"
       }`}
     >
       <div className="flex items-center gap-3">
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-            checked
-              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)]"
-              : "bg-[var(--color-hover)] text-[var(--color-muted)]"
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] ${
+            checked ? "bg-[#ECEBFB] text-[#5B53E0]" : "bg-[#F1F2F5] text-[#8A929E]"
           }`}
         >
-          <span className="material-symbols-rounded text-[18px]">{icon}</span>
+          <Icon className="w-[18px] h-[18px]" />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-semibold">{title}</div>
-          <div className="text-xs text-[var(--color-muted)]">{desc}</div>
+          <div className="text-[13px] font-bold text-[#15171C]">{title}</div>
+          <div className="text-[12px] text-[#8A929E]">{desc}</div>
         </div>
         <Toggle checked={checked} onChange={onChange} />
       </div>
@@ -726,65 +860,65 @@ function LineSection({
   const update = (i: number, patch: Partial<LineDraft>) =>
     setRows(rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
+    <Card padding="sm" className="bg-[#FAFBFC]">
       <div className="mb-3 flex items-center justify-between">
-        <span className="font-semibold">{title}</span>
+        <span className="text-[14px] font-bold text-[#15171C]">{title}</span>
         <button
           type="button"
           onClick={() => setRows([...rows, emptyLine()])}
-          className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs hover:bg-[var(--color-hover)]"
+          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#E1E4E8] bg-white px-2.5 py-1 text-[12px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors"
         >
-          + Add line
+          <Plus className="w-3.5 h-3.5" /> Add line
         </button>
       </div>
       <div className="flex flex-col gap-2">
-        {rows.length === 0 && <p className="text-xs text-[var(--color-muted)]">No lines.</p>}
+        {rows.length === 0 && <p className="text-[12px] text-[#8A929E]">No lines.</p>}
         {rows.map((r, i) => (
           <div key={i} className="grid grid-cols-12 items-center gap-2">
-            <input
-              className="input col-span-2"
+            <Input
+              className="col-span-2 h-10 text-[13px]"
               placeholder="CODE"
               value={r.code}
               onChange={(e) => update(i, { code: e.target.value.toUpperCase() })}
             />
-            <input
-              className="input col-span-3"
+            <Input
+              className="col-span-3 h-10 text-[13px]"
               placeholder="Label"
               value={r.label}
               onChange={(e) => update(i, { label: e.target.value })}
             />
-            <select
-              className="input col-span-2"
+            <Select
+              className="col-span-2 h-10 text-[13px]"
               value={r.type}
               onChange={(e) => update(i, { type: e.target.value as LineDraft["type"] })}
             >
               <option value="fixed">Fixed</option>
               <option value="percent">Percent</option>
               <option value="balance">Balance (CTC)</option>
-            </select>
+            </Select>
             {r.type === "fixed" ? (
-              <input
-                className="input col-span-4"
+              <Input
+                className={`col-span-4 h-10 text-[13px] ${jetbrainsMono.className}`}
                 type="number"
                 placeholder="Amount"
                 value={r.amount}
                 onChange={(e) => update(i, { amount: e.target.value })}
               />
             ) : r.type === "balance" ? (
-              <span className="col-span-4 self-center text-xs text-[var(--color-muted)]">
+              <span className="col-span-4 self-center text-[12px] text-[#8A929E]">
                 Absorbs the remaining CTC after the other earnings.
               </span>
             ) : (
               <>
-                <input
-                  className="input col-span-2"
+                <Input
+                  className={`col-span-2 h-10 text-[13px] ${jetbrainsMono.className}`}
                   type="number"
                   placeholder="%"
                   value={r.percent}
                   onChange={(e) => update(i, { percent: e.target.value })}
                 />
-                <select
-                  className="input col-span-2"
+                <Select
+                  className="col-span-2 h-10 text-[13px]"
                   value={r.percent_of}
                   onChange={(e) => update(i, { percent_of: e.target.value })}
                 >
@@ -797,20 +931,21 @@ function LineSection({
                         of {c}
                       </option>
                     ))}
-                </select>
+                </Select>
               </>
             )}
             <button
               type="button"
               onClick={() => setRows(rows.filter((_, idx) => idx !== i))}
-              className="col-span-1 flex justify-center text-[var(--color-danger)]"
+              className="col-span-1 flex justify-center text-[#9AA3AF] hover:text-[#C0383C] transition-colors"
+              title="Remove line"
             >
-              <span className="material-symbols-rounded text-[20px]">delete</span>
+              <Trash2 className="w-[18px] h-[18px]" />
             </button>
           </div>
         ))}
       </div>
       {footer && <div className="mt-3">{footer}</div>}
-    </div>
+    </Card>
   );
 }

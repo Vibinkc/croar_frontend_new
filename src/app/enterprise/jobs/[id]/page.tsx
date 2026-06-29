@@ -19,7 +19,7 @@ import {
     AreaChart,
     Area
 } from 'recharts';
-import { jetbrainsMono } from "@/components/ds";
+import { jetbrainsMono, Button, Card, Badge, StatCard, StatGrid, Input, PageHelp } from "@/components/ds";
 
 interface JobStage {
     id: number;
@@ -168,18 +168,39 @@ export default function JobDetailPage() {
 
     if (isLoading) {
         return (
-            <div className="p-8 flex items-center justify-center min-h-[400px]">
-                <div className="animate-spin material-symbols-rounded text-[#5B53E0] text-4xl">sync</div>
+            <div className="px-4 sm:px-5 md:px-7 pb-20 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+                <div className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED]">
+                    <div className="h-7 w-48 bg-[#E8EAED] rounded-[8px] animate-pulse" />
+                    <div className="h-3.5 w-32 bg-[#F0F0F1] rounded-[6px] animate-pulse mt-2" />
+                </div>
+                <StatGrid className="lg:grid-cols-5">
+                    {[1, 2, 3, 4, 5].map(i => (
+                        <div key={i} className="h-[104px] bg-white border border-[#E8EAED] rounded-[14px] animate-pulse" />
+                    ))}
+                </StatGrid>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 h-[380px] bg-white border border-[#E8EAED] rounded-[14px] animate-pulse" />
+                    <div className="h-[380px] bg-white border border-[#E8EAED] rounded-[14px] animate-pulse" />
+                </div>
             </div>
         );
     }
 
     if (!job) {
         return (
-             <div className="p-8 text-center">
-                <h1 className="text-xl font-bold text-[#15171C]">Job Not Found</h1>
-                <Link href="/enterprise/jobs" className="text-[#5B53E0] hover:underline mt-4 inline-block">Back to Jobs</Link>
-             </div>
+            <div className="px-4 sm:px-5 md:px-7 pb-20 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+                <Card className="flex flex-col items-center justify-center text-center py-20 mt-6">
+                    <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5 text-[#C7CCD4]">
+                        <span className="material-symbols-rounded text-3xl">work_off</span>
+                    </div>
+                    <h1 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Job Not Found</h1>
+                    <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-6">This requisition may have been removed or you don&apos;t have access to it.</p>
+                    <Link href="/enterprise/jobs" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors">
+                        <span className="material-symbols-rounded text-[19px]">arrow_back</span>
+                        Back to Jobs
+                    </Link>
+                </Card>
+            </div>
         );
     }
 
@@ -233,79 +254,65 @@ export default function JobDetailPage() {
     const hasTimeData = appsByDay.some(d => d.count > 0);
 
     return (
-        <div className="min-h-screen bg-[#F4F5F7] pb-20">
-            {/* Top Navigation Bar */}
-            <div className="bg-white border-b border-[#E8EAED] px-6 py-[18px] flex items-center justify-between sticky top-0 z-40">
-                <div className="flex items-center gap-4">
+        <div className="px-4 sm:px-5 md:px-7 pb-20 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3.5 min-w-0">
                     <button
                         onClick={() => router.back()}
-                        className="w-10 h-10 flex items-center justify-center rounded-[10px] border border-[#E1E4E8] text-[#4B5563] hover:bg-[#F7F8FA] transition-all shrink-0"
+                        className="w-10 h-10 flex items-center justify-center rounded-[10px] border border-[#E1E4E8] bg-white text-[#4B5563] hover:bg-[#F7F8FA] transition-all shrink-0"
+                        aria-label="Go back"
                     >
                         <span className="material-symbols-rounded text-xl">arrow_back</span>
                     </button>
-                    <div>
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-[#9AA3AF]   mb-0.5">
-                            <Link href="/enterprise/jobs" className="hover:text-[#5B53E0]">Jobs</Link>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#9AA3AF] mb-0.5">
+                            <Link href="/enterprise/jobs" className="hover:text-[#5B53E0] transition-colors">Jobs</Link>
                             <span>/</span>
-                            <span>{job.id.slice(0, 8)}</span>
+                            <span className={jetbrainsMono.className}>{job.id.slice(0, 8)}</span>
                         </div>
-                        <h1 className="text-[20px] font-extrabold tracking-[-0.3px] text-[#15171C] flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                            {job.title}
-                            <span className="px-2 py-0.5 bg-[#E6F4EA] text-[#15803D] text-[10px] font-semibold rounded-full border border-[#CDEAD7] tracking-wide">
-                                {getStatusLabel(job.status_id)}
-                            </span>
-                            {job.location && (
-                                <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[#8A929E]">
-                                    <span className="material-symbols-rounded text-[15px]">location_on</span>
-                                    {job.location}
-                                </span>
-                            )}
-                        </h1>
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                                <span className="truncate">{job.title}</span>
+                                <Badge tone="success" dot>{getStatusLabel(job.status_id)}</Badge>
+                                {job.location && (
+                                    <span className="inline-flex items-center gap-1 text-[12.5px] font-medium text-[#8A929E]">
+                                        <span className="material-symbols-rounded text-[15px]">location_on</span>
+                                        {job.location}
+                                    </span>
+                                )}
+                            </h1>
+                            <PageHelp title="Job Detail">Track this role&apos;s candidate pipeline. Move applicants through stages, review match scores, and manage the job from the tabs.</PageHelp>
+                        </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button className="w-10 h-10 flex items-center justify-center rounded-[10px] border border-[#E1E4E8] text-[#9AA3AF] hover:text-[#5B53E0] hover:border-[#DAD7F6] transition-all">
+                <div className="flex items-center gap-2.5 shrink-0">
+                    <Button variant="secondary" aria-label="Share" className="w-10 h-10 px-0">
                         <span className="material-symbols-rounded text-xl">share</span>
-                    </button>
+                    </Button>
                     {canAccess("jobs:update") && (
-                        <Link
-                            href={`/enterprise/jobs/${id}/edit`}
-                            className="h-10 px-4 flex items-center justify-center gap-1.5 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)]"
-                        >
-                            <span className="material-symbols-rounded text-[16px]">edit</span>
-                            {"Edit"}
+                        <Link href={`/enterprise/jobs/${id}/edit`}>
+                            <Button size="sm" icon="edit">Edit</Button>
                         </Link>
                     )}
                 </div>
-            </div>
+            </header>
 
-            <div className="p-6 space-y-6">
-                {/* Metric Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-                    {[
-                        { label: "Pipeline", value: metrics?.pipeline || 0, icon: "account_tree", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
-                        { label: "Submitted", value: metrics?.submitted || 0, icon: "assignment_ind", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-                        { label: "Interviews", value: metrics?.interviews || 0, icon: "groups", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-                        { label: "Rejected", value: metrics?.rejected || 0, icon: "block", grad: "linear-gradient(135deg,#F08C8C,#E5484D)", glow: "rgba(229,72,77,0.22)" },
-                        { label: "Onboarded", value: metrics?.onboarded || 0, icon: "person_add", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                    ].map((card, i) => (
-                        <div key={i} className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden transition-colors hover:border-[#D4D7DC]">
-                            <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: card.grad }} />
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{card.label}</span>
-                                    <div className={`text-[28px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{card.value}</div>
-                                </div>
-                                <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: card.grad, boxShadow: `0 6px 14px ${card.glow}` }}>
-                                    <span className="material-symbols-rounded text-[20px]">{card.icon}</span>
-                                </span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            {/* Metric Cards */}
+            <StatGrid className="lg:grid-cols-5">
+                {[
+                    { label: "Pipeline", value: metrics?.pipeline || 0, icon: "account_tree", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
+                    { label: "Submitted", value: metrics?.submitted || 0, icon: "assignment_ind", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: "Interviews", value: metrics?.interviews || 0, icon: "groups", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: "Rejected", value: metrics?.rejected || 0, icon: "block", grad: "linear-gradient(135deg,#F08C8C,#E5484D)", glow: "rgba(229,72,77,0.22)" },
+                    { label: "Onboarded", value: metrics?.onboarded || 0, icon: "person_add", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                ].map((card, i) => (
+                    <StatCard key={i} label={card.label} value={card.value} icon={card.icon} gradient={card.grad} glow={card.glow} />
+                ))}
+            </StatGrid>
 
-                {/* Tabs & Content */}
-                <div className="space-y-6">
+            {/* Tabs & Content */}
+            <div className="space-y-6">
                     {/* Tabs Navigation */}
                     <div className="flex border-b border-[#E1E4E8] gap-8 overflow-x-auto no-scrollbar">
                         {[
@@ -341,7 +348,7 @@ export default function JobDetailPage() {
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* Pipeline Visualization */}
-                                <div className="lg:col-span-2 bg-white rounded-[14px] border border-[#E8EAED] p-6 overflow-hidden">
+                                <Card className="lg:col-span-2 overflow-hidden">
                                      <div className="flex items-center justify-between mb-8">
                                         <div>
                                             <h3 className="text-sm font-bold text-[#15171C]  tracking-tight">Recruitment Pipeline</h3>
@@ -391,12 +398,12 @@ export default function JobDetailPage() {
                                             </BarChart>
                                         </ResponsiveContainer>
                                     </div>
-                                </div>
+                                </Card>
 
                                 {/* Summary Sidebar */}
                                 <div className="space-y-6">
-                                    <div className="bg-white rounded-[14px] border border-[#E8EAED] p-6">
-                                        <h3 className="text-xs font-bold text-[#15171C]   mb-4">Stage Efficiency</h3>
+                                    <Card>
+                                        <h3 className="text-[13px] font-bold text-[#15171C] mb-4">Stage Efficiency</h3>
                                         <div className="space-y-4">
                                             {pipelineData.map((stage, i) => (
                                                 <div key={i} className="flex flex-col gap-1.5">
@@ -413,8 +420,8 @@ export default function JobDetailPage() {
                                                 </div>
                                             ))}
                                         </div>
-                                    </div>
-                                    
+                                    </Card>
+
                                     <div className="rounded-[14px] p-6 shadow-[0_10px_24px_rgba(91,83,224,0.3)]" style={{ background: "linear-gradient(135deg,#6E63E6,#4A43C9)" }}>
                                         <div className="w-10 h-10 rounded-[11px] bg-white/15 flex items-center justify-center text-white mb-4">
                                             <span className="material-symbols-rounded text-white">trending_up</span>
@@ -431,7 +438,7 @@ export default function JobDetailPage() {
                             {/* Extra insights: match-score mix + applications over time */}
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* Match-score distribution donut */}
-                                <div className="bg-white rounded-[14px] border border-[#E8EAED] p-6">
+                                <Card>
                                     <h3 className="text-[15px] font-bold text-[#15171C]">Match-score mix</h3>
                                     <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-3">AI fit across the pipeline</p>
                                     {scoreTotal === 0 ? (
@@ -467,10 +474,10 @@ export default function JobDetailPage() {
                                             </div>
                                         </>
                                     )}
-                                </div>
+                                </Card>
 
                                 {/* Applications over time (area) */}
-                                <div className="lg:col-span-2 bg-white rounded-[14px] border border-[#E8EAED] p-6">
+                                <Card className="lg:col-span-2">
                                     <h3 className="text-[15px] font-bold text-[#15171C]">Applications over time</h3>
                                     <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-3">New applicants · last 14 days</p>
                                     {!hasTimeData ? (
@@ -512,14 +519,14 @@ export default function JobDetailPage() {
                                             </ResponsiveContainer>
                                         </div>
                                     )}
-                                </div>
+                                </Card>
                             </div>
                         </div>
                     )}
 
                     {/* Active Tab Content (Info) */}
                     {activeTab === "info" && (
-                        <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <Card padding="none" className="overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex items-center gap-3 px-6 py-4 border-b border-[#F0F0F1]">
                                 <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
                                     <span className="material-symbols-rounded text-[20px]">info</span>
@@ -581,43 +588,43 @@ export default function JobDetailPage() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Card>
                     )}
-                    
+
                     {/* Onboarding Tab Content */}
                     {activeTab === "onboarding_tab" && (
-                        <div className="bg-white rounded-[10px] border border-[#E1E4E8] shadow-sm overflow-hidden min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <Card padding="none" className="overflow-hidden min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="px-6 py-4 border-b border-[#E8EAED] flex items-center justify-between">
-                                <h3 className="text-xs font-bold text-[#15171C]  ">Onboarding Candidates</h3>
+                                <h3 className="text-[13px] font-bold text-[#15171C]">Onboarding Candidates</h3>
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-[#F7F8FA]/50">
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]  ">Code</th>
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]  ">Candidate</th>
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]   text-center">Status</th>
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]   text-right">Actions</th>
+                                        <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Code</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Candidate</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-center">Status</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[#E8EAED]">
+                                    <tbody className="divide-y divide-[#F0F0F1]">
                                         {onboardings.map((ob) => (
-                                            <tr key={ob.id} className="hover:bg-[#F7F8FA]/50 transition-colors group cursor-pointer" onClick={() => router.push(`/enterprise/onboarding/${ob.id}`)}>
+                                            <tr key={ob.id} className="hover:bg-[#F7F8FA]/60 transition-colors group cursor-pointer" onClick={() => router.push(`/enterprise/onboarding/${ob.id}`)}>
                                                 <td className="px-6 py-4">
-                                                    <span className="text-[10px] font-bold text-[#5B53E0] bg-[#ECEBFB] px-2 py-1 rounded ">
+                                                    <span className={`text-[11px] font-semibold text-[#5B53E0] bg-[#ECEBFB] px-2 py-1 rounded-[8px] ${jetbrainsMono.className}`}>
                                                         {ob.onboarding_code}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-full bg-[#E8EAED] text-[#9AA3AF] flex items-center justify-center font-bold text-xs ">
+                                                        <div className="w-9 h-9 rounded-[10px] bg-[#E8EAED] text-[#8A929E] flex items-center justify-center font-extrabold text-[12px] uppercase">
                                                             {ob.application?.candidate?.full_name?.charAt(0)}
                                                         </div>
-                                                        <div>
-                                                            <p className="text-xs font-bold text-[#15171C] leading-tight">
+                                                        <div className="min-w-0">
+                                                            <p className="text-[13.5px] font-bold text-[#15171C] leading-tight group-hover:text-[#5B53E0] transition-colors">
                                                                 {ob.application?.candidate?.full_name}
                                                             </p>
-                                                            <p className="text-[10px] font-bold text-[#9AA3AF]">
+                                                            <p className="text-[12px] text-[#8A929E]">
                                                                 {ob.application?.candidate?.email}
                                                             </p>
                                                         </div>
@@ -625,15 +632,13 @@ export default function JobDetailPage() {
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     {ob.status && (
-                                                        <span className={`text-[10px] font-bold px-3 py-1 rounded-full border  tracking-tight ${getOnboardingStatusColor(ob.status.name)}`}>
+                                                        <span className={`inline-flex items-center text-[11px] font-semibold px-2.5 py-0.5 rounded-[20px] border ${getOnboardingStatusColor(ob.status.name)}`}>
                                                             {ob.status.name}
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <button className="h-7 px-3 rounded-[10px] bg-[#E8EAED] text-[#6B6F76] text-[9px] font-bold   hover:bg-[#E1E4E8] transition-all">
-                                                        Track
-                                                    </button>
+                                                    <Button variant="secondary" size="sm">Track</Button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -641,10 +646,10 @@ export default function JobDetailPage() {
                                             <tr>
                                                 <td colSpan={4} className="px-6 py-20 text-center">
                                                     <div className="flex flex-col items-center gap-3">
-                                                        <div className="w-12 h-12 rounded-full bg-[#F7F8FA] flex items-center justify-center text-[#D4D7DC]">
+                                                        <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center text-[#C7CCD4]">
                                                             <span className="material-symbols-rounded text-2xl">person_add</span>
                                                         </div>
-                                                        <p className="text-xs font-bold text-[#9AA3AF]">No onboarding processes for this job yet.</p>
+                                                        <p className="text-[14px] text-[#8A929E]">No onboarding processes for this job yet.</p>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -652,63 +657,58 @@ export default function JobDetailPage() {
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </Card>
                     )}
 
                     {/* Candidate List Content (for stage tabs) */}
                     {!STATIC_LEADING_TABS.some(t => t.id === activeTab) && (
-                        <div className="bg-white rounded-[10px] border border-[#E1E4E8] shadow-sm overflow-hidden min-h-[400px]">
-                            <div className="px-6 py-4 border-b border-[#E8EAED] flex items-center justify-between">
-                                <h3 className="text-xs font-bold text-[#15171C]  ">Candidates</h3>
-                                <div className="flex items-center gap-2">
-                                    <div className="relative">
-                                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-sm">search</span>
-                                        <input type="text" placeholder="Search..." className="pl-9 pr-4 py-1.5 bg-[#F7F8FA] border-none rounded-[10px] text-xs font-medium focus:ring-1 focus:ring-[#5B53E0] w-48" />
-                                    </div>
-                                </div>
+                        <Card padding="none" className="overflow-hidden min-h-[400px]">
+                            <div className="px-6 py-4 border-b border-[#E8EAED] flex items-center justify-between gap-3">
+                                <h3 className="text-[13px] font-bold text-[#15171C]">Candidates</h3>
+                                <Input icon="search" type="text" placeholder="Search..." className="h-9 w-44 sm:w-56" />
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left">
                                     <thead>
-                                        <tr className="bg-[#F7F8FA]/50">
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]  ">Candidate</th>
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]   text-center">Match Score</th>
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]  ">Status</th>
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]  ">Applied</th>
-                                            <th className="px-6 py-3 text-[10px] font-bold text-[#9AA3AF]  "></th>
+                                        <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Candidate</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-center">Match Score</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Applied</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]"></th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[#E8EAED]">
+                                    <tbody className="divide-y divide-[#F0F0F1]">
                                         {applications
                                             .filter(app => {
                                                 const stage = job.stages?.find(s => s.name.toLowerCase().replace(/\s+/g, '_') === activeTab);
                                                 return stage ? app.current_stage === stage.id : false;
                                             })
                                             .map((app) => (
-                                                <tr key={app.id} className="hover:bg-[#F7F8FA]/50 transition-colors group cursor-pointer">
+                                                <tr key={app.id} className="hover:bg-[#F7F8FA]/60 transition-colors group cursor-pointer">
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-8 h-8 rounded-full bg-[#DAD7F6] text-[#5B53E0] flex items-center justify-center font-bold text-xs">
+                                                            <div className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-extrabold text-[12px] uppercase">
                                                                 {app.candidate?.full_name?.charAt(0)}
                                                             </div>
-                                                            <div>
-                                                                <p className="text-xs font-bold text-[#15171C]">{app.candidate?.full_name}</p>
-                                                                <p className="text-[10px] font-bold text-[#9AA3AF]">{app.candidate?.email}</p>
+                                                            <div className="min-w-0">
+                                                                <p className="text-[13.5px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors">{app.candidate?.full_name}</p>
+                                                                <p className="text-[12px] text-[#8A929E]">{app.candidate?.email}</p>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <div className="flex flex-col items-center">
-                                                            <div className={`text-xs font-bold ${
-                                                                (app.ai_match_score || 0) > 80 ? "text-emerald-600" : 
+                                                            <div className={`text-[13px] font-bold ${jetbrainsMono.className} ${
+                                                                (app.ai_match_score || 0) > 80 ? "text-[#15803D]" :
                                                                 (app.ai_match_score || 0) > 60 ? "text-[#5B53E0]" : "text-[#6B6F76]"
                                                             }`}>
                                                                 {app.ai_match_score ? `${Math.round(app.ai_match_score)}%` : "-"}
                                                             </div>
                                                             <div className="w-16 h-1 bg-[#E8EAED] rounded-full mt-1 overflow-hidden">
-                                                                <div 
+                                                                <div
                                                                     className={`h-full rounded-full ${
-                                                                        (app.ai_match_score || 0) > 80 ? "bg-emerald-500" : 
+                                                                        (app.ai_match_score || 0) > 80 ? "bg-[#15803D]" :
                                                                         (app.ai_match_score || 0) > 60 ? "bg-[#5B53E0]" : "bg-[#D4D7DC]"
                                                                     }`}
                                                                     style={{ width: `${app.ai_match_score || 0}%` }}
@@ -717,11 +717,9 @@ export default function JobDetailPage() {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <span className="px-2 py-0.5 bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold rounded-[10px] border border-[#DAD7F6]  tracking-wide">
-                                                            In Progress
-                                                        </span>
+                                                        <Badge tone="indigo">In Progress</Badge>
                                                     </td>
-                                                    <td className="px-6 py-4 text-[10px] font-bold text-[#6B6F76] ">
+                                                    <td className={`px-6 py-4 text-[12.5px] text-[#6B6F76] ${jetbrainsMono.className}`}>
                                                         {new Date(app.applied_at).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
@@ -738,10 +736,10 @@ export default function JobDetailPage() {
                                             <tr>
                                                 <td colSpan={5} className="px-6 py-20 text-center">
                                                     <div className="flex flex-col items-center gap-3">
-                                                        <div className="w-12 h-12 rounded-full bg-[#F7F8FA] flex items-center justify-center text-[#D4D7DC]">
+                                                        <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center text-[#C7CCD4]">
                                                             <span className="material-symbols-rounded text-2xl">person_search</span>
                                                         </div>
-                                                        <p className="text-xs font-bold text-[#9AA3AF]">No candidates found in this stage.</p>
+                                                        <p className="text-[14px] text-[#8A929E]">No candidates found in this stage.</p>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -749,12 +747,9 @@ export default function JobDetailPage() {
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </Card>
                     )}
                 </div>
-
-                {/* Footer Actions Removed */}
-            </div>
         </div>
     );
 }

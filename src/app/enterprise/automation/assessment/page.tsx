@@ -27,6 +27,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { PageHelp } from "@/components/ds";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -652,12 +653,14 @@ export default function AssessmentAutomationPage() {
       {/* Header (sticky) */}
       <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-[8px] bg-[#FEF3E2] flex items-center justify-center shrink-0 border border-[#FCE1BF]/80">
-              <Brain className="w-4 h-4 text-[#D97706]" />
-            </span>
-            Assessment Automation
-          </h1>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
+              Assessment Automation
+            </h1>
+            <PageHelp title="Assessment Automation">
+              <p>Automatically send assessments to candidates at the right stage.</p>
+            </PageHelp>
+          </div>
           <p className="text-[12.5px] text-[#8A929E] mt-0.5">Generate AI-powered assessments for candidates reaching specific hiring rounds.</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">

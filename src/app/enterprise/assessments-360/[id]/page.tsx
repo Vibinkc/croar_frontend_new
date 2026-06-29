@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { apiClient, BACKEND_URL } from "@/utils/api";
+import { BACKEND_URL } from "@/utils/api";
+import { Button, Card, Textarea, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface Question {
     id: string;
@@ -77,7 +78,7 @@ export default function X360FillAssessment() {
                         .sort((a: TemplateQuestion, b: TemplateQuestion) => a.order - b.order)
                         .map((tq: TemplateQuestion) => tq.question);
                     setQuestions(sortedQuestions);
-                    
+
                     // Initialize responses
                     const initialRes: Record<string, { answer_value?: number, answer_text?: string }> = {};
                     sortedQuestions.forEach((q: Question) => {
@@ -129,40 +130,73 @@ export default function X360FillAssessment() {
         }
     };
 
+    const progress = Math.round((Object.keys(responses).length / questions.length) * 100) || 0;
+
+    /* ── Loading ── */
     if (loading) return (
-        <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-8 text-center">
-            <div className="flex flex-col items-center gap-6">
-                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin shadow-xl shadow-indigo-100"></div>
-                <p className="text-slate-500 font-black  tracking-[0.2em] text-xs">Authenticating Assignment...</p>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <div className="py-3 border-b border-[#E8EAED]">
+                <div className="h-7 w-56 bg-[#F4F5F7] rounded-[8px] animate-pulse" />
+                <div className="h-3.5 w-40 bg-[#F4F5F7] rounded-[6px] animate-pulse mt-2" />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="lg:col-span-8 space-y-5">
+                    {[1, 2, 3].map(i => (
+                        <div key={i} className="h-40 bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+                    ))}
+                </div>
+                <div className="lg:col-span-4">
+                    <div className="h-64 bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+                </div>
             </div>
         </div>
     );
-    if (!assignment) return <div className="p-8 text-center text-rose-500 font-bold">Assessment not found.</div>;
 
+    /* ── Empty / not found ── */
+    if (!assignment) return (
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center gap-3">
+                <button onClick={() => router.back()} className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] transition-colors flex items-center justify-center shrink-0">
+                    <span className="material-symbols-rounded text-[19px]">arrow_back</span>
+                </button>
+                <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Assessment</h1>
+            </header>
+            <Card className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
+                <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5 text-[#C7CCD4]">
+                    <span className="material-symbols-rounded text-[32px]">search_off</span>
+                </div>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Assessment not found</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">This assignment may have been completed, expired, or the link is no longer valid.</p>
+                <Button variant="secondary" size="sm" icon="arrow_back" onClick={() => router.back()}>Go back</Button>
+            </Card>
+        </div>
+    );
+
+    /* ── Success ── */
     if (showSuccess) {
         return (
-            <div className="min-h-screen bg-[#fafafa] py-20 px-6 selection:bg-indigo-100">
-                <div className="max-w-[1000px] mx-auto">
-                    <div className="bg-white rounded-2xl shadow-2xl shadow-slate-200/50 p-12 md:p-20 border border-white text-center space-y-12 animate-in zoom-in-95 duration-700">
-                        <div className="w-32 h-32 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-2xl shadow-emerald-200 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                            <span className="material-symbols-rounded text-6xl">check_circle</span>
+            <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+                <Card padding="lg" className="text-center">
+                    <div className="max-w-2xl mx-auto py-6 md:py-10 space-y-7">
+                        <div className="w-20 h-20 rounded-[20px] bg-[#E6F4EA] text-[#15803D] flex items-center justify-center mx-auto animate-in zoom-in-95 duration-500">
+                            <span className="material-symbols-rounded text-[48px]">check_circle</span>
                         </div>
-                        
-                        <div className="space-y-4">
-                            <h2 className="text-5xl font-black text-slate-900 tracking-tight">Feedback Transmitted</h2>
-                            <p className="text-slate-500 text-xl font-medium max-w-2xl mx-auto leading-relaxed">
-                                Thank you for providing your feedback for <span className="text-indigo-600 font-bold">{assignment.ratee.first_name}</span>. Your insights are essential for their professional development.
+
+                        <div className="space-y-3">
+                            <h2 className="text-[26px] font-extrabold tracking-[-0.6px] text-[#15171C]">Feedback Transmitted</h2>
+                            <p className="text-[#374151] text-[15px] leading-relaxed max-w-xl mx-auto">
+                                Thank you for providing your feedback for <span className="text-[#5B53E0] font-semibold">{assignment.ratee.first_name}</span>. Your insights are essential for their professional development.
                             </p>
                         </div>
 
                         {pendingTasks.length > 0 ? (
-                            <div className="space-y-8 pt-8 border-t border-slate-50">
-                                <div className="bg-indigo-50 py-3 px-6 rounded-full inline-block border border-indigo-100">
-                                    <p className="text-[10px] font-black text-indigo-600   leading-none">Action Required</p>
+                            <div className="space-y-5 pt-7 border-t border-[#E8EAED] text-left">
+                                <div className="text-center space-y-2.5">
+                                    <Badge tone="indigo">Action Required</Badge>
+                                    <h3 className="text-[16px] font-bold text-[#15171C]">You have {pendingTasks.length} other pending {pendingTasks.length === 1 ? "assessment" : "assessments"}</h3>
                                 </div>
-                                <h3 className="text-xl font-black text-slate-900">You have {pendingTasks.length} other pending assessments</h3>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                                     {pendingTasks.map((task) => (
                                         <button
                                             key={task.id}
@@ -170,162 +204,162 @@ export default function X360FillAssessment() {
                                                 setShowSuccess(false);
                                                 router.push(`/enterprise/assessments-360/${task.id}`);
                                             }}
-                                            className="bg-slate-50 p-8 rounded-2xl border border-transparent hover:border-indigo-200 hover:bg-white transition-all group hover:shadow-xl hover:shadow-slate-100/50 text-left"
+                                            className="bg-white p-5 rounded-[14px] border border-[#E8EAED] hover:border-[#5B53E0]/40 hover:bg-[#FAFAFE] transition-colors group text-left"
                                         >
                                             <div className="flex justify-between items-start mb-4">
-                                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-400 group-hover:text-indigo-600 shadow-sm border border-slate-100 transition-colors">
-                                                    <span className="material-symbols-rounded">person</span>
-                                                </div>
-                                                <span className="text-[10px] font-black text-slate-400  ">{task.relation}</span>
+                                                <span className="w-10 h-10 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                                    <span className="material-symbols-rounded text-[20px]">person</span>
+                                                </span>
+                                                <Badge tone="neutral">{task.relation}</Badge>
                                             </div>
-                                            <p className="text-lg font-black text-slate-900 mb-1">{task.ratee.first_name} {task.ratee.last_name}</p>
-                                            <p className="text-xs text-slate-400 font-bold  ">{task.cycle.name}</p>
+                                            <p className="text-[15px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors mb-0.5">{task.ratee.first_name} {task.ratee.last_name}</p>
+                                            <p className="text-[12.5px] text-[#8A929E]">{task.cycle.name}</p>
                                         </button>
                                     ))}
                                 </div>
                             </div>
                         ) : (
-                            <div className="pt-12 border-t border-slate-50 space-y-8">
-                                <p className="text-slate-400 font-bold   text-xs flex items-center justify-center gap-2">
-                                    <span className="material-symbols-rounded text-emerald-500">verified</span>{""}
+                            <div className="pt-7 border-t border-[#E8EAED] space-y-5">
+                                <p className="text-[#8A929E] text-[13.5px] flex items-center justify-center gap-2">
+                                    <span className="material-symbols-rounded text-[#15803D] text-[19px]">verified</span>
                                     All assignments complete for this cycle
                                 </p>
-                                <button
-                                    onClick={() => router.push('/enterprise/assessments-360/portal')}
-                                    className="px-12 py-5 bg-slate-900 text-white rounded-xl font-black text-sm  tracking-[0.3em] hover:bg-indigo-600 transition-all active:scale-95"
-                                >
+                                <Button variant="dark" className="bg-[#15171C] border-0 text-white hover:bg-[#5B53E0]" icon="grid_view" onClick={() => router.push('/enterprise/assessments-360/portal')}>
                                     Return to Portal
-                                </button>
+                                </Button>
                             </div>
                         )}
                     </div>
-                </div>
+                </Card>
             </div>
         );
     }
 
+    /* ── Main fill form ── */
     return (
-        <div className="min-h-screen bg-[#fafafa] py-16 px-6 md:px-12 animate-in fade-in duration-700">
-            <div className="max-w-[1400px] mx-auto space-y-12">
-                <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-slate-100">
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <button onClick={() => router.back()} className="w-10 h-10 rounded-full bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-indigo-600 transition-all flex items-center justify-center">
-                                <span className="material-symbols-rounded">arrow_back</span>
-                            </button>
-                            <span className="text-[10px] font-black  tracking-[0.2em] text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-100">
-                                {assignment.relation} ASSESSMENT
-                            </span>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button onClick={() => router.back()} className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] transition-colors flex items-center justify-center shrink-0">
+                        <span className="material-symbols-rounded text-[19px]">arrow_back</span>
+                    </button>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">
+                                {assignment.ratee.first_name} {assignment.ratee.last_name}
+                            </h1>
+                            <Badge tone="indigo">{assignment.relation} ASSESSMENT</Badge>
+                            <PageHelp title="Give Feedback">Rate each competency and add your comments, then submit your feedback.</PageHelp>
                         </div>
-                        <h1 className="text-5xl font-black text-slate-900 tracking-tight">
-                            {assignment.ratee.first_name} {assignment.ratee.last_name}
-                        </h1>
-                        <p className="text-slate-400 font-bold   text-xs flex items-center gap-2">
-                            <span className="material-symbols-rounded text-base">event_repeat</span>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5 flex items-center gap-1.5">
+                            <span className="material-symbols-rounded text-[15px]">event_repeat</span>
                             {assignment.cycle.name}
                         </p>
                     </div>
-                    
-                    <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-100/50 flex items-center gap-6">
-                        <div className="text-right">
-                            <p className="text-[10px] font-black text-slate-400  ">Progress</p>
-                            <p className="text-lg font-black text-slate-900">{Math.round((Object.keys(responses).length / questions.length) * 100) || 0}% Complete</p>
-                        </div>
-                        <div className="w-16 h-16 rounded-full border-4 border-slate-50 border-t-indigo-600 rotate-45 flex items-center justify-center">
-                            <span className="material-symbols-rounded text-indigo-600 -rotate-45">bolt</span>
-                        </div>
+                </div>
+
+                <div className="flex items-center gap-3 sm:shrink-0">
+                    <div className="text-right">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Progress</p>
+                        <p className={`text-[15px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>{progress}% Complete</p>
                     </div>
-                </header>
+                    <span className="w-10 h-10 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                        <span className="material-symbols-rounded text-[20px]">bolt</span>
+                    </span>
+                </div>
+            </header>
 
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-32">
-                    {/* Left Column: Questions */}
-                    <div className="lg:col-span-8 space-y-8">
-                        {questions.map((q, idx) => (
-                            <div key={q.id} className="bg-white p-8 md:p-12 rounded-2xl border border-slate-100 shadow-xl shadow-slate-100/20 group hover:border-indigo-100 transition-all duration-500 animate-in fade-in" style={{ animationDelay: `${idx * 100}ms` }}>
-                                <div className="flex flex-col md:flex-row md:items-start gap-8">
-                                    <div className="shrink-0 w-14 h-14 rounded-xl bg-slate-50 text-slate-300 flex items-center justify-center font-black text-xl group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
-                                        {idx + 1}
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-8">
+                {/* Left Column: Questions */}
+                <div className="lg:col-span-8 space-y-5">
+                    {questions.map((q, idx) => (
+                        <Card key={q.id} padding="lg" interactive className="animate-in fade-in" style={{ animationDelay: `${idx * 60}ms` }}>
+                            <div className="flex flex-col sm:flex-row sm:items-start gap-5">
+                                <div className={`shrink-0 w-11 h-11 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-bold text-[17px] ${jetbrainsMono.className}`}>
+                                    {idx + 1}
+                                </div>
+                                <div className="flex-1 space-y-5 min-w-0">
+                                    <div className="space-y-1.5">
+                                        <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5B53E0]">{q.category}</span>
+                                        <h3 className="text-[17px] font-bold text-[#15171C] leading-snug">{q.text}</h3>
                                     </div>
-                                    <div className="flex-1 space-y-8">
-                                        <div className="space-y-2">
-                                            <span className="text-[10px] font-black text-indigo-400  tracking-[0.2em]">{q.category}</span>
-                                            <h3 className="text-2xl font-bold text-slate-800 leading-tight">{q.text}</h3>
-                                        </div>
 
-                                        {q.type === 'RATING' ? (
-                                            <div className="space-y-6">
-                                                <div className="grid grid-cols-5 gap-4">
-                                                    {[1, 2, 3, 4, 5].map((val) => (
-                                                        <button
-                                                            key={val}
-                                                            type="button"
-                                                            onClick={() => setResponses({...responses, [q.id]: { answer_value: val }})}
-                                                            className={`aspect-square rounded-xl font-black transition-all flex flex-col items-center justify-center gap-1 border-4 ${
-                                                                responses[q.id]?.answer_value === val 
-                                                                ? 'bg-slate-900 border-indigo-600 text-white shadow-2xl shadow-indigo-200 -translate-y-2 scale-105' 
-                                                                : 'bg-slate-50 border-transparent text-slate-300 hover:border-slate-200 hover:bg-white'
-                                                            }`}
-                                                        >
-                                                            <span className="text-2xl">{val}</span>
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                                <div className="flex justify-between px-2 text-[10px] font-black text-slate-300  ">
-                                                    <span>Needs Improvement</span>
-                                                    <span>Exceptional Performance</span>
-                                                </div>
+                                    {q.type === 'RATING' ? (
+                                        <div className="space-y-3">
+                                            <div className="grid grid-cols-5 gap-2.5">
+                                                {[1, 2, 3, 4, 5].map((val) => (
+                                                    <button
+                                                        key={val}
+                                                        type="button"
+                                                        onClick={() => setResponses({...responses, [q.id]: { answer_value: val }})}
+                                                        className={`aspect-square rounded-[12px] font-bold transition-all flex items-center justify-center border ${jetbrainsMono.className} ${
+                                                            responses[q.id]?.answer_value === val
+                                                            ? 'bg-[#5B53E0] border-[#4A43C9] text-white shadow-[0_6px_16px_rgba(91,83,224,0.28)] scale-105'
+                                                            : 'bg-[#F7F8FA] border-[#E8EAED] text-[#8A929E] hover:border-[#5B53E0]/40 hover:text-[#5B53E0]'
+                                                        }`}
+                                                    >
+                                                        <span className="text-[20px]">{val}</span>
+                                                    </button>
+                                                ))}
                                             </div>
-                                        ) : (
-                                            <textarea
-                                                className="w-full px-8 py-6 bg-slate-50 border-none rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-medium min-h-[200px] text-slate-700 text-lg placeholder:text-slate-200"
-                                                placeholder="Share your detailed observations..."
-                                                value={responses[q.id]?.answer_text || ""}
-                                                onChange={(e) => setResponses({...responses, [q.id]: { answer_text: e.target.value }})}
-                                                required
-                                            />
-                                        )}
-                                    </div>
+                                            <div className="flex justify-between px-1 text-[11px] font-semibold text-[#8A929E]">
+                                                <span>Needs Improvement</span>
+                                                <span>Exceptional</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <Textarea
+                                            className="min-h-[160px] text-[15px]"
+                                            placeholder="Share your detailed observations…"
+                                            value={responses[q.id]?.answer_text || ""}
+                                            onChange={(e) => setResponses({...responses, [q.id]: { answer_text: e.target.value }})}
+                                            required
+                                        />
+                                    )}
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        </Card>
+                    ))}
+                </div>
 
-                    {/* Right Column: Dynamic Summary / Footer Sticky */}
-                    <div className="lg:col-span-4 h-fit lg:sticky lg:top-8 space-y-6">
-                        <div className="bg-slate-900 p-10 rounded-2xl text-white shadow-2xl shadow-slate-200">
-                            <h4 className="text-xl font-black  tracking-tight mb-8">Submission Summary</h4>
-                            
-                            <div className="space-y-6 mb-10">
-                                <div className="flex justify-between items-center py-4 border-b border-white/10">
-                                    <span className="text-[10px] font-bold text-white/40  ">Questions Noted</span>
-                                    <span className="text-lg font-black">{Object.keys(responses).length} / {questions.length}</span>
-                                </div>
-                                <p className="text-xs text-white/50 leading-relaxed font-medium ">
-                                    {assignment.relation === 'PEER' || assignment.relation === 'REPORT' ? 
-                                        "🔒 Your responses are end-to-end encrypted and will be aggregated anonymously to help your colleague grow." : 
-                                        "📢 Your feedback will be shared directly with the employee as part of their development plan."
-                                    }
-                                </p>
+                {/* Right Column: Summary / Sticky footer */}
+                <div className="lg:col-span-4 h-fit lg:sticky lg:top-20 space-y-4">
+                    <div className="bg-[#15171C] p-6 rounded-[14px] text-white">
+                        <h4 className="text-[16px] font-bold tracking-tight mb-5">Submission Summary</h4>
+
+                        <div className="space-y-4 mb-6">
+                            <div className="flex justify-between items-center py-3 border-b border-white/10">
+                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-white/50">Questions Noted</span>
+                                <span className={`text-[15px] font-bold ${jetbrainsMono.className}`}>{Object.keys(responses).length} / {questions.length}</span>
                             </div>
-
-                            <button
-                                type="submit"
-                                disabled={submitting || Object.keys(responses).length < questions.length}
-                                className="w-full py-6 bg-indigo-600 text-white rounded-xl font-black text-sm  tracking-[0.3em] shadow-xl shadow-indigo-900/40 hover:bg-white hover:text-indigo-600 transition-all active:scale-95 disabled:opacity-30 disabled:grayscale"
-                            >
-                                {submitting ? 'Transmitting...' : 'Confirm Submission'}
-                            </button>
-                        </div>
-                        
-                        <div className="bg-indigo-50 p-8 rounded-2xl border border-indigo-100/50">
-                            <p className="text-[10px] font-black text-indigo-400   mb-3">Support</p>
-                            <p className="text-xs text-indigo-900/60 font-medium leading-relaxed">
-                                Need help with the assessment? Contact the HR Business Partner team via the corporate internal helpdesk.
+                            <p className="text-[12.5px] text-white/55 leading-relaxed">
+                                {assignment.relation === 'PEER' || assignment.relation === 'REPORT' ?
+                                    "🔒 Your responses are end-to-end encrypted and will be aggregated anonymously to help your colleague grow." :
+                                    "📢 Your feedback will be shared directly with the employee as part of their development plan."
+                                }
                             </p>
                         </div>
+
+                        <Button
+                            type="submit"
+                            fullWidth
+                            size="lg"
+                            icon={submitting ? undefined : "send"}
+                            disabled={submitting || Object.keys(responses).length < questions.length}
+                        >
+                            {submitting ? 'Transmitting…' : 'Confirm Submission'}
+                        </Button>
                     </div>
-                </form>
-            </div>
+
+                    <Card className="bg-[#FAFAFE] border-[#ECEBFB]">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5B53E0] mb-2">Support</p>
+                        <p className="text-[12.5px] text-[#374151] leading-relaxed">
+                            Need help with the assessment? Contact the HR Business Partner team via the corporate internal helpdesk.
+                        </p>
+                    </Card>
+                </div>
+            </form>
         </div>
     );
 }

@@ -4,6 +4,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
+import {
+    Check,
+    CheckCircle2,
+    Globe,
+    Rocket,
+    Users,
+    UserCheck,
+} from "lucide-react";
+import { Button, Card, CardHeader, Input, Field, Badge, PageHeader, jetbrainsMono } from "@/components/ds";
 
 interface Template {
     id: string;
@@ -26,7 +35,7 @@ export default function LaunchSurvey() {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    
+
     // Form State
     const [formData, setFormData] = useState({
         template_id: "",
@@ -57,8 +66,8 @@ export default function LaunchSurvey() {
 
     const toggleEmployee = (id: string) => {
         setFormData(prev => {
-            const ids = prev.employee_ids.includes(id) 
-                ? prev.employee_ids.filter(e => e !== id) 
+            const ids = prev.employee_ids.includes(id)
+                ? prev.employee_ids.filter(e => e !== id)
                 : [...prev.employee_ids, id];
             return { ...prev, employee_ids: ids };
         });
@@ -84,162 +93,179 @@ export default function LaunchSurvey() {
         }
     };
 
-    if (loading) return <div className="p-8 text-center text-slate-400 font-bold   text-xs ">Syncing with personnel database...</div>;
+    if (loading) return (
+        <div className="px-4 sm:px-5 md:px-7 py-16 text-center">
+            <div className="inline-flex items-center gap-2.5 text-[13px] font-medium text-[#8A929E]">
+                <span className="w-4 h-4 rounded-full border-2 border-[#E1E4E8] border-t-[#5B53E0] animate-spin" />
+                Syncing with personnel database…
+            </div>
+        </div>
+    );
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
-            <header className="flex justify-between items-center pb-6 border-b border-slate-100">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/enterprise/surveys')} className="w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-indigo-600 transition-all flex items-center justify-center text-xl">
-                        <span className="material-symbols-rounded">arrow_back</span>
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">Launch Survey Campaign</h1>
-                        <p className="text-slate-400 font-black   text-[9px]">Select target audience and deploy feedback framework</p>
-                    </div>
-                </div>
-            </header>
+        <div className="px-4 sm:px-5 md:px-7 pb-10 max-w-[1320px] mx-auto w-full space-y-6 animate-in fade-in duration-500">
+            {/* Page header */}
+            <PageHeader
+                title="Launch Survey Campaign"
+                subtitle="Select target audience and deploy your feedback framework"
+                onBack={() => router.push('/enterprise/surveys')}
+                help="Pick a template and choose the audience, then deploy. Recipients get a secure link to respond."
+            />
 
-            <form onSubmit={handleLaunch} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-4 space-y-6">
-                    <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-100/10 space-y-8">
-                        <div>
-                            <label htmlFor="survey-campaign-name" className="block text-[10px] font-black text-slate-400   mb-3 px-1">Campaign Name</label>
-                            <input
+            <form onSubmit={handleLaunch} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* Left column: campaign details */}
+                <div className="lg:col-span-5 xl:col-span-4 space-y-6">
+                    <Card padding="lg" className="space-y-6">
+                        <CardHeader title="Campaign Details" subtitle="Name and schedule for this survey" />
+
+                        <Field label="Campaign Name" htmlFor="survey-campaign-name" required>
+                            <Input
                                 id="survey-campaign-name"
-                                className="w-full px-5 py-4 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold text-slate-700"
                                 value={formData.name}
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                                 placeholder="e.g. Annual Engagement Survey"
                                 required
                             />
-                        </div>
+                        </Field>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label htmlFor="survey-start-date" className="block text-[10px] font-black text-slate-400   mb-3 px-1">Start Date</label>
-                                <input
+                        <div className="grid grid-cols-2 gap-3">
+                            <Field label="Start Date" htmlFor="survey-start-date" required>
+                                <Input
                                     id="survey-start-date"
-                                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-xs font-bold text-slate-700"
                                     type="date"
                                     value={formData.start_date}
                                     onChange={(e) => setFormData({...formData, start_date: e.target.value})}
                                     required
                                 />
-                            </div>
-                            <div>
-                                <label htmlFor="survey-end-date" className="block text-[10px] font-black text-slate-400   mb-3 px-1">End Date</label>
-                                <input
+                            </Field>
+                            <Field label="End Date" htmlFor="survey-end-date" required>
+                                <Input
                                     id="survey-end-date"
-                                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-xs font-bold text-slate-700"
                                     type="date"
                                     value={formData.end_date}
                                     onChange={(e) => setFormData({...formData, end_date: e.target.value})}
                                     required
                                 />
-                            </div>
+                            </Field>
                         </div>
 
                         <div>
-                            <label htmlFor="survey-framework-list" className="block text-[10px] font-black text-slate-400   mb-4 px-1">Selected Framework</label>
+                            <label htmlFor="survey-framework-list" className="block text-[12.5px] font-semibold text-[#374151] mb-2">Selected Framework</label>
                             <div id="survey-framework-list" className="space-y-2">
-                                {templates.map(tpl => (
-                                    <div
-                                        key={tpl.id}
-                                        role="button"
-                                        tabIndex={0}
-                                        onClick={() => setFormData({...formData, template_id: tpl.id})}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault();
-                                                setFormData({...formData, template_id: tpl.id});
-                                            }
-                                        }}
-                                        className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-4 ${formData.template_id === tpl.id ? 'border-indigo-600 bg-indigo-50/30' : 'border-slate-50 bg-slate-50 hover:border-slate-200'}`}
-                                    >
-                                        <div className="min-w-0">
-                                            <p className="text-[10px] font-black text-indigo-600  tracking-tighter mb-0.5">{tpl.survey_type.name}</p>
-                                            <h4 className="font-black text-slate-900 text-xs truncate leading-tight">{tpl.title}</h4>
+                                {templates.map(tpl => {
+                                    const active = formData.template_id === tpl.id;
+                                    return (
+                                        <div
+                                            key={tpl.id}
+                                            role="button"
+                                            tabIndex={0}
+                                            onClick={() => setFormData({...formData, template_id: tpl.id})}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    setFormData({...formData, template_id: tpl.id});
+                                                }
+                                            }}
+                                            className={`p-3.5 border rounded-[12px] cursor-pointer transition-colors flex items-center justify-between gap-3 ${active ? 'border-[#5B53E0] bg-[#F5F4FE]' : 'border-[#E8EAED] bg-white hover:border-[#D4D7DC]'}`}
+                                        >
+                                            <div className="min-w-0">
+                                                <Badge tone="indigo" className="mb-1.5">{tpl.survey_type.name}</Badge>
+                                                <h4 className="font-bold text-[#15171C] text-[13.5px] truncate leading-tight">{tpl.title}</h4>
+                                            </div>
+                                            {active && <CheckCircle2 className="w-5 h-5 text-[#5B53E0] shrink-0" />}
                                         </div>
-                                        {formData.template_id === tpl.id && <span className="material-symbols-rounded text-indigo-600 text-lg">check_circle</span>}
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 
-                        <button 
+                        <Button
                             type="submit"
+                            fullWidth
+                            size="lg"
                             disabled={submitting || !formData.template_id || (formData.target_group === 'CUSTOM' && formData.employee_ids.length === 0)}
-                            className="w-full py-5 bg-slate-900 text-white rounded-xl font-black text-[10px]  tracking-[0.2em] shadow-xl shadow-slate-100 hover:bg-indigo-600 transition-all flex items-center justify-center gap-2"
                         >
-                            {submitting ? 'Launching...' : 'DEPLOY SURVEY'}
-                        </button>
-                    </div>
+                            <Rocket className="w-4 h-4" />
+                            {submitting ? 'Launching…' : 'Deploy Survey'}
+                        </Button>
+                    </Card>
                 </div>
 
-                <div className="lg:col-span-8 bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-100/10 h-full flex flex-col relative overflow-hidden">
-                    <div className="flex justify-between items-center mb-6 px-1 border-b border-slate-50 pb-6  tracking-[0.1em] font-black">
+                {/* Right column: audience configuration */}
+                <Card padding="lg" className="lg:col-span-7 xl:col-span-8 h-full flex flex-col relative overflow-hidden">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#E8EAED] pb-5 mb-5">
                         <div>
-                            <h3 className="text-xl text-slate-900">Configure Audience</h3>
-                            <p className="text-slate-400 text-[9px] mt-1">Select target employees for this campaign</p>
+                            <h3 className="text-[15px] font-bold text-[#15171C]">Configure Audience</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">Select target employees for this campaign</p>
                         </div>
-                        <div className="flex gap-2">
-                            <button 
-                                type="button" 
+                        <div className="flex gap-2 shrink-0">
+                            <button
+                                type="button"
                                 onClick={() => setFormData({...formData, target_group: 'ALL'})}
-                                className={`px-4 py-2 rounded-xl text-[9px] font-black transition-all ${formData.target_group === 'ALL' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                                className={`inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[10px] text-[12.5px] font-semibold transition-colors ${formData.target_group === 'ALL' ? 'bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]' : 'bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7]'}`}
                             >
-                                Entire Organization
+                                <Users className="w-3.5 h-3.5" /> Entire Organization
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={() => setFormData({...formData, target_group: 'CUSTOM'})}
-                                className={`px-4 py-2 rounded-xl text-[9px] font-black transition-all ${formData.target_group === 'CUSTOM' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                                className={`inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[10px] text-[12.5px] font-semibold transition-colors ${formData.target_group === 'CUSTOM' ? 'bg-[#15171C] text-white shadow-sm' : 'bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7]'}`}
                             >
-                                Custom Selection
+                                <UserCheck className="w-3.5 h-3.5" /> Custom Selection
                             </button>
                         </div>
                     </div>
 
-                    <div className={`grid grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto pr-2 custom-scrollbar transition-opacity ${formData.target_group === 'ALL' ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
-                        {employees.map(emp => (
-                            <div
-                                key={emp.id}
-                                role="button"
-                                tabIndex={0}
-                                onClick={() => toggleEmployee(emp.id)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        toggleEmployee(emp.id);
-                                    }
-                                }}
-                                className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-center gap-3 ${formData.employee_ids.includes(emp.id) ? 'border-indigo-600 bg-indigo-50/30' : 'border-slate-50 bg-slate-50 hover:border-slate-200'}`}
-                            >
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-[11px] transition-all border ${formData.employee_ids.includes(emp.id) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-400 border-slate-100 shadow-sm'}`}>
-                                    {formData.employee_ids.includes(emp.id) ? <span className="material-symbols-rounded text-sm font-black">check</span> : emp.first_name[0]}
+                    {formData.target_group === 'CUSTOM' && formData.employee_ids.length > 0 && (
+                        <div className="mb-4">
+                            <Badge tone="indigo">
+                                <span className={jetbrainsMono.className}>{formData.employee_ids.length}</span> selected
+                            </Badge>
+                        </div>
+                    )}
+
+                    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 overflow-y-auto pr-1 custom-scrollbar transition-opacity ${formData.target_group === 'ALL' ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
+                        {employees.map(emp => {
+                            const active = formData.employee_ids.includes(emp.id);
+                            return (
+                                <div
+                                    key={emp.id}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => toggleEmployee(emp.id)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            toggleEmployee(emp.id);
+                                        }
+                                    }}
+                                    className={`p-3 border rounded-[12px] cursor-pointer transition-colors flex items-center gap-3 ${active ? 'border-[#5B53E0] bg-[#F5F4FE]' : 'border-[#E8EAED] bg-white hover:border-[#D4D7DC]'}`}
+                                >
+                                    <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center font-extrabold text-[12px] transition-colors border shrink-0 ${active ? 'bg-[#5B53E0] text-white border-[#5B53E0]' : 'bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]/60'}`}>
+                                        {active ? <Check className="w-4 h-4 stroke-[2.5]" /> : emp.first_name[0]}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[13px] font-bold text-[#15171C] truncate leading-tight">{emp.first_name} {emp.last_name}</p>
+                                        <p className="text-[11.5px] text-[#8A929E] truncate">{emp.designation || 'Specialist'}</p>
+                                    </div>
                                 </div>
-                                <div className="min-w-0">
-                                    <p className="text-[11px] font-black text-slate-900 truncate leading-tight">{emp.first_name} {emp.last_name}</p>
-                                    <p className="text-[9px] font-black text-slate-400  tracking-tighter truncate">{emp.designation || 'Specialist'}</p>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                     {formData.target_group === "ALL" && (
-                        <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex items-center justify-center p-12 text-center pointer-events-none">
-                            <div className="bg-white p-10 rounded-2xl shadow-2xl shadow-indigo-100 border border-slate-50 animate-in zoom-in duration-500 max-w-sm">
-                                <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-6">
-                                    <span className="material-symbols-rounded text-4xl">public</span>
+                        <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 flex items-center justify-center p-8 text-center pointer-events-none">
+                            <div className="bg-white p-8 rounded-[16px] shadow-[0_12px_40px_rgba(91,83,224,0.18)] border border-[#E8EAED] animate-in zoom-in duration-300 max-w-sm">
+                                <div className="w-16 h-16 rounded-[16px] flex items-center justify-center mx-auto mb-5 text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 8px 24px rgba(91,83,224,0.3)" }}>
+                                    <Globe className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none mb-3">Organization Wide</h3>
-                                <p className="text-[10px] font-black text-slate-400   leading-loose">
-                                    Survey will be dispatched to <span className="text-indigo-600 font-black">all {employees.length} employees</span> in the personnel database.
+                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Organization Wide</h3>
+                                <p className="text-[13px] text-[#8A929E] leading-relaxed">
+                                    Survey will be dispatched to <span className="text-[#5B53E0] font-bold"><span className={jetbrainsMono.className}>{employees.length}</span> employees</span> in the personnel database.
                                 </p>
                             </div>
                         </div>
                     )}
-                </div>
+                </Card>
             </form>
         </div>
     );

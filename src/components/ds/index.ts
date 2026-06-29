@@ -17,4 +17,6 @@ export { Input, Textarea, Select, Field, type InputProps } from "./Input";
 export { Badge, type BadgeProps } from "./Badge";
 export { StatCard, StatGrid, type StatCardProps } from "./StatCard";
 export { PageHeader, type PageHeaderProps } from "./PageHeader";
+export { PageHelp, type PageHelpProps } from "./PageHelp";
+export { EmptyState, type EmptyStateProps } from "./EmptyState";
 export { PageShell, HeroBand } from "./PageShell";

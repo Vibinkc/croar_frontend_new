@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 import { Chart } from "react-google-charts";
 import { API_BASE_URL } from "@/lib/api-config";
+import { PageHelp } from "@/components/ds";
 
 interface Profile {
     full_name: string;
@@ -584,10 +585,15 @@ export default function ProfileSourcingChatPage() {
             {/* Page header */}
             <header className="px-6 py-4 bg-white border-b border-[#E8EAED] flex items-center justify-between gap-3 shrink-0">
                 <div>
-                    <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
-                        AI Sourcing
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>Beta</span>
-                    </h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
+                            AI Sourcing
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>Beta</span>
+                        </h1>
+                        <PageHelp title="Profile Sourcing">
+                            <p>Describe who you&apos;re looking for and let AI source matching profiles for you.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[13.5px] text-[#8A929E] mt-0.5">Search across 30+ public sources to discover the best talent</p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">

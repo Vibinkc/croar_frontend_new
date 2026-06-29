@@ -12,7 +12,8 @@ import {
   type SkippedEmployee,
   inr,
 } from "@/utils/payroll/api";
-import { Banner, Modal, PageHeader, StatusBadge } from "@/components/payroll/ui";
+import { Banner, Modal, StatusBadge } from "@/components/payroll/ui";
+import { PageHeader } from "@/components/ds";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { useDialog } from "@/components/payroll/DialogProvider";
 
@@ -146,18 +147,17 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
   const t = cycle.totals ?? {};
 
   return (
-    <div className="animate-fade-in flex flex-col gap-6">
+    <div className="px-4 sm:px-5 md:px-7 py-6 max-w-[1320px] mx-auto w-full animate-fade-in flex flex-col gap-6">
       <div>
         <Link href="/enterprise/payroll" className="mb-3 inline-flex items-center gap-1 text-sm text-[var(--color-primary)]">
           <span className="material-symbols-rounded text-[18px]">arrow_back</span> Back to Payroll
         </Link>
         <PageHeader
-          icon="receipt_long"
           title={cycle.name}
           subtitle={`${cycle.period_start} → ${cycle.period_end} · Pay date ${cycle.pay_date}`}
-        >
-          <StatusBadge status={cycle.status} />
-        </PageHeader>
+          help="Process this pay cycle: review each payslip, then approve and mark it paid."
+          actions={<StatusBadge status={cycle.status} />}
+        />
       </div>
 
       {error && <Banner>{error}</Banner>}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { CroarMark } from "@/components/ds";
 
 export default function SuperAdminSidebar() {
     const pathname = usePathname();
@@ -15,14 +16,14 @@ export default function SuperAdminSidebar() {
                 { label: "Overview", icon: "grid_view", path: "/super-admin" },
                 { label: "Tenants Inventory", icon: "corporate_fare", path: "/super-admin/colleges/list" },
                 { label: "Provision Tenant", icon: "add_business", path: "/super-admin/colleges" },
-            ]
+            ],
         },
         {
             title: "User Intelligence",
             items: [
                 { label: "Global Users", icon: "groups", path: "/super-admin/users" },
                 { label: "Audit Logs", icon: "receipt_long", path: "/super-admin/logs" },
-            ]
+            ],
         },
         {
             title: "System Config",
@@ -30,25 +31,27 @@ export default function SuperAdminSidebar() {
                 { label: "Global Roles", icon: "security", path: "/super-admin/roles" },
                 { label: "Organizations", icon: "business", path: "/super-admin/organizations" },
                 { label: "Platform Settings", icon: "settings_suggest", path: "/super-admin/settings" },
-            ]
-        }
+            ],
+        },
     ];
 
-    const navLinkClass = (path: string) => {
-        const isActive = pathname === path || (path !== "/super-admin" && pathname.startsWith(path));
-        return `group flex items-center gap-3 px-3 py-1.5 rounded-lg transition-all duration-200 ${isActive
-            ? "bg-[#7C3AED]/10 text-[#7C3AED]"
-            : "text-slate-500 hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]"
-            }`;
-    };
+    const isActive = (path: string) =>
+        pathname === path || (path !== "/super-admin" && pathname.startsWith(path));
 
     return (
-        <aside className="w-64 bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 shrink-0 transition-all duration-300">
-            <div className="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col">
-                {/* Logo Section */}
-                <div className="p-4 flex items-center justify-between shrink-0 mb-4 border-b border-slate-50">
-                    <Link href="/super-admin" className="flex items-center gap-2 tracking-tighter">
-                        <span className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent">Croar.ai</span>
+        <aside
+            className="w-[236px] flex flex-col h-screen sticky top-0 shrink-0 border-r border-[#1C1F26]"
+            style={{ background: "#090A0C" }}
+        >
+            <div className="p-3 flex-1 overflow-y-auto no-scrollbar flex flex-col">
+                {/* Logo */}
+                <div className="px-2 pt-2.5 pb-4 flex items-center justify-between shrink-0 mb-3 border-b border-[#1C1F26]">
+                    <Link href="/super-admin" className="flex items-center gap-2.5">
+                        <CroarMark size={32} />
+                        <span className="flex flex-col leading-none">
+                            <span className="text-[17px] font-extrabold tracking-[-0.3px] text-white">Croar</span>
+                            <span className="text-[9.5px] text-[#4F5564] font-semibold uppercase mt-0.5 tracking-wider">Platform</span>
+                        </span>
                     </Link>
                 </div>
 
@@ -56,38 +59,51 @@ export default function SuperAdminSidebar() {
                 <nav className="space-y-4 px-1">
                     {navGroups.map((group) => (
                         <div key={group.title}>
-                            <p className="text-[11px] font-bold text-slate-400 mb-2 px-3">{group.title}</p>
-                            <div className="space-y-0.5">
-                                {group.items.map((item) => (
-                                    <Link key={item.path} href={item.path} className={navLinkClass(item.path)}>
-                                        <span className="material-symbols-rounded text-xl">{item.icon}</span>
-                                        <span className="text-[10px] font-bold whitespace-nowrap">{item.label}</span>
-                                    </Link>
-                                ))}
+                            <p className="text-[10.5px] font-bold tracking-widest uppercase text-[#5C6370] mb-2 px-3">{group.title}</p>
+                            <div className="space-y-1">
+                                {group.items.map((item) => {
+                                    const active = isActive(item.path);
+                                    return (
+                                        <Link
+                                            key={item.path}
+                                            href={item.path}
+                                            className={`group flex items-center gap-3 px-3.5 py-2 rounded-[10px] text-[12.5px] transition-all duration-150 ${
+                                                active
+                                                    ? "bg-[#5B53E0]/15 border border-[#5B53E0]/30 text-[#8B7DFF] font-semibold"
+                                                    : "text-[#BAC1CC] hover:bg-white/[0.04] hover:text-white border border-transparent font-medium"
+                                            }`}
+                                        >
+                                            <span className={`material-symbols-rounded text-[18px] ${active ? "text-[#8B7DFF]" : "text-[#656D7A] group-hover:text-white transition-colors"}`}>{item.icon}</span>
+                                            <span className="whitespace-nowrap">{item.label}</span>
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </div>
                     ))}
                 </nav>
             </div>
 
-            {/* Sidebar Footer User Info */}
-            <div className="p-3 border-t border-slate-50 shrink-0">
-                <div className="flex items-center gap-2 mb-4 px-2">
-                    <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md">
-                        {user ? user.charAt(0).toUpperCase() : 'S'}
+            {/* Sidebar Footer — user + logout */}
+            <div className="p-3 border-t border-[#1C1F26] shrink-0">
+                <div className="flex items-center gap-2.5 mb-3 px-2">
+                    <div className="w-8 h-8 rounded-[8px] bg-[#5B53E0] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_8px_rgba(91,83,224,0.3)]">
+                        {user ? user.charAt(0).toUpperCase() : "S"}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-bold text-slate-700 truncate">{user || "root@croar.ai"}</p>
-                        <p className="text-[10px] font-medium text-slate-400">{role ? role.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) : 'Super Admin'}</p>
+                        <p className="text-[12px] font-semibold text-[#C7CCD4] truncate">{user || "root@croar.ai"}</p>
+                        <p className="text-[10px] font-medium text-[#525969]">
+                            {role ? role.replace("_", " ").toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase()) : "Super Admin"}
+                        </p>
                     </div>
                 </div>
 
                 <button
                     onClick={logout}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all duration-200 group"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#8A929E] hover:bg-white/[0.04] hover:text-rose-400 rounded-[10px] transition-colors duration-150 group"
                 >
-                    <span className="material-symbols-rounded text-slate-500 text-[20px]">logout</span>
-                    <span className="text-[10px] font-bold">Logout</span>
+                    <span className="material-symbols-rounded text-[18px] text-[#525969] group-hover:text-rose-400">logout</span>
+                    <span className="text-[12.5px] font-medium">Logout</span>
                 </button>
             </div>
         </aside>

@@ -4,9 +4,18 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+    FolderKanban,
+    Search,
+    Filter,
+    ChevronDown,
+    Plus,
+    Calendar,
+    FileEdit,
+    Trash2,
+} from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
-import ProjectCard from "@/components/enterprise/ProjectCard";
+import { Badge, StatCard, StatGrid, EmptyState, Button, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface Member {
     first_name: string;
@@ -66,203 +75,218 @@ export default function ProjectsPage() {
         }
     };
 
-    const filteredProjects = projects.filter(proj => 
+    const filteredProjects = projects.filter(proj =>
         (statusFilter === "all" || proj.status === statusFilter) &&
         (proj.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (proj.description && proj.description.toLowerCase().includes(searchQuery.toLowerCase())))
     );
 
+    const selectCls =
+        "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+
+    const statusBadge = (status: string) =>
+        status === "Active" ? (
+            <Badge tone="success" dot>{status}</Badge>
+        ) : status === "Completed" ? (
+            <Badge tone="indigo" dot>{status}</Badge>
+        ) : (
+            <Badge tone="neutral" dot>{status || "—"}</Badge>
+        );
+
     return (
-        <div className="p-6 space-y-8 animate-in fade-in duration-500 bg-[#F8FAFC] min-h-screen">
-            {/* Header */}
-            <div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                    <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
-                            <span className="material-symbols-rounded text-[#7C3AED] text-2xl">account_tree</span>
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Project Management</h1>
-                            <p className="text-slate-500 text-[13px] font-medium mt-1">
-                                Track project milestones, manage team resources, and monitor deployment progress.
-                            </p>
-                        </div>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Projects</h1>
+                        <PageHelp title="Projects">
+                            <p>Organise work into projects, each with its own team and kanban board.</p>
+                            <p><strong>New Project</strong> to create one; open a project to manage its board and members. Tasks live inside projects.</p>
+                        </PageHelp>
                     </div>
-
-                    <div className="flex items-center gap-3">
-                        {canAccess("projects:moderate") && (
-                            <Link
-                                href="/enterprise/projects/add"
-                                className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
-                            >
-                                <span className="material-symbols-rounded text-lg">add_circle</span>{""}
-                                NEW PROJECT
-                            </Link>
-                        )}
-                    </div>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Track milestones, resources &amp; deployment progress</p>
                 </div>
-
-                {/* Stats Section */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {[
-                        { label: "Total Projects", value: projects.length, icon: "rule", color: "indigo" },
-                        { label: "Active Missions", value: projects.filter(p => p.status === 'Active').length, icon: "rocket_launch", color: "emerald" },
-                        { label: "Completed", value: projects.filter(p => p.status === 'Completed').length, icon: "task_alt", color: "amber" },
-                        { label: "Resources", value: projects.reduce((acc, p) => acc + (p.members?.length || 0), 0), icon: "groups", color: "purple" }
-                    ].map((stat, i) => (
-                        <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
-                            <div className="flex items-start justify-between mb-4">
-                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${
-                                    stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
-                                    stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
-                                    stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
-                                    'bg-purple-50 text-purple-600'
-                                }`}>
-                                    <span className="material-symbols-rounded text-xl">{stat.icon}</span>
-                                </div>
-                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
-                            </div>
-                            <p className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{stat.value}</p>
-                            <p className="text-[11px] font-bold text-slate-400 capitalize">{stat.label}</p>
-                        </div>
-                    ))}
+                <div className="flex items-center gap-2.5 shrink-0">
+                    {canAccess("projects:moderate") && (
+                        <Link
+                            href="/enterprise/projects/add"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
+                        >
+                            <Plus className="w-3.5 h-3.5" /> New Project
+                        </Link>
+                    )}
                 </div>
-            </div>
+            </header>
 
-            {/* Interaction Bar */}
-            <div className="flex flex-col md:flex-row items-center gap-4">
-                <div className="flex-1 relative w-full group">
-                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#7C3AED]">search</span>
+            {/* Stat cards */}
+            <StatGrid>
+                <StatCard label="Total Projects" value={projects.length} icon="folder" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label="Active Missions" value={projects.filter(p => p.status === 'Active').length} icon="rocket_launch" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label="Completed" value={projects.filter(p => p.status === 'Completed').length} icon="task_alt" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label="Resources" value={projects.reduce((acc, p) => acc + (p.members?.length || 0), 0)} icon="group" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+            </StatGrid>
+
+            {/* Toolbar: search + filter */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search projects by name or description..."
-                        className="w-full h-12 bg-white border border-slate-200 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
+                        placeholder="Search projects by name or description…"
+                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
-                
-                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm min-w-[200px]">
-                    <span className="material-symbols-rounded text-slate-400 ml-2 text-lg">filter_list</span>
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full bg-transparent border-none text-[11px] font-black text-slate-700 focus:outline-none focus:ring-0 cursor-pointer uppercase tracking-wider"
-                    >
-                        <option value="all">All Statuses</option>
-                        <option value="Active">Active Missions</option>
-                        <option value="Completed">Completed</option>
-                        <option value="On Hold">On Hold</option>
-                    </select>
+
+                <div className="flex items-center gap-2.5">
+                    <div className="relative flex-1 md:flex-none">
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className={`${selectCls} w-full md:min-w-[160px]`}
+                        >
+                            <option value="all">All Statuses</option>
+                            <option value="Active">Active Missions</option>
+                            <option value="Completed">Completed</option>
+                            <option value="On Hold">On Hold</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                    </div>
                 </div>
             </div>
 
-            {/* Content Table */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            {/* Project list */}
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
                 {isLoading ? (
-                    <div className="p-6 space-y-4">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                            <div key={i} className="bg-slate-50 h-16 rounded-xl animate-pulse"></div>
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
                         ))}
                     </div>
                 ) : filteredProjects.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-32 text-center">
-                        <div className="w-20 h-20 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-6">
-                            <span className="material-symbols-rounded text-4xl text-slate-100">account_tree</span>
-                        </div>
-                        <h3 className="text-xl font-black text-slate-800  tracking-tight">No Active Projects</h3>
-                        <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">Initialize your first multi-member project mission to begin tracking progress.</p>
-                    </div>
+                    projects.length === 0 ? (
+                        <EmptyState
+                            icon="lan"
+                            tone="brand"
+                            title="Create your first project"
+                            description="Group work into projects with their own team and board, then add tasks."
+                            action={
+                                canAccess("projects:moderate") ? (
+                                    <Link href="/enterprise/projects/add">
+                                        <Button icon="add">New Project</Button>
+                                    </Link>
+                                ) : undefined
+                            }
+                        />
+                    ) : (
+                        <EmptyState
+                            icon="search_off"
+                            tone="muted"
+                            title="No projects match your filters"
+                            description="Try adjusting your filters or search terms to find what you're looking for."
+                            action={
+                                <Button variant="secondary" onClick={() => { setSearchQuery(""); setStatusFilter("all"); }}>
+                                    Clear all filters
+                                </Button>
+                            }
+                        />
+                    )
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-slate-50 border-b border-slate-100">
-                                    <th className="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest">Project Details</th>
-                                    <th className="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest">Timeline</th>
-                                    <th className="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                                    <th className="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest">Team</th>
-                                    <th className="px-6 py-4 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {filteredProjects.map((proj) => (
-                                    <tr key={proj.id} className="hover:bg-slate-50/50 transition-all group">
-                                        <td className="px-6 py-4">
-                                            <Link href={`/enterprise/projects/${proj.id}`} className="flex flex-col group/title">
-                                                <span className="text-sm font-bold text-slate-900 group-hover/title:text-[#7C3AED] transition-colors">{proj.name}</span>
-                                                <span className="text-xs text-slate-500 line-clamp-1">{proj.description || "No description provided"}</span>
+                    <>
+                        {/* Column header (desktop) */}
+                        <div className="hidden md:grid grid-cols-[2.4fr_1.4fr_0.9fr_1.2fr_110px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Project Details</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Timeline</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Team</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                        </div>
+
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {filteredProjects.map((proj) => (
+                                <div
+                                    key={proj.id}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_1.4fr_0.9fr_1.2fr_110px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                                >
+                                    {/* Project details */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                            <FolderKanban className="w-[17px] h-[17px]" />
+                                        </span>
+                                        <div className="min-w-0">
+                                            <Link href={`/enterprise/projects/${proj.id}`} className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">
+                                                {proj.name}
                                             </Link>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col gap-1">
-                                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
-                                                    <span className="material-symbols-rounded text-sm text-slate-400">calendar_today</span>
-                                                    {proj.start_date ? new Date(proj.start_date).toLocaleDateString() : "TBA"} - {proj.end_date ? new Date(proj.end_date).toLocaleDateString() : "TBA"}
+                                            <span className="block text-[12px] text-[#8A929E] truncate mt-0.5">{proj.description || "No description provided"}</span>
+                                            {/* mobile-only meta */}
+                                            <div className="flex items-center gap-2.5 mt-1 text-[12px] text-[#8A929E] md:hidden">
+                                                <span className="inline-flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {proj.start_date ? new Date(proj.start_date).toLocaleDateString() : "TBA"}</span>
+                                                <span className={jetbrainsMono.className}>{(proj.members || []).length} members</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Timeline (desktop) */}
+                                    <div className="hidden md:flex items-center gap-1.5 text-[13px] text-[#374151] min-w-0">
+                                        <Calendar className="w-4 h-4 text-[#9AA3AF] shrink-0" />
+                                        <span className="truncate">
+                                            {proj.start_date ? new Date(proj.start_date).toLocaleDateString() : "TBA"} – {proj.end_date ? new Date(proj.end_date).toLocaleDateString() : "TBA"}
+                                        </span>
+                                    </div>
+
+                                    {/* Status (desktop) */}
+                                    <div className="hidden md:flex items-center">{statusBadge(proj.status)}</div>
+
+                                    {/* Team (desktop) */}
+                                    <div className="hidden md:flex items-center gap-2 min-w-0">
+                                        <div className="flex -space-x-2">
+                                            {(proj.members || []).slice(0, 3).map((m: Member, i: number) => (
+                                                <div key={i} className="w-8 h-8 rounded-full bg-[#ECEBFB] border-2 border-white flex items-center justify-center text-[10px] font-bold text-[#5B53E0] uppercase">
+                                                    {m.first_name?.[0]}{m.last_name?.[0]}
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-wider ${
-                                                proj.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                                proj.status === 'Completed' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
-                                                'bg-slate-100 text-slate-500 border-slate-200'
-                                            }`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${
-                                                    proj.status === 'Active' ? 'bg-emerald-500' :
-                                                    proj.status === 'Completed' ? 'bg-indigo-500' :
-                                                    'bg-slate-400'
-                                                }`}></span>
-                                                {proj.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <div className="flex -space-x-2">
-                                                    {(proj.members || []).slice(0, 3).map((m: Member, i: number) => (
-                                                        <div key={i} className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-600 uppercase">
-                                                            {m.first_name?.[0]}{m.last_name?.[0]}
-                                                        </div>
-                                                    ))}
-                                                    {(proj.members || []).length > 3 && (
-                                                        <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-400">
-                                                            +{(proj.members || []).length - 3}
-                                                        </div>
-                                                    )}
+                                            ))}
+                                            {(proj.members || []).length > 3 && (
+                                                <div className="w-8 h-8 rounded-full bg-[#F1F2F5] border-2 border-white flex items-center justify-center text-[10px] font-bold text-[#8A929E]">
+                                                    +{(proj.members || []).length - 3}
                                                 </div>
-                                                <span className="text-[11px] font-bold text-slate-400">{(proj.members || []).length} Members</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                {canAccess("projects:moderate") && (
-                                                    <Link
-                                                        href={`/enterprise/projects/${proj.id}/edit`}
-                                                        className="w-9 h-9 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 flex items-center justify-center transition-all"
-                                                        title="Edit Project"
-                                                    >
-                                                        <span className="material-symbols-rounded text-lg">edit</span>
-                                                    </Link>
-                                                )}
-                                                {canAccess("projects:delete") && (
-                                                    <button
-                                                        onClick={() => {
-                                                            setProjectToDelete({ id: proj.id, name: proj.name });
-                                                            setIsDeleteModalOpen(true);
-                                                        }}
-                                                        className="w-9 h-9 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 flex items-center justify-center transition-all"
-                                                        title="Delete Project"
-                                                    >
-                                                        <span className="material-symbols-rounded text-lg">delete</span>
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                            )}
+                                        </div>
+                                        <span className={`text-[12px] text-[#8A929E] ${jetbrainsMono.className}`}>{(proj.members || []).length}</span>
+                                    </div>
+
+                                    {/* Status + actions (mobile bundles status; desktop = actions cell) */}
+                                    <div className="flex items-center gap-1 justify-end">
+                                        <div className="md:hidden mr-1">{statusBadge(proj.status)}</div>
+
+                                        {canAccess("projects:moderate") && (
+                                            <Link
+                                                href={`/enterprise/projects/${proj.id}/edit`}
+                                                className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                                                title="Edit Project"
+                                            >
+                                                <FileEdit className="w-4 h-4" />
+                                            </Link>
+                                        )}
+                                        {canAccess("projects:delete") && (
+                                            <button
+                                                onClick={() => {
+                                                    setProjectToDelete({ id: proj.id, name: proj.name });
+                                                    setIsDeleteModalOpen(true);
+                                                }}
+                                                className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                                                title="Delete Project"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
 

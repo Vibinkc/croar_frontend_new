@@ -24,7 +24,7 @@ import {
     Globe as GlobeIcon,
 } from "lucide-react";
 import PublishJobModal from "@/components/enterprise/PublishJobModal";
-import { Badge, jetbrainsMono } from "@/components/ds";
+import { Badge, PageHelp, EmptyState, Button, jetbrainsMono } from "@/components/ds";
 
 interface JobPosting {
     platform: string;
@@ -219,7 +219,14 @@ export default function EnterpriseJobsPage() {
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Jobs</h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Jobs</h1>
+                        <PageHelp title="Jobs">
+                            <p>Every open position lives here. Each job has its own candidate pipeline.</p>
+                            <p><strong>New Position</strong> posts a job manually; <strong>Hire with AI</strong> lets Croar set up the whole pipeline for you.</p>
+                            <p>Open a job to track applicants, or use the row actions to share, edit or publish it.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your pipeline &amp; open positions</p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
@@ -316,31 +323,43 @@ export default function EnterpriseJobsPage() {
                         ))}
                     </div>
                 ) : filteredJobs.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
-                        <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
-                            <Briefcase className="w-8 h-8 text-[#C7CCD4]" />
-                        </div>
-                        {jobs.length === 0 ? (
-                            <>
-                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No jobs yet</h3>
-                                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Create your first job to start hiring — let AI set up the whole pipeline, or post one manually.</p>
-                                <div className="flex flex-wrap gap-2.5 justify-center">
-                                    <Link href="/enterprise/croar-pilot" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors">
-                                        <Sparkles className="w-4 h-4" /> Hire with AI
+                    jobs.length === 0 ? (
+                        <EmptyState
+                            tone="brand"
+                            icon="work"
+                            title="Post your first job"
+                            description="Create a role and Croar sets up its candidate pipeline. Post it manually, or let AI build the whole pipeline."
+                            action={
+                                canAccess("jobs:create") ? (
+                                    <Link href="/enterprise/croar-pilot">
+                                        <Button icon="auto_awesome">Hire with AI</Button>
                                     </Link>
-                                    <Link href="/enterprise/jobs/create" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13.5px] font-semibold hover:bg-[#F4F5F7] transition-colors">
-                                        <Plus className="w-4 h-4" /> Post a job
+                                ) : undefined
+                            }
+                            secondary={
+                                canAccess("jobs:create") ? (
+                                    <Link href="/enterprise/jobs/create">
+                                        <Button variant="secondary" icon="add">Post a job</Button>
                                     </Link>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No jobs match your filters</h3>
-                                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
-                                <button onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); }} className="inline-flex items-center h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] transition-colors">Clear all filters</button>
-                            </>
-                        )}
-                    </div>
+                                ) : undefined
+                            }
+                        />
+                    ) : (
+                        <EmptyState
+                            tone="muted"
+                            icon="search_off"
+                            title="No jobs match your filters"
+                            description="Try adjusting your filters or search terms to find what you're looking for."
+                            action={
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); }}
+                                >
+                                    Clear all filters
+                                </Button>
+                            }
+                        />
+                    )
                 ) : (
                     <>
                         {/* Column header (desktop) */}

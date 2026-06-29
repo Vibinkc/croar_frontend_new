@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   settingsApi,
-  type Organization,
   type OrganizationUpdate,
   type PayslipSettings,
   type PayslipDocScan,
@@ -12,8 +11,21 @@ import {
   type StatutoryConfig,
   type StatutoryConfigUpdate,
 } from "@/utils/payroll/api";
-import { Banner, PageHeader } from "@/components/payroll/ui";
+import { Banner } from "@/components/payroll/ui";
 import { useAuth } from "@/components/payroll/AuthProvider";
+import {
+  Button,
+  Card,
+  Field as DSField,
+  PageHeader,
+  jetbrainsMono,
+} from "@/components/ds";
+
+// Shared field control classes — aligns every native <input>/<select> in this
+// page with the design-system Input/Select look (hairline border, indigo focus).
+const INPUT_CLS =
+  "w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+const SELECT_CLS = `${INPUT_CLS} appearance-none pr-9 cursor-pointer`;
 
 const INDUSTRIES = [
   "Information Technology",
@@ -177,25 +189,25 @@ export default function SettingsPage() {
   }
 
   if (loading)
-    return <p className="p-12 text-center text-[var(--color-muted)]">Loading…</p>;
+    return <p className="p-12 text-center text-[#8A929E]">Loading…</p>;
 
   const initials = (form.name || "?").trim().charAt(0).toUpperCase() || "?";
   const locality = [form.city, form.state].filter(Boolean).join(", ");
 
   return (
-    <div className="animate-fade-in flex w-full flex-col gap-6 pb-24">
-      <PageHeader icon="settings_applications" title="Settings" />
+    <div className="px-4 sm:px-5 md:px-7 pb-24 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+      <PageHeader title="Settings" subtitle="Organisation profile, payslip template &amp; statutory compliance" help="Configure your organisation, payslip template and statutory settings used across payroll." />
 
       {/* Organisation hero */}
-      <div className="flex items-center gap-5 rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-card)] to-[var(--color-surface)] p-6">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-2xl font-bold text-white shadow-lg shadow-[var(--color-primary)]/20">
+      <Card padding="lg" className="flex items-center gap-5">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[14px] bg-[#5B53E0] text-[26px] font-extrabold text-white shadow-[0_8px_24px_rgba(91,83,224,0.3)]">
           {initials}
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-2xl font-bold">
+          <h2 className="truncate text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C]">
             {form.name || "Your Organisation"}
-          </h1>
-          <p className="truncate text-sm text-[var(--color-muted)]">
+          </h2>
+          <p className="truncate text-[13px] text-[#8A929E] mt-0.5">
             {form.legal_name || "Complete your organisation profile below."}
           </p>
           <div className="mt-2.5 flex flex-wrap gap-2">
@@ -205,7 +217,7 @@ export default function SettingsPage() {
             {form.pan && <Chip icon="badge">PAN {form.pan}</Chip>}
           </div>
         </div>
-      </div>
+      </Card>
 
       {!canEdit && (
         <Banner tone="warn">
@@ -213,17 +225,17 @@ export default function SettingsPage() {
         </Banner>
       )}
 
-      {/* Section tabs */}
-      <div className="flex flex-wrap gap-1 border-b border-[var(--color-border)]">
+      {/* Section tabs (segmented control) */}
+      <div className="flex flex-wrap gap-1 bg-[#E8EAED] rounded-[12px] p-1 w-full sm:w-fit">
         {TABS.map((t) => (
           <button
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
-            className={`flex items-center gap-2 rounded-t-lg border-b-2 px-4 py-2.5 text-sm font-semibold transition-colors ${
+            className={`flex items-center justify-center gap-2 rounded-[9px] px-4 h-9 text-[13px] font-semibold transition-all flex-1 sm:flex-none ${
               tab === t.key
-                ? "border-[var(--color-primary)] text-[var(--color-primary)]"
-                : "border-transparent text-[var(--color-muted)] hover:text-[var(--color-text)]"
+                ? "bg-white text-[#15171C] shadow-sm"
+                : "text-[#6B6F76] hover:text-[#374151]"
             }`}
           >
             <span className="material-symbols-rounded text-[18px]">{t.icon}</span>
@@ -235,12 +247,7 @@ export default function SettingsPage() {
       {/* Organisation Profile */}
       <div className={tab === "organisation" ? "flex flex-col gap-6" : "hidden"}>
         {error && <Banner>{error}</Banner>}
-        {saved && (
-          <div className="flex items-center gap-2 rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
-            <span className="material-symbols-rounded text-[20px]">check_circle</span>{" "}
-            Organisation profile saved.
-          </div>
-        )}
+        {saved && <SavedNote>Organisation profile saved.</SavedNote>}
 
       <form onSubmit={save} className="grid grid-cols-1 items-start gap-6 xl:grid-cols-2">
         <Section
@@ -250,7 +257,7 @@ export default function SettingsPage() {
         >
           <Field label="Organisation Name" required>
             <input
-              className="input"
+              className={INPUT_CLS}
               required
               placeholder="Acme Technologies"
               disabled={!canEdit}
@@ -260,7 +267,7 @@ export default function SettingsPage() {
           </Field>
           <Field label="Legal Name" hint="As registered with the authorities.">
             <input
-              className="input"
+              className={INPUT_CLS}
               placeholder="Acme Technologies Pvt Ltd"
               disabled={!canEdit}
               value={form.legal_name}
@@ -269,24 +276,27 @@ export default function SettingsPage() {
           </Field>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Industry">
-              <select
-                className="input"
-                disabled={!canEdit}
-                value={form.industry}
-                onChange={(e) => set("industry", e.target.value)}
-              >
-                <option value="">— Select —</option>
-                {INDUSTRIES.map((i) => (
-                  <option key={i} value={i}>
-                    {i}
-                  </option>
-                ))}
-              </select>
+              <SelectWrap>
+                <select
+                  className={SELECT_CLS}
+                  disabled={!canEdit}
+                  value={form.industry}
+                  onChange={(e) => set("industry", e.target.value)}
+                >
+                  <option value="">— Select —</option>
+                  {INDUSTRIES.map((i) => (
+                    <option key={i} value={i}>
+                      {i}
+                    </option>
+                  ))}
+                </select>
+              </SelectWrap>
             </Field>
             <Field label="Currency">
               <div className="flex flex-col gap-2">
+                <SelectWrap>
                 <select
-                  className="input"
+                  className={SELECT_CLS}
                   disabled={!canEdit}
                   value={customCurrency ? CUSTOM_CURRENCY : form.currency}
                   onChange={(e) => {
@@ -308,9 +318,10 @@ export default function SettingsPage() {
                   ))}
                   <option value={CUSTOM_CURRENCY}>Custom…</option>
                 </select>
+                </SelectWrap>
                 {customCurrency && (
                   <input
-                    className="input"
+                    className={INPUT_CLS}
                     autoFocus
                     maxLength={8}
                     placeholder="Enter currency code (e.g. KWD)"
@@ -334,7 +345,7 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Contact Email">
               <input
-                className="input"
+                className={INPUT_CLS}
                 type="email"
                 placeholder="hello@acme.com"
                 disabled={!canEdit}
@@ -344,7 +355,7 @@ export default function SettingsPage() {
             </Field>
             <Field label="Contact Phone">
               <input
-                className="input"
+                className={INPUT_CLS}
                 placeholder="+91 98765 43210"
                 disabled={!canEdit}
                 value={form.contact_phone}
@@ -362,7 +373,7 @@ export default function SettingsPage() {
         >
           <Field label="Address Line 1">
             <input
-              className="input"
+              className={INPUT_CLS}
               placeholder="Building, street"
               disabled={!canEdit}
               value={form.address_line1}
@@ -371,7 +382,7 @@ export default function SettingsPage() {
           </Field>
           <Field label="Address Line 2">
             <input
-              className="input"
+              className={INPUT_CLS}
               placeholder="Area, landmark"
               disabled={!canEdit}
               value={form.address_line2}
@@ -380,16 +391,16 @@ export default function SettingsPage() {
           </Field>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Field label="City">
-              <input className="input" disabled={!canEdit} value={form.city} onChange={(e) => set("city", e.target.value)} />
+              <input className={INPUT_CLS} disabled={!canEdit} value={form.city} onChange={(e) => set("city", e.target.value)} />
             </Field>
             <Field label="State">
-              <input className="input" disabled={!canEdit} value={form.state} onChange={(e) => set("state", e.target.value)} />
+              <input className={INPUT_CLS} disabled={!canEdit} value={form.state} onChange={(e) => set("state", e.target.value)} />
             </Field>
             <Field label="Pincode">
-              <input className="input" inputMode="numeric" disabled={!canEdit} value={form.pincode} onChange={(e) => set("pincode", e.target.value)} />
+              <input className={INPUT_CLS} inputMode="numeric" disabled={!canEdit} value={form.pincode} onChange={(e) => set("pincode", e.target.value)} />
             </Field>
             <Field label="Country">
-              <input className="input" disabled={!canEdit} value={form.country} onChange={(e) => set("country", e.target.value)} />
+              <input className={INPUT_CLS} disabled={!canEdit} value={form.country} onChange={(e) => set("country", e.target.value)} />
             </Field>
           </div>
         </Section>
@@ -402,7 +413,7 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="PAN" hint="10-character permanent account number.">
               <input
-                className="input font-mono uppercase tracking-wider"
+                className={`${INPUT_CLS} font-mono uppercase tracking-wider`}
                 maxLength={10}
                 placeholder="AAAAA9999A"
                 disabled={!canEdit}
@@ -412,7 +423,7 @@ export default function SettingsPage() {
             </Field>
             <Field label="TAN" hint="Tax deduction account number.">
               <input
-                className="input font-mono uppercase tracking-wider"
+                className={`${INPUT_CLS} font-mono uppercase tracking-wider`}
                 maxLength={10}
                 placeholder="AAAA99999A"
                 disabled={!canEdit}
@@ -432,40 +443,35 @@ export default function SettingsPage() {
         >
           <Link
             href="/enterprise/payroll/team"
-            className="flex items-center justify-between rounded-xl border border-[var(--color-border)] px-4 py-3 transition-colors hover:border-[var(--color-primary)]/40 hover:bg-[var(--color-hover)]"
+            className="flex items-center justify-between rounded-[12px] border border-[#E8EAED] px-4 py-3 transition-colors hover:border-[#5B53E0]/40 hover:bg-[#F4F5F7]"
           >
             <span className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#ECEBFB] text-[#5B53E0]">
                 <span className="material-symbols-rounded text-[20px]">manage_accounts</span>
               </span>
               <span>
-                <span className="block font-semibold">Users &amp; Roles</span>
-                <span className="block text-xs text-[var(--color-muted)]">
+                <span className="block text-[13.5px] font-bold text-[#15171C]">Users &amp; Roles</span>
+                <span className="block text-[12px] text-[#8A929E]">
                   Invite teammates and assign Admin / HR / Viewer roles.
                 </span>
               </span>
             </span>
-            <span className="material-symbols-rounded text-[var(--color-dim)]">chevron_right</span>
+            <span className="material-symbols-rounded text-[#C7CCD4]">chevron_right</span>
           </Link>
         </Section>
 
         {/* Sticky save bar */}
         {canEdit && (
-          <div className="sticky bottom-4 z-10 flex items-center justify-between gap-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]/90 px-5 py-3 shadow-xl backdrop-blur xl:col-span-2">
-            <span className="flex items-center gap-2 text-sm text-[var(--color-muted)]">
+          <div className="sticky bottom-4 z-10 flex items-center justify-between gap-4 rounded-[14px] border border-[#E8EAED] bg-white/95 px-5 py-3 shadow-[0_14px_34px_rgba(15,23,42,0.12)] backdrop-blur xl:col-span-2">
+            <span className="flex items-center gap-2 text-[13px] text-[#8A929E]">
               <span
-                className={`h-2 w-2 rounded-full ${dirty ? "bg-[var(--color-warn)]" : "bg-[var(--color-accent)]"}`}
+                className={`h-2 w-2 rounded-full ${dirty ? "bg-[#D97706]" : "bg-[#0E8A6E]"}`}
               />
               {dirty ? "You have unsaved changes" : "All changes saved"}
             </span>
-            <button
-              type="submit"
-              disabled={saving || !dirty}
-              style={{ width: "auto" }}
-              className="btn-primary px-6"
-            >
+            <Button type="submit" disabled={saving || !dirty}>
               {saving ? "Saving…" : "Save Changes"}
-            </button>
+            </Button>
           </div>
         )}
       </form>
@@ -623,12 +629,7 @@ function StatutoryComplianceSection({ canEdit }: { canEdit: boolean }) {
         wide
       >
         {err && <Banner>{err}</Banner>}
-        {saved && (
-          <div className="flex items-center gap-2 rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
-            <span className="material-symbols-rounded text-[20px]">check_circle</span>{" "}
-            Statutory settings saved — applied across payroll.
-          </div>
-        )}
+        {saved && <SavedNote>Statutory settings saved — applied across payroll.</SavedNote>}
 
         <Banner tone="warn">
           These override the built-in statutory defaults for your company. Slab tables (Professional
@@ -636,16 +637,16 @@ function StatutoryComplianceSection({ canEdit }: { canEdit: boolean }) {
         </Banner>
 
         {STAT_GROUPS.map((g) => (
-          <div key={g.group} className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
-            <div className="mb-3 flex items-center gap-2">
-              <span className="material-symbols-rounded text-[20px] text-[var(--color-primary)]">{g.icon}</span>
-              <span className="font-semibold">{g.group}</span>
+          <div key={g.group} className="rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4">
+            <div className="mb-3.5 flex items-center gap-2">
+              <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">{g.icon}</span>
+              <span className="text-[14px] font-bold text-[#15171C]">{g.group}</span>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {g.rates.map((f) => (
                 <Field key={f.key} label={f.label} hint={f.hint}>
                   <input
-                    className="input"
+                    className={`${INPUT_CLS} ${jetbrainsMono.className}`}
                     type="number"
                     step="0.01"
                     min="0"
@@ -658,7 +659,7 @@ function StatutoryComplianceSection({ canEdit }: { canEdit: boolean }) {
               {g.amounts.map((f) => (
                 <Field key={f.key} label={f.label} hint={f.hint}>
                   <input
-                    className="input"
+                    className={`${INPUT_CLS} ${jetbrainsMono.className}`}
                     type="number"
                     step="1"
                     min="0"
@@ -674,9 +675,9 @@ function StatutoryComplianceSection({ canEdit }: { canEdit: boolean }) {
 
         {canEdit && (
           <div className="flex justify-end pt-2">
-            <button type="submit" disabled={saving} style={{ width: "auto" }} className="btn-primary px-6">
+            <Button type="submit" disabled={saving}>
               {saving ? "Saving…" : "Save Statutory Settings"}
-            </button>
+            </Button>
           </div>
         )}
       </Section>
@@ -841,7 +842,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
   if (loading) return null;
 
-  const accentPreview = ps.accent_color || "var(--color-primary)";
+  const accentPreview = ps.accent_color || "#5B53E0";
 
   return (
     <form onSubmit={save} className="flex flex-col gap-4">
@@ -852,17 +853,12 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         wide
       >
         {err && <Banner>{err}</Banner>}
-        {saved && (
-          <div className="flex items-center gap-2 rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
-            <span className="material-symbols-rounded text-[20px]">check_circle</span>{" "}
-            Payslip template saved.
-          </div>
-        )}
+        {saved && <SavedNote>Payslip template saved.</SavedNote>}
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Display Name" hint={`Shown as the payslip header. Defaults to "${ps.company_name}".`}>
             <input
-              className="input"
+              className={INPUT_CLS}
               placeholder={ps.company_name}
               disabled={!canEdit}
               value={ps.display_name ?? ""}
@@ -876,25 +872,25 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
                 disabled={!canEdit}
                 value={ps.accent_color || "#2563eb"}
                 onChange={(e) => set("accent_color", e.target.value)}
-                className="h-9 w-10 shrink-0 cursor-pointer rounded border border-[var(--color-border)] bg-transparent"
+                className="h-11 w-11 shrink-0 cursor-pointer rounded-[10px] border border-[#E1E4E8] bg-transparent p-1"
                 aria-label="Accent colour"
               />
               <input
-                className="input font-mono"
+                className={`${INPUT_CLS} ${jetbrainsMono.className}`}
                 placeholder="#2563eb"
                 maxLength={7}
                 disabled={!canEdit}
                 value={ps.accent_color ?? ""}
                 onChange={(e) => set("accent_color", e.target.value)}
               />
-              <span className="h-9 w-9 shrink-0 rounded" style={{ background: accentPreview }} />
+              <span className="h-11 w-11 shrink-0 rounded-[10px] border border-[#E1E4E8]" style={{ background: accentPreview }} />
             </div>
           </Field>
         </div>
 
         <Field label="Logo URL" hint="Optional. A hosted image (https://…) shown in the payslip header.">
           <input
-            className="input"
+            className={INPUT_CLS}
             type="url"
             placeholder="https://example.com/logo.png"
             disabled={!canEdit}
@@ -905,7 +901,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
         <Field label="Footer Note" hint="Optional. Replaces the default 'system-generated' footer line.">
           <input
-            className="input"
+            className={INPUT_CLS}
             maxLength={300}
             placeholder="This is a system-generated payslip and does not require a signature."
             disabled={!canEdit}
@@ -915,7 +911,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         </Field>
 
         <div className="flex flex-col gap-2">
-          <span className="lbl">Sections</span>
+          <span className="block text-[12.5px] font-semibold text-[#374151] mb-0.5">Sections</span>
           <PayslipToggle
             label="Employer Contributions"
             desc="Show the employer PF/ESI contributions block (informational)."
@@ -940,12 +936,12 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         </div>
 
         {/* Uploaded Word (.docx) template */}
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
-          <div className="mb-1 flex items-center gap-2">
-            <span className="material-symbols-rounded text-[20px] text-[var(--color-primary)]">description</span>
-            <span className="font-semibold">Advanced: pre-tokenised Word (.docx) template</span>
+        <div className="rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4">
+          <div className="mb-1.5 flex items-center gap-2">
+            <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">description</span>
+            <span className="text-[14px] font-bold text-[#15171C]">Advanced: pre-tokenised Word (.docx) template</span>
           </div>
-          <p className="mb-2 text-xs text-[var(--color-muted)]">
+          <p className="mb-2 text-[12px] leading-relaxed text-[#8A929E] [&_code]:rounded-[6px] [&_code]:bg-[#ECEBFB] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[11px] [&_code]:font-semibold [&_code]:text-[#5B53E0]">
             Already added <code>{"{{ tokens }}"}</code> yourself? Upload it here. Otherwise use the
             smart mapping wizard below instead — it adds the tokens for you.
             Payslips are generated by filling the document.{" "}
@@ -959,39 +955,41 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
             or the whole list with <code>{"{{ earnings_lines }}"}</code> /{" "}
             <code>{"{{ deductions_lines }}"}</code>.
           </p>
-          <p className="mb-3 text-xs text-[var(--color-muted)]">
+          <p className="mb-3 text-[12px] leading-relaxed text-[#8A929E]">
             <strong>Tip:</strong> start from the sample below — typing tokens by hand in Word often
             splits them so they don&apos;t fill. Download it, restyle, and re-upload.{" "}
             <button
               type="button"
               onClick={() => settingsApi.downloadSampleTemplate()}
-              className="font-semibold text-[var(--color-primary)] underline"
+              className="font-semibold text-[#5B53E0] underline hover:text-[#4A43C9]"
             >
               Download sample template
             </button>
           </p>
 
           {ps.has_doc_template ? (
-            <div className="flex flex-wrap items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2">
-              <span className="material-symbols-rounded text-[20px] text-[var(--color-accent)]">check_circle</span>
-              <span className="min-w-0 flex-1 truncate text-sm">{ps.doc_filename || "template.docx"}</span>
+            <div className="flex flex-wrap items-center gap-3 rounded-[10px] border border-[#E8EAED] bg-white px-3 py-2.5">
+              <span className="material-symbols-rounded text-[20px] text-[#0E8A6E]">check_circle</span>
+              <span className="min-w-0 flex-1 truncate text-[13px] text-[#374151]">{ps.doc_filename || "template.docx"}</span>
               {canEdit && (
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={removeDoc}
                   disabled={uploading}
-                  className="rounded-md px-2.5 py-1 text-xs font-semibold text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10"
+                  className="text-[#C0383C] hover:bg-[#FDECEC]"
                 >
                   Remove
-                </button>
+                </Button>
               )}
             </div>
           ) : (
-            <p className="text-sm text-[var(--color-muted)]">No template uploaded — the built-in layout is used.</p>
+            <p className="text-[13px] text-[#8A929E]">No template uploaded — the built-in layout is used.</p>
           )}
 
           {ps.has_doc_template && !ps.doc_has_tokens && (
-            <div className="mt-3 flex items-start gap-2 rounded-lg border border-[var(--color-danger)]/30 bg-[var(--color-danger)]/10 px-3 py-2.5 text-sm text-[var(--color-danger)]">
+            <div className="mt-3 flex items-start gap-2 rounded-[10px] border border-[#F7D7D7] bg-[#FDECEC] px-3 py-2.5 text-[13px] text-[#C0383C]">
               <span className="material-symbols-rounded text-[20px]">warning</span>
               <span>
                 This template has <strong>no fillable fields</strong>, so payslips will show the
@@ -1004,7 +1002,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
           {canEdit && (
             <div className="mt-3 flex flex-wrap items-center gap-3">
-              <label className="cursor-pointer rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-3 py-2 text-sm font-semibold hover:bg-[var(--color-card)]">
+              <label className="inline-flex h-9 cursor-pointer items-center rounded-[10px] border border-[#E1E4E8] bg-white px-3.5 text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors">
                 {uploading ? "Uploading…" : ps.has_doc_template ? "Replace file…" : "Upload .docx…"}
                 <input
                   type="file"
@@ -1032,12 +1030,12 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         </div>
 
         {/* Smart mapping wizard — upload YOUR template, map fields, no tokens */}
-        <div className="rounded-xl border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 p-4">
-          <div className="mb-1 flex items-center gap-2">
-            <span className="material-symbols-rounded text-[20px] text-[var(--color-primary)]">auto_fix_high</span>
-            <span className="font-semibold">Map your own template (recommended)</span>
+        <div className="rounded-[12px] border border-[#5B53E0]/25 bg-[#ECEBFB]/40 p-4">
+          <div className="mb-1.5 flex items-center gap-2">
+            <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">auto_fix_high</span>
+            <span className="text-[14px] font-bold text-[#15171C]">Map your own template (recommended)</span>
           </div>
-          <p className="mb-3 text-xs text-[var(--color-muted)]">
+          <p className="mb-3 text-[12px] leading-relaxed text-[#8A929E]">
             Upload your company&apos;s existing payslip Word document — no tokens needed. We
             scan it for labels like <em>Basic</em>, <em>Net Pay</em> and <em>Employee Name</em>,
             and let you map each to the right payroll field. We then fill it automatically every
@@ -1045,26 +1043,28 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
           </p>
 
           {ps.doc_mapped && (
-            <div className="mb-3 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2">
-              <span className="material-symbols-rounded text-[20px] text-[var(--color-accent)]">link</span>
-              <span className="min-w-0 flex-1 truncate text-sm">
+            <div className="mb-3 flex flex-wrap items-center gap-3 rounded-[10px] border border-[#E8EAED] bg-white px-3 py-2.5">
+              <span className="material-symbols-rounded text-[20px] text-[#0E8A6E]">link</span>
+              <span className="min-w-0 flex-1 truncate text-[13px] text-[#374151]">
                 Mapped from <strong>{ps.doc_filename || "your template"}</strong>
               </span>
               {canEdit && (
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={editMapping}
                   disabled={busy}
-                  className="rounded-md px-2.5 py-1 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"
+                  className="text-[#5B53E0] hover:bg-[#ECEBFB]"
                 >
                   Edit mapping
-                </button>
+                </Button>
               )}
             </div>
           )}
 
           {canEdit && (
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-primary)]/40 bg-[var(--color-card)] px-3 py-2 text-sm font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10">
+            <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-[10px] border border-[#5B53E0]/40 bg-white px-3.5 text-[13px] font-semibold text-[#5B53E0] hover:bg-[#ECEBFB] transition-colors">
               <span className="material-symbols-rounded text-[18px]">upload_file</span>
               {busy ? "Scanning…" : ps.doc_mapped ? "Re-scan / replace template…" : "Upload my payslip template…"}
               <input
@@ -1084,9 +1084,9 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
         {canEdit && (
           <div className="flex justify-end pt-2">
-            <button type="submit" disabled={saving} style={{ width: "auto" }} className="btn-primary px-6">
+            <Button type="submit" disabled={saving}>
               {saving ? "Saving…" : "Save Payslip Template"}
-            </button>
+            </Button>
           </div>
         )}
       </Section>
@@ -1119,19 +1119,20 @@ function PayslipToggle({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className="flex items-center justify-between gap-3 rounded-lg border border-[var(--color-border)] px-4 py-3">
+    <label className={`flex items-center justify-between gap-3 rounded-[10px] border border-[#E8EAED] bg-white px-4 py-3 transition-colors ${disabled ? "opacity-60" : "cursor-pointer hover:border-[#D4D7DC]"}`}>
       <span className="min-w-0">
-        <span className="block text-sm font-medium">{label}</span>
-        <span className="block text-xs text-[var(--color-muted)]">{desc}</span>
+        <span className="block text-[13.5px] font-semibold text-[#15171C]">{label}</span>
+        <span className="block text-[12px] text-[#8A929E] mt-0.5">{desc}</span>
       </span>
       <input
         type="checkbox"
         aria-label={label}
-        className="h-4 w-4 shrink-0"
+        className="peer sr-only"
         disabled={disabled}
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />
+      <span className="relative h-6 w-11 shrink-0 rounded-full bg-[#D4D7DC] transition-colors peer-checked:bg-[#5B53E0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#5B53E0]/40 after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5" />
     </label>
   );
 }
@@ -1165,12 +1166,12 @@ function MappingWizard({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-2xl">
-        <div className="flex items-start justify-between gap-3 border-b border-[var(--color-border)] px-5 py-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#15171C]/40 backdrop-blur-sm p-4">
+      <div className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-[14px] border border-[#E8EAED] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.24)]">
+        <div className="flex items-start justify-between gap-3 border-b border-[#E8EAED] px-5 py-4">
           <div className="min-w-0">
-            <h3 className="text-lg font-bold">Map your template fields</h3>
-            <p className="truncate text-xs text-[var(--color-muted)]">
+            <h3 className="text-[16px] font-bold text-[#15171C]">Map your template fields</h3>
+            <p className="truncate text-[12px] text-[#8A929E] mt-0.5">
               {scan.filename} · {scan.slots.length} field
               {scan.slots.length === 1 ? "" : "s"} detected
             </p>
@@ -1178,7 +1179,7 @@ function MappingWizard({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-md p-1 text-[var(--color-muted)] hover:bg-[var(--color-hover)]"
+            className="w-8 h-8 rounded-[8px] text-[#8A929E] hover:bg-[#F4F5F7] hover:text-[#374151] flex items-center justify-center transition-colors"
             aria-label="Close"
           >
             <span className="material-symbols-rounded text-[22px]">close</span>
@@ -1187,7 +1188,7 @@ function MappingWizard({
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {scan.slots.length === 0 ? (
-            <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-4 text-sm text-[var(--color-muted)]">
+            <div className="rounded-[10px] border border-[#E8EAED] bg-[#F7F8FA] p-4 text-[13px] text-[#8A929E]">
               We couldn&apos;t find any recognisable label/value slots in this document.
               The wizard works best with a <strong>table</strong> of labels and values
               (e.g. <em>Basic | 0.00</em>) or <em>Label: value</em> lines. Try adjusting
@@ -1195,7 +1196,7 @@ function MappingWizard({
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <p className="mb-1 text-xs text-[var(--color-muted)]">
+              <p className="mb-1 text-[12px] text-[#8A929E]">
                 For each detected line, pick which payroll value should fill it. Leave as{" "}
                 <strong>Ignore</strong> to keep whatever is already in the document.
               </p>
@@ -1204,36 +1205,38 @@ function MappingWizard({
                 return (
                   <div
                     key={slot.index}
-                    className="grid grid-cols-1 items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 sm:grid-cols-[1fr_auto]"
+                    className="grid grid-cols-1 items-center gap-2 rounded-[10px] border border-[#E8EAED] bg-[#F7F8FA] px-3 py-2.5 sm:grid-cols-[1fr_auto]"
                   >
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-medium">
-                        {slot.label || <span className="italic text-[var(--color-muted)]">(blank)</span>}
+                      <div className="truncate text-[13px] font-semibold text-[#15171C]">
+                        {slot.label || <span className="italic text-[#8A929E]">(blank)</span>}
                       </div>
-                      <div className="truncate text-xs text-[var(--color-muted)]">
+                      <div className="truncate text-[12px] text-[#8A929E]">
                         {slot.context}
                         {slot.current ? ` → ${slot.current}` : ""}
                       </div>
                     </div>
-                    <select
-                      className="input sm:w-64"
-                      value={value}
-                      onChange={(e) => setSlot(slot.index, e.target.value)}
-                      title={value ? fieldLabel(value) : "Ignore"}
-                    >
-                      <option value="">— Ignore —</option>
-                      {groups.map((g) => (
-                        <optgroup key={g} label={g}>
-                          {scan.fields
-                            .filter((f) => f.group === g)
-                            .map((f) => (
-                              <option key={f.key} value={f.key}>
-                                {f.label}
-                              </option>
-                            ))}
-                        </optgroup>
-                      ))}
-                    </select>
+                    <SelectWrap className="sm:w-64">
+                      <select
+                        className={`${SELECT_CLS} sm:w-64`}
+                        value={value}
+                        onChange={(e) => setSlot(slot.index, e.target.value)}
+                        title={value ? fieldLabel(value) : "Ignore"}
+                      >
+                        <option value="">— Ignore —</option>
+                        {groups.map((g) => (
+                          <optgroup key={g} label={g}>
+                            {scan.fields
+                              .filter((f) => f.group === g)
+                              .map((f) => (
+                                <option key={f.key} value={f.key}>
+                                  {f.label}
+                                </option>
+                              ))}
+                          </optgroup>
+                        ))}
+                      </select>
+                    </SelectWrap>
                   </div>
                 );
               })}
@@ -1241,28 +1244,17 @@ function MappingWizard({
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-[var(--color-border)] px-5 py-4">
-          <span className="text-xs text-[var(--color-muted)]">
+        <div className="flex items-center justify-between gap-3 border-t border-[#E8EAED] px-5 py-4">
+          <span className="text-[12px] text-[#8A929E]">
             {mappedCount} field{mappedCount === 1 ? "" : "s"} mapped
           </span>
           <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={onCancel}
-              disabled={busy}
-              className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-semibold hover:bg-[var(--color-hover)]"
-            >
+            <Button type="button" variant="secondary" onClick={onCancel} disabled={busy}>
               Cancel
-            </button>
-            <button
-              type="button"
-              onClick={onApply}
-              disabled={busy || mappedCount === 0}
-              className="btn-primary px-5"
-              style={{ width: "auto" }}
-            >
+            </Button>
+            <Button type="button" onClick={onApply} disabled={busy || mappedCount === 0}>
               {busy ? "Applying…" : "Apply mapping"}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -1270,10 +1262,30 @@ function MappingWizard({
   );
 }
 
+// Small success confirmation strip shown after a save.
+function SavedNote({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2 rounded-[10px] border border-[#BBE7CE] bg-[#E6F4EA] px-4 py-3 text-[13px] font-medium text-[#15803D]">
+      <span className="material-symbols-rounded text-[20px]">check_circle</span>
+      {children}
+    </div>
+  );
+}
+
+// Wraps a native <select> to add the design-system chevron affordance.
+function SelectWrap({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`relative ${className ?? ""}`}>
+      {children}
+      <span className="material-symbols-rounded absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[20px] pointer-events-none">expand_more</span>
+    </div>
+  );
+}
+
 function Chip({ icon, children }: { icon: string; children: React.ReactNode }) {
   return (
-    <span className="chip">
-      <span className="material-symbols-rounded text-[14px]">{icon}</span>
+    <span className="inline-flex items-center gap-1.5 rounded-[20px] bg-[#F1F2F5] px-2.5 py-0.5 text-[12px] font-semibold text-[#4B5563]">
+      <span className="material-symbols-rounded text-[14px] text-[#5B53E0]">{icon}</span>
       {children}
     </span>
   );
@@ -1293,22 +1305,18 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={`rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6 ${
-        wide ? "xl:col-span-2" : ""
-      }`}
-    >
-      <div className="mb-5 flex items-center gap-3 border-b border-[var(--color-border)] pb-4">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+    <Card padding="lg" className={wide ? "xl:col-span-2" : ""}>
+      <div className="mb-5 flex items-center gap-3 border-b border-[#E8EAED] pb-4">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-[#ECEBFB] text-[#5B53E0]">
           <span className="material-symbols-rounded text-[22px]">{icon}</span>
         </span>
         <div>
-          <h2 className="font-semibold">{title}</h2>
-          {subtitle && <p className="text-xs text-[var(--color-muted)]">{subtitle}</p>}
+          <h2 className="text-[15px] font-bold text-[#15171C]">{title}</h2>
+          {subtitle && <p className="text-[12.5px] text-[#8A929E] mt-0.5">{subtitle}</p>}
         </div>
       </div>
       <div className="flex flex-col gap-4">{children}</div>
-    </div>
+    </Card>
   );
 }
 
@@ -1324,13 +1332,8 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="flex flex-col gap-1.5">
-      <span className="lbl">
-        {label}
-        {required && <span className="text-[var(--color-danger)]"> *</span>}
-      </span>
+    <DSField label={label} required={required} hint={hint}>
       {children}
-      {hint && <span className="text-xs text-[var(--color-muted)]">{hint}</span>}
-    </label>
+    </DSField>
   );
 }

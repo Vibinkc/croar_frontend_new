@@ -9,9 +9,31 @@ import {
   type SalaryStructure,
   inr,
 } from "@/utils/payroll/api";
-import { Banner, Modal, PageHeader, StatCard, StatusBadge } from "@/components/payroll/ui";
+import { Banner, Modal } from "@/components/payroll/ui";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { useDialog } from "@/components/payroll/DialogProvider";
+import {
+  Search,
+  Filter,
+  ChevronDown,
+  CalendarRange,
+} from "lucide-react";
+import {
+  Button,
+  Badge,
+  StatGrid,
+  StatCard,
+  PageHeader,
+  jetbrainsMono,
+} from "@/components/ds";
+
+const CYCLE_TONE: Record<string, "neutral" | "info" | "success" | "indigo" | "danger"> = {
+  DRAFT: "neutral",
+  PROCESSING: "info",
+  APPROVED: "success",
+  PAID: "indigo",
+  CANCELLED: "danger",
+};
 
 export default function PayrollHome() {
   const { can } = useAuth();
@@ -21,6 +43,10 @@ export default function PayrollHome() {
   const [structures, setStructures] = useState<SalaryStructure[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Presentation-only list view state (search + status filter).
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -61,6 +87,15 @@ export default function PayrollHome() {
   );
   const missing = employees.filter((e) => !configuredIds.has(e.id)).length;
   const current = cycles.find((c) => c.status !== "PAID" && c.status !== "CANCELLED") ?? cycles[0];
+
+  // Presentation-only filtered view of the cycles list.
+  const visibleCycles = cycles.filter((c) => {
+    const matchesSearch =
+      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      `${c.period_start} ${c.period_end}`.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "ALL" || c.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   function openModal() {
     const now = new Date();
@@ -110,106 +145,220 @@ export default function PayrollHome() {
     }
   }
 
+  const selectCls =
+    "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+
   return (
-    <div className="animate-fade-in flex flex-col gap-6">
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        icon="payments"
         title="Payroll"
         subtitle="Run monthly payroll cycles and review payslips."
-      >
-        {can("payroll:configure") && (
-          <button
-            onClick={openModal}
-            className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
-          >
-            <span className="material-symbols-rounded text-[20px]">add</span>{" "}
-            New Cycle
-          </button>
-        )}
-      </PageHeader>
+        help={<>
+          <p>Create and process pay cycles.</p>
+          <p>Start a <strong>New Cycle</strong> for a period, process it to generate payslips from each employee&apos;s salary structure, then mark it paid.</p>
+        </>}
+        actions={
+          can("payroll:configure") && (
+            <Button size="sm" icon="add" onClick={openModal}>
+              New Cycle
+            </Button>
+          )
+        }
+      />
 
       {error && <Banner>{error}</Banner>}
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon="groups" label="Total Employees" value={loading ? "…" : employees.length} />
-        <StatCard icon="task_alt" label="Salary Configured" value={loading ? "…" : configuredIds.size} />
-        <Link href="/enterprise/payroll/structures">
+      {/* Stat cards */}
+      <StatGrid>
+        <StatCard
+          label="Total Employees"
+          value={loading ? "…" : employees.length}
+          icon="group"
+          gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
+          glow="rgba(91,83,224,0.28)"
+        />
+        <StatCard
+          label="Salary Configured"
+          value={loading ? "…" : configuredIds.size}
+          icon="task_alt"
+          gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
+          glow="rgba(14,138,110,0.25)"
+        />
+        <Link href="/enterprise/payroll/structures" className="block">
           <StatCard
-            icon="warning"
             label={missing > 0 ? "Missing Setup — configure" : "Missing Setup"}
             value={loading ? "…" : missing}
-            tone={missing > 0 ? "text-[var(--color-danger)]" : "text-slate-900"}
+            icon="warning"
+            gradient="linear-gradient(135deg,#F6B65C,#D97706)"
+            glow="rgba(217,119,6,0.25)"
           />
         </Link>
         <StatCard
-          icon="payments"
           label={current ? `Current Net (${current.name})` : "Current Net"}
           value={loading ? "…" : inr(current?.totals?.net ?? 0)}
-          tone="text-emerald-600"
+          icon="payments"
+          gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
+          glow="rgba(53,89,199,0.25)"
         />
-      </section>
+      </StatGrid>
 
-      <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
-        <div className="border-b border-[var(--color-border)] px-6 py-4">
-          <h2 className="font-semibold">Payroll Cycles</h2>
+      {/* Toolbar: search + filter */}
+      <div className="flex flex-col md:flex-row md:items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search cycles by name or period…"
+            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+          />
         </div>
+
+        <div className="flex items-center gap-2.5">
+          <div className="relative flex-1 md:flex-none">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className={`${selectCls} w-full md:min-w-[170px]`}
+            >
+              <option value="ALL">All statuses</option>
+              <option value="DRAFT">Draft</option>
+              <option value="PROCESSING">Processing</option>
+              <option value="APPROVED">Approved</option>
+              <option value="PAID">Paid</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          </div>
+        </div>
+      </div>
+
+      {/* Cycles list */}
+      <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
         {loading ? (
-          <p className="p-8 text-center text-[var(--color-muted)]">Loading…</p>
-        ) : cycles.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 p-12 text-center">
-            <span className="material-symbols-rounded text-4xl text-[var(--color-dim)]">calendar_month</span>
-            <p className="text-[var(--color-muted)]">No payroll cycles yet. Create one to begin.</p>
+          <div className="p-4 space-y-2.5">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+            ))}
+          </div>
+        ) : visibleCycles.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
+            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
+              <CalendarRange className="w-8 h-8 text-[#C7CCD4]" />
+            </div>
+            {cycles.length === 0 ? (
+              <>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No payroll cycles yet</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Create your first cycle to start running monthly payroll.</p>
+                {can("payroll:configure") && (
+                  <Button icon="add" onClick={openModal}>
+                    New Cycle
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No cycles match your filters</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Try adjusting your search or status filter.</p>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setStatusFilter("ALL");
+                  }}
+                >
+                  Clear filters
+                </Button>
+              </>
+            )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="text-xs uppercase text-[var(--color-muted)]">
-                <tr className="border-b border-[var(--color-border)]">
-                  <th className="px-6 py-3">Cycle</th>
-                  <th className="px-6 py-3">Period</th>
-                  <th className="px-6 py-3">Status</th>
-                  <th className="px-6 py-3 text-right">Headcount</th>
-                  <th className="px-6 py-3 text-right">Net Pay</th>
-                  <th className="px-6 py-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cycles.map((c) => (
-                  <tr key={c.id} className="border-b border-[var(--color-border)] last:border-0">
-                    <td className="px-6 py-4 font-semibold">{c.name}</td>
-                    <td className="px-6 py-4 text-[var(--color-muted)]">
-                      {c.period_start} → {c.period_end}
-                    </td>
-                    <td className="px-6 py-4">
-                      <StatusBadge status={c.status} />
-                    </td>
-                    <td className="px-6 py-4 text-right">{c.totals?.headcount ?? "—"}</td>
-                    <td className="px-6 py-4 text-right">{inr(c.totals?.net ?? 0)}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        {c.status === "DRAFT" && can("payroll:manage") && (
-                          <button
-                            onClick={() => remove(c.id)}
-                            className="rounded-md px-2 py-1 text-xs text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10"
-                          >
-                            Delete
-                          </button>
-                        )}
-                        <Link
-                          href={`/enterprise/payroll/${c.id}`}
-                          className="rounded-md bg-[var(--color-primary)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--color-primary-hover)]"
-                        >
-                          Manage
-                        </Link>
+          <>
+            {/* Column header (desktop) */}
+            <div className="hidden md:grid grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr_150px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Cycle</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Period</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Headcount</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Net Pay</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+            </div>
+
+            <div className="divide-y divide-[#F0F0F1]">
+              {visibleCycles.map((c) => (
+                <div
+                  key={c.id}
+                  className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr_150px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                >
+                  {/* Cycle */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                      <CalendarRange className="w-[17px] h-[17px]" />
+                    </span>
+                    <div className="min-w-0">
+                      <Link
+                        href={`/enterprise/payroll/${c.id}`}
+                        className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate"
+                      >
+                        {c.name}
+                      </Link>
+                      {/* mobile-only meta */}
+                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[12px] text-[#8A929E] md:hidden">
+                        <span className={jetbrainsMono.className}>{c.period_start} → {c.period_end}</span>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                  </div>
+
+                  {/* Period (desktop) */}
+                  <div className={`hidden md:block text-[13px] text-[#374151] truncate ${jetbrainsMono.className}`}>
+                    {c.period_start} → {c.period_end}
+                  </div>
+
+                  {/* Status */}
+                  <div className="hidden md:flex items-center">
+                    <Badge tone={CYCLE_TONE[c.status] ?? "neutral"} dot>{c.status}</Badge>
+                  </div>
+
+                  {/* Headcount (desktop) */}
+                  <div className={`hidden md:block text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
+                    {c.totals?.headcount ?? "—"}
+                  </div>
+
+                  {/* Net Pay (desktop) */}
+                  <div className={`hidden md:block text-[13px] font-semibold text-[#15171C] text-right ${jetbrainsMono.className}`}>
+                    {inr(c.totals?.net ?? 0)}
+                  </div>
+
+                  {/* Status (mobile) + actions */}
+                  <div className="flex items-center gap-2 justify-end">
+                    <div className="md:hidden mr-1">
+                      <Badge tone={CYCLE_TONE[c.status] ?? "neutral"} dot>{c.status}</Badge>
+                    </div>
+
+                    {c.status === "DRAFT" && can("payroll:manage") && (
+                      <button
+                        onClick={() => remove(c.id)}
+                        className="h-8 px-3 rounded-[9px] text-[12px] font-semibold text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                      >
+                        Delete
+                      </button>
+                    )}
+                    <Link
+                      href={`/enterprise/payroll/${c.id}`}
+                      className="inline-flex items-center h-8 px-3 rounded-[9px] bg-[#5B53E0] text-white text-[12px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
+                    >
+                      Manage
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
-      </section>
+      </div>
 
       {showModal && (
         <Modal title="Create Payroll Cycle" onClose={() => setShowModal(false)}>
@@ -217,7 +366,7 @@ export default function PayrollHome() {
             <Field label="Cycle Name">
               <input
                 required
-                className="input"
+                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
@@ -227,7 +376,7 @@ export default function PayrollHome() {
                 <input
                   required
                   type="date"
-                  className="input"
+                  className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                   value={form.period_start}
                   onChange={(e) => setForm({ ...form, period_start: e.target.value })}
                 />
@@ -236,7 +385,7 @@ export default function PayrollHome() {
                 <input
                   required
                   type="date"
-                  className="input"
+                  className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                   value={form.period_end}
                   onChange={(e) => setForm({ ...form, period_end: e.target.value })}
                 />
@@ -246,33 +395,25 @@ export default function PayrollHome() {
               <input
                 required
                 type="date"
-                className="input"
+                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                 value={form.pay_date}
                 onChange={(e) => setForm({ ...form, pay_date: e.target.value })}
               />
             </Field>
             <Field label="Notes (optional)">
               <textarea
-                className="input min-h-20"
+                className="w-full min-h-20 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 py-2.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
               />
             </Field>
             <div className="mt-2 flex gap-3">
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex-1 rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-60"
-              >
+              <Button type="submit" disabled={saving} fullWidth>
                 {saving ? "Creating…" : "Create Cycle"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowModal(false)}
-                className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] py-2.5 text-sm font-semibold"
-              >
+              </Button>
+              <Button type="button" variant="secondary" fullWidth onClick={() => setShowModal(false)}>
                 Cancel
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>
@@ -284,7 +425,7 @@ export default function PayrollHome() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted)]">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
         {label}
       </span>
       {children}

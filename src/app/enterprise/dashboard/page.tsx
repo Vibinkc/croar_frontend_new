@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { useCachedFetch } from "@/hooks/useCachedFetch";
 import ThemeToggle from "@/components/enterprise/ThemeToggle";
+import { PageHelp } from "@/components/ds";
 
 // JetBrains Mono — the design system's numeric/data typeface for stats & counts.
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -131,7 +132,13 @@ export default function EnterpriseDashboard() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 {/* Left: title + live status */}
                 <div>
-                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Dashboard</h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Dashboard</h1>
+                        <PageHelp title="Dashboard">
+                            <p>Your hiring command centre — pipeline metrics at a glance.</p>
+                            <p>If your org is new, the <strong>Getting started</strong> checklist here walks you through your first steps. Jump into a module from the cards, and anything needing attention surfaces on the right.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[12.5px] text-[#8A929E] mt-0.5">Hiring command centre — overview at a glance</p>
                 </div>
 

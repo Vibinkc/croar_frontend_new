@@ -21,6 +21,7 @@ import {
     RefreshCcw
 } from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { PageHelp } from "@/components/ds";
 
 interface Scenario {
     id: string;
@@ -284,7 +285,12 @@ export default function ScenarioManagement() {
                         <span className="material-symbols-rounded">architecture</span>
                     </div>
                     <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight">Scenario Configuration</h1>
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-lg font-black text-slate-900 tracking-tight">Scenario Configuration</h1>
+                            <PageHelp title="Scenario Architect">
+                                <p>Create practice scenarios for the AI training lab.</p>
+                            </PageHelp>
+                        </div>
                         <p className="text-slate-500 text-[10px] font-medium   ">Training Scenario Design</p>
                     </div>
                 </div>

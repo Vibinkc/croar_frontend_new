@@ -5,6 +5,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { jetbrainsMono } from "@/components/ds";
 
 interface OnboardingField {
     name: string;
@@ -89,7 +90,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
             });
 
             if (res.ok) {
-                router.push("/enterprise/settings/onboarding-templates");
+                router.push("/enterprise/templates/onboarding-templates");
             } else {
                 const err = await res.json();
                 alert(err.detail || "Failed to save template");
@@ -154,27 +155,27 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
 
     return (
         <div className="animate-in fade-in duration-500">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                <div className="lg:col-span-1 space-y-10">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-1 space-y-6">
                     {/* Basic Info */}
-                    <div className="space-y-6">
-                        <div className="space-y-2">
-                            <label htmlFor="otf-template-name" className="text-[10px] font-black text-slate-400   ml-1">Template Name</label>
+                    <div className="bg-white border border-[#E8EAED] rounded-[14px] p-5 space-y-4 shadow-sm">
+                        <div className="space-y-1.5">
+                            <label htmlFor="otf-template-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Template Name</label>
                             <input
                                 id="otf-template-name"
                                 type="text"
-                                className="w-full bg-slate-50 border border-slate-100 rounded-[20px] px-6 py-4 text-slate-900 font-bold text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm"
+                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                 placeholder="e.g. Executive Onboarding"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 readOnly={!canAccess("onboarding:moderate")}
                             />
                         </div>
-                        <div className="space-y-2">
-                            <label htmlFor="otf-template-description" className="text-[10px] font-black text-slate-400   ml-1">Overall Description</label>
+                        <div className="space-y-1.5">
+                            <label htmlFor="otf-template-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Overall Description</label>
                             <textarea
                                 id="otf-template-description"
-                                className="w-full bg-slate-50 border border-slate-100 rounded-[20px] px-6 py-4 text-slate-900 font-bold text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm min-h-[120px]"
+                                className="w-full bg-white border border-[#E1E4E8] rounded-[10px] p-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none min-h-[100px] leading-relaxed"
                                 placeholder="Purpose of this flow..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -184,9 +185,9 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                     </div>
 
                     {/* Section Management */}
-                    <div className="space-y-6">
-                        <label htmlFor="otf-new-section-title" className="text-[10px] font-black text-slate-400   ml-1 block">Define Sections</label>
-                        <div className="space-y-3">
+                    <div className="bg-white border border-[#E8EAED] rounded-[14px] p-5 space-y-4 shadow-sm">
+                        <label htmlFor="otf-new-section-title" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5 block">Define Sections</label>
+                        <div className="space-y-2">
                             {sections.map((s, idx) => (
                                 <div
                                     key={s.id}
@@ -194,29 +195,29 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                     tabIndex={0}
                                     onClick={() => setActiveSectionId(s.id)}
                                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setActiveSectionId(s.id); } }}
-                                    className={`group flex items-center justify-between p-5 rounded-[24px] border transition-all cursor-pointer ${activeSectionId === s.id ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200" : "bg-white border-slate-100 text-slate-600 hover:border-indigo-200 hover:bg-indigo-50/30"}`}
+                                    className={`group flex items-center justify-between p-3.5 rounded-[10px] border transition-all cursor-pointer ${activeSectionId === s.id ? "bg-[#ECEBFB] border-[#5B53E0] text-[#5B53E0]" : "bg-white border-[#E8EAED] text-[#374151] hover:border-[#5B53E0]/40 hover:bg-[#F8F9FA]"}`}
                                 >
-                                    <div className="flex items-center gap-4">
-                                        <span className="text-xs font-black opacity-40">{idx + 1}</span>
-                                        <span className="text-sm font-black">{s.title}</span>
+                                    <div className="flex items-center gap-3">
+                                        <span className={`text-[11px] font-bold ${activeSectionId === s.id ? "text-[#5B53E0]/70" : "text-[#8A929E]"}`}>{idx + 1}</span>
+                                        <span className="text-[13.5px] font-bold">{s.title}</span>
                                     </div>
-                                     {canAccess("onboarding:moderate") && (
+                                    {canAccess("onboarding:moderate") && (
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); removeSection(s.id); }}
-                                            className={`p-2 rounded-lg transition-colors ${activeSectionId === s.id ? "hover:bg-indigo-500 text-indigo-200 hover:text-white" : "hover:bg-red-50 text-slate-300 hover:text-red-500"}`}
+                                            className={`p-1 rounded-[6px] transition-colors ${activeSectionId === s.id ? "hover:bg-[#5B53E0]/10 text-[#5B53E0]" : "hover:bg-red-50 text-[#8A929E] hover:text-rose-500"}`}
                                         >
-                                            <span className="material-icons-outlined text-lg">delete</span>
+                                            <span className="material-icons-outlined text-[16px]">delete</span>
                                         </button>
                                     )}
                                 </div>
                             ))}
                         </div>
-                         {canAccess("onboarding:moderate") && (
-                            <div className="pt-4 flex gap-3">
+                        {canAccess("onboarding:moderate") && (
+                            <div className="pt-2 flex gap-2">
                                 <input
                                     id="otf-new-section-title"
                                     type="text"
-                                    className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3 text-sm font-bold outline-none focus:border-indigo-500"
+                                    className="flex-1 h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                     placeholder="New Section Title..."
                                     value={newSectionTitle}
                                     onChange={(e) => setNewSectionTitle(e.target.value)}
@@ -224,9 +225,9 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                 />
                                 <button 
                                     onClick={addSection}
-                                    className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-black transition-all"
+                                    className="w-10 h-10 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] flex items-center justify-center transition-all shadow-sm"
                                 >
-                                    <span className="material-icons-outlined">add</span>
+                                    <span className="material-icons-outlined text-[20px]">add</span>
                                 </button>
                             </div>
                         )}
@@ -234,63 +235,63 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                 </div>
 
                 {/* Field Builder Column */}
-                <div className="lg:col-span-2 bg-slate-50 rounded-[48px] p-10 border border-slate-100 min-h-[500px]">
+                <div className="lg:col-span-2 bg-white border border-[#E8EAED] rounded-[14px] p-6 min-h-[500px] shadow-sm">
                     {activeSectionId ? (
                         <motion.div 
                             key={activeSectionId} 
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="space-y-10"
+                            className="space-y-6"
                         >
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center pb-2 border-b border-[#E8EAED]">
                                 <div>
-                                    <h4 className="text-2xl font-black text-slate-900 tracking-tight">
+                                    <h4 className="text-[16px] font-extrabold text-[#15171C] tracking-tight">
                                         {sections.find(s => s.id === activeSectionId)?.title}
                                     </h4>
-                                    <p className="text-slate-500 text-xs font-medium mt-1">Configure fields for this section.</p>
+                                    <p className="text-[12px] text-[#8A929E] mt-0.5">Configure fields for this section.</p>
                                 </div>
-                                <span className="px-4 py-2 bg-indigo-100 text-indigo-600 rounded-xl text-[10px] font-black  ">
+                                <span className="px-2.5 py-1 bg-[#ECEBFB] text-[#5B53E0] rounded-[6px] border border-[#DAD7F6]/60 text-[10px] font-bold">
                                     {(sections.find(s => s.id === activeSectionId)?.fields || []).length} Fields
                                 </span>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {(sections.find(s => s.id === activeSectionId)?.fields || []).map((field, idx) => (
-                                    <div key={idx} className="p-6 bg-white rounded-[28px] border border-slate-100 flex items-center justify-between group/field shadow-sm hover:shadow-md transition-all">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover/field:bg-indigo-50 group-hover/field:text-indigo-600 transition-colors">
-                                                <span className="material-icons-outlined text-lg">
+                                    <div key={idx} className="p-3.5 bg-white rounded-[10px] border border-[#E8EAED] flex items-center justify-between group/field hover:border-[#5B53E0]/40 transition-all">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center border border-[#DAD7F6]/60 transition-colors">
+                                                <span className="material-icons-outlined text-[18px]">
                                                     {field.type === "text" ? "input" : field.type === "date" ? "event" : field.type === "select" ? "list" : field.type === "file" ? "upload_file" : "contact_phone"}
                                                 </span>
                                             </div>
                                             <div>
-                                                <p className="text-sm font-black text-slate-800">{field.label}</p>
-                                                <p className="text-[9px] font-black text-slate-400  ">{field.type} • {field.required ? "Required" : "Optional"}</p>
+                                                <p className="text-[13.5px] font-bold text-[#15171C]">{field.label}</p>
+                                                <p className="text-[10px] text-[#8A929E] uppercase tracking-wider font-semibold">{field.type} • {field.required ? "Required" : "Optional"}</p>
                                             </div>
                                         </div>
-                                         {canAccess("onboarding:moderate") && (
+                                        {canAccess("onboarding:moderate") && (
                                             <button 
                                                 onClick={() => removeField(activeSectionId, idx)}
-                                                className="opacity-0 group-hover/field:opacity-100 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                className="opacity-0 group-hover/field:opacity-100 p-1 text-[#8A929E] hover:text-rose-500 hover:bg-rose-50 rounded-[6px] transition-all"
                                             >
-                                                <span className="material-icons-outlined text-lg">close</span>
+                                                <span className="material-icons-outlined text-[16px]">close</span>
                                             </button>
                                         )}
                                     </div>
                                 ))}
                             </div>
 
-                             {/* Add New Field Box */}
+                            {/* Add New Field Box */}
                             {canAccess("onboarding:moderate") && (
-                                <div className="bg-white p-8 rounded-[36px] border border-slate-200 shadow-xl shadow-slate-200/40 space-y-6">
-                                    <h5 className="text-xs font-black   text-slate-400">Add New Field</h5>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label htmlFor="otf-new-field-label" className="text-[9px] font-black text-slate-500   ml-1">Field Label (Display)</label>
+                                <div className="bg-[#F8F9FA] border border-[#E8EAED] rounded-[14px] p-5 space-y-5">
+                                    <h5 className="text-[12.5px] font-bold text-[#15171C]">Add New Field</h5>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-1.5">
+                                            <label htmlFor="otf-new-field-label" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Field Label (Display)</label>
                                             <input
                                                 id="otf-new-field-label"
                                                 type="text"
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                 placeholder="e.g. Your Mobile Number"
                                                 value={newFieldLabel}
                                                 onChange={(e) => {
@@ -301,11 +302,11 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                                 }}
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label htmlFor="otf-new-field-type" className="text-[9px] font-black text-slate-500   ml-1">Field Type</label>
+                                        <div className="space-y-1.5">
+                                            <label htmlFor="otf-new-field-type" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Field Type</label>
                                             <select
                                                 id="otf-new-field-type"
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all cursor-pointer"
                                                 value={newFieldType}
                                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                 onChange={(e) => setNewFieldType(e.target.value as any)}
@@ -319,46 +320,46 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                                 <option value="file">File Upload</option>
                                             </select>
                                         </div>
-                                        <div className="space-y-2">
-                                            <label htmlFor="otf-new-field-name" className="text-[9px] font-black text-slate-500   ml-1">Unique Identifier</label>
+                                        <div className="space-y-1.5">
+                                            <label htmlFor="otf-new-field-name" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Unique Identifier</label>
                                             <input
                                                 id="otf-new-field-name"
                                                 type="text"
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                 placeholder="e.g. mobile_number"
                                                 value={newFieldName}
                                                 onChange={(e) => setNewFieldName(e.target.value)}
                                             />
                                         </div>
                                         {newFieldType === "select" && (
-                                            <div className="space-y-2">
-                                                <label htmlFor="otf-new-field-options" className="text-[9px] font-black text-slate-500   ml-1">Options (Comma Separated)</label>
+                                            <div className="space-y-1.5">
+                                                <label htmlFor="otf-new-field-options" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Options (Comma Separated)</label>
                                                 <input
                                                     id="otf-new-field-options"
                                                     type="text"
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:border-indigo-500 outline-none"
+                                                    className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                     placeholder="e.g. Option 1, Option 2, Option 3"
                                                     value={newFieldOptions}
                                                     onChange={(e) => setNewFieldOptions(e.target.value)}
                                                 />
                                             </div>
                                         )}
-                                        <div className="flex items-end pb-1 gap-3">
+                                        <div className="flex items-end pb-0.5 gap-3">
                                             <div
                                                 role="button"
                                                 tabIndex={0}
                                                 onClick={() => setNewFieldRequired(!newFieldRequired)}
                                                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setNewFieldRequired(!newFieldRequired); } }}
-                                                className={`flex items-center gap-3 cursor-pointer p-3 rounded-xl border transition-all ${newFieldRequired ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-white border-slate-100 text-slate-400"}`}
+                                                className={`flex items-center gap-2 cursor-pointer h-10 px-3.5 rounded-[10px] border transition-all ${newFieldRequired ? "bg-[#ECEBFB]/30 border-[#5B53E0] text-[#5B53E0]" : "bg-white border-[#E1E4E8] text-[#8A929E]"}`}
                                             >
-                                                <span className="material-icons-outlined text-lg">{newFieldRequired ? "check_box" : "check_box_outline_blank"}</span>
-                                                <span className="text-[10px] font-black  ">Mark as Required</span>
+                                                <span className="material-icons-outlined text-[18px]">{newFieldRequired ? "check_box" : "check_box_outline_blank"}</span>
+                                                <span className="text-[11px] font-bold">Mark as Required</span>
                                             </div>
                                         </div>
                                     </div>
                                     <button 
                                         onClick={addField}
-                                        className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px]   hover:bg-black transition-all shadow-lg"
+                                        className="w-full h-10 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-sm transition-all flex items-center justify-center"
                                     >
                                         Add Field to {sections.find(s => s.id === activeSectionId)?.title}
                                     </button>
@@ -366,13 +367,13 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                             )}
                         </motion.div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-center p-10 space-y-6">
-                            <div className="w-24 h-24 bg-white rounded-[32px] flex items-center justify-center shadow-xl shadow-slate-200">
-                                <span className="material-icons-outlined text-5xl text-indigo-500 animate-pulse">layers</span>
+                        <div className="flex flex-col items-center justify-center h-full text-center p-8 space-y-4">
+                            <div className="w-14 h-14 bg-[#ECEBFB] border border-[#DAD7F6]/60 text-[#5B53E0] rounded-[16px] flex items-center justify-center">
+                                <span className="material-icons-outlined text-3xl animate-pulse">layers</span>
                             </div>
                             <div>
-                                <h4 className="text-xl font-black text-slate-900">Select a Section</h4>
-                                <p className="text-slate-500 text-xs font-medium max-w-[240px] mx-auto mt-2 leading-relaxed">
+                                <h4 className="text-[16px] font-bold text-[#15171C]">Select a Section</h4>
+                                <p className="text-[#8A929E] text-[12.5px] leading-relaxed max-w-[240px] mx-auto mt-1.5">
                                     Add or select a section from the left column to start building your custom form.
                                 </p>
                             </div>
@@ -381,17 +382,17 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                 </div>
             </div>
 
-            <div className="mt-12 flex gap-4">
+            <div className="mt-8 flex items-center justify-between gap-4 border-t border-[#E8EAED] pt-6">
                 <button 
-                    onClick={() => router.push("/enterprise/settings/onboarding-templates")}
-                    className="px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-black text-xs   transition-all"
+                    onClick={() => router.push("/enterprise/templates/onboarding-templates")}
+                    className="h-10 px-6 bg-white border border-[#E1E4E8] hover:bg-[#F4F5F7] text-[#374151] rounded-[10px] font-semibold text-[13px] shadow-sm transition-all"
                 >
                     Cancel
                 </button>
                 {canAccess("onboarding:moderate") && (
                     <button 
                         onClick={handleSave}
-                        className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs   transition-all shadow-2xl shadow-indigo-500/40"
+                        className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0"
                     >
                         {template ? "Update Template" : "Save Template"}
                     </button>

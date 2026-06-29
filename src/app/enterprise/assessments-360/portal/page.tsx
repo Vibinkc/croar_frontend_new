@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
 import { BACKEND_URL } from "@/utils/api";
+import { Button, Card, Input, Field, Badge, CroarLogo, jetbrainsMono } from "@/components/ds";
 
 interface Assessment {
     id: string;
@@ -36,12 +37,12 @@ export default function UnifiedEmployeePortal() {
     const [step, setStep] = useState<'login' | 'list'>('login');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    
+
     const [credentials, setCredentials] = useState({
         employee_id: "",
         email: ""
     });
-    
+
     const [assessments, setAssessments] = useState<Assessment[]>([]);
     const [surveys, setSurveys] = useState<Survey[]>([]);
     const [simulationAssignments, setSimulationAssignments] = useState<SimulationAssignment[]>([]);
@@ -55,10 +56,10 @@ export default function UnifiedEmployeePortal() {
         if (e) e.preventDefault();
         setLoading(true);
         setError("");
-        
+
         const trimmedId = credentials.employee_id.trim();
         const trimmedEmail = credentials.email.trim();
-        
+
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/surveys/portal/login?employee_id=${trimmedId}&email=${trimmedEmail}`, {
                 method: 'POST'
@@ -85,7 +86,7 @@ export default function UnifiedEmployeePortal() {
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/simulations/sessions`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -109,221 +110,242 @@ export default function UnifiedEmployeePortal() {
     if (activeSessionId) {
         return (
             <div className="fixed inset-0 bg-white z-[100] animate-in fade-in duration-500 overflow-hidden">
-                <SimulationChat 
-                    sessionId={activeSessionId} 
+                <SimulationChat
+                    sessionId={activeSessionId}
                     onClose={() => {
                         setActiveSessionId(null);
                         // Refresh data after completion
                         handleLogin();
-                    }} 
+                    }}
                 />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-start py-20 px-6 selection:bg-indigo-100 overflow-x-hidden">
-            {/* Background Accents */}
-            <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-50/50 rounded-full blur-[150px] opacity-40"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-violet-50/50 rounded-full blur-[150px] opacity-40"></div>
-            </div>
-
-            <div className={`w-full z-10 transition-all duration-1000 ease-in-out ${step === 'login' ? 'max-w-[550px]' : 'max-w-[1400px]'}`}>
+        <div className="min-h-screen bg-[#F7F8FA] flex flex-col items-center justify-start py-12 sm:py-16 px-4 sm:px-5 md:px-7 selection:bg-[#ECEBFB] overflow-x-hidden">
+            <div className={`w-full transition-all duration-700 ease-in-out ${step === 'login' ? 'max-w-[460px]' : 'max-w-[1200px]'}`}>
                 {step === 'login' ? (
-                    <div className="bg-white rounded-2xl shadow-2xl shadow-slate-200/50 p-10 md:p-14 border border-white animate-in fade-in slide-in-from-bottom-8 duration-700">
-                        <header className="text-center mb-12">
-                            <div className="mb-6 tracking-tighter">
-                                <span className="text-5xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent ">CROAR.AI</span>
+                    <Card padding="lg" className="animate-in fade-in slide-in-from-bottom-4 duration-500 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+                        <header className="text-center mb-9">
+                            <div className="flex justify-center mb-6">
+                                <CroarLogo />
                             </div>
-                            <h1 className="text-2xl font-black text-slate-400 tracking-[0.1em] mb-2 ">Employee Experience Hub</h1>
-                            <p className="text-slate-300 font-bold  text-[10px] tracking-[0.3em]">Growth, Feedback & Behavioral Training</p>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Employee Experience Hub</h1>
+                            <p className="text-[13.5px] text-[#8A929E] mt-1.5">Growth, Feedback &amp; Behavioral Training</p>
                         </header>
 
-                        <form onSubmit={handleLogin} className="space-y-6">
-                            <div className="space-y-2">
-                                <label htmlFor="portal-employee-id" className="block text-[10px] font-black text-slate-400   ml-1">Employee UUID / ID</label>
-                                <input
+                        <form onSubmit={handleLogin} className="space-y-5">
+                            <Field label="Employee UUID / ID" htmlFor="portal-employee-id" required>
+                                <Input
                                     id="portal-employee-id"
-                                    className="w-full px-7 py-5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all text-sm"
+                                    icon="badge"
                                     placeholder="Enter your unique ID..."
                                     value={credentials.employee_id}
                                     onChange={(e) => setCredentials({...credentials, employee_id: e.target.value})}
                                     required
                                 />
-                            </div>
+                            </Field>
 
-                            <div className="space-y-2">
-                                <label htmlFor="portal-corporate-email" className="block text-[10px] font-black text-slate-400   ml-1">Corporate Email</label>
-                                <input
+                            <Field label="Corporate Email" htmlFor="portal-corporate-email" required>
+                                <Input
                                     id="portal-corporate-email"
                                     type="email"
-                                    className="w-full px-7 py-5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all text-sm"
+                                    icon="mail"
                                     placeholder="yourname@company.com"
                                     value={credentials.email}
                                     onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                                     required
                                 />
-                            </div>
+                            </Field>
 
                             {error && (
-                                <div className="p-4 bg-rose-50 text-rose-500 rounded-xl text-xs font-bold text-center border border-rose-100 animate-shake">
-                                    {error}
+                                <div className="flex items-start gap-2 p-3 bg-[#FDECEC] text-[#C0383C] rounded-[10px] text-[12.5px] font-medium border border-[#F6D5D5]">
+                                    <span className="material-symbols-rounded text-[18px] mt-px">error</span>
+                                    <span>{error}</span>
                                 </div>
                             )}
 
-                            <button
+                            <Button
                                 type="submit"
+                                size="lg"
+                                fullWidth
                                 disabled={loading}
-                                className="w-full py-6 bg-slate-900 text-white rounded-xl font-black text-sm  tracking-[0.2em] shadow-xl shadow-slate-200 hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-50 mt-4 group"
+                                trailingIcon={loading ? undefined : "arrow_forward"}
+                                className="mt-1"
                             >
                                 {loading ? (
-                                    <div className="flex items-center justify-center gap-2">
-                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        <span>Logging in...</span>
-                                    </div>
+                                    <span className="flex items-center gap-2">
+                                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                        Logging in...
+                                    </span>
                                 ) : (
-                                    <div className="flex items-center justify-center gap-2">
-                                        <span>Enter Hub</span>
-                                        <span className="material-symbols-rounded text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                                    </div>
+                                    "Enter Hub"
                                 )}
-                            </button>
+                            </Button>
                         </form>
 
-                        <footer className="mt-12 text-center text-[10px] text-slate-400 font-medium ">
+                        <footer className="mt-8 text-center text-[12px] text-[#8A929E]">
                             Secure entry point for employee growth.
                         </footer>
-                    </div>
+                    </Card>
                 ) : (
-                    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                        <header className="flex flex-col md:flex-row justify-between items-center gap-6 pb-10 border-b border-slate-100">
-                            <div className="text-center md:text-left">
-                                <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-none mb-3">Welcome Back, {employee?.first_name}!</h2>
-                                <p className="text-slate-400 font-black  text-[10px] tracking-[0.4em] flex items-center justify-center md:justify-start gap-2">
-                                    <span className="material-symbols-rounded text-sm text-indigo-500">verified</span>
-                                    {totalTasks} ACTIVE TASKS IN YOUR PIPELINE
-                                </p>
+                    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-[#E8EAED]">
+                            <div className="min-w-0">
+                                <h1 className="text-[22px] md:text-[26px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
+                                    Welcome back, {employee?.first_name}
+                                </h1>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <Badge tone="indigo" dot>
+                                        <span className={`${jetbrainsMono.className} font-semibold`}>{totalTasks}</span>
+                                        &nbsp;active task{totalTasks === 1 ? '' : 's'}
+                                    </Badge>
+                                    <span className="text-[12.5px] text-[#8A929E]">in your pipeline</span>
+                                </div>
                             </div>
-                            <button 
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                icon="logout"
                                 onClick={() => setStep('login')}
-                                className="px-8 py-3 bg-white border border-slate-100 text-slate-400 rounded-xl font-black text-[9px]   hover:text-rose-500 hover:border-rose-100 transition-all shadow-sm"
                             >
                                 Close Session
-                            </button>
+                            </Button>
                         </header>
 
                         {totalTasks === 0 ? (
-                            <div className="bg-white py-32 rounded-2xl text-center border border-slate-100 shadow-xl shadow-slate-100/50">
-                                <div className="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-inner border border-emerald-100">
-                                    <span className="material-symbols-rounded text-5xl">task_alt</span>
+                            <Card padding="lg" className="py-20 text-center">
+                                <div className="w-16 h-16 bg-[#E6F4EA] text-[#15803D] rounded-[14px] flex items-center justify-center mx-auto mb-5">
+                                    <span className="material-symbols-rounded text-[34px]">task_alt</span>
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-2">All Caught Up</h3>
-                                <p className="text-slate-400 font-black  tracking-[0.2em] text-[10px]">You have no active tasks currently</p>
-                            </div>
+                                <h3 className="text-[17px] font-bold text-[#15171C]">All caught up</h3>
+                                <p className="text-[13.5px] text-[#8A929E] mt-1">You have no active tasks currently.</p>
+                            </Card>
                         ) : (
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* 360 Section */}
-                                <section className="space-y-6">
-                                    <h3 className="text-[10px] font-black text-indigo-600  tracking-[0.3em] flex items-center gap-3 px-2">
-                                        <span className="material-symbols-rounded">group</span>{"360° Feedback"}
-                                    </h3>
-                                    <div className="space-y-4">
+                                <section className="space-y-3.5">
+                                    <div className="flex items-center gap-2 px-0.5">
+                                        <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">group</span>
+                                        <h3 className="text-[13px] font-bold text-[#15171C]">360° Feedback</h3>
+                                        <Badge tone="indigo" className="ml-auto">
+                                            <span className={jetbrainsMono.className}>{assessments.length}</span>
+                                        </Badge>
+                                    </div>
+                                    <div className="space-y-3">
                                         {assessments.length > 0 ? assessments.map((ass) => (
-                                            <div key={ass.id} className="bg-white p-6 rounded-2xl border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-indigo-200 transition-all duration-500 flex items-center justify-between gap-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black text-base shadow-inner group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+                                            <Card key={ass.id} padding="sm" interactive className="group flex items-center justify-between gap-3">
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <div className="w-11 h-11 bg-[#ECEBFB] text-[#5B53E0] rounded-[11px] flex items-center justify-center font-bold text-[16px] shrink-0">
                                                         {ass.ratee_name?.[0]}
                                                     </div>
-                                                    <div>
-                                                        <h4 className="text-sm font-black text-slate-900 leading-tight">Review {ass.ratee_name}</h4>
-                                                        <p className="text-[9px] font-black text-indigo-400   mt-1">{ass.relation}</p>
+                                                    <div className="min-w-0">
+                                                        <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight truncate">Review {ass.ratee_name}</h4>
+                                                        <p className="text-[12px] text-[#8A929E] mt-0.5 truncate">{ass.relation}</p>
                                                     </div>
                                                 </div>
-                                                <button
+                                                <Button
+                                                    variant="primary"
+                                                    size="sm"
                                                     onClick={() => router.push(`/enterprise/assessments-360/${ass.id}`)}
-                                                    className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-indigo-600 transition-all shadow-lg active:scale-90"
+                                                    className="shrink-0 w-9 px-0"
+                                                    aria-label={`Review ${ass.ratee_name}`}
                                                 >
-                                                    <span className="material-symbols-rounded text-lg">arrow_forward</span>
-                                                </button>
-                                            </div>
+                                                    <span className="material-symbols-rounded text-[18px]">arrow_forward</span>
+                                                </Button>
+                                            </Card>
                                         )) : (
-                                            <div className="py-12 bg-slate-50/50 rounded-2xl border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
-                                                <span className="material-symbols-rounded text-3xl opacity-20">history_edu</span>
-                                                <p className="text-[9px] font-black    ">No pending reviews</p>
+                                            <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
+                                                <span className="material-symbols-rounded text-[26px] opacity-50">history_edu</span>
+                                                <p className="text-[12px] font-medium">No pending reviews</p>
                                             </div>
                                         )}
                                     </div>
                                 </section>
 
                                 {/* Surveys Section */}
-                                <section className="space-y-6">
-                                    <h3 className="text-[10px] font-black text-emerald-600  tracking-[0.3em] flex items-center gap-3 px-2">
-                                        <span className="material-symbols-rounded">analytics</span>{"Culture Surveys"}
-                                    </h3>
-                                    <div className="space-y-4">
+                                <section className="space-y-3.5">
+                                    <div className="flex items-center gap-2 px-0.5">
+                                        <span className="material-symbols-rounded text-[20px] text-[#0E8A6E]">analytics</span>
+                                        <h3 className="text-[13px] font-bold text-[#15171C]">Culture Surveys</h3>
+                                        <Badge tone="teal" className="ml-auto">
+                                            <span className={jetbrainsMono.className}>{surveys.length}</span>
+                                        </Badge>
+                                    </div>
+                                    <div className="space-y-3">
                                         {surveys.length > 0 ? surveys.map((srv) => (
-                                            <div key={srv.id} className="bg-white p-6 rounded-2xl border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-emerald-200 transition-all duration-500 flex items-center justify-between gap-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
-                                                        <span className="material-symbols-rounded text-lg">assignment</span>
+                                            <Card key={srv.id} padding="sm" interactive className="group flex items-center justify-between gap-3">
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <div className="w-11 h-11 bg-[#E3F4EF] text-[#0E8A6E] rounded-[11px] flex items-center justify-center shrink-0">
+                                                        <span className="material-symbols-rounded text-[20px]">assignment</span>
                                                     </div>
-                                                    <div>
-                                                        <h4 className="text-sm font-black text-slate-900 leading-tight">{srv.instance_name}</h4>
-                                                        <p className="text-[9px] font-black text-emerald-400   mt-1">{srv.template_title}</p>
+                                                    <div className="min-w-0">
+                                                        <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight truncate">{srv.instance_name}</h4>
+                                                        <p className="text-[12px] text-[#8A929E] mt-0.5 truncate">{srv.template_title}</p>
                                                     </div>
                                                 </div>
-                                                <button
+                                                <Button
+                                                    variant="primary"
+                                                    size="sm"
                                                     onClick={() => router.push(`/enterprise/surveys/fill/${srv.token}`)}
-                                                    className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 transition-all shadow-lg active:scale-90"
+                                                    className="shrink-0 w-9 px-0"
+                                                    aria-label={`Fill ${srv.instance_name}`}
                                                 >
-                                                    <span className="material-symbols-rounded text-lg">edit_note</span>
-                                                </button>
-                                            </div>
+                                                    <span className="material-symbols-rounded text-[18px]">edit_note</span>
+                                                </Button>
+                                            </Card>
                                         )) : (
-                                            <div className="py-12 bg-slate-50/50 rounded-2xl border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
-                                                <span className="material-symbols-rounded text-3xl opacity-20">poll</span>
-                                                <p className="text-[9px] font-black   ">All pulse checks completed</p>
+                                            <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
+                                                <span className="material-symbols-rounded text-[26px] opacity-50">poll</span>
+                                                <p className="text-[12px] font-medium">All pulse checks completed</p>
                                             </div>
                                         )}
                                     </div>
                                 </section>
 
                                 {/* AI Lab Section */}
-                                <section className="space-y-6">
-                                    <h3 className="text-[10px] font-black text-rose-600  tracking-[0.3em] flex items-center gap-3 px-2">
-                                        <span className="material-symbols-rounded font-black">neurology</span>{"AI Practice Lab"}
-                                    </h3>
-                                    <div className="space-y-4">
+                                <section className="space-y-3.5">
+                                    <div className="flex items-center gap-2 px-0.5">
+                                        <span className="material-symbols-rounded text-[20px] text-[#D97706]">neurology</span>
+                                        <h3 className="text-[13px] font-bold text-[#15171C]">AI Practice Lab</h3>
+                                        <Badge tone="warning" className="ml-auto">
+                                            <span className={jetbrainsMono.className}>{simulationAssignments.length}</span>
+                                        </Badge>
+                                    </div>
+                                    <div className="space-y-3">
                                         {simulationAssignments.length > 0 ? simulationAssignments.map((sim) => (
-                                            <div key={sim.id} className="bg-white p-6 rounded-2xl border border-slate-50 shadow-xl shadow-slate-200/20 group hover:border-rose-200 transition-all duration-500 flex flex-col gap-4">
+                                            <Card key={sim.id} padding="sm" interactive className="group flex flex-col gap-3.5">
                                                 <div className="flex items-center justify-between">
-                                                    <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center font-black shadow-inner group-hover:bg-rose-600 group-hover:text-white transition-all duration-500">
-                                                        <span className="material-symbols-rounded">psychology</span>
+                                                    <div className="w-11 h-11 bg-[#FEF3E2] text-[#D97706] rounded-[11px] flex items-center justify-center shrink-0">
+                                                        <span className="material-symbols-rounded text-[20px]">psychology</span>
                                                     </div>
-                                                    <span className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black  rounded-xl tracking-[0.2em]">Practice</span>
+                                                    <Badge tone="neutral">Practice</Badge>
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-sm font-black text-slate-900 leading-tight  group-hover:text-rose-600 transition-colors">{sim.title}</h4>
-                                                    <p className="text-[9px] font-bold text-slate-400  mt-1 leading-relaxed line-clamp-2">{sim.description}</p>
+                                                    <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight">{sim.title}</h4>
+                                                    <p className="text-[12.5px] text-[#8A929E] mt-1 leading-relaxed line-clamp-2">{sim.description}</p>
                                                 </div>
-                                                <div className="pt-2 border-t border-slate-50 mt-2 flex items-center justify-between">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="material-symbols-rounded text-rose-500 text-xs">record_voice_over</span>
-                                                        <span className="text-[9px] font-black text-slate-400  ">{sim.character}</span>
+                                                <div className="pt-3 border-t border-[#E8EAED] flex items-center justify-between gap-3">
+                                                    <div className="flex items-center gap-1.5 min-w-0">
+                                                        <span className="material-symbols-rounded text-[#D97706] text-[16px] shrink-0">record_voice_over</span>
+                                                        <span className="text-[12px] text-[#8A929E] truncate">{sim.character}</span>
                                                     </div>
-                                                    <button
+                                                    <Button
+                                                        variant="primary"
+                                                        size="sm"
+                                                        trailingIcon="play_arrow"
                                                         onClick={() => startSimulation(sim.scenario_id, sim.id)}
-                                                        className="px-5 py-2.5 bg-slate-900 text-white rounded-xl font-black text-[9px]   hover:bg-rose-600 transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                                                        className="shrink-0"
                                                     >
-                                                        {"Start Practice"}<span className="material-symbols-rounded text-sm">play_arrow</span>
-                                                    </button>
+                                                        Start Practice
+                                                    </Button>
                                                 </div>
-                                            </div>
+                                            </Card>
                                         )) : (
-                                            <div className="py-12 bg-slate-50/50 rounded-2xl border border-dashed border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-300">
-                                                <span className="material-symbols-rounded text-3xl opacity-20">lock_open</span>
-                                                <p className="text-[9px] font-black   ">No lab sessions assigned</p>
+                                            <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
+                                                <span className="material-symbols-rounded text-[26px] opacity-50">lock_open</span>
+                                                <p className="text-[12px] font-medium">No lab sessions assigned</p>
                                             </div>
                                         )}
                                     </div>
@@ -335,7 +357,7 @@ export default function UnifiedEmployeePortal() {
             </div>
 
             {/* Global Portal Footer */}
-            <div className={`mt-12 text-[10px] font-black text-slate-300  tracking-[0.5em] transition-opacity duration-1000 ${step === 'login' ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`mt-10 text-[11px] font-medium text-[#8A929E] tracking-[0.2em] uppercase transition-opacity duration-700 ${step === 'login' ? 'opacity-0' : 'opacity-100'}`}>
                 Employee Portal
             </div>
         </div>

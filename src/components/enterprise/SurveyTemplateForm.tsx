@@ -3,6 +3,18 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/utils/api";
+import {
+    PageHeader,
+    Card,
+    CardHeader,
+    Field,
+    Input,
+    Textarea,
+    Select,
+    Badge,
+    Button,
+    jetbrainsMono,
+} from "@/components/ds";
 
 interface SurveyType {
     id: string;
@@ -194,141 +206,141 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
     const submitLabel = isEdit ? (submitting ? 'Saving Changes...' : 'Save Framework') : (submitting ? 'Deploying...' : 'Deploy Framework');
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="min-h-[60vh] flex items-center justify-center p-8">
+            <div className="w-10 h-10 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
+    const submitDisabled = submitting || !formData.survey_type_id || !formData.title || formData.questions.length === 0 || formData.questions.some(q => !q.text.trim());
+
     return (
-        <div className="min-h-screen bg-slate-50/50">
-            {/* Cleaner Header */}
-            <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200 py-4 px-8 flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/enterprise/surveys/templates')} className="p-2 text-slate-400 hover:text-slate-900 transition-colors">
-                        <span className="material-symbols-rounded">arrow_back</span>
-                    </button>
-                    <div>
-                        <h1 className="text-xl font-bold text-slate-900 tracking-tight leading-none mb-1">{headerTitle}</h1>
-                        <p className="text-slate-500 text-xs font-medium">{headerSubtitle}</p>
-                    </div>
-                </div>
-                <div className="flex gap-3">
-                    <button
-                        type="button"
-                        onClick={() => router.push('/enterprise/surveys/templates')}
-                        className="px-5 py-2.5 text-slate-600 font-semibold text-xs hover:bg-slate-100 rounded-xl transition-all"
-                    >
-                        Discard
-                    </button>
-                    <button
+        <div className="max-w-[920px] mx-auto px-4 sm:px-5 md:px-7 pb-20 space-y-6 animate-in fade-in duration-500">
+            <PageHeader
+                help={<><p>Add your survey questions and their types.</p><p>Save the template, then launch a campaign to your team from HR Surveys.</p></>}
+                title={headerTitle}
+                subtitle={headerSubtitle}
+                onBack={() => router.push('/enterprise/surveys/templates')}
+                actions={
+                    <Button
                         form="template-form"
                         type="submit"
-                        disabled={submitting || !formData.survey_type_id || !formData.title || formData.questions.length === 0 || formData.questions.some(q => !q.text.trim())}
-                        className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold text-xs hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 disabled:opacity-50 disabled:shadow-none"
+                        disabled={submitDisabled}
                     >
                         {submitLabel}
-                    </button>
-                </div>
-            </header>
+                    </Button>
+                }
+            />
 
-            <main className="max-w-4xl mx-auto p-8 lg:p-12 space-y-12 animate-in fade-in duration-700">
-                <form id="template-form" onSubmit={handleSave} className="space-y-12">
-                    {/* Simplified Strategy Block */}
-                    <section className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-8">
-                        <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                            <span className="material-symbols-rounded text-indigo-500">settings</span>
-                            <h3 className="text-sm font-bold text-slate-900  ">Framework Configuration</h3>
-                        </div>
+            <form id="template-form" onSubmit={handleSave} className="space-y-6">
+                {/* Framework configuration */}
+                <Card>
+                    <CardHeader title="Framework Configuration" subtitle="Set the category and headline details for this framework" />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-2">
-                                <label htmlFor="survey-category" className="text-[10px] font-bold text-slate-400   px-1">Survey Category</label>
-                                <div className="relative">
-                                    <select
-                                        id="survey-category"
-                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 appearance-none transition-all"
-                                        value={formData.survey_type_id}
-                                        onChange={(e) => setFormData({...formData, survey_type_id: e.target.value})}
-                                        required
-                                    >
-                                        <option value="">Select Target Type</option>
-                                        {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                                    </select>
-                                    <span className="material-symbols-rounded absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">expand_more</span>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="framework-title" className="text-[10px] font-bold text-slate-400   px-1">Framework Title</label>
-                                <input
-                                    id="framework-title"
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 placeholder:text-slate-300 transition-all"
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                    placeholder="e.g. Employee Engagement Q4"
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                        <Field label="Survey Category" htmlFor="survey-category" required>
+                            <div className="relative">
+                                <Select
+                                    id="survey-category"
+                                    className="pr-10"
+                                    value={formData.survey_type_id}
+                                    onChange={(e) => setFormData({...formData, survey_type_id: e.target.value})}
                                     required
-                                />
+                                >
+                                    <option value="">Select Target Type</option>
+                                    {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                                </Select>
+                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">expand_more</span>
                             </div>
-                            <div className="md:col-span-2 space-y-2">
-                                <label htmlFor="executive-instructions" className="text-[10px] font-bold text-slate-400   px-1">Executive Instructions</label>
-                                <textarea
-                                    id="executive-instructions"
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 placeholder:text-slate-300 min-h-[100px] transition-all leading-relaxed"
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                    placeholder="Summary or instructions for employees..."
-                                />
-                            </div>
-                        </div>
-                    </section>
+                        </Field>
 
-                    {/* Structured Question Pool */}
-                    <section className="space-y-6">
-                        <div className="flex justify-between items-center px-1">
-                            <div className="flex items-center gap-3">
-                                <h3 className="text-sm font-bold text-slate-900  ">Question Stack</h3>
-                                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-xl border border-indigo-100">
-                                    {formData.questions.length} Items
-                                </span>
-                            </div>
-                            <div className="flex gap-3">
-                                <button
+                        <Field label="Framework Title" htmlFor="framework-title" required>
+                            <Input
+                                id="framework-title"
+                                value={formData.title}
+                                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                                placeholder="e.g. Employee Engagement Q4"
+                                required
+                            />
+                        </Field>
+
+                        <Field label="Executive Instructions" htmlFor="executive-instructions" className="md:col-span-2">
+                            <Textarea
+                                id="executive-instructions"
+                                className="min-h-[100px] leading-relaxed"
+                                value={formData.description}
+                                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                                placeholder="Summary or instructions for employees..."
+                            />
+                        </Field>
+                    </div>
+                </Card>
+
+                {/* Question stack */}
+                <Card>
+                    <CardHeader
+                        title={
+                            <span className="inline-flex items-center gap-2.5">
+                                Question Stack
+                                <Badge tone="indigo">
+                                    <span className={jetbrainsMono.className}>{formData.questions.length}</span> Items
+                                </Badge>
+                            </span>
+                        }
+                        subtitle="Build your systematic question stack"
+                        action={
+                            <div className="flex flex-wrap gap-2.5">
+                                <Button
+                                    variant="dark"
+                                    size="sm"
                                     type="button"
+                                    icon="psychology"
                                     onClick={() => setIsAiModalOpen(true)}
                                     disabled={!formData.survey_type_id}
-                                    className="bg-slate-900 text-white text-[10px] font-bold   flex items-center gap-2 hover:bg-indigo-600 px-5 py-2.5 rounded-xl transition-all disabled:opacity-30"
+                                    className="bg-[#15171C] text-white border-transparent hover:bg-[#4A43C9]"
                                 >
-                                    <span className="material-symbols-rounded text-lg">psychology</span>
-                                    <span>AI Wizard</span>
-                                </button>
-                                <button
+                                    AI Wizard
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
                                     type="button"
+                                    icon="add"
                                     onClick={addQuestion}
-                                    className="bg-white border border-slate-200 text-slate-900 text-[10px] font-bold   flex items-center gap-2 hover:bg-slate-50 px-5 py-2.5 rounded-xl transition-all"
                                 >
-                                    <span className="material-symbols-rounded text-lg">add</span>
-                                    <span>Add Question</span>
-                                </button>
+                                    Add Question
+                                </Button>
                             </div>
-                        </div>
+                        }
+                    />
 
-                        <div className="space-y-6">
+                    {formData.questions.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-14 text-center border border-dashed border-[#E8EAED] rounded-[14px] bg-[#F7F8FA]/50">
+                            <div className="w-14 h-14 rounded-[16px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center mb-4">
+                                <span className="material-symbols-rounded text-[28px]">help_center</span>
+                            </div>
+                            <h3 className="text-[15px] font-bold text-[#15171C] mb-1">No questions yet</h3>
+                            <p className="text-[13px] text-[#8A929E] max-w-xs mx-auto">Add a question manually, or use the AI Wizard to generate a stack.</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
                             {formData.questions.map((q, i) => (
-                                <div key={i} className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-8 transition-all relative group animate-in slide-in-from-bottom-2 duration-300">
-                                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Card key={i} padding="md" className="relative group bg-[#FCFCFD] animate-in slide-in-from-bottom-2 duration-300">
+                                    <div className="absolute top-3.5 right-3.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button
                                             type="button"
                                             onClick={() => removeQuestion(i)}
-                                            className="p-2 text-slate-400 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-xl transition-all"
+                                            className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                                            aria-label="Remove question"
                                         >
-                                            <span className="material-symbols-rounded text-xl">delete</span>
+                                            <span className="material-symbols-rounded text-[20px]">delete</span>
                                         </button>
                                     </div>
 
-                                    <div className="flex gap-6 items-start">
-                                        <div className="w-10 h-10 bg-slate-100 text-slate-400 font-bold rounded-xl flex items-center justify-center shrink-0 border border-slate-200">{i+1}</div>
-                                        <div className="flex-1 space-y-6">
+                                    <div className="flex gap-4 items-start">
+                                        <div className={`w-10 h-10 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] font-bold flex items-center justify-center shrink-0 ${jetbrainsMono.className}`}>{i+1}</div>
+                                        <div className="flex-1 min-w-0 space-y-4 pr-10">
                                             <input
-                                                className="w-full bg-transparent border-none focus:ring-0 text-slate-900 font-bold text-xl placeholder:text-slate-100 p-0"
+                                                className="w-full bg-transparent border-none focus:ring-0 text-[#15171C] font-bold text-[17px] placeholder:text-[#C7CCD4] p-0 outline-none"
                                                 value={q.text}
                                                 onChange={(e) => updateQuestion(i, "text", e.target.value)}
                                                 placeholder="Enter question text..."
@@ -340,7 +352,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                         key={type}
                                                         type="button"
                                                         onClick={() => updateQuestion(i, "type", type)}
-                                                        className={`px-6 py-2 rounded-xl text-[10px] font-bold   transition-all border ${q.type === type ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-slate-50 border-slate-100 text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                                                        className={`px-4 py-1.5 rounded-[8px] text-[12px] font-semibold transition-all border ${q.type === type ? 'bg-[#5B53E0] border-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.24)]' : 'bg-white border-[#E1E4E8] text-[#8A929E] hover:text-[#374151] hover:border-[#9AA3AF]'}`}
                                                     >
                                                         {type === 'RATING' ? 'Rating' : type === 'TEXT' ? 'Descriptive' : 'Multi-Choice'}
                                                     </button>
@@ -350,13 +362,13 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     </div>
 
                                     {q.type === 'MCQ' && (
-                                        <div className="ml-16 space-y-4 animate-in fade-in duration-400">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="ml-14 mt-5 animate-in fade-in duration-300">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                 {safeOptions(q.options).map((opt: string, optIdx: number) => (
                                                     <div key={optIdx} className="flex gap-2 items-center group/opt">
-                                                        <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-bold text-slate-300 group-hover/opt:bg-indigo-50 transition-colors shrink-0">{String.fromCodePoint(65 + optIdx)}</div>
-                                                        <input
-                                                            className="flex-1 px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                                        <div className={`w-8 h-8 rounded-[8px] bg-[#F1F2F5] flex items-center justify-center text-[11px] font-bold text-[#8A929E] group-hover/opt:bg-[#ECEBFB] group-hover/opt:text-[#5B53E0] transition-colors shrink-0 ${jetbrainsMono.className}`}>{String.fromCodePoint(65 + optIdx)}</div>
+                                                        <Input
+                                                            className="h-10 flex-1"
                                                             value={opt}
                                                             onChange={(e) => handleOptionChange(i, optIdx, e.target.value)}
                                                             required
@@ -364,70 +376,81 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                         <button
                                                             type="button"
                                                             onClick={() => removeOption(i, optIdx)}
-                                                            className="p-1 px-2 text-slate-300 hover:text-rose-500 transition-colors"
+                                                            className="w-8 h-8 flex items-center justify-center rounded-[8px] text-[#C7CCD4] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors shrink-0"
+                                                            aria-label="Remove option"
                                                         >
-                                                            <span className="material-symbols-rounded text-lg">close</span>
+                                                            <span className="material-symbols-rounded text-[18px]">close</span>
                                                         </button>
                                                     </div>
                                                 ))}
                                                 <button
                                                     type="button"
                                                     onClick={() => addOption(i)}
-                                                    className="px-6 py-2.5 border border-dashed border-slate-200 rounded-xl text-[10px] font-bold text-slate-400   hover:border-indigo-200 hover:text-indigo-600 transition-all flex items-center justify-center gap-2 bg-slate-50/20"
+                                                    className="h-10 px-4 border border-dashed border-[#E1E4E8] rounded-[10px] text-[12px] font-semibold text-[#8A929E] hover:border-[#5B53E0] hover:text-[#5B53E0] transition-all flex items-center justify-center gap-1.5"
                                                 >
-                                                    <span className="material-symbols-rounded text-lg">add_circle</span>
+                                                    <span className="material-symbols-rounded text-[18px]">add_circle</span>
                                                     <span>Add Choice</span>
                                                 </button>
                                             </div>
                                         </div>
                                     )}
-                                </div>
+                                </Card>
                             ))}
                         </div>
-                    </section>
+                    )}
+                </Card>
 
-                    <div className="pt-8 flex flex-col items-center border-t border-slate-100 pb-20">
-                        <button
-                            type="submit"
-                            disabled={submitting || !formData.survey_type_id || !formData.title || formData.questions.length === 0 || formData.questions.some(q => !q.text.trim())}
-                            className="px-16 py-4 bg-indigo-600 text-white rounded-xl font-bold text-sm   shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-[1.01] transition-all disabled:opacity-30 disabled:shadow-none"
-                        >
-                            {submitLabel}
-                        </button>
-                    </div>
-                </form>
-            </main>
+                <div className="pt-2 flex justify-end">
+                    <Button
+                        size="lg"
+                        type="submit"
+                        disabled={submitDisabled}
+                        className="px-10"
+                    >
+                        {submitLabel}
+                    </Button>
+                </div>
+            </form>
 
-            {/* Simplified AI Wizard Modal */}
+            {/* AI Wizard Modal */}
             {isAiModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in duration-200">
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <div className="flex items-center gap-3">
-                                <span className="material-symbols-rounded text-indigo-600">psychology</span>
-                                <h2 className="text-lg font-bold text-slate-900">AI Strategy Wizard</h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#15171C]/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                    <Card padding="none" className="w-full max-w-md shadow-[0_24px_60px_rgba(15,23,42,0.22)] overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-5 border-b border-[#E8EAED] flex justify-between items-center bg-[#F7F8FA]">
+                            <div className="flex items-center gap-2.5">
+                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                    <span className="material-symbols-rounded text-[20px]">psychology</span>
+                                </span>
+                                <h2 className="text-[16px] font-bold text-[#15171C]">AI Strategy Wizard</h2>
                             </div>
-                            <button onClick={() => setIsAiModalOpen(false)} className="text-slate-400 hover:text-rose-500 transition-colors">
-                                <span className="material-symbols-rounded">close</span>
+                            <button
+                                onClick={() => setIsAiModalOpen(false)}
+                                className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#8A929E] hover:text-[#374151] hover:bg-[#F1F2F5] transition-colors"
+                                aria-label="Close"
+                            >
+                                <span className="material-symbols-rounded text-[20px]">close</span>
                             </button>
                         </div>
-                        <div className="p-8 space-y-6">
-                            <div className="space-y-2">
-                                <label htmlFor="industry-nature" className="text-[10px] font-bold text-slate-400   px-1">Describe Your Industry</label>
-                                <input
+                        <div className="p-6 space-y-5">
+                            <Field
+                                label="Describe Your Industry"
+                                htmlFor="industry-nature"
+                                hint="Generated questions will reflect industry nuances."
+                            >
+                                <Input
                                     id="industry-nature"
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 transition-all"
                                     value={industryNature}
                                     onChange={(e) => setIndustryNature(e.target.value)}
                                     placeholder="e.g. Fintech, Healthcare..."
                                     autoFocus
                                 />
-                                <p className="text-[10px] text-slate-400 font-medium px-1 ">Generated questions will reflect industry nuances.</p>
-                            </div>
-                            <button
+                            </Field>
+                            <Button
+                                variant="dark"
+                                fullWidth
                                 onClick={generateWithAi}
                                 disabled={generatingAi || !industryNature}
-                                className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-xs   flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all disabled:opacity-30"
+                                className="bg-[#15171C] text-white border-transparent hover:bg-[#4A43C9]"
                             >
                                 {generatingAi ? (
                                     <>
@@ -436,13 +459,13 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     </>
                                 ) : (
                                     <>
-                                        <span className="material-symbols-rounded text-lg">magic_button</span>
+                                        <span className="material-symbols-rounded text-[19px]">magic_button</span>
                                         <span>Generate Strategy</span>
                                     </>
                                 )}
-                            </button>
+                            </Button>
                         </div>
-                    </div>
+                    </Card>
                 </div>
             )}
         </div>

@@ -12,6 +12,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Badge } from '../../../components/ui/badge';
+import { PageHelp } from "@/components/ds";
 
 interface Email {
     id: string;
@@ -205,7 +206,12 @@ const MailboxPage = () => {
             {/* Page header */}
             <header className="px-6 py-4 bg-white border-b border-[#E8EAED] flex items-center justify-between gap-3 shrink-0">
                 <div>
-                    <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Mail</h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Mail</h1>
+                        <PageHelp title="Mail">
+                            <p>Email candidates and keep every conversation in one place.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[13.5px] text-[#8A929E] mt-0.5">Candidate &amp; team conversations</p>
                 </div>
                 {canAccess("communications:create") && (

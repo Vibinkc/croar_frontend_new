@@ -2,7 +2,8 @@
 
 import { useEffect, useState, use } from "react";
 import { apiClient } from "@/utils/api";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { PageHeader, Card, Field, Input, Button, EmptyState, jetbrainsMono } from "@/components/ds";
 
 interface College {
     id: string;
@@ -22,11 +23,14 @@ interface Division {
 
 export default function SuperAdminDivisions({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
+    const router = useRouter();
     const [divisions, setDivisions] = useState<Division[]>([]);
     const [college, setCollege] = useState<College | null>(null);
     const [name, setName] = useState("");
     const [slug, setSlug] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isFetching, setIsFetching] = useState(true);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         fetchCollege();
@@ -45,6 +49,7 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
             const res = await apiClient.get(`/api/v1/super-admin/tenants/${id}/divisions`);
             if (res.ok) setDivisions(await res.json());
         } catch (e) { console.error(e); }
+        finally { setIsFetching(false); }
     };
 
     const handleAddDivision = async (e: React.FormEvent) => {
@@ -58,6 +63,7 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
             if (res.ok) {
                 setName("");
                 setSlug("");
+                setShowModal(false);
                 fetchDivisions();
             }
         } catch (e) { console.error(e); }
@@ -65,83 +71,113 @@ export default function SuperAdminDivisions({ params }: { params: Promise<{ id: 
     };
 
     return (
-        <div className="flex-1 overflow-y-auto bg-slate-50 p-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-                <header className="flex justify-between items-center border-b border-slate-200 pb-8">
-                    <div>
-                        <h1 className="text-3xl font-black  tracking-tight">
-                            {college?.name || 'Loading...'} <span className="text-blue-600">Divisions</span>
-                        </h1>
-                        <Link href="/super-admin/colleges/list" className="text-slate-400 text-xs font-bold   hover:text-slate-900 transition-colors">
-                            &larr; Back to List
-                        </Link>
+        <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <PageHeader
+                title="Divisions"
+                subtitle={college?.name || "Loading…"}
+                onBack={() => router.push("/super-admin/colleges/list")}
+                help={
+                    <>
+                        <p>This tenant&apos;s divisions or departments.</p>
+                        <p>Add, rename or remove them.</p>
+                    </>
+                }
+                actions={
+                    <Button icon="add" onClick={() => setShowModal(true)}>
+                        Add Division
+                    </Button>
+                }
+            />
+
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+                {isFetching ? (
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="h-14 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                        ))}
                     </div>
-                </header>
+                ) : divisions.length === 0 ? (
+                    <EmptyState
+                        tone="brand"
+                        icon="account_tree"
+                        title="No divisions yet"
+                        description="Create a division or department to organise this tenant&apos;s structure."
+                        action={
+                            <Button icon="add" onClick={() => setShowModal(true)}>
+                                Add Division
+                            </Button>
+                        }
+                    />
+                ) : (
+                    <>
+                        <div className="hidden md:grid grid-cols-[2.4fr_2fr] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Division Name</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Slug</span>
+                        </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <aside className="md:col-span-1">
-                        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-blue-500/5">
-                            <h2 className="text-xs font-black   mb-6 border-b border-slate-50 pb-4">Add Division</h2>
-                            <form onSubmit={handleAddDivision} className="space-y-4">
-                                <div className="space-y-1">
-                                    <label htmlFor="division-name" className="text-[10px] font-black text-slate-400  ">Name</label>
-                                    <input
-                                        id="division-name"
-                                        className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none"
-                                        placeholder="e.g. Arts & Science"
-                                        value={name} onChange={e => { setName(e.target.value); setSlug(e.target.value.toLowerCase().replaceAll(' ', '-')); }} required
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <label htmlFor="division-slug" className="text-[10px] font-black text-slate-400  ">Slug</label>
-                                    <input
-                                        id="division-slug"
-                                        className="w-full bg-slate-50 border border-slate-100 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none"
-                                        placeholder="e.g. arts-science"
-                                        value={slug} onChange={e => setSlug(e.target.value)} required
-                                    />
-                                </div>
-                                <button
-                                    disabled={isLoading}
-                                    className="w-full bg-slate-900 text-white p-4 rounded-2xl text-xs font-black   shadow-lg"
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {divisions.map((d) => (
+                                <div
+                                    key={d.id}
+                                    className="grid grid-cols-1 md:grid-cols-[2.4fr_2fr] gap-x-4 gap-y-1 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
                                 >
-                                    {isLoading ? 'Adding...' : 'Add Division'}
-                                </button>
-                            </form>
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                            <span className="material-icons-outlined text-[18px]">account_tree</span>
+                                        </span>
+                                        <span className="text-[14px] font-bold text-[#15171C] truncate">{d.name}</span>
+                                    </div>
+                                    <div className={`text-[12.5px] text-[#8A929E] truncate pl-12 md:pl-0 ${jetbrainsMono.className}`}>
+                                        {d.slug}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    </aside>
-
-                    <main className="md:col-span-2 space-y-4">
-                        <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
-                            <table className="min-w-full divide-y divide-slate-100">
-                                <thead className="bg-slate-50/50">
-                                    <tr>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Division Name</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400  ">Slug</th>
-                                        <th className="px-6 py-4"></th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-slate-100">
-                                    {divisions.map((d) => (
-                                        <tr key={d.id} className="hover:bg-slate-50 transition-colors">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900  tracking-tight">{d.name}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-[10px] font-mono text-slate-400">{d.slug}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-right">
-                                                {/* Add delete/edit if needed */}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {divisions.length === 0 && (
-                                        <tr>
-                                            <td colSpan={3} className="px-6 py-8 text-center text-slate-400 text-xs font-bold  ">No divisions found.</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </main>
-                </div>
+                    </>
+                )}
             </div>
+
+            {/* Add Division Modal */}
+            {showModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm">
+                    <Card padding="lg" className="max-w-md w-full shadow-xl animate-in fade-in zoom-in-95 duration-150">
+                        <div className="flex items-center justify-between mb-5">
+                            <div className="flex items-center gap-2.5">
+                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                    <span className="material-icons-outlined text-[18px]">account_tree</span>
+                                </span>
+                                <h3 className="text-[15px] font-bold text-[#15171C]">Add Division</h3>
+                            </div>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+                            >
+                                <span className="material-icons-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleAddDivision} className="space-y-4">
+                            <Field label="Name" htmlFor="division-name">
+                                <Input
+                                    id="division-name"
+                                    placeholder="e.g. Arts &amp; Science"
+                                    value={name} onChange={e => { setName(e.target.value); setSlug(e.target.value.toLowerCase().replaceAll(' ', '-')); }} required
+                                />
+                            </Field>
+                            <Field label="Slug" htmlFor="division-slug">
+                                <Input
+                                    id="division-slug"
+                                    placeholder="e.g. arts-science"
+                                    value={slug} onChange={e => setSlug(e.target.value)} required
+                                />
+                            </Field>
+                            <Button type="submit" fullWidth disabled={isLoading} icon="add" className="mt-2">
+                                {isLoading ? "Adding..." : "Add Division"}
+                            </Button>
+                        </form>
+                    </Card>
+                </div>
+            )}
         </div>
     );
 }

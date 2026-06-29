@@ -37,7 +37,7 @@ import {
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/lib/api-config";
-import { jetbrainsMono } from "@/components/ds";
+import { jetbrainsMono, PageHelp } from "@/components/ds";
 
 const PLATFORM_DOMAINS: Record<string, string> = {
     github: "github.com",
@@ -382,7 +382,12 @@ export default function ShortlistedTalentPage() {
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Talent Pipeline</h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Talent Pipeline</h1>
+                        <PageHelp title="Shortlisted Talent">
+                            <p>Profiles you&apos;ve shortlisted while sourcing. Review them or move them into a job.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage &amp; coordinate shortlisted candidates across job roles</p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">

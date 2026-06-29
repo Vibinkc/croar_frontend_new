@@ -11,7 +11,10 @@ import { DialogProvider } from "@/components/payroll/DialogProvider";
 export default function PayrollLayout({ children }: { children: React.ReactNode }) {
   return (
     <DialogProvider>
-      <div className="payroll-scope min-h-screen bg-[var(--color-bg)] p-6 md:p-8">{children}</div>
+      {/* No padding/background here — each payroll page owns its spacing via the
+          standard `px-4 sm:px-5 md:px-7 max-w-[1320px] mx-auto` container, exactly
+          like the Jobs page. The `payroll-scope` class is kept for legacy CSS vars. */}
+      <div className="payroll-scope">{children}</div>
     </DialogProvider>
   );
 }

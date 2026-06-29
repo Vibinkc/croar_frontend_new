@@ -51,7 +51,7 @@ export default function EditOnboardingTemplatePage() {
                 </div>
                 <div>
                     <h4 className="text-xl font-black text-slate-900">Template Not Found</h4>
-                    <Link href="/enterprise/settings/onboarding-templates" className="text-indigo-600 hover:underline mt-4 inline-block font-black text-xs  ">Back to Templates</Link>
+                    <Link href="/enterprise/templates/onboarding-templates" className="text-indigo-600 hover:underline mt-4 inline-block font-black text-xs  ">Back to Templates</Link>
                 </div>
             </div>
         );
@@ -62,7 +62,7 @@ export default function EditOnboardingTemplatePage() {
             {/* Header */}
             <div className="flex items-center gap-6 mb-10">
                 <Link 
-                    href="/enterprise/settings/onboarding-templates"
+                    href="/enterprise/templates/onboarding-templates"
                     className="w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-xl text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
                 >
                     <span className="material-icons-outlined">arrow_back</span>

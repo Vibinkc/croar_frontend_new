@@ -21,7 +21,7 @@ import {
     Phone,
     Briefcase,
 } from "lucide-react";
-import { jetbrainsMono } from "@/components/ds";
+import { jetbrainsMono, PageHelp } from "@/components/ds";
 
 interface Job {
     id: string;
@@ -267,7 +267,12 @@ export default function AllCandidatesPage() {
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Candidate Bank</h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Candidate Bank</h1>
+                        <PageHelp title="Candidate Search">
+                            <p>Search and review every candidate. Filter, open a profile, or shortlist promising people.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[12.5px] text-[#8A929E] mt-0.5">Discover &amp; manage qualified talent across your organization</p>
                 </div>
             </header>

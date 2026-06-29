@@ -21,6 +21,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { PageHelp } from "@/components/ds";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -346,15 +347,16 @@ export default function MailAutomationPage() {
         </div>
       )}
 
-      {/* Header (sticky) */}
       <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]/80">
-              <Mail className="w-4 h-4 text-[#5B53E0]" />
-            </span>
-            Mail Automation
-          </h1>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
+              Mail Automation
+            </h1>
+            <PageHelp title="Mail Automation">
+              <p>Auto-send templated emails at the right pipeline stage.</p>
+            </PageHelp>
+          </div>
           <p className="text-[12.5px] text-[#8A929E] mt-0.5">Configure automated emails for specific jobs and hiring rounds.</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
@@ -693,7 +695,7 @@ export default function MailAutomationPage() {
                   {templates.length === 0 ? (
                     <div className="bg-[#F7F8FA] rounded-lg p-4 border border-dashed border-[#E8EAED]">
                       <p className="text-xs text-[#8A929E] text-center">
-                        No templates found. <a href="/enterprise/settings/templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank" rel="noreferrer">Create one</a> first.
+                        No templates found. <a href="/enterprise/templates/email-templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank" rel="noreferrer">Create one</a> first.
                       </p>
                     </div>
                   ) : (

@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
+import { PageHelp } from "@/components/ds";
 
 interface OnboardingDocument {
     id: string;
@@ -221,7 +222,12 @@ export default function OnboardingDetailsPage() {
                     >
                         <span className="material-symbols-rounded">arrow_back</span>
                     </button>
-                    <h1 className="text-xl font-black text-slate-800 tracking-tight">Onboarding</h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-xl font-black text-slate-800 tracking-tight">Onboarding</h1>
+                        <PageHelp title="Onboarding">
+                            <p>Track and complete this new hire&apos;s onboarding steps and paperwork.</p>
+                        </PageHelp>
+                    </div>
                 </div>
                 <div className="flex items-center gap-3">
                     {canAccess("onboarding:moderate") && onboarding.status?.name !== 'Completed' && (

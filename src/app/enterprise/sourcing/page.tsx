@@ -40,6 +40,7 @@ import {
     Link as LinkIcon
 } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api-config";
+import { PageHelp } from "@/components/ds";
 
 const PLATFORM_LOGOS: Record<string, React.FC<{ className?: string }>> = {
     github: ({ className }) => (
@@ -347,12 +348,17 @@ export default function ProfileSourcingPage() {
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 pt-4 sm:pt-5 md:pt-6 pb-4 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.6px] text-[#15171C] leading-tight flex items-center gap-3">
-                        Profile Sourcing
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>
-                            New
-                        </span>
-                    </h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.6px] text-[#15171C] leading-tight flex items-center gap-3">
+                            Profile Sourcing
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>
+                                New
+                            </span>
+                        </h1>
+                        <PageHelp title="Profile Sourcing">
+                            <p>Find new candidate profiles to add to your pipeline.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[14px] text-[#8A929E] mt-1">
                         Search across 30+ public sources including GitHub and LinkedIn to find the best talent.
                     </p>

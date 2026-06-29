@@ -13,7 +13,7 @@ import {
     LayoutGrid,
     Shield
 } from "lucide-react";
-import { jetbrainsMono } from "@/components/ds";
+import { jetbrainsMono, PageHelp } from "@/components/ds";
 
 interface Permission {
     id: string;
@@ -142,17 +142,17 @@ function EnterpriseRolesContent() {
     }, {});
 
     return (
-        <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pb-20 animate-in fade-in duration-700 relative">
+        <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-700 relative">
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]/80">
-                        <span className="material-symbols-rounded text-[18px] text-[#5B53E0]">security</span>
-                    </div>
-                    <div>
+                <div>
+                    <div className="flex items-center gap-1.5">
                         <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Roles & Permissions</h1>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Define access policies and roles</p>
+                        <PageHelp title="Roles &amp; Permissions">
+                            <p>Define roles and exactly what each can access, then assign them to people in Team.</p>
+                        </PageHelp>
                     </div>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Define access policies and roles</p>
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
@@ -255,28 +255,30 @@ function EnterpriseRolesContent() {
                             </div>
 
                             <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                                <div className="lg:col-span-4 space-y-5">
-                                    <div className="space-y-1.5 group">
-                                        <label htmlFor="role-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Name</label>
-                                        <input
-                                            id="role-name"
-                                            className="w-full h-10 bg-white border border-[#E1E4E8] px-3.5 rounded-[10px] text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                            placeholder="e.g. Finance Lead"
-                                            value={name} onChange={e => setName(e.target.value)} required
-                                            disabled={selectedRole?.is_system}
-                                        />
-                                    </div>
-                                    <div className="space-y-1.5 group">
-                                        <label htmlFor="role-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Description</label>
-                                        <textarea
-                                            id="role-description"
-                                            className="w-full bg-white border border-[#E1E4E8] p-3.5 rounded-[10px] text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none min-h-[120px] leading-relaxed"
-                                            placeholder="What can this role do?"
-                                            value={description} onChange={e => setDescription(e.target.value)}
-                                        />
+                                <div className="lg:col-span-4 flex flex-col justify-between">
+                                    <div className="space-y-4 flex-1 flex flex-col mb-4">
+                                        <div className="space-y-1.5 group">
+                                            <label htmlFor="role-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Name</label>
+                                            <input
+                                                id="role-name"
+                                                className="w-full h-10 bg-white border border-[#E1E4E8] px-3.5 rounded-[10px] text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
+                                                placeholder="e.g. Finance Lead"
+                                                value={name} onChange={e => setName(e.target.value)} required
+                                                disabled={selectedRole?.is_system}
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5 group flex-1 flex flex-col">
+                                            <label htmlFor="role-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Description</label>
+                                            <textarea
+                                                id="role-description"
+                                                className="w-full bg-white border border-[#E1E4E8] p-3.5 rounded-[10px] text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none flex-1 min-h-[120px] leading-relaxed"
+                                                placeholder="What can this role do?"
+                                                value={description} onChange={e => setDescription(e.target.value)}
+                                            />
+                                        </div>
                                     </div>
 
-                                    <div className="pt-4">
+                                    <div className="pt-2">
                                         <button
                                             type="submit"
                                             disabled={isLoading}
@@ -288,7 +290,7 @@ function EnterpriseRolesContent() {
                                     </div>
                                 </div>
 
-                                <div className="lg:col-span-8 space-y-6">
+                                <div className="lg:col-span-8 space-y-5">
                                     <div className="flex justify-between items-center px-1">
                                         <div className="flex items-center gap-2">
                                             <div className="w-1.5 h-4 bg-[#5B53E0] rounded-full" />
@@ -308,7 +310,7 @@ function EnterpriseRolesContent() {
                                         />
                                     </div>
                                     
-                                    <div className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-4 max-h-[450px] overflow-y-auto custom-scrollbar space-y-6">
+                                    <div className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-4 max-h-[350px] overflow-y-auto custom-scrollbar space-y-6">
                                         {Object.keys(groupedPermissions).map(module => (
                                             <div key={module} className="space-y-3">
                                                 <div className="flex items-center gap-2">

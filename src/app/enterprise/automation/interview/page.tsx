@@ -7,7 +7,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BACKEND_URL } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import TemplateBuilder from "./TemplateBuilder";
-import { 
+import { PageHelp } from "@/components/ds";
+import {
   Calendar, 
   Plus, 
   Trash2, 
@@ -502,7 +503,12 @@ export default function InterviewAutomationPage() {
               <Calendar className="w-6 h-6 text-[#0E8A6E]" />
             </div>
             <div>
-              <h1 className="text-[22px] font-extrabold text-slate-900 tracking-tight leading-tight">Interview Automation</h1>
+              <div className="flex items-center gap-1.5">
+                <h1 className="text-[22px] font-extrabold text-slate-900 tracking-tight leading-tight">Interview Automation</h1>
+                <PageHelp title="Interview Automation">
+                  <p>Automate interview scheduling and reminders.</p>
+                </PageHelp>
+              </div>
               <p className="text-[#8A929E] text-[13px] font-medium mt-1">
                 Automatically schedule AI or human technical interviews based on your hiring criteria.
               </p>
@@ -965,7 +971,7 @@ export default function InterviewAutomationPage() {
                       {templates.length === 0 ? (
                         <div className="bg-[#F7F8FA] rounded-[12px] p-4 border border-dashed border-[#E1E4E8] text-center">
                           <p className="text-[12.5px] text-[#8A929E] font-medium">
-                            No templates found. <a href="/enterprise/settings/templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank">Create one</a> first.
+                            No templates found. <a href="/enterprise/templates/email-templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank">Create one</a> first.
                           </p>
                         </div>
                       ) : (

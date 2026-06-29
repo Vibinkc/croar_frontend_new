@@ -2,48 +2,49 @@
 
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { PageHelp } from "@/components/ds";
 
-// One place for every reusable template, instead of four scattered settings pages.
+// Reusable template cards styled under the design system rules.
 const TEMPLATE_CARDS = [
     {
         label: "Email Templates",
         desc: "Reusable emails for screening, offers, rejections and more.",
         icon: "mail",
-        href: "/enterprise/settings/templates",
+        href: "/enterprise/templates/email-templates",
         permission: "communications:read",
-        gradient: "from-indigo-500 to-blue-500",
-        glow: "group-hover:shadow-indigo-200",
-        accent: "text-indigo-600",
+        bgColor: "bg-[#ECEBFB]",
+        iconColor: "text-[#5B53E0]",
+        borderColor: "border-[#DAD7F6]/80",
     },
     {
         label: "Assessment Templates",
         desc: "Aptitude / coding test configs with generated questions.",
         icon: "quiz",
-        href: "/enterprise/settings/assessments",
+        href: "/enterprise/templates/assessments",
         permission: "assessments:read",
-        gradient: "from-amber-500 to-orange-500",
-        glow: "group-hover:shadow-amber-200",
-        accent: "text-amber-600",
+        bgColor: "bg-[#FEF3C7]",
+        iconColor: "text-[#D97706]",
+        borderColor: "border-[#FDE68A]/80",
     },
     {
         label: "Interview Templates",
         desc: "Structured AI or human interview plans and questions.",
         icon: "psychology",
-        href: "/enterprise/settings/interview-templates",
+        href: "/enterprise/templates/interview-templates",
         permission: "interviews:read",
-        gradient: "from-emerald-500 to-teal-500",
-        glow: "group-hover:shadow-emerald-200",
-        accent: "text-emerald-600",
+        bgColor: "bg-[#E3F4EF]",
+        iconColor: "text-[#0E8A6E]",
+        borderColor: "border-[#BFF0E2]/80",
     },
     {
         label: "Onboarding Templates",
         desc: "Form sections, fields and required documents for new hires.",
         icon: "rule",
-        href: "/enterprise/settings/onboarding-templates",
+        href: "/enterprise/templates/onboarding-templates",
         permission: "onboarding:read",
-        gradient: "from-violet-500 to-fuchsia-500",
-        glow: "group-hover:shadow-violet-200",
-        accent: "text-violet-600",
+        bgColor: "bg-[#F5F3FF]",
+        iconColor: "text-[#8B5CF6]",
+        borderColor: "border-[#EBE7FF]/80",
     },
 ];
 
@@ -52,44 +53,45 @@ export default function TemplatesHubPage() {
     const cards = TEMPLATE_CARDS.filter((c) => canAccess(c.permission));
 
     return (
-        <div className="p-6 max-w-6xl mx-auto space-y-6">
-            {/* Header */}
-            <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 shrink-0">
-                    <span className="material-symbols-rounded text-2xl">dashboard_customize</span>
-                </div>
+        <div className="px-4 sm:px-5 pb-20 max-w-6xl mx-auto space-y-6 animate-in fade-in duration-700 relative">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">Templates</h1>
-                    <p className="text-sm text-slate-500 font-semibold mt-1.5">All your reusable templates in one place.</p>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Templates Hub</h1>
+                        <PageHelp title="Templates">
+                            <p>Browse and manage the reusable templates your organisation uses.</p>
+                        </PageHelp>
+                    </div>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">All your reusable workflows &amp; configurations in one place.</p>
                 </div>
-            </div>
+            </header>
 
             {cards.length === 0 ? (
-                <p className="text-sm text-slate-400 py-16 text-center">You don&apos;t have access to any template types.</p>
+                <div className="py-16 text-center border border-[#E8EAED] rounded-[14px] bg-white shadow-sm">
+                    <p className="text-[13.5px] text-[#8A929E] font-medium">You don&apos;t have access to any template types.</p>
+                </div>
             ) : (
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                     {cards.map((c) => (
                         <Link
                             key={c.href}
                             href={c.href}
-                            className={`group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-sm hover:shadow-2xl ${c.glow} hover:-translate-y-1 transition-all duration-300`}
+                            className="group bg-white border border-[#E8EAED] hover:border-[#5B53E0]/40 rounded-[14px] p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
                         >
-                            {/* soft corner glow */}
-                            <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br ${c.gradient} opacity-0 group-hover:opacity-10 blur-2xl transition-opacity`} />
-
-                            <div className="relative flex items-start gap-4">
-                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${c.gradient} flex items-center justify-center text-white shadow-md shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform`}>
-                                    <span className="material-symbols-rounded text-[28px]">{c.icon}</span>
+                            <div className="flex items-start gap-4">
+                                <div className={`w-11 h-11 rounded-[10px] ${c.bgColor} ${c.iconColor} ${c.borderColor} border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                                    <span className="material-symbols-rounded text-[22px]">{c.icon}</span>
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                    <h3 className="text-base font-black text-slate-900 group-hover:text-indigo-700 transition-colors">{c.label}</h3>
-                                    <p className="text-[13px] text-slate-500 font-semibold mt-1 leading-relaxed">{c.desc}</p>
+                                    <h3 className="text-[15px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors">{c.label}</h3>
+                                    <p className="text-[13px] text-[#6B6F76] font-medium mt-1 leading-relaxed">{c.desc}</p>
                                 </div>
                             </div>
 
-                            <div className="relative mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
-                                <span className={`text-xs font-black ${c.accent}`}>Manage templates</span>
-                                <span className={`material-symbols-rounded ${c.accent} group-hover:translate-x-1 transition-transform`}>arrow_forward</span>
+                            <div className="mt-5 pt-4 border-t border-[#E8EAED] flex items-center justify-between text-[#8A929E] group-hover:text-[#5B53E0] transition-colors">
+                                <span className="text-[12.5px] font-semibold">Manage templates</span>
+                                <span className="material-symbols-rounded text-[18px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
                             </div>
                         </Link>
                     ))}
@@ -97,22 +99,22 @@ export default function TemplatesHubPage() {
             )}
 
             {/* Tip strip */}
-            <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-violet-50 p-5 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
-                    <span className="material-symbols-rounded">smart_toy</span>
+            <div className="rounded-[14px] border border-[#DAD7F6]/60 bg-[#ECEBFB]/40 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="w-10 h-10 rounded-[10px] bg-white border border-[#E8EAED] flex items-center justify-center text-[#5B53E0] shadow-sm shrink-0">
+                    <span className="material-symbols-rounded text-[20px]">smart_toy</span>
                 </div>
                 <div className="flex-1">
-                    <p className="text-sm font-black text-slate-900">Croar Pilot creates these for you</p>
-                    <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                    <p className="text-[13.5px] font-bold text-[#15171C]">Croar Pilot creates these for you</p>
+                    <p className="text-[12.5px] text-[#6B6F76] font-medium mt-0.5">
                         When the AI builds a hiring pipeline, it auto-generates role-specific email, assessment, interview and onboarding templates — they all show up here.
                     </p>
                 </div>
                 <Link
                     href="/enterprise/croar-pilot"
-                    className="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5 shrink-0"
+                    className="h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[12.5px] font-semibold hover:bg-[#4A43C9] transition-all flex items-center gap-1.5 shrink-0 shadow-sm"
                 >
-                    <span className="material-symbols-rounded text-base">smart_toy</span>
-                    {"Open Croar Pilot"}
+                    <span className="material-symbols-rounded text-[16px]">smart_toy</span>
+                    <span>Open Croar Pilot</span>
                 </Link>
             </div>
         </div>

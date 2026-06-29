@@ -17,7 +17,7 @@ import {
     Link2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { jetbrainsMono } from "@/components/ds";
+import { jetbrainsMono, PageHelp } from "@/components/ds";
 
 const PORTALS = [
     {
@@ -306,7 +306,12 @@ export default function JobPortalsPage() {
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 pt-4 sm:pt-5 md:pt-6 pb-4 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.6px] text-[#15171C] leading-tight">Job Portals</h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.6px] text-[#15171C] leading-tight">Job Portals</h1>
+                        <PageHelp title="Job Portals">
+                            <p>Connect job boards so you can publish your jobs to them.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[14px] text-[#8A929E] mt-1">Connect &amp; sync your listings with global talent platforms</p>
                 </div>
                 <button

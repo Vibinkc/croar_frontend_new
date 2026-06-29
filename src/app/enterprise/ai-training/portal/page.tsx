@@ -7,6 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
 import { BACKEND_URL } from "@/utils/api";
+import { PageHelp } from "@/components/ds";
 
 interface Scenario {
     id: string;
@@ -118,7 +119,12 @@ function SimulationPortalContent() {
                         <span className="material-symbols-rounded text-xl">arrow_back</span>
                     </button>
                     <div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1 ">Neural Coaching Lab</h1>
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1 ">Neural Coaching Lab</h1>
+                            <PageHelp title="Practice Portal">
+                                <p>Sign in to start the practice sessions assigned to you.</p>
+                            </PageHelp>
+                        </div>
                         <p className="text-slate-500 font-bold   text-[9px] flex items-center gap-2">
                             <span className="material-symbols-rounded text-sm text-indigo-500">neurology</span>
                             {"Active AI-Driven Practice Laboratory"}

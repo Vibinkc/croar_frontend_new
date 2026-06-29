@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
+import { PageHelp } from "@/components/ds";
 
 interface Company {
     id: string;
@@ -151,7 +152,12 @@ export default function CompaniesPage() {
             {/* Page Header */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
                 <div>
-                    <h1 className="text-4xl font-black text-slate-900 tracking-tighter  leading-none">Companies</h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tighter  leading-none">Companies</h1>
+                        <PageHelp title="Companies">
+                            <p>Manage your partner or client companies.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-sm text-slate-400 font-bold  mt-3">Manage companies and hiring partners</p>
                 </div>
                 {canAccess("platform:moderate") && (

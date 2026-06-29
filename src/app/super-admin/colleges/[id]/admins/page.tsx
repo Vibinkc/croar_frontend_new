@@ -2,7 +2,8 @@
 
 import { useEffect, useState, use } from "react";
 import { apiClient } from "@/utils/api";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { PageHeader, Card, Field, Input, Button, Badge, EmptyState, jetbrainsMono } from "@/components/ds";
 
 interface Admin {
     id: number;
@@ -16,9 +17,11 @@ interface Admin {
 
 export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: string }> }) {
     const { id: collegeId } = use(params);
+    const router = useRouter();
     const [admins, setAdmins] = useState<Admin[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isCreating, setIsCreating] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     // Form state
     const [firstName, setFirstName] = useState("");
@@ -59,6 +62,7 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
                 setLastName("");
                 setEmail("");
                 setPassword("");
+                setShowModal(false);
             } else {
                 const err = await res.json();
                 alert(err.detail || "Failed to create admin");
@@ -102,119 +106,173 @@ export default function ManageCollegeAdmins({ params }: { params: Promise<{ id: 
         }
     };
 
+    const initials = (admin: Admin) =>
+        ((admin.first_name?.[0] || "") + (admin.last_name?.[0] || "")).toUpperCase() || "?";
+
     return (
-        <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#0f172a] p-4 md:p-12">
-            <div className="max-w-6xl mx-auto space-y-8">
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 dark:border-slate-800 pb-8">
-                    <div>
-                        <div className="flex items-center gap-2 mb-2">
-                            <Link href="/super-admin/colleges/list" className="text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1">
-                                <span className="material-icons-outlined text-sm">arrow_back</span>
-                                <span className="text-[10px]  ">Back to List</span>
-                            </Link>
-                        </div>
-                        <h1 className="text-4xl font-black tracking-tighter  leading-none">
-                            Admin <span className="text-blue-600">Personnel</span>
-                        </h1>
-                        <p className="text-slate-500 text-xs font-bold   opacity-70 mt-1">Manage College Administration Staff</p>
+        <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <PageHeader
+                title="Tenant Admins"
+                subtitle="Manage college administration staff"
+                onBack={() => router.push("/super-admin/colleges/list")}
+                help={
+                    <>
+                        <p>The admin accounts for this tenant.</p>
+                        <p>Add or remove admins who can manage it.</p>
+                    </>
+                }
+                actions={
+                    <Button icon="person_add" onClick={() => setShowModal(true)}>
+                        Add Admin
+                    </Button>
+                }
+            />
+
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+                {isLoading ? (
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                        ))}
                     </div>
-                </header>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Create Form */}
-                    <aside className="lg:col-span-1">
-                        <div className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-blue-500/5 relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-                            <h2 className="text-sm font-black   mb-6 flex items-center gap-2">
-                                <span className="material-icons-outlined text-blue-500">person_add</span>
-                                {"Add New Admin"}
-                            </h2>
-                            <form onSubmit={handleCreate} className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1">
-                                        <label htmlFor="admin-first-name" className="text-[10px] font-black text-slate-400   ml-1">First Name</label>
-                                        <input
-                                            id="admin-first-name"
-                                            className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                            value={firstName} onChange={e => setFirstName(e.target.value)} required
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label htmlFor="admin-last-name" className="text-[10px] font-black text-slate-400   ml-1">Last Name</label>
-                                        <input
-                                            id="admin-last-name"
-                                            className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                            value={lastName} onChange={e => setLastName(e.target.value)} required
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-1">
-                                    <label htmlFor="admin-email" className="text-[10px] font-black text-slate-400   ml-1">Email / Username</label>
-                                    <input
-                                        id="admin-email"
-                                        type="email"
-                                        className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                        value={email} onChange={e => setEmail(e.target.value)} required
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <label htmlFor="admin-password" className="text-[10px] font-black text-slate-400   ml-1">Secure Password</label>
-                                    <input
-                                        id="admin-password"
-                                        type="password"
-                                        className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                        value={password} onChange={e => setPassword(e.target.value)} required
-                                    />
-                                </div>
-                                <button
-                                    disabled={isCreating}
-                                    className="w-full mt-4 bg-slate-900 dark:bg-blue-600 text-white p-5 rounded-3xl text-xs font-black   hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
-                                >
-                                    {isCreating ? 'Provisioning...' : 'Add Administrator'}
-                                    <span className="material-icons-outlined text-sm">shield</span>
-                                </button>
-                            </form>
+                ) : admins.length === 0 ? (
+                    <EmptyState
+                        tone="brand"
+                        icon="admin_panel_settings"
+                        title="No admins yet"
+                        description="Add an administrator who can manage this tenant&apos;s settings, users and data."
+                        action={
+                            <Button icon="person_add" onClick={() => setShowModal(true)}>
+                                Add Admin
+                            </Button>
+                        }
+                    />
+                ) : (
+                    <>
+                        <div className="hidden md:grid grid-cols-[2.4fr_2fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Admin</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Email</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Role</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
                         </div>
-                    </aside>
 
-                    {/* Admin List */}
-                    <main className="lg:col-span-2 space-y-4">
-                        <h2 className="text-sm font-black   text-slate-400">Current Administrative Staff</h2>
-                        {isLoading ? (
-                            <div className="p-12 text-center text-slate-400  tracking-[0.3em] font-black animate-pulse">Syncing Staff Records...</div>
-                        ) : admins.length === 0 ? (
-                            <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-800 p-12 rounded-[3rem] text-center">
-                                <p className="text-slate-400 text-sm font-medium">No secondary administrators identified for this college.</p>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {admins.map(admin => (
-                                    <div key={admin.id} className="group relative bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-[2.5rem] shadow-sm flex items-center gap-4 hover:shadow-xl hover:shadow-blue-500/5 transition-all">
-                                        <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-700">
-                                            <span className="material-icons-outlined text-2xl text-slate-400">person</span>
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="text-sm font-black  tracking-tight truncate">{admin.first_name} {admin.last_name}</h3>
-                                            <p className="text-[10px] text-slate-400 font-bold truncate">{admin.email}</p>
-                                            <span className="inline-block mt-2 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black   rounded-full">
-                                                Active_{admin.role}
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {admins.map(admin => (
+                                <div
+                                    key={admin.id}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_2fr_1fr_120px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                                >
+                                    {/* Admin */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-bold text-[12px] shrink-0">
+                                            {initials(admin)}
+                                        </span>
+                                        <div className="min-w-0">
+                                            <span className="block text-[14px] font-bold text-[#15171C] truncate">
+                                                {admin.first_name} {admin.last_name}
                                             </span>
-                                        </div>
-                                        <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button onClick={() => handleEdit(admin)} className="p-2 bg-slate-50 hover:bg-blue-50 text-slate-400 hover:text-blue-600 rounded-xl transition-all">
-                                                <span className="material-icons-outlined text-sm">edit</span>
-                                            </button>
-                                            <button onClick={() => handleDelete(admin.id)} className="p-2 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-xl transition-all">
-                                                <span className="material-icons-outlined text-sm">delete</span>
-                                            </button>
+                                            <span className="block text-[12px] text-[#8A929E] truncate md:hidden">{admin.email}</span>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        )}
-                    </main>
-                </div>
+
+                                    {/* Email (desktop) */}
+                                    <div className="hidden md:flex items-center text-[13px] text-[#374151] min-w-0">
+                                        <span className="truncate">{admin.email}</span>
+                                    </div>
+
+                                    {/* Role */}
+                                    <div className="hidden md:flex items-center">
+                                        <Badge tone={admin.is_active ? "success" : "neutral"} dot>{admin.role}</Badge>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex items-center gap-1 justify-end">
+                                        <div className="md:hidden mr-1">
+                                            <Badge tone={admin.is_active ? "success" : "neutral"} dot>{admin.role}</Badge>
+                                        </div>
+                                        <button
+                                            onClick={() => handleEdit(admin)}
+                                            className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                                            title="Edit admin"
+                                        >
+                                            <span className="material-icons-outlined text-[18px]">edit</span>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(admin.id)}
+                                            className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                                            title="Remove admin"
+                                        >
+                                            <span className="material-icons-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
+
+            {/* Add Admin Modal */}
+            {showModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm">
+                    <Card padding="lg" className="max-w-md w-full shadow-xl animate-in fade-in zoom-in-95 duration-150">
+                        <div className="flex items-center justify-between mb-5">
+                            <div className="flex items-center gap-2.5">
+                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                    <span className="material-icons-outlined text-[18px]">person_add</span>
+                                </span>
+                                <h3 className="text-[15px] font-bold text-[#15171C]">Add New Admin</h3>
+                            </div>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+                            >
+                                <span className="material-icons-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleCreate} className="space-y-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <Field label="First Name" htmlFor="admin-first-name">
+                                    <Input
+                                        id="admin-first-name"
+                                        placeholder="John"
+                                        value={firstName} onChange={e => setFirstName(e.target.value)} required
+                                    />
+                                </Field>
+                                <Field label="Last Name" htmlFor="admin-last-name">
+                                    <Input
+                                        id="admin-last-name"
+                                        placeholder="Doe"
+                                        value={lastName} onChange={e => setLastName(e.target.value)} required
+                                    />
+                                </Field>
+                            </div>
+                            <Field label="Email / Username" htmlFor="admin-email">
+                                <Input
+                                    id="admin-email"
+                                    icon="mail"
+                                    type="email"
+                                    placeholder="john@example.com"
+                                    value={email} onChange={e => setEmail(e.target.value)} required
+                                />
+                            </Field>
+                            <Field label="Secure Password" htmlFor="admin-password">
+                                <Input
+                                    id="admin-password"
+                                    icon="lock"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={password} onChange={e => setPassword(e.target.value)} required
+                                />
+                            </Field>
+                            <Button type="submit" fullWidth disabled={isCreating} icon="shield" className="mt-2">
+                                {isCreating ? "Provisioning..." : "Add Administrator"}
+                            </Button>
+                        </form>
+                    </Card>
+                </div>
+            )}
         </div>
     );
 }

@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { authApi, type UserRole } from "@/utils/payroll/api";
 import type { AuthUser } from "@/utils/payroll/auth";
-import { Banner, Modal, PageHeader } from "@/components/payroll/ui";
+import { Banner, Modal } from "@/components/payroll/ui";
+import { PageHeader } from "@/components/ds";
 import { useAuth } from "@/components/payroll/AuthProvider";
 
 const ROLES: { value: UserRole; label: string; hint: string }[] = [
@@ -80,24 +81,25 @@ export default function TeamPage() {
     "?";
 
   return (
-    <div className="animate-fade-in flex flex-col gap-6">
+    <div className="px-4 sm:px-5 md:px-7 py-6 max-w-[1320px] mx-auto w-full animate-fade-in flex flex-col gap-6">
       <PageHeader
-        icon="manage_accounts"
         title="Team"
         subtitle="Manage the users who can sign in to your organization."
-      >
-        <button
-          onClick={() => {
-            setFormErr(null);
-            setForm(EMPTY);
-            setOpen(true);
-          }}
-          className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
-        >
-          <span className="material-symbols-rounded text-[20px]">person_add</span>{" "}
-          Add User
-        </button>
-      </PageHeader>
+        help="Manage who can access and approve payroll."
+        actions={
+          <button
+            onClick={() => {
+              setFormErr(null);
+              setForm(EMPTY);
+              setOpen(true);
+            }}
+            className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
+          >
+            <span className="material-symbols-rounded text-[20px]">person_add</span>{" "}
+            Add User
+          </button>
+        }
+      />
 
       {error && <Banner>{error}</Banner>}
 

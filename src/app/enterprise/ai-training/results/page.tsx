@@ -16,6 +16,7 @@ import {
     ShieldAlert,
     Atom
 } from "lucide-react";
+import { PageHelp } from "@/components/ds";
 
 interface Result {
     id: string;
@@ -138,9 +139,14 @@ export default function ResultsDashboard() {
                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
                             <span className="text-[8px] font-black  tracking-[0.1em] text-indigo-400">Performance Analytics</span>
                         </div>
-                        <h1 className="text-3xl font-black tracking-tighter leading-none   flex items-center gap-4">
-                            Performance Results
-                        </h1>
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-3xl font-black tracking-tighter leading-none   flex items-center gap-4">
+                                Performance Results
+                            </h1>
+                            <PageHelp title="Performance Results">
+                                <p>Review results and scores from AI practice sessions.</p>
+                            </PageHelp>
+                        </div>
                         <p className="text-[10px] text-slate-400 font-bold  tracking-[0.3em] mt-3 opacity-60">Review training session outcomes and behavioral analytics</p>
                     </div>
                 </div>

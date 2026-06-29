@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Hanken_Grotesk } from "next/font/google";
 import CommandPalette from "@/components/enterprise/CommandPalette";
+import { GuideProvider, Tour, HelpButton, GuideBook } from "@/components/guide";
 
 const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
@@ -135,7 +136,7 @@ export default function EnterprisePortalLayout({
     const navGroups = [
         {
             title: "Hiring Hub",
-            icon: "grid_view",
+            icon: "business_center",
             items: [
                 { label: "Dashboard", icon: "dashboard", path: "/enterprise/dashboard", permission: "organization:read" },
                 { label: "Croar Pilot", icon: "smart_toy", path: "/enterprise/croar-pilot", permission: "jobs:read" },
@@ -143,11 +144,12 @@ export default function EnterprisePortalLayout({
                 { label: "Pipeline", icon: "view_kanban", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
                 { label: "Mail", icon: "mail", path: "/enterprise/communication", permission: "communications:read" },
                 { label: "Job Portals", icon: "share", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
+                { label: "Onboarding Hub", icon: "hub", path: "/enterprise/onboarding", permission: "onboarding:read" },
             ]
         },
         {
             title: "Talent Search",
-            icon: "groups",
+            icon: "person_search",
             items: [
                 { label: "Candidate Search", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
                 { label: "Profile Sourcing", icon: "travel_explore", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
@@ -156,18 +158,18 @@ export default function EnterprisePortalLayout({
         },
         {
             title: "Automation",
-            icon: "bolt",
+            icon: "rocket_launch",
             items: [
-                { label: "Automation Canvas", icon: "account_tree", path: "/enterprise/automation", permission: "automation:read" },
-                { label: "Mail Automation", icon: "forward_to_inbox", path: "/enterprise/automation/mail", permission: "communications:moderate" },
-                { label: "Assessment Automation", icon: "psychology", path: "/enterprise/automation/assessment", permission: "assessments:moderate" },
-                { label: "Interview Automation", icon: "co_present", path: "/enterprise/automation/interview", permission: "interviews:moderate" },
-                { label: "Onboarding Automation", icon: "person_add", path: "/enterprise/automation/onboarding", permission: "onboarding:moderate" },
+                { label: "Canvas", icon: "account_tree", path: "/enterprise/automation", permission: "automation:read" },
+                { label: "Mail", icon: "forward_to_inbox", path: "/enterprise/automation/mail", permission: "communications:moderate" },
+                { label: "Assessment", icon: "psychology", path: "/enterprise/automation/assessment", permission: "assessments:moderate" },
+                { label: "Interview", icon: "co_present", path: "/enterprise/automation/interview", permission: "interviews:moderate" },
+                { label: "Onboarding", icon: "person_add", path: "/enterprise/automation/onboarding", permission: "onboarding:moderate" },
             ]
         },
         {
             title: "Post Onboarding",
-            icon: "folder",
+            icon: "groups",
             items: [
                 { label: "Employees", icon: "badge", path: "/enterprise/employees", permission: "employees:read" },
                 { label: "Projects", icon: "workspaces", path: "/enterprise/projects", permission: "projects:read" },
@@ -178,7 +180,7 @@ export default function EnterprisePortalLayout({
         },
         {
             title: "Payroll",
-            icon: "payments",
+            icon: "account_balance_wallet",
             items: [
                 { label: "Payroll Dashboard", icon: "space_dashboard", path: "/enterprise/payroll/dashboard", permission: "payroll:read" },
                 { label: "Payroll", icon: "payments", path: "/enterprise/payroll", permission: "payroll:read" },
@@ -192,13 +194,15 @@ export default function EnterprisePortalLayout({
                 { label: "Payroll Settings", icon: "settings_applications", path: "/enterprise/payroll/settings", permission: "payroll:read" },
             ]
         },
+        /*
         {
             title: "AI & Training",
-            icon: "architecture",
+            icon: "psychology",
             items: [
                 { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios", permission: "ai_training:read" },
             ]
         },
+        */
         {
             title: "General",
             icon: "settings",
@@ -208,7 +212,6 @@ export default function EnterprisePortalLayout({
                 { label: "Permissions", icon: "admin_panel_settings", path: "/enterprise/settings/roles", permission: "organization:moderate" },
                 { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
                 { label: "Templates", icon: "dashboard_customize", path: "/enterprise/templates", permission: "organization:read" },
-                { label: "Onboarding Hub", icon: "hub", path: "/enterprise/onboarding", permission: "onboarding:read" },
             ]
         }
     ];
@@ -265,6 +268,7 @@ export default function EnterprisePortalLayout({
         setOpenGroups(prev => ({ ...prev, [title]: !(prev[title] ?? (title === activeGroupTitle)) }));
 
     return (
+        <GuideProvider>
         <div className={`flex w-full h-screen bg-[#F4F5F7] overflow-hidden ${hankenGrotesk.className}`}>
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
@@ -323,6 +327,7 @@ export default function EnterprisePortalLayout({
 
                     {/* Quick search (opens the ⌘K command palette) */}
                     <button
+                        data-tour="search"
                         onClick={() => setIsPaletteOpen(true)}
                         title="Search (Ctrl/Cmd + K)"
                         className={`flex items-center gap-2 mb-4 mx-1 px-3.5 h-10 rounded-[10px] border border-[#1F242E] bg-[#13161C]/50 text-[#6B7280] hover:text-[#9CA3AF] hover:border-[#5B53E0]/50 hover:bg-[#161A22] transition-all duration-200 cursor-pointer shrink-0 ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
@@ -339,7 +344,7 @@ export default function EnterprisePortalLayout({
                     </button>
 
                     {/* Navigation Groups — collapsible accordion (keeps the long menu scannable) */}
-                    <nav className={isSidebarCollapsed ? "space-y-4 px-1" : "space-y-1 px-1"}>
+                    <nav data-tour="nav" className={isSidebarCollapsed ? "space-y-4 px-1" : "space-y-1 px-1"}>
                         {accessibleNavGroups.map((group) => {
                             const open = isSidebarCollapsed ? true : isGroupOpen(group.title);
                             const hasActive = group.items.some((i) => isItemActive(i.path));
@@ -395,13 +400,18 @@ export default function EnterprisePortalLayout({
                                                         <Link
                                                             key={item.path}
                                                             href={item.path}
-                                                            className={`block px-3 py-1.5 rounded-[8px] text-[12.5px] transition-all duration-150 ${
+                                                            className={`flex items-center justify-between px-3 py-1.5 rounded-[8px] text-[12.5px] transition-all duration-150 ${
                                                                 isActive
                                                                     ? "bg-[#5B53E0]/15 border border-[#5B53E0]/30 text-[#8B7DFF] font-bold"
                                                                     : "text-[#BAC1CC] hover:text-white hover:bg-white/[0.02] border border-transparent font-medium"
                                                             }`}
                                                         >
-                                                            {item.label}
+                                                            <span>{item.label}</span>
+                                                            {item.label === "Croar Pilot" && (
+                                                                <span className="px-1.5 py-0.5 rounded-[6px] bg-[#14161F] border border-[#5B53E0]/20 text-[#8B7DFF] text-[9.5px] font-extrabold uppercase tracking-wider leading-none">
+                                                                    AI
+                                                                </span>
+                                                            )}
                                                         </Link>
                                                     );
                                                 })}
@@ -466,5 +476,12 @@ export default function EnterprisePortalLayout({
             {/* Global command palette (⌘K) — jump to any accessible page */}
             <CommandPalette open={isPaletteOpen} onOpenChange={setIsPaletteOpen} items={commandItems} />
         </div>
+
+        {/* In-app onboarding: first-run coach-mark tour, persistent Help launcher,
+            and the detailed product guide. */}
+        <Tour />
+        <HelpButton />
+        <GuideBook />
+        </GuideProvider>
     );
 }

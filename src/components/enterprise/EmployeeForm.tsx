@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient, BACKEND_URL } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
+import { Button, Card, CardHeader, Input, Textarea, Select, Field, Badge, PageHeader, jetbrainsMono } from "@/components/ds";
 
 interface EmployeeFormProps {
     employeeId?: string;
@@ -96,7 +97,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
     const [companies, setCompanies] = useState<Company[]>([]);
     const [isDeptModalOpen, setIsDeptModalOpen] = useState(false);
     const [newDeptName, setNewDeptName] = useState("");
-    
+
     const [formData, setFormData] = useState<EmployeeFormData>({
         employee_id: "",
         first_name: "",
@@ -173,15 +174,15 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 apiClient.get(`/api/v1/enterprise/candidates/${candidateId}`),
                 apiClient.get(`/api/v1/enterprise/onboarding/?candidate_id=${candidateId}`)
             ]);
-            
+
             if (candRes.ok) {
                 const cand = await candRes.json();
                 const onbList = onbRes.ok ? await onbRes.json() : [];
                 const onb = onbList[0] || {};
-                
+
                 const job_info = onb.job_info || {};
                 const personal_info = onb.personal_info || {};
-                
+
                 setFormData((prev) => ({
                     ...prev,
                     first_name: personal_info.first_name || cand.full_name?.split(" ")[0] || "",
@@ -232,16 +233,16 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
         e.preventDefault();
         setIsLoading(true);
         try {
-            const url = employeeId 
+            const url = employeeId
                 ? `/api/v1/enterprise/employees/${employeeId}`
                 : `/api/v1/enterprise/employees/`;
             const method = employeeId ? "PATCH" : "POST";
-            
+
             const res = await apiClient.request(url, {
                 method,
                 body: JSON.stringify(formData)
             });
-            
+
             if (res.ok) {
                 router.push("/enterprise/employees");
             } else {
@@ -300,335 +301,305 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
     ];
 
     if (isLoading && !formData.first_name) {
-        return <div className="p-10 text-center font-bold text-slate-400 animate-pulse">Loading form...</div>;
+        return <div className="p-10 text-center text-[13px] font-semibold text-[#8A929E] animate-pulse">Loading form...</div>;
     }
 
     return (
-        <form onSubmit={handleSubmit} className="p-6 space-y-6 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">{employeeId ? "Edit Employee" : "Add New Employee"}</h1>
-                    <p className="text-slate-500 text-xs font-semibold mt-1">Fill in all the details to {employeeId ? "update" : "create"} the employee record.</p>
-                </div>
-                <div className="flex gap-3">
-                    <button 
-                        type="button"
-                        onClick={() => router.back()}
-                        className="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-black text-[10px]   hover:bg-slate-50 transition-all"
-                    >
-                        Cancel
-                    </button>
-                    <button 
-                        type="submit"
-                        disabled={isLoading}
-                        className="bg-[#7C3AED] text-white px-8 py-2.5 rounded-xl font-black text-[10px]   hover:bg-[#6D28D9] shadow-lg shadow-indigo-100 transition-all active:scale-95 disabled:opacity-50"
-                    >
+        <form onSubmit={handleSubmit} className="max-w-5xl mx-auto px-4 sm:px-5 md:px-7 space-y-6 animate-in fade-in duration-500">
+            <PageHeader
+                help={<><p>Enter the person&apos;s details and assign a department.</p><p>Save to add them to your directory. You can create a workspace login for them later from their record.</p></>}
+                title={employeeId ? "Edit Employee" : "Add New Employee"}
+                subtitle={`Fill in all the details to ${employeeId ? "update" : "create"} the employee record.`}
+                onBack={() => router.back()}
+                actions={
+                    <Button type="submit" disabled={isLoading} icon={isLoading ? undefined : "check"}>
                         {isLoading ? "Saving..." : employeeId ? "Update Employee" : "Create Employee"}
-                    </button>
-                </div>
-            </div>
+                    </Button>
+                }
+            />
 
             {/* Tab Navigation */}
-            <div className="flex gap-2 p-1.5 bg-slate-100/50 rounded-2xl w-fit">
+            <div className="flex flex-wrap gap-1 p-1 bg-[#E8EAED] rounded-[10px] w-fit border border-[#E8EAED]">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
                         type="button"
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black   transition-all ${
-                            activeTab === tab.id 
-                            ? "bg-white text-[#7C3AED] shadow-sm" 
-                            : "text-slate-400 hover:text-slate-600"
+                        className={`flex items-center gap-2 h-9 px-4 rounded-[8px] text-[13px] font-semibold transition-all ${
+                            activeTab === tab.id
+                            ? "bg-white text-[#5B53E0] shadow-sm"
+                            : "text-[#6B6F76] hover:text-[#374151]"
                         }`}
                     >
-                        <span className="material-symbols-rounded text-lg">{tab.icon}</span>
+                        <span className="material-symbols-rounded text-[18px]">{tab.icon}</span>
                         {tab.label}
                     </button>
                 ))}
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 p-10">
-                {activeTab === "job" && (
-                    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="space-y-2">
-                                <label htmlFor="emp-employee_id" className="text-[10px] font-black text-slate-400   ml-1">Employee ID*</label>
-                                <input id="emp-employee_id" name="employee_id" value={formData.employee_id} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" placeholder="EMP-1001" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-designation" className="text-[10px] font-black text-slate-400   ml-1">Designation</label>
-                                <input id="emp-designation" name="designation" value={formData.designation} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" placeholder="Software Engineer" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-employment_type" className="text-[10px] font-black text-slate-400   ml-1">Employment Type</label>
-                                <select id="emp-employment_type" name="employment_type" value={formData.employment_type} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
-                                    <option value="">Select</option>
-                                    <option value="Full-time">Full-time</option>
-                                    <option value="Part-time">Part-time</option>
-                                    <option value="Contract">Contract</option>
-                                    <option value="Intern">Intern</option>
-                                </select>
-                            </div>
-                        </div>
+            {activeTab === "job" && (
+                <Card padding="lg" className="space-y-6 animate-in fade-in duration-300">
+                    <CardHeader title="Job Information" subtitle="Role, company, and employment details." />
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="space-y-2">
-                                <label htmlFor="emp-company_id" className="text-[10px] font-black text-slate-400   ml-1">Company*</label>
-                                <select id="emp-company_id" name="company_id" value={formData.company_id} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
-                                    <option value="">Select Company</option>
-                                    {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                                </select>
-                            </div>
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between ml-1">
-                                    <label htmlFor="emp-department_id" className="text-[10px] font-black text-slate-400  ">Department</label>
-                                    <button 
-                                        type="button" 
-                                        onClick={() => setIsDeptModalOpen(true)}
-                                        className="text-[9px] font-black text-[#7C3AED]  tracking-tighter hover:underline"
-                                    >
-                                        + Add New
-                                    </button>
-                                </div>
-                                <select id="emp-department_id" name="department_id" value={formData.department_id} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
-                                    <option value="">Select Department</option>
-                                    {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                </select>
-                            </div>
-                             <div className="space-y-2">
-                                <label htmlFor="emp-status" className="text-[10px] font-black text-slate-400   ml-1">Status</label>
-                                <select id="emp-status" name="status" value={formData.status} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                    <option value="On Leave">On Leave</option>
-                                    <option value="Terminated">Terminated</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="space-y-2">
-                                <label htmlFor="emp-hire_date" className="text-[10px] font-black text-slate-400   ml-1">Hire Date</label>
-                                <input id="emp-hire_date" type="date" name="hire_date" value={formData.hire_date} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-probation_end_date" className="text-[10px] font-black text-slate-400   ml-1">Probation End Date</label>
-                                <input id="emp-probation_end_date" type="date" name="probation_end_date" value={formData.probation_end_date} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-notice_period" className="text-[10px] font-black text-slate-400   ml-1">Notice Period (Days)</label>
-                                <input id="emp-notice_period" type="number" name="notice_period" value={formData.notice_period} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label htmlFor="emp-about_yourself" className="text-[10px] font-black text-slate-400   ml-1">About Yourself</label>
-                            <textarea id="emp-about_yourself" name="about_yourself" value={formData.about_yourself} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all min-h-[100px]" placeholder="Brief professional summary..." />
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <Field label="Employee ID" htmlFor="emp-employee_id" required>
+                            <Input id="emp-employee_id" name="employee_id" value={formData.employee_id} onChange={handleChange} required placeholder="EMP-1001" className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label="Designation" htmlFor="emp-designation">
+                            <Input id="emp-designation" name="designation" value={formData.designation} onChange={handleChange} placeholder="Software Engineer" />
+                        </Field>
+                        <Field label="Employment Type" htmlFor="emp-employment_type">
+                            <Select id="emp-employment_type" name="employment_type" value={formData.employment_type} onChange={handleChange}>
+                                <option value="">Select</option>
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Intern">Intern</option>
+                            </Select>
+                        </Field>
                     </div>
-                )}
 
-                {activeTab === "personal" && (
-                     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="space-y-2">
-                                <label htmlFor="emp-first_name" className="text-[10px] font-black text-slate-400   ml-1">First Name*</label>
-                                <input id="emp-first_name" name="first_name" value={formData.first_name} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <Field label="Company" htmlFor="emp-company_id" required>
+                            <Select id="emp-company_id" name="company_id" value={formData.company_id} onChange={handleChange} required>
+                                <option value="">Select Company</option>
+                                {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                            </Select>
+                        </Field>
+                        <div className="w-full">
+                            <div className="flex items-center justify-between mb-1.5">
+                                <label htmlFor="emp-department_id" className="block text-[12.5px] font-semibold text-[#374151]">Department</label>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsDeptModalOpen(true)}
+                                    className="text-[11px] font-semibold text-[#5B53E0] hover:text-[#4A43C9] hover:underline"
+                                >
+                                    + Add New
+                                </button>
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-middle_name" className="text-[10px] font-black text-slate-400   ml-1">Middle Name</label>
-                                <input id="emp-middle_name" name="middle_name" value={formData.middle_name} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-last_name" className="text-[10px] font-black text-slate-400   ml-1">Last Name*</label>
-                                <input id="emp-last_name" name="last_name" value={formData.last_name} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
+                            <Select id="emp-department_id" name="department_id" value={formData.department_id} onChange={handleChange}>
+                                <option value="">Select Department</option>
+                                {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                            </Select>
                         </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                             <div className="space-y-2">
-                                <label htmlFor="emp-email" className="text-[10px] font-black text-slate-400   ml-1">Email*</label>
-                                <input id="emp-email" type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-mobile" className="text-[10px] font-black text-slate-400   ml-1">Mobile</label>
-                                <input id="emp-mobile" name="mobile" value={formData.mobile} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-phone_number" className="text-[10px] font-black text-slate-400   ml-1">Phone Number</label>
-                                <input id="emp-phone_number" name="phone_number" value={formData.phone_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="space-y-2">
-                                <label htmlFor="emp-date_of_birth" className="text-[10px] font-black text-slate-400   ml-1">Date of Birth</label>
-                                <input id="emp-date_of_birth" type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-gender" className="text-[10px] font-black text-slate-400   ml-1">Gender</label>
-                                <select id="emp-gender" name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
-                                    <option value="">Select</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-marital_status" className="text-[10px] font-black text-slate-400   ml-1">Marital Status</label>
-                                <select id="emp-marital_status" name="marital_status" value={formData.marital_status} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all">
-                                    <option value="">Select</option>
-                                    <option value="Single">Single</option>
-                                    <option value="Married">Married</option>
-                                    <option value="Divorced">Divorced</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                             <div className="space-y-2">
-                                <label htmlFor="emp-pan_card_number" className="text-[10px] font-black text-slate-400   ml-1">PAN Card Number</label>
-                                <input id="emp-pan_card_number" name="pan_card_number" value={formData.pan_card_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-aadhar_card_number" className="text-[10px] font-black text-slate-400   ml-1">Aadhar Card Number</label>
-                                <input id="emp-aadhar_card_number" name="aadhar_card_number" value={formData.aadhar_card_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-passport_number" className="text-[10px] font-black text-slate-400   ml-1">Passport Number</label>
-                                <input id="emp-passport_number" name="passport_number" value={formData.passport_number} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                        </div>
-                     </div>
-                )}
-
-                {activeTab === "contact" && (
-                    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <div className="space-y-2">
-                            <label htmlFor="emp-address_line_1" className="text-[10px] font-black text-slate-400   ml-1">Address Line 1</label>
-                            <input id="emp-address_line_1" name="address_line_1" value={formData.address_line_1} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                        </div>
-                        <div className="space-y-2">
-                            <label htmlFor="emp-address_line_2" className="text-[10px] font-black text-slate-400   ml-1">Address Line 2</label>
-                            <input id="emp-address_line_2" name="address_line_2" value={formData.address_line_2} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            <div className="space-y-2">
-                                <label htmlFor="emp-city" className="text-[10px] font-black text-slate-400   ml-1">City</label>
-                                <input id="emp-city" name="city" value={formData.city} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-state" className="text-[10px] font-black text-slate-400   ml-1">State</label>
-                                <input id="emp-state" name="state" value={formData.state} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-country" className="text-[10px] font-black text-slate-400   ml-1">Country</label>
-                                <input id="emp-country" name="country" value={formData.country} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="emp-pincode" className="text-[10px] font-black text-slate-400   ml-1">Pincode</label>
-                                <input id="emp-pincode" name="pincode" value={formData.pincode} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all" />
-                            </div>
-                        </div>
+                        <Field label="Status" htmlFor="emp-status">
+                            <Select id="emp-status" name="status" value={formData.status} onChange={handleChange}>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="On Leave">On Leave</option>
+                                <option value="Terminated">Terminated</option>
+                            </Select>
+                        </Field>
                     </div>
-                )}
 
-                {activeTab === "documents" && (
-                    <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
-                         <div className="space-y-2">
-                            <label htmlFor="emp-roles_responsibilities" className="text-[10px] font-black text-slate-400   ml-1">Roles & Responsibilities</label>
-                            <textarea id="emp-roles_responsibilities" name="roles_responsibilities" value={formData.roles_responsibilities} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold outline-none focus:border-[#7C3AED] focus:bg-white transition-all min-h-[120px]" placeholder="List key roles and responsibilities..." />
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <Field label="Hire Date" htmlFor="emp-hire_date">
+                            <Input id="emp-hire_date" type="date" name="hire_date" value={formData.hire_date} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label="Probation End Date" htmlFor="emp-probation_end_date">
+                            <Input id="emp-probation_end_date" type="date" name="probation_end_date" value={formData.probation_end_date} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label="Notice Period (Days)" htmlFor="emp-notice_period">
+                            <Input id="emp-notice_period" type="number" name="notice_period" value={formData.notice_period} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                    </div>
 
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                            <div className="space-y-4">
-                                <h3 className="text-sm font-bold text-slate-800">Skills</h3>
-                                <p className="text-[10px] text-slate-500 font-semibold ">Employee skills will be managed here. (Currently viewing as text list)</p>
-                                <div className="flex flex-wrap gap-2">
+                    <Field label="About Yourself" htmlFor="emp-about_yourself">
+                        <Textarea id="emp-about_yourself" name="about_yourself" value={formData.about_yourself} onChange={handleChange} placeholder="Brief professional summary..." className="min-h-[100px]" />
+                    </Field>
+                </Card>
+            )}
+
+            {activeTab === "personal" && (
+                <Card padding="lg" className="space-y-6 animate-in fade-in duration-300">
+                    <CardHeader title="Personal Information" subtitle="Identity and statutory details." />
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <Field label="First Name" htmlFor="emp-first_name" required>
+                            <Input id="emp-first_name" name="first_name" value={formData.first_name} onChange={handleChange} required />
+                        </Field>
+                        <Field label="Middle Name" htmlFor="emp-middle_name">
+                            <Input id="emp-middle_name" name="middle_name" value={formData.middle_name} onChange={handleChange} />
+                        </Field>
+                        <Field label="Last Name" htmlFor="emp-last_name" required>
+                            <Input id="emp-last_name" name="last_name" value={formData.last_name} onChange={handleChange} required />
+                        </Field>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <Field label="Email" htmlFor="emp-email" required>
+                            <Input id="emp-email" type="email" name="email" value={formData.email} onChange={handleChange} required />
+                        </Field>
+                        <Field label="Mobile" htmlFor="emp-mobile">
+                            <Input id="emp-mobile" name="mobile" value={formData.mobile} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label="Phone Number" htmlFor="emp-phone_number">
+                            <Input id="emp-phone_number" name="phone_number" value={formData.phone_number} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <Field label="Date of Birth" htmlFor="emp-date_of_birth">
+                            <Input id="emp-date_of_birth" type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label="Gender" htmlFor="emp-gender">
+                            <Select id="emp-gender" name="gender" value={formData.gender} onChange={handleChange}>
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </Select>
+                        </Field>
+                        <Field label="Marital Status" htmlFor="emp-marital_status">
+                            <Select id="emp-marital_status" name="marital_status" value={formData.marital_status} onChange={handleChange}>
+                                <option value="">Select</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                            </Select>
+                        </Field>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <Field label="PAN Card Number" htmlFor="emp-pan_card_number">
+                            <Input id="emp-pan_card_number" name="pan_card_number" value={formData.pan_card_number} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label="Aadhar Card Number" htmlFor="emp-aadhar_card_number">
+                            <Input id="emp-aadhar_card_number" name="aadhar_card_number" value={formData.aadhar_card_number} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label="Passport Number" htmlFor="emp-passport_number">
+                            <Input id="emp-passport_number" name="passport_number" value={formData.passport_number} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                    </div>
+                </Card>
+            )}
+
+            {activeTab === "contact" && (
+                <Card padding="lg" className="space-y-6 animate-in fade-in duration-300">
+                    <CardHeader title="Contact Information" subtitle="Address and location details." />
+
+                    <Field label="Address Line 1" htmlFor="emp-address_line_1">
+                        <Input id="emp-address_line_1" name="address_line_1" value={formData.address_line_1} onChange={handleChange} />
+                    </Field>
+                    <Field label="Address Line 2" htmlFor="emp-address_line_2">
+                        <Input id="emp-address_line_2" name="address_line_2" value={formData.address_line_2} onChange={handleChange} />
+                    </Field>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <Field label="City" htmlFor="emp-city">
+                            <Input id="emp-city" name="city" value={formData.city} onChange={handleChange} />
+                        </Field>
+                        <Field label="State" htmlFor="emp-state">
+                            <Input id="emp-state" name="state" value={formData.state} onChange={handleChange} />
+                        </Field>
+                        <Field label="Country" htmlFor="emp-country">
+                            <Input id="emp-country" name="country" value={formData.country} onChange={handleChange} />
+                        </Field>
+                        <Field label="Pincode" htmlFor="emp-pincode">
+                            <Input id="emp-pincode" name="pincode" value={formData.pincode} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                    </div>
+                </Card>
+            )}
+
+            {activeTab === "documents" && (
+                <div className="space-y-6 animate-in fade-in duration-300">
+                    <Card padding="lg" className="space-y-6">
+                        <CardHeader title="Documents & Others" subtitle="Roles, skills, and synced onboarding records." />
+
+                        <Field label="Roles & Responsibilities" htmlFor="emp-roles_responsibilities">
+                            <Textarea id="emp-roles_responsibilities" name="roles_responsibilities" value={formData.roles_responsibilities} onChange={handleChange} placeholder="List key roles and responsibilities..." className="min-h-[120px]" />
+                        </Field>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <h3 className="text-[14px] font-bold text-[#15171C]">Skills</h3>
+                                <p className="text-[12.5px] text-[#8A929E]">Employee skills will be managed here. (Currently viewing as text list)</p>
+                                <div className="flex flex-wrap gap-1.5">
                                     {formData.skills.map((skill: string, idx: number) => (
-                                        <span key={idx} className="bg-indigo-50 text-[#7C3AED] px-3 py-1.5 rounded-lg text-[10px] font-bold border border-indigo-100  tracking-tight">{skill}</span>
+                                        <Badge key={idx} tone="indigo">{skill}</Badge>
                                     ))}
-                                    {formData.skills.length === 0 && <span className="text-xs text-slate-400">No skills added.</span>}
+                                    {formData.skills.length === 0 && <span className="text-[12.5px] text-[#9AA3AF]">No skills added.</span>}
                                 </div>
                             </div>
-                            <div className="space-y-4">
-                                <h3 className="text-sm font-bold text-slate-800">Documents</h3>
-                                <p className="text-[10px] text-slate-500 font-semibold  md:pr-4 leading-relaxed">Onboarding documents and related details are managed entirely through the Candidate Onboarding Portal. Records here are read-only references synced securely from their onboarding session.</p>
+                            <div className="space-y-3">
+                                <h3 className="text-[14px] font-bold text-[#15171C]">Documents</h3>
+                                <p className="text-[12.5px] text-[#8A929E] leading-relaxed">Onboarding documents and related details are managed entirely through the Candidate Onboarding Portal. Records here are read-only references synced securely from their onboarding session.</p>
                                 <div className="space-y-2">
                                     {formData.documents.map((doc, idx) => (
-                                        <a key={idx} href={doc.file_path} target="_blank" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-white hover:shadow-sm border border-slate-200 transition-all">
-                                            <span className="text-[11px] font-bold text-slate-600">{doc.name}</span>
-                                            <span className="material-symbols-rounded text-lg text-slate-400">download</span>
+                                        <a key={idx} href={doc.file_path} target="_blank" className="flex items-center justify-between p-3 bg-[#F7F8FA] rounded-[10px] border border-[#E8EAED] hover:border-[#D4D7DC] hover:bg-white transition-all">
+                                            <span className="text-[13px] font-semibold text-[#374151]">{doc.name}</span>
+                                            <span className="material-symbols-rounded text-[18px] text-[#9AA3AF]">download</span>
                                         </a>
                                     ))}
-                                    {formData.documents.length === 0 && <span className="text-xs text-slate-400">No documents found.</span>}
+                                    {formData.documents.length === 0 && <span className="text-[12.5px] text-[#9AA3AF]">No documents found.</span>}
                                 </div>
                             </div>
                         </div>
+                    </Card>
 
-                        <div className="bg-slate-50 rounded-[32px] p-8 space-y-4 border border-slate-100">
-                             <h3 className="text-xs font-black text-slate-400  ">Other Records</h3>
-                             <p className="text-[10px] text-slate-500 font-semibold">Dependents, Education, Emergency Contacts, and Payment Info are currently stored as encrypted JSON data.</p>
-                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                 <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-center">
-                                     <p className="text-[10px] font-black text-slate-400   mb-1">Dependents</p>
-                                     <p className="text-sm font-black text-[#7C3AED]">{formData.dependents.length}</p>
-                                 </div>
-                                 <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-center">
-                                     <p className="text-[10px] font-black text-slate-400   mb-1">Education</p>
-                                     <p className="text-sm font-black text-[#7C3AED]">{formData.educational_details.length}</p>
-                                 </div>
-                                 <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-center">
-                                     <p className="text-[10px] font-black text-slate-400   mb-1">Emergency</p>
-                                     <p className="text-sm font-black text-[#7C3AED]">{formData.emergency_contacts.length}</p>
-                                 </div>
-                                 <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-center">
-                                     <p className="text-[10px] font-black text-slate-400   mb-1">Payment info</p>
-                                     <p className="text-sm font-black text-emerald-600">{formData.payment_information.length > 0 ? "Linked" : "Missing"}</p>
-                                 </div>
-                             </div>
+                    <Card padding="lg" className="bg-[#F7F8FA] space-y-4">
+                        <div>
+                            <h3 className="text-[13px] font-bold text-[#15171C]">Other Records</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">Dependents, Education, Emergency Contacts, and Payment Info are currently stored as encrypted JSON data.</p>
                         </div>
-                    </div>
-                )}
-            </div>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
+                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">Dependents</p>
+                                <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.dependents.length}</p>
+                            </div>
+                            <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
+                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">Education</p>
+                                <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.educational_details.length}</p>
+                            </div>
+                            <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
+                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">Emergency</p>
+                                <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.emergency_contacts.length}</p>
+                            </div>
+                            <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
+                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">Payment info</p>
+                                <p className="text-[15px] font-bold text-[#0E8A6E]">{formData.payment_information.length > 0 ? "Linked" : "Missing"}</p>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            )}
 
             {/* Department Modal */}
             {isDeptModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-100">
-                        <div className="mb-8">
-                            <h3 className="text-xl font-black text-slate-900 tracking-tight  ">Add Department Node</h3>
-                            <p className="text-[10px] font-black text-slate-400   mt-1">Hierarchical Synchronization</p>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm animate-in fade-in duration-300">
+                    <Card padding="lg" className="w-full max-w-md shadow-xl animate-in zoom-in-95 duration-200">
+                        <div className="mb-6">
+                            <h3 className="text-[16px] font-bold text-[#15171C]">Add Department</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">Create a new department for the selected company.</p>
                         </div>
-                        <div className="space-y-8">
-                            <div className="space-y-2 group">
-                                <label htmlFor="emp-new_dept_name" className="text-[10px] font-black text-slate-400   ml-1 group-focus-within:text-slate-900 transition-colors">Department Designation</label>
-                                <input
+                        <div className="space-y-5">
+                            <Field label="Department Name" htmlFor="emp-new_dept_name">
+                                <Input
                                     id="emp-new_dept_name"
                                     value={newDeptName}
                                     onChange={(e) => setNewDeptName(e.target.value)}
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black outline-none focus:border-[#0F172A] focus:bg-white transition-all shadow-inner"
-                                    placeholder="E.G. TECHNICAL OPERATIONS"
+                                    placeholder="e.g. Technical Operations"
                                 />
-                            </div>
-                            <div className="flex gap-4">
-                                <button 
+                            </Field>
+                            <div className="flex gap-3">
+                                <Button
                                     type="button"
+                                    variant="secondary"
+                                    fullWidth
                                     onClick={() => setIsDeptModalOpen(false)}
-                                    className="flex-1 px-6 py-4 rounded-2xl border border-slate-200 text-slate-400 font-black text-[10px]  tracking-[0.2em] hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95"
                                 >
                                     Cancel
-                                </button>
-                                <button 
+                                </Button>
+                                <Button
                                     type="button"
+                                    fullWidth
                                     onClick={handleAddDepartment}
-                                    className="flex-1 bg-[#0F172A] text-white px-6 py-4 rounded-2xl font-black text-[10px]  tracking-[0.2em] hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all active:scale-95"
                                 >
-                                    Sync Node
-                                </button>
+                                    Add Department
+                                </Button>
                             </div>
                         </div>
-                    </div>
+                    </Card>
                 </div>
             )}
         </form>

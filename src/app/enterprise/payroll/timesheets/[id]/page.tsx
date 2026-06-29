@@ -9,7 +9,8 @@ import {
   type TimesheetDetail,
   type TimesheetEntryEdit,
 } from "@/utils/payroll/api";
-import { Banner, PageHeader, StatCard, StatusBadge } from "@/components/payroll/ui";
+import { Banner, StatCard, StatusBadge } from "@/components/payroll/ui";
+import { PageHeader } from "@/components/ds";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { useDialog } from "@/components/payroll/DialogProvider";
 
@@ -122,14 +123,13 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
     );
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="px-4 sm:px-5 md:px-7 py-6 mx-auto max-w-4xl w-full">
       <Link href="/enterprise/payroll/timesheets" className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]">
         <span className="material-symbols-rounded text-[18px]">arrow_back</span> Timesheets
       </Link>
 
       <div className="mb-5">
         <PageHeader
-          icon="schedule"
           title={ts.employee_name || ts.employee_id.slice(0, 8)}
           subtitle={
             <>
@@ -143,9 +143,9 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
               )}
             </>
           }
-        >
-          <StatusBadge status={ts.status} />
-        </PageHeader>
+          help={<>Review and approve this timesheet&apos;s hours.</>}
+          actions={<StatusBadge status={ts.status} />}
+        />
       </div>
 
       {error && (

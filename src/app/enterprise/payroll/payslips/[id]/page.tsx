@@ -11,7 +11,8 @@ import {
   type Payslip,
   type PayslipSettings,
 } from "@/utils/payroll/api";
-import { Banner, PageHeader, PayslipBadge } from "@/components/payroll/ui";
+import { Banner, PayslipBadge } from "@/components/payroll/ui";
+import { PageHeader } from "@/components/ds";
 import { useAuth } from "@/components/payroll/AuthProvider";
 
 export default function PayslipDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -103,50 +104,53 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
   const accent = tpl?.accent_color || undefined;
 
   return (
-    <div className="animate-fade-in flex flex-col gap-6">
+    <div className="px-4 sm:px-5 md:px-7 py-6 max-w-[1320px] mx-auto w-full animate-fade-in flex flex-col gap-6">
       <div className="no-print">
         <Link href={`/enterprise/payroll/${slip.cycle_id}`} className="mb-3 inline-flex items-center gap-1 text-sm text-[var(--color-primary)]">
           <span className="material-symbols-rounded text-[18px]">arrow_back</span> Back to Cycle
         </Link>
         <PageHeader
-          icon="description"
           title={employee ? `${employee.first_name} ${employee.last_name}` : "Payslip"}
-        >
-          <button
-            onClick={handleDownload}
-            disabled={downloading}
-            className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
-          >
-            <span className="material-symbols-rounded text-[18px]">download</span>
-            {downloading ? "Preparing…" : "Download PDF"}
-          </button>
-          {tpl?.has_doc_template && (
-            <button
-              onClick={handleDownloadDoc}
-              disabled={downloadingDoc}
-              className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
-            >
-              <span className="material-symbols-rounded text-[18px]">description</span>
-              {downloadingDoc ? "Preparing…" : "Download as Word"}
-            </button>
-          )}
-          {can("payroll:pay") && (
-            <button
-              onClick={handleEmail}
-              disabled={emailing}
-              className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
-            >
-              <span className="material-symbols-rounded text-[18px]">mail</span>
-              {emailing ? "Sending…" : "Email to Employee"}
-            </button>
-          )}
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
-          >
-            <span className="material-symbols-rounded text-[18px]">print</span> Print
-          </button>
-        </PageHeader>
+          help={<>View this payslip&apos;s full breakdown. Print or download it.</>}
+          actions={
+            <>
+              <button
+                onClick={handleDownload}
+                disabled={downloading}
+                className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
+              >
+                <span className="material-symbols-rounded text-[18px]">download</span>
+                {downloading ? "Preparing…" : "Download PDF"}
+              </button>
+              {tpl?.has_doc_template && (
+                <button
+                  onClick={handleDownloadDoc}
+                  disabled={downloadingDoc}
+                  className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
+                >
+                  <span className="material-symbols-rounded text-[18px]">description</span>
+                  {downloadingDoc ? "Preparing…" : "Download as Word"}
+                </button>
+              )}
+              {can("payroll:pay") && (
+                <button
+                  onClick={handleEmail}
+                  disabled={emailing}
+                  className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
+                >
+                  <span className="material-symbols-rounded text-[18px]">mail</span>
+                  {emailing ? "Sending…" : "Email to Employee"}
+                </button>
+              )}
+              <button
+                onClick={() => window.print()}
+                className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
+              >
+                <span className="material-symbols-rounded text-[18px]">print</span> Print
+              </button>
+            </>
+          }
+        />
       </div>
 
       {notice && (

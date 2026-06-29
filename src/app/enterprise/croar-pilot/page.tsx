@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/lib/api-config";
+import { PageHelp } from "@/components/ds";
 
 interface Message {
     role: "user" | "agent";
@@ -757,12 +758,14 @@ export default function CroarPilotPage() {
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4 px-4 sm:px-5 md:px-7 shrink-0">
                 <div>
-                    <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
-                        <span className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]/80">
-                            <span className="material-symbols-rounded text-[18px] text-[#5B53E0]">smart_toy</span>
-                        </span>
-                        Croar Pilot
-                    </h1>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
+                            Croar Pilot
+                        </h1>
+                        <PageHelp title="Croar Pilot">
+                            <p>Describe a role and let AI build the job, candidate pipeline and automations for you.</p>
+                        </PageHelp>
+                    </div>
                     <p className="text-[12.5px] text-[#8A929E] mt-0.5">Autonomous AI recruiting companion for sourcing &amp; hiring</p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">

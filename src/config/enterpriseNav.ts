@@ -49,6 +49,7 @@ export const ENTERPRISE_MODULES: NavModule[] = [
                     { label: "Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
                     { label: "Mail", icon: "alternate_email", path: "/enterprise/communication", permission: "communications:read" },
                     { label: "Job Portals", icon: "rocket_launch", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
+                    { label: "Onboarding Hub", icon: "person_add", path: "/enterprise/onboarding", permission: "onboarding:read" },
                 ],
             },
             {
@@ -62,11 +63,11 @@ export const ENTERPRISE_MODULES: NavModule[] = [
             {
                 title: "Automation",
                 items: [
-                    { label: "Automation Canvas", icon: "account_tree", path: "/enterprise/automation", permission: "automation:read" },
-                    { label: "Mail Automation", icon: "mark_email_unread", path: "/enterprise/automation/mail", permission: "communications:moderate" },
-                    { label: "Assessment Automation", icon: "psychology", path: "/enterprise/automation/assessment", permission: "assessments:moderate" },
-                    { label: "Interview Automation", icon: "event_available", path: "/enterprise/automation/interview", permission: "interviews:moderate" },
-                    { label: "Onboarding Automation", icon: "person_add", path: "/enterprise/automation/onboarding", permission: "onboarding:moderate" },
+                    { label: "Canvas", icon: "account_tree", path: "/enterprise/automation", permission: "automation:read" },
+                    { label: "Mail", icon: "mark_email_unread", path: "/enterprise/automation/mail", permission: "communications:moderate" },
+                    { label: "Assessment", icon: "psychology", path: "/enterprise/automation/assessment", permission: "assessments:moderate" },
+                    { label: "Interview", icon: "event_available", path: "/enterprise/automation/interview", permission: "interviews:moderate" },
+                    { label: "Onboarding", icon: "person_add", path: "/enterprise/automation/onboarding", permission: "onboarding:moderate" },
                 ],
             },
         ],
@@ -87,18 +88,20 @@ export const ENTERPRISE_MODULES: NavModule[] = [
                     { label: "HR Surveys", icon: "poll", path: "/enterprise/surveys", permission: "surveys:read" },
                 ],
             },
+            /*
             {
                 title: "AI & Training",
                 items: [
                     { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios", permission: "ai_training:read" },
                 ],
             },
+            */
         ],
     },
     {
         id: "payroll",
         label: "Payroll",
-        icon: "payments",
+        icon: "account_balance_wallet",
         blurb: "Run payroll, timesheets, leave and tax filings",
         sections: [
             {
@@ -131,7 +134,6 @@ export const ENTERPRISE_MODULES: NavModule[] = [
                     { label: "Permissions", icon: "security", path: "/enterprise/settings/roles", permission: "organization:moderate" },
                     { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
                     { label: "Templates", icon: "dashboard_customize", path: "/enterprise/templates", permission: "organization:read" },
-                    { label: "Onboarding Hub", icon: "person_add", path: "/enterprise/onboarding", permission: "onboarding:read" },
                 ],
             },
         ],

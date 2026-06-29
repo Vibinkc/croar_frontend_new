@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/utils/api";
+import { Button, Card, Badge, Field, Textarea, CroarLogo, CroarMark, jetbrainsMono } from "@/components/ds";
 
 interface Question {
     id: string;
@@ -99,48 +100,52 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="flex flex-col items-center gap-6">
-                <div className="w-16 h-16 border-[6px] border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-slate-400 font-black  tracking-[0.2em] text-[10px]">Loading Framework...</p>
+        <div className="min-h-screen flex items-center justify-center p-8 bg-[#F4F5F7]">
+            <div className="flex flex-col items-center gap-5">
+                <div className="w-12 h-12 border-[3px] border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
+                <p className="text-[12px] font-semibold text-[#8A929E]">Loading survey…</p>
             </div>
         </div>
     );
 
     if (completed) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-white selection:bg-indigo-100">
-            <div className="max-w-md w-full text-center space-y-8 animate-in zoom-in duration-700">
-                <div className="w-24 h-24 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-xl border border-emerald-100 mb-10">
-                    <span className="material-symbols-rounded text-5xl">verified</span>
-                </div>
-                <div>
-                    <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-none mb-4">Pulse Noted.</h1>
-                    <p className="text-slate-500 font-medium text-lg leading-relaxed">Your feedback has been successfully securely recorded. Thank you for helping us shape a better workplace culture.</p>
-                </div>
-                <div className="pt-8 border-t border-slate-50 space-y-6">
-                    <div className="bg-slate-50 rounded-xl p-6 border border-slate-100 text-left space-y-4 animate-in slide-in-from-bottom-4 duration-1000 delay-300">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
-                                <span className="material-symbols-rounded text-xl">neurology</span>
-                            </div>
-                            <h3 className="text-sm font-black text-slate-900  ">Neural Coaching Lab</h3>
-                        </div>
-                        <p className="text-xs text-slate-500 font-bold leading-relaxed">Enhance your behavioral intelligence through interactive AI role-play simulations. Practice real-world scenarios in a safe, automated lab.</p>
-                        <button 
-                            onClick={() => router.push('/enterprise/ai-training/portal')}
-                            className="w-full py-3 bg-indigo-600 text-white rounded-xl font-black text-[10px]   hover:bg-slate-900 transition-all flex items-center justify-center gap-2 shadow-xl shadow-indigo-100"
-                        >
-                            <span className="material-symbols-rounded text-lg">play_circle</span>
-                            {"Engage Simulation"}
-                        </button>
+        <div className="min-h-screen flex items-center justify-center bg-[#F4F5F7] px-4 py-8">
+            <div className="w-full max-w-[480px] space-y-5 animate-in fade-in zoom-in-95 duration-500">
+                <Card padding="lg" className="text-center">
+                    <div className="w-16 h-16 rounded-[14px] bg-[#E6F4EA] text-[#15803D] flex items-center justify-center mx-auto mb-6">
+                        <span className="material-symbols-rounded text-[34px]">verified</span>
                     </div>
-                    <button 
-                        onClick={() => window.close()}
-                        className="text-slate-400 hover:text-slate-900 transition-colors font-black   text-[9px] flex items-center justify-center gap-2 mx-auto"
+                    <h1 className="text-[24px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">Thank you</h1>
+                    <p className="text-[14px] text-[#374151] leading-relaxed">
+                        Your feedback has been securely recorded. Thank you for helping us shape a better workplace culture.
+                    </p>
+                </Card>
+
+                <Card padding="lg" className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <CroarMark size={40} />
+                        <div>
+                            <h3 className="text-[14px] font-bold text-[#15171C]">Neural Coaching Lab</h3>
+                            <p className="text-[12px] text-[#8A929E]">Behavioral intelligence, automated.</p>
+                        </div>
+                    </div>
+                    <p className="text-[13px] text-[#374151] leading-relaxed">
+                        Enhance your behavioral intelligence through interactive AI role-play simulations. Practice real-world scenarios in a safe, automated lab.
+                    </p>
+                    <Button
+                        type="button"
+                        fullWidth
+                        icon="play_circle"
+                        onClick={() => router.push('/enterprise/ai-training/portal')}
                     >
-                        <span className="material-symbols-rounded text-lg">close</span>
-                        {"Close Portal"}
-                    </button>
+                        Engage Simulation
+                    </Button>
+                </Card>
+
+                <div className="text-center">
+                    <Button type="button" variant="ghost" size="sm" icon="close" onClick={() => window.close()}>
+                        Close Portal
+                    </Button>
                 </div>
             </div>
         </div>
@@ -149,51 +154,62 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
     const questions = invite?.instance.template.questions ?? [];
 
     return (
-        <div className="min-h-screen bg-slate-50/50 py-12 px-6 lg:py-24">
-            <div className="max-w-3xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-                <header className="bg-white p-10 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/20 space-y-4">
-                    <div className="flex justify-between items-start">
-                        <span className="bg-indigo-600 text-white text-[9px] font-black px-4 py-1.5 rounded-full  ">
-                            {invite?.instance.template.survey_type.name}
-                        </span>
-                        <div className="text-right">
-                            <p className="text-slate-300 text-[10px] font-black  ">Confidential Entry</p>
-                        </div>
-                    </div>
-                    <h1 className="text-4xl font-black text-slate-900 tracking-tight shrink-0">{invite?.instance.name}</h1>
-                    <p className="text-slate-500 font-medium text-lg leading-relaxed pr-8">{invite?.instance.template.description || "Every voice matters. Please provide your honest feedback across the following points."}</p>
-                </header>
+        <div className="min-h-screen bg-[#F4F5F7]">
+            <div className="max-w-[720px] mx-auto px-4 py-8 space-y-6 animate-in fade-in duration-500">
+                {/* Brand */}
+                <div className="flex justify-center">
+                    <CroarLogo size={32} />
+                </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Intro */}
+                <Card padding="lg" className="space-y-4">
+                    <div className="flex items-center justify-between gap-3">
+                        <Badge tone="indigo">{invite?.instance.template.survey_type.name}</Badge>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A929E]">
+                            <span className="material-symbols-rounded text-[15px]">lock</span>
+                            Confidential
+                        </span>
+                    </div>
+                    <h1 className="text-[26px] leading-tight font-extrabold text-[#15171C] tracking-[-0.4px]">
+                        {invite?.instance.name}
+                    </h1>
+                    <p className="text-[14px] text-[#374151] leading-relaxed">
+                        {invite?.instance.template.description || "Every voice matters. Please provide your honest feedback across the following points."}
+                    </p>
+                </Card>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
                     {questions.map((q: Question, i: number) => (
-                        <div key={q.id} className="bg-white p-10 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/10 space-y-8 group transition-all duration-500 hover:border-indigo-600">
-                            <div className="flex gap-6 items-start">
-                                <span className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 font-black text-xs flex items-center justify-center shrink-0 border border-slate-100 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                        <Card key={q.id} padding="lg" className="space-y-6">
+                            <div className="flex gap-3.5 items-start">
+                                <span className={`${jetbrainsMono.className} w-8 h-8 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] text-[13px] font-semibold flex items-center justify-center shrink-0`}>
                                     {i + 1}
                                 </span>
-                                <h2 className="text-xl font-black text-slate-800 tracking-tight leading-snug">{q.text}</h2>
+                                <h2 className="text-[16px] font-bold text-[#15171C] leading-snug pt-1">{q.text}</h2>
                             </div>
 
                             {q.type === 'RATING' && (
-                                <div className="space-y-6">
-                                    <div className="flex justify-between items-end px-2">
-                                        <span className="text-[10px] font-black text-slate-300  ">Least Agree</span>
-                                        <div className="text-4xl font-black text-indigo-600">{responses[i]?.answer_value}</div>
-                                        <span className="text-[10px] font-black text-slate-300  ">Fully Agree</span>
+                                <div className="space-y-5">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-[11px] font-semibold text-[#8A929E]">Least Agree</span>
+                                        <div className={`${jetbrainsMono.className} text-[32px] font-bold text-[#5B53E0] leading-none`}>
+                                            {responses[i]?.answer_value}
+                                        </div>
+                                        <span className="text-[11px] font-semibold text-[#8A929E]">Fully Agree</span>
                                     </div>
-                                    <div className="relative px-2">
-                                        <input 
+                                    <div className="relative">
+                                        <input
                                             type="range"
                                             min={q.scale_min}
                                             max={q.scale_max}
                                             step="1"
-                                            className="w-full h-3 bg-slate-100 rounded-full appearance-none cursor-pointer accent-indigo-600 outline-none"
+                                            className="w-full h-2 bg-[#E8EAED] rounded-full appearance-none cursor-pointer accent-[#5B53E0] outline-none"
                                             value={responses[i]?.answer_value || 3}
                                             onChange={(e) => updateResponse(i, "answer_value", Number.parseInt(e.target.value))}
                                         />
-                                        <div className="flex justify-between mt-4 px-1">
+                                        <div className="flex justify-between mt-3 px-0.5">
                                             {[...new Array(q.scale_max - q.scale_min + 1)].map((_, idx) => (
-                                                <div key={idx} className={`w-1 h-3 rounded-full transition-all ${responses[i]?.answer_value === idx + q.scale_min ? 'h-5 bg-indigo-600' : 'bg-slate-200'}`}></div>
+                                                <div key={idx} className={`w-1 rounded-full transition-all ${responses[i]?.answer_value === idx + q.scale_min ? 'h-4 bg-[#5B53E0]' : 'h-3 bg-[#E1E4E8]'}`} />
                                             ))}
                                         </div>
                                     </div>
@@ -201,17 +217,17 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                             )}
 
                             {q.type === 'MCQ' && (
-                                <div className="grid grid-cols-1 gap-3">
+                                <div className="grid grid-cols-1 gap-2.5">
                                     {safeOptions(q.options).map((opt: string, optIdx: number) => (
-                                        <button 
+                                        <button
                                             key={optIdx}
                                             type="button"
                                             onClick={() => updateResponse(i, "answer_value", optIdx)}
-                                            className={`w-full p-5 rounded-xl text-left font-bold text-sm transition-all flex items-center justify-between border-2 ${responses[i]?.answer_value === optIdx ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700' : 'border-slate-50 bg-slate-50/30 text-slate-500 hover:border-slate-200 shadow-sm'}`}
+                                            className={`w-full p-4 rounded-[10px] text-left font-medium text-[14px] transition-all flex items-center justify-between border ${responses[i]?.answer_value === optIdx ? 'border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]' : 'border-[#E1E4E8] bg-white text-[#374151] hover:border-[#A7A0EE]'}`}
                                         >
                                             {opt}
                                             {responses[i]?.answer_value === optIdx && (
-                                                <span className="material-symbols-rounded text-lg">check_circle</span>
+                                                <span className="material-symbols-rounded text-[20px]">check_circle</span>
                                             )}
                                         </button>
                                     ))}
@@ -219,27 +235,31 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                             )}
 
                             {q.type === 'TEXT' && (
-                                <textarea 
-                                    className="w-full px-8 py-6 bg-slate-50/50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 min-h-[140px] transition-all"
-                                    value={responses[i]?.answer_text || ""}
-                                    onChange={(e) => updateResponse(i, "answer_text", e.target.value)}
-                                    placeholder="Share your thoughts in detail..."
-                                />
+                                <Field>
+                                    <Textarea
+                                        className="min-h-[120px]"
+                                        value={responses[i]?.answer_text || ""}
+                                        onChange={(e) => updateResponse(i, "answer_text", e.target.value)}
+                                        placeholder="Share your thoughts in detail…"
+                                    />
+                                </Field>
                             )}
-                        </div>
+                        </Card>
                     ))}
 
-                    <div className="pt-10 flex flex-col items-center gap-6">
-                        <button 
+                    <div className="pt-2 flex flex-col items-center gap-4">
+                        <Button
                             type="submit"
+                            size="lg"
+                            fullWidth
                             disabled={submitting}
-                            className="px-24 py-5 bg-slate-900 text-white rounded-xl font-black text-sm  tracking-[0.3em] shadow-2xl shadow-indigo-200 hover:bg-indigo-600 hover:scale-[1.02] transition-all disabled:opacity-50 active:scale-[0.98]"
+                            icon={submitting ? undefined : "send"}
                         >
-                            {submitting ? 'Transmitting Entry...' : 'Complete Entry'}
-                        </button>
-                        <p className="text-slate-300 font-black   text-[9px] flex items-center gap-2">
-                            <span className="material-symbols-rounded text-sm">lock_outline</span>
-                            {"End-to-End Encrypted Secure Submission"}
+                            {submitting ? 'Submitting…' : 'Complete Entry'}
+                        </Button>
+                        <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#8A929E]">
+                            <span className="material-symbols-rounded text-[15px]">lock</span>
+                            End-to-end encrypted secure submission
                         </p>
                     </div>
                 </form>

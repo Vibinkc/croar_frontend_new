@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { PageHelp } from "@/components/ds";
 
 export default function AutomationHubPage() {
     const { canAccess } = useAuth();
@@ -69,7 +70,12 @@ export default function AutomationHubPage() {
                         <span className="material-symbols-rounded text-[#7C3AED] text-2xl">settings_suggest</span>
                     </div>
                     <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Automation Management Hub</h1>
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Automation Management Hub</h1>
+                            <PageHelp title="Automation Management Hub">
+                                <p>All your automation workflows in one place.</p>
+                            </PageHelp>
+                        </div>
                         <p className="text-slate-500 text-[13px] font-medium mt-1">
                             Centralized control for all enterprise automation modules and workflows.
                         </p>

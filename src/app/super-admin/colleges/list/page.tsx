@@ -3,6 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { apiClient } from "@/utils/api";
+import {
+    Search,
+    Building2,
+    Users,
+    FileEdit,
+    Trash2,
+} from "lucide-react";
+import { Badge, Button, EmptyState, PageHeader, jetbrainsMono } from "@/components/ds";
 
 const FRONTEND_DOMAIN = process.env.NEXT_PUBLIC_FRONTEND_DOMAIN || "app.croar.in";
 
@@ -19,6 +27,7 @@ interface College {
 export default function DeployedNodesList() {
     const [colleges, setColleges] = useState<College[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         fetchColleges();
@@ -59,103 +68,171 @@ export default function DeployedNodesList() {
         }
     };
 
+    const filteredColleges = colleges.filter(c => {
+        const q = searchQuery.toLowerCase();
+        return (
+            c.name?.toLowerCase().includes(q) ||
+            c.slug?.toLowerCase().includes(q) ||
+            c.db_name?.toLowerCase().includes(q) ||
+            c.admin_email?.toLowerCase().includes(q)
+        );
+    });
+
     return (
-        <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
-            {/* Page Title */}
-            <div className="flex items-center justify-between mb-8">
-                <h1 className="text-xs font-black text-slate-400  tracking-[0.2em]">Platform Inventory</h1>
-                <Link href="/super-admin/colleges" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors">
-                    <span className="material-symbols-rounded text-lg">add_box</span>
-                    <span className="text-[10px] font-black  ">Provision Tenant</span>
-                </Link>
+        <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <PageHeader
+                title="Tenants Inventory"
+                subtitle="Every tenant instance on the platform"
+                icon="dns"
+                help={<><p>Every tenant instance on the platform.</p><p>Open one to manage its admins, divisions and users.</p></>}
+                actions={
+                    <Link href="/super-admin/colleges">
+                        <Button icon="add">Provision Tenant</Button>
+                    </Link>
+                }
+            />
+
+            {/* Toolbar: search */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search by name, slug, database or admin email…"
+                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                    />
+                </div>
+                <Badge tone="neutral" className="self-start md:self-auto px-3 py-1.5">
+                    {colleges.length} tenants
+                </Badge>
             </div>
-                <div className="max-w-7xl mx-auto">
-                    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="p-5 border-b border-slate-100 flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-900">
-                                    <span className="material-icons-outlined text-lg">view_list</span>
-                                </div>
-                                <h2 className="text-xs font-black   text-slate-900">Active Deployments ({colleges.length})</h2>
-                            </div>
-                            <Link href="/super-admin/colleges" className="px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-colors flex items-center gap-2">
-                                <span className="material-icons-outlined text-sm">add</span>
-                                {"New Node"}
-                            </Link>
+
+            {/* Tenant list */}
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+                {isLoading ? (
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                        ))}
+                    </div>
+                ) : filteredColleges.length === 0 ? (
+                    colleges.length === 0 ? (
+                        <EmptyState
+                            tone="brand"
+                            icon="dns"
+                            title="No tenants provisioned yet"
+                            description="Spin up your first tenant organization and its admin to get started."
+                            action={
+                                <Link href="/super-admin/colleges">
+                                    <Button icon="add">Provision Tenant</Button>
+                                </Link>
+                            }
+                        />
+                    ) : (
+                        <EmptyState
+                            tone="muted"
+                            icon="search_off"
+                            title="No tenants match your search"
+                            description="Try a different name, slug or email."
+                            action={
+                                <Button variant="secondary" onClick={() => setSearchQuery("")}>
+                                    Clear search
+                                </Button>
+                            }
+                        />
+                    )
+                ) : (
+                    <>
+                        {/* Column header (desktop) */}
+                        <div className="hidden md:grid grid-cols-[2.2fr_1.6fr_1.2fr_0.9fr_140px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Organization</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Slug / URL</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Database</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
                         </div>
 
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-slate-50 border-b border-slate-100">
-                                    <tr>
-                                        <th className="px-5 py-3 text-[10px] font-black   text-slate-400">Organization Name</th>
-                                        <th className="px-5 py-3 text-[10px] font-black   text-slate-400">Slug / URL</th>
-                                        <th className="px-5 py-3 text-[10px] font-black   text-slate-400">Database</th>
-                                        <th className="px-5 py-3 text-[10px] font-black   text-slate-400">Status</th>
-                                        <th className="px-5 py-3 text-[10px] font-black   text-slate-400 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100">
-                                    {colleges.map((c: College) => (
-                                        <tr key={c.id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-5 py-3">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center">
-                                                        {c.admin_profile_image ? (
-                                                            <img src={c.admin_profile_image} className="w-full h-full object-cover rounded-lg" alt="" />
-                                                        ) : (
-                                                            <span className="text-[10px] font-bold text-slate-500">{c.name?.charAt(0)}</span>
-                                                        )}
-                                                    </div>
-                                                    <span className="text-xs font-bold text-slate-700">{c.name}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-5 py-3">
-                                                <span className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-[10px] font-mono text-slate-500">
-                                                    {c.slug}.{FRONTEND_DOMAIN}
-                                                </span>
-                                            </td>
-                                            <td className="px-5 py-3">
-                                                <span className="text-[10px] font-mono text-slate-400">{c.db_name}</span>
-                                            </td>
-                                            <td className="px-5 py-3">
-                                                <button
-                                                    onClick={() => toggleStatus(c)}
-                                                    className={`px-2 py-0.5 rounded-full text-[8px] font-black   border transition-all cursor-pointer ${c.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100 dashed hover:bg-slate-100'}`}
-                                                >
-                                                    {c.is_active ? 'Active' : 'Offline'}
-                                                </button>
-                                            </td>
-                                            <td className="px-5 py-3 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <Link href={`/super-admin/colleges?edit=${c.id}`} className="p-2 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors" title="Edit Configuration">
-                                                        <span className="material-icons-outlined text-lg">edit</span>
-                                                    </Link>
-                                                    <Link href={`/super-admin/colleges/${c.id}/admins`} className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors" title="Manage Admins">
-                                                        <span className="material-icons-outlined text-lg">manage_accounts</span>
-                                                    </Link>
-                                                    <Link href={`/super-admin/colleges/${c.id}/divisions`} className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors" title="Manage Divisions">
-                                                        <span className="material-icons-outlined text-lg">account_balance</span>
-                                                    </Link>
-                                                    <button onClick={() => handleDelete(c.id)} className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Delete">
-                                                        <span className="material-icons-outlined text-lg">delete</span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {colleges.length === 0 && !isLoading && (
-                                        <tr>
-                                            <td colSpan={5} className="px-6 py-12 text-center text-slate-400 text-xs font-bold  ">
-                                                No tenants provisioned yet
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {filteredColleges.map((c: College) => (
+                                <div
+                                    key={c.id}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.2fr_1.6fr_1.2fr_0.9fr_140px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                                >
+                                    {/* Organization */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 overflow-hidden font-bold text-[13px]">
+                                            {c.admin_profile_image ? (
+                                                <img src={c.admin_profile_image} className="w-full h-full object-cover" alt="" />
+                                            ) : (
+                                                c.name?.charAt(0).toUpperCase() || <Building2 className="w-[17px] h-[17px]" />
+                                            )}
+                                        </span>
+                                        <div className="min-w-0">
+                                            <Link href={`/super-admin/colleges?edit=${c.id}`} className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">
+                                                {c.name}
+                                            </Link>
+                                            {/* mobile-only meta */}
+                                            <div className="flex items-center gap-2.5 mt-0.5 text-[12px] text-[#8A929E] md:hidden">
+                                                <span className={`truncate ${jetbrainsMono.className}`}>{c.slug}.{FRONTEND_DOMAIN}</span>
+                                            </div>
+                                            <span className="hidden md:block text-[11px] text-[#C7CCD4] mt-0.5">{c.admin_email}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Slug / URL (desktop) */}
+                                    <div className="hidden md:flex items-center min-w-0">
+                                        <span className={`px-2 py-0.5 rounded-[6px] bg-[#F4F5F7] border border-[#E1E4E8] text-[11px] text-[#6B6F76] truncate ${jetbrainsMono.className}`}>
+                                            {c.slug}.{FRONTEND_DOMAIN}
+                                        </span>
+                                    </div>
+
+                                    {/* Database (desktop) */}
+                                    <div className={`hidden md:block text-[12px] text-[#8A929E] truncate ${jetbrainsMono.className}`}>
+                                        {c.db_name}
+                                    </div>
+
+                                    {/* Status (desktop) */}
+                                    <div className="hidden md:flex items-center">
+                                        <button onClick={() => toggleStatus(c)} title="Toggle status" className="cursor-pointer">
+                                            {c.is_active ? (
+                                                <Badge tone="success" dot>Active</Badge>
+                                            ) : (
+                                                <Badge tone="neutral" dot>Offline</Badge>
+                                            )}
+                                        </button>
+                                    </div>
+
+                                    {/* Status (mobile) + actions */}
+                                    <div className="flex items-center gap-1 justify-end">
+                                        <button onClick={() => toggleStatus(c)} className="md:hidden mr-1 cursor-pointer" title="Toggle status">
+                                            {c.is_active ? (
+                                                <Badge tone="success" dot>Active</Badge>
+                                            ) : (
+                                                <Badge tone="neutral" dot>Offline</Badge>
+                                            )}
+                                        </button>
+
+                                        <Link href={`/super-admin/colleges?edit=${c.id}`} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title="Edit Configuration">
+                                            <FileEdit className="w-4 h-4" />
+                                        </Link>
+                                        <Link href={`/super-admin/colleges/${c.id}/admins`} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title="Manage Admins">
+                                            <Users className="w-4 h-4" />
+                                        </Link>
+                                        <Link href={`/super-admin/colleges/${c.id}/divisions`} className="hidden sm:flex w-9 h-9 items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title="Manage Divisions">
+                                            <Building2 className="w-4 h-4" />
+                                        </Link>
+                                        <button onClick={() => handleDelete(c.id)} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors" title="Delete">
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 }

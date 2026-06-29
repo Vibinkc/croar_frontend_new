@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { BACKEND_URL } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { PageHelp } from "@/components/ds";
 import {
   UserPlus,
   Plus,
@@ -331,7 +332,12 @@ export default function OnboardingAutomationPage() {
               <UserPlus className="w-6 h-6 text-[#8B5CF6]" />
             </div>
             <div>
-              <h1 className="text-[22px] font-extrabold text-slate-900 tracking-tight leading-tight">Onboarding Automation</h1>
+              <div className="flex items-center gap-1.5">
+                <h1 className="text-[22px] font-extrabold text-slate-900 tracking-tight leading-tight">Onboarding Automation</h1>
+                <PageHelp title="Onboarding Automation">
+                  <p>Automate onboarding steps for new hires.</p>
+                </PageHelp>
+              </div>
               <p className="text-[#8A929E] text-[13px] font-medium mt-1">
                 Automatically trigger onboarding processes when candidates reach specific hiring stages.
               </p>

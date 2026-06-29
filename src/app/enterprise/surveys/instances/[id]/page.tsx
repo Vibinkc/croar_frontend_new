@@ -4,6 +4,19 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
+import {
+    ArrowLeft,
+    Megaphone,
+    Sparkles,
+    BrainCircuit,
+    CheckCircle2,
+    AlertTriangle,
+    Lightbulb,
+    HelpCircle,
+    TrendingUp,
+    MessageSquareQuote,
+} from "lucide-react";
+import { Card, Badge, StatGrid, StatCard, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface AIAnalysis {
     summary: string;
@@ -71,129 +84,157 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <div className="h-16 bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+            <div className="h-44 bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+            <StatGrid>
+                {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="h-[104px] bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+                ))}
+            </StatGrid>
+            <div className="space-y-4">
+                {[1, 2, 3].map(i => (
+                    <div key={i} className="h-44 bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+                ))}
+            </div>
         </div>
     );
 
-    if (!report) return <div className="p-8 text-center text-slate-500 font-medium">Report data unavailable or unauthorized.</div>;
+    if (!report) return (
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <Card padding="lg" className="mt-6">
+                <div className="flex flex-col items-center justify-center text-center py-12">
+                    <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
+                        <AlertTriangle className="w-8 h-8 text-[#C7CCD4]" />
+                    </div>
+                    <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Report data unavailable</h3>
+                    <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">This report could not be loaded, or you are not authorized to view it.</p>
+                </div>
+            </Card>
+        </div>
+    );
 
     const completionRate = report.total_invites > 0 ? (report.completed_invites / report.total_invites) * 100 : 0;
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 pb-20">
-            <header className="flex justify-between items-center pb-8 border-b border-slate-100">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/enterprise/surveys')} className="w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-indigo-600 transition-all flex items-center justify-center">
-                        <span className="material-symbols-rounded text-xl">arrow_back</span>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button
+                        onClick={() => router.push('/enterprise/surveys')}
+                        aria-label="Back to surveys"
+                        className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#8A929E] hover:text-[#5B53E0] hover:bg-[#F4F5F7] transition-colors flex items-center justify-center shrink-0"
+                    >
+                        <ArrowLeft className="w-[18px] h-[18px]" />
                     </button>
-                    <div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">{report.instance_name}</h1>
-                        <p className="text-slate-400 font-black   text-[10px] flex items-center gap-2">
-                            <span className="material-symbols-rounded text-sm text-indigo-500">analytics</span>
-                            {"Aggregated Sentiment Analysis & Participation Data"}
-                        </p>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">{report.instance_name}</h1>
+                            <PageHelp title="Campaign Results">This campaign&apos;s results — responses, completion and AI insights. Send reminders to anyone still pending.</PageHelp>
+                        </div>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Aggregated sentiment analysis &amp; participation data</p>
                     </div>
                 </div>
-                <div className="flex gap-4">
-                    {report.completed_invites < report.total_invites && (
-                        <button 
+                {report.completed_invites < report.total_invites && (
+                    <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap sm:shrink-0">
+                        <button
                             onClick={() => {
                                 apiClient.post(`/api/v1/enterprise/surveys/instances/${id}/notify`, {})
                                     .then(() => alert("Reminders sent to all pending participants!"))
                                     .catch(() => alert("Failed to send reminders."));
                             }}
-                            className="px-6 py-3 bg-white border border-slate-200 text-slate-900 rounded-xl font-black text-[10px]  tracking-[0.2em] flex items-center gap-2 hover:bg-slate-50 transition-all"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
                         >
-                            <span className="material-symbols-rounded text-lg">campaign</span>
-                            {"Remind Pending"}
+                            <Megaphone className="w-3.5 h-3.5 text-[#5B53E0]" /> Remind Pending
                         </button>
-                    )}
-                </div>
+                    </div>
+                )}
             </header>
 
             {/* AI Strategic Intelligence Section */}
-            <section className="relative overflow-hidden bg-slate-900 rounded-2xl p-10 md:p-14 text-white shadow-2xl shadow-indigo-200/20 group">
+            <section className="relative overflow-hidden bg-[#0E1014] rounded-[20px] p-7 md:p-10 text-white">
                 {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 w-[40%] h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none"></div>
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] group-hover:bg-indigo-500/30 transition-all duration-1000"></div>
+                <div className="absolute top-0 right-0 w-[40%] h-full bg-gradient-to-l from-[#5B53E0]/15 to-transparent pointer-events-none" />
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#5B53E0]/25 rounded-full blur-[80px] pointer-events-none" />
 
                 {!aiAnalysis && !analyzing ? (
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
-                        <div className="space-y-4 text-center md:text-left">
-                            <h2 className="text-3xl font-black tracking-tight leading-none">Strategic AI Intelligence</h2>
-                            <p className="text-slate-400 text-lg font-medium max-w-xl leading-relaxed">Let AI evaluate the organizational pulse, detect hidden risks, and suggest actionable strategic improvements based on this feedback.</p>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                        <div className="space-y-3 text-center md:text-left">
+                            <h2 className="text-[22px] font-extrabold tracking-[-0.5px] leading-tight">Strategic AI Intelligence</h2>
+                            <p className="text-white/55 text-[14px] font-medium max-w-xl leading-relaxed">Let AI evaluate the organizational pulse, detect hidden risks, and suggest actionable strategic improvements based on this feedback.</p>
                         </div>
-                        <button 
+                        <button
                             onClick={generateAIInsights}
-                            className="px-10 py-5 bg-indigo-600 text-white rounded-xl font-black text-xs  tracking-[0.3em] flex items-center gap-3 hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-900/40 shrink-0"
+                            className="inline-flex items-center gap-2 h-[46px] px-5 rounded-[10px] bg-[#5B53E0] text-white text-[14px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.4)] transition-colors shrink-0"
                         >
-                            <span className="material-symbols-rounded">psychology</span>
-                            {"Generate Insights"}
+                            <BrainCircuit className="w-[18px] h-[18px]" /> Generate Insights
                         </button>
                     </div>
                 ) : analyzing ? (
-                    <div className="flex flex-col items-center justify-center py-10 space-y-8 animate-pulse relative z-10">
-                        <div className="w-16 h-16 border-4 border-indigo-400 border-t-white rounded-full animate-spin"></div>
-                        <div className="text-center space-y-2">
-                            <h3 className="text-xl font-black  ">Analyzing Pulse...</h3>
-                            <p className="text-slate-400 font-black text-[10px] tracking-[0.3em]">PROCESSING AGGREGATED FEEDBACK VIA GPT-4o</p>
+                    <div className="flex flex-col items-center justify-center py-10 space-y-6 relative z-10">
+                        <div className="w-14 h-14 border-4 border-[#5B53E0]/40 border-t-white rounded-full animate-spin" />
+                        <div className="text-center space-y-1.5">
+                            <h3 className="text-[16px] font-extrabold tracking-[-0.3px]">Analyzing Pulse…</h3>
+                            <p className="text-white/45 text-[11px] font-semibold uppercase tracking-[0.04em]">Processing aggregated feedback</p>
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-12 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                        <header className="flex flex-col md:flex-row items-start justify-between gap-8 pb-10 border-b border-white/10">
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-3">
-                                    <span className="bg-indigo-600 text-[10px] font-black px-4 py-1.5 rounded-full  ">Strategic Insight</span>
-                                    <span className="text-slate-500 font-black text-[10px]  ">Generated by Croar AI</span>
+                    <div className="space-y-9 relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <header className="flex flex-col md:flex-row items-start justify-between gap-6 pb-8 border-b border-white/10">
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-2.5 flex-wrap">
+                                    <span className="inline-flex items-center gap-1.5 rounded-[20px] px-2.5 py-0.5 text-[12px] font-semibold bg-[#5B53E0] text-white">
+                                        <Sparkles className="w-3 h-3" /> Strategic Insight
+                                    </span>
+                                    <span className="text-white/45 text-[11px] font-semibold uppercase tracking-[0.04em]">Generated by Croar AI</span>
                                 </div>
-                                <h2 className="text-4xl font-black tracking-tighter leading-none">{report.instance_name} Summary</h2>
-                                <p className="text-slate-300 text-lg font-medium max-w-3xl leading-relaxed ">&quot;{aiAnalysis?.summary}&quot;</p>
+                                <h2 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.7px] leading-tight">{report.instance_name} Summary</h2>
+                                <p className="text-white/70 text-[14px] font-medium max-w-3xl leading-relaxed">&quot;{aiAnalysis?.summary}&quot;</p>
                             </div>
-                            <div className="bg-white/5 border border-white/10 p-8 rounded-2xl text-center min-w-[220px] backdrop-blur-xl shrink-0">
-                                <p className="text-[10px] font-black text-indigo-400   mb-1">Health Score</p>
-                                <div className="text-6xl font-black tracking-tighter text-indigo-100">{aiAnalysis?.performance_score}</div>
-                                <div className="w-full h-1.5 bg-white/5 rounded-full mt-4 overflow-hidden">
-                                    <div className="h-full bg-indigo-500 transition-all duration-1000" style={{ width: `${aiAnalysis?.performance_score}%` }}></div>
+                            <div className="bg-white/[0.06] border border-white/10 p-6 rounded-[14px] text-center min-w-[200px] backdrop-blur-sm shrink-0">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] mb-1">Health Score</p>
+                                <div className={`text-[48px] font-semibold tracking-[-1px] text-white leading-none ${jetbrainsMono.className}`}>{aiAnalysis?.performance_score}</div>
+                                <div className="w-full h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden">
+                                    <div className="h-full bg-[#5B53E0] transition-all duration-1000" style={{ width: `${aiAnalysis?.performance_score}%` }} />
                                 </div>
                             </div>
                         </header>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                            <div className="space-y-6">
-                                <h4 className="text-[10px] font-black text-indigo-400  tracking-[0.3em] px-2">Cultural Strengths</h4>
-                                <ul className="space-y-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] px-1">Cultural Strengths</h4>
+                                <ul className="space-y-2.5">
                                     {(aiAnalysis?.strengths ?? []).map((s: string, idx: number) => (
-                                        <li key={idx} className="flex items-center gap-4 bg-white/5 p-5 rounded-xl border border-white/5 group hover:border-emerald-500/50 transition-all">
-                                            <span className="material-symbols-rounded text-emerald-500">task_alt</span>
-                                            <span className="text-sm font-bold text-slate-100">{s}</span>
+                                        <li key={idx} className="flex items-center gap-3 bg-white/[0.05] p-4 rounded-[12px] border border-white/[0.07]">
+                                            <CheckCircle2 className="w-[18px] h-[18px] text-[#34D399] shrink-0" />
+                                            <span className="text-[13.5px] font-semibold text-white/90">{s}</span>
                                         </li>
                                     ))}
                                 </ul>
                             </div>
-                            <div className="space-y-6">
-                                <h4 className="text-[10px] font-black text-rose-400  tracking-[0.3em] px-2">Detected Risks</h4>
-                                <ul className="space-y-3">
+                            <div className="space-y-4">
+                                <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#FB7185] px-1">Detected Risks</h4>
+                                <ul className="space-y-2.5">
                                     {(aiAnalysis?.weaknesses ?? []).map((w: string, idx: number) => (
-                                        <li key={idx} className="flex items-center gap-4 bg-white/5 p-5 rounded-xl border border-white/5 group hover:border-rose-500/50 transition-all">
-                                            <span className="material-symbols-rounded text-rose-500">warning</span>
-                                            <span className="text-sm font-bold text-slate-100">{w}</span>
+                                        <li key={idx} className="flex items-center gap-3 bg-white/[0.05] p-4 rounded-[12px] border border-white/[0.07]">
+                                            <AlertTriangle className="w-[18px] h-[18px] text-[#FB7185] shrink-0" />
+                                            <span className="text-[13.5px] font-semibold text-white/90">{w}</span>
                                         </li>
                                     ))}
                                 </ul>
                             </div>
                         </div>
 
-                        <div className="pt-10 border-t border-white/10 space-y-6">
-                            <h4 className="text-[10px] font-black text-indigo-400  tracking-[0.3em] px-2">AI Strategic Recommendations</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="pt-8 border-t border-white/10 space-y-4">
+                            <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] px-1">AI Strategic Recommendations</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {(aiAnalysis?.recommendations ?? []).map((r: string, idx: number) => (
-                                    <div key={idx} className="bg-indigo-600/10 border border-indigo-500/20 p-8 rounded-2xl flex gap-5 group items-start hover:bg-indigo-600 transition-all duration-500">
-                                        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg group-hover:bg-white group-hover:text-indigo-600 transition-all">
-                                            <span className="material-symbols-rounded text-lg">lightbulb</span>
+                                    <div key={idx} className="bg-[#5B53E0]/10 border border-[#5B53E0]/25 p-5 rounded-[14px] flex gap-4 items-start">
+                                        <div className="w-9 h-9 bg-[#5B53E0] rounded-[10px] flex items-center justify-center shrink-0 shadow-[0_6px_14px_rgba(91,83,224,0.4)]">
+                                            <Lightbulb className="w-[18px] h-[18px] text-white" />
                                         </div>
-                                        <p className="text-sm font-bold leading-relaxed text-slate-100 group-hover:text-white">{r}</p>
+                                        <p className="text-[13.5px] font-semibold leading-relaxed text-white/90">{r}</p>
                                     </div>
                                 ))}
                             </div>
@@ -202,103 +243,100 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                 )}
             </section>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-100/30">
-                    <p className="text-slate-400 text-[9px] font-black   mb-1">Total Audience</p>
-                    <p className="text-3xl font-black text-slate-900">{report.total_invites}</p>
-                </div>
-                <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-100/30">
-                    <p className="text-slate-400 text-[9px] font-black   mb-1">Total Returns</p>
-                    <p className="text-3xl font-black text-emerald-600">{report.completed_invites}</p>
-                </div>
-                <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-100/30 md:col-span-2">
+            {/* Participation metrics */}
+            <StatGrid className="lg:grid-cols-3">
+                <StatCard label="Total Audience" value={report.total_invites} icon="groups" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label="Total Returns" value={report.completed_invites} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <Card padding="sm" className="flex flex-col justify-center">
                     <div className="flex justify-between items-end mb-2">
-                        <p className="text-slate-400 text-[9px] font-black   leading-none">Participation Rate</p>
-                        <p className="text-2xl font-black text-indigo-600 tracking-tight leading-none">{completionRate.toFixed(1)}%</p>
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Participation Rate</span>
+                        <span className={`text-[24px] font-semibold tracking-[-1px] text-[#5B53E0] leading-none ${jetbrainsMono.className}`}>{completionRate.toFixed(1)}%</span>
                     </div>
-                    <div className="h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100 mt-2">
-                        <div className="h-full bg-indigo-600 rounded-full transition-all duration-1000" style={{ width: `${completionRate}%` }}></div>
+                    <div className="h-3 bg-[#F4F5F7] rounded-full overflow-hidden border border-[#E8EAED]">
+                        <div className="h-full bg-[#5B53E0] rounded-full transition-all duration-1000" style={{ width: `${completionRate}%` }} />
                     </div>
-                </div>
-            </div>
+                </Card>
+            </StatGrid>
 
-            <div className="space-y-6">
-                <h2 className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Detailed Findings</h2>
-                <div className="grid grid-cols-1 gap-6">
+            {/* Detailed findings */}
+            <div className="space-y-4">
+                <h2 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] px-1">Detailed Findings</h2>
+                <div className="grid grid-cols-1 gap-4">
                     {report.questions.map((q: QuestionData) => (
-                        <div key={q.question_id} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-100/20 space-y-8 group transition-all duration-500 hover:border-indigo-600">
-                            <div className="flex gap-4 items-start">
-                                <div className="w-8 h-8 rounded-xl bg-slate-50 text-slate-400 font-black text-xs flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
-                                    <span className="material-symbols-rounded text-sm">question_mark</span>
-                                </div>
-                                <h3 className="text-xl font-black text-slate-900 tracking-tight leading-snug">{q.question_text}</h3>
+                        <Card key={q.question_id} padding="lg" interactive className="space-y-7">
+                            <div className="flex gap-3.5 items-start">
+                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                    <HelpCircle className="w-[18px] h-[18px]" />
+                                </span>
+                                <h3 className="text-[17px] font-bold text-[#15171C] tracking-[-0.3px] leading-snug pt-1">{q.question_text}</h3>
                             </div>
 
                             {q.question_type === 'RATING' && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-2">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center px-1">
                                     <div>
-                                        <div className="flex justify-between items-end mb-4 pr-1">
-                                            <p className="text-slate-400 text-[9px] font-black  ">Score Distribution</p>
-                                            <p className="text-base font-black text-slate-900 font-mono ">AVG. {q.average_score?.toFixed(1) || '0.0'}</p>
+                                        <div className="flex justify-between items-end mb-4">
+                                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Score Distribution</span>
+                                            <span className={`text-[14px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>AVG. {q.average_score?.toFixed(1) || '0.0'}</span>
                                         </div>
-                                        <div className="space-y-4">
+                                        <div className="space-y-3.5">
                                             {['5', '4', '3', '2', '1'].map(val => (
-                                                <div key={val} className="flex items-center gap-4">
-                                                    <span className="text-[10px] font-black text-slate-400 w-2 text-right">{val}</span>
-                                                    <div className="flex-1 h-2 bg-slate-50 rounded-full overflow-hidden">
-                                                        <div 
-                                                            className="h-full bg-indigo-600/60 rounded-full transition-all duration-1000" 
+                                                <div key={val} className="flex items-center gap-3">
+                                                    <span className={`text-[12px] font-semibold text-[#8A929E] w-2 text-right ${jetbrainsMono.className}`}>{val}</span>
+                                                    <div className="flex-1 h-2 bg-[#F4F5F7] rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-[#5B53E0]/70 rounded-full transition-all duration-1000"
                                                             style={{ width: `${(q.distribution[val] || 0) / q.response_count * 100}%` }}
-                                                        ></div>
+                                                        />
                                                     </div>
-                                                    <span className="text-[9px] font-bold text-slate-400 font-mono w-6 text-right">{q.distribution[val] || 0}</span>
+                                                    <span className={`text-[12px] font-semibold text-[#8A929E] w-6 text-right ${jetbrainsMono.className}`}>{q.distribution[val] || 0}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
-                                    <div className="flex items-center justify-center relative py-10">
+                                    <div className="flex items-center justify-center relative py-8">
                                         <div className="text-center space-y-2 relative z-10">
-                                            <p className="text-7xl font-black text-slate-900 tracking-tighter leading-none">{q.average_score?.toFixed(1) || '0.0'}</p>
-                                            <p className="text-[9px] font-black text-slate-400   bg-slate-50 px-3 py-1.5 rounded-full inline-block">Organizational Pulse</p>
+                                            <p className={`text-[64px] font-semibold text-[#15171C] tracking-[-2px] leading-none ${jetbrainsMono.className}`}>{q.average_score?.toFixed(1) || '0.0'}</p>
+                                            <Badge tone="neutral">Organizational Pulse</Badge>
                                         </div>
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] select-none pointer-events-none">
-                                            <span className="material-symbols-rounded text-[180px]">trending_up</span>
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-[0.04] select-none pointer-events-none">
+                                            <TrendingUp className="w-[160px] h-[160px] text-[#5B53E0]" />
                                         </div>
                                     </div>
                                 </div>
                             )}
 
                             {q.question_type === 'TEXT' && (
-                                <div className="space-y-4 max-h-[400px] overflow-y-auto no-scrollbar pr-2 pt-2">
+                                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
                                     {q.text_responses.length > 0 ? q.text_responses.map((resp: string, idx: number) => (
-                                        <div key={idx} className="bg-slate-50/50 p-6 rounded-xl border border-slate-100 text-sm font-medium text-slate-600  leading-relaxed hover:bg-white hover:shadow-lg hover:shadow-slate-100 transition-all border-l-4 border-l-indigo-600/30">
-                                            &quot;{resp}&quot;
+                                        <div key={idx} className="flex gap-3 bg-[#F7F8FA] p-4 rounded-[12px] border border-[#E8EAED] border-l-[3px] border-l-[#5B53E0]/40 text-[13.5px] font-medium text-[#374151] leading-relaxed">
+                                            <MessageSquareQuote className="w-4 h-4 text-[#9AA3AF] shrink-0 mt-0.5" />
+                                            <span>&quot;{resp}&quot;</span>
                                         </div>
                                     )) : (
-                                        <p className="text-slate-300 font-black   text-[9px] text-center py-10 ">No textual entries were submitted for this item</p>
+                                        <p className="text-[#8A929E] text-[13px] font-medium text-center py-8">No textual entries were submitted for this item</p>
                                     )}
                                 </div>
                             )}
 
                             {q.question_type === 'MCQ' && (
-                                <div className="space-y-4">
+                                <div className="space-y-3.5">
                                     {Object.entries(q.distribution).map(([opt, count]) => (
-                                        <div key={opt} className="space-y-2">
-                                            <div className="flex justify-between text-[10px] font-black  ">
-                                                <span className="text-slate-600">{opt}</span>
-                                                <span className="text-indigo-600">{count} Choices</span>
+                                        <div key={opt} className="space-y-1.5">
+                                            <div className="flex justify-between text-[13px] font-semibold">
+                                                <span className="text-[#374151]">{opt}</span>
+                                                <span className={`text-[#5B53E0] ${jetbrainsMono.className}`}>{count} Choices</span>
                                             </div>
-                                            <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
-                                                <div 
-                                                    className="h-full bg-indigo-600/60 rounded-full" 
+                                            <div className="h-2 bg-[#F4F5F7] rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-[#5B53E0]/70 rounded-full transition-all duration-1000"
                                                     style={{ width: `${(count / q.response_count) * 100}%` }}
-                                                ></div>
+                                                />
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             )}
-                        </div>
+                        </Card>
                     ))}
                 </div>
             </div>

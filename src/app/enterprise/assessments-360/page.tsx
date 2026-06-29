@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
+import { Search, Filter, ChevronDown } from "lucide-react";
+import { Button, StatCard, StatGrid, Badge, Card, EmptyState, jetbrainsMono, PageHelp } from "@/components/ds";
 
 interface Cycle {
     id: string;
@@ -28,10 +30,13 @@ export default function X360Dashboard() {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
 
-    const filteredCycles = recentCycles.filter(cycle => 
+    const filteredCycles = recentCycles.filter(cycle =>
         (statusFilter === "all" || cycle.status === statusFilter) &&
         (cycle.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
+
+    const selectCls =
+        "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
 
     const fetchDashboardData = useCallback(async () => {
         try {
@@ -43,7 +48,7 @@ export default function X360Dashboard() {
             if (statsRes.ok && cyclesRes.ok) {
                 const statsData = await statsRes.json();
                 const cycles = await cyclesRes.json();
-                
+
                 setStats({
                     activeCycles: statsData.active_cycles,
                     pendingMyAssessments: statsData.pending_my_assignments,
@@ -63,200 +68,211 @@ export default function X360Dashboard() {
         fetchDashboardData();
     }, [fetchDashboardData]);
 
-
-    if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="w-12 h-12 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div>
-        </div>
-    );
+    const statusBadge = (status: string) =>
+        status === "ACTIVE" ? (
+            <Badge tone="success" dot>{status}</Badge>
+        ) : status === "DRAFT" ? (
+            <Badge tone="warning" dot>{status}</Badge>
+        ) : (
+            <Badge tone="neutral" dot>{status}</Badge>
+        );
 
     return (
-        <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pt-2 animate-in fade-in duration-700">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
-                <div className="flex items-center gap-3 px-2">
-                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
-                        <span className="material-symbols-rounded">360</span>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">360 Assessments</h1>
+                        <PageHelp title="360 Assessments">
+                            <p>Run multi-rater performance feedback.</p>
+                            <p>Build a competency framework in <strong>Templates</strong>, start a <strong>New Cycle</strong> and pick raters, then read each person&apos;s report. Manage questions in the Question Bank.</p>
+                        </PageHelp>
                     </div>
-                    <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight">360 Assessments</h1>
-                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-0.5">Enterprise Talent Review Hub</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Enterprise talent review hub</p>
+                </div>
+                {canAccess("assessments:moderate") && (
+                    <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap sm:shrink-0">
+                        <Link
+                            href="/enterprise/assessments-360/questions"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
+                        >
+                            <span className="material-symbols-rounded text-[17px]">quiz</span>
+                            Question Bank
+                        </Link>
+                        <Link
+                            href="/enterprise/assessments-360/templates"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
+                        >
+                            <span className="material-symbols-rounded text-[17px]">description</span>
+                            Templates
+                        </Link>
+                        <Link
+                            href="/enterprise/assessments-360/new"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
+                        >
+                            <span className="material-symbols-rounded text-[17px]">add</span>
+                            New Cycle
+                        </Link>
                     </div>
-                </div>
-                <div className="flex gap-4">
-                    {canAccess("assessments:moderate") && (
-                        <>
-                            <Link 
-                                href="/enterprise/assessments-360/questions" 
-                                className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
-                            >
-                                <span className="material-symbols-rounded text-base">quiz</span>{""}
-                                Question Bank
-                            </Link>
-                            <Link 
-                                href="/enterprise/assessments-360/templates" 
-                                className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
-                            >
-                                <span className="material-symbols-rounded text-base">description</span>{""}
-                                Templates
-                            </Link>
-                            <Link 
-                                href="/enterprise/assessments-360/new" 
-                                className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-[0.2em] flex items-center gap-2 shadow-xl shadow-indigo-100"
-                            >
-                                <span className="material-symbols-rounded text-base">add</span>{""}
-                                New Cycle
-                            </Link>
-                        </>
-                    )}
-                </div>
-            </div>
+                )}
+            </header>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-[#7C3AED] transition-all duration-500">
-                    <div className="w-10 h-10 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#7C3AED] group-hover:text-white transition-all duration-500">
-                        <span className="material-symbols-rounded text-xl">sync</span>
-                    </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Active Cycles</p>
-                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tighter">{stats.activeCycles}</p>
-                </div>
-                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-orange-500 transition-all duration-500">
-                    <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
-                        <span className="material-symbols-rounded text-xl">pending_actions</span>
-                    </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Pending Action</p>
-                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tighter">{stats.pendingMyAssessments}</p>
-                </div>
-                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-emerald-500 transition-all duration-500">
-                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
-                        <span className="material-symbols-rounded text-xl">check_circle</span>
-                    </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Completed</p>
-                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tighter">{stats.completedMyAssessments}</p>
-                </div>
-                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-blue-500 transition-all duration-500">
-                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
-                        <span className="material-symbols-rounded text-xl">groups</span>
-                    </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Participants</p>
-                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tighter">{stats.totalParticipants}</p>
-                </div>
-            </div>
+            {/* Stat cards */}
+            <StatGrid>
+                <StatCard label="Active Cycles" value={loading ? "—" : stats.activeCycles} icon="sync" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label="Pending Action" value={loading ? "—" : stats.pendingMyAssessments} icon="pending_actions" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label="Completed" value={loading ? "—" : stats.completedMyAssessments} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label="Participants" value={loading ? "—" : stats.totalParticipants} icon="groups" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+            </StatGrid>
 
-            <div className="flex flex-col md:flex-row items-center gap-4">
-                <div className="flex-1 relative w-full group">
-                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#7C3AED]">search</span>
+            {/* Toolbar: search + filter */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search cycles by name..."
-                        className="w-full h-12 bg-white border border-slate-100 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
+                        placeholder="Search cycles by name…"
+                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
-                
-                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-100 shadow-sm min-w-[200px]">
-                    <span className="material-symbols-rounded text-slate-400 ml-2 text-lg">filter_list</span>
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full bg-transparent border-none text-[11px] font-black text-slate-700 focus:outline-none focus:ring-0 cursor-pointer uppercase tracking-wider"
-                    >
-                        <option value="all">All Cycles</option>
-                        <option value="ACTIVE">Active Only</option>
-                        <option value="DRAFT">Drafts</option>
-                        <option value="CLOSED">Closed</option>
-                    </select>
+
+                <div className="flex items-center gap-2.5">
+                    <div className="relative flex-1 md:flex-none">
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className={`${selectCls} w-full md:min-w-[170px]`}
+                        >
+                            <option value="all">All Cycles</option>
+                            <option value="ACTIVE">Active Only</option>
+                            <option value="DRAFT">Drafts</option>
+                            <option value="CLOSED">Closed</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                    </div>
                 </div>
             </div>
 
-            <div className="mt-2">
-                <div className="bg-white rounded-xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden">
-                    <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                        <div className="flex items-center gap-3">
-                            <span className="material-symbols-rounded text-[#7C3AED] text-lg">dashboard_customize</span>
-                            <h2 className="font-black text-slate-900 text-[10px] uppercase tracking-widest">Assessment Cycles</h2>
-                        </div>
-                        <Link href="/enterprise/assessments-360/cycles" className="text-[#7C3AED] text-[9px] font-black uppercase tracking-widest hover:underline">View All Cycles</Link>
+            {/* Assessment Cycles list */}
+            <Card padding="none" className="overflow-hidden min-h-[420px]">
+                <div className="flex items-center justify-between px-5 py-3.5 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                    <div className="flex items-center gap-2.5">
+                        <span className="material-symbols-rounded text-[#5B53E0] text-[19px]">dashboard_customize</span>
+                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">Assessment Cycles</h2>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-slate-50/20">
-                                    <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Cycle Details</th>
-                                    <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Timeline</th>
-                                    <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Status</th>
-                                    <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {filteredCycles.length > 0 ? filteredCycles.map((cycle) => (
-                                    <tr 
-                                        key={cycle.id} 
-                                        className="group hover:bg-slate-50/50 transition-all cursor-pointer" 
-                                        onClick={() => router.push(`/enterprise/assessments-360/cycles/${cycle.id}`)}
-                                    >
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center group-hover:bg-[#7C3AED] group-hover:text-white transition-all">
-                                                    <span className="material-symbols-rounded text-base">sync</span>
-                                                </div>
-                                                <div>
-                                                    <p className="font-black text-slate-900 leading-tight mb-0.5 text-xs">{cycle.name}</p>
-                                                    <p className="text-[9px] font-bold text-slate-400 tracking-tight">Enterprise talent review</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col gap-0.5">
-                                                <div className="flex items-center gap-1.5 text-slate-400">
-                                                    <span className="material-symbols-rounded text-[10px]">calendar_today</span>
-                                                    <span className="text-[9px] font-bold font-mono tracking-tighter">
-                                                        {new Date(cycle.start_date).toLocaleDateString()}
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center gap-1.5 text-slate-400">
-                                                    <span className="material-symbols-rounded text-[10px]">event</span>
-                                                    <span className="text-[9px] font-bold font-mono tracking-tighter">
-                                                        {new Date(cycle.end_date).toLocaleDateString()}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-3 py-1 rounded-full text-[8px] font-black inline-flex items-center gap-1.5 ${
-                                                cycle.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 
-                                                cycle.status === 'DRAFT' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
-                                                'bg-slate-50 text-slate-500 border border-slate-100'
-                                            }`}>
-                                                <span className={`w-1 h-1 rounded-full ${
-                                                    cycle.status === 'ACTIVE' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
-                                                }`}></span>
-                                                {cycle.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex justify-end gap-2">
-                                                <button className="px-4 py-1.5 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[8px] hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center gap-1.5">
-                                                    Manage{""}
-                                                    <span className="material-symbols-rounded text-[10px]">trending_up</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )) : (
-                                    <tr>
-                                        <td colSpan={4} className="py-20 text-center">
-                                            <p className="text-slate-300 font-black text-[10px] uppercase tracking-widest">
-                                                {searchQuery || statusFilter !== 'all' ? "No cycles match parameters" : "No assessment cycles active"}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                    <Link href="/enterprise/assessments-360/cycles" className="text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4A43C9] transition-colors">
+                        View all cycles
+                    </Link>
                 </div>
-            </div>
+
+                {loading ? (
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                        ))}
+                    </div>
+                ) : filteredCycles.length === 0 ? (
+                    searchQuery || statusFilter !== "all" ? (
+                        <EmptyState
+                            icon="search_off"
+                            tone="muted"
+                            title="No cycles match your filters"
+                            description="Try adjusting your filters or search terms to find what you're looking for."
+                            action={
+                                <Button size="sm" onClick={() => { setSearchQuery(""); setStatusFilter("all"); }}>
+                                    Clear all filters
+                                </Button>
+                            }
+                        />
+                    ) : (
+                        <EmptyState
+                            icon="360"
+                            tone="brand"
+                            title="Start your first 360° cycle"
+                            description="Run multi-rater feedback. Build a competency framework, then launch a review cycle."
+                            action={
+                                canAccess("assessments:moderate") && (
+                                    <Link href="/enterprise/assessments-360/new">
+                                        <Button>New Cycle</Button>
+                                    </Link>
+                                )
+                            }
+                            secondary={
+                                canAccess("assessments:moderate") && (
+                                    <Link href="/enterprise/assessments-360/questions">
+                                        <Button variant="secondary">Question Bank</Button>
+                                    </Link>
+                                )
+                            }
+                        />
+                    )
+                ) : (
+                    <>
+                        {/* Column header (desktop) */}
+                        <div className="hidden md:grid grid-cols-[2.4fr_1.4fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Cycle Details</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Timeline</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                        </div>
+
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {filteredCycles.map((cycle) => (
+                                <div
+                                    key={cycle.id}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_1.4fr_1fr_120px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors cursor-pointer group"
+                                    onClick={() => router.push(`/enterprise/assessments-360/cycles/${cycle.id}`)}
+                                >
+                                    {/* Cycle Details */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                            <span className="material-symbols-rounded text-[18px]">sync</span>
+                                        </span>
+                                        <div className="min-w-0">
+                                            <p className="text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{cycle.name}</p>
+                                            <p className="text-[12px] text-[#8A929E] truncate">Enterprise talent review</p>
+                                            {/* mobile-only meta */}
+                                            <div className="flex items-center gap-2.5 mt-1 md:hidden">
+                                                {statusBadge(cycle.status)}
+                                                <span className={`text-[11px] text-[#8A929E] ${jetbrainsMono.className}`}>
+                                                    {new Date(cycle.start_date).toLocaleDateString()}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Timeline (desktop) */}
+                                    <div className="hidden md:flex flex-col gap-1">
+                                        <div className="flex items-center gap-1.5 text-[12.5px] text-[#374151]">
+                                            <span className="material-symbols-rounded text-[15px] text-[#9AA3AF]">calendar_today</span>
+                                            <span className={jetbrainsMono.className}>{new Date(cycle.start_date).toLocaleDateString()}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-[12.5px] text-[#374151]">
+                                            <span className="material-symbols-rounded text-[15px] text-[#9AA3AF]">event</span>
+                                            <span className={jetbrainsMono.className}>{new Date(cycle.end_date).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Status (desktop) */}
+                                    <div className="hidden md:flex items-center">{statusBadge(cycle.status)}</div>
+
+                                    {/* Actions */}
+                                    <div className="flex items-center justify-end">
+                                        <button className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12px] font-semibold hover:bg-[#15171C] hover:text-white hover:border-[#15171C] transition-colors">
+                                            Manage
+                                            <span className="material-symbols-rounded text-[15px]">trending_up</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+            </Card>
         </div>
     );
 }

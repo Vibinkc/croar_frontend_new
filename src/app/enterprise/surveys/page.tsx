@@ -5,6 +5,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
+import {
+    Search,
+    Filter,
+    ChevronDown,
+    Plus,
+    FileText,
+    Calendar,
+    CalendarClock,
+    Send,
+    BarChart3,
+} from "lucide-react";
+import { StatGrid, StatCard, Badge, Button, EmptyState, PageHelp, jetbrainsMono } from "@/components/ds";
 
 export default function SurveyDashboard() {
     const { token, canAccess } = useAuth();
@@ -17,7 +29,7 @@ export default function SurveyDashboard() {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
 
-    const filteredInstances = instances.filter(inst => 
+    const filteredInstances = instances.filter(inst =>
         (statusFilter === "all" || inst.status === statusFilter) &&
         (inst.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
@@ -40,199 +52,218 @@ export default function SurveyDashboard() {
         fetchData();
     }, []);
 
-    if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="w-12 h-12 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div>
-        </div>
-    );
+    const selectCls =
+        "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+
+    const statusBadge = (status: string) =>
+        status === 'ACTIVE' ? (
+            <Badge tone="success" dot>ACTIVE</Badge>
+        ) : status === 'CLOSED' ? (
+            <Badge tone="neutral" dot>CLOSED</Badge>
+        ) : (
+            <Badge tone="warning" dot>{status}</Badge>
+        );
 
     return (
-        <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pt-2 animate-in fade-in duration-700">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-2 shadow-lg shadow-slate-200/20">
-                <div className="flex items-center gap-3 px-2">
-                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
-                        <span className="material-symbols-rounded">poll</span>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">HR Surveys</h1>
+                        <PageHelp title="HR Surveys">
+                            <p>Measure engagement and culture.</p>
+                            <p>Create a template, <strong>Launch</strong> a campaign to your team, and read participation and results. Recipients respond via a secure link.</p>
+                        </PageHelp>
                     </div>
-                    <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight">HR Surveys</h1>
-                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-0.5">Measure engagement and culture</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Measure engagement and culture</p>
+                </div>
+                {canAccess("surveys:moderate") && (
+                    <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap sm:shrink-0">
+                        <Link
+                            href="/enterprise/surveys/templates"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
+                        >
+                            <FileText className="w-3.5 h-3.5 text-[#5B53E0]" /> Templates
+                        </Link>
+                        <Link
+                            href="/enterprise/surveys/new"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
+                        >
+                            <Plus className="w-3.5 h-3.5" /> Launch Survey
+                        </Link>
                     </div>
-                </div>
-                <div className="flex gap-4">
-                    {canAccess("surveys:moderate") && (
-                        <>
-                            <Link 
-                                href="/enterprise/surveys/templates" 
-                                className="px-5 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-[#7C3AED] hover:border-violet-100 transition-all font-black text-[9px] uppercase tracking-widest flex items-center gap-2"
-                            >
-                                <span className="material-symbols-rounded text-base">description</span>
-                                <span>Templates</span>
-                            </Link>
-                            <Link 
-                                href="/enterprise/surveys/new" 
-                                className="px-8 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px] uppercase tracking-[0.2em] flex items-center gap-2 shadow-xl shadow-indigo-100"
-                            >
-                                <span className="material-symbols-rounded text-base">add</span>
-                                <span>Launch Survey</span>
-                            </Link>
-                        </>
-                    )}
-                </div>
-            </div>
+                )}
+            </header>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-[#7C3AED] transition-all duration-500">
-                    <div className="w-10 h-10 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#7C3AED] group-hover:text-white transition-all duration-500">
-                        <span className="material-symbols-rounded text-xl">rocket_launch</span>
-                    </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Active Campaigns</p>
-                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tighter">{instances.filter(i => i.status === 'ACTIVE').length}</p>
-                </div>
-                
-                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-orange-500 transition-all duration-500">
-                    <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
-                        <span className="material-symbols-rounded text-xl">hourglass_empty</span>
-                    </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">In Progress</p>
-                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tighter">{instances.filter(i => i.status === 'DRAFT').length}</p>
-                </div>
+            {/* Stat cards */}
+            <StatGrid>
+                <StatCard label="Active Campaigns" value={instances.filter(i => i.status === 'ACTIVE').length} icon="rocket_launch" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
+                <StatCard label="In Progress" value={instances.filter(i => i.status === 'DRAFT').length} icon="hourglass_empty" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label="Total Completed" value={instances.filter(i => i.status === 'CLOSED').length} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label="Frameworks" value={templates.length} icon="poll" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+            </StatGrid>
 
-                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-emerald-500 transition-all duration-500">
-                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
-                        <span className="material-symbols-rounded text-xl">check_circle</span>
-                    </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Total Completed</p>
-                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tighter">{instances.filter(i => i.status === 'CLOSED').length}</p>
-                </div>
-
-                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-100/30 group hover:border-blue-500 transition-all duration-500">
-                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
-                        <span className="material-symbols-rounded text-xl">poll</span>
-                    </div>
-                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">Frameworks</p>
-                    <p className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tighter">{templates.length}</p>
-                </div>
-            </div>
-
-            <div className="flex flex-col md:flex-row items-center gap-4">
-                <div className="flex-1 relative w-full group">
-                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#7C3AED]">search</span>
+            {/* Toolbar: search + filter */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search surveys by name..."
-                        className="w-full h-12 bg-white border border-slate-100 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
+                        placeholder="Search surveys by name…"
+                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
-                
-                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-100 shadow-sm min-w-[200px]">
-                    <span className="material-symbols-rounded text-slate-400 ml-2 text-lg">filter_list</span>
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full bg-transparent border-none text-[11px] font-black text-slate-700 focus:outline-none focus:ring-0 cursor-pointer uppercase tracking-wider"
-                    >
-                        <option value="all">All Campaigns</option>
-                        <option value="ACTIVE">Active Only</option>
-                        <option value="DRAFT">Drafts</option>
-                        <option value="CLOSED">Closed</option>
-                    </select>
+
+                <div className="flex items-center gap-2.5">
+                    <div className="relative flex-1 md:flex-none">
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className={`${selectCls} w-full md:min-w-[170px]`}
+                        >
+                            <option value="all">All Campaigns</option>
+                            <option value="ACTIVE">Active Only</option>
+                            <option value="DRAFT">Drafts</option>
+                            <option value="CLOSED">Closed</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                    </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden">
-                <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                    <div className="flex items-center gap-2">
-                        <span className="material-symbols-rounded text-[#7C3AED] text-lg">history</span>
-                        <h2 className="font-black text-slate-900 text-[10px] uppercase tracking-widest">Survey Campaigns</h2>
+            {/* Survey campaigns list */}
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+                {loading ? (
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                        ))}
                     </div>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-slate-50/20">
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Campaign Details</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Timeline</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Status</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                            {filteredInstances.length > 0 ? filteredInstances.map((instance) => (
-                                <tr key={instance.id} className="group hover:bg-slate-50/50 transition-all cursor-pointer" onClick={() => router.push(`/enterprise/surveys/instances/${instance.id}`)}>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center group-hover:bg-[#7C3AED] group-hover:text-white transition-all">
-                                                <span className="material-symbols-rounded text-base">description</span>
-                                            </div>
-                                            <div>
-                                                <p className="font-black text-slate-900 leading-tight mb-0.5 text-xs truncate max-w-[200px]">{instance.name}</p>
-                                                <p className="text-[9px] font-bold text-slate-400  tracking-tight ">Target: {instance.target_group}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col gap-0.5">
-                                            <div className="flex items-center gap-1.5 text-slate-400">
-                                                <span className="material-symbols-rounded text-[10px]">calendar_today</span>
-                                                <span className="text-[9px] font-bold font-mono tracking-tighter">
-                                                    {new Date(instance.start_date).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-1.5 text-slate-400">
-                                                <span className="material-symbols-rounded text-[10px]">event</span>
-                                                <span className="text-[9px] font-bold font-mono tracking-tighter">
-                                                    {new Date(instance.end_date).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`px-3 py-1 rounded-full text-[8px] font-black   inline-flex items-center gap-1.5 ${
-                                            instance.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 
-                                            instance.status === 'CLOSED' ? 'bg-slate-50 text-slate-500 border border-slate-100' : 
-                                            'bg-amber-50 text-amber-600 border border-amber-100'
-                                        }`}>
-                                            <span className={`w-1 h-1 rounded-full ${
-                                                instance.status === 'ACTIVE' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
-                                            }`}></span>
-                                            {instance.status}
+                ) : instances.length === 0 ? (
+                    <EmptyState
+                        tone="brand"
+                        icon="poll"
+                        title="Launch your first survey"
+                        description="Measure engagement and culture. Create a template, then launch a campaign to your team."
+                        action={
+                            canAccess("surveys:moderate") ? (
+                                <Link href="/enterprise/surveys/new">
+                                    <Button icon="rocket_launch">Launch Survey</Button>
+                                </Link>
+                            ) : undefined
+                        }
+                        secondary={
+                            canAccess("surveys:moderate") ? (
+                                <Link href="/enterprise/surveys/templates">
+                                    <Button variant="secondary" icon="description">Templates</Button>
+                                </Link>
+                            ) : undefined
+                        }
+                    />
+                ) : filteredInstances.length === 0 ? (
+                    <EmptyState
+                        tone="muted"
+                        icon="search_off"
+                        title="No surveys match your filters"
+                        description="Try a different search term or status, or clear your filters to see every campaign."
+                        action={
+                            <Button
+                                variant="secondary"
+                                icon="filter_alt_off"
+                                onClick={() => {
+                                    setSearchQuery("");
+                                    setStatusFilter("all");
+                                }}
+                            >
+                                Clear filters
+                            </Button>
+                        }
+                    />
+                ) : (
+                    <>
+                        {/* Column header (desktop) */}
+                        <div className="hidden md:grid grid-cols-[2.4fr_1.2fr_1fr_140px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Campaign Details</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Timeline</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                        </div>
+
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {filteredInstances.map((instance) => (
+                                <div
+                                    key={instance.id}
+                                    onClick={() => router.push(`/enterprise/surveys/instances/${instance.id}`)}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_1.2fr_1fr_140px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group cursor-pointer"
+                                >
+                                    {/* Campaign Details */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                            <FileText className="w-[17px] h-[17px]" />
                                         </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex justify-end gap-2">
-                                            {instance.status === 'ACTIVE' && canAccess("surveys:moderate") && (
-                                                <button 
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        apiClient.post(`/api/v1/enterprise/surveys/instances/${instance.id}/notify`, {})
-                                                            .then(() => alert("Reminder sent successfully!"))
-                                                            .catch(() => alert("Failed to send reminder."));
-                                                    }}
-                                                    className="px-3 py-1.5 bg-violet-50 text-[#7C3AED] rounded-xl font-black text-[8px]   hover:bg-[#7C3AED] hover:text-white transition-all border border-violet-100 flex items-center gap-1.5"
-                                                >
-                                                    <span>Remind</span>
-                                                    <span className="material-symbols-rounded text-[10px]">send</span>
-                                                </button>
-                                            )}
-                                            <button className="px-4 py-1.5 bg-white border border-slate-100 text-slate-900 rounded-xl font-black text-[8px]   hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center gap-1.5">
-                                                <span>View</span>
-                                                <span className="material-symbols-rounded text-[10px]">analytics</span>
-                                            </button>
+                                        <div className="min-w-0">
+                                            <p className="text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{instance.name}</p>
+                                            <p className="text-[12px] text-[#8A929E] mt-0.5 truncate">Target: {instance.target_group}</p>
+                                            {/* mobile-only timeline */}
+                                            <div className="flex items-center gap-2.5 mt-1 text-[12px] text-[#8A929E] md:hidden">
+                                                <span className={`inline-flex items-center gap-1 ${jetbrainsMono.className}`}>
+                                                    <Calendar className="w-3.5 h-3.5" /> {new Date(instance.start_date).toLocaleDateString()}
+                                                </span>
+                                            </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            )) : (
-                                <tr>
-                                    <td colSpan={4} className="py-20 text-center">
-                                        <p className="text-slate-300 font-black   text-[10px]">No active survey campaigns found</p>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+
+                                    {/* Timeline (desktop) */}
+                                    <div className="hidden md:flex flex-col gap-1 min-w-0">
+                                        <div className="flex items-center gap-1.5 text-[12.5px] text-[#374151]">
+                                            <Calendar className="w-3.5 h-3.5 text-[#9AA3AF] shrink-0" />
+                                            <span className={jetbrainsMono.className}>{new Date(instance.start_date).toLocaleDateString()}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-[12.5px] text-[#8A929E]">
+                                            <CalendarClock className="w-3.5 h-3.5 text-[#9AA3AF] shrink-0" />
+                                            <span className={jetbrainsMono.className}>{new Date(instance.end_date).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Status (desktop) */}
+                                    <div className="hidden md:flex items-center">{statusBadge(instance.status)}</div>
+
+                                    {/* Status (mobile) + Actions */}
+                                    <div className="flex items-center gap-1.5 justify-end">
+                                        <div className="md:hidden mr-1">{statusBadge(instance.status)}</div>
+
+                                        {instance.status === 'ACTIVE' && canAccess("surveys:moderate") && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    apiClient.post(`/api/v1/enterprise/surveys/instances/${instance.id}/notify`, {})
+                                                        .then(() => alert("Reminder sent successfully!"))
+                                                        .catch(() => alert("Failed to send reminder."));
+                                                }}
+                                                className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[9px] bg-[#ECEBFB] text-[#5B53E0] text-[12.5px] font-semibold hover:bg-[#5B53E0] hover:text-white transition-colors"
+                                            >
+                                                Remind <Send className="w-3.5 h-3.5" />
+                                            </button>
+                                        )}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                router.push(`/enterprise/surveys/instances/${instance.id}`);
+                                            }}
+                                            className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#15171C] hover:text-white hover:border-[#15171C] transition-colors"
+                                        >
+                                            View <BarChart3 className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

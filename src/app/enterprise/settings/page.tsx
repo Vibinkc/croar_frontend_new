@@ -4,12 +4,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
+import { PageHelp } from "@/components/ds";
+import {
     Building2, 
     Upload, 
     MapPin, 
-    Globe, 
-    ExternalLink, 
     CheckCircle2, 
     AlertCircle,
     Save,
@@ -19,7 +18,6 @@ import {
     RefreshCcw,
     Activity
 } from "lucide-react";
-import { jetbrainsMono } from "@/components/ds";
 
 interface CompanyProfile {
     id: string;
@@ -174,7 +172,7 @@ export default function OrganizationProfilePage() {
     }
 
     return (
-        <div className="p-4 sm:p-5 max-w-7xl mx-auto space-y-6 pt-2 animate-in fade-in duration-700">
+        <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-700">
             {/* Toast */}
             <AnimatePresence>
                 {toast && (
@@ -194,14 +192,15 @@ export default function OrganizationProfilePage() {
 
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]/80">
-                        <span className="material-symbols-rounded text-[18px] text-[#5B53E0]">business</span>
-                    </div>
-                    <div>
+                <div>
+                    <div className="flex items-center gap-1.5">
                         <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Organization Profile</h1>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your global brand presence</p>
+                        <PageHelp title="Settings">
+                            <p>Your organisation&apos;s profile and company-wide settings.</p>
+                            <p>Set up company details here. Manage who can access Croar in <strong>Team</strong> and <strong>Permissions</strong>.</p>
+                        </PageHelp>
                     </div>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your global brand presence</p>
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
@@ -229,47 +228,48 @@ export default function OrganizationProfilePage() {
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Left Side: Brand Preview */}
-                <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="lg:col-span-4 space-y-6"
-                >
-                    <div className="bg-white border border-[#E8EAED] rounded-[14px] p-8 shadow-sm hover:shadow-md transition-all duration-350 overflow-hidden relative group">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#5B53E0] to-[#8B7DFF] opacity-0 group-hover:opacity-100 transition-opacity" />
-                        
-                        <div className="text-center space-y-6">
-                            <div className="relative w-36 h-36 mx-auto group/logo">
-                                <div className="absolute inset-0 bg-[#F4F5F7]/50 rounded-[14px] border border-[#E8EAED] overflow-hidden flex items-center justify-center p-6 shadow-inner transition-transform group-hover/logo:scale-95">
+            {/* Unified Settings Card */}
+            <motion.div 
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-white border border-[#E8EAED] rounded-[14px] p-6 sm:p-8 shadow-sm"
+            >
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    {/* Left Column: Brand Preview & Health */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <div className="text-center space-y-5">
+                            {/* Logo */}
+                            <div className="relative w-32 h-32 mx-auto group/logo">
+                                <div className="absolute inset-0 bg-[#F4F5F7]/50 rounded-[12px] border border-[#E8EAED] overflow-hidden flex items-center justify-center p-5 shadow-inner transition-transform group-hover/logo:scale-95">
                                     {logoUrl ? (
                                         <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                                     ) : (
-                                        <Building2 className="w-12 h-12 text-[#9AA3AF]" />
+                                        <Building2 className="w-10 h-10 text-[#9AA3AF]" />
                                     )}
                                 </div>
                                 {canAccess("organization:moderate") && (
                                     <button 
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="absolute -bottom-1 -right-1 w-10 h-10 bg-[#15171C] text-white rounded-[10px] flex items-center justify-center shadow-lg hover:bg-[#5B53E0] transition-all scale-0 group-hover/logo:scale-100"
+                                        className="absolute -bottom-1 -right-1 w-9 h-9 bg-[#15171C] text-white rounded-[8px] flex items-center justify-center shadow-lg hover:bg-[#5B53E0] transition-all scale-0 group-hover/logo:scale-100"
                                     >
                                         <Camera className="w-4 h-4" />
                                     </button>
                                 )}
                                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoUpload} accept="image/*" />
                                 {isUploading && (
-                                    <div className="absolute inset-0 bg-white/85 backdrop-blur-sm rounded-[14px] flex flex-col items-center justify-center gap-1.5">
+                                    <div className="absolute inset-0 bg-white/85 backdrop-blur-sm rounded-[12px] flex flex-col items-center justify-center gap-1.5">
                                          <RefreshCcw className="w-5 h-5 text-[#5B53E0] animate-spin" />
                                          <span className="text-[9.5px] font-bold text-[#8A929E]">Updating</span>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="space-y-3">
+                            {/* Name & Location */}
+                            <div className="space-y-2">
                                 <div className="space-y-0.5">
                                     <p className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider">{industry || "Brand Identity"}</p>
-                                    <h2 className="text-xl font-extrabold text-[#15171C] tracking-[-0.3px] leading-tight truncate">{name || "Your Company"}</h2>
+                                    <h2 className="text-lg font-extrabold text-[#15171C] tracking-[-0.3px] leading-tight truncate">{name || "Your Company"}</h2>
                                 </div>
                                 <div className="flex items-center justify-center gap-1.5 text-[#8A929E]">
                                     <MapPin className="w-3.5 h-3.5" />
@@ -277,59 +277,61 @@ export default function OrganizationProfilePage() {
                                 </div>
                             </div>
 
-                            <div className="pt-2 grid grid-cols-2 gap-3">
-                                <div className="px-3 py-2.5 bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
-                                    <Shield className="w-4 h-4 text-[#15803D]" />
+                            {/* Badges */}
+                            <div className="grid grid-cols-2 gap-2.5 pt-1">
+                                <div className="px-2.5 py-2 bg-[#F4F5F7]/50 rounded-[8px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
+                                    <Shield className="w-3.5 h-3.5 text-[#15803D]" />
                                     <span className="text-[9.5px] font-bold text-[#8A929E]">Verified</span>
                                 </div>
-                                <div className="px-3 py-2.5 bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
-                                    <Zap className="w-4 h-4 text-[#5B53E0]" />
+                                <div className="px-2.5 py-2 bg-[#F4F5F7]/50 rounded-[8px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
+                                    <Zap className="w-3.5 h-3.5 text-[#5B53E0]" />
                                     <span className="text-[9.5px] font-bold text-[#8A929E]">Premium</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="bg-white border border-[#E8EAED] p-6 rounded-[14px] shadow-sm space-y-4">
-                        <div className="flex items-center justify-between">
-                            <h3 className="text-[12px] font-bold text-[#15171C]">Health Status</h3>
-                            <Activity className="w-4 h-4 text-[#5B53E0]" />
-                        </div>
+                        <div className="h-px bg-[#E8EAED]" />
+
+                        {/* Health Status */}
                         <div className="space-y-4">
-                            {[
-                                { label: "Candidate Portals", status: "Optimal" },
-                                { label: "Brand Propagation", status: "Syncing" }
-                            ].map((item, idx) => (
-                                <div key={idx} className="space-y-1.5">
-                                    <div className="flex justify-between text-[11px] font-bold">
-                                        <span className="text-[#8A929E]">{item.label}</span>
-                                        <span className="text-[#5B53E0]">{item.status}</span>
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-[12px] font-bold text-[#15171C]">Health Status</h3>
+                                <Activity className="w-3.5 h-3.5 text-[#5B53E0]" />
+                            </div>
+                            <div className="space-y-3.5">
+                                {[
+                                    { label: "Candidate Portals", status: "Optimal" },
+                                    { label: "Brand Propagation", status: "Syncing" }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="space-y-1.5">
+                                        <div className="flex justify-between text-[11px] font-bold">
+                                            <span className="text-[#8A929E]">{item.label}</span>
+                                            <span className="text-[#5B53E0]">{item.status}</span>
+                                        </div>
+                                        <div className="h-1 bg-[#F1F2F5] rounded-full overflow-hidden">
+                                            <div className="h-full bg-[#5B53E0] w-full animate-pulse" />
+                                        </div>
                                     </div>
-                                    <div className="h-1 bg-[#F1F2F5] rounded-full overflow-hidden">
-                                        <div className="h-full bg-[#5B53E0] w-full animate-pulse" />
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </motion.div>
 
-                {/* Right Side: Configuration */}
-                <motion.div 
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="lg:col-span-8"
-                >
-                    <div className="bg-white border border-[#E8EAED] rounded-[14px] shadow-sm p-6 sm:p-8 space-y-8">
+                    {/* Middle Divider (LG Screens) */}
+                    <div className="hidden lg:flex lg:col-span-1 self-stretch justify-center">
+                        <div className="w-px h-full bg-[#E8EAED]" />
+                    </div>
+
+                    {/* Right Column: Configuration Form */}
+                    <div className="lg:col-span-7 space-y-6">
                         {/* Section: Basic Information */}
-                        <section className="space-y-6">
+                        <section className="space-y-5">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-1 h-5 bg-[#5B53E0] rounded-full" />
+                                <div className="w-1 h-4 bg-[#5B53E0] rounded-full" />
                                 <h3 className="text-[15px] font-bold text-[#15171C]">Basic Information</h3>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label htmlFor="company-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Company Name</label>
                                     <input
@@ -370,10 +372,12 @@ export default function OrganizationProfilePage() {
                             </div>
                         </section>
 
+                        <div className="h-px bg-[#E8EAED]" />
+
                         {/* Section: Brand Assets */}
-                        <section className="space-y-6">
+                        <section className="space-y-5">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-1 h-5 bg-[#5B53E0] rounded-full" />
+                                <div className="w-1 h-4 bg-[#5B53E0] rounded-full" />
                                 <h3 className="text-[15px] font-bold text-[#15171C]">Brand Assets</h3>
                             </div>
 
@@ -412,8 +416,8 @@ export default function OrganizationProfilePage() {
                             </div>
                         </section>
                     </div>
-                </motion.div>
-            </div>
+                </div>
+            </motion.div>
         </div>
     );
 }

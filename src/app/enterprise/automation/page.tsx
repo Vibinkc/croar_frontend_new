@@ -16,6 +16,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import AutomationNodeModal from "./AutomationNodeModal";
+import { PageHelp } from "@/components/ds";
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -317,7 +318,12 @@ export default function AutomationCanvasPage() {
             <span className="material-symbols-rounded text-[#5B53E0] text-xl">account_tree</span>
           </div>
           <div>
-            <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Automation Canvas</h1>
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Automation Canvas</h1>
+              <PageHelp title="Automation Canvas">
+                <p>Build no-code recruiting workflows visually &mdash; add steps and connect them.</p>
+              </PageHelp>
+            </div>
             <p className="text-[13.5px] text-[#8A929E] mt-0.5">
               Visualize and build your automated hiring pipelines
             </p>

@@ -10,6 +10,7 @@ import Link from "next/link";
 import SendEmailModal from "@/components/enterprise/SendEmailModal";
 import SendAssessmentModal from "@/components/enterprise/SendAssessmentModal";
 import SendOnboardingModal from "@/components/enterprise/SendOnboardingModal";
+import { PageHelp } from "@/components/ds";
 
 // --- Interfaces ---
 
@@ -670,7 +671,12 @@ export default function KanbanBoardPage() {
                 {/* Header row: title + controls */}
                 <div className="px-6 py-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between border-b border-[#F0F0F1]">
                     <div className="min-w-0">
-                        <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Pipeline</h1>
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Pipeline</h1>
+                            <PageHelp title="Pipeline">
+                                <p>Drag candidates through your hiring stages &mdash; applied, screening, interview, offer, hired.</p>
+                            </PageHelp>
+                        </div>
                         <p className="text-[14px] text-[#8A929E] mt-1 truncate">
                             {selectedJobId && selectedJobId !== "ALL" ? selectedJobTitle : "Track candidates through every stage"}
                         </p>

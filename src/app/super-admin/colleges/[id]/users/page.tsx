@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/utils/api";
 import { useRouter, useParams } from "next/navigation";
+import { PageHeader, Card, Field, Input, Select, Button, Badge, EmptyState, type BadgeProps } from "@/components/ds";
 
 interface User {
     id: number;
@@ -20,6 +21,7 @@ export default function CollegeUserManagement() {
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     // New User State
     const [newUser, setNewUser] = useState({
@@ -76,93 +78,184 @@ export default function CollegeUserManagement() {
         }
     };
 
-    return (
-        <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#0f172a] p-8">
-            <div className="max-w-6xl mx-auto space-y-8">
-                <header className="flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <div className="flex items-center gap-4">
-                        <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                            <span className="material-icons-outlined text-slate-500">arrow_back</span>
-                        </button>
-                        <div>
-                            <h1 className="text-2xl font-black  tracking-tighter text-slate-900">User Management</h1>
-                            <p className="text-xs font-bold text-slate-400  ">Connect ID: {id}</p>
-                        </div>
-                    </div>
-                    <button
-                        onClick={() => setShowModal(true)}
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black   hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
-                    >
-                        Add User
-                    </button>
-                </header>
+    const roleTone = (role: string): BadgeProps["tone"] =>
+        role === "ADMIN" ? "indigo" : role === "SUPER_ADMIN" ? "danger" : "teal";
 
+    const initials = (u: User) =>
+        ((u.first_name?.[0] || "") + (u.last_name?.[0] || "")).toUpperCase() || "?";
+
+    const filteredUsers = users.filter(u => {
+        const fullName = `${u.first_name || ""} ${u.last_name || ""}`.trim();
+        const q = searchQuery.toLowerCase();
+        return fullName.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+    });
+
+    return (
+        <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <PageHeader
+                title="Tenant Users"
+                subtitle={`Tenant ID: ${id}`}
+                onBack={() => router.back()}
+                help={
+                    <>
+                        <p>The users within this tenant.</p>
+                        <p>Search and manage their accounts.</p>
+                    </>
+                }
+                actions={
+                    <Button icon="person_add" onClick={() => setShowModal(true)}>
+                        Add User
+                    </Button>
+                }
+            />
+
+            {/* Search */}
+            <Input
+                icon="search"
+                type="text"
+                placeholder="Search users by name or email…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+            />
+
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
                 {isLoading ? (
-                    <div className="flex justify-center p-12"><div className="w-8 h-8 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin"></div></div>
-                ) : (
-                    <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-50 dark:bg-slate-800/50">
-                                <tr>
-                                    <th className="p-6 text-[10px] font-black   text-slate-400">Name</th>
-                                    <th className="p-6 text-[10px] font-black   text-slate-400">Email</th>
-                                    <th className="p-6 text-[10px] font-black   text-slate-400">Role</th>
-                                    <th className="p-6 text-[10px] font-black   text-slate-400">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                                {users.map(u => (
-                                    <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                        <td className="p-6">
-                                            <div className="font-bold text-slate-700">{u.first_name} {u.last_name}</div>
-                                        </td>
-                                        <td className="p-6 text-sm font-medium text-slate-500">{u.email}</td>
-                                        <td className="p-6">
-                                            <span className={`px-3 py-1 rounded-full text-[10px] font-black   ${u.role === 'ADMIN' ? 'bg-purple-50 text-purple-600' :
-                                                u.role === 'SUPER_ADMIN' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
-                                                }`}>
-                                                {u.role}
-                                            </span>
-                                        </td>
-                                        <td className="p-6">
-                                            <button onClick={() => handleDelete(u.id)} className="text-rose-400 hover:text-rose-600 transition-colors">
-                                                <span className="material-icons-outlined text-lg">delete</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        {users.length === 0 && (
-                            <div className="p-12 text-center text-slate-400 font-medium text-sm ">No users found for this college.</div>
-                        )}
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                        ))}
                     </div>
+                ) : filteredUsers.length === 0 ? (
+                    users.length === 0 ? (
+                        <EmptyState
+                            tone="brand"
+                            icon="group"
+                            title="No users yet"
+                            description="Add the first user to this tenant to give them access."
+                            action={
+                                <Button icon="person_add" onClick={() => setShowModal(true)}>
+                                    Add User
+                                </Button>
+                            }
+                        />
+                    ) : (
+                        <EmptyState
+                            tone="muted"
+                            icon="search_off"
+                            title="No users match your search"
+                            description="Try a different name or email."
+                            action={
+                                <Button variant="secondary" onClick={() => setSearchQuery("")}>
+                                    Clear search
+                                </Button>
+                            }
+                        />
+                    )
+                ) : (
+                    <>
+                        <div className="hidden md:grid grid-cols-[2.4fr_2fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Name</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Email</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Role</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                        </div>
+
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {filteredUsers.map(u => (
+                                <div
+                                    key={u.id}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_2fr_1fr_120px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                                >
+                                    {/* Name */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-bold text-[12px] shrink-0">
+                                            {initials(u)}
+                                        </span>
+                                        <div className="min-w-0">
+                                            <span className="block text-[14px] font-bold text-[#15171C] truncate">
+                                                {u.first_name} {u.last_name}
+                                            </span>
+                                            <span className="block text-[12px] text-[#8A929E] truncate md:hidden">{u.email}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Email (desktop) */}
+                                    <div className="hidden md:flex items-center text-[13px] text-[#374151] min-w-0">
+                                        <span className="truncate">{u.email}</span>
+                                    </div>
+
+                                    {/* Role */}
+                                    <div className="hidden md:flex items-center">
+                                        <Badge tone={roleTone(u.role)}>{u.role}</Badge>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex items-center gap-1 justify-end">
+                                        <div className="md:hidden mr-1">
+                                            <Badge tone={roleTone(u.role)}>{u.role}</Badge>
+                                        </div>
+                                        <button
+                                            onClick={() => handleDelete(u.id)}
+                                            className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                                            title="Remove user"
+                                        >
+                                            <span className="material-icons-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
 
             {/* Create Modal */}
             {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                    <div className="w-full max-w-md bg-white rounded-3xl p-8 animate-in zoom-in-95">
-                        <h3 className="text-xl font-black  tracking-tight mb-6">Create User</h3>
-                        <form onSubmit={handleCreateUser} className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <input placeholder="First Name" className="p-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-indigo-500" value={newUser.first_name} onChange={e => setNewUser({ ...newUser, first_name: e.target.value })} required />
-                                <input placeholder="Last Name" className="p-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-indigo-500" value={newUser.last_name} onChange={e => setNewUser({ ...newUser, last_name: e.target.value })} required />
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm">
+                    <Card padding="lg" className="max-w-md w-full shadow-xl animate-in fade-in zoom-in-95 duration-150">
+                        <div className="flex items-center justify-between mb-5">
+                            <div className="flex items-center gap-2.5">
+                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                    <span className="material-icons-outlined text-[18px]">person_add</span>
+                                </span>
+                                <h3 className="text-[15px] font-bold text-[#15171C]">Create User</h3>
                             </div>
-                            <input type="email" placeholder="Email" className="w-full p-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-indigo-500" value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} required />
-                            <input type="password" placeholder="Password" className="w-full p-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-indigo-500" value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} required />
-                            <select className="w-full p-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-indigo-500 bg-white" value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value })}>
-                                <option value="STUDENT">Student</option>
-                                <option value="ADMIN">Admin</option>
-                                <option value="FACULTY">Faculty</option>
-                            </select>
-                            <div className="flex gap-4 pt-4">
-                                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-black   text-[10px]">Cancel</button>
-                                <button type="submit" className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black   text-[10px]">Create</button>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+                            >
+                                <span className="material-icons-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleCreateUser} className="space-y-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <Field label="First Name" htmlFor="user-first-name">
+                                    <Input id="user-first-name" placeholder="John" value={newUser.first_name} onChange={e => setNewUser({ ...newUser, first_name: e.target.value })} required />
+                                </Field>
+                                <Field label="Last Name" htmlFor="user-last-name">
+                                    <Input id="user-last-name" placeholder="Doe" value={newUser.last_name} onChange={e => setNewUser({ ...newUser, last_name: e.target.value })} required />
+                                </Field>
+                            </div>
+                            <Field label="Email" htmlFor="user-email">
+                                <Input id="user-email" icon="mail" type="email" placeholder="john@example.com" value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} required />
+                            </Field>
+                            <Field label="Password" htmlFor="user-password">
+                                <Input id="user-password" icon="lock" type="password" placeholder="••••••••" value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} required />
+                            </Field>
+                            <Field label="Role" htmlFor="user-role">
+                                <Select id="user-role" value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value })}>
+                                    <option value="STUDENT">Student</option>
+                                    <option value="ADMIN">Admin</option>
+                                    <option value="FACULTY">Faculty</option>
+                                </Select>
+                            </Field>
+                            <div className="flex gap-3 pt-2">
+                                <Button type="button" variant="secondary" fullWidth onClick={() => setShowModal(false)}>Cancel</Button>
+                                <Button type="submit" fullWidth>Create</Button>
                             </div>
                         </form>
-                    </div>
+                    </Card>
                 </div>
             )}
         </div>

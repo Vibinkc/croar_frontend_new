@@ -3,20 +3,25 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
-import { motion } from "framer-motion";
-import { 
-    Users, 
-    Search, 
-    RefreshCcw, 
-    Mail, 
-    Calendar, 
-    Shield, 
-    MoreVertical,
-    Building,
+import {
+    Search,
+    Filter,
+    ChevronDown,
+    RefreshCcw,
+    Building2,
     UserCheck,
     UserX,
-    Filter
+    Trash2,
 } from "lucide-react";
+import {
+    PageHeader,
+    StatCard,
+    StatGrid,
+    Badge,
+    Button,
+    EmptyState,
+    jetbrainsMono,
+} from "@/components/ds";
 
 interface UserRecord {
     id: string;
@@ -33,6 +38,7 @@ export default function GlobalUsersPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [users, setUsers] = useState<UserRecord[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
 
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
@@ -88,26 +94,30 @@ export default function GlobalUsersPage() {
         }
     };
 
-    const filteredUsers = users.filter(u => 
-        u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.last_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredUsers = users.filter(u => {
+        const matchesSearch =
+            u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.last_name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus =
+            statusFilter === "all" ||
+            (statusFilter === "active" && u.is_active) ||
+            (statusFilter === "disabled" && !u.is_active);
+        return matchesSearch && matchesStatus;
+    });
 
-    if (isLoading) {
-        return (
-            <div className="p-8 space-y-6">
-                <div className="h-20 bg-white rounded-2xl border border-slate-100 animate-pulse" />
-                <div className="h-96 bg-white rounded-2xl border border-slate-100 animate-pulse" />
-            </div>
-        );
-    }
+    const activeCount = users.filter(u => u.is_active).length;
+    const disabledCount = users.filter(u => !u.is_active).length;
+    const orgCount = new Set(users.map(u => u.company_id).filter(Boolean)).size;
+
+    const selectCls =
+        "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
 
     return (
         <div
             role="button"
             tabIndex={0}
-            className="p-8 space-y-6 animate-in fade-in duration-700"
+            className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500"
             onClick={() => setActiveDropdown(null)}
             onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
@@ -115,137 +125,183 @@ export default function GlobalUsersPage() {
                 }
             }}
         >
-            {/* Header Area */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-100">
-                        <Users className="w-8 h-8" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Global Users</h1>
-                        <p className="text-slate-500 text-sm font-medium">Monitoring {users.length} self-registered accounts</p>
-                    </div>
+            {/* Header */}
+            <PageHeader
+                title="Global Users"
+                subtitle={`Monitoring ${users.length} self-registered accounts`}
+                help={<><p>Every user across all tenants.</p><p>Search, filter and manage platform-wide accounts.</p></>}
+                actions={
+                    <Button variant="secondary" size="sm" onClick={fetchUsers}>
+                        <RefreshCcw className="w-3.5 h-3.5" /> Refresh
+                    </Button>
+                }
+            />
+
+            {/* Stat cards */}
+            <StatGrid>
+                <StatCard label="Total Users" value={users.length} icon="group" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label="Active" value={activeCount} icon="verified_user" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label="Disabled" value={disabledCount} icon="person_off" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label="Organizations" value={orgCount} icon="domain" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+            </StatGrid>
+
+            {/* Toolbar: search + filter */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search by name or email..."
+                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                    />
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
-                        <input 
-                            type="text"
-                            placeholder="Search by name or email..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full md:w-80 h-12 bg-white border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-medium focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 outline-none transition-all shadow-sm"
-                        />
+                <div className="flex items-center gap-2.5">
+                    <div className="relative flex-1 md:flex-none">
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className={`${selectCls} w-full md:min-w-[170px]`}
+                        >
+                            <option value="all">All Accounts</option>
+                            <option value="active">Active Only</option>
+                            <option value="disabled">Disabled</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
-                    <button 
-                        onClick={fetchUsers}
-                        className="w-12 h-12 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm"
-                    >
-                        <RefreshCcw className="w-5 h-5" />
-                    </button>
-                    <button className="h-12 px-5 bg-slate-900 text-white rounded-xl flex items-center gap-2 font-bold text-xs shadow-xl transition-transform hover:scale-105 active:scale-95">
-                        <Filter className="w-4 h-4" />
-                        Filter
-                    </button>
                 </div>
             </div>
 
-            {/* Users Table */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-slate-50/50 border-b border-slate-100">
-                                <th className="px-6 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">User Profile</th>
-                                <th className="px-6 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">Organization ID</th>
-                                <th className="px-6 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                                <th className="px-6 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">Joined Date</th>
-                                <th className="px-6 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                            {filteredUsers.map((user, idx) => (
-                                <motion.tr 
-                                    key={user.id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: idx * 0.05 }}
-                                    className="hover:bg-indigo-50/30 transition-colors group"
+            {/* Users list */}
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+                {isLoading ? (
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                        ))}
+                    </div>
+                ) : filteredUsers.length === 0 ? (
+                    users.length === 0 ? (
+                        <EmptyState
+                            tone="brand"
+                            icon="group"
+                            title="No users yet"
+                            description="Once people register across tenants, their accounts will appear here for platform-wide management."
+                        />
+                    ) : (
+                        <EmptyState
+                            tone="muted"
+                            icon="search_off"
+                            title="No users match your filters"
+                            description="Try a different search term or status, or reset your filters to see everyone."
+                            action={
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => {
+                                        setSearchTerm("");
+                                        setStatusFilter("all");
+                                    }}
                                 >
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-lg shadow-lg group-hover:scale-110 transition-transform">
-                                                {user.first_name?.[0] || 'U'}
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-bold text-slate-900">{user.first_name} {user.last_name}</p>
-                                                <div className="flex items-center gap-1.5 text-slate-400">
-                                                    <Mail className="w-3.5 h-3.5" />
-                                                    <span className="text-xs font-medium">{user.email}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-2">
-                                            <Building className="w-4 h-4 text-slate-300" />
-                                            <span className="text-xs font-mono font-bold text-slate-600 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
-                                                {user.company_id?.split('-')[0]}...
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        {user.is_active ? (
-                                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                                <UserCheck className="w-3.5 h-3.5" />
-                                                <span className="text-[10px] font-black uppercase tracking-tight">Active</span>
-                                            </div>
-                                        ) : (
-                                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-100">
-                                                <UserX className="w-3.5 h-3.5" />
-                                                <span className="text-[10px] font-black uppercase tracking-tight">Disabled</span>
-                                            </div>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-2 text-slate-500">
-                                            <Calendar className="w-4 h-4 text-slate-300" />
-                                            <span className="text-xs font-semibold">
-                                                {new Date(user.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-5 text-right">
-                                        <div className="flex items-center justify-end gap-2">
-                                            {/* Toggle Status Button */}
-                                            <button 
-                                                onClick={() => toggleUserStatus(user.id)}
-                                                title={user.is_active ? "Deactivate User" : "Activate User"}
-                                                className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all border ${
-                                                    user.is_active 
-                                                    ? "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-600 hover:text-white" 
-                                                    : "bg-slate-50 text-slate-400 border-slate-100 hover:bg-indigo-600 hover:text-white"
-                                                }`}
-                                            >
-                                                {user.is_active ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
-                                            </button>
+                                    Reset filters
+                                </Button>
+                            }
+                        />
+                    )
+                ) : (
+                    <>
+                        {/* Column header (desktop) */}
+                        <div className="hidden md:grid grid-cols-[2.4fr_1.4fr_0.9fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">User Profile</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Organization ID</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Joined Date</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                        </div>
 
-                                            {/* Delete Button */}
-                                            <button 
-                                                onClick={() => deleteUser(user.id)}
-                                                title="Delete Permanently"
-                                                className="w-9 h-9 bg-rose-50 text-rose-500 border border-rose-100 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all"
-                                            >
-                                                <span className="material-symbols-rounded text-sm">delete</span>
-                                            </button>
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {filteredUsers.map((user) => (
+                                <div
+                                    key={user.id}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_1.4fr_0.9fr_1fr_120px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                                >
+                                    {/* User Profile */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-extrabold text-[12px] uppercase shrink-0">
+                                            {((user.first_name?.[0] || "") + (user.last_name?.[0] || "")).toUpperCase() || "U"}
+                                        </span>
+                                        <div className="min-w-0">
+                                            <span className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">
+                                                {user.first_name} {user.last_name}
+                                            </span>
+                                            <span className="block text-[11px] text-[#8A929E] truncate">{user.email}</span>
+                                            {/* mobile-only meta */}
+                                            <div className="flex flex-wrap items-center gap-2 mt-1 text-[12px] text-[#8A929E] md:hidden">
+                                                <span className={jetbrainsMono.className}>{user.company_id?.split('-')[0]}…</span>
+                                                <span>· {new Date(user.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                                            </div>
                                         </div>
-                                    </td>
-                                </motion.tr>
+                                    </div>
+
+                                    {/* Organization ID (desktop) */}
+                                    <div className="hidden md:flex items-center gap-1.5 min-w-0">
+                                        <Building2 className="w-4 h-4 text-[#9AA3AF] shrink-0" />
+                                        <span className={`text-[12px] text-[#374151] bg-[#F1F2F5] px-2 py-0.5 rounded-[8px] truncate ${jetbrainsMono.className}`}>
+                                            {user.company_id?.split('-')[0]}…
+                                        </span>
+                                    </div>
+
+                                    {/* Status (desktop) */}
+                                    <div className="hidden md:flex items-center">
+                                        {user.is_active ? (
+                                            <Badge tone="success" dot>Active</Badge>
+                                        ) : (
+                                            <Badge tone="danger" dot>Disabled</Badge>
+                                        )}
+                                    </div>
+
+                                    {/* Joined Date (desktop) */}
+                                    <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
+                                        {new Date(user.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    </div>
+
+                                    {/* Status (mobile) + actions */}
+                                    <div className="flex items-center gap-1 justify-end">
+                                        <div className="md:hidden mr-1">
+                                            {user.is_active ? (
+                                                <Badge tone="success" dot>Active</Badge>
+                                            ) : (
+                                                <Badge tone="danger" dot>Disabled</Badge>
+                                            )}
+                                        </div>
+
+                                        <button
+                                            onClick={() => toggleUserStatus(user.id)}
+                                            title={user.is_active ? "Deactivate User" : "Activate User"}
+                                            className={`w-9 h-9 flex items-center justify-center rounded-[9px] transition-colors ${
+                                                user.is_active
+                                                    ? "text-[#9AA3AF] hover:bg-[#FEF3E2] hover:text-[#D97706]"
+                                                    : "text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0]"
+                                            }`}
+                                        >
+                                            {user.is_active ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
+                                        </button>
+
+                                        <button
+                                            onClick={() => deleteUser(user.id)}
+                                            title="Delete Permanently"
+                                            className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
                             ))}
-                        </tbody>
-                    </table>
-                </div>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

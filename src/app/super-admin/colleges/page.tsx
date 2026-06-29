@@ -4,6 +4,16 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { apiClient } from "@/utils/api";
+import {
+    Building2,
+    Power,
+    Users,
+    Trash2,
+    Save,
+    Rocket,
+    ImageIcon,
+} from "lucide-react";
+import { Button, Card, CardHeader, Input, Field, PageHeader, jetbrainsMono } from "@/components/ds";
 
 
 interface College {
@@ -211,145 +221,150 @@ function SuperAdminCollegesContent() {
     };
 
     return (
-        <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8 text-center sm:text-left">
-            {/* Page Title */}
-            <div className="flex items-center justify-between mb-8">
-                <h1 className="text-[10px] font-black text-slate-400  tracking-[0.2em]">
-                    {selectedCollege ? `Manage Tenant` : "Tenant Provisioning Console"}
-                </h1>
-                <Link href="/super-admin/colleges/list" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors">
-                    <span className="material-symbols-rounded text-lg">list_alt</span>
-                    <span className="text-[9px] font-black  ">View Inventory</span>
-                </Link>
-            </div>
+        <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <PageHeader
+                title={selectedCollege ? "Manage Tenant" : "Provision Tenant"}
+                subtitle={selectedCollege ? `Update settings for ${selectedCollege.slug}` : "Deploy a new dedicated environment"}
+                icon={selectedCollege ? "settings" : "add_business"}
+                help={<><p>Spin up a new tenant organization and its first admin.</p><p>Fill in the details and create it.</p></>}
+                actions={
+                    <Link href="/super-admin/colleges/list">
+                        <Button variant="secondary" icon="list_alt">View Inventory</Button>
+                    </Link>
+                }
+            />
 
-            <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
-                    {selectedCollege && (
-                        <div className="absolute top-0 right-0 p-6 flex gap-2">
-                            <Link href={`/super-admin/colleges/${selectedCollege.id}/admins`} className="p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-colors" title="Manage Admins">
-                                <span className="material-icons-outlined text-base">manage_accounts</span>
-                            </Link>
-                            <Link href={`/super-admin/colleges/${selectedCollege.id}/divisions`} className="p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-colors" title="Manage Divisions">
-                                <span className="material-icons-outlined text-base">account_balance</span>
-                            </Link>
-                            <button onClick={() => toggleStatus(selectedCollege)} className={`p-1.5 rounded-lg transition-colors ${selectedCollege.is_active ? 'bg-emerald-50 text-emerald-500 hover:bg-rose-50 hover:text-rose-500' : 'bg-slate-50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-500'}`} title="Toggle Status">
-                                <span className="material-icons-outlined text-base">{selectedCollege.is_active ? 'toggle_on' : 'toggle_off'}</span>
-                            </button>
-                            <button onClick={() => handleDelete(selectedCollege.id)} className="p-1.5 rounded-lg bg-rose-50 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors" title="Delete">
-                                <span className="material-icons-outlined text-base">delete</span>
-                            </button>
-                        </div>
-                    )}
+            <Card padding="lg" className="max-w-3xl mx-auto w-full">
+                <CardHeader
+                    title={selectedCollege ? "Configuration" : "Initialize New Tenant"}
+                    subtitle={selectedCollege ? `Update settings for ${selectedCollege.slug}` : "Deploy a new dedicated environment to the cluster."}
+                    action={
+                        selectedCollege ? (
+                            <div className="flex items-center gap-1.5">
+                                <Link
+                                    href={`/super-admin/colleges/${selectedCollege.id}/admins`}
+                                    className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                                    title="Manage Admins"
+                                >
+                                    <Users className="w-4 h-4" />
+                                </Link>
+                                <Link
+                                    href={`/super-admin/colleges/${selectedCollege.id}/divisions`}
+                                    className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                                    title="Manage Divisions"
+                                >
+                                    <Building2 className="w-4 h-4" />
+                                </Link>
+                                <button
+                                    type="button"
+                                    onClick={() => toggleStatus(selectedCollege)}
+                                    className={`w-9 h-9 flex items-center justify-center rounded-[9px] transition-colors ${selectedCollege.is_active ? 'text-[#15803D] hover:bg-[#E6F4EA]' : 'text-[#9AA3AF] hover:bg-[#F1F2F5]'}`}
+                                    title="Toggle Status"
+                                >
+                                    <Power className="w-4 h-4" />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleDelete(selectedCollege.id)}
+                                    className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                                    title="Delete"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                        ) : undefined
+                    }
+                />
 
-                    <div className="flex items-center gap-3 mb-6 pb-5 border-b border-slate-100">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${selectedCollege ? 'bg-indigo-600 shadow-indigo-200' : 'bg-slate-900 shadow-slate-200'}`}>
-                            <span className="material-icons-outlined text-xl">{selectedCollege ? 'settings_applications' : 'add_business'}</span>
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-black  tracking-tight text-slate-900">{selectedCollege ? 'Configuration' : 'Initialize New Tenant'}</h2>
-                            <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                                {selectedCollege ? `Update settings for ${selectedCollege.slug}` : 'Deploy a new dedicated environment to the cluster.'}
-                            </p>
-                        </div>
+                <form onSubmit={handleCreateOrUpdate} className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Field label="Organization Name" htmlFor="college-name" required>
+                            <Input
+                                id="college-name"
+                                placeholder="e.g. Stanford University"
+                                value={name} onChange={e => setName(e.target.value)} required
+                            />
+                        </Field>
+                        <Field label="URL Slug" htmlFor="college-slug" required>
+                            <Input
+                                id="college-slug"
+                                placeholder="e.g. stanford"
+                                value={slug} onChange={e => setSlug(e.target.value)} required
+                            />
+                        </Field>
                     </div>
 
-                        <form onSubmit={handleCreateOrUpdate} className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label htmlFor="college-name" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Organization Name</label>
-                                    <input
-                                        id="college-name"
-                                        className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
-                                        placeholder="e.g. Stanford University"
-                                        value={name} onChange={e => setName(e.target.value)} required
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="college-slug" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Url Slug</label>
-                                    <input
-                                        id="college-slug"
-                                        className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
-                                        placeholder="e.g. stanford"
-                                        value={slug} onChange={e => setSlug(e.target.value)} required
-                                    />
-                                </div>
-                            </div>
+                    <Field label="Database Instance Name" htmlFor="college-db-name" required>
+                        <Input
+                            id="college-db-name"
+                            className={jetbrainsMono.className}
+                            placeholder="e.g. talixo_stanford"
+                            value={dbName} onChange={e => setDbName(e.target.value)} required
+                            disabled={!!selectedCollege}
+                        />
+                    </Field>
 
-                            <div>
-                                <label htmlFor="college-db-name" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Database Instance Name</label>
-                                <input
-                                    id="college-db-name"
-                                    className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300 font-mono"
-                                    placeholder="e.g. talixo_stanford"
-                                    value={dbName} onChange={e => setDbName(e.target.value)} required
-                                    disabled={!!selectedCollege} // Disable DB name edit usually? User can decide.
-                                />
-                            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Field label="Admin Email" htmlFor="college-admin-email" required>
+                            <Input
+                                id="college-admin-email"
+                                icon="mail"
+                                placeholder="admin@college.com"
+                                type="email"
+                                value={adminEmail} onChange={e => setAdminEmail(e.target.value)} required
+                            />
+                        </Field>
+                        <Field label={`Admin Password${selectedCollege ? ' (Leave blank to keep)' : ''}`}>
+                            <Input
+                                icon="lock"
+                                placeholder="••••••••"
+                                type="password"
+                                value={adminPassword} onChange={e => setAdminPassword(e.target.value)} required={!selectedCollege}
+                            />
+                        </Field>
+                    </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label htmlFor="college-admin-email" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Email</label>
-                                    <input
-                                        id="college-admin-email"
-                                        className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
-                                        placeholder="admin@college.com"
-                                        type="email"
-                                        value={adminEmail} onChange={e => setAdminEmail(e.target.value)} required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Password {selectedCollege && '(Leave blank to keep)'}</label>
-                                    <input
-                                        className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
-                                        placeholder="••••••••"
-                                        type="password"
-                                        value={adminPassword} onChange={e => setAdminPassword(e.target.value)} required={!selectedCollege}
-                                    />
-                                </div>
+                    <Field label="Admin Profile Image" htmlFor="college-admin-profile-image">
+                        <div className="flex gap-2.5">
+                            <Input
+                                id="college-admin-profile-image"
+                                className="flex-1"
+                                placeholder="https://example.com/avatar.jpg"
+                                type="url"
+                                value={adminProfileImage} onChange={e => setAdminProfileImage(e.target.value)}
+                            />
+                            <div className="w-11 h-11 rounded-[10px] bg-[#F4F5F7] border border-[#E1E4E8] flex items-center justify-center overflow-hidden shrink-0">
+                                {adminProfileImage ? (
+                                    <img src={adminProfileImage} alt="Preview" className="w-full h-full object-cover" />
+                                ) : (
+                                    <ImageIcon className="w-4 h-4 text-[#9AA3AF]" />
+                                )}
                             </div>
+                        </div>
+                    </Field>
 
-                            <div>
-                                <label htmlFor="college-admin-profile-image" className="text-[10px] font-black text-slate-400   ml-1 mb-1.5 block">Admin Profile Image</label>
-                                <div className="flex gap-2">
-                                    <input
-                                        id="college-admin-profile-image"
-                                        className="flex-1 bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-700 focus:border-slate-900 focus:ring-4 focus:ring-slate-100 outline-none transition-all placeholder:text-slate-300"
-                                        placeholder="https://example.com/avatar.jpg"
-                                        type="url"
-                                        value={adminProfileImage} onChange={e => setAdminProfileImage(e.target.value)}
-                                    />
-                                    <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden">
-                                        {adminProfileImage ? (
-                                            <img src={adminProfileImage} alt="Preview" className="w-full h-full object-cover" />
-                                        ) : (
-                                            <span className="material-icons-outlined text-slate-300">image</span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                    <button
+                    <Button
+                        type="submit"
+                        fullWidth
                         disabled={isLoading}
-                        className={`w-full mt-2 text-white p-4 rounded-xl text-[10px] font-black   hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl flex items-center justify-center gap-3 group ${selectedCollege ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-900 hover:bg-slate-800 shadow-slate-200'}`}
+                        className="mt-2"
                     >
+                        {selectedCollege ? <Save className="w-4 h-4" /> : <Rocket className="w-4 h-4" />}
                         {isLoading ? 'Processing...' : (selectedCollege ? 'Save Changes' : 'Initialize Deployment')}
-                        <span className="material-icons-rounded text-sm group-hover:translate-x-1 transition-transform">{selectedCollege ? 'save' : 'rocket_launch'}</span>
-                    </button>
+                    </Button>
                 </form>
-            </div>
+            </Card>
         </div>
-    </div>
     );
 }
 
 export default function SuperAdminColleges() {
     return (
         <Suspense fallback={
-            <div className="flex items-center justify-center h-screen bg-slate-50">
+            <div className="flex items-center justify-center h-screen bg-[#F4F5F7]">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-slate-500 font-bold   text-xs">Loading Console...</p>
+                    <div className="w-12 h-12 border-[3px] border-[#5B53E0] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-[#8A929E] font-semibold text-[13px]">Loading console…</p>
                 </div>
             </div>
         }>

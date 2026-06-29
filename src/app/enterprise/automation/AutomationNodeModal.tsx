@@ -679,7 +679,7 @@ export default function AutomationNodeModal({
                                <div className="flex items-center justify-between mb-2 ml-0.5">
                                  <label htmlFor="automation-interview-template" className="block text-[11.5px] font-bold text-[#0E8A6E] uppercase tracking-wider">AI Template</label>
                                  <button 
-                                   onClick={() => window.open('/enterprise/settings/interview-templates', '_blank')}
+                                   onClick={() => window.open('/enterprise/templates/interview-templates', '_blank')}
                                    className="text-[11px] font-semibold text-[#5B53E0] hover:underline"
                                  >
                                    + Create New

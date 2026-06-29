@@ -4,9 +4,18 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { format } from "date-fns";
+import {
+    Search,
+    Filter,
+    ChevronDown,
+    RefreshCcw,
+    Network,
+    ExternalLink,
+    Calendar,
+} from "lucide-react";
 import ProjectKanban from "@/components/enterprise/ProjectKanban";
 import { apiClient } from "@/utils/api";
-import TaskCard from "@/components/enterprise/TaskCard";
+import { StatCard, StatGrid, Badge, EmptyState, Button, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface Member {
     id: string;
@@ -120,35 +129,44 @@ export default function GlobalTasksPage() {
         return matchesSearch && matchesStatus;
     });
 
-    const getStatusColor = (status: string) => {
+    const statusTone = (status: string): "success" | "info" | "warning" | "neutral" => {
         switch (status.toLowerCase()) {
             case "done":
             case "completed":
-                return "bg-emerald-100 text-emerald-700 border-emerald-200";
+                return "success";
             case "development":
             case "in progress":
-                return "bg-blue-100 text-blue-700 border-blue-200";
+                return "info";
             case "testing":
             case "review":
-                return "bg-amber-100 text-amber-700 border-amber-200";
+                return "warning";
             default:
-                return "bg-slate-100 text-slate-700 border-slate-200";
+                return "neutral";
         }
     };
 
+    const selectCls =
+        "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+
     return (
-        <div className="p-4 space-y-4 animate-in fade-in duration-500 max-w-[1600px] mx-auto">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-lg font-black text-slate-900 tracking-tight">Project Tasks</h1>
-                    <p className="text-slate-500 text-[10px] font-medium">Manage and track assignments across all projects</p>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Project Tasks</h1>
+                        <PageHelp title="Project Tasks">
+                            <p>Every task across your projects in one place.</p>
+                            <p>Filter by project or status. Tasks are created inside a project — use the project selector or open a project&apos;s board to add them.</p>
+                        </PageHelp>
+                    </div>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage and track assignments across all projects</p>
                 </div>
 
-                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-100 shadow-sm">
-                    <span className="material-symbols-rounded text-slate-400 ml-1.5 text-lg">filter_list</span>
+                <div className="relative shrink-0 sm:min-w-[220px]">
+                    <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     <select
-                        className="bg-transparent border-none text-[9px] font-black text-slate-900   focus:outline-none focus:ring-0 cursor-pointer min-w-[160px]"
+                        className={`${selectCls} w-full`}
                         value={selectedProjectId}
                         onChange={(e) => setSelectedProjectId(e.target.value)}
                     >
@@ -157,63 +175,75 @@ export default function GlobalTasksPage() {
                             <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
                     </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                 </div>
-            </div>
+            </header>
 
-            {/* Stats Section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                    { label: "Total Tasks", value: tasks.length, icon: "assignment", color: "indigo" },
-                    { label: "In Progress", value: tasks.filter(t => t.status !== 'Done' && t.status !== 'Completed').length, icon: "sync", color: "blue" },
-                    { label: "Completed", value: tasks.filter(t => t.status === 'Done' || t.status === 'Completed').length, icon: "task_alt", color: "emerald" },
-                    { label: "Upcoming", value: tasks.filter(t => t.due_date && new Date(t.due_date) > new Date()).length, icon: "event", color: "amber" }
-                ].map((stat, i) => (
-                    <div key={i} className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 group">
-                        <div className="flex items-start justify-between mb-4">
-                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${
-                                stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
-                                stat.color === 'blue' ? 'bg-blue-50 text-blue-600' :
-                                stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
-                                'bg-amber-50 text-amber-600'
-                            }`}>
-                                <span className="material-symbols-rounded text-xl">{stat.icon}</span>
-                            </div>
-                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
-                        </div>
-                        <p className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{stat.value}</p>
-                        <p className="text-[11px] font-bold text-slate-400 capitalize">{stat.label}</p>
-                    </div>
-                ))}
-            </div>
+            {/* Stat cards */}
+            <StatGrid>
+                <StatCard
+                    label="Total Tasks"
+                    value={tasks.length}
+                    icon="task_alt"
+                    gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
+                    glow="rgba(91,83,224,0.28)"
+                />
+                <StatCard
+                    label="In Progress"
+                    value={tasks.filter(t => t.status !== 'Done' && t.status !== 'Completed').length}
+                    icon="sync"
+                    gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
+                    glow="rgba(53,89,199,0.25)"
+                />
+                <StatCard
+                    label="Completed"
+                    value={tasks.filter(t => t.status === 'Done' || t.status === 'Completed').length}
+                    icon="check_circle"
+                    gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
+                    glow="rgba(14,138,110,0.25)"
+                />
+                <StatCard
+                    label="Upcoming"
+                    value={tasks.filter(t => t.due_date && new Date(t.due_date) > new Date()).length}
+                    icon="event"
+                    gradient="linear-gradient(135deg,#F6B65C,#D97706)"
+                    glow="rgba(217,119,6,0.25)"
+                />
+            </StatGrid>
 
             {/* Content Area */}
             {isLoading ? (
-                <div className="flex justify-center py-20">
-                    <div className="w-10 h-10 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div>
+                <div className="bg-white rounded-[14px] border border-[#E8EAED] p-4 space-y-2.5 min-h-[420px]">
+                    {[1, 2, 3, 4, 5].map(i => (
+                        <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                    ))}
                 </div>
             ) : selectedProjectId !== "all" && selectedProjectData ? (
                 /* Kanban View */
                 <div className="space-y-6">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#7C3AED] text-white flex items-center justify-center shadow-lg shadow-indigo-100">
-                            <span className="material-symbols-rounded">account_tree</span>
-                        </div>
+                            <span
+                                className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0"
+                                style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 6px 14px rgba(91,83,224,0.28)" }}
+                            >
+                                <Network className="w-[18px] h-[18px]" />
+                            </span>
                             <div>
-                                <h2 className="text-lg font-black text-slate-900 leading-none">{selectedProjectData.name} Board</h2>
-                                <p className="text-[9px] font-black text-slate-400   mt-1">Interactive Kanban Workspace</p>
+                                <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-none">{selectedProjectData.name} Board</h2>
+                                <p className="text-[12.5px] text-[#8A929E] mt-1">Interactive Kanban workspace</p>
                             </div>
                         </div>
-                        <button 
+                        <button
                             onClick={() => fetchProjectSpecificData(selectedProjectId)}
-                            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-xl text-[10px] font-black text-slate-600   hover:bg-slate-50 transition-all"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shrink-0"
                         >
-                            <span className="material-symbols-rounded text-sm">refresh</span>
-                            {"Sync Board"}
+                            <RefreshCcw className="w-3.5 h-3.5" />
+                            Sync Board
                         </button>
                     </div>
 
-                    <ProjectKanban 
+                    <ProjectKanban
                         projectId={selectedProjectData.id}
                         columns={selectedProjectData.kanban_columns}
                         tasks={tasks}
@@ -224,94 +254,95 @@ export default function GlobalTasksPage() {
             ) : (
                 /* Consolidated Table View */
                 <div className="space-y-6">
-                    <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-wrap gap-4 items-center">
-                        <div className="flex-1 min-w-[280px] relative group">
-                            <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#7C3AED]">search</span>
+                    {/* Toolbar: search + filter */}
+                    <div className="flex flex-col md:flex-row md:items-center gap-3">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
                             <input
                                 type="text"
-                                placeholder="Search tasks, descriptions or project names..."
-                                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-transparent rounded-xl text-[11px] font-bold focus:outline-none focus:ring-0 transition-all focus:bg-white focus:border-[#7C3AED]/20 shadow-sm"
+                                placeholder="Search tasks, descriptions or project names…"
+                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
 
-                        <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100 min-w-[180px]">
-                            <span className="material-symbols-rounded text-slate-400 ml-1.5 text-lg">filter_alt</span>
+                        <div className="relative flex-1 md:flex-none">
+                            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="w-full bg-transparent border-none text-[10px] font-black text-slate-700 focus:outline-none focus:ring-0 cursor-pointer uppercase tracking-tight"
+                                className={`${selectCls} w-full md:min-w-[170px]`}
                             >
                                 <option value="all">All Stages</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Doing">In Progress</option>
                                 <option value="Done">Completed</option>
                             </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    {/* Task list */}
+                    <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
                         {filteredGridTasks.length > 0 ? (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
+                                <table className="w-full border-collapse">
                                     <thead>
-                                        <tr className="bg-slate-50 border-b border-slate-100">
-                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Task Details</th>
-                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Project</th>
-                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Assignee</th>
-                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Due Date</th>
-                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                        <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Task Details</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Project</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Assignee</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Due Date</th>
+                                            <th className="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-50">
+                                    <tbody className="divide-y divide-[#F0F0F1]">
                                         {filteredGridTasks.map((task) => (
-                                            <tr key={task.id} className="hover:bg-slate-50/50 transition-all group">
+                                            <tr key={task.id} className="hover:bg-[#F7F7F8] transition-colors group">
                                                 <td className="px-6 py-4">
                                                     <div className="flex flex-col">
-                                                        <span className="text-[13px] font-bold text-slate-900 group-hover:text-[#7C3AED] transition-colors">{task.title}</span>
-                                                        <span className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{task.description || "No description"}</span>
+                                                        <span className="text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors">{task.title}</span>
+                                                        <span className="text-[12.5px] text-[#8A929E] line-clamp-1 mt-0.5">{task.description || "No description"}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
-                                                        <span className="text-[11px] font-black text-slate-600 uppercase tracking-tight">{task.project?.name}</span>
+                                                        <span className="w-2 h-2 rounded-full bg-[#5B53E0]" />
+                                                        <span className="text-[13px] font-medium text-[#374151]">{task.project?.name}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {task.assignee ? (
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-black uppercase">
+                                                        <div className="flex items-center gap-2.5">
+                                                            <div className="w-8 h-8 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center text-[11px] font-extrabold uppercase border border-[#DAD7F6]/60">
                                                                 {task.assignee.first_name[0]}{task.assignee.last_name[0]}
                                                             </div>
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[11px] font-bold text-slate-700 capitalize">{task.assignee.first_name} {task.assignee.last_name}</span>
-                                                            </div>
+                                                            <span className="text-[13px] font-medium text-[#374151] capitalize">{task.assignee.first_name} {task.assignee.last_name}</span>
                                                         </div>
                                                     ) : (
-                                                        <span className="text-[10px] font-bold text-slate-400">Unassigned</span>
+                                                        <span className="text-[13px] text-[#9AA3AF]">Unassigned</span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[9px] font-black border uppercase tracking-wider ${getStatusColor(task.status)}`}>
-                                                        {task.status}
-                                                    </span>
+                                                    <Badge tone={statusTone(task.status)} dot>{task.status}</Badge>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
-                                                        <span className="material-symbols-rounded text-sm text-slate-400">event</span>
-                                                        {task.due_date ? format(new Date(task.due_date), "MMM d, yyyy") : "No date"}
+                                                    <div className="flex items-center gap-1.5 text-[13px] text-[#374151]">
+                                                        <Calendar className="w-4 h-4 text-[#9AA3AF]" />
+                                                        <span className={jetbrainsMono.className}>
+                                                            {task.due_date ? format(new Date(task.due_date), "MMM d, yyyy") : "No date"}
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <Link 
+                                                    <Link
                                                         href={`/enterprise/projects/${task.project_id}`}
-                                                        className="w-8 h-8 rounded-lg text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 flex items-center justify-center transition-all ml-auto"
+                                                        className="w-9 h-9 rounded-[9px] text-[#9AA3AF] hover:text-[#5B53E0] hover:bg-[#ECEBFB] flex items-center justify-center transition-colors ml-auto"
                                                         title="View Project Board"
                                                     >
-                                                        <span className="material-symbols-rounded text-lg">open_in_new</span>
+                                                        <ExternalLink className="w-4 h-4" />
                                                     </Link>
                                                 </td>
                                             </tr>
@@ -319,17 +350,36 @@ export default function GlobalTasksPage() {
                                     </tbody>
                                 </table>
                             </div>
+                        ) : tasks.length === 0 ? (
+                            <EmptyState
+                                tone="brand"
+                                icon="checklist"
+                                title="No tasks yet"
+                                description="Tasks live inside projects. Open a project and add tasks to its board, then track them here across every project."
+                                action={
+                                    <Link href="/enterprise/projects">
+                                        <Button>Go to Projects</Button>
+                                    </Link>
+                                }
+                            />
                         ) : (
-                            <div className="rounded-xl p-20 text-center">
-                                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <span className="material-symbols-rounded text-slate-300 text-4xl">folder_off</span>
-                                </div>
-                                <h3 className="text-2xl font-black text-slate-900 mb-2">No tasks found</h3>
-                                <p className="text-slate-500 font-medium max-w-sm mx-auto">
-                                    {/* eslint-disable-next-line react/no-unescaped-entities */}
-                                    We couldn&apos;t find any tasks matching your criteria. Try adjusting your search or selecting a specific project.
-                                </p>
-                            </div>
+                            <EmptyState
+                                tone="muted"
+                                icon="search_off"
+                                title="No tasks found"
+                                description="We couldn't find any tasks matching your criteria. Try adjusting your search or status filter."
+                                action={
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => {
+                                            setSearchTerm("");
+                                            setStatusFilter("all");
+                                        }}
+                                    >
+                                        Reset filters
+                                    </Button>
+                                }
+                            />
                         )}
                     </div>
                 </div>

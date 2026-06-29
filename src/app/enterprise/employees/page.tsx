@@ -2,9 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import {
+    Search,
+    Filter,
+    ChevronDown,
+    Edit3,
+    KeyRound,
+    Trash2,
+    Badge as BadgeIcon,
+    X,
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { apiClient, BACKEND_URL } from "@/utils/api";
+import { apiClient } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { Button, StatCard, StatGrid, Badge, Input, PageHelp, EmptyState, jetbrainsMono } from "@/components/ds";
 
 interface Department {
     id: string;
@@ -106,191 +117,225 @@ export default function EmployeesPage() {
         return matchesSearch && matchesStatus;
     });
 
+    const newHires = employees.filter(e => e.hire_date && new Date(e.hire_date) > new Date(new Date().getFullYear(), new Date().getMonth(), 1)).length;
+    const activeCount = employees.filter(e => e.status === 'Active').length;
+    const departmentCount = new Set(employees.filter(e => e.department).map(e => e.department?.id)).size;
+
+    const selectCls =
+        "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+
     return (
-        <div className="p-6 space-y-8 animate-in fade-in duration-500 bg-[#F8FAFC] min-h-screen">
-            {/* Header */}
-            <div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                    <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
-                            <span className="material-symbols-rounded text-[#7C3AED] text-2xl">badge</span>
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Employee Directory</h1>
-                            <p className="text-slate-500 text-[13px] font-medium mt-1">
-                                Manage your workforce, departments, and employee records in one place.
-                            </p>
-                        </div>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <div className="flex items-center gap-1.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Employee Directory</h1>
+                        <PageHelp title="Employee Directory">
+                            <p>Your single source of truth for everyone in the organisation.</p>
+                            <p><strong>Add employees</strong> (or convert hired candidates), assign them to <strong>departments</strong>, and open a record to manage details and documents.</p>
+                            <p>Use search and the status filter to find people fast.</p>
+                        </PageHelp>
                     </div>
-
-                    <div className="flex items-center gap-3">
-                        {canAccess("employees:create") && (
-                            <Link
-                                href="/enterprise/employees/add"
-                                className="flex items-center gap-2 px-5 h-11 bg-[#7C3AED] text-white rounded-lg text-xs font-black hover:bg-[#6d28d9] transition-all shadow-lg shadow-[#7C3AED]/20 active:scale-95"
-                            >
-                                <span className="material-symbols-rounded text-lg">add</span>
-                                {"ADD EMPLOYEE"}
-                            </Link>
-                        )}
-                    </div>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your workforce, departments &amp; records</p>
                 </div>
-
-                {/* Stats Section */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {[
-                        { label: "Total Employees", value: employees.length, icon: "groups", color: "indigo" },
-                        { label: "Active Workforce", value: employees.filter(e => e.status === 'Active').length, icon: "verified", color: "emerald" },
-                        { label: "Departments", value: new Set(employees.filter(e => e.department).map(e => e.department?.id)).size, icon: "domain", color: "amber" },
-                        { label: "New Hires", value: employees.filter(e => e.hire_date && new Date(e.hire_date) > new Date(new Date().getFullYear(), new Date().getMonth(), 1)).length, icon: "person_add", color: "purple" }
-                    ].map((stat, i) => (
-                        <div key={i} className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#7C3AED]/20 transition-all duration-300">
-                            <div className="flex items-start justify-between mb-4">
-                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${
-                                    stat.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
-                                    stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
-                                    stat.color === 'amber' ? 'bg-amber-50 text-amber-600' :
-                                    'bg-purple-50 text-purple-600'
-                                }`}>
-                                    <span className="material-symbols-rounded text-xl">{stat.icon}</span>
-                                </div>
-                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
-                            </div>
-                            <p className="text-2xl font-black text-slate-900 mb-0.5 tracking-tight">{stat.value}</p>
-                            <p className="text-[11px] font-bold text-slate-400 capitalize">{stat.label}</p>
-                        </div>
-                    ))}
+                <div className="flex items-center gap-2.5 sm:shrink-0">
+                    {canAccess("employees:create") && (
+                        <Link href="/enterprise/employees/add">
+                            <Button size="sm" icon="add">Add Employee</Button>
+                        </Link>
+                    )}
                 </div>
-            </div>
+            </header>
 
-            {/* Interaction Bar */}
-            <div className="flex flex-col md:flex-row items-center gap-4">
-                <div className="flex-1 relative w-full group">
-                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#7C3AED]">search</span>
+            {/* Stat cards */}
+            <StatGrid>
+                <StatCard label="Total Employees" value={employees.length} icon="group" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label="Active Workforce" value={activeCount} icon="verified_user" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label="Departments" value={departmentCount} icon="domain" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label="New Hires" value={newHires} icon="person_add" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+            </StatGrid>
+
+            {/* Toolbar: search + filter */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search by name, ID, or email..."
-                        className="w-full h-12 bg-white border border-slate-200 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
+                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
 
-                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm min-w-[200px]">
-                    <span className="material-symbols-rounded text-slate-400 ml-2 text-lg">filter_list</span>
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full bg-transparent border-none text-[11px] font-black text-slate-700 focus:outline-none focus:ring-0 cursor-pointer uppercase tracking-wider"
-                    >
-                        <option value="all">All Workforce</option>
-                        <option value="Active">Active Only</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
+                <div className="flex items-center gap-2.5">
+                    <div className="relative flex-1 md:flex-none">
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className={`${selectCls} w-full md:min-w-[170px]`}
+                        >
+                            <option value="all">All Workforce</option>
+                            <option value="Active">Active Only</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                    </div>
                 </div>
             </div>
 
-            {/* Content Table */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col min-h-[calc(100vh-12rem)] overflow-hidden">
+            {/* Employee list */}
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
                 {isLoading ? (
-                    <div className="p-6 space-y-4 flex-1">
+                    <div className="p-4 space-y-2.5">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="bg-slate-50 h-16 rounded-xl animate-pulse"></div>
+                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
                         ))}
                     </div>
                 ) : filteredEmployees.length === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center p-20 text-center">
-                        <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
-                            <span className="material-symbols-rounded text-3xl text-slate-300">badge</span>
-                        </div>
-                        <h3 className="text-sm font-bold text-slate-900 mb-1">No Employees Found</h3>
-                        <p className="text-xs text-slate-500 mb-6 max-w-xs mx-auto">
-                            Add your first employee or convert an onboarded candidate.
-                        </p>
-                        <Link href="/enterprise/onboarding" className="px-4 py-2 bg-indigo-50 text-[#7C3AED] font-bold text-xs rounded-xl hover:bg-slate-200 transition-all">Go to Onboarding Hub</Link>
-                    </div>
+                    employees.length === 0 ? (
+                        <EmptyState
+                            tone="brand"
+                            icon="badge"
+                            title="Add your first employee"
+                            description="Your directory is empty. Add people manually, or convert hired candidates from the Onboarding Hub."
+                            action={
+                                canAccess("employees:create") ? (
+                                    <Link href="/enterprise/employees/add">
+                                        <Button icon="add">Add Employee</Button>
+                                    </Link>
+                                ) : undefined
+                            }
+                            secondary={
+                                <Link href="/enterprise/onboarding">
+                                    <Button variant="secondary" icon="badge">Onboarding Hub</Button>
+                                </Link>
+                            }
+                        />
+                    ) : (
+                        <EmptyState
+                            tone="muted"
+                            icon="search_off"
+                            title="No employees match your filters"
+                            description="Try a different search term or status, or reset your filters to see everyone."
+                            action={
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => {
+                                        setSearchQuery("");
+                                        setStatusFilter("all");
+                                    }}
+                                >
+                                    Reset filters
+                                </Button>
+                            }
+                        />
+                    )
                 ) : (
-                    <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-16rem)]">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Employee</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Designation</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Department</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Hire Date</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500  ">Status</th>
-                                    <th className="px-3 py-1.5 text-[10px] font-bold text-slate-500   text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {filteredEmployees.map((emp) => (
-                                    <tr key={emp.id} className="hover:bg-slate-50/50 transition-all group">
-                                        <td className="px-3 py-1.5">
-                                            <div className="flex flex-col">
-                                                <span className="text-xs font-bold text-slate-800 leading-tight">{emp.first_name} {emp.last_name}</span>
-                                                <span className="text-[9px] font-semibold text-slate-500">{emp.employee_id} • {emp.email}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-3 py-1.5">
-                                            <span className="text-xs font-semibold text-slate-600">{emp.designation || "N/A"}</span>
-                                        </td>
-                                        <td className="px-3 py-1.5">
-                                            <span className="text-xs font-semibold text-slate-600">{emp.department?.name || "N/A"}</span>
-                                        </td>
-                                        <td className="px-3 py-1.5">
-                                            <span className="text-xs font-semibold text-slate-600">{emp.hire_date ? new Date(emp.hire_date).toLocaleDateString() : "N/A"}</span>
-                                        </td>
-                                        <td className="px-3 py-1.5">
-                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border  tracking-wide ${
-                                                emp.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-100 text-slate-500 border-slate-200'
-                                            }`}>
-                                                <span className={`w-1 h-1 rounded-full ${emp.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
-                                                {emp.status}
+                    <>
+                        {/* Column header (desktop) */}
+                        <div className="hidden md:grid grid-cols-[2.4fr_1.2fr_1.1fr_1fr_0.9fr_130px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Designation</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Department</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Hire Date</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                        </div>
+
+                        <div className="divide-y divide-[#F0F0F1]">
+                            {filteredEmployees.map((emp) => (
+                                <div
+                                    key={emp.id}
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_1.2fr_1.1fr_1fr_0.9fr_130px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                                >
+                                    {/* Employee */}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-extrabold text-[12px] uppercase shrink-0">
+                                            {((emp.first_name?.[0] || "") + (emp.last_name?.[0] || "")).toUpperCase() || <BadgeIcon className="w-4 h-4" />}
+                                        </span>
+                                        <div className="min-w-0">
+                                            <span className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">
+                                                {emp.first_name} {emp.last_name}
                                             </span>
-                                        </td>
-                                        <td className="px-3 py-1.5 text-right">
-                                            <div className="flex items-center justify-end gap-1">
-                                                {canAccess("employees:update") && (
-                                                    <Link
-                                                        href={`/enterprise/employees/${emp.id}`}
-                                                        className="w-8 h-8 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
-                                                        title="Edit Employee"
-                                                    >
-                                                        <span className="material-symbols-rounded text-lg">edit</span>
-                                                    </Link>
-                                                )}
-                                                {canAccess("employees:moderate") && (
-                                                    <button
-                                                        onClick={() => {
-                                                            setAccountEmp(emp);
-                                                            setAccountPassword("");
-                                                            setAccountMsg(null);
-                                                        }}
-                                                        className="w-8 h-8 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 border border-transparent hover:border-[#7C3AED]/10 flex items-center justify-center transition-all"
-                                                        title="Create Workspace Login"
-                                                    >
-                                                        <span className="material-symbols-rounded text-lg">key</span>
-                                                    </button>
-                                                )}
-                                                {canAccess("employees:delete") && (
-                                                    <button
-                                                        onClick={() => {
-                                                            setEmployeeToDelete(emp.id);
-                                                            setIsConfirmModalOpen(true);
-                                                        }}
-                                                        className="w-8 h-8 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 flex items-center justify-center transition-all"
-                                                        title="Delete Employee"
-                                                    >
-                                                        <span className="material-symbols-rounded text-lg">delete</span>
-                                                    </button>
-                                                )}
+                                            <span className="block text-[11px] text-[#8A929E] truncate">
+                                                <span className={jetbrainsMono.className}>{emp.employee_id}</span> · {emp.email}
+                                            </span>
+                                            {/* mobile-only meta */}
+                                            <div className="flex flex-wrap items-center gap-2 mt-1 text-[12px] text-[#8A929E] md:hidden">
+                                                <span>{emp.designation || "N/A"}</span>
+                                                {emp.department?.name && <span>· {emp.department.name}</span>}
                                             </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Designation (desktop) */}
+                                    <div className="hidden md:block text-[13px] text-[#374151] truncate">
+                                        {emp.designation || "N/A"}
+                                    </div>
+
+                                    {/* Department (desktop) */}
+                                    <div className="hidden md:block text-[13px] text-[#374151] truncate">
+                                        {emp.department?.name || "N/A"}
+                                    </div>
+
+                                    {/* Hire Date (desktop) */}
+                                    <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
+                                        {emp.hire_date ? new Date(emp.hire_date).toLocaleDateString() : "N/A"}
+                                    </div>
+
+                                    {/* Status (desktop) */}
+                                    <div className="hidden md:flex items-center">
+                                        <Badge tone={emp.status === 'Active' ? 'success' : 'neutral'} dot>{emp.status}</Badge>
+                                    </div>
+
+                                    {/* Status (mobile) + actions */}
+                                    <div className="flex items-center gap-1 justify-end">
+                                        <div className="md:hidden mr-1">
+                                            <Badge tone={emp.status === 'Active' ? 'success' : 'neutral'} dot>{emp.status}</Badge>
+                                        </div>
+
+                                        {canAccess("employees:update") && (
+                                            <Link
+                                                href={`/enterprise/employees/${emp.id}`}
+                                                className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                                                title="Edit Employee"
+                                            >
+                                                <Edit3 className="w-4 h-4" />
+                                            </Link>
+                                        )}
+                                        {canAccess("employees:moderate") && (
+                                            <button
+                                                onClick={() => {
+                                                    setAccountEmp(emp);
+                                                    setAccountPassword("");
+                                                    setAccountMsg(null);
+                                                }}
+                                                className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                                                title="Create Workspace Login"
+                                            >
+                                                <KeyRound className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                        {canAccess("employees:delete") && (
+                                            <button
+                                                onClick={() => {
+                                                    setEmployeeToDelete(emp.id);
+                                                    setIsConfirmModalOpen(true);
+                                                }}
+                                                className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                                                title="Delete Employee"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
 
@@ -309,54 +354,56 @@ export default function EmployeesPage() {
                 <div
                     role="button"
                     tabIndex={-1}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-6 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-[#15171C]/40 p-4 backdrop-blur-sm"
                     onClick={(e) => { if (e.target === e.currentTarget) setAccountEmp(null); }}
                     onKeyDown={(e) => { if (e.key === "Escape" || e.key === "Enter") setAccountEmp(null); }}
                 >
-                    <div
-                        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
-                    >
-                        <div className="mb-4 flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#7C3AED]/10 text-[#7C3AED]">
-                                <span className="material-symbols-rounded">key</span>
+                    <div className="w-full max-w-md rounded-[14px] border border-[#E8EAED] bg-white p-6 shadow-xl">
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] shrink-0">
+                                    <KeyRound className="w-[18px] h-[18px]" />
+                                </div>
+                                <div className="min-w-0">
+                                    <h2 className="text-[15px] font-bold text-[#15171C]">Create Workspace Login</h2>
+                                    <p className="truncate text-[12.5px] text-[#8A929E]">
+                                        {accountEmp.first_name} {accountEmp.last_name} · {accountEmp.email}
+                                    </p>
+                                </div>
                             </div>
-                            <div className="min-w-0">
-                                <h2 className="text-lg font-black text-slate-900">Create Workspace Login</h2>
-                                <p className="truncate text-sm text-slate-500">
-                                    {accountEmp.first_name} {accountEmp.last_name} · {accountEmp.email}
-                                </p>
-                            </div>
+                            <button
+                                onClick={() => setAccountEmp(null)}
+                                className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors shrink-0"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
                         </div>
-                        <p className="mb-3 text-xs text-slate-500">
-                            The employee signs in with <b>{accountEmp.email}</b> and this password, and lands on
+                        <p className="mb-3 text-[12.5px] text-[#8A929E] leading-relaxed">
+                            The employee signs in with <b className="text-[#374151]">{accountEmp.email}</b> and this password, and lands on
                             their own workspace (timesheets, payslips, leave) — not the admin area.
                         </p>
-                        <input
+                        <Input
                             type="text"
                             value={accountPassword}
                             onChange={(e) => setAccountPassword(e.target.value)}
                             placeholder="Temporary password (min 6 characters)"
-                            className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-indigo-500/20"
                         />
                         {accountMsg && (
-                            <p className={`mt-3 text-sm ${accountMsg.ok ? "text-emerald-600" : "text-rose-600"}`}>
+                            <p className={`mt-3 text-[13px] ${accountMsg.ok ? "text-[#15803D]" : "text-[#C0383C]"}`}>
                                 {accountMsg.text}
                             </p>
                         )}
                         <div className="mt-5 flex justify-end gap-3">
-                            <button
-                                onClick={() => setAccountEmp(null)}
-                                className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50"
-                            >
+                            <Button variant="secondary" size="sm" onClick={() => setAccountEmp(null)}>
                                 Close
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                size="sm"
                                 onClick={handleCreateAccount}
                                 disabled={accountBusy || accountPassword.length < 6}
-                                className="rounded-xl bg-[#7C3AED] px-5 py-2 text-sm font-bold text-white hover:bg-[#6d28d9] disabled:opacity-50"
                             >
                                 {accountBusy ? "Creating…" : "Create Login"}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

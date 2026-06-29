@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
+import { Button, Card, Textarea, Select, Field, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface Question {
     id: string;
@@ -24,7 +25,7 @@ export default function X360QuestionBank() {
     const router = useRouter();
     const [questions, setQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
-    
+
     // Manual Form State
     const [newQuestion, setNewQuestion] = useState({
         text: "",
@@ -76,7 +77,7 @@ export default function X360QuestionBank() {
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
@@ -97,7 +98,7 @@ export default function X360QuestionBank() {
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions/ai-generate`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
@@ -124,7 +125,7 @@ export default function X360QuestionBank() {
             for (const q of generatedQuestions) {
                 await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/questions`, {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
@@ -141,7 +142,7 @@ export default function X360QuestionBank() {
     const toggleAiCategory = (cat: string) => {
         setAiConfig(prev => ({
             ...prev,
-            categories: prev.categories.includes(cat) 
+            categories: prev.categories.includes(cat)
                 ? prev.categories.filter(c => c !== cat)
                 : [...prev.categories, cat]
         }));
@@ -159,280 +160,279 @@ export default function X360QuestionBank() {
         { id: 'ADAPTABILITY', label: 'Adaptability' }
     ];
 
+    const categoryIcons: Record<string, string> = {
+        'PERFORMANCE': 'trending_up',
+        'ENGAGEMENT': 'favorite',
+        'CORE_VALUES': 'verified_user',
+        'LEADERSHIP': 'shield_person',
+        'TECHNICAL_SKILLS': 'code_blocks',
+        'SOFT_SKILLS': 'psychology',
+        'COMMUNICATION': 'forum',
+        'TEAMWORK': 'groups',
+        'ADAPTABILITY': 'published_with_changes'
+    };
+
+    const allCategoryIds = Array.from(new Set([
+        ...categories.map(c => c.id),
+        ...questions.map(q => q.category)
+    ])).sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0);
+
     return (
-        <div className="p-4 max-w-[1600px] mx-auto animate-in fade-in duration-500">
-            <header className="mb-5 flex items-center gap-3">
-                <button onClick={() => router.push('/enterprise/assessments-360')} className="w-7 h-7 rounded-xl bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-[#7C3AED] transition-all flex items-center justify-center">
-                    <span className="material-symbols-rounded text-base">arrow_back</span>
-                </button>
-                <div>
-                    <h1 className="text-lg font-black text-slate-900 tracking-tight leading-none">Question Bank</h1>
-                    <p className="text-slate-500 mt-1 text-[10px] font-black uppercase tracking-widest opacity-70">Build and manage your feedback framework with AI assistance.</p>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button
+                        onClick={() => router.push('/enterprise/assessments-360')}
+                        aria-label="Back"
+                        className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#8A929E] hover:text-[#5B53E0] hover:border-[#D4D7DC] transition-all flex items-center justify-center shrink-0 shadow-sm"
+                    >
+                        <span className="material-symbols-rounded text-[20px]">arrow_back</span>
+                    </button>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Question Bank</h1>
+                            <PageHelp title="Question Bank">Manage the 360 question bank by competency. Add questions or generate them with AI — they feed your frameworks.</PageHelp>
+                        </div>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Build and manage your feedback framework with AI assistance</p>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 shrink-0">
+                    <Button
+                        size="sm"
+                        icon="add"
+                        onClick={() => router.push('/enterprise/assessments-360/questions/new')}
+                    >
+                        Add Question
+                    </Button>
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 gap-6">
-                {/* AI Generator - Now Full Width */}
-                <section className="bg-gradient-to-br from-[#7C3AED] to-indigo-700 p-6 rounded-xl text-white shadow-2xl shadow-indigo-100 overflow-hidden relative">
-                    {/* Decorative Background Elements */}
-                    <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-10 -mt-20"></div>
-                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-400/10 rounded-full blur-2xl -ml-20 -mb-10"></div>
-                    
-                    <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30 shadow-xl">
-                                    <span className="material-symbols-rounded text-white text-xl animate-pulse">auto_awesome</span>
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-black leading-none tracking-tight">Scenario Architect</h2>
-                                    <p className="text-violet-100 text-[9px]  font-black tracking-[0.2em] mt-1.5 opacity-80 ">GPT-4 Organizational AI</p>
-                                </div>
+            {/* Stat cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                {[
+                    { label: "Total Questions", value: questions.length, icon: "quiz", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
+                    { label: "Categories", value: allCategoryIds.length, icon: "category", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: "Rating Items", value: questions.filter(q => q.type === 'RATING').length, icon: "star_rate", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: "Open Text Items", value: questions.filter(q => q.type === 'TEXT').length, icon: "edit_note", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                ].map((s) => (
+                    <div key={s.label} className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden transition-colors hover:border-[#D4D7DC]">
+                        <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
+                                <div className={`text-[30px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{s.value}</div>
                             </div>
-                            <button 
-                                onClick={() => router.push('/enterprise/assessments-360/questions/new')}
-                                className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-[9px] font-black   transition-all flex items-center gap-2 group"
-                            >
-                                <span className="material-symbols-rounded text-base group-hover:rotate-90 transition-transform">add</span>{"Create Manual"}
-                            </button>
+                            <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                                <span className="material-symbols-rounded text-[20px]">{s.icon}</span>
+                            </span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* AI Generator panel */}
+            <Card padding="lg" className="relative overflow-hidden text-white border-0" style={{ background: "linear-gradient(135deg,#5B53E0,#4A43C9)" }}>
+                <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-10 -mt-20" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -ml-20 -mb-10" />
+
+                <div className="relative z-10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div className="flex items-center gap-3">
+                            <div className="w-11 h-11 bg-white/15 backdrop-blur-md rounded-[12px] flex items-center justify-center border border-white/25">
+                                <span className="material-symbols-rounded text-white text-[22px]">auto_awesome</span>
+                            </div>
+                            <div>
+                                <h2 className="text-[17px] font-extrabold tracking-[-0.3px] leading-tight">Scenario Architect</h2>
+                                <p className="text-white/70 text-[12px] mt-0.5">AI-assisted question generation</p>
+                            </div>
+                        </div>
+                        <Button
+                            variant="dark"
+                            size="sm"
+                            icon="add"
+                            onClick={() => router.push('/enterprise/assessments-360/questions/new')}
+                        >
+                            Create Manual
+                        </Button>
+                    </div>
+
+                    <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-10">
+                        {/* Categories Selection */}
+                        <div className="xl:col-span-7">
+                            <label htmlFor="ai-target-categories" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-3">Target Competencies &amp; Categories</label>
+                            <div id="ai-target-categories" className="flex flex-wrap gap-2">
+                                {categories.map(cat => (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => toggleAiCategory(cat.id)}
+                                        className={`flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-[12.5px] font-semibold transition-all border whitespace-nowrap ${
+                                            aiConfig.categories.includes(cat.id)
+                                            ? 'bg-white text-[#5B53E0] border-white shadow-sm'
+                                            : 'bg-white/[0.08] text-white/90 border-white/15 hover:bg-white/[0.14]'
+                                        }`}
+                                    >
+                                        <span className="material-symbols-rounded text-[18px] shrink-0">
+                                            {aiConfig.categories.includes(cat.id) ? 'check_circle' : 'circle'}
+                                        </span>
+                                        {cat.label}
+                                    </button>
+                                ))}
+
+                                {/* Custom Categories already added */}
+                                {aiConfig.categories.filter(c => !categories.find(base => base.id === c)).map(cat => (
+                                    <button
+                                        key={cat}
+                                        onClick={() => toggleAiCategory(cat)}
+                                        className="flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-[12.5px] font-semibold transition-all border whitespace-nowrap bg-white text-[#5B53E0] border-white shadow-sm"
+                                    >
+                                        <span className="material-symbols-rounded text-[18px] shrink-0 text-[#D97706]">new_releases</span>
+                                        {cat}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
-                            {/* Categories Selection - More Space */}
-                            <div className="xl:col-span-7">
-                                <label htmlFor="ai-target-categories" className="block text-[10px] font-black text-violet-100   mb-4 px-1 opacity-70">Target Competencies & Categories</label>
-                                <div id="ai-target-categories" className="flex flex-wrap gap-2">
-                                    {/* Standard Categories */}
-                                    {categories.map(cat => (
-                                        <button
-                                            key={cat.id}
-                                            onClick={() => toggleAiCategory(cat.id)}
-                                            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-bold transition-all border whitespace-nowrap shadow-sm ${
-                                                aiConfig.categories.includes(cat.id) 
-                                                ? 'bg-white text-[#7C3AED] border-white scale-105 shadow-violet-500/20' 
-                                                : 'bg-white/5 text-violet-50 border-white/10 hover:border-white/30 hover:bg-white/10'
-                                            }`}
-                                        >
-                                            <span className="material-symbols-rounded text-base shrink-0">
-                                                {aiConfig.categories.includes(cat.id) ? 'check_circle' : 'circle'}
-                                            </span>
-                                            {cat.label}
-                                        </button>
-                                    ))}
-                                    
-                                    {/* Custom Categories already added */}
-                                    {aiConfig.categories.filter(c => !categories.find(base => base.id === c)).map(cat => (
-                                            <button
-                                            key={cat}
-                                            onClick={() => toggleAiCategory(cat)}
-                                            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-bold transition-all border whitespace-nowrap shadow-sm bg-white text-[#7C3AED] border-white scale-105"
-                                        >
-                                            <span className="material-symbols-rounded text-base shrink-0 text-amber-500">new_releases</span>
-                                            {cat}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Configuration & Action */}
-                            <div className="xl:col-span-5 flex flex-col justify-between gap-6">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label htmlFor="ai-quantity" className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Quantity</label>
-                                        <div className="relative">
-                                            <input
-                                                id="ai-quantity"
-                                                type="number"
-                                                min="1" max="20"
-                                                className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl focus:ring-2 focus:ring-white outline-none text-xs font-bold placeholder:text-violet-200 transition-all hover:bg-white/15"
-                                                value={aiConfig.count}
-                                                onChange={(e) => setAiConfig({...aiConfig, count: Number.parseInt(e.target.value)})}
-                                            />
-                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-violet-200 ">Items</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="ai-business-context" className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Business Context</label>
+                        {/* Configuration & Action */}
+                        <div className="xl:col-span-5 flex flex-col justify-between gap-5">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label htmlFor="ai-quantity" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">Quantity</label>
+                                    <div className="relative">
                                         <input
-                                            id="ai-business-context"
-                                            type="text"
-                                            placeholder="e.g. Sales, Health..."
-                                            className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl focus:ring-2 focus:ring-white outline-none text-xs font-bold placeholder:text-violet-200 transition-all hover:bg-white/15"
-                                            value={aiConfig.context}
-                                            onChange={(e) => setAiConfig({...aiConfig, context: e.target.value})}
+                                            id="ai-quantity"
+                                            type="number"
+                                            min="1" max="20"
+                                            className="w-full h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[10px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
+                                            value={aiConfig.count}
+                                            onChange={(e) => setAiConfig({...aiConfig, count: Number.parseInt(e.target.value)})}
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-4">
-                                    <div>
-                                        <label htmlFor="ai-new-category" className="block text-[9px] font-black text-violet-100   mb-2 px-1 opacity-70">Add New Category</label>
-                                        <div className="flex gap-2">
-                                            <input
-                                                id="ai-new-category"
-                                                type="text"
-                                                placeholder="Type and hit + to add..."
-                                                className="flex-1 px-4 py-3 bg-white/10 border border-white/10 rounded-xl focus:ring-2 focus:ring-white outline-none text-xs font-bold placeholder:text-violet-200 transition-all hover:bg-white/15"
-                                                value={aiConfig.customCategory}
-                                                onChange={(e) => setAiConfig({...aiConfig, customCategory: e.target.value})}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' && aiConfig.customCategory) {
-                                                        e.preventDefault();
-                                                        toggleAiCategory(aiConfig.customCategory.toUpperCase().replace(/\s+/g, '_'));
-                                                        setAiConfig(prev => ({ ...prev, customCategory: "" }));
-                                                    }
-                                                }}
-                                            />
-                                            <button 
-                                                onClick={() => {
-                                                    if (aiConfig.customCategory) {
-                                                        toggleAiCategory(aiConfig.customCategory.toUpperCase().replace(/\s+/g, '_'));
-                                                        setAiConfig(prev => ({ ...prev, customCategory: "" }));
-                                                    }
-                                                }}
-                                                className="w-14 h-[52px] bg-white text-[#7C3AED] rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
-                                            >
-                                                <span className="material-symbols-rounded font-black">add</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <button 
-                                        onClick={handleAIGenerate}
-                                        disabled={isGenerating || aiConfig.categories.length === 0}
-                                        className="w-full py-4 bg-white text-[#7C3AED] rounded-xl font-black text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-indigo-900/40 disabled:opacity-50 disabled:scale-100  tracking-[0.2em] flex items-center justify-center gap-3 group"
-                                    >
-                                        {isGenerating ? (
-                                            <>
-                                                <div className="w-4 h-4 border-2 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div>
-                                                <span>Synthesizing...</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <span className="material-symbols-rounded text-lg group-hover:rotate-12 transition-transform">bolt</span>
-                                                <span>Generate Questions</span>
-                                            </>
-                                        )}
-                                    </button>
+                                <div>
+                                    <label htmlFor="ai-business-context" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">Business Context</label>
+                                    <input
+                                        id="ai-business-context"
+                                        type="text"
+                                        placeholder="e.g. Sales, Health..."
+                                        className="w-full h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[10px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
+                                        value={aiConfig.context}
+                                        onChange={(e) => setAiConfig({...aiConfig, context: e.target.value})}
+                                    />
                                 </div>
+                            </div>
+                            <div className="space-y-4">
+                                <div>
+                                    <label htmlFor="ai-new-category" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">Add New Category</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            id="ai-new-category"
+                                            type="text"
+                                            placeholder="Type and hit + to add..."
+                                            className="flex-1 h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[10px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
+                                            value={aiConfig.customCategory}
+                                            onChange={(e) => setAiConfig({...aiConfig, customCategory: e.target.value})}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && aiConfig.customCategory) {
+                                                    e.preventDefault();
+                                                    toggleAiCategory(aiConfig.customCategory.toUpperCase().replace(/\s+/g, '_'));
+                                                    setAiConfig(prev => ({ ...prev, customCategory: "" }));
+                                                }
+                                            }}
+                                        />
+                                        <button
+                                            onClick={() => {
+                                                if (aiConfig.customCategory) {
+                                                    toggleAiCategory(aiConfig.customCategory.toUpperCase().replace(/\s+/g, '_'));
+                                                    setAiConfig(prev => ({ ...prev, customCategory: "" }));
+                                                }
+                                            }}
+                                            aria-label="Add category"
+                                            className="w-11 h-11 shrink-0 bg-white text-[#5B53E0] rounded-[10px] flex items-center justify-center hover:bg-white/90 active:scale-95 transition-all shadow-sm"
+                                        >
+                                            <span className="material-symbols-rounded">add</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={handleAIGenerate}
+                                    disabled={isGenerating || aiConfig.categories.length === 0}
+                                    className="w-full h-[46px] bg-white text-[#5B53E0] rounded-[10px] font-semibold text-[14px] hover:bg-white/90 active:scale-[0.99] transition-all disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2.5"
+                                >
+                                    {isGenerating ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
+                                            <span>Synthesizing...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="material-symbols-rounded text-[20px]">bolt</span>
+                                            <span>Generate Questions</span>
+                                        </>
+                                    )}
+                                </button>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </Card>
 
-                <div className="grid grid-cols-12 gap-8 items-start">
-                    {/* Sidebar */}
-                    <aside className="col-span-12 lg:col-span-4 space-y-8 sticky top-8">
-                        {/* Manual Form */}
-                        <section className="bg-white p-6 rounded-xl border border-slate-100 shadow-xl shadow-slate-200/50">
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center text-[#7C3AED]">
-                                    <span className="material-symbols-rounded text-xl">edit_note</span>
-                                </div>
-                                <h2 className="text-lg font-bold text-slate-800 tracking-tight">New Question</h2>
+            {/* AI Preview */}
+            {generatedQuestions.length > 0 && (
+                <Card ref={suggestionsRef} padding="lg" className="border-[#FBBF24]/40 bg-[#FEF9EF] animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                        <div className="flex items-center gap-3.5">
+                            <div className="w-11 h-11 bg-[#FEF3E2] rounded-[12px] flex items-center justify-center text-[#D97706] border border-[#FBBF24]/40 shrink-0">
+                                <span className="material-symbols-rounded text-[22px]">auto_awesome</span>
                             </div>
-                            <form onSubmit={handleAdd} className="space-y-5">
-                                <div>
-                                    <label htmlFor="manual-question-content" className="block text-[9px] font-black text-slate-400   mb-2 px-1 opacity-70">Question Content</label>
-                                    <textarea
-                                        id="manual-question-content"
-                                        className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white focus:ring-4 focus:ring-violet-500/10 outline-none min-h-[120px] text-xs text-slate-700 placeholder:text-slate-300 transition-all font-medium leading-relaxed"
-                                        value={newQuestion.text}
-                                        onChange={(e) => setNewQuestion({...newQuestion, text: e.target.value})}
-                                        required
-                                        placeholder="e.g. Handle stress..."
-                                    />
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label htmlFor="manual-response-type" className="block text-[10px] font-black text-slate-400   mb-2.5 px-1 opacity-70">Response Type</label>
-                                        <div className="relative">
-                                            <select
-                                                id="manual-response-type"
-                                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white outline-none text-sm font-bold text-slate-600 appearance-none transition-all cursor-pointer"
-                                                value={newQuestion.type}
-                                                onChange={(e) => setNewQuestion({...newQuestion, type: e.target.value})}
-                                            >
-                                                <option value="RATING">Rating (1-5)</option>
-                                                <option value="TEXT">Open Text</option>
-                                            </select>
-                                            <span className="material-symbols-rounded absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">unfold_more</span>
-                                        </div>
+                            <div>
+                                <h3 className="text-[16px] font-bold text-[#15171C] tracking-tight">AI Suggestions Ready</h3>
+                                <p className="text-[12.5px] text-[#8A929E] mt-0.5">Review, refine, and add these AI-curated questions.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-2.5 shrink-0">
+                            <Button variant="secondary" size="sm" onClick={() => setGeneratedQuestions([])}>
+                                Discard All
+                            </Button>
+                            <Button size="sm" icon="library_add" onClick={saveGenerated}>
+                                Add to Library ({generatedQuestions.length})
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="space-y-2.5">
+                        {generatedQuestions.map((q, i) => (
+                            <div key={i} className="bg-white p-4 rounded-[12px] border border-[#E8EAED] flex items-start gap-3.5">
+                                <div className={`w-7 h-7 rounded-full bg-[#FEF3E2] flex items-center justify-center text-[#D97706] font-bold text-[12px] shrink-0 ${jetbrainsMono.className}`}>{i + 1}</div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-[13.5px] font-medium text-[#15171C] leading-relaxed">{q.text}</p>
+                                    <div className="flex flex-wrap gap-1.5 mt-2">
+                                        <Badge tone="indigo">{q.category}</Badge>
+                                        <Badge tone="neutral">{q.type}</Badge>
                                     </div>
-                                    <div>
-                                        <label htmlFor="manual-core-category" className="block text-[10px] font-black text-slate-400   mb-2.5 px-1 opacity-70">Core Category</label>
-                                        <div className="relative">
-                                            <select
-                                                id="manual-core-category"
-                                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#7C3AED] focus:bg-white outline-none text-sm font-bold text-slate-600 appearance-none transition-all cursor-pointer"
-                                                value={newQuestion.category}
-                                                onChange={(e) => setNewQuestion({...newQuestion, category: e.target.value})}
-                                            >
-                                                {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
-                                            </select>
-                                            <span className="material-symbols-rounded absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">unfold_more</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button 
-                                    type="submit"
-                                    className="w-full py-4 bg-[#7C3AED] text-white rounded-xl font-black text-[10px] hover:bg-slate-900 hover:shadow-2xl hover:shadow-violet-200 hover:-translate-y-0.5 transition-all active:translate-y-0  tracking-[0.2em] mt-2 block shadow-lg"
-                                >
-                                    Save to Bank
-                                </button>
-                            </form>
-                        </section>
-                    </aside>
-
-                    {/* Main Area */}
-                    <main className="col-span-12 lg:col-span-8 space-y-8">
-                    {/* AI Preview */}
-                    {generatedQuestions.length > 0 && (
-                        <section ref={suggestionsRef} className="bg-amber-50/50 rounded-2xl p-8 border-2 border-amber-200 animate-in fade-in slide-in-from-top-4 duration-500 shadow-2xl shadow-amber-100/50">
-                            <div className="flex justify-between items-center mb-8 bg-white/50 p-6 rounded-xl border border-amber-100/50">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 shadow-inner border border-amber-200/50">
-                                        <span className="material-symbols-rounded text-3xl animate-bounce">auto_awesome</span>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-black text-amber-900 tracking-tight">AI Suggestions Ready</h3>
-                                        <p className="text-amber-700/70 text-sm font-medium">Review, refine, and add these AI-curated questions.</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <button 
-                                        onClick={() => setGeneratedQuestions([])}
-                                        className="px-6 py-3 text-amber-700 font-black text-[10px]   hover:bg-amber-100 rounded-xl transition-all border border-amber-200"
-                                    >
-                                        Discard All
-                                    </button>
-                                    <button 
-                                        onClick={saveGenerated}
-                                        className="px-8 py-3 bg-amber-600 text-white font-black text-[10px] rounded-xl shadow-xl shadow-amber-200 hover:bg-amber-700 transition-all  tracking-[0.2em] flex items-center gap-2"
-                                    >
-                                        <span className="material-symbols-rounded text-lg">library_add</span>
-                                        Add to Library ({generatedQuestions.length})
-                                    </button>
                                 </div>
                             </div>
-                            <div className="space-y-3">
-                                {generatedQuestions.map((q, i) => (
-                                    <div key={i} className="bg-white p-5 rounded-xl border border-amber-100 flex items-start gap-4 shadow-sm">
-                                        <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-xs shrink-0">{i+1}</div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium text-slate-800">{q.text}</p>
-                                            <div className="flex gap-2 mt-2">
-                                                <span className="text-[9px] font-black  px-2 py-0.5 bg-slate-50 text-slate-500 rounded-xl border border-slate-100">{q.category}</span>
-                                                <span className="text-[9px] font-black  px-2 py-0.5 bg-slate-50 text-slate-500 rounded-xl border border-slate-100">{q.type}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                    )}
+                        ))}
+                    </div>
+                </Card>
+            )}
 
-                    {/* Question List Grouped by Category - Directory View */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                        {/* Manual Create Card - THE "CREA" BUTTON */}
+            {/* Category directory */}
+            <div className="space-y-4">
+                <div className="flex items-center justify-between px-1">
+                    <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">Competency Categories</h2>
+                    <Badge tone="neutral">{allCategoryIds.length} categories</Badge>
+                </div>
+
+                {loading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                            <div key={i} className="h-44 bg-white rounded-[14px] border border-[#E8EAED] animate-pulse" />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {/* Manual Create Card */}
                         <div
                             role="button"
                             tabIndex={0}
@@ -442,37 +442,24 @@ export default function X360QuestionBank() {
                                     router.push('/enterprise/assessments-360/questions/new');
                                 }
                             }}
-                            className="bg-violet-50/30 p-5 rounded-xl border-2 border-dashed border-violet-200 hover:border-violet-400 hover:bg-violet-50 transition-all cursor-pointer flex flex-col items-center justify-center text-center group"
+                            className="bg-[#FAFAFE] p-5 rounded-[14px] border-2 border-dashed border-[#DAD7F6] hover:border-[#5B53E0] hover:bg-[#F4F3FE] transition-all cursor-pointer flex flex-col items-center justify-center text-center group min-h-[176px]"
                         >
-                            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center text-[#7C3AED] shadow-xl group-hover:scale-110 transition-transform mb-4 border border-violet-100">
-                                <span className="material-symbols-rounded text-2xl">add_circle</span>
+                            <div className="w-14 h-14 bg-white rounded-[14px] flex items-center justify-center text-[#5B53E0] shadow-sm border border-[#E8EAED] group-hover:scale-105 transition-transform mb-3">
+                                <span className="material-symbols-rounded text-[26px]">add_circle</span>
                             </div>
-                            <h3 className="text-base font-black text-violet-900 tracking-tight mb-1">Create Competency</h3>
-                            <p className="text-violet-400 text-[8px] font-black  ">Manual Entry</p>
+                            <h3 className="text-[14px] font-bold text-[#15171C] tracking-tight mb-0.5">Create Competency</h3>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Manual Entry</p>
                         </div>
 
-                        {Array.from(new Set([
-                            ...categories.map(c => c.id),
-                            ...questions.map(q => q.category)
-                        ])).sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0).map(cat => {
+                        {allCategoryIds.map(cat => {
                             const catQuestions = questions.filter(q => q.category === cat);
-                            const categoryIcons: Record<string, string> = {
-                                'PERFORMANCE': 'trending_up',
-                                'ENGAGEMENT': 'favorite',
-                                'CORE_VALUES': 'verified_user',
-                                'LEADERSHIP': 'shield_person',
-                                'TECHNICAL_SKILLS': 'code_blocks',
-                                'SOFT_SKILLS': 'psychology',
-                                'COMMUNICATION': 'forum',
-                                'TEAMWORK': 'groups',
-                                'ADAPTABILITY': 'published_with_changes'
-                            };
                             const icon = categoryIcons[cat] || 'folder';
                             const label = categories.find(c => c.id === cat)?.label || cat.replaceAll('_', ' ');
 
                             return (
-                                <div
+                                <Card
                                     key={cat}
+                                    interactive
                                     role="button"
                                     tabIndex={0}
                                     onClick={() => router.push(`/enterprise/assessments-360/questions/${cat.toLowerCase().replaceAll('_', '-')}`)}
@@ -481,44 +468,96 @@ export default function X360QuestionBank() {
                                             router.push(`/enterprise/assessments-360/questions/${cat.toLowerCase().replaceAll('_', '-')}`);
                                         }
                                     }}
-                                    className="group bg-white p-5 rounded-xl border border-slate-100 shadow-lg shadow-slate-200/20 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1 transition-all cursor-pointer relative overflow-hidden flex flex-col items-center text-center animate-in zoom-in duration-500"
+                                    className="group relative overflow-hidden flex flex-col items-center text-center cursor-pointer min-h-[176px] justify-center animate-in zoom-in duration-300"
                                 >
-                                    <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-50/50 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-indigo-100 transition-colors"></div>
-                                    
-                                    <div className="w-16 h-16 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform mb-4">
-                                        <span className="material-symbols-rounded text-2xl">{icon}</span>
+                                    <div className="absolute top-0 right-0 w-20 h-20 bg-[#ECEBFB]/60 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-[#ECEBFB] transition-colors" />
+
+                                    <div className="w-14 h-14 bg-[#15171C] rounded-[14px] flex items-center justify-center text-white group-hover:scale-105 transition-transform mb-3">
+                                        <span className="material-symbols-rounded text-[26px]">{icon}</span>
                                     </div>
-                                    
-                                    <h3 className="text-base font-black text-slate-800 tracking-tight mb-1">{label}</h3>
-                                    <p className="text-slate-400 text-[8px] font-black   mb-4">Competencies</p>
-                                    
-                                    <div className="flex items-center gap-2">
-                                        <div className="px-5 py-1.5 bg-slate-50 border border-slate-100 rounded-full text-[10px] font-black text-slate-600 transition-all group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600">
-                                            {catQuestions.length} Items
-                                        </div>
+
+                                    <h3 className="text-[14px] font-bold text-[#15171C] tracking-tight mb-0.5">{label}</h3>
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] mb-3">Competencies</p>
+
+                                    <div className={`px-4 py-1 bg-[#F1F2F5] border border-[#E8EAED] rounded-[20px] text-[12px] font-semibold text-[#4B5563] transition-all group-hover:bg-[#5B53E0] group-hover:text-white group-hover:border-[#5B53E0] ${jetbrainsMono.className}`}>
+                                        {catQuestions.length} Items
                                     </div>
-                                    
-                                    <div className="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 transition-all translate-x-3 group-hover:translate-x-0">
-                                        <span className="material-symbols-rounded text-indigo-600 text-xl font-black">arrow_right_alt</span>
+
+                                    <div className="absolute bottom-4 right-5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                                        <span className="material-symbols-rounded text-[#5B53E0] text-[20px]">arrow_right_alt</span>
                                     </div>
-                                </div>
+                                </Card>
                             );
                         })}
 
                         {/* Blank Slate for Library */}
                         {questions.length === 0 && (
-                            <div className="col-span-full bg-white rounded-2xl p-24 text-center border-2 border-dashed border-slate-100 shadow-inner">
-                                <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-                                    <span className="material-symbols-rounded text-slate-300 text-5xl">inventory_2</span>
+                            <div className="col-span-full bg-white rounded-[14px] p-16 md:p-20 text-center border border-dashed border-[#E8EAED]">
+                                <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mx-auto mb-5">
+                                    <span className="material-symbols-rounded text-[#C7CCD4] text-[32px]">inventory_2</span>
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Vast Knowledge Base Initializing</h3>
-                                <p className="text-slate-400 text-sm font-medium mb-12 max-w-sm mx-auto leading-relaxed">Your professional framework library is currently dormant. Use the AI generator above to populate it with high-fidelity questions.</p>
+                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Your knowledge base is empty</h3>
+                                <p className="text-[#8A929E] text-[14px] max-w-sm mx-auto mb-7">Your professional framework library is currently dormant. Use the AI generator above to populate it with high-fidelity questions.</p>
                             </div>
                         )}
                     </div>
-                </main>
+                )}
             </div>
+
+            {/* Quick manual add */}
+            <Card padding="lg">
+                <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 bg-[#ECEBFB] rounded-[11px] flex items-center justify-center text-[#5B53E0] shrink-0">
+                        <span className="material-symbols-rounded text-[20px]">edit_note</span>
+                    </div>
+                    <div>
+                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">New Question</h2>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Add a question directly to the bank</p>
+                    </div>
+                </div>
+                <form onSubmit={handleAdd} className="space-y-4">
+                    <Field label="Question Content" htmlFor="manual-question-content">
+                        <Textarea
+                            id="manual-question-content"
+                            className="min-h-[110px] leading-relaxed"
+                            value={newQuestion.text}
+                            onChange={(e) => setNewQuestion({...newQuestion, text: e.target.value})}
+                            required
+                            placeholder="e.g. Handle stress..."
+                        />
+                    </Field>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Field label="Response Type" htmlFor="manual-response-type">
+                            <div className="relative">
+                                <Select
+                                    id="manual-response-type"
+                                    value={newQuestion.type}
+                                    onChange={(e) => setNewQuestion({...newQuestion, type: e.target.value})}
+                                >
+                                    <option value="RATING">Rating (1-5)</option>
+                                    <option value="TEXT">Open Text</option>
+                                </Select>
+                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">unfold_more</span>
+                            </div>
+                        </Field>
+                        <Field label="Core Category" htmlFor="manual-core-category">
+                            <div className="relative">
+                                <Select
+                                    id="manual-core-category"
+                                    value={newQuestion.category}
+                                    onChange={(e) => setNewQuestion({...newQuestion, category: e.target.value})}
+                                >
+                                    {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                                </Select>
+                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">unfold_more</span>
+                            </div>
+                        </Field>
+                    </div>
+                    <Button type="submit" block icon="save">
+                        Save to Bank
+                    </Button>
+                </form>
+            </Card>
         </div>
-    </div>
-);
+    );
 }

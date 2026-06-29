@@ -3,23 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
-import { motion } from "framer-motion";
-import { 
-    History, 
-    Clock, 
-    Activity, 
-    ShieldAlert, 
-    RefreshCcw, 
-    Terminal,
-    Search,
-    ChevronRight,
-    Eye
-} from "lucide-react";
+import { Activity, Clock, ShieldAlert, History } from "lucide-react";
+import { Card, Badge, Button, EmptyState, PageHeader, jetbrainsMono } from "@/components/ds";
 
 interface AuditLog {
     id: string;
     action: string;
-    details: any;
+    details?: unknown;
     timestamp: string;
     admin_id?: string;
 }
@@ -50,81 +40,73 @@ export default function AuditLogsPage() {
         }
     };
 
-    if (isLoading) {
-        return <div className="p-8"><div className="h-96 bg-white rounded-2xl animate-pulse border border-slate-100" /></div>;
-    }
-
     return (
-        <div className="p-8 max-w-6xl mx-auto space-y-8 animate-in fade-in duration-700">
-            {/* Page Header */}
-            <div className="flex items-center justify-between bg-slate-900 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 blur-[120px] rounded-full" />
-                <div className="flex items-center gap-6 relative z-10">
-                    <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 shadow-inner">
-                        <Terminal className="w-8 h-8 text-indigo-400" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-black tracking-tight">Audit Intelligence</h1>
-                        <p className="text-slate-400 font-medium">Real-time stream of all platform operations</p>
-                    </div>
-                </div>
-                <button 
-                    onClick={fetchLogs}
-                    className="relative z-10 w-14 h-14 bg-white/5 hover:bg-white/10 rounded-2xl flex items-center justify-center transition-all border border-white/5"
-                >
-                    <RefreshCcw className="w-6 h-6 text-indigo-300" />
-                </button>
-            </div>
+        <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <PageHeader
+                title="Audit Logs"
+                subtitle="Real-time stream of all platform operations"
+                help={<><p>Every platform action, logged.</p><p>Search and review who did what, and when.</p></>}
+                actions={
+                    <Button variant="secondary" icon="refresh" onClick={fetchLogs} disabled={isLoading}>
+                        Refresh
+                    </Button>
+                }
+            />
 
-            {/* Timeline View */}
-            <div className="space-y-4">
-                {logs.length === 0 ? (
-                    <div className="bg-white rounded-2xl border border-slate-100 p-20 text-center space-y-4">
-                        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto">
-                            <History className="w-8 h-8 text-slate-300" />
-                        </div>
-                        <p className="text-slate-500 font-bold">No activity logs recorded yet.</p>
+            {isLoading ? (
+                <Card padding="none" className="overflow-hidden">
+                    <div className="p-4 space-y-2.5">
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <div key={i} className="h-14 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                        ))}
                     </div>
-                ) : (
-                    logs.map((log, idx) => (
-                        <motion.div 
-                            key={log.id}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: idx * 0.05 }}
-                            className="bg-white rounded-2xl border border-slate-100 p-5 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/5 transition-all group flex items-center justify-between"
-                        >
-                            <div className="flex items-center gap-5">
-                                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-                                    <Activity className="w-5 h-5" />
-                                </div>
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Action</span>
-                                        <ChevronRight className="w-3 h-3 text-slate-300" />
-                                        <span className="text-sm font-black text-slate-900">{log.action}</span>
+                </Card>
+            ) : logs.length === 0 ? (
+                <Card padding="none">
+                    <EmptyState
+                        tone="muted"
+                        icon="history"
+                        title="No activity logs recorded yet"
+                        description="Platform actions will appear here as they happen — who did what, and when."
+                    />
+                </Card>
+            ) : (
+                <Card padding="none" className="overflow-hidden">
+                    <div className="divide-y divide-[#F0F0F1]">
+                        {logs.map((log) => (
+                            <div
+                                key={log.id}
+                                className="flex items-start gap-3.5 px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                            >
+                                {/* Icon chip */}
+                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 mt-0.5">
+                                    <Activity className="w-[17px] h-[17px]" />
+                                </span>
+
+                                {/* Action + meta */}
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                        <span className="text-[14px] font-bold text-[#15171C] truncate">
+                                            {log.action}
+                                        </span>
+                                        <Badge tone="indigo">Action</Badge>
                                     </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-1.5 text-slate-400">
+                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+                                        <span className={`inline-flex items-center gap-1.5 text-[11.5px] text-[#8A929E] ${jetbrainsMono.className}`}>
                                             <Clock className="w-3.5 h-3.5" />
-                                            <span className="text-xs font-semibold">{new Date(log.timestamp).toLocaleString()}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5 text-slate-400 border-l border-slate-100 pl-4">
+                                            {new Date(log.timestamp).toLocaleString()}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1.5 text-[12px] text-[#8A929E]">
                                             <ShieldAlert className="w-3.5 h-3.5" />
-                                            <span className="text-xs font-semibold">Admin: {log.admin_id?.split('-')[0] || "System"}</span>
-                                        </div>
+                                            Admin: {log.admin_id?.split('-')[0] || "System"}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-
-                            <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-indigo-600 hover:text-white rounded-xl text-slate-600 text-[10px] font-black uppercase transition-all shadow-sm">
-                                <Eye className="w-3.5 h-3.5" />
-                                View Details
-                            </button>
-                        </motion.div>
-                    ))
-                )}
-            </div>
+                        ))}
+                    </div>
+                </Card>
+            )}
         </div>
     );
 }

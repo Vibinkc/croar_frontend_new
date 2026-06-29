@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
+import { Card, Input, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface Question {
     id: string;
@@ -25,10 +26,11 @@ interface Template {
 }
 
 export default function X360Templates() {
-    const { token } = useAuth();
+    const { token, canAccess } = useAuth();
     const router = useRouter();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchTemplates = useCallback(async () => {
         try {
@@ -67,102 +69,179 @@ export default function X360Templates() {
         }
     };
 
-    if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
-            <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        </div>
+    const filteredTemplates = templates.filter((tpl) =>
+        tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (tpl.description || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const totalQuestions = templates.reduce((sum, tpl) => sum + (tpl.questions?.length || 0), 0);
+
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 pb-20">
-            <header className="flex justify-between items-center pb-8 border-b border-slate-200">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/enterprise/assessments-360')} className="p-2 text-slate-400 hover:text-slate-900 transition-colors">
-                        <span className="material-symbols-rounded">arrow_back</span>
+        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            {/* Header (sticky) */}
+            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button
+                        onClick={() => router.push('/enterprise/assessments-360')}
+                        className="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-[10px] text-[#8A929E] hover:bg-white hover:text-[#15171C] border border-transparent hover:border-[#E1E4E8] transition-colors"
+                        title="Back to 360 Assessments"
+                    >
+                        <span className="material-symbols-rounded text-[20px]">arrow_back</span>
                     </button>
-                    <div>
-                        <h1 className="text-lg font-black text-slate-900 tracking-tight leading-none mb-1">Assessment Library</h1>
-                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest opacity-70">Design and manage high-fidelity templates for 360 feedback cycles</p>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">Assessment Library</h1>
+                            <PageHelp title="Assessment Library">Your 360 competency frameworks. Create one, then choose it when starting a cycle.</PageHelp>
+                        </div>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Design &amp; manage templates for 360 feedback cycles</p>
                     </div>
                 </div>
-                <button 
-                    onClick={() => router.push('/enterprise/assessments-360/templates/new')}
-                    className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-indigo-100"
-                >
-                    <span className="material-symbols-rounded text-lg">add_box</span>
-                    <span>Construct Template</span>
-                </button>
+                {canAccess("assessments:moderate") && (
+                    <div className="flex items-center gap-2.5 shrink-0">
+                        <button
+                            onClick={() => router.push('/enterprise/assessments-360/templates/new')}
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
+                        >
+                            <span className="material-symbols-rounded text-[17px]">add</span>
+                            New Template
+                        </button>
+                    </div>
+                )}
             </header>
 
-            <div className="bg-white rounded-xl border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden">
-                <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                    <div className="flex items-center gap-3">
-                        <span className="material-symbols-rounded text-[#7C3AED] text-lg">architecture</span>
-                        <h2 className="font-black text-slate-900 text-[10px] uppercase tracking-widest">Assessment Frameworks</h2>
+            {/* Stat cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                <div className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden">
+                    <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }} />
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Templates</span>
+                            <div className={`text-[28px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{loading ? "—" : templates.length}</div>
+                        </div>
+                        <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 6px 14px rgba(91,83,224,0.28)" }}>
+                            <span className="material-symbols-rounded text-[18px]">description</span>
+                        </span>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-slate-50/20">
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Framework Title</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">Strategic Context</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-center">Items</th>
-                                <th className="px-6 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                            {templates.length === 0 ? (
-                                <tr>
-                                    <td colSpan={4} className="py-20 text-center">
-                                        <p className="text-slate-300 font-black text-[10px] uppercase tracking-widest">Library Empty</p>
-                                    </td>
-                                </tr>
-                            ) : (
-                                templates.map((tpl) => (
-                                    <tr key={tpl.id} className="group hover:bg-slate-50/50 transition-all">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-9 h-9 rounded-xl bg-violet-50 text-[#7C3AED] flex items-center justify-center group-hover:bg-[#7C3AED] group-hover:text-white transition-all">
-                                                    <span className="material-symbols-rounded text-lg">architecture</span>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs font-black text-slate-900 tracking-tight leading-tight">{tpl.name}</p>
-                                                    <p className="text-[9px] font-bold text-slate-400 mt-0.5">Initialized {new Date(tpl.created_at).toLocaleDateString()}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <p className="text-[11px] text-slate-500 font-medium line-clamp-1 max-w-sm">{tpl.description || "Performance architecture."}</p>
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <span className="inline-block bg-violet-50 text-[#7C3AED] text-[9px] font-black px-3 py-1 rounded-full border border-violet-100 uppercase tracking-tighter">
-                                                {tpl.questions?.length || 0} Questions
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-1">
-                                                <button 
-                                                    onClick={() => router.push(`/enterprise/assessments-360/templates/${tpl.id}/edit`)}
-                                                    className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors"
-                                                >
-                                                    <span className="material-symbols-rounded text-[20px]">edit</span>
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleDelete(tpl.id)}
-                                                    className="p-1.5 text-slate-400 hover:text-rose-600 transition-colors"
-                                                >
-                                                    <span className="material-symbols-rounded text-[20px]">delete</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                <div className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden">
+                    <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: "linear-gradient(135deg,#6E8BEA,#3559C7)" }} />
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Total Questions</span>
+                            <div className={`text-[28px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{loading ? "—" : totalQuestions}</div>
+                        </div>
+                        <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#6E8BEA,#3559C7)", boxShadow: "0 6px 14px rgba(53,89,199,0.25)" }}>
+                            <span className="material-symbols-rounded text-[18px]">quiz</span>
+                        </span>
+                    </div>
                 </div>
             </div>
+
+            {/* Toolbar: search */}
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <Input
+                    icon="search"
+                    type="text"
+                    placeholder="Search templates by name or context…"
+                    className="flex-1"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+
+            {/* Templates grid */}
+            {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="h-[168px] bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+                    ))}
+                </div>
+            ) : filteredTemplates.length === 0 ? (
+                <Card padding="none" className="min-h-[420px] flex flex-col items-center justify-center p-16 md:p-20 text-center">
+                    <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5 text-[#C7CCD4]">
+                        <span className="material-symbols-rounded text-[32px]">description</span>
+                    </div>
+                    <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
+                        {searchQuery ? "No templates match your search" : "No templates yet"}
+                    </h3>
+                    <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
+                        {searchQuery
+                            ? "Try adjusting your search terms to find what you're looking for."
+                            : "Build your first assessment template to power your 360 feedback cycles."}
+                    </p>
+                    {searchQuery ? (
+                        <button
+                            onClick={() => setSearchQuery("")}
+                            className="inline-flex items-center h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] transition-colors"
+                        >
+                            Clear search
+                        </button>
+                    ) : (
+                        canAccess("assessments:moderate") && (
+                            <button
+                                onClick={() => router.push('/enterprise/assessments-360/templates/new')}
+                                className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
+                            >
+                                <span className="material-symbols-rounded text-[19px]">add</span> New Template
+                            </button>
+                        )
+                    )}
+                </Card>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredTemplates.map((tpl) => (
+                        <Card
+                            key={tpl.id}
+                            interactive
+                            padding="none"
+                            className="group flex flex-col p-5 cursor-pointer"
+                            onClick={() => router.push(`/enterprise/assessments-360/templates/${tpl.id}/edit`)}
+                        >
+                            <div className="flex items-start gap-3 min-w-0">
+                                <span className="w-10 h-10 rounded-[12px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 transition-colors group-hover:bg-[#5B53E0] group-hover:text-white">
+                                    <span className="material-symbols-rounded text-[20px]">description</span>
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-[14.5px] font-bold text-[#15171C] tracking-[-0.2px] leading-tight truncate group-hover:text-[#5B53E0] transition-colors">{tpl.name}</p>
+                                    <p className={`text-[11px] text-[#8A929E] mt-1 ${jetbrainsMono.className}`}>
+                                        {new Date(tpl.created_at).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p className="text-[12.5px] text-[#374151] mt-3.5 line-clamp-2 min-h-[36px]">
+                                {tpl.description || "Performance architecture template."}
+                            </p>
+
+                            <div className="flex items-center justify-between gap-2 mt-4 pt-4 border-t border-[#F0F0F1]">
+                                <Badge tone="indigo">
+                                    {tpl.questions?.length || 0} Questions
+                                </Badge>
+                                <div className="flex items-center gap-1">
+                                    {canAccess("assessments:moderate") && (
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); router.push(`/enterprise/assessments-360/templates/${tpl.id}/edit`); }}
+                                            className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                                            title="Edit template"
+                                        >
+                                            <span className="material-symbols-rounded text-[19px]">edit</span>
+                                        </button>
+                                    )}
+                                    {canAccess("assessments:moderate") && (
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleDelete(tpl.id); }}
+                                            className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                                            title="Delete template"
+                                        >
+                                            <span className="material-symbols-rounded text-[19px]">delete</span>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

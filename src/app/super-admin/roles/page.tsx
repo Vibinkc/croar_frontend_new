@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { apiClient } from "@/utils/api";
+import { Button, Card, Input, Textarea, Field, Badge, StatCard, StatGrid, PageHeader, EmptyState } from "@/components/ds";
 
 interface Permission {
     id: string;
@@ -24,11 +25,11 @@ function RolesContent() {
     const [permissions, setPermissions] = useState<Permission[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [permSearch, setPermSearch] = useState("");
-    
+
     // UI State
     const [isEditing, setIsEditing] = useState(false);
     const [selectedRole, setSelectedRole] = useState<Role | null>(null);
-    
+
     // Form State
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -46,7 +47,7 @@ function RolesContent() {
                 apiClient.get("/api/v1/super-admin/roles"),
                 apiClient.get("/api/v1/super-admin/permissions")
             ]);
-            
+
             if (rolesRes.ok) { const r = await rolesRes.json(); setRoles(Array.isArray(r) ? r : []); }
             if (permsRes.ok) { const p = await permsRes.json(); setPermissions(Array.isArray(p) ? p : []); }
         } catch (e) {
@@ -85,7 +86,7 @@ function RolesContent() {
                 permission_ids: selectedPermIds
             };
 
-            const res = selectedRole 
+            const res = selectedRole
                 ? await apiClient.put(`/api/v1/super-admin/roles/${selectedRole.id}`, payload)
                 : await apiClient.post("/api/v1/super-admin/roles", payload);
 
@@ -114,14 +115,14 @@ function RolesContent() {
     };
 
     const togglePermission = (id: string) => {
-        setSelectedPermIds(prev => 
+        setSelectedPermIds(prev =>
             prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
         );
     };
 
     // Group permissions by module for better UI
-    const filteredPermissions = permissions.filter(p => 
-        p.resource.toLowerCase().includes(permSearch.toLowerCase()) || 
+    const filteredPermissions = permissions.filter(p =>
+        p.resource.toLowerCase().includes(permSearch.toLowerCase()) ||
         p.module.toLowerCase().includes(permSearch.toLowerCase())
     );
 
@@ -132,195 +133,216 @@ function RolesContent() {
     }, {});
 
     return (
-        <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
-            {/* Page Title */}
-            <div className="flex items-center justify-between mb-8">
-                <h1 className="text-xs font-black text-slate-400  tracking-[0.2em]">Global RBAC Control</h1>
-                {!isEditing && (
-                    <button 
-                        onClick={handleOpenCreate}
-                        className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all shadow-lg flex items-center gap-2"
-                    >
-                        <span className="material-symbols-rounded text-sm">security</span>
-                        {"Define New Role"}
-                    </button>
-                )}
+        <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+            <PageHeader
+                title="Global Roles"
+                subtitle="Platform-wide roles &amp; their permissions"
+                icon="admin_panel_settings"
+                help={<><p>Platform-wide roles and their permissions, used across all tenants.</p><p>Create a role and pick its permissions.</p></>}
+                actions={
+                    <Button size="sm" icon="add_moderator" onClick={handleOpenCreate}>
+                        Create Role
+                    </Button>
+                }
+            />
+
+            <StatGrid>
+                <StatCard label="Total Roles" value={roles.length} icon="verified_user" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
+                <StatCard label="System Roles" value={roles.filter(r => r.is_system).length} icon="lock" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label="Custom Roles" value={roles.filter(r => !r.is_system).length} icon="shield" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label="Global Permissions" value={permissions.length || "—"} icon="security" gradient="linear-gradient(135deg,#FBBF24,#D97706)" glow="rgba(217,119,6,0.25)" />
+            </StatGrid>
+
+            <div className="flex items-center justify-between px-1">
+                <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">Access Control</h2>
+                <Badge tone="neutral">{roles.length} available roles</Badge>
             </div>
-                {isEditing ? (
-                    <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-                        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
-                            <div className="flex items-center justify-between mb-8 pb-5 border-b border-slate-100">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl shadow-indigo-100/50">
-                                        <span className="material-icons-outlined text-2xl">admin_panel_settings</span>
+
+            {isLoading && roles.length === 0 ? (
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="bg-white border border-[#E8EAED] rounded-[14px] p-5 md:p-6 min-h-[180px] animate-pulse">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="w-9 h-9 rounded-[10px] bg-[#F1F2F5]" />
+                                <div className="w-10 h-8 rounded-[8px] bg-[#F1F2F5]" />
+                            </div>
+                            <div className="h-4 w-2/3 rounded bg-[#F1F2F5] mb-2" />
+                            <div className="h-3 w-full rounded bg-[#F1F2F5] mb-1.5" />
+                            <div className="h-3 w-4/5 rounded bg-[#F1F2F5]" />
+                        </div>
+                    ))}
+                </div>
+            ) : roles.length === 0 ? (
+                <Card padding="none">
+                    <EmptyState
+                        icon="shield"
+                        title="No roles yet"
+                        description="Global roles are used across all tenants. Create a role and pick its permissions to get started."
+                        action={
+                            <Button size="sm" icon="add_moderator" onClick={handleOpenCreate}>
+                                Create Role
+                            </Button>
+                        }
+                    />
+                </Card>
+            ) : (
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    {roles.map((role) => (
+                        <Card key={role.id} interactive className="flex flex-col justify-between min-h-[180px] animate-in fade-in duration-500">
+                            <div>
+                                <div className="flex justify-between items-start mb-3">
+                                    <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center border ${role.is_system ? 'bg-[#15171C] text-white border-[#15171C]' : 'bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]/80'}`}>
+                                        <span className="material-symbols-rounded text-[20px]">shield</span>
                                     </div>
-                                    <div>
-                                        <h2 className="text-xl font-black text-slate-900">{selectedRole ? "Refine Role" : "Draft System Role"}</h2>
-                                        <p className="text-[10px] text-slate-400 font-black  tracking-[0.2em] mt-1">Configuring System Authority Level</p>
+                                    <div className="text-right">
+                                        <div className="text-[10px] font-semibold text-[#8A929E] uppercase tracking-[0.06em]">Rank</div>
+                                        <div className="text-[20px] font-extrabold text-[#15171C] tracking-tight leading-none">0{role.role_rank}</div>
                                     </div>
                                 </div>
-                                <button onClick={() => setIsEditing(false)} className="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-all">
-                                    <span className="material-icons-outlined text-base">close</span>
-                                </button>
+
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <h3 className="text-[14px] font-bold text-[#15171C] truncate">{role.name}</h3>
+                                    {role.is_system && <Badge tone="neutral" className="shrink-0 rounded-[6px] px-2 py-0.5 text-[10px]">System</Badge>}
+                                </div>
+                                <p className="text-[12.5px] text-[#8A929E] leading-normal line-clamp-2 h-9 mb-4">
+                                    {role.description || "System authority level for administrative operations."}
+                                </p>
+
+                                <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-[#E8EAED]">
+                                    {role.permissions.slice(0, 3).map((p) => (
+                                        <Badge key={p.id} tone="neutral" className="rounded-[6px] px-2 py-0.5 text-[10px]">
+                                            {p.resource}
+                                        </Badge>
+                                    ))}
+                                    {role.permissions.length > 3 && (
+                                        <span className="text-[10px] font-bold text-[#5B53E0] ml-0.5 self-center">+{role.permissions.length - 3} more</span>
+                                    )}
+                                </div>
                             </div>
 
-                            <form onSubmit={handleSave} className="space-y-10">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-6">
-                                        <div>
-                                            <label htmlFor="role-identity" className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Role Identity</label>
-                                            <input
-                                                id="role-identity"
-                                                className="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-100 transition-all"
-                                                placeholder="e.g. REGIONAL_MANAGER"
-                                                value={name} onChange={e => setName(e.target.value.toUpperCase())} required
-                                                disabled={selectedRole?.is_system}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="role-rank" className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Rank Priority (Lower = higher auth)</label>
-                                            <input
-                                                id="role-rank"
-                                                className="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-100 transition-all"
-                                                type="number"
-                                                value={rank} onChange={e => setRank(Number.parseInt(e.target.value))} required
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="role-description" className="text-[10px] font-black text-slate-400   ml-1 mb-2 block">Capabilities Summary</label>
-                                            <textarea
-                                                id="role-description"
-                                                className="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-slate-900 focus:ring-4 focus:ring-slate-100 transition-all resize-none min-h-[120px]"
-                                                placeholder="Describe what this role manages..."
-                                                value={description} onChange={e => setDescription(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-6">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <label className="text-[10px] font-black text-slate-900  tracking-[0.2em] ml-1">
-                                                {"Assigned Permissions"}
-                                                <span className="text-indigo-600 font-black ml-3">{selectedPermIds.length} Active</span>
-                                            </label>
-                                        </div>
-                                        
-                                        <div className="relative mb-4">
-                                            <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-                                            <input 
-                                                type="text"
-                                                placeholder="Filter capabilities..."
-                                                className="w-full bg-slate-100 border-none p-4 pl-12 rounded-xl text-[10px] font-black   text-slate-700 outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all"
-                                                value={permSearch}
-                                                onChange={(e) => setPermSearch(e.target.value)}
-                                            />
-                                        </div>
-                                        
-                                        <div className="bg-slate-50 rounded-3xl border border-slate-200 p-6 max-h-[400px] overflow-y-auto custom-scrollbar space-y-8">
-                                            {Object.keys(groupedPermissions).map(module => (
-                                                <div key={module} className="space-y-3">
-                                                    <h4 className="text-[9px] font-black text-slate-400   border-b border-slate-200 pb-1">{module} Module</h4>
-                                                    <div className="grid grid-cols-1 gap-2">
-                                                        {groupedPermissions[module].map((perm) => (
-                                                            <div
-                                                                key={perm.id}
-                                                                role="button"
-                                                                tabIndex={0}
-                                                                onClick={() => togglePermission(perm.id)}
-                                                                onKeyDown={(e) => {
-                                                                    if (e.key === "Enter" || e.key === " ") {
-                                                                        e.preventDefault();
-                                                                        togglePermission(perm.id);
-                                                                    }
-                                                                }}
-                                                                className={`p-3 rounded-xl border text-[10px] font-black   cursor-pointer transition-all flex items-center justify-between ${selectedPermIds.includes(perm.id) ? 'bg-slate-900 text-white border-slate-900 shadow-lg' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'}`}
-                                                            >
-                                                                <span>{perm.resource} : {perm.action}</span>
-                                                                {selectedPermIds.includes(perm.id) && <span className="material-icons-outlined text-xs">check_circle</span>}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-4 pt-10 border-t border-slate-100">
+                            <div className="flex gap-2 pt-4 mt-4 border-t border-[#E8EAED]">
+                                <Button variant="secondary" size="sm" icon="edit_note" className="flex-1" onClick={() => handleOpenEdit(role)}>
+                                    Configure
+                                </Button>
+                                {!role.is_system && (
                                     <button
-                                        type="submit"
-                                        disabled={isLoading}
-                                        className="flex-1 bg-slate-900 text-white p-5 rounded-2xl text-xs font-black   hover:bg-slate-800 shadow-xl transition-all"
+                                        onClick={() => handleDelete(role.id)}
+                                        aria-label="Delete role"
+                                        className="w-9 h-9 flex items-center justify-center bg-[#FDECEC] border border-[#F7D7D7] text-[#C0383C] rounded-[10px] hover:bg-[#EF4444] hover:text-white hover:border-[#EF4444] transition-all shrink-0"
                                     >
-                                        {isLoading ? "Synchronizing..." : (selectedRole ? "Update Role Clearance" : "Authorize New System Role")}
+                                        <span className="material-symbols-rounded text-[19px]">delete</span>
                                     </button>
+                                )}
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            )}
+
+            {/* Create / Edit Role Modal */}
+            {isEditing && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm">
+                    <Card padding="none" className="max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-xl animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between p-6 border-b border-[#E8EAED]">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                    <span className="material-symbols-rounded text-[20px]">admin_panel_settings</span>
                                 </div>
-                            </form>
+                                <div>
+                                    <h3 className="text-[15px] font-bold text-[#15171C]">{selectedRole ? "Edit Role" : "Create Role"}</h3>
+                                    <p className="text-[12.5px] text-[#8A929E]">Configure system authority &amp; permissions</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setIsEditing(false)}
+                                aria-label="Close"
+                                className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+                            >
+                                <span className="material-symbols-rounded text-[19px]">close</span>
+                            </button>
                         </div>
-                    </div>
-                ) : (
-                    <div className="max-w-7xl mx-auto space-y-6 pb-20">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {roles.map((role) => (
-                                <div key={role.id} className="bg-white rounded-3xl border border-slate-200 p-6 hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden animate-in fade-in duration-500">
-                                    {role.is_system && (
-                                        <div className="absolute top-0 right-0 px-6 py-2 bg-slate-900 text-white text-[8px] font-black   rounded-bl-2xl">
-                                            System Default
-                                        </div>
-                                    )}
-                                    
-                                    <div className="flex items-start justify-between mb-8">
-                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${role.is_system ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white'}`}>
-                                            <span className="material-icons-outlined text-2xl">shield</span>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="text-[10px] font-black text-slate-400  ">Rank Level</div>
-                                            <div className="text-2xl font-black text-slate-900 tracking-tighter">0{role.role_rank}</div>
-                                        </div>
+
+                        <form onSubmit={handleSave} className="flex flex-col flex-1 overflow-hidden">
+                            <div className="p-6 space-y-4 overflow-y-auto custom-scrollbar">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <Field label="Role Identity" htmlFor="role-identity" required>
+                                        <Input
+                                            id="role-identity"
+                                            placeholder="e.g. REGIONAL_MANAGER"
+                                            value={name} onChange={e => setName(e.target.value.toUpperCase())} required
+                                            disabled={selectedRole?.is_system}
+                                        />
+                                    </Field>
+                                    <Field label="Rank Priority" htmlFor="role-rank" hint="Lower = higher authority" required>
+                                        <Input
+                                            id="role-rank"
+                                            type="number"
+                                            value={rank} onChange={e => setRank(Number.parseInt(e.target.value))} required
+                                        />
+                                    </Field>
+                                </div>
+
+                                <Field label="Capabilities Summary" htmlFor="role-description">
+                                    <Textarea
+                                        id="role-description"
+                                        className="min-h-[90px]"
+                                        placeholder="Describe what this role manages..."
+                                        value={description} onChange={e => setDescription(e.target.value)}
+                                    />
+                                </Field>
+
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center">
+                                        <label id="assigned-permissions-label" htmlFor="assigned-permissions-group" className="text-[12.5px] font-semibold text-[#374151]">Assigned Permissions</label>
+                                        <Badge tone="indigo">{selectedPermIds.length} active</Badge>
                                     </div>
 
-                                    <h3 className="text-xl font-black text-slate-900 mb-2 truncate">
-                                        {role.name}
-                                    </h3>
-                                    <p className="text-xs text-slate-400 font-medium mb-8 min-h-[32px] line-clamp-2">
-                                        {role.description || "System authority level for administrative operations."}
-                                    </p>
+                                    <Input
+                                        icon="search"
+                                        type="text"
+                                        placeholder="Filter capabilities..."
+                                        value={permSearch}
+                                        onChange={(e) => setPermSearch(e.target.value)}
+                                    />
 
-                                    <div className="flex flex-wrap gap-1.5 mb-8">
-                                        {role.permissions.slice(0, 4).map((p) => (
-                                            <span key={p.id} className="px-2 py-1 bg-slate-50 text-slate-500 rounded text-[8px] font-black   border border-slate-100">
-                                                {p.resource}
-                                            </span>
+                                    <div id="assigned-permissions-group" role="group" aria-labelledby="assigned-permissions-label" className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-3 max-h-[280px] overflow-y-auto custom-scrollbar space-y-4">
+                                        {Object.keys(groupedPermissions).map(module => (
+                                            <div key={module} className="space-y-1.5">
+                                                <h4 className="text-[10px] font-bold text-[#8A929E] uppercase tracking-[0.06em] border-b border-[#E8EAED] pb-1">{module} Module</h4>
+                                                <div className="space-y-1.5">
+                                                    {groupedPermissions[module].map((perm) => (
+                                                        <button
+                                                            key={perm.id}
+                                                            type="button"
+                                                            onClick={() => togglePermission(perm.id)}
+                                                            className={`w-full flex items-center justify-between p-2.5 rounded-[8px] border text-[11px] font-bold transition-all ${selectedPermIds.includes(perm.id) ? "bg-[#15171C] border-[#15171C] text-white shadow-md" : "bg-white border-[#E1E4E8] text-[#8A929E] hover:border-[#9AA3AF]"}`}
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${selectedPermIds.includes(perm.id) ? "bg-[#5B53E0]" : "bg-slate-300"}`} />
+                                                                <span>{perm.resource}</span>
+                                                            </div>
+                                                            <span className="opacity-60">{perm.action}</span>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         ))}
-                                        {role.permissions.length > 4 && (
-                                            <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded text-[8px] font-black   border border-indigo-100">
-                                                +{role.permissions.length - 4} More
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="flex gap-3 pt-6 border-t border-slate-50">
-                                        <button 
-                                            onClick={() => handleOpenEdit(role)}
-                                            className="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl text-[10px] font-black   hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center gap-2"
-                                        >
-                                            <span className="material-icons-outlined text-sm">edit_note</span>
-                                            {"Configure"}
-                                        </button>
-                                        {!role.is_system && (
-                                            <button 
-                                                onClick={() => handleDelete(role.id)}
-                                                className="w-12 h-12 flex items-center justify-center bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all"
-                                            >
-                                                <span className="material-icons-outlined text-lg">delete</span>
-                                            </button>
-                                        )}
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
+                            </div>
+
+                            <div className="flex gap-3 p-6 border-t border-[#E8EAED]">
+                                <Button type="button" variant="secondary" onClick={() => setIsEditing(false)} className="flex-1">
+                                    Cancel
+                                </Button>
+                                <Button type="submit" disabled={isLoading} icon="verified_user" className="flex-1">
+                                    {isLoading ? "Saving..." : (selectedRole ? "Update Role" : "Create Role")}
+                                </Button>
+                            </div>
+                        </form>
+                    </Card>
+                </div>
+            )}
         </div>
     );
 }
@@ -328,10 +350,12 @@ function RolesContent() {
 export default function RolesPage() {
     return (
         <Suspense fallback={
-            <div className="flex items-center justify-center h-screen bg-white">
-                <div className="flex flex-col items-center gap-6">
-                    <div className="w-16 h-16 border-b-4 border-slate-900 rounded-full animate-spin"></div>
-                    <p className="text-slate-400 font-black  tracking-[0.3em] text-[10px]">Encrypting Authority Map...</p>
+            <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full">
+                <div className="h-12 rounded-[14px] bg-[#F1F2F5] animate-pulse" />
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="bg-white border border-[#E8EAED] rounded-[14px] p-6 min-h-[180px] animate-pulse" />
+                    ))}
                 </div>
             </div>
         }>

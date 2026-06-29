@@ -7,37 +7,25 @@ import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import JobEditor from "@/components/enterprise/JobEditor";
 import {
-    ArrowLeft,
     ArrowRight,
     CircleCheck,
-    Building2,
     MapPin,
-    Rocket,
     Sparkles,
     RefreshCcw,
     CirclePlus,
-    Network,
     ClipboardList,
-    Settings,
     X,
     LayoutDashboard,
     Eye,
-    Users,
-    Brain,
     Calculator,
-    ShieldCheck,
     ChevronUp,
     ChevronDown,
     ListPlus,
     Pin,
     FileText,
-    AtSign,
-    ToggleRight,
-    Type,
-    Link as LinkIcon,
-    Mail
+    AtSign
 } from "lucide-react";
-import { jetbrainsMono } from "@/components/ds";
+import { jetbrainsMono, Button, Card, CardHeader, Field, Input, Select, PageHeader, cn } from "@/components/ds";
 
 interface ApplicationField {
     id: string;
@@ -359,61 +347,56 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
     const canGoNext = () => currentStep === 1 ? (formData.title && !isExperienceInvalid && !isSalaryInvalid) : true;
 
-    const labelCls = "block text-[12px] font-semibold text-[#374151] mb-1.5";
-    const inputCls = "w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
-    const inputErrCls = "w-full h-11 px-3.5 rounded-[10px] border border-[#EF4444] bg-[#FDECEC] text-[14px] font-medium text-[#C0383C] outline-none focus:ring-2 focus:ring-[#EF4444]/20 transition-all";
-    const selectCls = inputCls + " appearance-none cursor-pointer";
+    const errorInputCls = "border-[#EF4444] bg-[#FDECEC] text-[#C0383C] focus:border-[#EF4444] focus:ring-[#EF4444]/20";
 
     if (isEdit && isLoading) {
         return (
-            <div className="h-screen w-full flex items-center justify-center bg-[#F4F5F7]">
+            <div className="min-h-[60vh] w-full flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-sm font-medium text-[#8A929E]">Loading details…</span>
+                    <span className="text-[13px] font-medium text-[#8A929E]">Loading details…</span>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="h-full min-h-screen bg-[#F4F5F7] flex flex-col p-4 md:p-5 animate-in fade-in duration-500 overflow-hidden relative">
+        <div className="px-4 sm:px-5 md:px-7 pb-6 space-y-6 max-w-[1400px] mx-auto w-full animate-in fade-in duration-500 relative">
             {/* Header */}
-            <div className="flex items-center justify-between gap-3 mb-5 px-1 shrink-0">
-                <div className="flex items-center gap-3 min-w-0">
-                    <button onClick={() => router.back()} className="w-10 h-10 rounded-[10px] bg-white border border-[#E8EAED] flex items-center justify-center text-[#6B6F76] hover:text-[#15171C] hover:bg-[#F4F5F7] transition-colors shrink-0">
-                        <ArrowLeft className="w-5 h-5" />
-                    </button>
-                    <div className="min-w-0">
-                        <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-none truncate">{isEdit ? "Edit Job" : "Create Job"}</h1>
-                        <p className="text-[11px] text-[#9AA3AF] font-semibold uppercase tracking-[0.08em] mt-1.5">{steps.find(s => s.id === currentStep)?.name || "Job Details"}</p>
-                    </div>
-                </div>
+            <PageHeader
+                help={<><p>Describe the role across the steps — title, requirements, pipeline.</p><p>Use <strong>Draft with AI</strong> for the description. Save, then publish or share the job to start receiving candidates.</p></>}
+                title={isEdit ? "Edit Job" : "Create Job"}
+                subtitle={`Step ${currentStep} of 3 — ${steps.find(s => s.id === currentStep)?.name || "Job Details"}`}
+                onBack={() => router.back()}
+                actions={
+                    <>
+                        <div className="hidden lg:flex items-center bg-white p-1 rounded-[12px] border border-[#E8EAED]">
+                            {steps.map((step) => (
+                                <button
+                                    key={step.id}
+                                    disabled={step.id > currentStep && !canGoNext()}
+                                    onClick={() => canGoNext() && setCurrentStep(step.id)}
+                                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-[9px] transition-colors ${currentStep === step.id ? "bg-[#ECEBFB] text-[#5B53E0]" : "text-[#6B6F76] hover:text-[#15171C]"}`}
+                                >
+                                    <span className={`text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full ${currentStep === step.id ? "bg-[#5B53E0] text-white" : "bg-[#F1F2F5] text-[#8A929E]"}`}>{step.id}</span>
+                                    <span className="text-[12px] font-semibold">{step.name}</span>
+                                </button>
+                            ))}
+                        </div>
 
-                <div className="hidden lg:flex items-center bg-white p-1 rounded-[12px] border border-[#E8EAED]">
-                    {steps.map((step) => (
-                        <button
-                            key={step.id}
-                            disabled={step.id > currentStep && !canGoNext()}
-                            onClick={() => canGoNext() && setCurrentStep(step.id)}
-                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-[9px] transition-colors ${currentStep === step.id ? "bg-[#ECEBFB] text-[#5B53E0]" : "text-[#6B6F76] hover:text-[#15171C]"}`}
+                        <Button
+                            disabled={!canGoNext()}
+                            onClick={() => currentStep < 3 ? setCurrentStep(currentStep + 1) : handleSubmit()}
+                            className="group shrink-0"
                         >
-                            <span className={`text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full ${currentStep === step.id ? "bg-[#5B53E0] text-white" : "bg-[#F1F2F5] text-[#8A929E]"}`}>{step.id}</span>
-                            <span className="text-[12px] font-semibold">{step.name}</span>
-                        </button>
-                    ))}
-                </div>
+                            {isSubmitting ? "Saving…" : currentStep === 3 ? (isEdit ? "Save changes" : "Create job") : "Next step"}
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                    </>
+                }
+            />
 
-                <button
-                    disabled={!canGoNext()}
-                    className="h-11 px-5 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold shadow-[0_6px_16px_rgba(91,83,224,0.28)] hover:bg-[#4A43C9] transition-colors flex items-center gap-2 group disabled:opacity-40 shrink-0"
-                    onClick={() => currentStep < 3 ? setCurrentStep(currentStep + 1) : handleSubmit()}
-                >
-                    {isSubmitting ? "Saving…" : currentStep === 3 ? (isEdit ? "Save changes" : "Create job") : "Next step"}
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-            </div>
-
-            <div className="flex-1 bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden flex flex-col relative">
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden flex flex-col relative min-h-[600px]">
                 <AnimatePresence mode="wait">
                     {currentStep === 1 && (
                         <motion.div key="step1" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="flex-1 bg-[#F7F8FA] overflow-y-auto p-4 md:p-6 no-scrollbar relative">
@@ -421,107 +404,107 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                 {/* Left Form Column */}
                                 <div className="lg:col-span-4 space-y-5 flex flex-col">
                                     {/* Core Details Card */}
-                                    <div className="bg-white rounded-[12px] border border-[#E8EAED] p-5 space-y-4">
-                                        <div className="flex items-center gap-3 border-b border-[#F0F0F1] pb-4">
-                                            <div className="w-10 h-10 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
-                                                <ClipboardList className="w-5 h-5" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-[14px] font-bold text-[#15171C]">Job Profile</h3>
-                                                <p className="text-[11px] font-medium text-[#9AA3AF] mt-0.5">Core listing details</p>
-                                            </div>
-                                        </div>
+                                    <Card padding="sm" className="space-y-4">
+                                        <CardHeader
+                                            className="border-b border-[#F0F0F1] pb-4 mb-0"
+                                            title={
+                                                <span className="flex items-center gap-3">
+                                                    <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                                        <ClipboardList className="w-[18px] h-[18px]" />
+                                                    </span>
+                                                    Job Profile
+                                                </span>
+                                            }
+                                            subtitle="Core listing details"
+                                        />
 
                                         <div className="space-y-4 pt-1">
-                                            <div>
-                                                <label htmlFor="job-title-input" className={labelCls}>Job Title <span className="text-[#EF4444]">*</span></label>
-                                                <input id="job-title-input" type="text" placeholder="e.g. Senior Frontend Engineer" className={inputCls} value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
-                                            </div>
+                                            <Field label="Job Title" htmlFor="job-title-input" required>
+                                                <Input id="job-title-input" type="text" placeholder="e.g. Senior Frontend Engineer" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
+                                            </Field>
 
                                             {companies.length > 0 && (
-                                                <div>
-                                                    <label htmlFor="company-select" className={labelCls}>Company</label>
-                                                    <select id="company-select" className={selectCls} value={formData.company_id} onChange={e => setFormData({ ...formData, company_id: e.target.value })}>
+                                                <Field label="Company" htmlFor="company-select">
+                                                    <Select id="company-select" className="cursor-pointer" value={formData.company_id} onChange={e => setFormData({ ...formData, company_id: e.target.value })}>
                                                         {companies.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
-                                                    </select>
-                                                </div>
+                                                    </Select>
+                                                </Field>
                                             )}
                                         </div>
-                                    </div>
+                                    </Card>
 
                                     {/* Logistics Card */}
-                                    <div className="bg-white rounded-[12px] border border-[#E8EAED] p-5 space-y-4">
-                                        <div className="flex items-center gap-3 border-b border-[#F0F0F1] pb-4">
-                                            <div className="w-10 h-10 rounded-[11px] bg-[#E3F4EF] text-[#0E8A6E] flex items-center justify-center shrink-0">
-                                                <MapPin className="w-5 h-5" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-[14px] font-bold text-[#15171C]">Work Arrangement</h3>
-                                                <p className="text-[11px] font-medium text-[#9AA3AF] mt-0.5">Work mode &amp; location</p>
-                                            </div>
-                                        </div>
+                                    <Card padding="sm" className="space-y-4">
+                                        <CardHeader
+                                            className="border-b border-[#F0F0F1] pb-4 mb-0"
+                                            title={
+                                                <span className="flex items-center gap-3">
+                                                    <span className="w-9 h-9 rounded-[10px] bg-[#E3F4EF] text-[#0E8A6E] flex items-center justify-center shrink-0">
+                                                        <MapPin className="w-[18px] h-[18px]" />
+                                                    </span>
+                                                    Work Arrangement
+                                                </span>
+                                            }
+                                            subtitle="Work mode & location"
+                                        />
 
                                         <div className="space-y-4 pt-1">
                                             <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label htmlFor="job-type-select" className={labelCls}>Type</label>
-                                                    <select id="job-type-select" className={selectCls} value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
+                                                <Field label="Type" htmlFor="job-type-select">
+                                                    <Select id="job-type-select" className="cursor-pointer" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
                                                         <option>Full Time</option><option>Part Time</option><option>Contract</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="work-mode-select" className={labelCls}>Mode</label>
-                                                    <select id="work-mode-select" className={selectCls} value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
+                                                    </Select>
+                                                </Field>
+                                                <Field label="Mode" htmlFor="work-mode-select">
+                                                    <Select id="work-mode-select" className="cursor-pointer" value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
                                                         <option>On-Site</option><option>Remote</option><option>Hybrid</option>
-                                                    </select>
-                                                </div>
+                                                    </Select>
+                                                </Field>
                                             </div>
-                                            <div>
-                                                <label htmlFor="location-input" className={labelCls}>Location</label>
-                                                <input id="location-input" type="text" placeholder="e.g. San Francisco, CA" className={inputCls} value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
-                                            </div>
+                                            <Field label="Location" htmlFor="location-input">
+                                                <Input id="location-input" type="text" placeholder="e.g. San Francisco, CA" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
+                                            </Field>
                                         </div>
-                                    </div>
+                                    </Card>
 
                                     {/* Requirements Card */}
-                                    <div className="bg-white rounded-[12px] border border-[#E8EAED] p-5 space-y-4">
-                                        <div className="flex items-center gap-3 border-b border-[#F0F0F1] pb-4">
-                                            <div className="w-10 h-10 rounded-[11px] bg-[#FEF3E2] text-[#D97706] flex items-center justify-center shrink-0">
-                                                <Calculator className="w-5 h-5" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-[14px] font-bold text-[#15171C]">Requirements</h3>
-                                                <p className="text-[11px] font-medium text-[#9AA3AF] mt-0.5">Experience &amp; compensation</p>
-                                            </div>
-                                        </div>
+                                    <Card padding="sm" className="space-y-4">
+                                        <CardHeader
+                                            className="border-b border-[#F0F0F1] pb-4 mb-0"
+                                            title={
+                                                <span className="flex items-center gap-3">
+                                                    <span className="w-9 h-9 rounded-[10px] bg-[#FEF3E2] text-[#D97706] flex items-center justify-center shrink-0">
+                                                        <Calculator className="w-[18px] h-[18px]" />
+                                                    </span>
+                                                    Requirements
+                                                </span>
+                                            }
+                                            subtitle="Experience & compensation"
+                                        />
 
                                         <div className="space-y-4 pt-1">
                                             <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label htmlFor="experience-min-input" className={labelCls}>Min Exp (Yrs)</label>
-                                                    <input id="experience-min-input" type="number" min="0" className={isExperienceInvalid ? inputErrCls : inputCls} value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="experience-max-input" className={labelCls}>Max Exp (Yrs)</label>
-                                                    <input id="experience-max-input" type="number" min="0" className={isExperienceInvalid ? inputErrCls : inputCls} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
-                                                </div>
+                                                <Field label="Min Exp (Yrs)" htmlFor="experience-min-input" error={isExperienceInvalid ? "Max must be ≥ min" : undefined}>
+                                                    <Input id="experience-min-input" type="number" min="0" className={cn(jetbrainsMono.className, isExperienceInvalid && errorInputCls)} value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
+                                                </Field>
+                                                <Field label="Max Exp (Yrs)" htmlFor="experience-max-input">
+                                                    <Input id="experience-max-input" type="number" min="0" className={cn(jetbrainsMono.className, isExperienceInvalid && errorInputCls)} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
+                                                </Field>
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label htmlFor="salary-min-input" className={labelCls}>Min Salary (LPA)</label>
-                                                    <input id="salary-min-input" type="number" min="0" placeholder="5" className={isSalaryInvalid ? inputErrCls : inputCls} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="salary-max-input" className={labelCls}>Max Salary (LPA)</label>
-                                                    <input id="salary-max-input" type="number" min="0" placeholder="15" className={isSalaryInvalid ? inputErrCls : inputCls} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
-                                                </div>
+                                                <Field label="Min Salary (LPA)" htmlFor="salary-min-input" error={isSalaryInvalid ? "Max must be ≥ min" : undefined}>
+                                                    <Input id="salary-min-input" type="number" min="0" placeholder="5" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
+                                                </Field>
+                                                <Field label="Max Salary (LPA)" htmlFor="salary-max-input">
+                                                    <Input id="salary-max-input" type="number" min="0" placeholder="15" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
+                                                </Field>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Card>
                                 </div>
 
                                 {/* Right Description Area */}
-                                <div className="lg:col-span-8 flex flex-col min-h-[600px] bg-white rounded-[12px] border border-[#E8EAED] overflow-hidden">
+                                <Card padding="none" className="lg:col-span-8 flex flex-col min-h-[600px] overflow-hidden">
                                     <div className="px-5 py-4 border-b border-[#F0F0F1] flex flex-wrap gap-3 justify-between items-center bg-white z-10 shrink-0">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
@@ -534,10 +517,10 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                         </div>
                                         {isEdit ? (
                                             <div className="flex items-center gap-2.5">
-                                                <select
+                                                <Select
                                                     value={formData.status_id}
                                                     onChange={(e) => setFormData({ ...formData, status_id: Number.parseInt(e.target.value) })}
-                                                    className={`h-10 px-3 rounded-[10px] border text-[12px] font-semibold outline-none cursor-pointer transition-colors appearance-none text-center ${formData.status_id === 2
+                                                    className={`h-10 text-[12px] font-semibold cursor-pointer text-center ${formData.status_id === 2
                                                             ? "bg-[#E6F4EA] text-[#15803D] border-[#CDEAD7]"
                                                             : formData.status_id === 3
                                                                 ? "bg-[#FDECEC] text-[#C0383C] border-[#F5C9C9]"
@@ -547,17 +530,17 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                     <option value={1}>Draft</option>
                                                     <option value={2}>Active</option>
                                                     <option value={3}>Closed</option>
-                                                </select>
-                                                <button onClick={generateAIDescription} disabled={isGeneratingAI} className="h-10 px-3.5 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold shadow-[0_6px_16px_rgba(91,83,224,0.28)] hover:bg-[#4A43C9] transition-colors flex items-center gap-2 disabled:opacity-60">
+                                                </Select>
+                                                <Button onClick={generateAIDescription} disabled={isGeneratingAI} className="h-10">
                                                     {isGeneratingAI ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                                                     {isGeneratingAI ? 'Generating…' : 'Auto Draft with AI'}
-                                                </button>
+                                                </Button>
                                             </div>
                                         ) : (
-                                            <button onClick={generateAIDescription} disabled={isGeneratingAI} className="h-10 px-3.5 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold shadow-[0_6px_16px_rgba(91,83,224,0.28)] hover:bg-[#4A43C9] transition-colors flex items-center gap-2 disabled:opacity-60">
+                                            <Button onClick={generateAIDescription} disabled={isGeneratingAI} className="h-10">
                                                 {isGeneratingAI ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                                                 {isGeneratingAI ? 'Generating…' : 'Auto Draft with AI'}
-                                            </button>
+                                            </Button>
                                         )}
                                     </div>
 
@@ -566,15 +549,19 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                     </div>
 
                                     <div className="p-5 bg-[#F7F8FA] shrink-0">
-                                        <label htmlFor="required-skills-input" className={labelCls}>Required Tech Stack <span className="font-normal text-[#9AA3AF]">(Comma Separated)</span></label>
-                                        <div className="relative">
-                                            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF]">
-                                                <AtSign className="w-4 h-4" />
+                                        <Field
+                                            label={<>Required Tech Stack <span className="font-normal text-[#9AA3AF]">(Comma Separated)</span></>}
+                                            htmlFor="required-skills-input"
+                                        >
+                                            <div className="relative">
+                                                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] z-10 pointer-events-none">
+                                                    <AtSign className="w-4 h-4" />
+                                                </div>
+                                                <Input id="required-skills-input" type="text" className="pl-10" placeholder="e.g. React, Node.js, Python, AWS" value={formData.required_skills} onChange={e => setFormData({ ...formData, required_skills: e.target.value })} />
                                             </div>
-                                            <input id="required-skills-input" type="text" className="w-full h-11 pl-10 pr-4 rounded-[10px] border border-[#E1E4E8] outline-none font-medium text-[#15171C] text-[14px] bg-white placeholder:text-[#9AA3AF] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder="e.g. React, Node.js, Python, AWS" value={formData.required_skills} onChange={e => setFormData({ ...formData, required_skills: e.target.value })} />
-                                        </div>
+                                        </Field>
                                     </div>
-                                </div>
+                                </Card>
                             </div>
                         </motion.div>
                     )}
@@ -590,18 +577,18 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
                                 {/* Form Stats */}
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="bg-white rounded-[12px] border border-[#E8EAED] p-4 text-center">
+                                    <Card padding="sm" className="text-center">
                                         <div className={`text-[26px] font-semibold text-[#5B53E0] tracking-[-1px] ${jetbrainsMono.className}`}>{formData.application_fields.length}</div>
                                         <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">Total Fields</div>
-                                    </div>
-                                    <div className="bg-white rounded-[12px] border border-[#E8EAED] p-4 text-center">
+                                    </Card>
+                                    <Card padding="sm" className="text-center">
                                         <div className={`text-[26px] font-semibold text-[#15803D] tracking-[-1px] ${jetbrainsMono.className}`}>{formData.application_fields.filter(f => f.is_required).length}</div>
                                         <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">Required</div>
-                                    </div>
+                                    </Card>
                                 </div>
 
                                 {/* Field Types Guide */}
-                                <div className="bg-white rounded-[12px] border border-[#E8EAED] p-4 space-y-3">
+                                <Card padding="sm" className="space-y-3">
                                     <p className="text-[11px] font-semibold text-[#6B6F76] uppercase tracking-wider">Field Types</p>
                                     {[
                                         { type: 'Text', color: 'bg-[#E7ECFB] text-[#3559C7]', desc: 'Short or long text answers' },
@@ -615,7 +602,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                             <span className="text-[12px] text-[#8A929E] font-medium">{item.desc}</span>
                                         </div>
                                     ))}
-                                </div>
+                                </Card>
                             </div>
                             <div className="lg:col-span-8 p-5 md:p-6 overflow-y-auto no-scrollbar">
                                 <div className="flex flex-col gap-2.5 max-w-3xl mx-auto pb-10">
@@ -659,13 +646,13 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                 </div>
 
                                 {/* Stage Stats */}
-                                <div className="bg-white rounded-[12px] border border-[#E8EAED] p-4 text-center">
+                                <Card padding="sm" className="text-center">
                                     <div className={`text-[26px] font-semibold text-[#5B53E0] tracking-[-1px] ${jetbrainsMono.className}`}>{formData.workflow_stages.length}</div>
                                     <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">Total Stages</div>
-                                </div>
+                                </Card>
 
                                 {/* Stage Types Guide */}
-                                <div className="bg-white rounded-[12px] border border-[#E8EAED] p-4 space-y-3">
+                                <Card padding="sm" className="space-y-3">
                                     <p className="text-[11px] font-semibold text-[#6B6F76] uppercase tracking-wider">Stage Types</p>
                                     {[
                                         { type: 'Screening', color: 'bg-[#E7ECFB] text-[#3559C7]', desc: 'Initial candidate filtering' },
@@ -680,7 +667,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                             <span className="text-[12px] text-[#8A929E] font-medium">{item.desc}</span>
                                         </div>
                                     ))}
-                                </div>
+                                </Card>
                             </div>
                             <div className="lg:col-span-8 p-5 md:p-6 overflow-y-auto no-scrollbar flex flex-col items-center">
                                 <div className="w-full max-w-lg space-y-2.5 pb-10 pl-8">
@@ -732,14 +719,14 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                             <h2 className="text-[24px] font-extrabold text-[#15171C] tracking-[-0.4px] mb-2 leading-tight">{isEdit ? "Job updated" : "Job created"}</h2>
                             <p className="text-[14px] text-[#8A929E] leading-relaxed mb-7">{isEdit ? "The job details have been updated successfully." : "The new job has been created and is now live."}</p>
                             <div className="flex flex-col gap-2.5">
-                                <button onClick={() => router.push("/enterprise/jobs")} className="w-full h-[46px] bg-[#5B53E0] text-white rounded-[10px] font-semibold text-[14px] hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors flex items-center justify-center gap-2">
+                                <Button size="lg" fullWidth onClick={() => router.push("/enterprise/jobs")}>
                                     <LayoutDashboard className="w-4 h-4" />
                                     View job board
-                                </button>
-                                <button onClick={() => window.open(`${window.location.origin}/jobs/${isEdit ? jobId : createdJobId}`, '_blank')} className="w-full h-[46px] border border-[#E1E4E8] rounded-[10px] text-[#374151] font-semibold text-[14px] hover:bg-[#F4F5F7] transition-colors flex items-center justify-center gap-2">
+                                </Button>
+                                <Button variant="secondary" size="lg" fullWidth onClick={() => window.open(`${window.location.origin}/jobs/${isEdit ? jobId : createdJobId}`, '_blank')}>
                                     <Eye className="w-4 h-4" />
                                     View job application
-                                </button>
+                                </Button>
                             </div>
                         </motion.div>
                     </motion.div>

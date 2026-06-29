@@ -4,6 +4,16 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
+import {
+    Button,
+    Card,
+    CardHeader,
+    Input,
+    Field,
+    Badge,
+    PageHeader,
+    jetbrainsMono,
+} from "@/components/ds";
 
 interface Question {
     id: string;
@@ -198,231 +208,221 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
-            <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="min-h-screen flex items-center justify-center bg-[#F4F5F7]">
+            <div className="w-10 h-10 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-slate-50/50">
-            <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200 py-4 px-8 flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/enterprise/assessments-360/templates')} className="p-2 text-slate-400 hover:text-slate-900 transition-colors">
-                        <span className="material-symbols-rounded">arrow_back</span>
-                    </button>
-                    <div>
-                        <h1 className="text-xl font-bold text-slate-900 tracking-tight leading-none mb-1">{isEdit ? 'Refine 360 Framework' : 'Construct 360 Framework'}</h1>
-                        <p className="text-slate-500 text-xs font-medium">{isEdit ? 'Optimizing professional competencies for feedback cycles' : 'Design professional competencies for organizational feedback'}</p>
-                    </div>
-                </div>
-                <div className="flex gap-3">
-                    <button
-                        onClick={() => router.push('/enterprise/assessments-360/templates')}
-                        className="px-5 py-2.5 text-slate-600 font-semibold text-xs hover:bg-slate-100 rounded-xl transition-all"
-                    >
-                        {isEdit ? 'Cancel' : 'Discard'}
-                    </button>
-                    <button
+        <div className="max-w-[1100px] mx-auto w-full px-4 sm:px-5 md:px-7 pb-24 space-y-6 animate-in fade-in duration-500">
+            {/* Page header (sticky) */}
+            <PageHeader
+                help={<><p>Build a competency framework: pick the competencies and questions raters will answer.</p><p>Save it, then choose it when you start a 360 cycle.</p></>}
+                title={isEdit ? 'Refine 360 Framework' : 'Construct 360 Framework'}
+                subtitle={isEdit ? 'Optimizing professional competencies for feedback cycles' : 'Design professional competencies for organizational feedback'}
+                onBack={() => router.push('/enterprise/assessments-360/templates')}
+                actions={
+                    <Button
+                        size="sm"
+                        icon={isEdit ? 'published_with_changes' : 'rocket_launch'}
                         onClick={handleSave}
                         disabled={submitting || formData.question_ids.length === 0}
-                        className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold text-xs hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 disabled:opacity-50 disabled:shadow-none"
                     >
                         {isEdit ? (submitting ? 'Updating...' : 'Update Framework') : (submitting ? 'Deploying...' : 'Deploy Framework')}
-                    </button>
+                    </Button>
+                }
+            />
+
+            {/* Meta Config */}
+            <Card padding="lg">
+                <CardHeader
+                    title={isEdit ? 'Framework Details' : 'Framework Setup'}
+                    subtitle={isEdit ? 'Update the designation and context of this framework' : 'Name your framework and define its strategic objective'}
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <Field label="Framework Designation" htmlFor={`${isEdit ? 'edit' : 'new'}-framework-name`} required>
+                        <Input
+                            id={`${isEdit ? 'edit' : 'new'}-framework-name`}
+                            value={formData.name}
+                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                            required
+                            placeholder="e.g. Executive Leadership Quarterly"
+                        />
+                    </Field>
+                    <Field label={isEdit ? 'Organization Context' : 'Strategic Objective'} htmlFor={`${isEdit ? 'edit' : 'new'}-framework-description`}>
+                        <Input
+                            id={`${isEdit ? 'edit' : 'new'}-framework-description`}
+                            value={formData.description}
+                            onChange={(e) => setFormData({...formData, description: e.target.value})}
+                            placeholder={isEdit ? 'Strategic summary for management stakeholders...' : 'Define the core purpose of this assessment...'}
+                        />
+                    </Field>
                 </div>
-            </header>
+            </Card>
 
-            <main className="max-w-6xl mx-auto p-8 lg:p-12 space-y-12 animate-in fade-in duration-700">
-                {/* Meta Config */}
-                <section className="bg-white p-10 rounded-2xl border border-slate-100 shadow-2xl shadow-slate-200/50 space-y-10 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                    <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div className="space-y-3">
-                            <label htmlFor={`${isEdit ? 'edit' : 'new'}-framework-name`} className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">Framework Designation</label>
-                            <input
-                                id={`${isEdit ? 'edit' : 'new'}-framework-name`}
-                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
-                                value={formData.name}
-                                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                required
-                                placeholder="e.g. Executive Leadership Quarterly"
-                            />
-                        </div>
-                        <div className="space-y-3">
-                            <label htmlFor={`${isEdit ? 'edit' : 'new'}-framework-description`} className="text-[10px] font-black text-slate-400  tracking-[0.2em] px-1">{isEdit ? 'Organization Context' : 'Strategic Objective'}</label>
-                            <input
-                                id={`${isEdit ? 'edit' : 'new'}-framework-description`}
-                                className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-300 transition-all h-[60px]"
-                                value={formData.description}
-                                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                placeholder={isEdit ? 'Strategic summary for management stakeholders...' : 'Define the core purpose of this assessment...'}
-                            />
+            {/* Selection Pool - Grouped by Category */}
+            <Card padding="lg">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <span className="w-10 h-10 rounded-[11px] bg-[#15171C] text-white flex items-center justify-center shrink-0">
+                            <span className="material-symbols-rounded text-[22px]">account_tree</span>
+                        </span>
+                        <div className="min-w-0">
+                            <h3 className="text-[15px] font-bold text-[#15171C]">{isEdit ? 'Competency Refinement' : 'Competency Architecture'}</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{isEdit ? 'Adjust competencies for specific organizational needs' : 'Select questions by category for a balanced assessment'}</p>
                         </div>
                     </div>
-                </section>
-
-                {/* Selection Pool - Grouped by Category */}
-                <section className="space-y-10">
-                    <div className="flex justify-between items-center px-2">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-xl">
-                                <span className="material-symbols-rounded">account_tree</span>
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-black text-slate-900 tracking-tight">{isEdit ? 'Competency Refinement' : 'Competency Architecture'}</h3>
-                                <p className="text-slate-500 text-[10px] font-bold   mt-0.5">{isEdit ? 'Adjust competencies for specific organizational needs' : 'Select questions by category for a balanced assessment'}</p>
-                            </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                        <div className="flex flex-col items-end leading-none">
+                            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[#5B53E0] mb-1">Total Selected</span>
+                            <span className={`text-[24px] font-semibold tracking-[-1px] text-[#15171C] ${jetbrainsMono.className}`}>{formData.question_ids.length}</span>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <div className="flex flex-col items-end">
-                                <span className="text-[10px] font-black text-indigo-600   leading-none mb-1">Total Selected</span>
-                                <span className="text-2xl font-black text-slate-900 leading-none">{formData.question_ids.length}</span>
-                            </div>
-                            <button
-                                type="button"
-                                onClick={() => setIsAiWizardOpen(true)}
-                                className="h-14 bg-indigo-600 text-white text-[11px] font-black  tracking-[0.15em] flex items-center gap-3 hover:bg-slate-900 px-8 rounded-xl transition-all shadow-xl shadow-indigo-100 group"
-                            >
-                                <span className="material-symbols-rounded text-xl group-hover:rotate-12 transition-transform">psychology</span>
-                                <span>{isEdit ? 'AI Strategy Wizard' : 'Strategy Wizard'}</span>
-                            </button>
-                        </div>
+                        <Button
+                            type="button"
+                            variant="dark"
+                            icon="psychology"
+                            onClick={() => setIsAiWizardOpen(true)}
+                            className="bg-[#5B53E0] border-transparent text-white hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)]"
+                        >
+                            {isEdit ? 'AI Strategy Wizard' : 'Strategy Wizard'}
+                        </Button>
                     </div>
+                </div>
 
-                    <div className="space-y-16">
-                        {Array.from(new Set(questions.map(q => q.category))).sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0).map(cat => {
-                            const catQuestions = questions.filter(q => q.category === cat);
-                            const selectedInCat = catQuestions.filter(q => formData.question_ids.includes(q.id)).length;
+                <div className="space-y-8">
+                    {Array.from(new Set(questions.map(q => q.category))).sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0).map(cat => {
+                        const catQuestions = questions.filter(q => q.category === cat);
+                        const selectedInCat = catQuestions.filter(q => formData.question_ids.includes(q.id)).length;
 
-                            return (
-                                <div key={cat} className="space-y-6">
-                                    <div className="sticky top-20 z-20 flex justify-between items-end pb-4 border-b-2 border-slate-100 bg-[#f8fafc]/80 backdrop-blur-sm -mx-4 px-4 pt-2">
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-all ${selectedInCat > 0 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-100 text-slate-400'}`}>
-                                                {selectedInCat}
-                                            </div>
-                                            <div>
-                                                <h4 className="text-lg font-black text-slate-800 tracking-tight">{cat.replaceAll('_', ' ')}</h4>
-                                                <p className="text-slate-400 text-[9px] font-bold  tracking-[0.2em]">{catQuestions.length} Total Options</p>
-                                            </div>
+                        return (
+                            <div key={cat} className="space-y-4">
+                                <div className="flex justify-between items-center pb-3 border-b border-[#E8EAED]">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center font-semibold text-[13px] transition-all ${jetbrainsMono.className} ${selectedInCat > 0 ? 'bg-[#5B53E0] text-white shadow-[0_6px_16px_rgba(91,83,224,0.28)]' : 'bg-[#F1F2F5] text-[#9AA3AF]'}`}>
+                                            {selectedInCat}
                                         </div>
-                                        {selectedInCat > 0 && (
-                                            <span className="text-[10px] font-black text-indigo-600   animate-in fade-in slide-in-from-right-2">
-                                                {selectedInCat} Competencies Chosen
-                                            </span>
-                                        )}
+                                        <div className="min-w-0">
+                                            <h4 className="text-[14px] font-bold text-[#15171C]">{cat.replaceAll('_', ' ')}</h4>
+                                            <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A929E]">{catQuestions.length} Total Options</p>
+                                        </div>
                                     </div>
+                                    {selectedInCat > 0 && (
+                                        <Badge tone="indigo">{selectedInCat} chosen</Badge>
+                                    )}
+                                </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {catQuestions.map(q => (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {catQuestions.map(q => {
+                                        const isSelected = formData.question_ids.includes(q.id);
+                                        return (
                                             <div
                                                 key={q.id}
                                                 role="button"
                                                 tabIndex={0}
                                                 onClick={() => toggleQuestion(q.id)}
                                                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { toggleQuestion(q.id); } }}
-                                                className={`p-6 rounded-xl cursor-pointer transition-all flex flex-col gap-4 border-2 relative group animate-in slide-in-from-bottom-2 duration-500 overflow-hidden ${
-                                                    formData.question_ids.includes(q.id)
-                                                    ? 'border-indigo-600 bg-white shadow-2xl shadow-indigo-100'
-                                                    : 'border-white bg-white shadow-sm hover:border-slate-200 hover:shadow-xl'
+                                                className={`p-4 rounded-[12px] cursor-pointer transition-all flex flex-col gap-3 border relative group ${
+                                                    isSelected
+                                                    ? 'border-[#5B53E0] bg-[#F8F7FE] ring-2 ring-[#5B53E0]/15'
+                                                    : 'border-[#E8EAED] bg-white hover:border-[#D4D7DC] hover:bg-[#F7F7F8]'
                                                 }`}
                                             >
-                                                {formData.question_ids.includes(q.id) && (
-                                                    <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-600 flex items-center justify-center translate-x-8 -translate-y-8 rotate-45 shadow-lg">
-                                                        <span className="material-symbols-rounded text-white -rotate-45 mt-6 mr-1 text-sm font-black">check</span>
-                                                    </div>
-                                                )}
                                                 <div className="flex-1">
-                                                    <p className={`text-sm font-bold leading-relaxed transition-colors ${formData.question_ids.includes(q.id) ? 'text-indigo-900' : 'text-slate-600'}`}>
+                                                    <p className={`text-[13.5px] font-semibold leading-relaxed transition-colors ${isSelected ? 'text-[#15171C]' : 'text-[#374151]'}`}>
                                                         {q.text}
                                                     </p>
                                                 </div>
-                                                <div className="flex justify-between items-center pt-2 border-t border-slate-50 mt-auto">
-                                                    <span className="text-[9px] font-black  text-slate-400 ">{q.type}</span>
-                                                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${formData.question_ids.includes(q.id) ? 'bg-indigo-50 border-indigo-200 text-indigo-600' : 'bg-slate-50 border-slate-100 text-transparent group-hover:border-slate-300'}`}>
-                                                        <span className="material-symbols-rounded text-base font-black">check</span>
+                                                <div className="flex justify-between items-center pt-2.5 border-t border-[#E8EAED] mt-auto">
+                                                    <Badge tone="neutral" className="rounded-[6px] px-2 py-0.5 text-[10px]">{q.type}</Badge>
+                                                    <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all ${isSelected ? 'bg-[#5B53E0] border-[#5B53E0] text-white' : 'bg-[#F4F5F7] border-[#E1E4E8] text-transparent group-hover:border-[#9AA3AF]'}`}>
+                                                        <span className="material-symbols-rounded text-[15px] font-bold">check</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
+                                        );
+                                    })}
                                 </div>
-                            );
-                        })}
-                    </div>
-                </section>
-
-                <div className={`pt-20 flex flex-col items-center border-t ${isEdit ? 'border-slate-100' : 'border-slate-200'} pb-32`}>
-                    <div className="flex flex-col items-center mb-10 text-center max-w-sm">
-                        <p className="text-[10px] font-black text-slate-400  tracking-[0.3em] mb-4">{isEdit ? 'Final Architecture' : 'Framework Readiness'}</p>
-                        <h4 className="text-2xl font-black text-slate-900 mb-2">{formData.question_ids.length} {isEdit ? 'Questions Configured' : 'Questions Selected'}</h4>
-                        <p className="text-slate-500 text-xs font-medium">{isEdit ? 'Verify your selection and competency weightings before finalizing the update.' : 'Review your competency mix above before deploying to your organization.'}</p>
-                    </div>
-                    <button
-                        onClick={handleSave}
-                        disabled={submitting || formData.question_ids.length === 0}
-                        className="h-20 px-24 bg-indigo-600 text-white rounded-2xl font-black text-sm  tracking-[0.25em] shadow-[0_20px_50px_rgba(79,70,229,0.3)] hover:bg-slate-900 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30 disabled:shadow-none flex items-center justify-center gap-4"
-                    >
-                        {submitting ? (
-                            <>
-                                <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
-                                {isEdit ? 'Persisting...' : 'Sequencing...'}
-                            </>
-                        ) : (
-                            <>
-                                <span className="material-symbols-rounded text-2xl">{isEdit ? 'published_with_changes' : 'rocket_launch'}</span>
-                                <span>{isEdit ? 'Update Framework Structure' : 'Deploy Assessment Framework'}</span>
-                            </>
-                        )}
-                    </button>
+                            </div>
+                        );
+                    })}
                 </div>
-            </main>
+            </Card>
+
+            {/* Finalize */}
+            <Card padding="lg" className="flex flex-col items-center text-center">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A929E] mb-3">{isEdit ? 'Final Architecture' : 'Framework Readiness'}</span>
+                <h4 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#15171C] mb-1.5">
+                    <span className={jetbrainsMono.className}>{formData.question_ids.length}</span> {isEdit ? 'Questions Configured' : 'Questions Selected'}
+                </h4>
+                <p className="text-[13px] text-[#8A929E] max-w-sm mb-6">{isEdit ? 'Verify your selection and competency weightings before finalizing the update.' : 'Review your competency mix above before deploying to your organization.'}</p>
+                <Button
+                    size="lg"
+                    icon={submitting ? undefined : (isEdit ? 'published_with_changes' : 'rocket_launch')}
+                    onClick={handleSave}
+                    disabled={submitting || formData.question_ids.length === 0}
+                    className="px-10"
+                >
+                    {submitting ? (
+                        <>
+                            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                            {isEdit ? 'Persisting...' : 'Sequencing...'}
+                        </>
+                    ) : (
+                        <span>{isEdit ? 'Update Framework Structure' : 'Deploy Assessment Framework'}</span>
+                    )}
+                </Button>
+            </Card>
 
             {/* AI Wizard Modal */}
             {isAiWizardOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in duration-200">
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <div className="flex items-center gap-3">
-                                <span className="material-symbols-rounded text-indigo-600">psychology</span>
-                                <h2 className="text-lg font-bold text-slate-900">AI Strategy Wizard</h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#15171C]/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                    <Card padding="none" className="w-full max-w-md shadow-[0_24px_60px_rgba(15,23,42,0.24)] overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-5 border-b border-[#E8EAED] flex justify-between items-center bg-[#F7F8FA]">
+                            <div className="flex items-center gap-2.5">
+                                <span className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                    <span className="material-symbols-rounded text-[19px]">psychology</span>
+                                </span>
+                                <h2 className="text-[15px] font-bold text-[#15171C]">AI Strategy Wizard</h2>
                             </div>
-                            <button onClick={() => setIsAiWizardOpen(false)} className="text-slate-400 hover:text-rose-500 transition-colors">
-                                <span className="material-symbols-rounded">close</span>
+                            <button onClick={() => setIsAiWizardOpen(false)} className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors">
+                                <span className="material-symbols-rounded text-[19px]">close</span>
                             </button>
                         </div>
-                        <div className="p-8 space-y-6">
-                            <div className="space-y-2">
-                                <label htmlFor={`${isEdit ? 'edit' : 'new'}-industry-nature`} className="text-[10px] font-bold text-slate-400   px-1">{isEdit ? 'Describe Your Industry' : 'Industry for Context'}</label>
-                                <input
+                        <div className="p-6 space-y-5">
+                            <Field
+                                label={isEdit ? 'Describe Your Industry' : 'Industry for Context'}
+                                htmlFor={`${isEdit ? 'edit' : 'new'}-industry-nature`}
+                                hint={isEdit ? 'Generated items will reflect industry nuances.' : 'Generated items will be calibrated for this segment.'}
+                            >
+                                <Input
                                     id={`${isEdit ? 'edit' : 'new'}-industry-nature`}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold text-slate-700 transition-all h-[52px]"
                                     value={industryNature}
                                     onChange={(e) => setIndustryNature(e.target.value)}
                                     placeholder={isEdit ? 'e.g. High-Tech, Social, Retail...' : 'e.g. Fintech, Manufacturing...'}
                                     autoFocus
                                 />
-                                <p className="text-[10px] text-slate-400 font-medium px-1 ">{isEdit ? 'Generated items will reflect industry nuances.' : 'Generated items will be calibrated for this segment.'}</p>
-                            </div>
-                            <button
+                            </Field>
+                            <Button
+                                fullWidth
+                                variant="dark"
                                 onClick={generateWithAi}
                                 disabled={generatingAi || !industryNature}
-                                className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-xs   flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all disabled:opacity-30 shadow-md"
+                                className="bg-[#15171C] border-transparent text-white hover:bg-[#5B53E0]"
                             >
                                 {generatingAi ? (
                                     <>
-                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                                         Generating...
                                     </>
                                 ) : (
                                     <>
-                                        <span className="material-symbols-rounded text-lg">magic_button</span>
+                                        <span className="material-symbols-rounded text-[19px]">magic_button</span>
                                         <span>Inject AI Insights</span>
                                     </>
                                 )}
-                            </button>
+                            </Button>
                         </div>
-                    </div>
+                    </Card>
                 </div>
             )}
         </div>

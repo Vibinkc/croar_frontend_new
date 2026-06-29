@@ -12,9 +12,34 @@ import {
   type StructurePreviewOut,
   type TemplateAssignment,
 } from "@/utils/payroll/api";
-import { Banner, Modal, PageHeader } from "@/components/payroll/ui";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { useDialog } from "@/components/payroll/DialogProvider";
+import {
+  Search,
+  Filter,
+  ChevronDown,
+  Plus,
+  Copy,
+  X,
+  Calculator,
+  ShieldCheck,
+  Trash2,
+  Layers,
+  CheckCircle2,
+  AlertTriangle,
+} from "lucide-react";
+import {
+  Button,
+  Card,
+  Input,
+  Select,
+  Field,
+  Badge,
+  StatCard,
+  StatGrid,
+  PageHeader,
+  jetbrainsMono,
+} from "@/components/ds";
 
 // ---------------------------------------------------------------------------
 // A template is a reusable, CTC-driven salary package: its lines are *rules*
@@ -57,6 +82,9 @@ function fromMoneyLines(lines: MoneyLine[]): LineDraft[] {
 
 const SAMPLE_CTC_DEFAULT = "1200000";
 
+const selectCls =
+  "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+
 export default function TemplatesPage() {
   const { can } = useAuth();
   const { confirm, alert } = useDialog();
@@ -66,6 +94,10 @@ export default function TemplatesPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Toolbar (presentation-only filtering)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statutoryFilter, setStatutoryFilter] = useState<"ALL" | "WITH" | "WITHOUT">("ALL");
 
   // Editor modal state
   const [open, setOpen] = useState(false);
@@ -247,220 +279,319 @@ export default function TemplatesPage() {
   const earningLines: ResolvedLine[] = preview?.earnings ?? [];
   const deductionLines: ResolvedLine[] = preview?.deductions ?? [];
 
+  // Presentation-only list filtering (no logic/data mutation).
+  const hasStatutory = (t: SalaryTemplate) => t.pf_enabled || t.esi_enabled || t.pt_enabled || t.tds_enabled;
+  const filteredTemplates = templates.filter((t) => {
+    const q = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      t.name.toLowerCase().includes(q) ||
+      (t.description ?? "").toLowerCase().includes(q) ||
+      t.components.some((c) => c.code.toLowerCase().includes(q));
+    const matchesStatutory =
+      statutoryFilter === "ALL" ||
+      (statutoryFilter === "WITH" && hasStatutory(t)) ||
+      (statutoryFilter === "WITHOUT" && !hasStatutory(t));
+    return matchesSearch && matchesStatutory;
+  });
+
+  const statCards = [
+    { label: "Templates", value: templates.length, icon: "content_copy", gradient: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+    { label: "With Statutory", value: templates.filter(hasStatutory).length, icon: "verified_user", gradient: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+    { label: "Employees", value: employees.length, icon: "group", gradient: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+    { label: "Avg. Components", value: templates.length ? Math.round(templates.reduce((a, t) => a + t.components.length, 0) / templates.length) : "—", icon: "layers", gradient: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+  ];
+
   return (
-    <div className="animate-fade-in flex flex-col gap-6">
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        icon="content_copy"
         title="Salary Templates"
         subtitle="Reusable, CTC-driven packages. Define the rules once, apply to many employees."
-      >
-        {canEdit && (
-          <button onClick={openCreate} className="flex shrink-0 items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-            <span className="material-symbols-rounded text-[20px]">add</span>{" "}
-            New Template
-          </button>
-        )}
-      </PageHeader>
+        help={<><p>Create reusable salary templates — earnings, deductions and statutory items.</p><p>Apply a template to employees from Salary Structures.</p></>}
+        actions={
+          canEdit && (
+            <Button icon="add" onClick={openCreate}>
+              New Template
+            </Button>
+          )
+        }
+      />
 
-      {error && <Banner>{error}</Banner>}
+      {error && (
+        <div className="flex items-start gap-2.5 rounded-[12px] border border-[#F7D7D7] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+          <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
-      <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
+      {/* Stat cards */}
+      <StatGrid>
+        {statCards.map((s) => (
+          <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} gradient={s.gradient} glow={s.glow} />
+        ))}
+      </StatGrid>
+
+      {/* Toolbar: search + filter */}
+      <div className="flex flex-col md:flex-row md:items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search templates by name, description or code…"
+            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+          />
+        </div>
+        <div className="relative flex-1 md:flex-none">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          <select
+            value={statutoryFilter}
+            onChange={(e) => setStatutoryFilter(e.target.value as "ALL" | "WITH" | "WITHOUT")}
+            className={`${selectCls} w-full md:min-w-[170px]`}
+          >
+            <option value="ALL">Any statutory</option>
+            <option value="WITH">With statutory</option>
+            <option value="WITHOUT">Without statutory</option>
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+        </div>
+      </div>
+
+      {/* Templates list */}
+      <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
         {loading ? (
-          <p className="p-8 text-center text-[var(--color-muted)]">Loading…</p>
-        ) : templates.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 p-12 text-center">
-            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-hover)] text-[var(--color-dim)]">
-              <span className="material-symbols-rounded text-3xl">content_copy</span>
-            </span>
-            <p className="font-medium">No salary templates yet</p>
-            <p className="max-w-sm text-sm text-[var(--color-muted)]">
-              Create a template (e.g. &ldquo;Engineer L1&rdquo;) with percentage-of-CTC rules, then
-              apply it to employees at their own CTC.
-            </p>
-            {canEdit && (
-              <button onClick={openCreate} className="mt-1 flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-                <span className="material-symbols-rounded text-[20px]">add</span>{" "}
-                Create your first template
-              </button>
+          <div className="p-4 space-y-2.5">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+            ))}
+          </div>
+        ) : filteredTemplates.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
+            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
+              <Copy className="w-8 h-8 text-[#C7CCD4]" />
+            </div>
+            {templates.length === 0 ? (
+              <>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No salary templates yet</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
+                  Create a template (e.g. &ldquo;Engineer L1&rdquo;) with percentage-of-CTC rules, then apply it to employees at their own CTC.
+                </p>
+                {canEdit && (
+                  <Button icon="add" onClick={openCreate}>
+                    Create your first template
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No templates match your filters</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Try adjusting your search or filter to find what you&apos;re looking for.</p>
+                <Button onClick={() => { setSearchQuery(""); setStatutoryFilter("ALL"); }}>Clear filters</Button>
+              </>
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="text-xs uppercase tracking-wide text-[var(--color-muted)]">
-                <tr className="border-b border-[var(--color-border)] bg-[var(--color-bg)]/40">
-                  <th className="px-6 py-3 font-semibold">Template</th>
-                  <th className="px-6 py-3 font-semibold">Earnings</th>
-                  <th className="px-6 py-3 font-semibold">Statutory</th>
-                  <th className="px-6 py-3 text-right font-semibold">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {templates.map((t) => (
-                  <tr key={t.id} className="border-b border-[var(--color-border)] transition-colors last:border-0 hover:bg-[var(--color-hover)]/30">
-                    <td className="px-6 py-4">
-                      <div className="font-medium">{t.name}</div>
-                      {t.description && <div className="text-xs text-[var(--color-muted)]">{t.description}</div>}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1.5">
-                        {t.components.map((c) => (
-                          <StatChip key={c.code}>{c.code}</StatChip>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1.5">
-                        {t.pf_enabled && <StatChip>EPF</StatChip>}
-                        {t.esi_enabled && <StatChip>ESI</StatChip>}
-                        {t.pt_enabled && <StatChip>PT</StatChip>}
-                        {t.tds_enabled && <StatChip>TDS</StatChip>}
-                        {!t.pf_enabled && !t.esi_enabled && !t.pt_enabled && !t.tds_enabled && (
-                          <span className="text-xs text-[var(--color-dim)]">None</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        {canEdit && (
-                          <button onClick={() => setApplyFor(t)} className="rounded-md bg-[var(--color-primary)] px-2.5 py-1 text-xs font-semibold text-white hover:bg-[var(--color-primary-hover)]">
-                            Apply
-                          </button>
-                        )}
-                        {canEdit && (
-                          <button onClick={() => openEdit(t)} className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs hover:bg-[var(--color-hover)]">
-                            Edit
-                          </button>
-                        )}
-                        {canEdit && (
-                          <button onClick={() => remove(t)} className="rounded-md px-2.5 py-1 text-xs text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10">
-                            Delete
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <>
+            {/* Column header (desktop) */}
+            <div className="hidden md:grid grid-cols-[2.4fr_1.6fr_1.2fr_200px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Template</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Earnings</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Statutory</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+            </div>
+
+            <div className="divide-y divide-[#F0F0F1]">
+              {filteredTemplates.map((t) => (
+                <div
+                  key={t.id}
+                  className="grid grid-cols-1 md:grid-cols-[2.4fr_1.6fr_1.2fr_200px] gap-x-4 gap-y-3 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                >
+                  {/* Template */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                      <Copy className="w-[17px] h-[17px]" />
+                    </span>
+                    <div className="min-w-0">
+                      <div className="text-[14px] font-bold text-[#15171C] truncate">{t.name}</div>
+                      {t.description && <div className="text-[12px] text-[#8A929E] truncate">{t.description}</div>}
+                    </div>
+                  </div>
+
+                  {/* Earnings */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {t.components.map((c) => (
+                      <Badge key={c.code} tone="indigo">{c.code}</Badge>
+                    ))}
+                  </div>
+
+                  {/* Statutory */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {t.pf_enabled && <Badge tone="teal">EPF</Badge>}
+                    {t.esi_enabled && <Badge tone="teal">ESI</Badge>}
+                    {t.pt_enabled && <Badge tone="teal">PT</Badge>}
+                    {t.tds_enabled && <Badge tone="teal">TDS</Badge>}
+                    {!t.pf_enabled && !t.esi_enabled && !t.pt_enabled && !t.tds_enabled && (
+                      <span className="text-[12px] text-[#9AA3AF]">None</span>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-start md:justify-end gap-2">
+                    {canEdit && (
+                      <Button size="sm" onClick={() => setApplyFor(t)}>Apply</Button>
+                    )}
+                    {canEdit && (
+                      <Button size="sm" variant="secondary" onClick={() => openEdit(t)}>Edit</Button>
+                    )}
+                    {canEdit && (
+                      <button
+                        onClick={() => remove(t)}
+                        title="Delete template"
+                        className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors shrink-0"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
-      </section>
+      </div>
 
       {open && (
-        <Modal title={editingId ? "Edit Template" : "New Template"} onClose={() => setOpen(false)} width="max-w-6xl">
-          <form onSubmit={save} className="flex flex-col gap-6">
-            {formErr && <Banner>{formErr}</Banner>}
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-              <div className="flex min-w-0 flex-col gap-5">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <label className="flex flex-col gap-1.5">
-                    <span className="lbl">Template Name</span>
-                    <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Engineer L1" required />
-                  </label>
-                  <label className="flex flex-col gap-1.5">
-                    <span className="lbl">Pay Frequency</span>
-                    <select className="input" value={payFrequency} onChange={(e) => setPayFrequency(e.target.value as PayFrequency)}>
-                      <option value="MONTHLY">MONTHLY</option>
-                      <option value="WEEKLY">WEEKLY</option>
-                    </select>
-                  </label>
-                  <label className="flex flex-col gap-1.5 sm:col-span-2">
-                    <span className="lbl">Description (optional)</span>
-                    <input className="input" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Standard package for L1 engineers" />
-                  </label>
-                </div>
-
-                <LineSection title="Earnings" rows={earnings} setRows={setEarnings} earningCodes={earningCodes} />
-                <LineSection title="Deductions" rows={deductions} setRows={setDeductions} earningCodes={earningCodes} />
-
-                <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="material-symbols-rounded text-[20px] text-[var(--color-primary)]">verified_user</span>
-                    <span className="font-semibold">Statutory Compliance</span>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <ToggleRow icon="savings" title="Provident Fund (EPF)" desc="12% employee + employer." checked={pfEnabled} onChange={setPfEnabled}>
-                      {pfEnabled && (
-                        <label className="mt-2 flex items-center gap-2 text-xs text-[var(--color-muted)]">
-                          <input type="checkbox" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
-                          <span>Cap PF wage at the ₹15,000 ceiling</span>
-                        </label>
-                      )}
-                    </ToggleRow>
-                    <ToggleRow icon="health_and_safety" title="ESI" desc="When gross ≤ ₹21,000." checked={esiEnabled} onChange={setEsiEnabled} />
-                    <ToggleRow icon="account_balance_wallet" title="Professional Tax" desc="By the employee's state slab." checked={ptEnabled} onChange={setPtEnabled} />
-                    <ToggleRow icon="account_balance" title="Income Tax (TDS)" desc="Estimated from the IT declaration." checked={tdsEnabled} onChange={setTdsEnabled} />
-                  </div>
-                </div>
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#15171C]/40 backdrop-blur-sm">
+          <Card padding="none" className="w-full max-w-6xl my-auto shadow-[0_24px_60px_rgba(15,23,42,0.22)] overflow-hidden">
+            <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#E8EAED]">
+              <div className="flex items-center gap-2.5">
+                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                  <Copy className="w-[18px] h-[18px]" />
+                </span>
+                <h3 className="text-[16px] font-bold text-[#15171C]">{editingId ? "Edit Template" : "New Template"}</h3>
               </div>
-
-              {/* Live preview at a sample CTC */}
-              <div className="lg:sticky lg:top-0 lg:self-start">
-                <div className="overflow-hidden rounded-xl border border-[var(--color-primary)]/30 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-bg)]">
-                  <div className="border-b border-[var(--color-border)] px-4 py-2.5">
-                    <span className="flex items-center gap-2 text-sm font-semibold">
-                      <span className="material-symbols-rounded text-[18px] text-[var(--color-primary)]">calculate</span>
-                      Preview at sample CTC
-                      {previewing && <span className="text-xs font-normal text-[var(--color-muted)]">updating…</span>}
-                    </span>
-                  </div>
-                  <div className="px-4 py-3">
-                    <label className="flex flex-col gap-1.5">
-                      <span className="lbl">Sample Annual CTC</span>
-                      <input type="number" className="input" value={sampleCtc} onChange={(e) => setSampleCtc(e.target.value)} />
-                      {!ctcDriven && (
-                        <span className="text-xs text-[var(--color-warn)]">
-                          No earning line is anchored to CTC, so changing this won&apos;t affect the
-                          numbers. Add a <strong>Balance (CTC)</strong> line or a{" "}
-                          <strong>Percent … of CTC</strong> line to make the package CTC-driven.
-                        </span>
-                      )}
-                    </label>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 px-4 pb-3">
-                    <Stat label="Gross" value={inr(gross, currency)} />
-                    <Stat label="Deductions" value={`- ${inr(totalDeductions, currency)}`} tone="text-[var(--color-danger)]" />
-                    <Stat label="Net" value={inr(net, currency)} tone="text-[var(--color-accent)]" big />
-                  </div>
-                  {earningLines.length > 0 && (
-                    <div className="border-t border-[var(--color-border)] px-4 py-3">
-                      <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted)]">Earnings breakdown</div>
-                      <div className="flex flex-col gap-1">
-                        {earningLines.map((l) => (
-                          <div key={l.code} className="flex justify-between text-sm">
-                            <span className="text-[var(--color-muted)]">{l.label}</span>
-                            <span className="font-medium">{inr(l.amount, currency)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {deductionLines.length > 0 && (
-                    <div className="border-t border-[var(--color-border)] px-4 py-3">
-                      <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted)]">Deduction breakdown</div>
-                      <div className="flex flex-col gap-1">
-                        {deductionLines.map((l) => (
-                          <div key={l.code} className="flex justify-between text-sm">
-                            <span className="text-[var(--color-muted)]">{l.label}</span>
-                            <span className="font-medium text-[var(--color-danger)]">- {inr(l.amount, currency)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 border-t border-[var(--color-border)] pt-4">
-              <button type="button" onClick={() => setOpen(false)} className="btn-ghost px-8">Cancel</button>
-              <button type="submit" disabled={saving} style={{ width: "auto" }} className="btn-primary px-8">
-                {saving ? "Saving…" : editingId ? "Update Template" : "Save Template"}
+              <button
+                onClick={() => setOpen(false)}
+                className="w-8 h-8 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+              >
+                <X className="w-4 h-4" />
               </button>
             </div>
-          </form>
-        </Modal>
+
+            <form onSubmit={save} className="flex flex-col gap-6 p-6">
+              {formErr && (
+                <div className="flex items-start gap-2.5 rounded-[12px] border border-[#F7D7D7] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+                  <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span>{formErr}</span>
+                </div>
+              )}
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+                <div className="flex min-w-0 flex-col gap-5">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Field label="Template Name" htmlFor="tpl-name" required>
+                      <Input id="tpl-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Engineer L1" required />
+                    </Field>
+                    <Field label="Pay Frequency" htmlFor="tpl-freq">
+                      <Select id="tpl-freq" value={payFrequency} onChange={(e) => setPayFrequency(e.target.value as PayFrequency)}>
+                        <option value="MONTHLY">MONTHLY</option>
+                        <option value="WEEKLY">WEEKLY</option>
+                      </Select>
+                    </Field>
+                    <Field label="Description (optional)" htmlFor="tpl-desc" className="sm:col-span-2">
+                      <Input id="tpl-desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Standard package for L1 engineers" />
+                    </Field>
+                  </div>
+
+                  <LineSection title="Earnings" rows={earnings} setRows={setEarnings} earningCodes={earningCodes} />
+                  <LineSection title="Deductions" rows={deductions} setRows={setDeductions} earningCodes={earningCodes} />
+
+                  <div className="rounded-[14px] border border-[#E8EAED] bg-[#F7F8FA]/60 p-4">
+                    <div className="mb-3 flex items-center gap-2">
+                      <ShieldCheck className="w-[18px] h-[18px] text-[#5B53E0]" />
+                      <span className="text-[14px] font-bold text-[#15171C]">Statutory Compliance</span>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <ToggleRow icon="savings" title="Provident Fund (EPF)" desc="12% employee + employer." checked={pfEnabled} onChange={setPfEnabled}>
+                        {pfEnabled && (
+                          <label className="mt-2 flex items-center gap-2 text-[12px] text-[#8A929E]">
+                            <input type="checkbox" className="accent-[#5B53E0]" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
+                            <span>Cap PF wage at the ₹15,000 ceiling</span>
+                          </label>
+                        )}
+                      </ToggleRow>
+                      <ToggleRow icon="health_and_safety" title="ESI" desc="When gross ≤ ₹21,000." checked={esiEnabled} onChange={setEsiEnabled} />
+                      <ToggleRow icon="account_balance_wallet" title="Professional Tax" desc="By the employee's state slab." checked={ptEnabled} onChange={setPtEnabled} />
+                      <ToggleRow icon="account_balance" title="Income Tax (TDS)" desc="Estimated from the IT declaration." checked={tdsEnabled} onChange={setTdsEnabled} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Live preview at a sample CTC */}
+                <div className="lg:sticky lg:top-0 lg:self-start">
+                  <div className="overflow-hidden rounded-[14px] border border-[#DAD7F6] bg-gradient-to-br from-[#ECEBFB] to-white">
+                    <div className="border-b border-[#E8EAED] px-4 py-3">
+                      <span className="flex items-center gap-2 text-[13.5px] font-bold text-[#15171C]">
+                        <Calculator className="w-4 h-4 text-[#5B53E0]" />
+                        Preview at sample CTC
+                        {previewing && <span className="text-[11px] font-medium text-[#8A929E]">updating…</span>}
+                      </span>
+                    </div>
+                    <div className="px-4 py-3">
+                      <Field label="Sample Annual CTC" htmlFor="tpl-sample-ctc">
+                        <Input id="tpl-sample-ctc" type="number" value={sampleCtc} onChange={(e) => setSampleCtc(e.target.value)} />
+                      </Field>
+                      {!ctcDriven && (
+                        <p className="mt-1.5 text-[12px] text-[#D97706]">
+                          No earning line is anchored to CTC, so changing this won&apos;t affect the numbers. Add a{" "}
+                          <strong>Balance (CTC)</strong> line or a <strong>Percent … of CTC</strong> line to make the package CTC-driven.
+                        </p>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 px-4 pb-3">
+                      <PreviewStat label="Gross" value={inr(gross, currency)} />
+                      <PreviewStat label="Deductions" value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C0383C]" />
+                      <PreviewStat label="Net" value={inr(net, currency)} tone="text-[#0E8A6E]" big />
+                    </div>
+                    {earningLines.length > 0 && (
+                      <div className="border-t border-[#E8EAED] px-4 py-3">
+                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Earnings breakdown</div>
+                        <div className="flex flex-col gap-1">
+                          {earningLines.map((l) => (
+                            <div key={l.code} className="flex justify-between text-[13px]">
+                              <span className="text-[#8A929E]">{l.label}</span>
+                              <span className={`font-medium text-[#15171C] ${jetbrainsMono.className}`}>{inr(l.amount, currency)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {deductionLines.length > 0 && (
+                      <div className="border-t border-[#E8EAED] px-4 py-3">
+                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Deduction breakdown</div>
+                        <div className="flex flex-col gap-1">
+                          {deductionLines.map((l) => (
+                            <div key={l.code} className="flex justify-between text-[13px]">
+                              <span className="text-[#8A929E]">{l.label}</span>
+                              <span className={`font-medium text-[#C0383C] ${jetbrainsMono.className}`}>- {inr(l.amount, currency)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
+                <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+                <Button type="submit" disabled={saving}>
+                  {saving ? "Saving…" : editingId ? "Update Template" : "Save Template"}
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </div>
       )}
 
       {applyFor && (
@@ -543,98 +674,107 @@ function ApplyModal({
   }
 
   return (
-    <Modal title={`Apply "${template.name}"`} onClose={onClose} width="max-w-3xl">
-      <div className="flex flex-col gap-5">
-        {err && <Banner>{err}</Banner>}
-        <p className="text-sm text-[var(--color-muted)]">
-          Each selected employee gets a salary structure generated from this template, scaled to
-          their own CTC. Leave an employee&apos;s CTC blank to use the default.
-        </p>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <label className="flex flex-col gap-1.5">
-            <span className="lbl">Default Annual CTC</span>
-            <input type="number" className="input" value={defaultCtc} onChange={(e) => setDefaultCtc(e.target.value)} />
-          </label>
-          <label className="flex flex-col gap-1.5">
-            <span className="lbl">Effective From</span>
-            <input type="date" className="input" value={effectiveFrom} onChange={(e) => setEffectiveFrom(e.target.value)} />
-          </label>
-        </div>
-
-        <div className="max-h-72 overflow-y-auto rounded-xl border border-[var(--color-border)]">
-          <table className="w-full text-left text-sm">
-            <thead className="sticky top-0 bg-[var(--color-card)] text-xs uppercase text-[var(--color-muted)]">
-              <tr className="border-b border-[var(--color-border)]">
-                <th className="px-4 py-2.5 w-10" />
-                <th className="px-4 py-2.5 font-semibold">Employee</th>
-                <th className="px-4 py-2.5 text-right font-semibold">CTC (override)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {employees.length === 0 && (
-                <tr><td colSpan={3} className="px-4 py-6 text-center text-[var(--color-muted)]">No employees.</td></tr>
-              )}
-              {employees.map((e) => (
-                <tr key={e.id} className="border-b border-[var(--color-border)] last:border-0">
-                  <td className="px-4 py-2.5">
-                    <input type="checkbox" checked={rows[e.id]?.checked ?? false} onChange={() => toggle(e.id)} />
-                  </td>
-                  <td className="px-4 py-2.5">
-                    <div className="font-medium">{e.first_name} {e.last_name}</div>
-                    {e.email && <div className="text-xs text-[var(--color-muted)]">{e.email}</div>}
-                  </td>
-                  <td className="px-4 py-2.5 text-right">
-                    <input
-                      type="number"
-                      className="input w-36 text-right"
-                      placeholder={defaultCtc}
-                      value={rows[e.id]?.ctc ?? ""}
-                      onChange={(ev) => setRows((r) => ({ ...r, [e.id]: { ...r[e.id], ctc: ev.target.value } }))}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={replaceExisting} onChange={(e) => setReplaceExisting(e.target.checked)} />
-          <span>Replace an existing active structure (otherwise that employee is skipped)</span>
-        </label>
-
-        <div className="flex justify-end gap-3 border-t border-[var(--color-border)] pt-4">
-          <button type="button" onClick={onClose} className="btn-ghost px-8">Cancel</button>
-          <button type="button" onClick={submit} disabled={busy} style={{ width: "auto" }} className="btn-primary px-8">
-            {busy ? "Applying…" : `Apply to ${selected.length || ""} employee${selected.length === 1 ? "" : "s"}`.trim()}
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#15171C]/40 backdrop-blur-sm">
+      <Card padding="none" className="w-full max-w-3xl my-auto shadow-[0_24px_60px_rgba(15,23,42,0.22)] overflow-hidden">
+        <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#E8EAED]">
+          <div className="flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-[18px] h-[18px]" />
+            </span>
+            <h3 className="text-[16px] font-bold text-[#15171C]">Apply &ldquo;{template.name}&rdquo;</h3>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+          >
+            <X className="w-4 h-4" />
           </button>
         </div>
-      </div>
-    </Modal>
+
+        <div className="flex flex-col gap-5 p-6">
+          {err && (
+            <div className="flex items-start gap-2.5 rounded-[12px] border border-[#F7D7D7] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>{err}</span>
+            </div>
+          )}
+          <p className="text-[13px] text-[#8A929E]">
+            Each selected employee gets a salary structure generated from this template, scaled to their own CTC. Leave an employee&apos;s CTC blank to use the default.
+          </p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Field label="Default Annual CTC" htmlFor="apply-default-ctc">
+              <Input id="apply-default-ctc" type="number" value={defaultCtc} onChange={(e) => setDefaultCtc(e.target.value)} />
+            </Field>
+            <Field label="Effective From" htmlFor="apply-effective-from">
+              <Input id="apply-effective-from" type="date" value={effectiveFrom} onChange={(e) => setEffectiveFrom(e.target.value)} />
+            </Field>
+          </div>
+
+          <div className="max-h-72 overflow-y-auto rounded-[12px] border border-[#E8EAED]">
+            <table className="w-full text-left text-[13px]">
+              <thead className="sticky top-0 bg-[#F7F8FA] text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
+                <tr className="border-b border-[#E8EAED]">
+                  <th className="px-4 py-2.5 w-10" />
+                  <th className="px-4 py-2.5">Employee</th>
+                  <th className="px-4 py-2.5 text-right">CTC (override)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F0F0F1]">
+                {employees.length === 0 && (
+                  <tr><td colSpan={3} className="px-4 py-6 text-center text-[#8A929E]">No employees.</td></tr>
+                )}
+                {employees.map((e) => (
+                  <tr key={e.id} className="hover:bg-[#F7F8FA]/60 transition-colors">
+                    <td className="px-4 py-2.5">
+                      <input type="checkbox" className="accent-[#5B53E0]" checked={rows[e.id]?.checked ?? false} onChange={() => toggle(e.id)} />
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <div className="font-bold text-[#15171C]">{e.first_name} {e.last_name}</div>
+                      {e.email && <div className="text-[12px] text-[#8A929E]">{e.email}</div>}
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
+                      <Input
+                        type="number"
+                        className={`w-36 ml-auto text-right ${jetbrainsMono.className}`}
+                        placeholder={defaultCtc}
+                        value={rows[e.id]?.ctc ?? ""}
+                        onChange={(ev) => setRows((r) => ({ ...r, [e.id]: { ...r[e.id], ctc: ev.target.value } }))}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <label className="flex items-center gap-2 text-[13px] text-[#374151]">
+            <input type="checkbox" className="accent-[#5B53E0]" checked={replaceExisting} onChange={(e) => setReplaceExisting(e.target.checked)} />
+            <span>Replace an existing active structure (otherwise that employee is skipped)</span>
+          </label>
+
+          <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
+            <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button type="button" onClick={submit} disabled={busy}>
+              {busy ? "Applying…" : `Apply to ${selected.length || ""} employee${selected.length === 1 ? "" : "s"}`.trim()}
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
 // Shared bits
 // ---------------------------------------------------------------------------
-function Stat({ label, value, tone = "text-[var(--color-text)]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
+function PreviewStat({ label, value, tone = "text-[#15171C]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
   return (
     <div className="min-w-0">
-      <div className="text-xs text-[var(--color-muted)]">{label}</div>
-      <div
-        className={`font-bold tabular-nums leading-tight break-words ${tone} ${big ? "text-base" : "text-sm"}`}
-      >
+      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{label}</div>
+      <div className={`font-bold tabular-nums leading-tight break-words ${tone} ${jetbrainsMono.className} ${big ? "text-[15px]" : "text-[13px]"}`}>
         {value}
       </div>
     </div>
-  );
-}
-
-function StatChip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-md bg-[var(--color-primary)]/15 px-2 py-0.5 text-xs font-semibold text-[var(--color-primary)]">
-      {children}
-    </span>
   );
 }
 
@@ -645,9 +785,9 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${checked ? "bg-[var(--color-primary)]" : "bg-[var(--color-hover)]"}`}
+      className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${checked ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
     >
-      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${checked ? "translate-x-[18px]" : "translate-x-0.5"}`} />
+      <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${checked ? "translate-x-[18px]" : "translate-x-0.5"}`} />
     </button>
   );
 }
@@ -668,14 +808,14 @@ function ToggleRow({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`rounded-lg border p-3 transition-colors ${checked ? "border-[var(--color-primary)]/40 bg-[var(--color-primary)]/5" : "border-[var(--color-border)] bg-[var(--color-card)]"}`}>
+    <div className={`rounded-[10px] border p-3 transition-colors ${checked ? "border-[#DAD7F6] bg-[#ECEBFB]/50" : "border-[#E8EAED] bg-white"}`}>
       <div className="flex items-center gap-3">
-        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${checked ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)]" : "bg-[var(--color-hover)] text-[var(--color-muted)]"}`}>
+        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] ${checked ? "bg-[#ECEBFB] text-[#5B53E0]" : "bg-[#F1F2F5] text-[#8A929E]"}`}>
           <span className="material-symbols-rounded text-[18px]">{icon}</span>
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-semibold">{title}</div>
-          <div className="text-xs text-[var(--color-muted)]">{desc}</div>
+          <div className="text-[13.5px] font-semibold text-[#15171C]">{title}</div>
+          <div className="text-[12px] text-[#8A929E]">{desc}</div>
         </div>
         <Toggle checked={checked} onChange={onChange} />
       </div>
@@ -698,42 +838,54 @@ function LineSection({
   const update = (i: number, patch: Partial<LineDraft>) =>
     setRows(rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
+    <div className="rounded-[14px] border border-[#E8EAED] bg-[#F7F8FA]/60 p-4">
       <div className="mb-3 flex items-center justify-between">
-        <span className="font-semibold">{title}</span>
-        <button type="button" onClick={() => setRows([...rows, emptyLine()])} className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs hover:bg-[var(--color-hover)]">
-          + Add line
+        <span className="flex items-center gap-2 text-[14px] font-bold text-[#15171C]">
+          <Layers className="w-4 h-4 text-[#5B53E0]" />
+          {title}
+        </span>
+        <button
+          type="button"
+          onClick={() => setRows([...rows, emptyLine()])}
+          className="inline-flex items-center gap-1 rounded-[8px] border border-[#E1E4E8] bg-white px-2.5 py-1 text-[12px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" /> Add line
         </button>
       </div>
       <div className="flex flex-col gap-2">
-        {rows.length === 0 && <p className="text-xs text-[var(--color-muted)]">No lines.</p>}
+        {rows.length === 0 && <p className="text-[12px] text-[#8A929E]">No lines.</p>}
         {rows.map((r, i) => (
           <div key={i} className="grid grid-cols-12 items-center gap-2">
-            <input className="input col-span-2" placeholder="CODE" value={r.code} onChange={(e) => update(i, { code: e.target.value.toUpperCase() })} />
-            <input className="input col-span-3" placeholder="Label" value={r.label} onChange={(e) => update(i, { label: e.target.value })} />
-            <select className="input col-span-2" value={r.type} onChange={(e) => update(i, { type: e.target.value as LineDraft["type"] })}>
+            <Input className="col-span-2 h-10" placeholder="CODE" value={r.code} onChange={(e) => update(i, { code: e.target.value.toUpperCase() })} />
+            <Input className="col-span-3 h-10" placeholder="Label" value={r.label} onChange={(e) => update(i, { label: e.target.value })} />
+            <Select className="col-span-2 h-10" value={r.type} onChange={(e) => update(i, { type: e.target.value as LineDraft["type"] })}>
               <option value="fixed">Fixed</option>
               <option value="percent">Percent</option>
               <option value="balance">Balance (CTC)</option>
-            </select>
+            </Select>
             {r.type === "fixed" ? (
-              <input className="input col-span-4" type="number" placeholder="Amount" value={r.amount} onChange={(e) => update(i, { amount: e.target.value })} />
+              <Input className="col-span-4 h-10" type="number" placeholder="Amount" value={r.amount} onChange={(e) => update(i, { amount: e.target.value })} />
             ) : r.type === "balance" ? (
-              <span className="col-span-4 self-center text-xs text-[var(--color-muted)]">Absorbs the remaining CTC.</span>
+              <span className="col-span-4 self-center text-[12px] text-[#8A929E]">Absorbs the remaining CTC.</span>
             ) : (
               <>
-                <input className="input col-span-2" type="number" placeholder="%" value={r.percent} onChange={(e) => update(i, { percent: e.target.value })} />
-                <select className="input col-span-2" value={r.percent_of} onChange={(e) => update(i, { percent_of: e.target.value })}>
+                <Input className="col-span-2 h-10" type="number" placeholder="%" value={r.percent} onChange={(e) => update(i, { percent: e.target.value })} />
+                <Select className="col-span-2 h-10" value={r.percent_of} onChange={(e) => update(i, { percent_of: e.target.value })}>
                   <option value="">of gross</option>
                   <option value="CTC">of CTC</option>
                   {earningCodes.filter((c) => c && c !== r.code).map((c) => (
                     <option key={c} value={c}>of {c}</option>
                   ))}
-                </select>
+                </Select>
               </>
             )}
-            <button type="button" onClick={() => setRows(rows.filter((_, idx) => idx !== i))} className="col-span-1 flex justify-center text-[var(--color-danger)]">
-              <span className="material-symbols-rounded text-[20px]">delete</span>
+            <button
+              type="button"
+              onClick={() => setRows(rows.filter((_, idx) => idx !== i))}
+              className="col-span-1 flex justify-center text-[#9AA3AF] hover:text-[#C0383C] transition-colors"
+              title="Remove line"
+            >
+              <Trash2 className="w-4 h-4" />
             </button>
           </div>
         ))}
