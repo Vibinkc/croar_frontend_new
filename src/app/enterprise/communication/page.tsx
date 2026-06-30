@@ -23,8 +23,25 @@ interface Email {
     direction: "INBOUND" | "OUTBOUND";
     status: string;
     is_read: boolean;
+    is_favorite?: boolean;
+    is_trashed?: boolean;
     sent_at: string;
     candidate_name?: string;
+}
+
+interface CandidateFit {
+    available: boolean;
+    candidate_name?: string;
+    job_title?: string | null;
+    ai_match_score?: number | null;
+    skill_match_percent?: number | null;
+    experience_fit?: number | null;
+    ranking_position?: number | null;
+    current_stage?: number | null;
+    fit_reason?: string | null;
+    not_fit_reason?: string | null;
+    highlights?: string[];
+    skills?: string[];
 }
 
 const MailboxPage = () => {
@@ -41,17 +58,33 @@ const MailboxPage = () => {
     const [isSending, setIsSending] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [fit, setFit] = useState<{ open: boolean; loading: boolean; data: CandidateFit | null; error: string | null }>({ open: false, loading: false, data: null, error: null });
+
+    const openCandidateFit = async () => {
+        if (!selectedEmail || !token) return;
+        setFit({ open: true, loading: true, data: null, error: null });
+        try {
+            const resp = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/logs/${selectedEmail.id}/candidate-fit`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (resp.ok) {
+                setFit({ open: true, loading: false, data: await resp.json() as CandidateFit, error: null });
+            } else {
+                setFit({ open: true, loading: false, data: null, error: "Couldn't load candidate fit for this email." });
+            }
+        } catch {
+            setFit({ open: true, loading: false, data: null, error: "Couldn't load candidate fit for this email." });
+        }
+    };
 
     const fetchEmails = async (direction: string) => {
         if (!token) return;
-        if (direction === 'FAVORITE' || direction === 'TRASH') {
-            setEmails([]);
-            setIsLoading(false);
-            return;
-        }
         setIsLoading(true);
         try {
-            const resp = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/logs?direction=${direction}`, {
+            const qs = direction === 'FAVORITE' ? 'favorite=true'
+                : direction === 'TRASH' ? 'trashed=true'
+                : `direction=${direction}`;
+            const resp = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/logs?${qs}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -108,6 +141,66 @@ const MailboxPage = () => {
             console.error("Failed to mark as read", err);
         }
     };
+
+    const logsBase = `${BACKEND_URL}/api/v1/enterprise/communication/logs`;
+    const callLog = async (url: string, method: string) => {
+        if (!token) return null;
+        try {
+            const resp = await fetch(url, { method, headers: { "Authorization": `Bearer ${token}` } });
+            return resp.ok ? (await resp.json().catch(() => ({}))) : null;
+        } catch { return null; }
+    };
+
+    const toggleFavorite = async (email: Email) => {
+        const res = await callLog(`${logsBase}/${email.id}/favorite`, 'PATCH');
+        if (!res) return;
+        const fav = !!res.is_favorite;
+        setEmails(prev => (activeTab === 'FAVORITE' && !fav)
+            ? prev.filter(e => e.id !== email.id)
+            : prev.map(e => e.id === email.id ? { ...e, is_favorite: fav } : e));
+        setSelectedEmail(s => (s && s.id === email.id) ? { ...s, is_favorite: fav } : s);
+        setStatusMsg({ type: 'success', text: fav ? 'Added to Favorites' : 'Removed from Favorites' });
+        setTimeout(() => setStatusMsg(null), 2500);
+    };
+
+    const moveToTrash = async (email: Email) => {
+        if (!(await callLog(`${logsBase}/${email.id}/trash`, 'PATCH'))) return;
+        setEmails(prev => prev.filter(e => e.id !== email.id));
+        if (selectedEmail?.id === email.id) setSelectedEmail(null);
+        setStatusMsg({ type: 'success', text: 'Moved to Trash' });
+        setTimeout(() => setStatusMsg(null), 2500);
+    };
+
+    const restoreFromTrash = async (email: Email) => {
+        if (!(await callLog(`${logsBase}/${email.id}/trash?trashed=false`, 'PATCH'))) return;
+        setEmails(prev => prev.filter(e => e.id !== email.id));
+        if (selectedEmail?.id === email.id) setSelectedEmail(null);
+        setStatusMsg({ type: 'success', text: 'Restored to its folder' });
+        setTimeout(() => setStatusMsg(null), 2500);
+    };
+
+    const deletePermanently = async (email: Email) => {
+        if (!(await callLog(`${logsBase}/${email.id}`, 'DELETE'))) return;
+        setEmails(prev => prev.filter(e => e.id !== email.id));
+        if (selectedEmail?.id === email.id) setSelectedEmail(null);
+        setStatusMsg({ type: 'success', text: 'Deleted permanently' });
+        setTimeout(() => setStatusMsg(null), 2500);
+    };
+
+    // Quietly pull new inbound replies on first load so they appear without a
+    // manual sync (best-effort — silently ignored if IMAP isn't configured).
+    useEffect(() => {
+        if (!token) return;
+        (async () => {
+            try {
+                const resp = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/sync-imap`, {
+                    method: 'POST', headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (resp.ok) fetchEmails(activeTab);
+            } catch { /* IMAP may be unconfigured — ignore */ }
+        })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
 
     const handleSmartReply = async () => {
         if (!selectedEmail || !token) return;
@@ -195,11 +288,16 @@ const MailboxPage = () => {
         setSmartReply('');
     }, [selectedEmail]);
 
-    const filteredEmails = Array.isArray(emails) ? emails.filter((e: Email) =>
-        (e.subject?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-        (e.sender_email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-        (e.recipient_email?.toLowerCase() || "").includes(searchQuery.toLowerCase())
-    ) : [];
+    const filteredEmails = Array.isArray(emails) ? emails.filter((e: Email) => {
+        const q = searchQuery.toLowerCase();
+        const bodyText = (e.body || "").replace(/<[^>]{0,4096}>/g, " ").toLowerCase();
+        return (
+            (e.subject?.toLowerCase() || "").includes(q) ||
+            (e.sender_email?.toLowerCase() || "").includes(q) ||
+            (e.recipient_email?.toLowerCase() || "").includes(q) ||
+            bodyText.includes(q)
+        );
+    }) : [];
 
     return (
         <div className="flex flex-col h-full bg-[#F4F5F7] overflow-hidden animate-in fade-in duration-500">
@@ -409,9 +507,18 @@ const MailboxPage = () => {
                                 {canAccess("communications:create") && (
                                     <Button variant="outline" size="sm" className="rounded-full" onClick={openReply}><Reply className="w-3 h-3 mr-2" /> Reply</Button>
                                 )}
-                                <Button variant="outline" size="sm" className="rounded-full" onClick={() => setStatusMsg({ type: 'success', text: "Added to Favorites (Local Only)" })}><Star className="w-3 h-3" /></Button>
-                                {canAccess("communications:delete") && (
-                                    <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" onClick={() => setStatusMsg({ type: 'error', text: "Moved to Trash (Local Only)" })}><Trash2 className="w-3 h-3" /></Button>
+                                <Button variant="outline" size="sm" className={`rounded-full ${selectedEmail.is_favorite ? 'text-[#D97706]' : ''}`} title={selectedEmail.is_favorite ? 'Remove from favorites' : 'Add to favorites'} onClick={() => toggleFavorite(selectedEmail)}><Star className={`w-3 h-3 ${selectedEmail.is_favorite ? 'fill-current' : ''}`} /></Button>
+                                {activeTab === 'TRASH' ? (
+                                    <>
+                                        <Button variant="outline" size="sm" className="rounded-full" title="Restore" onClick={() => restoreFromTrash(selectedEmail)}><RotateCcw className="w-3 h-3" /></Button>
+                                        {canAccess("communications:delete") && (
+                                            <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" title="Delete permanently" onClick={() => deletePermanently(selectedEmail)}><Trash2 className="w-3 h-3" /></Button>
+                                        )}
+                                    </>
+                                ) : (
+                                    canAccess("communications:delete") && (
+                                        <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" title="Move to trash" onClick={() => moveToTrash(selectedEmail)}><Trash2 className="w-3 h-3" /></Button>
+                                    )
                                 )}
                             </div>
                             <div className="flex gap-2">
@@ -467,8 +574,8 @@ const MailboxPage = () => {
 
                                 {/* AI Agent Sidebar Section */}
                                 <div className="mt-10 p-6 bg-[#ECEBFB]/40 rounded-[14px] border border-[#DAD7F6] relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                        <Brain className="w-24 h-24" />
+                                    <div className="absolute -top-3 -right-3 p-4 text-[#5B53E0] opacity-[0.05] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
+                                        <Brain className="w-20 h-20" />
                                     </div>
                                     <div className="relative z-10">
                                         <div className="flex items-center gap-3 mb-4">
@@ -476,19 +583,26 @@ const MailboxPage = () => {
                                                 <Brain className="w-3 h-3 mr-1" /> AI Agent Analysis
                                             </Badge>
                                         </div>
-                                        <p className="text-sm text-[#374151] mb-4 ">
-                                            &quot;The AI has analyzed this message. You can generate a smart reply based on candidates requirements and the job context.&quot;
-                                        </p>
-
-                                        {smartReply && (
-                                            <div className="mb-4 p-4 bg-white/50 rounded-[10px] border border-[#DAD7F6] text-sm text-[#374151] animate-in slide-in-from-top-2">
-                                                <div className="font-bold text-xs text-[#5B53E0] mb-2  ">Suggested Reply:</div>
-                                                {smartReply}
-                                            </div>
+                                        {selectedEmail.direction === 'INBOUND' ? (
+                                            <>
+                                                <p className="text-sm text-[#374151] mb-4">
+                                                    The AI can draft a reply to this message using the candidate&apos;s details and the job context.
+                                                </p>
+                                                {smartReply && (
+                                                    <div className="mb-4 p-4 bg-white/50 rounded-[10px] border border-[#DAD7F6] text-sm text-[#374151] animate-in slide-in-from-top-2">
+                                                        <div className="font-bold text-xs text-[#5B53E0] mb-2">Suggested Reply:</div>
+                                                        {smartReply}
+                                                    </div>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <p className="text-sm text-[#374151] mb-4">
+                                                Smart replies are generated only for incoming messages from candidates. You can still review this candidate&apos;s fit below.
+                                            </p>
                                         )}
 
                                         <div className="flex gap-2 mt-2">
-                                            {canAccess("communications:moderate") && (
+                                            {selectedEmail.direction === 'INBOUND' && canAccess("communications:moderate") && (
                                                 <Button
                                                     size="sm"
                                                     className="bg-[#5B53E0] hover:bg-[#4A43C9] font-bold text-xs shadow-lg shadow-[#DAD7F6]"
@@ -499,10 +613,10 @@ const MailboxPage = () => {
                                                 </Button>
                                             )}
                                             
-                                            {canAccess("communications:create") && smartReply && (
-                                                <Button 
-                                                    size="sm" 
-                                                    variant="secondary" 
+                                            {selectedEmail.direction === 'INBOUND' && canAccess("communications:create") && smartReply && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="secondary"
                                                     className="bg-white border-[#DAD7F6] text-[#4A43C9] hover:bg-[#ECEBFB]"
                                                     onClick={() => {
                                                         const cleanReply = smartReply.replace(/Suggested Reply:\s*/, "");
@@ -522,9 +636,7 @@ const MailboxPage = () => {
                                                 size="sm" 
                                                 variant="ghost" 
                                                 className="text-[#5B53E0]"
-                                                onClick={() => {
-                                                    alert("Candidate Fit Analysis: \n- AI Score: 85/100 \n- Strong Skills: Project Management, Communication \n- Recommendation: Proceed to Interview Round");
-                                                }}
+                                                onClick={openCandidateFit}
                                             >
                                                 View Candidate Fit
                                             </Button>
@@ -548,6 +660,103 @@ const MailboxPage = () => {
                 )}
             </div>
             </div>
+            {/* Candidate Fit — real AI metrics for the selected email's candidate */}
+            {fit.open && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-[#15171C]/50 backdrop-blur-sm" onClick={() => setFit(f => ({ ...f, open: false }))} />
+                    <div className="relative z-10 w-full max-w-[460px] max-h-[88vh] overflow-y-auto bg-white rounded-[16px] border border-[#E8EAED] shadow-[0_22px_60px_rgba(15,23,42,0.24)]">
+                        <div className="px-5 py-4 border-b border-[#E8EAED] flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0"><Brain className="w-[18px] h-[18px]" /></span>
+                                <div className="min-w-0">
+                                    <h3 className="text-[15px] font-bold text-[#15171C] leading-tight truncate">Candidate fit</h3>
+                                    <p className="text-[12px] text-[#8A929E] truncate">{fit.data?.candidate_name || selectedEmail?.candidate_name || "Candidate"}{fit.data?.job_title ? ` · ${fit.data.job_title}` : ""}</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setFit(f => ({ ...f, open: false }))} className="w-7 h-7 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors shrink-0"><X className="w-4 h-4" /></button>
+                        </div>
+
+                        <div className="p-5">
+                            {fit.loading ? (
+                                <div className="flex items-center justify-center py-12"><div className="w-7 h-7 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin" /></div>
+                            ) : fit.error ? (
+                                <p className="text-[13px] text-[#C0383C] py-8 text-center">{fit.error}</p>
+                            ) : !fit.data?.available ? (
+                                <div className="text-center py-10">
+                                    <div className="w-12 h-12 rounded-[12px] bg-[#F4F5F7] text-[#9AA3AF] flex items-center justify-center mx-auto mb-3"><Brain className="w-6 h-6" /></div>
+                                    <p className="text-[13.5px] font-semibold text-[#15171C]">No AI fit analysis yet</p>
+                                    <p className="text-[12.5px] text-[#8A929E] mt-1 max-w-xs mx-auto">This candidate doesn&apos;t have an AI fit score for this role yet — it&apos;s generated when they apply with a resume.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-5">
+                                    {fit.data.ai_match_score != null && (
+                                        <div>
+                                            <div className="flex items-end justify-between mb-1.5">
+                                                <span className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E]">Overall match</span>
+                                                <span className="text-[22px] font-bold text-[#15171C] leading-none">{Math.round(fit.data.ai_match_score)}<span className="text-[13px] text-[#9AA3AF] font-semibold"> / 100</span></span>
+                                            </div>
+                                            <div className="h-2.5 rounded-full bg-[#F1F2F5] overflow-hidden"><div className="h-full rounded-full" style={{ width: `${Math.min(100, Math.max(0, fit.data.ai_match_score))}%`, background: "linear-gradient(90deg,#8B7DFF,#5B53E0)" }} /></div>
+                                        </div>
+                                    )}
+
+                                    {(fit.data.skill_match_percent != null || fit.data.experience_fit != null) && (
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {fit.data.skill_match_percent != null && (
+                                                <div className="rounded-[12px] border border-[#E8EAED] p-3">
+                                                    <p className="text-[10.5px] font-bold uppercase tracking-wider text-[#8A929E]">Skill match</p>
+                                                    <p className="text-[18px] font-bold text-[#15171C] mt-1">{Math.round(fit.data.skill_match_percent)}%</p>
+                                                </div>
+                                            )}
+                                            {fit.data.experience_fit != null && (
+                                                <div className="rounded-[12px] border border-[#E8EAED] p-3">
+                                                    <p className="text-[10.5px] font-bold uppercase tracking-wider text-[#8A929E]">Experience fit</p>
+                                                    <p className="text-[18px] font-bold text-[#15171C] mt-1">{Math.round(fit.data.experience_fit)}%</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {fit.data.fit_reason && (
+                                        <div>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#15803D] mb-1.5">Why they fit</p>
+                                            <p className="text-[13px] text-[#374151] leading-relaxed">{fit.data.fit_reason}</p>
+                                        </div>
+                                    )}
+
+                                    {fit.data.not_fit_reason && (
+                                        <div>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#C0383C] mb-1.5">Gaps to probe</p>
+                                            <p className="text-[13px] text-[#374151] leading-relaxed">{fit.data.not_fit_reason}</p>
+                                        </div>
+                                    )}
+
+                                    {fit.data.highlights && fit.data.highlights.length > 0 && (
+                                        <div>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">Highlights</p>
+                                            <ul className="space-y-1.5">
+                                                {fit.data.highlights.map((h, i) => (
+                                                    <li key={i} className="flex gap-2 text-[13px] text-[#374151] leading-relaxed"><span className="text-[#5B53E0] mt-0.5">•</span><span>{h}</span></li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+
+                                    {fit.data.skills && fit.data.skills.length > 0 && (
+                                        <div>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">Key skills</p>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {fit.data.skills.slice(0, 12).map((s, i) => (
+                                                    <span key={i} className="px-2.5 py-1 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] text-[11px] font-semibold">{s}</span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

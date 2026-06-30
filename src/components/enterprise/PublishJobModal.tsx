@@ -9,8 +9,7 @@ import {
     CheckCircle2, 
     AlertCircle,
     Search,
-    Send,
-    ExternalLink
+    Send
 } from "lucide-react";
 import { BACKEND_URL } from "@/utils/api";
 
@@ -97,74 +96,74 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                    <motion.div 
-                        initial={{ opacity: 0 }} 
-                        animate={{ opacity: 1 }} 
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-[#15171C]/50 backdrop-blur-sm"
                     />
-                    
-                    <motion.div 
-                        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+
+                    <motion.div
+                        initial={{ scale: 0.96, opacity: 0, y: 12 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                        className="bg-white w-full max-w-lg rounded-[32px] overflow-hidden shadow-2xl relative z-10 border border-slate-100"
+                        exit={{ scale: 0.96, opacity: 0, y: 12 }}
+                        className="bg-white w-full max-w-[420px] max-h-[88vh] overflow-y-auto rounded-[16px] shadow-[0_22px_60px_rgba(15,23,42,0.24)] relative z-10 border border-[#E8EAED]"
                     >
                         {/* Header */}
-                        <div className="px-8 py-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-100">
-                                    <Globe className="w-5 h-5" />
+                        <div className="px-5 py-4 border-b border-[#E8EAED] flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-9 h-9 rounded-[10px] bg-[#5B53E0] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(91,83,224,0.28)]">
+                                    <Globe className="w-4.5 h-4.5" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-black text-slate-900 leading-none">Publish Job</h3>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Distribute to external portals</p>
+                                    <h3 className="text-[15px] font-bold text-[#15171C] leading-tight">Publish Job</h3>
+                                    <p className="text-[12px] text-[#8A929E] mt-0.5">Distribute to external portals</p>
                                 </div>
                             </div>
-                            <button onClick={onClose} className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
-                                <X className="w-5 h-5" />
+                            <button onClick={onClose} className="w-7 h-7 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors">
+                                <X className="w-4 h-4" />
                             </button>
                         </div>
 
                         {/* Content */}
-                        <div className="p-8 space-y-6">
-                            <div className="p-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
-                                <p className="text-[11px] font-bold text-indigo-600 uppercase tracking-wider mb-1">Target Position</p>
-                                <p className="text-sm font-black text-slate-900">{jobTitle}</p>
+                        <div className="p-5 space-y-4">
+                            <div className="p-3 bg-[#ECEBFB]/50 border border-[#DAD7F6]/60 rounded-[12px]">
+                                <p className="text-[10.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-0.5">Target Position</p>
+                                <p className="text-[14px] font-bold text-[#15171C]">{jobTitle}</p>
                             </div>
 
-                            <div className="space-y-3">
-                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Select Platforms</p>
+                            <div className="space-y-2">
+                                <p className="text-[10.5px] font-bold text-[#8A929E] uppercase tracking-wider ml-0.5">Select Platforms</p>
                                 {PLATFORMS.map((platform) => (
                                     <button
                                         key={platform.id}
                                         disabled={platform.disabled}
                                         onClick={() => togglePlatform(platform.id)}
-                                        className={`w-full p-4 rounded-2xl border transition-all flex items-center justify-between group ${
-                                            platform.disabled ? "opacity-50 cursor-not-allowed bg-slate-50" : 
-                                            selectedPlatforms.includes(platform.id) ? "border-indigo-600 bg-indigo-50/30" : "border-slate-100 hover:border-indigo-200"
+                                        className={`w-full p-3 rounded-[12px] border transition-all flex items-center justify-between gap-3 group ${
+                                            platform.disabled ? "opacity-50 cursor-not-allowed bg-[#F7F8FA]" :
+                                            selectedPlatforms.includes(platform.id) ? "border-[#5B53E0] bg-[#ECEBFB]/30" : "border-[#E8EAED] hover:border-[#5B53E0]/40"
                                         }`}
                                     >
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${platform.bg} ${platform.color} group-hover:scale-110`}>
-                                                <platform.icon className="w-6 h-6" />
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 ${platform.bg} ${platform.color}`}>
+                                                <platform.icon className="w-4.5 h-4.5" />
                                             </div>
-                                            <div className="text-left">
-                                                <p className="text-sm font-black text-slate-900">{platform.name}</p>
-                                                <p className="text-[10px] font-bold text-slate-500">{platform.description}</p>
+                                            <div className="text-left min-w-0">
+                                                <p className="text-[13px] font-bold text-[#15171C]">{platform.name}</p>
+                                                <p className="text-[11.5px] text-[#8A929E] leading-snug">{platform.description}</p>
                                             </div>
                                         </div>
                                         {!platform.disabled && (
-                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                                                selectedPlatforms.includes(platform.id) ? "bg-indigo-600 border-indigo-600" : "border-slate-200"
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                                                selectedPlatforms.includes(platform.id) ? "bg-[#5B53E0] border-[#5B53E0]" : "border-[#CBD0D8]"
                                             }`}>
-                                                {selectedPlatforms.includes(platform.id) && <CheckCircle2 className="w-4 h-4 text-white" />}
+                                                {selectedPlatforms.includes(platform.id) && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                                             </div>
                                         )}
                                         {platform.disabled && (
-                                            <span className="text-[9px] font-black text-slate-400 bg-slate-100 px-2 py-1 rounded-lg uppercase tracking-wider">Coming Soon</span>
+                                            <span className="text-[9px] font-bold text-[#8A929E] bg-[#F1F2F5] px-2 py-1 rounded-[6px] uppercase tracking-wider shrink-0">Coming Soon</span>
                                         )}
                                     </button>
                                 ))}
@@ -172,18 +171,18 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                         </div>
 
                         {/* Footer */}
-                        <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                            <p className="text-[10px] font-bold text-slate-400 max-w-[200px]">
-                                Your job will be shared according to each platform's indexing schedule.
+                        <div className="px-5 py-4 bg-[#F7F8FA] border-t border-[#E8EAED] flex items-center justify-between gap-3">
+                            <p className="text-[11px] text-[#8A929E] max-w-[190px] leading-snug">
+                                Shared according to each platform&apos;s indexing schedule.
                             </p>
-                            
+
                             <button
                                 onClick={handlePublish}
                                 disabled={isSubmitting || selectedPlatforms.length === 0 || status === "success"}
-                                className={`px-8 py-3.5 rounded-2xl font-black text-xs transition-all flex items-center gap-2 active:scale-95 shadow-xl ${
-                                    status === "success" ? "bg-emerald-500 text-white shadow-emerald-200" :
-                                    status === "error" ? "bg-rose-500 text-white shadow-rose-200" :
-                                    "bg-indigo-600 text-white shadow-indigo-200 hover:bg-indigo-700 disabled:opacity-50"
+                                className={`h-10 px-5 rounded-[10px] font-semibold text-[13px] transition-colors flex items-center gap-2 shrink-0 ${
+                                    status === "success" ? "bg-[#15803D] text-white" :
+                                    status === "error" ? "bg-[#EF4444] text-white" :
+                                    "bg-[#5B53E0] text-white shadow-[0_6px_16px_rgba(91,83,224,0.28)] hover:bg-[#4A43C9] disabled:opacity-50"
                                 }`}
                             >
                                 {isSubmitting ? (

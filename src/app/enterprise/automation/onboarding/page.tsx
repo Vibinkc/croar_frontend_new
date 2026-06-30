@@ -109,6 +109,7 @@ export default function OnboardingAutomationPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [automationToDelete, setAutomationToDelete] = useState<OnboardingAutomation | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const showToast = (msg: string | string[] | { msg?: string; detail?: string } | null, type: "success" | "error" = "success") => {
     let finalMsg = "";
@@ -178,12 +179,14 @@ export default function OnboardingAutomationPage() {
 
   const openCreate = () => {
     setEditingId(null);
+    setFormError(null);
     setForm({ ...EMPTY_FORM, job_requirement_id: selectedJobId });
     setShowModal(true);
   };
 
   const openEdit = (a: OnboardingAutomation) => {
     setEditingId(a.id);
+    setFormError(null);
     setForm({
       job_requirement_id: a.job_requirement_id,
       stage_index: a.stage_index,
@@ -199,14 +202,28 @@ export default function OnboardingAutomationPage() {
   const closeModal = () => {
     setShowModal(false);
     setEditingId(null);
+    setFormError(null);
     setForm(EMPTY_FORM);
   };
 
   const handleSave = async () => {
-    if (!form.job_requirement_id || !form.template_id) {
-      showToast("Please select a job and an onboarding template.", "error");
+    // Collect every missing required field — Trigger Stage was previously not
+    // validated, so rules could be saved without picking a stage.
+    const missing: string[] = [];
+    if (!form.job_requirement_id) missing.push("Job Requirement");
+    const stageMissing = jobRounds.length > 0 ? !(Number(form.stage_index) > 0) : !String(form.stage_index).trim();
+    if (stageMissing) missing.push("Trigger Stage");
+    if (!form.template_id) missing.push("Onboarding Template");
+
+    if (missing.length > 0) {
+      const msg = missing.length === 1
+        ? `Please fill in the required field: ${missing[0]}.`
+        : `Please fill in the required fields: ${missing.join(", ")}.`;
+      setFormError(msg);
+      showToast(msg, "error");
       return;
     }
+    setFormError(null);
     setSaving(true);
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -237,7 +254,9 @@ export default function OnboardingAutomationPage() {
         fetchAutomations(selectedJobId || undefined);
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast(err?.detail || "Failed to save onboarding automation.", "error");
+        const msg = (typeof err?.detail === "string" && err.detail) || "Failed to save onboarding automation. Please try again.";
+        setFormError(msg);
+        showToast(msg, "error");
       }
     } finally {
       setSaving(false);
@@ -307,7 +326,7 @@ export default function OnboardingAutomationPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 animate-in fade-in duration-500">
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
@@ -324,38 +343,31 @@ export default function OnboardingAutomationPage() {
         </div>
       )}
 
-      {/* Header */}
-      <div className="mb-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-[12px] bg-[#F5F3FF] flex items-center justify-center shrink-0 border border-[#EBE7FF] shadow-sm">
-              <UserPlus className="w-6 h-6 text-[#8B5CF6]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <h1 className="text-[22px] font-extrabold text-slate-900 tracking-tight leading-tight">Onboarding Automation</h1>
-                <PageHelp title="Onboarding Automation">
-                  <p>Automate onboarding steps for new hires.</p>
-                </PageHelp>
-              </div>
-              <p className="text-[#8A929E] text-[13px] font-medium mt-1">
-                Automatically trigger onboarding processes when candidates reach specific hiring stages.
-              </p>
-            </div>
+      {/* Header (sticky) */}
+      <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Onboarding Automation</h1>
+            <PageHelp title="Onboarding Automation">
+              <p>Automate onboarding steps for new hires.</p>
+            </PageHelp>
           </div>
-
-          <div className="flex items-center gap-3">
-             {canAccess("automation:moderate") && (
-                <button
-                  onClick={openCreate}
-                  className="flex items-center gap-2 px-5 h-11 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-bold hover:bg-[#4A43C9] transition-all shadow-[0_4px_12px_rgba(91,83,224,0.25)] hover:shadow-[0_6px_16px_rgba(91,83,224,0.35)] active:scale-95 cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>NEW AUTOMATION</span>
-                </button>
-              )}
-          </div>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Automatically trigger onboarding processes when candidates reach specific hiring stages.</p>
         </div>
+        <div className="flex items-center gap-2.5 shrink-0">
+          {canAccess("automation:moderate") && (
+            <button
+              onClick={openCreate}
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              New Automation
+            </button>
+          )}
+        </div>
+      </header>
+
+      <div className="mb-10">
 
         {/* Stats Section */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -731,7 +743,13 @@ export default function OnboardingAutomationPage() {
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-[#E8EAED] bg-[#F7F8FA] shrink-0">
+              <div className="p-6 border-t border-[#E8EAED] bg-[#F7F8FA] shrink-0 space-y-3">
+                {formError && (
+                  <div className="flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3">
+                    <AlertCircle className="w-4 h-4 text-rose-500 mt-0.5 shrink-0" />
+                    <p className="text-[12px] font-semibold text-rose-700 leading-relaxed">{formError}</p>
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={handleSave}

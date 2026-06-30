@@ -46,6 +46,10 @@ function EnterpriseRolesContent() {
     const [selectedPermIds, setSelectedPermIds] = useState<string[]>([]);
     const [roleSearch, setRoleSearch] = useState("");
     const [typeFilter, setTypeFilter] = useState("ALL");
+    const [initialSnapshot, setInitialSnapshot] = useState("");
+
+    const snapshotOf = (n: string, d: string, perms: string[]) =>
+        JSON.stringify({ n, d, perms: [...perms].sort() });
 
     useEffect(() => {
         fetchData();
@@ -79,19 +83,26 @@ function EnterpriseRolesContent() {
         setName("");
         setDescription("");
         setSelectedPermIds([]);
+        setInitialSnapshot(snapshotOf("", "", []));
         setIsEditing(true);
     };
 
     const handleOpenEdit = (role: Role) => {
+        const permIds = role.permissions.map((p: Permission) => p.id);
         setSelectedRole(role);
         setName(role.name);
         setDescription(role.description || "");
-        setSelectedPermIds(role.permissions.map((p: Permission) => p.id));
+        setSelectedPermIds(permIds);
+        setInitialSnapshot(snapshotOf(role.name, role.description || "", permIds));
         setIsEditing(true);
     };
 
+    const isDirty = snapshotOf(name, description, selectedPermIds) !== initialSnapshot;
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
+        // Nothing changed on an existing role — don't re-save.
+        if (selectedRole && !isDirty) return;
         setIsLoading(true);
         try {
             const payload = {
@@ -179,10 +190,10 @@ function EnterpriseRolesContent() {
                     {/* Stat Cards */}
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                         {[
-                            { label: "Total Roles", value: roles.length, Icon: Shield, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-                            { label: "System Roles", value: roles.filter(r => r.is_system).length, Icon: Lock, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-                            { label: "Total Permissions", value: permissions.length, Icon: ShieldCheck, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                            { label: "Security Health", value: "100%", Icon: ShieldHalf, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                            { label: "Total Roles", value: roles.length, Icon: Shield, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)", tip: "Every role in your organization — built-in plus custom." },
+                            { label: "Built-in Roles", value: roles.filter(r => r.is_system).length, Icon: Lock, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)", tip: "Predefined system roles. These can't be edited or deleted." },
+                            { label: "Custom Roles", value: roles.filter(r => !r.is_system).length, Icon: ShieldCheck, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)", tip: "Roles your team created — fully editable." },
+                            { label: "Permission Types", value: permissions.length, Icon: ShieldHalf, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)", tip: "Distinct access actions available to assign across all modules." },
                         ].map((s) => (
                             <div
                                 key={s.label}
@@ -191,7 +202,7 @@ function EnterpriseRolesContent() {
                                 <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
+                                        <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] cursor-help" title={s.tip}>{s.label}</span>
                                         <div className={`text-[26px] font-semibold tracking-[-1px] text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>{s.value}</div>
                                     </div>
                                     <span className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
@@ -255,7 +266,7 @@ function EnterpriseRolesContent() {
                             </div>
 
                             <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                                <div className="lg:col-span-4 flex flex-col justify-between">
+                                <div className="lg:col-span-3 flex flex-col justify-between">
                                     <div className="space-y-4 flex-1 flex flex-col mb-4">
                                         <div className="space-y-1.5 group">
                                             <label htmlFor="role-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Name</label>
@@ -281,8 +292,9 @@ function EnterpriseRolesContent() {
                                     <div className="pt-2">
                                         <button
                                             type="submit"
-                                            disabled={isLoading}
-                                            className="w-full bg-[#5B53E0] text-white h-10 rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all flex items-center justify-center gap-2 disabled:opacity-40"
+                                            disabled={isLoading || (!!selectedRole && !isDirty)}
+                                            title={selectedRole && !isDirty ? "No changes to save yet" : undefined}
+                                            className="w-full bg-[#5B53E0] text-white h-10 rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
                                         >
                                             {isLoading ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                                             {isLoading ? "Saving..." : (selectedRole ? "Update Permissions" : "Create Role")}
@@ -290,7 +302,7 @@ function EnterpriseRolesContent() {
                                     </div>
                                 </div>
 
-                                <div className="lg:col-span-8 space-y-5">
+                                <div className="lg:col-span-9 space-y-5">
                                     <div className="flex justify-between items-center px-1">
                                         <div className="flex items-center gap-2">
                                             <div className="w-1.5 h-4 bg-[#5B53E0] rounded-full" />
@@ -310,14 +322,16 @@ function EnterpriseRolesContent() {
                                         />
                                     </div>
                                     
-                                    <div className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-4 max-h-[350px] overflow-y-auto custom-scrollbar space-y-6">
+                                    <div className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-4 max-h-[520px] overflow-y-auto custom-scrollbar space-y-6">
                                         {Object.keys(groupedPermissions).map(module => (
                                             <div key={module} className="space-y-3">
                                                 <div className="flex items-center gap-2">
-                                                    <LayoutGrid className="w-3.5 h-3.5 text-[#8A929E]" />
-                                                    <h4 className="text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider">{module} Module</h4>
+                                                    <span className="w-6 h-6 rounded-[7px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center border border-[#DAD7F6]/60 shrink-0">
+                                                        <LayoutGrid className="w-3.5 h-3.5" />
+                                                    </span>
+                                                    <h4 className="text-[11.5px] font-bold text-[#15171C] uppercase tracking-wider">{module} Module</h4>
                                                 </div>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
                                                     {groupedPermissions[module].map((perm: Permission) => (
                                                         <button
                                                             key={perm.id}

@@ -33,8 +33,6 @@ import {
 
     Mail,
     Phone,
-    Mic,
-    MicOff,
     Globe,
     BarChart
 } from "lucide-react";
@@ -91,7 +89,6 @@ export default function ProfileSourcingChatPage() {
     const { token } = useAuth();
     const [searchPhase, setSearchPhase] = useState<"initial" | "filters" | "results">("initial");
     const [query, setQuery] = useState("");
-    const [isListening, setIsListening] = useState(false);
     const [extractedFilters, setExtractedFilters] = useState({
         title: "",
         location: "Global",
@@ -126,6 +123,7 @@ export default function ProfileSourcingChatPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
+    const [showCriteria, setShowCriteria] = useState(false);
     const itemsPerPage = 10;
 
     // Load sessions on mount
@@ -307,64 +305,6 @@ export default function ProfileSourcingChatPage() {
         setSearchPhase("initial");
         setQuery("");
     };
-    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const audioChunksRef = useRef<Blob[]>([]);
-
-    const toggleSpeechRecognition = async () => {
-        if (isListening) {
-            if (mediaRecorderRef.current) {
-                mediaRecorderRef.current.stop();
-            }
-            setIsListening(false);
-            return;
-        }
-
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const mediaRecorder = new MediaRecorder(stream);
-            mediaRecorderRef.current = mediaRecorder;
-            audioChunksRef.current = [];
-
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data.size > 0) {
-                    audioChunksRef.current.push(event.data);
-                }
-            };
-
-            mediaRecorder.onstop = async () => {
-                const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-                const formData = new FormData();
-                formData.append('file', audioBlob, 'recording.webm');
-
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/v1/enterprise/audio/transcribe`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: formData
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.text) {
-                            setQuery(data.text);
-                        }
-                    }
-                } catch (error) {
-                    console.error("Transcription failed:", error);
-                } finally {
-                    stream.getTracks().forEach(track => track.stop());
-                }
-            };
-
-            mediaRecorder.start();
-            setIsListening(true);
-        } catch (err) {
-            console.error("Microphone access failed:", err);
-            alert("Could not access microphone. Please ensure permissions are granted.");
-        }
-    };
 
     const handleChatSend = (text: string) => {
         setQuery(text);
@@ -519,32 +459,36 @@ export default function ProfileSourcingChatPage() {
         "IL": "#475569"  // Slate-600
     };
 
-    const mapData = useMemo(() => {
+    // Aggregated real per-country candidate counts, derived from the backend
+    // distribution (preferred) or, failing that, the real loaded result page.
+    // No hardcoded sample countries — an empty search yields an empty list.
+    const countryCounts = useMemo(() => {
         const counts: Record<string, number> = {};
-        let hasData = false;
-        
+
         // Use fullDistribution from aggregation, fallback to current results page
         const sourceData = fullDistribution.length > 0 ? fullDistribution : results;
-        
+
         sourceData.forEach(item => {
             const locStr = item.location || "";
             const countryCode = extractCountry(locStr);
             if (countryCode) {
                 const addCount = item.count || 1;
                 counts[countryCode] = (counts[countryCode] || 0) + addCount;
-                hasData = true;
             }
         });
-        
+
+        // [code, realCount] sorted by real candidate count (desc)
+        return Object.entries(counts).sort((a, b) => b[1] - a[1]) as [string, number][];
+    }, [results, fullDistribution]);
+
+    const mapData = useMemo(() => {
         // GeoChart with specific colors needs values that map to a color axis
         const data: any[] = [["Country", "ColorValue", { role: "tooltip", type: "string", p: { html: true } }]];
-        
-        const sortedCountries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-        
+
         // We use the index as a color value to force specific colors from the axis
-        sortedCountries.forEach(([code, count], index) => {
+        countryCounts.forEach(([code, count], index) => {
             data.push([
-                code, 
+                code,
                 index, // This index will map to a specific color in the options
                 `<div style="padding:10px; font-family: sans-serif;">
                     <b style="color:#1e293b; font-size:14px;">${COUNTRY_NAMES[code] || code}</b><br/>
@@ -552,15 +496,9 @@ export default function ProfileSourcingChatPage() {
                 </div>`
             ]);
         });
-        
-        if (!hasData) {
-            data.push(["US", 0, "No Candidates"]);
-            data.push(["IN", 1, "No Candidates"]);
-            data.push(["GB", 2, "No Candidates"]);
-        }
-        
+
         return data;
-    }, [results, fullDistribution]);
+    }, [countryCounts]);
 
     const runSearch = () => {
         setSearchPhase("results");
@@ -574,6 +512,49 @@ export default function ProfileSourcingChatPage() {
         }
     }, [currentPage]);
 
+    // Hand-off from job creation: a freshly created job can launch sourcing here.
+    // "autostart" runs the JD-based AI search immediately; otherwise we just
+    // pre-select the job and prefill the search box for a manual search.
+    useEffect(() => {
+        if (!token) return;
+        let raw: string | null = null;
+        try { raw = sessionStorage.getItem("croar_source_job"); } catch { return; }
+        if (!raw) return;
+        try { sessionStorage.removeItem("croar_source_job"); } catch { /* ignore */ }
+        try {
+            const ctx = JSON.parse(raw);
+            if (ctx?.id) setSelectedJobId(ctx.id);
+            const jd = (ctx?.description || "").trim();
+            const title = (ctx?.title || "").trim();
+            if (ctx?.autostart && (jd || title)) {
+                if (jd) setJobDescription(jd);
+                handleChatSend(jd || title);
+            } else if (title) {
+                setQuery(title);
+            }
+        } catch (e) {
+            console.error("Failed to start sourcing from job hand-off:", e);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
+
+    // The profile list is narrowed client-side by the platform filter, so the
+    // "Profiles (N)" count must reflect the displayed rows, not the raw total.
+    const displayedResults = results.filter(
+        profile => extractedFilters.platform === "All"
+            || (profile.platform && profile.platform.toLowerCase().includes(extractedFilters.platform.toLowerCase()))
+    );
+    const platformFilterActive = extractedFilters.platform !== "All";
+    const profilesCount = platformFilterActive ? displayedResults.length : (totalCount || results.length);
+
+    // Active-filter count for the "Filters" badge (was hardcoded to 2).
+    const activeFilterCount = [
+        extractedFilters.title.trim() !== "",
+        extractedFilters.location.trim() !== "" && extractedFilters.location !== "Global",
+        Number(extractedFilters.minExp) > 0,
+        platformFilterActive,
+    ].filter(Boolean).length;
+
     return (
         <div className="flex flex-col h-full bg-[#F4F5F7] overflow-hidden animate-in fade-in duration-500">
             <style dangerouslySetInnerHTML={{ __html: `
@@ -583,10 +564,10 @@ export default function ProfileSourcingChatPage() {
             ` }} />
 
             {/* Page header */}
-            <header className="px-6 py-4 bg-white border-b border-[#E8EAED] flex items-center justify-between gap-3 shrink-0">
+            <header className="sticky top-0 z-20 px-6 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4 shrink-0">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
                             AI Sourcing
                             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>Beta</span>
                         </h1>
@@ -594,14 +575,14 @@ export default function ProfileSourcingChatPage() {
                             <p>Describe who you&apos;re looking for and let AI source matching profiles for you.</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[13.5px] text-[#8A929E] mt-0.5">Search across 30+ public sources to discover the best talent</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Search across 30+ public sources to discover the best talent</p>
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-2.5 shrink-0">
                     <button
                         onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                        className={`inline-flex items-center gap-2 h-11 px-4 rounded-[10px] text-[13.5px] font-semibold transition-all border shadow-sm ${
-                            isHistoryOpen 
-                                ? "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]" 
+                        className={`inline-flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-semibold transition-all border shadow-sm ${
+                            isHistoryOpen
+                                ? "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]"
                                 : "bg-white text-[#4B5563] border-[#E8EAED] hover:bg-[#F7F8FA]"
                         }`}
                     >
@@ -609,7 +590,7 @@ export default function ProfileSourcingChatPage() {
                     </button>
                     <button
                         onClick={createNewChat}
-                        className="inline-flex items-center gap-2 h-11 px-4 bg-[#5B53E0] text-white rounded-[10px] text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors shrink-0"
+                        className="inline-flex items-center gap-2 h-9 px-4 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors shrink-0"
                     >
                         <Edit className="w-4 h-4" /> New Search
                     </button>
@@ -692,15 +673,7 @@ export default function ProfileSourcingChatPage() {
                                     placeholder="Software Engineers with 5+ yrs of experience at fintech companies in the Bay Area"
                                     className="w-full bg-transparent border-none focus:outline-none text-[15px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] mb-4"
                                 />
-                                <div className="flex items-center justify-between mt-1">
-                                    <button
-                                        type="button"
-                                        onClick={toggleSpeechRecognition}
-                                        className={`w-9 h-9 rounded-[9px] border transition-all flex items-center justify-center ${isListening ? 'bg-[#FDECEC] border-[#FDECEC] text-[#C0383C] animate-pulse' : 'bg-[#F4F5F7] border-[#E8EAED] text-[#9AA3AF] hover:text-[#374151] hover:bg-[#E8EAED] shadow-sm'}`}
-                                    >
-                                        {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                                    </button>
-                                    
+                                <div className="flex items-center justify-end mt-1">
                                     <button
                                         type="submit"
                                         disabled={!query.trim()}
@@ -804,11 +777,44 @@ export default function ProfileSourcingChatPage() {
                             </div>
                             <div className="flex items-center gap-2.5 self-end md:self-center">
                                 <button onClick={() => setIsFilterModalOpen(true)} className="h-11 px-4 bg-white border border-[#E1E4E8] rounded-[12px] text-[13px] font-semibold text-[#4B5563] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm">
-                                    <Filter className="w-4 h-4 text-[#5B53E0]" /> Filters <span className="bg-[#ECEBFB] text-[#5B53E0] px-1.5 py-0.5 rounded-md text-[10px] font-bold">2</span>
+                                    <Filter className="w-4 h-4 text-[#5B53E0]" /> Filters
+                                    {activeFilterCount > 0 && (
+                                        <span className="bg-[#ECEBFB] text-[#5B53E0] px-1.5 py-0.5 rounded-md text-[10px] font-bold">{activeFilterCount}</span>
+                                    )}
                                 </button>
-                                <button className="h-11 px-4 bg-white border border-[#E1E4E8] rounded-[12px] text-[13px] font-semibold text-[#4B5563] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm">
-                                    <Sparkles className="w-4 h-4 text-[#5B53E0]" /> Criteria
-                                </button>
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setShowCriteria(v => !v)}
+                                        title="View the active search criteria extracted from your query"
+                                        aria-expanded={showCriteria}
+                                        className="h-11 px-4 bg-white border border-[#E1E4E8] rounded-[12px] text-[13px] font-semibold text-[#4B5563] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm"
+                                    >
+                                        <Sparkles className="w-4 h-4 text-[#5B53E0]" /> Criteria
+                                    </button>
+                                    {showCriteria && (
+                                        <>
+                                            <div className="fixed inset-0 z-40" onClick={() => setShowCriteria(false)} aria-hidden />
+                                            <div className="absolute right-0 top-12 z-50 w-64 bg-white rounded-[12px] border border-[#E8EAED] shadow-[0_16px_40px_rgba(15,23,42,0.18)] p-4">
+                                                <div className="flex items-center gap-1.5 mb-3">
+                                                    <Sparkles className="w-3.5 h-3.5 text-[#5B53E0]" />
+                                                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E]">Active search criteria</span>
+                                                </div>
+                                                <dl className="space-y-2 text-[12.5px]">
+                                                    <div className="flex justify-between gap-3"><dt className="text-[#8A929E]">Title</dt><dd className="font-semibold text-[#15171C] text-right truncate">{extractedFilters.title || "Any"}</dd></div>
+                                                    <div className="flex justify-between gap-3"><dt className="text-[#8A929E]">Location</dt><dd className="font-semibold text-[#15171C] text-right">{extractedFilters.location || "Global"}</dd></div>
+                                                    <div className="flex justify-between gap-3"><dt className="text-[#8A929E]">Min experience</dt><dd className="font-semibold text-[#15171C] text-right">{extractedFilters.minExp ? `${extractedFilters.minExp}+ yrs` : "Any"}</dd></div>
+                                                    <div className="flex justify-between gap-3"><dt className="text-[#8A929E]">Platform</dt><dd className="font-semibold text-[#15171C] text-right">{extractedFilters.platform || "All"}</dd></div>
+                                                </dl>
+                                                <button
+                                                    onClick={() => { setShowCriteria(false); setIsFilterModalOpen(true); }}
+                                                    className="mt-3 w-full h-8 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] text-[12px] font-semibold hover:bg-[#DAD7F6]/60 transition-colors"
+                                                >
+                                                    Edit in Filters
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -830,7 +836,7 @@ export default function ProfileSourcingChatPage() {
                                             className={`pb-3 text-sm font-bold transition-all relative ${resultsTab === 'profiles' ? 'text-[#5B53E0]' : 'text-[#9AA3AF] hover:text-[#4B5563]'}`}
                                         >
                                             <div className="flex items-center gap-2">
-                                                <Users className="w-4 h-4" /> Profiles ({totalCount || results.length})
+                                                <Users className="w-4 h-4" /> Profiles ({profilesCount})
                                             </div>
                                             {resultsTab === 'profiles' && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B53E0] rounded-full" />}
                                         </button>
@@ -861,29 +867,40 @@ export default function ProfileSourcingChatPage() {
                                                     </p>
                                                 </div>
  
-                                                {/* Color Synchronized Legend at Top */}
-                                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                                                    {mapData.slice(1).sort((a, b) => b[1] - a[1]).slice(0, 12).map((item, idx) => (
-                                                        <div 
-                                                            key={idx} 
-                                                            className="bg-white px-3 py-2.5 rounded-xl border border-[#E8EAED] shadow-sm flex items-center gap-2 group hover:scale-105 transition-all duration-300"
-                                                        >
-                                                            <div 
-                                                                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm" 
-                                                                style={{ backgroundColor: COUNTRY_COLORS[item[0]] || "#CBD5E1" }}
-                                                            />
-                                                            <div className="flex flex-col min-w-0">
-                                                                <span className="text-[9px] font-bold text-[#1F2127] truncate uppercase tracking-tighter">
-                                                                    {COUNTRY_NAMES[item[0]] || item[0]}
-                                                                </span>
-                                                                <span className="text-[8px] font-bold text-[#9AA3AF]">
-                                                                    {item[1]} Candidates
-                                                                </span>
+                                                {/* Color Synchronized Legend at Top — real per-country counts */}
+                                                {countryCounts.length > 0 && (
+                                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                                                        {countryCounts.slice(0, 12).map(([code, count]) => (
+                                                            <div
+                                                                key={code}
+                                                                className="bg-white px-3 py-2.5 rounded-xl border border-[#E8EAED] shadow-sm flex items-center gap-2 group hover:scale-105 transition-all duration-300"
+                                                            >
+                                                                <div
+                                                                    className="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm"
+                                                                    style={{ backgroundColor: COUNTRY_COLORS[code] || "#CBD5E1" }}
+                                                                />
+                                                                <div className="flex flex-col min-w-0">
+                                                                    <span className="text-[9px] font-bold text-[#1F2127] truncate uppercase tracking-tighter">
+                                                                        {COUNTRY_NAMES[code] || code}
+                                                                    </span>
+                                                                    <span className="text-[8px] font-bold text-[#9AA3AF]">
+                                                                        {count} Candidates
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
- 
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                {countryCounts.length === 0 ? (
+                                                    <div className="w-full min-h-[500px] bg-[#F7F8FA]/60 rounded-xl border border-[#E8EAED] flex flex-col items-center justify-center text-center gap-2 px-6">
+                                                        <Globe className="w-10 h-10 text-[#C4C9D0]" />
+                                                        <h4 className="text-sm font-bold text-[#1F2127]">No location data available</h4>
+                                                        <p className="text-[#9AA3AF] text-xs font-medium max-w-xs">
+                                                            We couldn&apos;t derive any candidate locations from this search. Refine your query to surface geospatial intel.
+                                                        </p>
+                                                    </div>
+                                                ) : (
                                                 <div className="w-full min-h-[500px] bg-[#F7F8FA]/60 rounded-xl border border-[#E8EAED] overflow-hidden flex items-center justify-center relative group">
                                                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#ECEBFB]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
                                                     <Chart
@@ -913,13 +930,13 @@ export default function ProfileSourcingChatPage() {
                                                         }}
                                                     />
                                                 </div>
+                                                )}
                                             </div>
                                         </div>
                                     </motion.div>
                                 ) : (
                                     <div className="flex flex-col w-full animate-in fade-in duration-500 bg-white rounded-[14px] border border-[#E8EAED] shadow-sm overflow-hidden">
-                                        {results
-                                            .filter(profile => extractedFilters.platform === "All" || (profile.platform && profile.platform.toLowerCase().includes(extractedFilters.platform.toLowerCase())))
+                                        {displayedResults
                                             .map((profile, index) => (
                                     <motion.div
                                         key={index}

@@ -30,13 +30,32 @@ interface Question {
     options?: string; // stringified JSON array
 }
 
-const safeOptions = (v: string | undefined | null): string[] => {
-    try {
-        const a = JSON.parse(v || "[]");
-        return Array.isArray(a) ? a : [];
-    } catch {
-        return [];
+// Options can arrive as a JSON string (the stored shape), an actual array, or
+// an array of {label/text/value} objects — normalize all of them to strings so
+// the inputs never render blank.
+const safeOptions = (v: unknown): string[] => {
+    if (v == null) return [];
+    let arr: unknown = v;
+    if (typeof v === "string") {
+        const s = v.trim();
+        if (!s) return [];
+        try {
+            arr = JSON.parse(s);
+        } catch {
+            // Tolerate Python-style single-quoted lists, else comma-separated.
+            try { arr = JSON.parse(s.replace(/'/g, '"')); }
+            catch { arr = s.split(",").map(x => x.trim()).filter(Boolean); }
+        }
     }
+    if (!Array.isArray(arr)) return [];
+    return arr.map(o => {
+        if (typeof o === "string") return o;
+        if (o && typeof o === "object") {
+            const obj = o as Record<string, unknown>;
+            return String(obj.label ?? obj.text ?? obj.value ?? obj.name ?? "");
+        }
+        return String(o ?? "");
+    });
 };
 
 interface SurveyTemplateFormProps {

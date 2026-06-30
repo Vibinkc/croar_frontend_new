@@ -637,6 +637,28 @@ export default function CroarPilotPage() {
         }
     };
 
+    // Hand-off from job creation ("Source with Croar Pilot"): auto-start sourcing
+    // using the new job's title + description.
+    useEffect(() => {
+        if (!token) return;
+        let raw: string | null = null;
+        try { raw = sessionStorage.getItem("croar_source_job"); } catch { return; }
+        if (!raw) return;
+        try { sessionStorage.removeItem("croar_source_job"); } catch { /* ignore */ }
+        try {
+            const ctx = JSON.parse(raw);
+            if (!ctx?.autostart) return;
+            const title = (ctx?.title || "").trim();
+            const jd = (ctx?.description || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+            if (!title && !jd) return;
+            const prompt = `Source candidates for the role "${title || "this position"}".${jd ? ` Job description: ${jd}` : ""}`;
+            send(prompt);
+        } catch (e) {
+            console.error("Pilot hand-off failed:", e);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
+
     const loadSession = async (id: string) => {
         if (!token) return;
         try {

@@ -438,9 +438,6 @@ export default function EnterpriseJobsPage() {
                                                 >
                                                     <GlobeIcon className="w-4 h-4" /> Publish job
                                                 </button>
-                                                <button onClick={() => {}} className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors">
-                                                    <Plus className="w-4 h-4" /> Post template
-                                                </button>
                                                 {canAccess("jobs:delete") && (
                                                     <button
                                                         onClick={() => handleDeleteJob(job.id)}

@@ -106,6 +106,7 @@ export default function MailAutomationPage() {
   const [automationToDelete, setAutomationToDelete] = useState<Automation | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const showToast = (msg: string | string[] | { msg?: string; detail?: string } | null, type: "success" | "error" = "success") => {
     let finalMsg = "";
@@ -186,12 +187,14 @@ export default function MailAutomationPage() {
 
   const openCreate = () => {
     setEditingId(null);
+    setFormError(null);
     setForm({ ...EMPTY_FORM, job_requirement_id: selectedJobId });
     setShowModal(true);
   };
 
   const openEdit = (a: Automation) => {
     setEditingId(a.id);
+    setFormError(null);
     setForm({
       job_requirement_id: a.job_requirement_id,
       stage_index: a.stage_index,
@@ -209,23 +212,51 @@ export default function MailAutomationPage() {
   const closeModal = () => {
     setShowModal(false);
     setEditingId(null);
+    setFormError(null);
     setForm(EMPTY_FORM);
   };
 
   // ── Save ─────────────────────────────────────────────────────────────────────
 
+  const fail = (msg: string) => {
+    setFormError(msg);
+    showToast(msg, "error");
+  };
+
   const handleSave = async () => {
-    if (!form.job_requirement_id || !form.criteria.trim() || !form.template_id) {
-      showToast("Please fill in all required fields.", "error");
+    // No templates exist at all — they can't pick one, so guide them there.
+    if (templates.length === 0) {
+      fail("Create an email template first — there are no templates to attach to this automation.");
       return;
     }
+
+    // Collect every missing required field so the message names exactly what's wrong.
+    const missing: string[] = [];
+    if (!form.job_requirement_id) missing.push("Job Requirement");
+    const roundMissing = jobRounds.length > 0 ? !form.stage_name : !String(form.stage_index).trim();
+    if (roundMissing) missing.push("Hiring Round");
+    if (!form.criteria.trim()) missing.push("Trigger Criteria");
+    if (!form.template_id) missing.push("Email Template");
+    if (!form.is_immediate && !form.send_at) missing.push("Scheduled Date & Time");
+
+    if (missing.length > 0) {
+      fail(
+        missing.length === 1
+          ? `Please fill in the required field: ${missing[0]}.`
+          : `Please fill in the required fields: ${missing.join(", ")}.`
+      );
+      return;
+    }
+
     if (!form.is_immediate && form.send_at) {
       const scheduledDate = new Date(form.send_at);
       if (scheduledDate < new Date()) {
-        showToast("Scheduled time cannot be in the past.", "error");
+        fail("The scheduled date & time is in the past. Pick a future time.");
         return;
       }
     }
+
+    setFormError(null);
     setSaving(true);
     try {
       const payload = {
@@ -249,6 +280,13 @@ export default function MailAutomationPage() {
         fetchAutomations(selectedJobId || undefined);
       } else {
         const err = await res.json().catch(() => ({}));
+        const detail = err?.detail ?? err;
+        const detailMsg = typeof detail === "string"
+          ? detail
+          : Array.isArray(detail)
+            ? detail.map((e: string | { msg?: string }) => (typeof e === "string" ? e : (e.msg || ""))).filter(Boolean).join(", ")
+            : "";
+        setFormError(detailMsg || `Could not ${editingId ? "update" : "create"} the automation. Please try again.`);
         showToast(err, "error");
       }
     } finally {
@@ -334,7 +372,7 @@ export default function MailAutomationPage() {
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-[200] flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
+          className={`fixed top-5 right-5 z-[300] flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
             toast.type === "success" ? "bg-[#5B53E0] text-white" : "bg-rose-600 text-white"
           }`}
         >
@@ -466,7 +504,12 @@ export default function MailAutomationPage() {
                   <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Rule Configuration</th>
                   <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Target Job &amp; Template</th>
                   <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Trigger/Schedule</th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Status</th>
+                  <th
+                    className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] cursor-help"
+                    title="Turn this automation rule on or off. When off, the rule won't send any emails even if its trigger conditions are met."
+                  >
+                    Active
+                  </th>
                   <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Actions</th>
                 </tr>
               </thead>
@@ -791,6 +834,12 @@ export default function MailAutomationPage() {
 
               {/* Footer */}
               <div className="p-6 border-t border-[#E8EAED] bg-[#F7F8FA]/50 shrink-0 flex flex-col gap-3">
+                {formError && (
+                  <div className="flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3">
+                    <AlertCircle className="w-4 h-4 text-rose-500 mt-0.5 shrink-0" />
+                    <p className="text-[12px] font-semibold text-rose-700 leading-relaxed">{formError}</p>
+                  </div>
+                )}
                 <button
                   onClick={handleSave}
                   disabled={saving}
@@ -804,12 +853,6 @@ export default function MailAutomationPage() {
                       {editingId ? "SAVE CHANGES" : "CREATE AUTOMATION"}
                     </>
                   )}
-                </button>
-                <button
-                  onClick={closeModal}
-                  className="w-full h-11 border border-[#E1E4E8] bg-white hover:bg-[#F4F5F7] text-[13.5px] font-semibold text-[#374151] rounded-[9px] transition-all"
-                >
-                  Cancel
                 </button>
               </div>
             </motion.div>

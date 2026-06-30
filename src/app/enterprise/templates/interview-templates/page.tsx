@@ -108,6 +108,12 @@ function InterviewTemplatesContent() {
         );
     }
 
+    const filteredTemplates = templates.filter(t => {
+        const matchesSearch = (t.title + t.topic).toLowerCase().includes(interviewSearch.toLowerCase());
+        const matchesDiff = difficultyFilter === "ALL" || t.difficulty === difficultyFilter;
+        return matchesSearch && matchesDiff;
+    });
+
     return (
         <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-700 relative">
             {/* Header (sticky) */}
@@ -198,7 +204,7 @@ function InterviewTemplatesContent() {
                 </div>
             </div>
 
-            {templates.length === 0 ? (
+            {filteredTemplates.length === 0 ? (
                 <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-[14px] border border-dashed border-[#E8EAED] shadow-sm max-w-md mx-auto">
                     <div className="relative mb-5">
                         <div className="absolute -inset-3 rounded-full bg-[#5B53E0]/10 blur-xl" />
@@ -206,16 +212,36 @@ function InterviewTemplatesContent() {
                             <MessagesSquare className="w-6 h-6" />
                         </div>
                     </div>
-                    <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Found</h3>
-                    <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first interview template to automate candidate screening.</p>
+                    {templates.length === 0 ? (
+                        <>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Yet</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first interview template to automate candidate screening.</p>
+                            {canAccess("interviews:moderate") && (
+                                <button
+                                    onClick={() => { setEditingTemplate(null); setShowBuilder(true); }}
+                                    className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5"
+                                >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    New Template
+                                </button>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Results Found</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">No interview templates match your current search or filter.</p>
+                            <button
+                                onClick={() => { setInterviewSearch(""); setDifficultyFilter("ALL"); }}
+                                className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
+                            >
+                                Reset Filters
+                            </button>
+                        </>
+                    )}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {templates.filter(t => {
-                        const matchesSearch = (t.title + t.topic).toLowerCase().includes(interviewSearch.toLowerCase());
-                        const matchesDiff = difficultyFilter === "ALL" || t.difficulty === difficultyFilter;
-                        return matchesSearch && matchesDiff;
-                    }).map(template => (
+                    {filteredTemplates.map(template => (
                         <motion.div
                             layout
                             key={template.id}

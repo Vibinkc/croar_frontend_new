@@ -311,30 +311,23 @@ export default function AutomationCanvasPage() {
 
   return (
     <div className="w-full h-full flex flex-col bg-[#FDFDFF]">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-[#E8EAED] flex-shrink-0 bg-white z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-[12px] bg-[#ECEBFB] flex items-center justify-center shrink-0 border border-[#DAD7F6]">
-            <span className="material-symbols-rounded text-[#5B53E0] text-xl">account_tree</span>
+      {/* Header (sticky) */}
+      <div className="sticky top-0 z-20 px-6 py-3 border-b border-[#E8EAED] flex-shrink-0 bg-[#F4F5F7]/95 backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Automation Canvas</h1>
+            <PageHelp title="Automation Canvas">
+              <p>Build no-code recruiting workflows visually &mdash; add steps and connect them.</p>
+            </PageHelp>
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Automation Canvas</h1>
-              <PageHelp title="Automation Canvas">
-                <p>Build no-code recruiting workflows visually &mdash; add steps and connect them.</p>
-              </PageHelp>
-            </div>
-            <p className="text-[13.5px] text-[#8A929E] mt-0.5">
-              Visualize and build your automated hiring pipelines
-            </p>
-          </div>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Visualize and build your automated hiring pipelines</p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2.5">
           <button 
             onClick={() => selectedJobId && fetchAutomations(selectedJobId)}
             disabled={loading || !selectedJobId}
-            className="flex items-center gap-2 h-11 px-4 rounded-[10px] border border-[#E8EAED] text-[#4B5563] hover:bg-[#F7F8FA] hover:text-[#15171C] transition-all font-semibold text-[13px] bg-white shadow-sm disabled:opacity-50 active:scale-95 shrink-0"
+            className="flex items-center gap-2 h-9 px-4 rounded-[10px] border border-[#E8EAED] text-[#4B5563] hover:bg-[#F7F8FA] hover:text-[#15171C] transition-all font-semibold text-[13px] bg-white shadow-sm disabled:opacity-50 active:scale-95 shrink-0"
           >
             <span className={`material-symbols-rounded text-lg ${loading ? 'animate-spin' : ''}`}>refresh</span>
             SYNC
@@ -345,7 +338,7 @@ export default function AutomationCanvasPage() {
             <select
               value={selectedJobId}
               onChange={(e) => setSelectedJobId(e.target.value)}
-              className="w-64 h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-10 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+              className="w-64 h-9 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-10 text-[13px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
             >
               <option value="">Select a Job to view flow...</option>
               {jobs.map((j) => (

@@ -244,7 +244,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                         role="button"
                         tabIndex={0}
                         aria-label="Close"
-                        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in"
+                        className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in"
                         onClick={() => setIsAddingTask({ isOpen: false, column: "" })}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
@@ -255,93 +255,97 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                     />
                     
                     {/* Drawer Content */}
-                    <div className="absolute inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-out animate-in slide-in-from-right">
-                        <div className="flex-1 flex flex-col h-full overflow-y-auto no-scrollbar">
-                            <div className="p-8 pb-32">
-                                <div className="flex items-center justify-between mb-8">
-                                    <div>
-                                        <h3 className="text-2xl font-black text-slate-900 tracking-tight">Add New Task</h3>
-                                        <p className="text-[10px] font-black text-indigo-500   mt-1 bg-indigo-50 px-2 py-0.5 rounded-full inline-block ">
-                                            Column: {isAddingTask.column}
-                                        </p>
-                                    </div>
-                                    <button 
-                                        onClick={() => setIsAddingTask({ isOpen: false, column: "" })} 
-                                        className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-all hover:rotate-90"
-                                    >
-                                        <span className="material-symbols-rounded">close</span>
-                                    </button>
+                    <div className="absolute inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl border-l border-[#E8EAED] flex flex-col transform transition-transform duration-300 ease-out animate-in slide-in-from-right">
+                        {/* Header */}
+                        <div className="px-6 py-5 border-b border-[#E8EAED] flex items-center justify-between shrink-0">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center border border-[#DAD7F6]/60 shrink-0">
+                                    <span className="material-symbols-rounded text-[20px]">add_task</span>
                                 </div>
-
-                                <form onSubmit={handleAddTask} id="add-task-form" className="space-y-6">
-                                    <div className="space-y-1.5 px-1">
-                                        <label htmlFor="task-title" className="text-[10px] font-black text-slate-400   ml-1">Task Title*</label>
-                                        <input
-                                            id="task-title"
-                                            required
-                                            value={newTaskData.title}
-                                            onChange={(e) => setNewTaskData(prev => ({ ...prev, title: e.target.value }))}
-                                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all shadow-sm"
-                                            placeholder="What needs to be done?"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-1.5 px-1">
-                                        <label htmlFor="task-assignee" className="text-[10px] font-black text-slate-400   ml-1">Assign To</label>
-                                        <div className="relative">
-                                            <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">person</span>
-                                            <select
-                                                id="task-assignee"
-                                                value={newTaskData.employee_id}
-                                                onChange={(e) => setNewTaskData(prev => ({ ...prev, employee_id: e.target.value }))}
-                                                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-5 py-4 text-sm font-bold focus:outline-none focus:ring-0 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
-                                            >
-                                                <option value="">Select Assignee</option>
-                                                {members.map(m => (
-                                                    <option key={m.id} value={m.id}>{m.first_name} {m.last_name}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-1.5 px-1">
-                                        <label htmlFor="task-due-date" className="text-[10px] font-black text-slate-400   ml-1">Due Date</label>
-                                        <div className="relative">
-                                            <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">calendar_month</span>
-                                            <input
-                                                id="task-due-date"
-                                                type="date"
-                                                value={newTaskData.due_date}
-                                                onChange={(e) => setNewTaskData(prev => ({ ...prev, due_date: e.target.value }))}
-                                                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-5 py-4 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all shadow-sm cursor-pointer [color-scheme:light]"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-1.5 px-1">
-                                        <label htmlFor="task-description" className="text-[10px] font-black text-slate-400   ml-1">Description</label>
-                                        <textarea
-                                            id="task-description"
-                                            rows={5}
-                                            value={newTaskData.description}
-                                            onChange={(e) => setNewTaskData(prev => ({ ...prev, description: e.target.value }))}
-                                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all shadow-sm resize-none "
-                                            placeholder="Provide any additional details or context for this task..."
-                                        />
-                                    </div>
-                                </form>
+                                <div>
+                                    <h3 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-tight">Add New Task</h3>
+                                    <p className="text-[12px] text-[#8A929E] mt-0.5">Column: <span className="font-semibold text-[#5B53E0]">{isAddingTask.column}</span></p>
+                                </div>
                             </div>
+                            <button
+                                onClick={() => setIsAddingTask({ isOpen: false, column: "" })}
+                                className="w-8 h-8 rounded-[8px] bg-white border border-[#E1E4E8] text-[#6B6F76] hover:bg-[#F4F5F7] hover:text-[#374151] transition-all flex items-center justify-center shadow-sm shrink-0"
+                            >
+                                <span className="material-symbols-rounded text-[18px]">close</span>
+                            </button>
                         </div>
 
-                        {/* Sticky Footer */}
-                        <div className="p-8 bg-white border-t border-slate-50 shadow-[0_-10px_40px_rgba(0,0,0,0.02)] shrink-0">
+                        {/* Body */}
+                        <div className="flex-1 overflow-y-auto px-6 py-6 custom-scrollbar">
+                            <form onSubmit={handleAddTask} id="add-task-form" className="space-y-5">
+                                <div className="space-y-1.5">
+                                    <label htmlFor="task-title" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Task Title <span className="text-rose-500">*</span></label>
+                                    <input
+                                        id="task-title"
+                                        required
+                                        value={newTaskData.title}
+                                        onChange={(e) => setNewTaskData(prev => ({ ...prev, title: e.target.value }))}
+                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all placeholder:text-[#9AA3AF]"
+                                        placeholder="What needs to be done?"
+                                    />
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label htmlFor="task-assignee" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Assign To</label>
+                                    <div className="relative">
+                                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[20px] pointer-events-none">person</span>
+                                        <select
+                                            id="task-assignee"
+                                            value={newTaskData.employee_id}
+                                            onChange={(e) => setNewTaskData(prev => ({ ...prev, employee_id: e.target.value }))}
+                                            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-9 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all appearance-none cursor-pointer"
+                                        >
+                                            <option value="">Select Assignee</option>
+                                            {members.map(m => (
+                                                <option key={m.id} value={m.id}>{m.first_name} {m.last_name}</option>
+                                            ))}
+                                        </select>
+                                        <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[20px] pointer-events-none">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label htmlFor="task-due-date" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Due Date</label>
+                                    <div className="relative">
+                                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[20px] pointer-events-none">calendar_month</span>
+                                        <input
+                                            id="task-due-date"
+                                            type="date"
+                                            value={newTaskData.due_date}
+                                            onChange={(e) => setNewTaskData(prev => ({ ...prev, due_date: e.target.value }))}
+                                            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-3.5 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all cursor-pointer [color-scheme:light]"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label htmlFor="task-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Description</label>
+                                    <textarea
+                                        id="task-description"
+                                        rows={5}
+                                        value={newTaskData.description}
+                                        onChange={(e) => setNewTaskData(prev => ({ ...prev, description: e.target.value }))}
+                                        className="w-full bg-white border border-[#E1E4E8] rounded-[10px] p-3.5 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none leading-relaxed placeholder:text-[#9AA3AF]"
+                                        placeholder="Provide any additional details or context for this task..."
+                                    />
+                                </div>
+                            </form>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="p-6 border-t border-[#E8EAED] bg-[#F7F8FA]/50 shrink-0">
                             <button
                                 type="submit"
                                 form="add-task-form"
-                                className="w-full bg-[#7C3AED] text-white py-4 rounded-[20px] font-black text-xs  tracking-[0.2em] hover:bg-[#6D28D9] shadow-xl shadow-indigo-100 transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-md flex items-center justify-center gap-3"
+                                className="w-full h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(91,83,224,0.25)] transition-all flex items-center justify-center gap-2"
                             >
-                                <span className="material-symbols-rounded text-lg">send</span>
-                                <span>Assign &amp; Notify Team</span>
+                                <span className="material-symbols-rounded text-[18px]">send</span>
+                                Assign &amp; Notify Team
                             </button>
                         </div>
                     </div>

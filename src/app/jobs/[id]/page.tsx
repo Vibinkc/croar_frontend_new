@@ -48,9 +48,25 @@ export default function PublicJobPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [applied, setApplied] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [resumeFile, setResumeFile] = useState<File | null>(null);
 
     const [formData, setFormData] = useState<Record<string, string>>({});
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    // A field is a phone field if its type is 'phone' or its label/key references phone/mobile/tel.
+    const isPhoneField = (field: ApplicationField, fieldKey: string) => {
+        if (field.type === 'phone') return true;
+        const hay = `${field.label} ${fieldKey}`.toLowerCase();
+        return /phone|mobile|tel/.test(hay);
+    };
+
+    // Plausible phone: only digits, leading '+', spaces, dashes, parentheses; 7–15 digits total.
+    const isValidPhone = (value: string) => {
+        if (!/^[+\d\s\-()]+$/.test(value)) return false;
+        const digits = value.replace(/\D/g, "");
+        return digits.length >= 7 && digits.length <= 15;
+    };
 
     useEffect(() => {
         if (id) {
@@ -72,7 +88,8 @@ export default function PublicJobPage() {
                 const data = await res.json();
                 setJob(data.job);
                 setOrgName(data.organization);
-                
+                setIsOpen(data.is_open !== false);
+
                 // Initialize boolean fields and pre-fill email
                 const initialData: Record<string, string> = {};
                 data.job.application_fields?.forEach((f: ApplicationField) => {
@@ -101,6 +118,30 @@ export default function PublicJobPage() {
 
     const handleApply = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validate phone fields before submitting.
+        const phoneErrors: Record<string, string> = {};
+        const fieldsToCheck = (job?.application_fields && job.application_fields.length > 0)
+            ? job.application_fields
+            : [];
+        fieldsToCheck.forEach((field) => {
+            const fieldKey = field.label.toLowerCase().replace(/\s+/g, '_');
+            if (!isPhoneField(field, fieldKey)) return;
+            const value = (formData[fieldKey] || "").trim();
+            if (!value) {
+                if (field.is_required) phoneErrors[fieldKey] = "Phone number is required.";
+                return;
+            }
+            if (!isValidPhone(value)) {
+                phoneErrors[fieldKey] = "Enter a valid phone number (7–15 digits).";
+            }
+        });
+        if (Object.keys(phoneErrors).length > 0) {
+            setFieldErrors(phoneErrors);
+            return;
+        }
+        setFieldErrors({});
+
         setIsSubmitting(true);
         try {
             const data = new FormData();
@@ -130,7 +171,14 @@ export default function PublicJobPage() {
             if (res.ok) {
                 setApplied(true);
             } else {
-                alert("Failed to submit application");
+                let msg = "Failed to submit application";
+                try {
+                    const errData = await res.json();
+                    if (errData?.detail) msg = errData.detail;
+                } catch { /* ignore */ }
+                // Job was closed after the page loaded — reflect it in the UI.
+                if (res.status === 409) setIsOpen(false);
+                alert(msg);
             }
         } catch (error) {
             console.error("Error applying:", error);
@@ -279,10 +327,17 @@ export default function PublicJobPage() {
                         <span className="inline-flex items-center px-2.5 py-1 bg-white/[0.1] border border-white/15 text-[#C7CCD4] text-[12px] font-semibold rounded-[20px]">
                             {job.work_mode || "On-Site"}
                         </span>
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#34D399]/15 border border-[#34D399]/30 text-[#34D399] text-[12px] font-semibold rounded-[20px]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
-                            {"Currently hiring"}
-                        </span>
+                        {isOpen ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#34D399]/15 border border-[#34D399]/30 text-[#34D399] text-[12px] font-semibold rounded-[20px]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
+                                {"Currently hiring"}
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/[0.08] border border-white/15 text-[#C7CCD4] text-[12px] font-semibold rounded-[20px]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#9AA3AF]"></span>
+                                {"Applications closed"}
+                            </span>
+                        )}
                     </div>
 
                     <h1 className="text-[34px] md:text-[42px] font-extrabold tracking-[-1px] leading-[1.05] mb-5 max-w-3xl">{job.title}</h1>
@@ -366,7 +421,17 @@ export default function PublicJobPage() {
                 {/* Right Column: Application Form */}
                 <div className="lg:col-span-4">
                     <div className="bg-white rounded-[16px] border border-[#E8EAED] p-7 sticky top-24 shadow-[0_4px_14px_rgba(15,23,42,0.05)]">
-                        {applied ? (
+                        {!isOpen ? (
+                            <div className="text-center py-8">
+                                <div className="w-16 h-16 bg-[#F4F5F7] text-[#8A929E] rounded-[16px] flex items-center justify-center mx-auto mb-5">
+                                    <span className="material-icons-outlined text-[32px]">lock_clock</span>
+                                </div>
+                                <h3 className="text-[20px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">Applications closed</h3>
+                                <p className="text-[#8A929E] text-[14px] leading-relaxed">
+                                    This role is no longer accepting applications. Thanks for your interest — please check back for other openings.
+                                </p>
+                            </div>
+                        ) : applied ? (
                             <div className="text-center py-8 animate-in fade-in zoom-in duration-500">
                                 <div className="w-16 h-16 bg-[#E6F4EA] text-[#15803D] rounded-[16px] flex items-center justify-center mx-auto mb-5">
                                     <span className="material-icons-outlined text-[34px]">check</span>
@@ -456,6 +521,8 @@ export default function PublicJobPage() {
                                             );
                                         }
 
+                                        const phoneField = isPhoneField(field, fieldKey);
+                                        const fieldError = fieldErrors[fieldKey];
                                         return (
                                             <div key={field.id}>
                                                 <label className="block text-[12px] font-semibold text-[#374151] mb-1.5">
@@ -464,16 +531,28 @@ export default function PublicJobPage() {
                                                 <div className="relative">
                                                     <span className="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[19px] pointer-events-none">{getIcon(field.icon)}</span>
                                                     <input
-                                                        type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : 'text'}
+                                                        type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : phoneField ? 'tel' : 'text'}
                                                         step="any"
                                                         placeholder={`Enter ${field.label.toLowerCase()}`}
-                                                        className="w-full h-11 pl-10 pr-4 rounded-[10px] bg-white border border-[#E1E4E8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 outline-none transition-all text-[#15171C] font-medium text-[14px] placeholder:text-[#9AA3AF] read-only:bg-[#F4F5F7] read-only:text-[#8A929E] read-only:cursor-not-allowed"
+                                                        className={`w-full h-11 pl-10 pr-4 rounded-[10px] bg-white border ${fieldError ? "border-[#EF4444] focus:border-[#EF4444] focus:ring-[#EF4444]/20" : "border-[#E1E4E8] focus:border-[#5B53E0] focus:ring-[#5B53E0]/20"} focus:ring-2 outline-none transition-all text-[#15171C] font-medium text-[14px] placeholder:text-[#9AA3AF] read-only:bg-[#F4F5F7] read-only:text-[#8A929E] read-only:cursor-not-allowed`}
                                                         value={formData[fieldKey] || ""}
-                                                        onChange={e => setFormData({ ...formData, [fieldKey]: e.target.value })}
+                                                        onChange={e => {
+                                                            setFormData({ ...formData, [fieldKey]: e.target.value });
+                                                            if (fieldErrors[fieldKey]) {
+                                                                setFieldErrors(prev => {
+                                                                    const next = { ...prev };
+                                                                    delete next[fieldKey];
+                                                                    return next;
+                                                                });
+                                                            }
+                                                        }}
                                                         required={field.is_required}
                                                         readOnly={(field.type === 'email' || fieldKey === 'email' || fieldKey === 'email_address') && !!prefilledEmail}
                                                     />
                                                 </div>
+                                                {fieldError && (
+                                                    <p className="mt-1.5 text-[11px] font-medium text-[#EF4444]">{fieldError}</p>
+                                                )}
                                             </div>
                                         );
                                     })}

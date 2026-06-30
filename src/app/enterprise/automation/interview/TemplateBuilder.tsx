@@ -311,7 +311,23 @@ export default function TemplateBuilder({
           </div>
 
           <div className="flex-1 overflow-y-auto p-8 space-y-5 custom-scrollbar">
-            {questions.length === 0 ? (
+            {isGenerating ? (
+              <div className="h-full flex flex-col items-center justify-center text-center space-y-5 max-w-sm mx-auto">
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  <span className="absolute inset-0 rounded-[18px] bg-[#5B53E0]/20 animate-ping" />
+                  <div className="relative w-16 h-16 rounded-[16px] bg-[#5B53E0] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(91,83,224,0.35)]">
+                    <Wand2 className="w-7 h-7 animate-pulse" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-5 h-5 border-[2.5px] border-[#5B53E0]/25 border-t-[#5B53E0] rounded-full animate-spin" />
+                  <h4 className="text-[15px] font-extrabold text-[#15171C]">Generating interview questions…</h4>
+                </div>
+                <p className="text-[12.5px] text-[#8A929E] font-medium leading-relaxed">
+                  Our AI is drafting tailored questions{topic ? <> for &quot;<span className="font-bold text-[#5B53E0]">{topic}</span>&quot;</> : ""}. This usually takes a few seconds.
+                </p>
+              </div>
+            ) : questions.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-4 max-w-sm mx-auto">
                 <div className="w-16 h-16 rounded-[12px] bg-slate-50 border border-[#E1E4E8] flex items-center justify-center">
                   <MessageSquare className="w-7 h-7 text-[#8A929E]" />
@@ -398,12 +414,13 @@ export default function TemplateBuilder({
                             <div key={pIdx} className="flex items-center gap-2 px-3 py-1.5 bg-[#F7F8FA] rounded-[8px] border border-[#E1E4E8] group/point">
                               <input
                                 value={point}
+                                placeholder="New point"
                                 onChange={(e) => {
                                   const newPoints = [...q.expected_answer_points];
                                   newPoints[pIdx] = e.target.value;
                                   updateQuestion(q.id, { expected_answer_points: newPoints });
                                 }}
-                                className="text-[11.5px] font-bold text-slate-600 bg-transparent border-none focus:ring-0 p-0 w-32 focus:outline-none"
+                                className="text-[11.5px] font-bold text-slate-600 bg-transparent border-none focus:ring-0 p-0 w-32 focus:outline-none placeholder:text-[#9AA3AF] placeholder:font-semibold"
                                 readOnly={!canAccess("interviews:moderate")}
                               />
                               {canAccess("interviews:moderate") && (
@@ -425,7 +442,7 @@ export default function TemplateBuilder({
                               id={`tb-eval-points-${q.id}`}
                               type="button"
                               onClick={() => {
-                                 updateQuestion(q.id, { expected_answer_points: [...q.expected_answer_points, "New point..."] });
+                                 updateQuestion(q.id, { expected_answer_points: [...q.expected_answer_points, ""] });
                               }}
                               className="px-3 py-1.5 border border-dashed border-[#E1E4E8] rounded-[8px] text-[11.5px] font-bold text-[#8A929E] hover:border-[#5B53E0] hover:text-[#5B53E0] transition-all cursor-pointer"
                             >

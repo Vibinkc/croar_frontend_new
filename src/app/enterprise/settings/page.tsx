@@ -13,6 +13,7 @@ import {
     AlertCircle,
     Save,
     Camera,
+    Trash2,
     Zap,
     Shield,
     RefreshCcw,
@@ -153,19 +154,32 @@ export default function OrganizationProfilePage() {
 
     if (isLoading) {
         return (
-            <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-                <div className="h-32 bg-slate-900 rounded-xl relative overflow-hidden flex items-center px-10 shadow-xl shadow-indigo-100/50">
-                    <div className="flex items-center gap-6 text-white/20">
-                        <div className="w-16 h-16 bg-white/10 rounded-xl animate-pulse" />
-                        <div className="space-y-3">
-                            <div className="w-64 h-8 bg-white/10 rounded-xl animate-pulse" />
-                            <div className="w-40 h-4 bg-white/5 rounded-xl animate-pulse" />
-                        </div>
+            <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500">
+                {/* Header skeleton — mirrors the real sticky header so nothing shifts on load */}
+                <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+                    <div className="space-y-2">
+                        <div className="w-44 h-6 bg-[#E8EAED] rounded-[8px] animate-pulse" />
+                        <div className="w-60 h-4 bg-[#E8EAED] rounded-[6px] animate-pulse" />
                     </div>
+                    <div className="w-9 h-9 bg-[#E8EAED] rounded-[10px] animate-pulse" />
+                </header>
+
+                {/* Centered, branded spinner so users clearly see it's working */}
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                    <div className="relative w-12 h-12">
+                        <span className="absolute inset-0 rounded-full border-[3px] border-[#E8EAED]" />
+                        <span className="absolute inset-0 rounded-full border-[3px] border-transparent border-t-[#5B53E0] animate-spin" />
+                    </div>
+                    <p className="text-[12.5px] font-semibold text-[#8A929E]">Loading settings…</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                    <div className="md:col-span-4 h-96 bg-white rounded-xl border border-slate-100 animate-pulse" />
-                    <div className="md:col-span-8 h-96 bg-white rounded-xl border border-slate-100 animate-pulse" />
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div className="md:col-span-4 space-y-3">
+                        {[1, 2, 3, 4].map(i => (
+                            <div key={i} className="h-16 bg-white rounded-[14px] border border-[#E8EAED] animate-pulse shadow-sm" />
+                        ))}
+                    </div>
+                    <div className="md:col-span-8 h-96 bg-white rounded-[14px] border border-[#E8EAED] animate-pulse shadow-sm" />
                 </div>
             </div>
         );
@@ -249,11 +263,21 @@ export default function OrganizationProfilePage() {
                                     )}
                                 </div>
                                 {canAccess("organization:moderate") && (
-                                    <button 
+                                    <button
                                         onClick={() => fileInputRef.current?.click()}
+                                        title={logoUrl ? "Replace logo" : "Upload logo"}
                                         className="absolute -bottom-1 -right-1 w-9 h-9 bg-[#15171C] text-white rounded-[8px] flex items-center justify-center shadow-lg hover:bg-[#5B53E0] transition-all scale-0 group-hover/logo:scale-100"
                                     >
                                         <Camera className="w-4 h-4" />
+                                    </button>
+                                )}
+                                {canAccess("organization:moderate") && logoUrl && (
+                                    <button
+                                        onClick={() => setLogoUrl("")}
+                                        title="Remove logo"
+                                        className="absolute -top-1 -right-1 w-8 h-8 bg-white border border-[#F7D7D7] text-[#C0383C] rounded-[8px] flex items-center justify-center shadow-lg hover:bg-[#EF4444] hover:text-white hover:border-[#EF4444] transition-all scale-0 group-hover/logo:scale-100"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
                                     </button>
                                 )}
                                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoUpload} accept="image/*" />

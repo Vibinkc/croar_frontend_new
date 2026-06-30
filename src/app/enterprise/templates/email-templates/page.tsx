@@ -1,24 +1,28 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-    Mail, 
-    Plus, 
-    Trash2, 
-    Sparkles, 
-    Zap, 
-    X, 
-    Save, 
+import {
+    Mail,
+    Plus,
+    Trash2,
+    Sparkles,
+    Zap,
+    X,
+    Save,
     ArrowRight,
+    ArrowLeft,
     FileText,
     History,
     ChevronDown,
     RefreshCcw,
     Layout,
-    Lock
+    Lock,
+    Loader2,
+    AlertTriangle
 } from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { jetbrainsMono, PageHelp } from "@/components/ds";
@@ -35,6 +39,7 @@ interface Template {
 }
 
 export default function EmailTemplatesPage() {
+    const router = useRouter();
     const { token, canAccess } = useAuth();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +61,12 @@ export default function EmailTemplatesPage() {
     const [aiPurpose, setAiPurpose] = useState("");
     const [aiTone, setAiTone] = useState("professional");
     const [isGenerating, setIsGenerating] = useState(false);
+
+    // Save / validation / dirty-check state
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const [initialSnapshot, setInitialSnapshot] = useState("");
+    const [isOverwriteConfirmOpen, setIsOverwriteConfirmOpen] = useState(false);
 
     useEffect(() => {
         if (token) {
@@ -90,23 +101,48 @@ export default function EmailTemplatesPage() {
         }
     };
 
+    const snapshotOf = (vals: { name: string; subject: string; body: string; category: string }) => JSON.stringify(vals);
+
     const handleOpenModal = (template?: Template) => {
         setIsAiMode(false);
         setAiPurpose("");
+        setSaveError(null);
         if (template) {
+            const vals = { name: template.name, subject: template.subject, body: template.body, category: template.category || "GENERAL" };
             setEditingTemplate(template);
-            setName(template.name);
-            setSubject(template.subject);
-            setBody(template.body);
-            setCategory(template.category || "GENERAL");
+            setName(vals.name);
+            setSubject(vals.subject);
+            setBody(vals.body);
+            setCategory(vals.category);
+            setInitialSnapshot(snapshotOf(vals));
         } else {
             setEditingTemplate(null);
             setName("");
             setSubject("");
             setBody("");
             setCategory("GENERAL");
+            setInitialSnapshot(snapshotOf({ name: "", subject: "", body: "", category: "GENERAL" }));
         }
         setIsModalOpen(true);
+    };
+
+    const isDirty = snapshotOf({ name, subject, body, category }) !== initialSnapshot;
+
+    const validateTemplate = (): string | null => {
+        if (!name.trim()) return "Add a template name before saving.";
+        if (!subject.trim()) return "Add an email subject before saving.";
+        if (!body.trim()) return "Add the email body content before saving.";
+        return null;
+    };
+
+    // AI generation overwrites name/subject/body. Warn first if there's content to lose.
+    const requestAiGenerate = () => {
+        if (!aiPurpose.trim()) return;
+        if (name.trim() || subject.trim() || body.trim()) {
+            setIsOverwriteConfirmOpen(true);
+            return;
+        }
+        handleAiGenerate();
     };
 
     const handleAiGenerate = async () => {
@@ -189,6 +225,13 @@ export default function EmailTemplatesPage() {
     };
 
     const handleSave = async () => {
+        const problem = validateTemplate();
+        if (problem) {
+            setSaveError(problem);
+            return;
+        }
+        setSaveError(null);
+        setIsSaving(true);
         try {
             const url = editingTemplate
                 ? `${BACKEND_URL}/api/v1/enterprise/communication/templates/${editingTemplate.id}`
@@ -208,9 +251,14 @@ export default function EmailTemplatesPage() {
             if (res.ok) {
                 fetchTemplates();
                 setIsModalOpen(false);
+            } else {
+                setSaveError("Could not save the template. Please try again.");
             }
         } catch (e) {
             console.error(e);
+            setSaveError("Something went wrong while saving. Please try again.");
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -242,14 +290,24 @@ export default function EmailTemplatesPage() {
         <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-700 relative">
             {/* Header (sticky) */}
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
-                <div>
-                    <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Email Templates</h1>
-                        <PageHelp title="Email Templates">
-                            <p>Reusable email templates for candidate communication.</p>
-                        </PageHelp>
+                <div className="flex items-center gap-2.5">
+                    <button
+                        onClick={() => router.push("/enterprise/templates")}
+                        title="Back to Template Hub"
+                        aria-label="Back to Template Hub"
+                        className="w-8 h-8 shrink-0 bg-white border border-[#E1E4E8] rounded-[10px] text-[#6B6F76] hover:text-[#374151] hover:bg-[#F4F5F7] transition-all flex items-center justify-center shadow-sm"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                    </button>
+                    <div>
+                        <div className="flex items-center gap-1.5">
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Email Templates</h1>
+                            <PageHelp title="Email Templates">
+                                <p>Reusable email templates for candidate communication.</p>
+                            </PageHelp>
+                        </div>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage and standardize organizational outreach communication.</p>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage and standardize organizational outreach communication.</p>
                 </div>
 
                 <div className="flex items-center gap-2.5">
@@ -275,9 +333,9 @@ export default function EmailTemplatesPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
                     { label: "Total Templates", value: templates.length, Icon: Mail, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-                    { label: "Recruitment", value: templates.filter(t => t.category === 'INTERVIEW' || t.category === 'ASSESSMENT').length, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                    { label: "Onboarding", value: templates.filter(t => t.category === 'ONBOARDING').length, Icon: Layout, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-                    { label: "Dynamic Vars", value: templates.reduce((acc, t) => acc + (t.variables?.length || 0), 0), Icon: Sparkles, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: "Assessments", value: templates.filter(t => t.category === 'ASSESSMENT').length, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: "Interviews", value: templates.filter(t => t.category === 'INTERVIEW').length, Icon: FileText, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: "Onboarding", value: templates.filter(t => t.category === 'ONBOARDING').length, Icon: Layout, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
                 ].map((s) => (
                     <div
                         key={s.label}
@@ -334,14 +392,32 @@ export default function EmailTemplatesPage() {
                             <Mail className="w-6 h-6" />
                         </div>
                     </div>
-                    <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Found</h3>
-                    <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first email template to standardize candidate communication.</p>
-                    <button 
-                        onClick={() => { setTemplateSearch(""); setCategoryFilter("ALL"); }} 
-                        className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
-                    >
-                        Reset Filters
-                    </button>
+                    {templates.length === 0 ? (
+                        <>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Yet</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first email template to standardize candidate communication.</p>
+                            {canAccess("communications:moderate") && (
+                                <button
+                                    onClick={() => handleOpenModal()}
+                                    className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5"
+                                >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    New Template
+                                </button>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Results Found</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">No email templates match your current search or filter.</p>
+                            <button
+                                onClick={() => { setTemplateSearch(""); setCategoryFilter("ALL"); }}
+                                className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
+                            >
+                                Reset Filters
+                            </button>
+                        </>
+                    )}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -467,8 +543,8 @@ export default function EmailTemplatesPage() {
                                         </div>
                                         <div className="grid grid-cols-2 gap-3 pt-2">
                                             <button onClick={() => setIsAiMode(false)} className="h-10 rounded-[10px] border border-[#E1E4E8] text-[#8A929E] font-semibold text-[13px] hover:bg-[#F4F5F7] transition-all">Cancel</button>
-                                            <button 
-                                                onClick={handleAiGenerate}
+                                            <button
+                                                onClick={requestAiGenerate}
                                                 disabled={isGenerating || !aiPurpose.trim()}
                                                 className="h-10 bg-[#5B53E0] text-white rounded-[10px] font-semibold text-[13px] hover:bg-[#4A43C9] transition-all active:scale-95 disabled:opacity-20 shadow-sm flex items-center justify-center gap-2"
                                             >
@@ -553,7 +629,7 @@ export default function EmailTemplatesPage() {
                                                             e.target.value = "";
                                                         }}
                                                     >
-                                                        <option value="">Quick Insert Link/Var</option>
+                                                        <option value="">Insert variable…</option>
                                                         <optgroup label="General">
                                                             <option value="candidate_name">Candidate Name</option>
                                                             <option value="job_title">Job Title</option>
@@ -593,6 +669,9 @@ export default function EmailTemplatesPage() {
                                                 required
                                                 readOnly={!canAccess("communications:moderate")}
                                             />
+                                            <p className="text-[11px] text-[#8A929E] leading-relaxed px-1 pt-0.5">
+                                                <span className="font-semibold text-[#6B6F76]">Tip:</span> not limited to the list above — type any custom variable directly using the <code className="px-1 py-0.5 rounded-[4px] bg-[#ECEBFB] text-[#5B53E0] font-semibold">{`{{your_variable}}`}</code> format and it will be filled in when the email is sent.
+                                            </p>
                                         </div>
                                     </form>
                                 )}
@@ -600,16 +679,26 @@ export default function EmailTemplatesPage() {
 
                             {/* Drawer Footer */}
                             {!isAiMode && canAccess("communications:moderate") && (
-                                <div className="p-8 border-t border-[#E8EAED] flex items-center justify-between gap-6 shrink-0">
-                                    <p className="text-[11.5px] text-[#8A929E] leading-normal max-w-[280px]">This template will be available for all automated campaigns and manual outreach.</p>
-                                    <button 
-                                        form="template-form"
-                                        type="submit"
-                                        className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0"
-                                    >
-                                        <Save className="w-4 h-4" />
-                                        Save Template
-                                    </button>
+                                <div className="border-t border-[#E8EAED] shrink-0">
+                                    {saveError && (
+                                        <div className="mx-8 mt-4 flex items-start gap-2.5 rounded-[10px] border border-amber-200 bg-amber-50 px-3.5 py-3">
+                                            <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                                            <p className="text-[12px] font-semibold text-amber-800 leading-relaxed">{saveError}</p>
+                                        </div>
+                                    )}
+                                    <div className="p-8 flex items-center justify-between gap-6">
+                                        <p className="text-[11.5px] text-[#8A929E] leading-normal max-w-[280px]">This template will be available for all automated campaigns and manual outreach.</p>
+                                        <button
+                                            type="submit"
+                                            form="template-form"
+                                            disabled={isSaving || (!!editingTemplate && !isDirty)}
+                                            title={editingTemplate && !isDirty ? "No changes to save yet" : undefined}
+                                            className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
+                                        >
+                                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                            {isSaving ? "Saving…" : editingTemplate ? "Update Template" : "Save Template"}
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </motion.div>
@@ -625,6 +714,17 @@ export default function EmailTemplatesPage() {
                 message={`Are you sure you want to delete "${templateToDelete?.name}"? This action cannot be undone.`}
                 confirmLabel="Delete Template"
                 cancelLabel="Cancel"
+                isDestructive={true}
+            />
+
+            <ConfirmationModal
+                isOpen={isOverwriteConfirmOpen}
+                onClose={() => setIsOverwriteConfirmOpen(false)}
+                onConfirm={() => { setIsOverwriteConfirmOpen(false); handleAiGenerate(); }}
+                title="Replace current content?"
+                message="Generating with AI will overwrite the current name, subject and body of this template. This cannot be undone."
+                confirmLabel="Replace & Generate"
+                cancelLabel="Keep Current"
                 isDestructive={true}
             />
         </div>

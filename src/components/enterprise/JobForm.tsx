@@ -23,7 +23,8 @@ import {
     ListPlus,
     Pin,
     FileText,
-    AtSign
+    AtSign,
+    Users
 } from "lucide-react";
 import { jetbrainsMono, Button, Card, CardHeader, Field, Input, Select, PageHeader, cn } from "@/components/ds";
 
@@ -349,6 +350,23 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
     const errorInputCls = "border-[#EF4444] bg-[#FDECEC] text-[#C0383C] focus:border-[#EF4444] focus:ring-[#EF4444]/20";
 
+    // Hand the just-created job off to sourcing.
+    //  - "ai":     Croar Pilot auto-starts sourcing from the job's title + JD.
+    //  - "manual": AI Sourcing page, pre-filled with the job title to search.
+    const startSourcing = (mode: "ai" | "manual") => {
+        try {
+            sessionStorage.setItem("croar_source_job", JSON.stringify({
+                id: createdJobId,
+                title: formData.title || "",
+                description: formData.description || "",
+                autostart: mode === "ai",
+            }));
+        } catch (e) {
+            console.error("Could not hand off to sourcing:", e);
+        }
+        router.push(mode === "ai" ? "/enterprise/croar-pilot" : "/enterprise/sourcing/chat");
+    };
+
     if (isEdit && isLoading) {
         return (
             <div className="min-h-[60vh] w-full flex items-center justify-center">
@@ -361,7 +379,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     }
 
     return (
-        <div className="px-4 sm:px-5 md:px-7 pb-6 space-y-6 max-w-[1400px] mx-auto w-full animate-in fade-in duration-500 relative">
+        <div className="px-4 sm:px-5 md:px-7 pb-6 max-w-[1400px] mx-auto w-full h-full flex flex-col gap-6 animate-in fade-in duration-500 relative">
             {/* Header */}
             <PageHeader
                 help={<><p>Describe the role across the steps — title, requirements, pipeline.</p><p>Use <strong>Draft with AI</strong> for the description. Save, then publish or share the job to start receiving candidates.</p></>}
@@ -396,7 +414,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 }
             />
 
-            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden flex flex-col relative min-h-[600px]">
+            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden flex flex-col relative flex-1 min-h-0">
                 <AnimatePresence mode="wait">
                     {currentStep === 1 && (
                         <motion.div key="step1" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="flex-1 bg-[#F7F8FA] overflow-y-auto p-4 md:p-6 no-scrollbar relative">
@@ -568,7 +586,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
                     {currentStep === 2 && (
                         <motion.div key="step2" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden h-full">
-                            <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-[#E8EAED] p-5 md:p-6 bg-[#F7F8FA] overflow-y-auto no-scrollbar flex flex-col gap-5">
+                            <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-[#E8EAED] p-5 md:p-6 bg-[#F7F8FA] lg:overflow-hidden flex flex-col gap-5">
                                 {/* Header */}
                                 <div>
                                     <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-tight mb-1.5">Application Form</h1>
@@ -618,8 +636,8 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2 ml-4 shrink-0">
-                                                <button onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, is_required: !f.is_required } : f) }))} className={`px-2.5 py-1 rounded-[8px] text-[11px] font-semibold border transition-colors ${field.is_required ? 'bg-[#5B53E0] text-white border-[#5B53E0]' : 'bg-white text-[#9AA3AF] border-[#E8EAED]'}`}>{field.is_required ? 'Required' : 'Optional'}</button>
-                                                <button onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-8 h-8 rounded-[9px] hover:bg-[#FDECEC] text-[#C7CCD4] hover:text-[#EF4444] transition-colors flex items-center justify-center"><X className="w-4 h-4" /></button>
+                                                <button title={field.is_required ? "Required — click to make optional" : "Optional — click to make required"} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, is_required: !f.is_required } : f) }))} className={`px-2.5 py-1 rounded-[8px] text-[11px] font-semibold border transition-colors ${field.is_required ? 'bg-[#5B53E0] text-white border-[#5B53E0]' : 'bg-[#F4F5F7] text-[#374151] border-[#D4D7DC] hover:bg-[#ECEBFB] hover:text-[#5B53E0] hover:border-[#5B53E0]/40'}`}>{field.is_required ? 'Required' : 'Optional'}</button>
+                                                <button title="Remove question" onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
                                             </div>
                                         </div>
                                     ))}
@@ -638,7 +656,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
                     {currentStep === 3 && (
                         <motion.div key="step3" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden h-full">
-                            <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-[#E8EAED] p-5 md:p-6 bg-[#F7F8FA] overflow-y-auto no-scrollbar flex flex-col gap-5">
+                            <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-[#E8EAED] p-5 md:p-6 bg-[#F7F8FA] lg:overflow-y-auto no-scrollbar flex flex-col gap-5">
                                 {/* Header */}
                                 <div>
                                     <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-tight mb-1.5">Hiring Process</h1>
@@ -673,17 +691,17 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                 <div className="w-full max-w-lg space-y-2.5 pb-10 pl-8">
                                     {formData.workflow_stages.map((node, idx) => (
                                         <div key={node.id} className="group relative flex items-center gap-3.5 bg-white p-3.5 rounded-[12px] border border-[#E8EAED] border-l-[3px] border-l-[#5B53E0] hover:border-[#5B53E0]/40 transition-colors">
-                                            <div className="flex flex-col gap-1 items-center opacity-0 group-hover:opacity-100 transition-opacity absolute -left-8">
-                                                <button disabled={idx === 0} onClick={() => {
+                                            <div className="flex flex-col gap-1 items-center absolute -left-8">
+                                                <button title="Move up" disabled={idx === 0} onClick={() => {
                                                     const newStages = [...formData.workflow_stages];
                                                     [newStages[idx], newStages[idx - 1]] = [newStages[idx - 1], newStages[idx]];
                                                     setFormData(prev => ({ ...prev, workflow_stages: newStages }));
-                                                }} className="w-6 h-6 rounded-[8px] bg-white border border-[#E8EAED] flex items-center justify-center text-[#C7CCD4] hover:text-[#5B53E0] disabled:opacity-30 transition-colors"><ChevronUp className="w-4 h-4" /></button>
-                                                <button disabled={idx === formData.workflow_stages.length - 1} onClick={() => {
+                                                }} className="w-6 h-6 rounded-[8px] bg-white border border-[#E1E4E8] shadow-sm flex items-center justify-center text-[#8A929E] hover:text-[#5B53E0] hover:border-[#5B53E0]/40 disabled:opacity-30 transition-colors"><ChevronUp className="w-4 h-4" /></button>
+                                                <button title="Move down" disabled={idx === formData.workflow_stages.length - 1} onClick={() => {
                                                     const newStages = [...formData.workflow_stages];
                                                     [newStages[idx], newStages[idx + 1]] = [newStages[idx + 1], newStages[idx]];
                                                     setFormData(prev => ({ ...prev, workflow_stages: newStages }));
-                                                }} className="w-6 h-6 rounded-[8px] bg-white border border-[#E8EAED] flex items-center justify-center text-[#C7CCD4] hover:text-[#5B53E0] disabled:opacity-30 transition-colors"><ChevronDown className="w-4 h-4" /></button>
+                                                }} className="w-6 h-6 rounded-[8px] bg-white border border-[#E1E4E8] shadow-sm flex items-center justify-center text-[#8A929E] hover:text-[#5B53E0] hover:border-[#5B53E0]/40 disabled:opacity-30 transition-colors"><ChevronDown className="w-4 h-4" /></button>
                                             </div>
                                             <div className={`w-9 h-9 rounded-[10px] bg-[#5B53E0] text-white flex items-center justify-center text-[11px] font-semibold shrink-0 ${jetbrainsMono.className}`}>#0{idx + 1}</div>
                                             <div className="flex-1 space-y-1.5 min-w-0">
@@ -692,7 +710,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                     {STAGE_TYPES.map(t => (<option key={t.name} value={t.name}>{t.name}</option>))}
                                                 </select>
                                             </div>
-                                            <button onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-[9px] hover:bg-[#FDECEC] text-[#C7CCD4] hover:text-[#EF4444] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
+                                            <button title="Remove stage" onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
                                         </div>
                                     ))}
 
@@ -714,16 +732,34 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             <AnimatePresence>
                 {showSuccessModal && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0E1014]/50 backdrop-blur-sm p-6">
-                        <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-md rounded-[16px] p-8 text-center shadow-[0_14px_34px_rgba(15,23,42,0.16)] relative overflow-hidden border border-[#E8EAED]">
-                            <div className="w-16 h-16 bg-[#E6F4EA] text-[#15803D] rounded-[16px] flex items-center justify-center mx-auto mb-5"><CircleCheck className="w-9 h-9" /></div>
-                            <h2 className="text-[24px] font-extrabold text-[#15171C] tracking-[-0.4px] mb-2 leading-tight">{isEdit ? "Job updated" : "Job created"}</h2>
-                            <p className="text-[14px] text-[#8A929E] leading-relaxed mb-7">{isEdit ? "The job details have been updated successfully." : "The new job has been created and is now live."}</p>
-                            <div className="flex flex-col gap-2.5">
-                                <Button size="lg" fullWidth onClick={() => router.push("/enterprise/jobs")}>
+                        <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-sm rounded-[16px] p-6 text-center shadow-[0_14px_34px_rgba(15,23,42,0.16)] relative overflow-hidden border border-[#E8EAED]">
+                            <div className="w-12 h-12 bg-[#E6F4EA] text-[#15803D] rounded-[14px] flex items-center justify-center mx-auto mb-3.5"><CircleCheck className="w-7 h-7" /></div>
+                            <h2 className="text-[19px] font-extrabold text-[#15171C] tracking-[-0.4px] mb-1.5 leading-tight">{isEdit ? "Job updated" : "Job created"}</h2>
+                            <p className="text-[12.5px] text-[#8A929E] leading-relaxed mb-5">{isEdit ? "The job details have been updated successfully." : (formData.status_id === 2 ? "The new job has been created and is now live." : "The new job has been created. Set its status to Active to start receiving applications.")}</p>
+
+                            {!isEdit && (
+                                <div className="mb-4 rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-3.5 text-left">
+                                    <p className="text-[12.5px] font-bold text-[#15171C] mb-0.5">Start sourcing candidates</p>
+                                    <p className="text-[11.5px] text-[#8A929E] leading-relaxed mb-3">Let Croar Pilot match candidates from the job description, or search yourself.</p>
+                                    <div className="flex flex-col gap-2">
+                                        <Button fullWidth onClick={() => startSourcing("ai")}>
+                                            <Sparkles className="w-4 h-4" />
+                                            Source with Croar Pilot
+                                        </Button>
+                                        <Button variant="secondary" fullWidth onClick={() => startSourcing("manual")}>
+                                            <Users className="w-4 h-4" />
+                                            Source manually
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="flex flex-col gap-2">
+                                <Button variant={isEdit ? "primary" : "secondary"} fullWidth onClick={() => router.push("/enterprise/jobs")}>
                                     <LayoutDashboard className="w-4 h-4" />
                                     View job board
                                 </Button>
-                                <Button variant="secondary" size="lg" fullWidth onClick={() => window.open(`${window.location.origin}/jobs/${isEdit ? jobId : createdJobId}`, '_blank')}>
+                                <Button variant="secondary" fullWidth onClick={() => window.open(`${window.location.origin}/jobs/${isEdit ? jobId : createdJobId}`, '_blank')}>
                                     <Eye className="w-4 h-4" />
                                     View job application
                                 </Button>

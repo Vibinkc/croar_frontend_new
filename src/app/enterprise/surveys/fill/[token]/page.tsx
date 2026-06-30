@@ -176,6 +176,10 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                     <p className="text-[14px] text-[#374151] leading-relaxed">
                         {invite?.instance.template.description || "Every voice matters. Please provide your honest feedback across the following points."}
                     </p>
+                    <p className="inline-flex items-center gap-1.5 text-[12.5px] text-[#8A929E] leading-relaxed">
+                        <span className="material-symbols-rounded text-[16px]">info</span>
+                        Please answer all questions below. Your responses are confidential.
+                    </p>
                 </Card>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -185,7 +189,18 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                                 <span className={`${jetbrainsMono.className} w-8 h-8 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] text-[13px] font-semibold flex items-center justify-center shrink-0`}>
                                     {i + 1}
                                 </span>
-                                <h2 className="text-[16px] font-bold text-[#15171C] leading-snug pt-1">{q.text}</h2>
+                                <div className="pt-1 space-y-1">
+                                    <h2 className="text-[16px] font-bold text-[#15171C] leading-snug">{q.text}</h2>
+                                    <p className="text-[12px] text-[#8A929E]">
+                                        {q.type === 'MCQ'
+                                            ? 'Select one option'
+                                            : q.type === 'RATING'
+                                                ? (q.scale_min != null && q.scale_max != null
+                                                    ? `Rate from ${q.scale_min} to ${q.scale_max}`
+                                                    : 'Rate on the scale below')
+                                                : 'Type your response'}
+                                    </p>
+                                </div>
                             </div>
 
                             {q.type === 'RATING' && (

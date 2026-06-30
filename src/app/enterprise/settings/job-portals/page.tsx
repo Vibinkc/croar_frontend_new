@@ -6,9 +6,7 @@ import {
     Globe,
     Zap,
     CheckCircle2,
-    ExternalLink,
     ShieldCheck,
-    Settings2,
     RefreshCw,
     ArrowLeft,
     X,
@@ -130,9 +128,6 @@ export default function JobPortalsPage() {
                     </div>
 
                     <div className="flex items-center gap-2.5 shrink-0">
-                        <button className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13.5px] font-semibold hover:bg-[#F4F5F7] transition-colors">
-                            <Settings2 className="w-4 h-4 text-[#8A929E]" /> Settings
-                        </button>
                         <button
                             onClick={() => setShowAddAccount(true)}
                             className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
@@ -388,18 +383,15 @@ export default function JobPortalsPage() {
                                 ))}
                             </div>
 
-                            <div className="pt-3 flex items-center gap-3">
+                            <div className="pt-3">
                                 <button
                                     onClick={() => openPortalDetail(portal)}
-                                    className={`flex-1 h-11 rounded-[10px] font-semibold text-[13.5px] transition-colors ${
+                                    className={`w-full h-11 rounded-[10px] font-semibold text-[13.5px] transition-colors ${
                                         portal.connected
                                             ? "bg-[#F4F5F7] text-[#15171C] border border-[#E8EAED] hover:bg-[#ECEBFB]/60"
                                             : "bg-[#5B53E0] text-white hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.24)]"
                                     }`}>
                                     {portal.connected ? "Configure Settings" : "Connect Portal"}
-                                </button>
-                                <button className="w-11 h-11 bg-white border border-[#E8EAED] rounded-[10px] text-[#9AA3AF] hover:text-[#5B53E0] hover:border-[#DAD7F6] flex items-center justify-center transition-colors">
-                                    <ExternalLink className="w-4 h-4" />
                                 </button>
                             </div>
                         </div>

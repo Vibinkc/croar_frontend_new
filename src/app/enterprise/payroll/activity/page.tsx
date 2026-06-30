@@ -17,6 +17,17 @@ function statusTone(code: number): StatusTone {
   return "danger";
 }
 
+// The backend derives a friendly label for known payroll actions (e.g.
+// "Ran payroll cycle"). Anything it can't map falls back to the raw request
+// signature "<METHOD> <path>" (e.g. "GET /api/v1/enterprise/payroll/cycles").
+// Those raw entries are system/integration "API activities" — noise that
+// shouldn't be surfaced to users, so we drop them and keep only real actions.
+const API_ACTIVITY = /^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+\/api\//i;
+
+function isApiActivity(entry: AuditEntry): boolean {
+  return API_ACTIVITY.test(entry.action);
+}
+
 function when(iso: string): string {
   // Backend audit timestamps are naive server-LOCAL (Postgres now()), not UTC.
   // A datetime string without a timezone is parsed as local time by JS, which
@@ -34,7 +45,7 @@ export default function ActivityPage() {
   useEffect(() => {
     auditApi
       .list(200)
-      .then(setEntries)
+      .then((rows) => setEntries(rows.filter((row) => !isApiActivity(row))))
       .catch((err) => setError((err as Error).message))
       .finally(() => setLoading(false));
   }, []);

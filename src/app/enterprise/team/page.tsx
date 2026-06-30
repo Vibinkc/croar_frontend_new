@@ -17,6 +17,7 @@ import {
     X
 } from "lucide-react";
 import { Button, StatCard, StatGrid, Badge, Card, Input, Textarea, Select, Field, PageHelp } from "@/components/ds";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 interface Permission {
     id: string;
@@ -60,6 +61,12 @@ function TeamManagementContent() {
     const [memberFirstName, setMemberFirstName] = useState("");
     const [memberLastName, setMemberLastName] = useState("");
     const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
+
+    // Member management (reassign roles / remove)
+    const [reassignTarget, setReassignTarget] = useState<Member | null>(null);
+    const [reassignRoleIds, setReassignRoleIds] = useState<string[]>([]);
+    const [memberToRemove, setMemberToRemove] = useState<Member | null>(null);
+    const [isSavingMember, setIsSavingMember] = useState(false);
 
     // Role Form State
     const [roleName, setRoleName] = useState("");
@@ -149,6 +156,49 @@ function TeamManagementContent() {
         }
     };
 
+    const openReassign = (member: Member) => {
+        setReassignTarget(member);
+        setReassignRoleIds(member.roles?.map(r => r.id) || []);
+    };
+
+    const toggleReassignRole = (id: string) => {
+        setReassignRoleIds(prev => prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]);
+    };
+
+    const handleSaveReassign = async () => {
+        if (!reassignTarget) return;
+        setIsSavingMember(true);
+        try {
+            const res = await apiClient.put(`/api/v1/enterprise/team/members/${reassignTarget.id}/roles`, {
+                role_ids: reassignRoleIds,
+            });
+            if (res.ok) {
+                setReassignTarget(null);
+                fetchData();
+            }
+        } catch (e) {
+            console.error("Failed to reassign roles", e);
+        } finally {
+            setIsSavingMember(false);
+        }
+    };
+
+    const handleRemoveMember = async () => {
+        if (!memberToRemove) return;
+        setIsSavingMember(true);
+        try {
+            const res = await apiClient.delete(`/api/v1/enterprise/team/members/${memberToRemove.id}`);
+            if (res.ok) {
+                setMemberToRemove(null);
+                fetchData();
+            }
+        } catch (e) {
+            console.error("Failed to remove member", e);
+        } finally {
+            setIsSavingMember(false);
+        }
+    };
+
     const filteredMembers = members.filter(m => {
         const fullName = `${m.first_name || ""} ${m.last_name || ""}`.trim() || m.email;
         const matchesSearch = fullName.toLowerCase().includes(searchQuery.toLowerCase()) || m.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -215,14 +265,15 @@ function TeamManagementContent() {
 
             {/* Search and Filter Bar */}
             <div className="flex flex-col md:flex-row md:items-center gap-3">
-                <Input
-                    icon="search"
-                    type="text"
-                    placeholder="Search members by name or email..."
-                    className="flex-1"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <div className="flex-1 w-full">
+                    <Input
+                        icon="search"
+                        type="text"
+                        placeholder="Search members by name or email..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 md:flex-none">
                         <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[19px] pointer-events-none">filter_list</span>
@@ -277,6 +328,9 @@ function TeamManagementContent() {
                                         <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Member Name</th>
                                         <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Email Address</th>
                                         <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Assigned Roles</th>
+                                        {canAccess("employees:moderate") && (
+                                            <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Actions</th>
+                                        )}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[#F0F0F1]">
@@ -307,6 +361,26 @@ function TeamManagementContent() {
                                                     )}
                                                 </div>
                                             </td>
+                                            {canAccess("employees:moderate") && (
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center justify-end gap-2">
+                                                        <button
+                                                            onClick={() => openReassign(member)}
+                                                            title="Reassign roles"
+                                                            className="w-8 h-8 flex items-center justify-center rounded-[8px] text-[#8A929E] hover:text-[#5B53E0] hover:bg-[#ECEBFB] border border-transparent hover:border-[#DAD7F6]/60 transition-all"
+                                                        >
+                                                            <ShieldCheck className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setMemberToRemove(member)}
+                                                            title="Remove member"
+                                                            className="w-8 h-8 flex items-center justify-center rounded-[8px] text-[#8A929E] hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
@@ -537,6 +611,67 @@ function TeamManagementContent() {
                     </div>
                 )}
             </AnimatePresence>
+
+            {/* Reassign roles modal */}
+            <AnimatePresence>
+                {reassignTarget && (
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-[#15171C]/40 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.96, y: 16 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.96, y: 16 }}
+                            className="w-full max-w-md bg-white rounded-[16px] shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] overflow-hidden"
+                        >
+                            <div className="px-6 py-5 border-b border-[#E8EAED] flex items-center justify-between">
+                                <div>
+                                    <h3 className="text-[16px] font-extrabold text-[#15171C]">Reassign roles</h3>
+                                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">{`${reassignTarget.first_name || ""} ${reassignTarget.last_name || ""}`.trim() || reassignTarget.email}</p>
+                                </div>
+                                <button onClick={() => setReassignTarget(null)} className="p-1.5 hover:bg-[#F4F5F7] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg transition-all">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+                            <div className="p-5 max-h-[360px] overflow-y-auto space-y-2 custom-scrollbar">
+                                {roles.map(role => (
+                                    <button
+                                        key={role.id}
+                                        type="button"
+                                        onClick={() => toggleReassignRole(role.id)}
+                                        className={`w-full flex items-center justify-between p-3 rounded-[10px] border text-left transition-all ${reassignRoleIds.includes(role.id) ? 'bg-[#15171C] border-[#15171C] text-white' : 'bg-white border-[#E1E4E8] text-[#374151] hover:border-[#9AA3AF]'}`}
+                                    >
+                                        <div className="min-w-0">
+                                            <p className="text-[13px] font-bold truncate">{role.name}</p>
+                                            <p className={`text-[11px] truncate ${reassignRoleIds.includes(role.id) ? 'text-white/60' : 'text-[#8A929E]'}`}>{role.description || 'Organizational access role'}</p>
+                                        </div>
+                                        <div className={`w-2 h-2 rounded-full shrink-0 ml-3 ${reassignRoleIds.includes(role.id) ? 'bg-[#5B53E0] ring-4 ring-[#5B53E0]/30' : 'bg-[#E1E4E8]'}`} />
+                                    </button>
+                                ))}
+                                {roles.length === 0 && (
+                                    <p className="text-[12.5px] text-[#8A929E] text-center py-6">No roles available — create a role first.</p>
+                                )}
+                            </div>
+                            <div className="px-6 py-4 border-t border-[#E8EAED] flex justify-end gap-3 bg-[#F7F8FA]/50">
+                                <Button variant="secondary" onClick={() => setReassignTarget(null)}>Cancel</Button>
+                                <Button onClick={handleSaveReassign} disabled={isSavingMember}>
+                                    {isSavingMember ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+                                    Save roles
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            <ConfirmationModal
+                isOpen={!!memberToRemove}
+                onClose={() => setMemberToRemove(null)}
+                onConfirm={handleRemoveMember}
+                title="Remove team member?"
+                message={`Remove ${`${memberToRemove?.first_name || ""} ${memberToRemove?.last_name || ""}`.trim() || memberToRemove?.email || "this member"} from the team? They will lose access immediately. This action cannot be undone.`}
+                confirmLabel="Remove member"
+                cancelLabel="Cancel"
+                isDestructive={true}
+            />
         </div>
     );
 }

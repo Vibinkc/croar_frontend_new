@@ -51,22 +51,36 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
     const [newFieldRequired, setNewFieldRequired] = useState(false);
     const [newFieldOptions, setNewFieldOptions] = useState("");
 
+    // Save / validation / dirty-check state
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const [initialSnapshot, setInitialSnapshot] = useState("");
+
     useEffect(() => {
         if (template) {
             setTimeout(() => {
+                const secs = template.form_config?.sections || [];
                 setName(template.name);
                 setDescription(template.description || "");
-                setSections(template.form_config?.sections || []);
-                if (template.form_config?.sections?.length > 0) {
-                    setActiveSectionId(template.form_config.sections[0].id);
+                setSections(secs);
+                if (secs.length > 0) {
+                    setActiveSectionId(secs[0].id);
                 }
+                setInitialSnapshot(JSON.stringify({ name: template.name, description: template.description || "", sections: secs }));
             }, 0);
+        } else {
+            setInitialSnapshot(JSON.stringify({ name: "", description: "", sections: [] }));
         }
     }, [template]);
 
+    const isDirty = JSON.stringify({ name, description, sections }) !== initialSnapshot;
+
     const handleSave = async () => {
-        if (!name) return alert("Template name is required");
-        if (sections.length === 0) return alert("At least one section is required");
+        if (!name.trim()) { setSaveError("Add a template name before saving."); return; }
+        if (sections.length === 0) { setSaveError("Add at least one section before saving."); return; }
+        const totalFields = sections.reduce((acc, s) => acc + s.fields.length, 0);
+        if (totalFields === 0) { setSaveError("Add at least one field to a section before saving."); return; }
+        setSaveError(null);
 
         const payload = {
             name,
@@ -75,10 +89,11 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
             form_config: { sections }
         };
 
-        const url = template 
+        const url = template
             ? `${BACKEND_URL}/api/v1/enterprise/onboarding/templates/${template.id}`
             : `${BACKEND_URL}/api/v1/enterprise/onboarding/templates/`;
-        
+
+        setIsSaving(true);
         try {
             const res = await fetch(url, {
                 method: template ? "PUT" : "POST",
@@ -93,10 +108,13 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                 router.push("/enterprise/templates/onboarding-templates");
             } else {
                 const err = await res.json();
-                alert(err.detail || "Failed to save template");
+                setSaveError(err.detail || "Failed to save template. Please try again.");
             }
         } catch (error) {
             console.error("Error saving template:", error);
+            setSaveError("Something went wrong while saving. Please try again.");
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -382,19 +400,29 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                 </div>
             </div>
 
+            {saveError && (
+                <div className="mt-6 flex items-start gap-2.5 rounded-[12px] border border-amber-200 bg-amber-50 px-4 py-3.5">
+                    <span className="material-icons-outlined text-[18px] text-amber-600 mt-0.5 shrink-0">error_outline</span>
+                    <p className="text-[12.5px] font-semibold text-amber-800 leading-relaxed">{saveError}</p>
+                </div>
+            )}
+
             <div className="mt-8 flex items-center justify-between gap-4 border-t border-[#E8EAED] pt-6">
-                <button 
+                <button
                     onClick={() => router.push("/enterprise/templates/onboarding-templates")}
                     className="h-10 px-6 bg-white border border-[#E1E4E8] hover:bg-[#F4F5F7] text-[#374151] rounded-[10px] font-semibold text-[13px] shadow-sm transition-all"
                 >
                     Cancel
                 </button>
                 {canAccess("onboarding:moderate") && (
-                    <button 
+                    <button
                         onClick={handleSave}
-                        className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0"
+                        disabled={isSaving || (!!template && !isDirty)}
+                        title={template && !isDirty ? "No changes to save yet" : undefined}
+                        className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
                     >
-                        {template ? "Update Template" : "Save Template"}
+                        {isSaving && <span className="material-icons-outlined text-[18px] animate-spin">progress_activity</span>}
+                        {isSaving ? (template ? "Updating…" : "Saving…") : (template ? "Update Template" : "Save Template")}
                     </button>
                 )}
             </div>

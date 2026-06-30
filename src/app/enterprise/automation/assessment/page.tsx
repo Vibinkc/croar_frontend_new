@@ -14,7 +14,6 @@ import {
   Edit2,
   X,
   Save,
-  Eye,
   EyeOff,
   Sparkles,
   AlertCircle,
@@ -161,13 +160,14 @@ export default function AssessmentAutomationPage() {
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [automationToDelete, setAutomationToDelete] = useState<Automation | null>(null);
-  const [previewingAutomation, setPreviewingAutomation] = useState<Automation | null>(null);
   const [originalForm, setOriginalForm] = useState<FormState | null>(null);
-  const [originalQuestions, setOriginalQuestions] = useState<Question[] | null>(null);
   const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
   const [assessmentTemplates, setAssessmentTemplates] = useState<AssessmentTemplate[]>([]);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   const [activeTab, setActiveTab] = useState<'config' | 'questions'>('config');
+  const [isDetachConfirmOpen, setIsDetachConfirmOpen] = useState(false);
+  // Row-level "Generate AI questions" now asks before replacing.
+  const [regenerateTarget, setRegenerateTarget] = useState<Automation | null>(null);
 
   const showToast = (msg: string | { msg?: string, detail?: string } | Array<{ msg?: string } | string>, type: "success" | "error" = "success") => {
     let finalMsg = "";
@@ -294,13 +294,8 @@ export default function AssessmentAutomationPage() {
     setEditingId(null);
     setForm(EMPTY_FORM);
     setOriginalForm(null);
-    setOriginalQuestions(null);
     setActiveTab('config');
   };
-
-  // ── Save ─────────────────────────────────────────────────────────────────────
-
-  const [isPreviewingNew, setIsPreviewingNew] = useState(false);
 
   // ── Save/Generate Preview ──────────────────────────────────────────────────
 
@@ -337,7 +332,9 @@ export default function AssessmentAutomationPage() {
           id: q.id || crypto.randomUUID()
         }));
 
-        setForm(f => ({ ...f, generated_questions: finalQuestions }));
+        // AI-generated questions are not the template's set — detach from the
+        // template so we never persist a template_id alongside foreign questions.
+        setForm(f => ({ ...f, generated_questions: finalQuestions, template_id: "" }));
         setActiveTab('questions');
         showToast("Questions generated! Please review questions.");
       } else {
@@ -348,9 +345,62 @@ export default function AssessmentAutomationPage() {
     }
   };
 
+  // Entry point for the "Draft / Regenerate with AI" buttons. If a template is
+  // currently attached, confirm first — generating will replace its questions and
+  // switch the automation to a custom (template-less) configuration.
+  const requestGeneratePreview = () => {
+    if (!form.job_requirement_id) {
+      showToast("Please select a target job first.", "error");
+      return;
+    }
+    if (!form.topic.trim()) {
+      showToast("Please enter a topic for the assessment.", "error");
+      return;
+    }
+    if (form.template_id) {
+      setIsDetachConfirmOpen(true);
+      return;
+    }
+    handleGeneratePreview();
+  };
+
+  const selectedTemplateName = assessmentTemplates.find(t => t.id === form.template_id)?.name || "selected";
+
+  // Blocks saving incomplete/empty questions. Returns the first problem (with the
+  // question number) or null when every question is complete.
+  const validateQuestionContent = (questions: Question[] | null): string | null => {
+    for (let i = 0; i < (questions || []).length; i++) {
+      const q = (questions as Question[])[i];
+      const n = i + 1;
+      if (q.type === 'CODING') {
+        if (!(q.title || "").trim()) return `Question ${n}: add a problem title.`;
+        if (!((q.description || q.problem_statement || "") as string).trim())
+          return `Question ${n}: add a problem description or statement.`;
+      } else {
+        if (!(q.question || "").trim()) return `Question ${n}: add the question text.`;
+        const opts = (q.options || []).map(o => (o || "").trim());
+        if (opts.length < 2 || opts.some(o => !o)) return `Question ${n}: fill in every answer option.`;
+        if (!(q.correct_answer || "").trim() || !opts.includes((q.correct_answer || "").trim()))
+          return `Question ${n}: mark which option is the correct answer.`;
+      }
+    }
+    return null;
+  };
+
   const handleFinalCreate = async () => {
     if (!form.job_requirement_id) {
       showToast("Job selection is required.", "error");
+      return;
+    }
+    if (!form.generated_questions || form.generated_questions.length === 0) {
+      showToast("Add at least one question — draft with AI or add manually — before creating.", "error");
+      setActiveTab('questions');
+      return;
+    }
+    const qErr = validateQuestionContent(form.generated_questions);
+    if (qErr) {
+      showToast(qErr, "error");
+      setActiveTab('questions');
       return;
     }
     if (!form.is_immediate && form.send_at) {
@@ -385,8 +435,6 @@ export default function AssessmentAutomationPage() {
       });
       if (res.ok) {
         showToast("Assessment Automation created successfully!");
-        setPreviewingAutomation(null);
-        setIsPreviewingNew(false);
         setForm(EMPTY_FORM);
         fetchAutomations(selectedJobId || undefined);
         closeModal();
@@ -398,29 +446,14 @@ export default function AssessmentAutomationPage() {
     }
   };
 
-  const handleSaveQuestions = async () => {
-    if (!previewingAutomation) return;
-    setSaving(true);
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${previewingAutomation.id}`, {
-        method: "PATCH",
-        headers: authHeaders,
-        body: JSON.stringify({ generated_questions: previewingAutomation.generated_questions }),
-      });
-      if (res.ok) {
-        showToast("Questions saved successfully!");
-        setPreviewingAutomation(null);
-        fetchAutomations(selectedJobId || undefined);
-      } else {
-        showToast("Failed to save questions.", "error");
-      }
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const handleUpdate = async () => {
     if (!editingId) return;
+    const qErr = validateQuestionContent(form.generated_questions);
+    if (qErr) {
+      showToast(qErr, "error");
+      setActiveTab('questions');
+      return;
+    }
     if (!form.is_immediate && form.send_at) {
       if (new Date(form.send_at) < new Date()) {
         showToast("Scheduled time cannot be in the past.", "error");
@@ -505,80 +538,71 @@ export default function AssessmentAutomationPage() {
   };
 
   const handleUpdateQuestion = (id: string, field: string, value: string | string[]) => {
-    if (previewingAutomation) {
-      setPreviewingAutomation(prev => ({
-        ...prev!,
-        generated_questions: (prev!.generated_questions || []).map((q: Question) =>
-          q.id === id ? { ...q, [field]: value } : q
-        )
-      }));
-    } else {
-      setForm(f => ({
-        ...f,
-        generated_questions: (f.generated_questions || []).map((q: Question) =>
-          q.id === id ? { ...q, [field]: value } : q
-        )
-      }));
-    }
+    setForm(f => ({
+      ...f,
+      generated_questions: (f.generated_questions || []).map((q: Question) =>
+        q.id === id ? { ...q, [field]: value } : q
+      )
+    }));
   };
 
   const handleDeleteQuestion = (id: string) => {
-    if (previewingAutomation) {
-      setPreviewingAutomation(prev => ({
-        ...prev!,
-        generated_questions: (prev!.generated_questions || []).filter((q: Question) => q.id !== id)
-      }));
-    } else {
-      setForm(f => ({
-        ...f,
-        generated_questions: (f.generated_questions || []).filter((q: Question) => q.id !== id)
-      }));
-    }
+    setForm(f => ({
+      ...f,
+      generated_questions: (f.generated_questions || []).filter((q: Question) => q.id !== id)
+    }));
     showToast("Question removed.");
   };
 
   const handleAddQuestion = () => {
-    const currentType = (previewingAutomation?.type || form.type) === "CODING" ? "CODING" : "APTITUDE";
-    
+    const currentType = form.type === "CODING" ? "CODING" : "APTITUDE";
+
+    // Start blank so the new question must be filled in — validation blocks empty ones.
     const newQ: Question = {
       id: crypto.randomUUID(),
       type: currentType as AssessmentType,
     };
 
     if (currentType === "CODING") {
-      newQ.title = "New Coding Problem";
-      newQ.description = "Enter problem description...";
-      newQ.problem_statement = "// Write your problem statement or starter code here...";
+      newQ.title = "";
+      newQ.description = "";
+      newQ.problem_statement = "";
     } else {
-      newQ.question = "New Aptitude Question";
-      newQ.options = ["Option 1", "Option 2", "Option 3", "Option 4"];
-      newQ.correct_answer = "Option 1";
+      newQ.question = "";
+      newQ.options = ["", "", "", ""];
+      newQ.correct_answer = "";
       newQ.explanation = "";
     }
 
-    if (previewingAutomation) {
-      setPreviewingAutomation(prev => ({
-        ...prev!,
-        generated_questions: [...(prev!.generated_questions || []), newQ]
-      }));
-    } else {
-      setForm(f => ({
-        ...f,
-        generated_questions: [...(f.generated_questions || []), newQ]
-      }));
-    }
-    showToast("Manual question added!");
+    const detaching = !!form.template_id;
+    setForm(f => ({
+      ...f,
+      generated_questions: [...(f.generated_questions || []), newQ],
+      template_id: "",
+    }));
+    showToast(detaching
+      ? "Switched to a custom question set — no longer linked to the template."
+      : "Blank question added — fill it in before saving.");
   };
 
-  const handleGenerateQuestions = async (id: string) => {
-    setGeneratingId(id);
+  const handleGenerateQuestions = async (a: Automation) => {
+    setGeneratingId(a.id);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${id}/generate`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${a.id}/generate`, {
         method: "POST",
         headers: authHeaders,
       });
       if (res.ok) {
-        showToast("AI Questions generated successfully!");
+        // AI questions are not the template's set — detach so we never keep a stale
+        // template link alongside regenerated questions.
+        if (a.template_id) {
+          await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${a.id}`, {
+            method: "PATCH",
+            headers: authHeaders,
+            body: JSON.stringify({ template_id: null }),
+          }).catch(() => {});
+        }
+        showToast("AI questions generated successfully!");
         fetchAutomations(selectedJobId || undefined);
       } else {
         showToast("AI Generation failed.", "error");
@@ -626,9 +650,6 @@ export default function AssessmentAutomationPage() {
   });
 
   const hasFormChanged = originalForm ? JSON.stringify(form) !== JSON.stringify(originalForm) : true;
-  const hasQuestionsChanged = (previewingAutomation && originalQuestions) 
-    ? JSON.stringify(previewingAutomation.generated_questions) !== JSON.stringify(originalQuestions)
-    : true;
 
   // ─── Render ────────────────────────────────────────────────────────────────
 
@@ -862,11 +883,11 @@ export default function AssessmentAutomationPage() {
                       <div className="flex items-center justify-end gap-2">
                         {canAccess("automation:moderate") && (
                           <button
-                            onClick={() => handleGenerateQuestions(a.id)}
+                            onClick={() => setRegenerateTarget(a)}
                             disabled={generatingId === a.id}
                             className={`w-8 h-8 flex items-center justify-center rounded-[8px] transition-all ${
-                              a.generated_questions 
-                                ? "bg-[#F4F5F7] text-[#8A929E] hover:bg-[#ECEBFB] hover:text-[#5B53E0]" 
+                              a.generated_questions
+                                ? "bg-[#F4F5F7] text-[#8A929E] hover:bg-[#ECEBFB] hover:text-[#5B53E0]"
                                 : "bg-[#FEF3E2] text-[#D97706] hover:bg-[#D97706] hover:text-white"
                             }`}
                             title={a.generated_questions ? "Regenerate AI Questions" : "Generate AI Questions"}
@@ -878,22 +899,10 @@ export default function AssessmentAutomationPage() {
                             )}
                           </button>
                         )}
-                        {a.generated_questions && (
-                          <button
-                            onClick={() => {
-                              setPreviewingAutomation(a);
-                              setOriginalQuestions(a.generated_questions);
-                            }}
-                            className="w-8 h-8 flex items-center justify-center rounded-[8px] bg-[#E3F4EF] text-[#0E8A6E] hover:bg-[#0E8A6E] hover:text-white transition-all"
-                            title="Preview Questions"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                        )}
                         <button
                           onClick={() => openEdit(a)}
                           className="w-8 h-8 flex items-center justify-center rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#1F2127] transition-all"
-                          title="Edit Rule"
+                          title={a.generated_questions ? "View / edit questions & rule" : "Edit rule"}
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
@@ -1209,8 +1218,16 @@ export default function AssessmentAutomationPage() {
                       )}
 
                       <div className="pt-4 mt-6 border-t border-[#E8EAED]">
+                        {form.template_id && (
+                          <div className="mb-3 flex items-start gap-2 rounded-[10px] border border-[#FCE1BF] bg-[#FEF3E2]/60 px-3.5 py-2.5">
+                            <AlertCircle className="w-4 h-4 text-[#D97706] mt-0.5 shrink-0" />
+                            <p className="text-[11.5px] font-semibold text-[#92590C] leading-relaxed">
+                              Questions come from the &quot;{selectedTemplateName}&quot; template. Drafting with AI or adding a question will switch this automation to a custom set and unlink the template.
+                            </p>
+                          </div>
+                        )}
                         <button
-                          onClick={handleGeneratePreview}
+                          onClick={requestGeneratePreview}
                           disabled={saving || !form.job_requirement_id || !form.topic}
                           className="w-full h-12 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[12px] text-[13.5px] font-bold shadow-[0_6px_16px_rgba(91,83,224,0.25)] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
@@ -1263,20 +1280,22 @@ export default function AssessmentAutomationPage() {
                                        id={`cfg-q-question-${q.id}`}
                                        value={q.question || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2.5 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-20 resize-none"
+                                       placeholder="Type the question…"
+                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2.5 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-20 resize-none"
                                      />
                                    </div>
                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                      {(q.options || []).map((opt: string, oi: number) => (
                                        <div key={oi} className="relative">
-                                         <input 
-                                           value={opt} 
+                                         <input
+                                           value={opt}
                                            onChange={(e) => {
                                              const newOpts = [...(q.options ?? [])];
                                              newOpts[oi] = e.target.value;
                                              handleUpdateQuestion(q.id, "options", newOpts);
                                            }}
-                                           className={`w-full bg-[#F7F8FA] border-2 rounded-[10px] pl-12 pr-4 py-2.5 text-xs font-semibold transition-all ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" : "border-transparent text-[#4B5563]"}`}
+                                           placeholder={`Option ${oi + 1}`}
+                                           className={`w-full bg-[#F7F8FA] border-2 rounded-[10px] pl-12 pr-4 py-2.5 text-xs font-semibold transition-all placeholder:text-[#9AA3AF] placeholder:font-normal ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" : "border-transparent text-[#4B5563]"}`}
                                          />
                                          <button 
                                            onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
@@ -1297,7 +1316,8 @@ export default function AssessmentAutomationPage() {
                                        type="text"
                                        value={q.title || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
-                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all"
+                                       placeholder="e.g. Two Sum"
+                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all"
                                      />
                                    </div>
                                    <div>
@@ -1306,7 +1326,8 @@ export default function AssessmentAutomationPage() {
                                        id={`cfg-q-description-${q.id}`}
                                        value={q.description || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
-                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
+                                       placeholder="Describe the problem the candidate must solve…"
+                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
                                      />
                                    </div>
                                    <div>
@@ -1315,7 +1336,8 @@ export default function AssessmentAutomationPage() {
                                        id={`cfg-q-statement-${q.id}`}
                                        value={q.problem_statement || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
-                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-xs font-mono text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
+                                       placeholder="// Constraints, examples, or starter code…"
+                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-xs font-mono text-[#374151] placeholder:text-[#9AA3AF] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
                                      />
                                    </div>
                                  </>
@@ -1360,11 +1382,12 @@ export default function AssessmentAutomationPage() {
                     )}
                     <span>Save Changes</span>
                   </button>
-                ) : form.generated_questions ? (
+                ) : (
                   <button
                     onClick={handleFinalCreate}
-                    disabled={saving}
-                    className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50"
+                    disabled={saving || !form.generated_questions?.length}
+                    title={!form.generated_questions?.length ? "Draft questions with AI (or add one) first" : undefined}
+                    className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {saving ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -1373,174 +1396,7 @@ export default function AssessmentAutomationPage() {
                     )}
                     <span>Confirm & Create</span>
                   </button>
-                ) : (
-                  <button
-                    onClick={handleGeneratePreview}
-                    disabled={saving || !form.job_requirement_id || !form.topic || !form.email_template_id}
-                    className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50"
-                  >
-                    {saving ? (
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <Sparkles className="w-4 h-4" />
-                    )}
-                    <span>Generate Draft with AI</span>
-                  </button>
                 )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Question Editor Modal ────────────────────────────────────────── */}
-      {previewingAutomation && (
-        <div className="fixed inset-0 z-[160] flex items-center justify-center p-4">
-          <div
-            role="button"
-            tabIndex={0}
-            aria-label="Close preview"
-            className="absolute inset-0 bg-[#15171C]/50 backdrop-blur-sm transition-opacity duration-300"
-            onClick={() => { setPreviewingAutomation(null); setOriginalQuestions(null); }}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setPreviewingAutomation(null); setOriginalQuestions(null); } }}
-          />
-          <div className="relative bg-white rounded-[16px] shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED] bg-white shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[8px] bg-[#FEF3E2] flex items-center justify-center border border-[#FCE1BF]/80 shadow-sm">
-                  <Brain className="w-5 h-5 text-[#D97706]" />
-                </div>
-                <div>
-                  <h2 className="text-[16px] font-bold text-[#15171C]">Preview & Edit Questions</h2>
-                  <p className="text-[12px] text-[#8A929E] font-medium">{previewingAutomation.topic} • {previewingAutomation.type}</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => { setPreviewingAutomation(null); setOriginalQuestions(null); }} 
-                className="w-8 h-8 rounded-[8px] hover:bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] hover:text-[#1F2127] transition-all"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-6 overflow-y-auto pr-4 custom-scrollbar flex-1 bg-slate-50/30">
-              {(previewingAutomation.generated_questions || []).map((q: Question, idx: number) => (
-                <div key={q.id} className="bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[12px] p-6 shadow-sm hover:shadow-md transition-all relative group">
-                  <div className="absolute -top-3 -left-3 w-7 h-7 bg-[#5B53E0] text-white rounded-[8px] flex items-center justify-center text-[12px] font-bold shadow-sm">#{idx + 1}</div>
-                  
-                  <button 
-                    onClick={() => handleDeleteQuestion(q.id)}
-                    className="absolute top-4 right-4 w-8 h-8 rounded-[8px] bg-rose-50 text-rose-600 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-rose-600 hover:text-white"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-
-                  <div className="space-y-4">
-                    {q.type === 'APTITUDE' ? (
-                      <>
-                        <div>
-                          <label htmlFor={`prev-q-question-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Question Text (Aptitude)</label>
-                          <textarea
-                            id={`prev-q-question-${q.id}`}
-                            value={q.question || ""}
-                            onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2.5 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-20 resize-none"
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {(q.options || []).map((opt: string, oi: number) => (
-                            <div key={oi} className="relative">
-                              <input 
-                                value={opt} 
-                                onChange={(e) => {
-                                  const newOpts = [...(q.options ?? [])];
-                                  newOpts[oi] = e.target.value;
-                                  handleUpdateQuestion(q.id, "options", newOpts);
-                                }}
-                                className={`w-full bg-[#F7F8FA] border-2 rounded-[10px] pl-12 pr-4 py-2.5 text-xs font-semibold transition-all ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" : "border-transparent text-[#4B5563]"}`}
-                              />
-                              <button 
-                                onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
-                                className={`absolute left-3 top-2.5 w-6 h-6 rounded-[6px] flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#5B53E0] text-white" : "bg-[#E1E4E8] text-[#8A929E] hover:bg-[#D4D7DC]"}`}
-                              >
-                                {q.correct_answer === opt ? <Check className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div>
-                          <label htmlFor={`prev-q-title-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Title</label>
-                          <input
-                            id={`prev-q-title-${q.id}`}
-                            type="text"
-                            value={q.title || ""}
-                            onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
-                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor={`prev-q-description-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Description</label>
-                          <textarea
-                            id={`prev-q-description-${q.id}`}
-                            value={q.description || ""}
-                            onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
-                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor={`prev-q-statement-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Statement</label>
-                          <textarea
-                            id={`prev-q-statement-${q.id}`}
-                            value={q.problem_statement || ""}
-                            onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
-                            className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-xs font-mono text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
-                          />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              <button 
-                onClick={handleAddQuestion}
-                className="w-full py-4 border-2 border-dashed border-[#E1E4E8] rounded-[12px] text-[#8A929E] font-semibold hover:border-[#D97706] hover:text-[#D97706] hover:bg-[#FEF3E2]/30 transition-all flex items-center justify-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add Manual Question</span>
-              </button>
-            </div>
-
-            <div className="px-6 py-5 border-t border-[#E8EAED] bg-white flex items-center justify-between shrink-0">
-              <p className="text-[12.5px] font-bold text-[#8A929E]">
-                {(previewingAutomation.generated_questions || []).length} Total Questions
-              </p>
-              <div className="flex gap-3">
-                <button 
-                  onClick={() => {
-                    setPreviewingAutomation(null);
-                    setIsPreviewingNew(false);
-                    setOriginalQuestions(null);
-                  }} 
-                  className="px-4 py-2 border border-[#E1E4E8] bg-white hover:bg-[#F4F5F7] text-[13px] font-semibold text-[#374151] rounded-[9px] transition-all"
-                >
-                  Discard
-                </button>
-                <button 
-                   onClick={isPreviewingNew ? handleFinalCreate : handleSaveQuestions}
-                   disabled={saving || (!isPreviewingNew && !hasQuestionsChanged)}
-                   className="px-6 h-11 bg-[#5B53E0] text-white rounded-[9px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {saving ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Check className="w-4 h-4" />
-                  )}
-                  <span>{isPreviewingNew ? "Confirm & Create Automation" : "Save Question Set"}</span>
-                </button>
               </div>
             </div>
           </div>
@@ -1559,6 +1415,32 @@ export default function AssessmentAutomationPage() {
         confirmLabel="Yes, Delete"
         cancelLabel="No"
         isDestructive={true}
+      />
+
+      <ConfirmationModal
+        isOpen={isDetachConfirmOpen}
+        onClose={() => setIsDetachConfirmOpen(false)}
+        onConfirm={() => { setIsDetachConfirmOpen(false); handleGeneratePreview(); }}
+        title="Replace template questions?"
+        message={`This automation is using the "${selectedTemplateName}" template. Drafting with AI will replace its questions and switch the automation to a custom configuration (it will no longer be linked to the template). Continue?`}
+        confirmLabel="Replace & Use AI"
+        cancelLabel="Keep Template"
+        isDestructive={true}
+      />
+
+      <ConfirmationModal
+        isOpen={!!regenerateTarget}
+        onClose={() => setRegenerateTarget(null)}
+        onConfirm={() => { const t = regenerateTarget; setRegenerateTarget(null); if (t) handleGenerateQuestions(t); }}
+        title={regenerateTarget?.generated_questions?.length ? "Regenerate AI questions?" : "Generate AI questions?"}
+        message={
+          regenerateTarget?.generated_questions?.length
+            ? `This will generate a fresh AI question set for "${regenerateTarget?.topic}" and replace the current ${regenerateTarget?.generated_questions?.length} question${regenerateTarget?.generated_questions?.length === 1 ? "" : "s"}${regenerateTarget?.template_id ? ", and unlink the attached template" : ""}. This cannot be undone.`
+            : `AI will draft questions for "${regenerateTarget?.topic}" based on this rule's type and topic. You can review and edit them afterwards.`
+        }
+        confirmLabel={regenerateTarget?.generated_questions?.length ? "Regenerate" : "Generate"}
+        cancelLabel="Cancel"
+        isDestructive={!!regenerateTarget?.generated_questions?.length}
       />
     </div>
   );

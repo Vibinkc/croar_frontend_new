@@ -87,7 +87,7 @@ export default function OnboardingDashboard() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setJobs(data);
+                setJobs(Array.isArray(data) ? data : (Array.isArray(data?.items) ? data.items : []));
             }
         } catch (error) {
             console.error("Error fetching jobs:", error);
@@ -102,7 +102,7 @@ export default function OnboardingDashboard() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setOnboardings(data);
+                setOnboardings(Array.isArray(data) ? data : (Array.isArray(data?.items) ? data.items : []));
             }
         } catch (error) {
             console.error("Error fetching onboardings:", error);

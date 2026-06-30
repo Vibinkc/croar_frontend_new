@@ -19,7 +19,9 @@ import {
     Search,
     RefreshCcw,
     Settings2,
-    Calendar
+    Calendar,
+    Loader2,
+    AlertTriangle
 } from "lucide-react";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { jetbrainsMono, PageHelp } from "@/components/ds";
@@ -81,6 +83,12 @@ export default function AssessmentTemplatesPage() {
     const [generatedQuestions, setGeneratedQuestions] = useState<GeneratedQuestion[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
 
+    // Save / validation / dirty-check state
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const [initialSnapshot, setInitialSnapshot] = useState("");
+    const [isRegenConfirmOpen, setIsRegenConfirmOpen] = useState(false);
+
     const fetchEmailTemplates = useCallback(async () => {
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, {
@@ -119,17 +127,37 @@ export default function AssessmentTemplatesPage() {
         }
     }, [token, fetchTemplates, fetchEmailTemplates]);
 
+    const snapshotOf = (vals: {
+        name: string; type: string; topic: string; questionCount: number;
+        duration: number; selectedEmailTemplateId: string; generatedQuestions: GeneratedQuestion[];
+    }) => JSON.stringify(vals);
+
     const handleOpenModal = (template?: AssessmentTemplate) => {
+        setSaveError(null);
         if (template) {
+            const vals = {
+                name: template.name,
+                type: template.type,
+                topic: template.topic,
+                questionCount: template.question_count,
+                duration: template.test_duration,
+                selectedEmailTemplateId: template.email_template_id || "",
+                generatedQuestions: template.generated_questions || [],
+            };
             setEditingTemplate(template);
-            setName(template.name);
+            setName(vals.name);
             setType(template.type);
-            setTopic(template.topic);
-            setQuestionCount(template.question_count);
-            setDuration(template.test_duration);
-            setSelectedEmailTemplateId(template.email_template_id || "");
-            setGeneratedQuestions(template.generated_questions || []);
+            setTopic(vals.topic);
+            setQuestionCount(vals.questionCount);
+            setDuration(vals.duration);
+            setSelectedEmailTemplateId(vals.selectedEmailTemplateId);
+            setGeneratedQuestions(vals.generatedQuestions);
+            setInitialSnapshot(snapshotOf(vals));
         } else {
+            const vals = {
+                name: "", type: "APTITUDE", topic: "", questionCount: 10,
+                duration: 30, selectedEmailTemplateId: "", generatedQuestions: [] as GeneratedQuestion[],
+            };
             setEditingTemplate(null);
             setName("");
             setType("APTITUDE");
@@ -138,13 +166,58 @@ export default function AssessmentTemplatesPage() {
             setDuration(30);
             setSelectedEmailTemplateId("");
             setGeneratedQuestions([]);
+            setInitialSnapshot(snapshotOf(vals));
         }
         setActiveTab('config');
         setIsModalOpen(true);
     };
 
+    const currentSnapshot = snapshotOf({ name, type, topic, questionCount, duration, selectedEmailTemplateId, generatedQuestions });
+    const isDirty = currentSnapshot !== initialSnapshot;
+
+    // Returns a human-readable problem (with the tab to focus), or null when valid.
+    const validateTemplate = (): { message: string; tab: 'config' | 'questions' } | null => {
+        if (!name.trim()) return { message: "Add a template name before saving.", tab: 'config' };
+        if (!topic.trim()) return { message: "Add a topic / skills before saving.", tab: 'config' };
+        if (generatedQuestions.length === 0)
+            return { message: "Add at least one question — manually or with AI — before saving.", tab: 'questions' };
+        for (let i = 0; i < generatedQuestions.length; i++) {
+            const q = generatedQuestions[i];
+            const n = i + 1;
+            if (q.type === 'CODING') {
+                if (!(q.title || "").trim()) return { message: `Question ${n}: add a challenge title.`, tab: 'questions' };
+                if (!((q.description || q.problem_statement || "") as string).trim())
+                    return { message: `Question ${n}: add a problem specification.`, tab: 'questions' };
+            } else {
+                if (!(q.question || "").trim()) return { message: `Question ${n}: add the question text.`, tab: 'questions' };
+                const opts = (q.options || []).map(o => (o || "").trim());
+                if (opts.length < 2 || opts.some(o => !o))
+                    return { message: `Question ${n}: fill in every answer option.`, tab: 'questions' };
+                if (!(q.correct_answer || "").trim() || !opts.includes((q.correct_answer || "").trim()))
+                    return { message: `Question ${n}: mark which option is the correct answer.`, tab: 'questions' };
+            }
+        }
+        return null;
+    };
+
+    // Generating replaces ALL existing questions. If the user already has some
+    // (including a half-filled manual one), confirm before discarding them.
+    const requestGenerate = () => {
+        if (!topic.trim()) {
+            setSaveError("Add a topic / skills first so AI knows what to generate.");
+            setActiveTab('config');
+            return;
+        }
+        if (generatedQuestions.length > 0) {
+            setIsRegenConfirmOpen(true);
+            return;
+        }
+        handleGenerateQuestions();
+    };
+
     const handleGenerateQuestions = async () => {
         if (!topic) return;
+        setSaveError(null);
         setIsGenerating(true);
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/generate-preview?type=${type}&topic=${encodeURIComponent(topic)}&count=${questionCount}`, {
@@ -189,6 +262,14 @@ export default function AssessmentTemplatesPage() {
     };
 
     const handleSave = async () => {
+        const problem = validateTemplate();
+        if (problem) {
+            setSaveError(problem.message);
+            setActiveTab(problem.tab);
+            return;
+        }
+        setSaveError(null);
+        setIsSaving(true);
         try {
             const url = editingTemplate
                 ? `${BACKEND_URL}/api/v1/enterprise/assessment-templates/${editingTemplate.id}`
@@ -216,9 +297,14 @@ export default function AssessmentTemplatesPage() {
             if (res.ok) {
                 fetchTemplates();
                 setIsModalOpen(false);
+            } else {
+                setSaveError("Could not save the template. Please try again.");
             }
         } catch (error) {
             console.error("Failed to save assessment template:", error);
+            setSaveError("Something went wrong while saving. Please try again.");
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -360,14 +446,32 @@ export default function AssessmentTemplatesPage() {
                             <ListChecks className="w-6 h-6" />
                         </div>
                     </div>
-                    <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Found</h3>
-                    <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first skill assessment template to begin testing candidates.</p>
-                    <button 
-                        onClick={() => { setAssessmentSearch(""); setTypeFilter("ALL"); }} 
-                        className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
-                    >
-                        Reset Filters
-                    </button>
+                    {templates.length === 0 ? (
+                        <>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Yet</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first skill assessment template to begin testing candidates.</p>
+                            {canAccess("assessments:moderate") && (
+                                <button
+                                    onClick={() => handleOpenModal()}
+                                    className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5"
+                                >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    New Template
+                                </button>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Results Found</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">No assessment templates match your current search or filter.</p>
+                            <button
+                                onClick={() => { setAssessmentSearch(""); setTypeFilter("ALL"); }}
+                                className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
+                            >
+                                Reset Filters
+                            </button>
+                        </>
+                    )}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -575,8 +679,8 @@ export default function AssessmentTemplatesPage() {
                                             </div>
                                             <div className="flex gap-2">
                                                 {canAccess("assessments:moderate") && (
-                                                    <button 
-                                                        onClick={handleGenerateQuestions}
+                                                    <button
+                                                        onClick={requestGenerate}
                                                         disabled={isGenerating || !topic}
                                                         className="h-8 px-3.5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[12px] font-bold flex items-center gap-1.5 transition-all disabled:opacity-20 shadow-sm"
                                                     >
@@ -590,7 +694,7 @@ export default function AssessmentTemplatesPage() {
                                                         className="h-8 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[10px] text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-sm"
                                                     >
                                                         <Plus className="w-3.5 h-3.5" />
-                                                        Add Manual
+                                                        Add Question
                                                     </button>
                                                 )}
                                             </div>
@@ -698,17 +802,26 @@ export default function AssessmentTemplatesPage() {
 
                             {/* Drawer Footer */}
                             {canAccess("assessments:moderate") && (
-                                <div className="p-8 border-t border-[#E8EAED] flex items-center justify-between gap-6 shrink-0">
-                                    <p className="text-[11.5px] text-[#8A929E] leading-normal max-w-[280px]">This assessment template will be available for all recruitment workflows and job postings.</p>
-                                    <button 
-                                        onClick={handleSave}
-                                        form="matrix-form"
-                                        type="submit"
-                                        className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0"
-                                    >
-                                        <Save className="w-4 h-4" />
-                                        Save Template
-                                    </button>
+                                <div className="border-t border-[#E8EAED] shrink-0">
+                                    {saveError && (
+                                        <div className="mx-8 mt-4 flex items-start gap-2.5 rounded-[10px] border border-amber-200 bg-amber-50 px-3.5 py-3">
+                                            <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                                            <p className="text-[12px] font-semibold text-amber-800 leading-relaxed">{saveError}</p>
+                                        </div>
+                                    )}
+                                    <div className="p-8 flex items-center justify-between gap-6">
+                                        <p className="text-[11.5px] text-[#8A929E] leading-normal max-w-[280px]">This assessment template will be available for all recruitment workflows and job postings.</p>
+                                        <button
+                                            onClick={handleSave}
+                                            type="button"
+                                            disabled={isSaving || (!!editingTemplate && !isDirty)}
+                                            title={editingTemplate && !isDirty ? "No changes to save yet" : undefined}
+                                            className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
+                                        >
+                                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                            {isSaving ? "Saving…" : editingTemplate ? "Update Template" : "Save Template"}
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </motion.div>
@@ -724,6 +837,17 @@ export default function AssessmentTemplatesPage() {
                 message={`Are you sure you want to delete "${templateToDelete?.name}"? This will remove all associated assessment logic.`}
                 confirmLabel="Delete Template"
                 cancelLabel="Cancel"
+                isDestructive={true}
+            />
+
+            <ConfirmationModal
+                isOpen={isRegenConfirmOpen}
+                onClose={() => setIsRegenConfirmOpen(false)}
+                onConfirm={() => { setIsRegenConfirmOpen(false); handleGenerateQuestions(); }}
+                title="Replace all questions?"
+                message={`Generating with AI will replace all ${generatedQuestions.length} current question${generatedQuestions.length === 1 ? "" : "s"}, including any you added or edited manually. This cannot be undone.`}
+                confirmLabel="Replace & Generate"
+                cancelLabel="Keep Current"
                 isDestructive={true}
             />
         </div>

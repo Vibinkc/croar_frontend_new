@@ -5,6 +5,8 @@ interface SendEmailModalProps {
     isOpen: boolean;
     onClose: () => void;
     candidateIds: string[];
+    /** Candidate emails — sent alongside ids so delivery still works if an id can't be resolved. */
+    candidateEmails?: string[];
     jobId?: string | null;
     token: string;
 }
@@ -21,7 +23,7 @@ interface SenderContext {
     recruiter_name?: string;
 }
 
-export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, token }: SendEmailModalProps) {
+export default function SendEmailModal({ isOpen, onClose, candidateIds, candidateEmails, jobId, token }: SendEmailModalProps) {
     const slug = "default"; // Added to fix "Cannot find name 'slug'" error
     const [templates, setTemplates] = useState<EmailTemplate[]>([]);
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
@@ -160,6 +162,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
                 },
                 body: JSON.stringify({
                     recipient_ids: candidateIds,
+                    recipient_emails: candidateEmails && candidateEmails.length > 0 ? candidateEmails : undefined,
                     template_id: selectedTemplateId || null,
                     job_id: jobId || null,
                     subject: subject,
@@ -173,7 +176,9 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
                 alert(result.message || "Emails sent successfully!");
                 onClose();
             } else {
-                alert("Failed to send emails.");
+                let msg = "Failed to send emails.";
+                try { const e = await res.json(); if (e?.detail) msg = typeof e.detail === "string" ? e.detail : msg; } catch { /* ignore */ }
+                alert(msg);
             }
         } catch (e) {
             alert("Error sending emails.");
@@ -339,7 +344,6 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, jobId, t
 
                 </div>
                 <div className="mt-8 flex justify-end gap-3 pt-6 border-t border-slate-100 shrink-0">
-                    <button onClick={onClose} className="px-6 py-3 font-bold text-slate-500 hover:bg-slate-50 rounded-xl transition-colors">CANCEL</button>
                     <button
                         onClick={handleSend}
                         disabled={isSending}

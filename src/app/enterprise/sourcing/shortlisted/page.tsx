@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Users,
-    Bookmark,
+    Link2,
     Mail,
     Trash2,
     ExternalLink,
@@ -684,8 +684,8 @@ export default function ShortlistedTalentPage() {
                                                             }}
                                                             className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] font-semibold text-[#4B5563] hover:bg-[#F4F5F7] hover:text-[#15171C] rounded-[8px] transition-colors text-left group"
                                                         >
-                                                            <Bookmark className="w-4 h-4 text-[#8A929E] group-hover:text-[#5B53E0] transition-colors" />
-                                                            Copy Share Link
+                                                            <Link2 className="w-4 h-4 text-[#8A929E] group-hover:text-[#5B53E0] transition-colors" />
+                                                            Copy Engagement Link
                                                         </button>
 
                                                         <button
@@ -697,7 +697,7 @@ export default function ShortlistedTalentPage() {
                                                             className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] font-semibold text-[#4B5563] hover:bg-[#F4F5F7] hover:text-[#15171C] rounded-[8px] transition-colors text-left group"
                                                         >
                                                             <Briefcase className="w-4 h-4 text-[#8A929E] group-hover:text-[#5B53E0] transition-colors" />
-                                                            Move to Job
+                                                            Move to Another Job
                                                         </button>
 
                                                         <div className="my-1.5 border-t border-[#F1F2F5]" />

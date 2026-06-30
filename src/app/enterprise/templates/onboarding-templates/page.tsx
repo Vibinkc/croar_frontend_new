@@ -112,6 +112,8 @@ export default function OnboardingTemplatesPage() {
         );
     }
 
+    const filteredTemplates = templates.filter(t => t.name.toLowerCase().includes(onboardingSearch.toLowerCase()));
+
     return (
         <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-700 relative">
             {/* Header (sticky) */}
@@ -186,7 +188,7 @@ export default function OnboardingTemplatesPage() {
             </div>
 
             {/* Template List Grid */}
-            {templates.length === 0 ? (
+            {filteredTemplates.length === 0 ? (
                 <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-[14px] border border-dashed border-[#E8EAED] shadow-sm max-w-md mx-auto">
                     <div className="relative mb-5">
                         <div className="absolute -inset-3 rounded-full bg-[#5B53E0]/10 blur-xl" />
@@ -194,12 +196,36 @@ export default function OnboardingTemplatesPage() {
                             <ClipboardList className="w-6 h-6" />
                         </div>
                     </div>
-                    <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Found</h3>
-                    <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Synthesize your first onboarding sequence to standardize the cultural handshake.</p>
+                    {templates.length === 0 ? (
+                        <>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Yet</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Synthesize your first onboarding sequence to standardize the cultural handshake.</p>
+                            {canAccess("onboarding:moderate") && (
+                                <Link
+                                    href="/enterprise/templates/onboarding-templates/create"
+                                    className="px-5 h-9 inline-flex items-center gap-1.5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
+                                >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    New Template
+                                </Link>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Results Found</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">No onboarding templates match your current search.</p>
+                            <button
+                                onClick={() => setOnboardingSearch("")}
+                                className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
+                            >
+                                Reset Filters
+                            </button>
+                        </>
+                    )}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {templates.filter(t => t.name.toLowerCase().includes(onboardingSearch.toLowerCase())).map((t) => (
+                    {filteredTemplates.map((t) => (
                         <motion.div
                             layout
                             key={t.id}

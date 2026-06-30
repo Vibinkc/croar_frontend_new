@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Search,
@@ -237,6 +237,22 @@ export default function ProfileSourcingPage() {
         platform: "github"
     });
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+    // Hand-off from "Source manually" after creating a job: pre-fill the search box
+    // with the job title so the recruiter can search right away (no auto-run).
+    useEffect(() => {
+        let raw: string | null = null;
+        try { raw = sessionStorage.getItem("croar_source_job"); } catch { return; }
+        if (!raw) return;
+        try { sessionStorage.removeItem("croar_source_job"); } catch { /* ignore */ }
+        try {
+            const ctx = JSON.parse(raw);
+            const title = (ctx?.title || "").trim();
+            if (title) setQuery(title);
+        } catch (e) {
+            console.error("Failed to read sourcing hand-off:", e);
+        }
+    }, []);
 
     const fetchDetails = async (url: string) => {
         setFetchingDetails(true);

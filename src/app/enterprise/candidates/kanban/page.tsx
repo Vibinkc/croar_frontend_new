@@ -84,6 +84,17 @@ const STAGE_COLORS = [
     'border-blue-500'
 ];
 
+// Backend returns naive UTC timestamps (no 'Z' / offset). `new Date(str)` would
+// parse these as LOCAL time, skewing relative "ago" times by the UTC offset.
+// Normalize to a space->'T' separator and append 'Z' when no tz marker exists.
+const parseUTC = (str: string): Date => {
+    let s = str.trim().replace(" ", "T");
+    if (!/[zZ]$|[+-]\d{2}:?\d{2}$/.test(s)) {
+        s += "Z";
+    }
+    return new Date(s);
+};
+
 const getScoreStyles = (score: number) => {
     if (score >= 80) return "bg-emerald-50 text-emerald-700 border-emerald-200";
     if (score >= 60) return "bg-amber-50 text-amber-700 border-amber-200";
@@ -552,9 +563,9 @@ export default function KanbanBoardPage() {
             const app = applications.find(a => a.id === appId);
             if (!app) return;
 
-            const currentIndex = stages.findIndex(s => String(s.id) === String(app.current_stage));
-            if (currentIndex !== -1 && currentIndex < stages.length - 1) {
-                const nextStage = stages[currentIndex + 1];
+            const currentIndex = boardStages.findIndex(s => String(s.id) === String(app.current_stage));
+            if (currentIndex !== -1 && currentIndex < boardStages.length - 1) {
+                const nextStage = boardStages[currentIndex + 1];
                 updates.push({ appId: appId, newStage: Number(nextStage.id) });
             }
         });
@@ -614,8 +625,11 @@ export default function KanbanBoardPage() {
     // --- Computed ---
     const filteredApplications = useMemo(() => {
         return applications.filter(app => {
-            const matchesSearch = (app.candidate?.full_name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (app.candidate?.email || "").toLowerCase().includes(searchQuery.toLowerCase());
+            const q = searchQuery.toLowerCase().trim();
+            const matchesSearch = !q ||
+                (app.candidate?.full_name || "").toLowerCase().includes(q) ||
+                (app.candidate?.email || "").toLowerCase().includes(q) ||
+                (app.candidate?.skills || []).some(s => (s || "").toLowerCase().includes(q));
 
             const job = jobs.find(j => j.id === app.job_requirement_id);
 
@@ -626,7 +640,7 @@ export default function KanbanBoardPage() {
 
             let matchesPeriod = true;
             if (appliedPeriod !== "ALL" && app.applied_at) {
-                const appliedDate = new Date(app.applied_at);
+                const appliedDate = parseUTC(app.applied_at);
                 const now = new Date();
                 const diffDays = (now.getTime() - appliedDate.getTime()) / (1000 * 3600 * 24);
                 if (appliedPeriod === "TODAY") matchesPeriod = diffDays <= 1;
@@ -634,13 +648,34 @@ export default function KanbanBoardPage() {
                 else if (appliedPeriod === "30D") matchesPeriod = diffDays <= 30;
             }
 
-            const matchesSource = selectedSource === "ALL" || (app.source || "AI Sourcing") === selectedSource;
+            const matchesSource = selectedSource === "ALL" || app.source === selectedSource;
 
             return matchesSearch && matchesJob && matchesCompany && matchesLocation && matchesScore && matchesPeriod && matchesSource;
         });
     }, [applications, searchQuery, selectedJobId, selectedCompanyId, selectedLocation, minMatchScore, appliedPeriod, selectedSource, jobs]);
 
+    // Real, distinct sources present in the data — so the filter offers exactly
+    // what exists and always matches what's stored (no hardcoded mismatch).
+    const sourceOptions = useMemo(
+        () => Array.from(new Set(applications.map(a => a.source).filter(Boolean))).sort() as string[],
+        [applications]
+    );
+
     const getStageApps = (stageId: number | string) => filteredApplications.filter(app => String(app.current_stage) === String(stageId));
+
+    // The backend only returns stages for a specific job, so "All Job Requirements"
+    // has no columns. In that case build a unified pipeline from the applications'
+    // own stage indices so every candidate stays visible across jobs.
+    const boardStages = useMemo<Stage[]>(() => {
+        if (stages.length > 0) return stages;
+        const fallbackNames = ["Applied", "Screening", "Assessment", "Interview", "Offer", "Hired"];
+        const maxStage = applications.reduce((m, a) => Math.max(m, Number(a.current_stage) || 1), 1);
+        return Array.from({ length: maxStage }, (_, i) => ({
+            id: i + 1,
+            name: fallbackNames[i] || `Stage ${i + 1}`,
+            color: STAGE_COLORS[i % STAGE_COLORS.length],
+        }));
+    }, [stages, applications]);
 
     const locations = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)));
 
@@ -823,9 +858,9 @@ export default function KanbanBoardPage() {
                                             className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
                                             <option value="ALL">All Sources</option>
-                                            <option value="AI Sourcing">AI Sourcing</option>
-                                            <option value="Job Portal">Job Portal</option>
-                                            <option value="Direct Link">Direct Link</option>
+                                            {sourceOptions.map(src => (
+                                                <option key={src} value={src}>{src}</option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
@@ -837,7 +872,7 @@ export default function KanbanBoardPage() {
 
             {/* Board */}
             <div className="flex-1 overflow-hidden bg-[#F7F8FA] p-6 flex flex-col">
-                {!isLoading && applications.length === 0 && stages.length > 0 && (
+                {!isLoading && applications.length === 0 && boardStages.length > 0 && (
                     <div className="mb-4 rounded-[14px] border border-[#DAD7F6] bg-[#ECEBFB]/50 p-5 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
                         <div>
                             <p className="text-sm font-bold text-[#15171C]">No candidates in this pipeline yet</p>
@@ -856,7 +891,7 @@ export default function KanbanBoardPage() {
                     </div>
                 )}
                 <div className="relative flex-1 min-h-0">
-                    {stages.length > 4 && (
+                    {boardStages.length > 4 && (
                         <>
                             <button
                                 onClick={() => scrollBoard(-1)}
@@ -878,7 +913,7 @@ export default function KanbanBoardPage() {
                         ref={boardRef}
                         className="h-full flex gap-4 overflow-x-auto overflow-y-hidden scroll-smooth snap-x [&::-webkit-scrollbar]:hidden"
                     >
-                    {stages.map((stage, index) => {
+                    {boardStages.map((stage, index) => {
                         const stageApps = getStageApps(stage.id);
                         const isAllSelected = stageApps.length > 0 && stageApps.every(app => selectedApps.has(app.id));
                         const borderColor = STAGE_COLORS[index % STAGE_COLORS.length];
@@ -889,8 +924,8 @@ export default function KanbanBoardPage() {
                             <div
                                 key={stage.id}
                                 role="group"
-                                style={stages.length > 4 ? { width: "calc((100% - 3rem) / 4)" } : undefined}
-                                className={`relative flex flex-col h-full rounded-[14px] border bg-white overflow-hidden transition-colors snap-start ${stages.length > 4 ? "shrink-0" : "flex-1 min-w-0"} ${dragOverStageId === stage.id ? 'border-[#5B53E0] ring-2 ring-[#5B53E0]/15' : 'border-[#E8EAED]'}`}
+                                style={boardStages.length > 4 ? { width: "calc((100% - 3rem) / 4)" } : undefined}
+                                className={`relative flex flex-col h-full rounded-[14px] border bg-white overflow-hidden transition-colors snap-start ${boardStages.length > 4 ? "shrink-0" : "flex-1 min-w-0"} ${dragOverStageId === stage.id ? 'border-[#5B53E0] ring-2 ring-[#5B53E0]/15' : 'border-[#E8EAED]'}`}
                                 onDragOver={(e) => handleDragOver(e, stage.id)}
                                 onDrop={(e) => handleDrop(e, stage.id)}
                             >
@@ -1007,7 +1042,7 @@ export default function KanbanBoardPage() {
                                                         <div className="flex flex-col gap-1">
                                                             <div className="flex items-center gap-1.5 text-[11px] text-[#6B6F76]">
 
-                                                                {app.applied_at ? formatDistanceToNow(new Date(app.applied_at), { addSuffix: true })
+                                                                {app.applied_at ? formatDistanceToNow(parseUTC(app.applied_at), { addSuffix: true })
                                                                     .replace("about ", "") : "Recently"}
                                                             </div>
 
@@ -1042,7 +1077,7 @@ export default function KanbanBoardPage() {
                         onStatusUpdate={handleStageChange}
                         onRefresh={fetchApplications}
                         onboardingTemplates={onboardingTemplates}
-                        stages={stages}
+                        stages={boardStages}
                     />
                 )}
             </AnimatePresence>
@@ -1107,6 +1142,7 @@ export default function KanbanBoardPage() {
                 isOpen={isEmailModalOpen}
                 onClose={() => setIsEmailModalOpen(false)}
                 candidateIds={Array.from(selectedApps).map(id => applications.find(a => a.id === id)?.candidate.id || "").filter(Boolean)}
+                candidateEmails={Array.from(selectedApps).map(id => applications.find(a => a.id === id)?.candidate.email || "").filter(Boolean)}
                 jobId={selectedJobId === "ALL" ? null : selectedJobId}
                 token={token || ""}
             />

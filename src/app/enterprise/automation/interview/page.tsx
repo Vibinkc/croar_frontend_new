@@ -313,6 +313,16 @@ export default function InterviewAutomationPage() {
       showToast("Start date cannot be in the past.", "error");
       return;
     }
+    // Authoritative slot-limit gate: slots can drift over the limit (e.g. the daily
+    // limit was lowered after generating, or an older rule had more slots), so block
+    // the save rather than persisting more slots than the limit allows.
+    const dailyLimit = Number(form.daily_limit);
+    if (dailyLimit > 0 && form.time_slots.length > dailyLimit) {
+      const over = form.time_slots.length - dailyLimit;
+      showToast(`You have ${form.time_slots.length} time slots but the daily limit is ${dailyLimit}. Remove ${over} slot${over === 1 ? "" : "s"} or raise the daily limit in the Config tab.`, "error");
+      setActiveTab("times");
+      return;
+    }
     setSaving(true);
     try {
       let finalTimeSlots = form.time_slots;
@@ -478,7 +488,7 @@ export default function InterviewAutomationPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 animate-in fade-in duration-500">
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       {/* Toast */}
       {toast && (
         <div
@@ -495,38 +505,31 @@ export default function InterviewAutomationPage() {
         </div>
       )}
 
-      {/* Header */}
-      <div className="mb-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-[12px] bg-[#E3F4EF] flex items-center justify-center shrink-0 border border-[#BFF0E2] shadow-sm">
-              <Calendar className="w-6 h-6 text-[#0E8A6E]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <h1 className="text-[22px] font-extrabold text-slate-900 tracking-tight leading-tight">Interview Automation</h1>
-                <PageHelp title="Interview Automation">
-                  <p>Automate interview scheduling and reminders.</p>
-                </PageHelp>
-              </div>
-              <p className="text-[#8A929E] text-[13px] font-medium mt-1">
-                Automatically schedule AI or human technical interviews based on your hiring criteria.
-              </p>
-            </div>
+      {/* Header (sticky) */}
+      <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Interview Automation</h1>
+            <PageHelp title="Interview Automation">
+              <p>Automate interview scheduling and reminders.</p>
+            </PageHelp>
           </div>
-
-          <div className="flex items-center gap-3">
-             {canAccess("automation:moderate") && (
-                <button
-                  onClick={openCreate}
-                  className="flex items-center gap-2 px-5 h-11 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-bold hover:bg-[#4A43C9] transition-all shadow-[0_4px_12px_rgba(91,83,224,0.25)] hover:shadow-[0_6px_16px_rgba(91,83,224,0.35)] active:scale-95 cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>NEW AUTOMATION</span>
-                </button>
-              )}
-          </div>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Automatically schedule AI or human technical interviews based on your hiring criteria.</p>
         </div>
+        <div className="flex items-center gap-2.5 shrink-0">
+          {canAccess("automation:moderate") && (
+            <button
+              onClick={openCreate}
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              New Automation
+            </button>
+          )}
+        </div>
+      </header>
+
+      <div className="mb-10">
 
         {/* Stats Section */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -1152,11 +1155,29 @@ export default function InterviewAutomationPage() {
                 ) : (
                   // TIME SLOTS TAB
                   <div className="space-y-6">
+                    {(() => {
+                      const slotLimit = Number(form.daily_limit) || 0;
+                      const atLimit = slotLimit > 0 && form.time_slots.length >= slotLimit;
+                      const overLimit = slotLimit > 0 && form.time_slots.length > slotLimit;
+                      return (
                     <div className="bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] p-4">
-                      <p className="text-[13.5px] font-bold text-[#15171C] mb-1">Pre-Generated Time Slots</p>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[13.5px] font-bold text-[#15171C]">Pre-Generated Time Slots</p>
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-[6px] border ${atLimit ? "bg-[#FEF3E2] text-[#D97706] border-[#FCE1BF]" : "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]/60"}`}>
+                          {form.time_slots.length} / {slotLimit} slots
+                        </span>
+                      </div>
                       <p className="text-[12.5px] text-[#8A929E] font-semibold mb-4 leading-relaxed">
-                        Instead of automatic scheduling, explicitly define exactly which {form.daily_limit} times per day the scheduler should use.
+                        Instead of automatic scheduling, explicitly define up to {form.daily_limit} times per day the scheduler should use. To add more, increase the daily limit in the Config tab.
                       </p>
+                      {overLimit && (
+                        <div className="mb-4 flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3">
+                          <AlertCircle className="w-4 h-4 text-rose-500 mt-0.5 shrink-0" />
+                          <p className="text-[12px] font-semibold text-rose-700 leading-relaxed">
+                            You have {form.time_slots.length} slots, which exceeds the daily limit of {slotLimit}. Remove {form.time_slots.length - slotLimit} or raise the limit in the Config tab before saving.
+                          </p>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
@@ -1168,14 +1189,27 @@ export default function InterviewAutomationPage() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setForm(f => ({ ...f, time_slots: [...f.time_slots, "12:00"] }))}
-                          className="w-11 h-11 flex border border-[#E1E4E8] hover:border-[#DAD7F6] items-center justify-center rounded-[12px] hover:bg-slate-50 text-slate-500 transition-colors cursor-pointer"
-                          title="Add Slot manually"
+                          disabled={atLimit}
+                          onClick={() => {
+                            if (slotLimit <= 0) {
+                              showToast("Set a daily limit in the Config tab first, then add slots.", "error");
+                              return;
+                            }
+                            if (atLimit) {
+                              showToast(`You've reached the daily limit of ${slotLimit} slot${slotLimit === 1 ? "" : "s"}. Increase the daily limit in the Config tab to add more.`, "error");
+                              return;
+                            }
+                            setForm(f => ({ ...f, time_slots: [...f.time_slots, "12:00"] }));
+                          }}
+                          className="w-11 h-11 flex border border-[#E1E4E8] hover:border-[#DAD7F6] items-center justify-center rounded-[12px] hover:bg-slate-50 text-slate-500 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-[#E1E4E8]"
+                          title={atLimit ? "Daily slot limit reached — raise it in the Config tab" : "Add slot manually"}
                         >
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
+                      );
+                    })()}
 
                     {form.time_slots.length > 0 && (
                       <div className="space-y-3">
