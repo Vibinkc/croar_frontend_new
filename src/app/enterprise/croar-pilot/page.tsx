@@ -610,16 +610,24 @@ export default function CroarPilotPage() {
         setInput("");
         setIsLoading(true);
 
+        // Pilot tasks (sourcing, pipeline building) can legitimately run for a few
+        // minutes. Give the request a generous client timeout so the browser doesn't
+        // abort it early — and, when it does time out, say so instead of falsely
+        // claiming the backend is down.
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 240000); // 4 minutes
+
         try {
             const res = await fetch(`${API_BASE_URL}/api/v1/agents/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ message: text, thread_id: threadId, context: "pilot" }),
+                signal: controller.signal,
             });
             const d = await res.json().catch(() => ({}));
             const reply = res.ok
                 ? d.response || "Done."
-                : `Pilot error: ${d.detail || "could not reach the agent."}`;
+                : `Pilot error: ${d.detail || "the request couldn't be completed. Please try again."}`;
             const action: PilotAction | undefined =
                 res.ok && ["candidate_picker", "pipeline_built"].includes(d.pilot_action?.ui)
                     ? d.pilot_action
@@ -627,12 +635,14 @@ export default function CroarPilotPage() {
             const finalMsgs: Message[] = [...withUser, { role: "agent", content: reply, action }];
             setMessages(finalMsgs);
             saveSession(finalMsgs, titleRef.current || text.slice(0, 42));
-        } catch {
-            setMessages((prev) => [
-                ...prev,
-                { role: "agent", content: "I couldn't reach the Pilot service. Is the backend running?" },
-            ]);
+        } catch (err) {
+            const timedOut = err instanceof DOMException && err.name === "AbortError";
+            const content = timedOut
+                ? "That request is taking longer than usual — the Pilot may still be working on it in the background (sourcing and pipeline tasks can take a few minutes). Give it a moment, then try again or narrow the request."
+                : "I couldn't reach the Pilot service just now. Please check your connection and try again in a moment.";
+            setMessages((prev) => [...prev, { role: "agent", content }]);
         } finally {
+            clearTimeout(timeout);
             setIsLoading(false);
         }
     };
