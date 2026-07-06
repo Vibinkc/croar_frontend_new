@@ -342,8 +342,8 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                     <CardHeader title="Job Information" subtitle="Role, company, and employment details." />
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="Employee ID" htmlFor="emp-employee_id" required>
-                            <Input id="emp-employee_id" name="employee_id" value={formData.employee_id} onChange={handleChange} required placeholder="EMP-1001" className={jetbrainsMono.className} />
+                        <Field label="Employee ID" htmlFor="emp-employee_id" required hint={employeeId ? "Fixed after creation." : undefined}>
+                            <Input id="emp-employee_id" name="employee_id" value={formData.employee_id} onChange={handleChange} required disabled={!!employeeId} placeholder="EMP-1001" className={jetbrainsMono.className} />
                         </Field>
                         <Field label="Designation" htmlFor="emp-designation">
                             <Input id="emp-designation" name="designation" value={formData.designation} onChange={handleChange} placeholder="Software Engineer" />
@@ -360,8 +360,8 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="Company" htmlFor="emp-company_id" required>
-                            <Select id="emp-company_id" name="company_id" value={formData.company_id} onChange={handleChange} required>
+                        <Field label="Company" htmlFor="emp-company_id" required hint={employeeId ? "Fixed after creation." : undefined}>
+                            <Select id="emp-company_id" name="company_id" value={formData.company_id} onChange={handleChange} required disabled={!!employeeId}>
                                 <option value="">Select Company</option>
                                 {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </Select>
@@ -427,8 +427,8 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="Email" htmlFor="emp-email" required>
-                            <Input id="emp-email" type="email" name="email" value={formData.email} onChange={handleChange} required />
+                        <Field label="Email" htmlFor="emp-email" required hint={employeeId ? "Fixed after creation." : undefined}>
+                            <Input id="emp-email" type="email" name="email" value={formData.email} onChange={handleChange} required disabled={!!employeeId} />
                         </Field>
                         <Field label="Mobile" htmlFor="emp-mobile">
                             <Input id="emp-mobile" name="mobile" value={formData.mobile} onChange={handleChange} className={jetbrainsMono.className} />

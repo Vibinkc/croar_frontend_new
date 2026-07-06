@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   meApi,
   DAY_STATUS_OPTIONS,
@@ -9,28 +9,31 @@ import {
   type TimesheetDetail,
   type TimesheetEntryEdit,
 } from "@/utils/payroll/api";
-import { Banner, StatusBadge } from "@/components/payroll/ui";
+import { PageHeader, StatCard, StatGrid, Card, CardHeader, Badge, Button, jetbrainsMono } from "@/components/ds";
+import NotLinkedNotice, { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
 
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const STATUS_LABEL: Record<string, string> = Object.fromEntries(
-  DAY_STATUS_OPTIONS.map((o) => [o.value, o.label])
-);
-// Statuses an employee may self-mark (no leave / no self-LOP — enforced server-side too).
+const STATUS_LABEL: Record<string, string> = Object.fromEntries(DAY_STATUS_OPTIONS.map((o) => [o.value, o.label]));
 const SELF_MARK: { value: DayStatus; label: string }[] = [
   { value: "PRESENT", label: "Present" },
   { value: "WFH", label: "Work From Home" },
 ];
 const NON_WORKING = ["HOLIDAY", "WEEKLY_OFF"];
 const LEAVE_LOCKED = ["PAID_LEAVE", "UNPAID_LEAVE", "HALF_DAY", "HALF_DAY_PAID"];
-// UTC date (matches the server's utcnow().date() future-date guard).
 const TODAY = new Date().toISOString().slice(0, 10);
 
-export default function MyTimesheetDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+const statusTone = (s: string): "success" | "warning" | "danger" | "info" | "neutral" => {
+  const u = (s || "").toUpperCase();
+  if (u === "APPROVED" || u === "FINALIZED") return "success";
+  if (u === "SUBMITTED") return "info";
+  if (u === "REJECTED") return "danger";
+  if (u === "DRAFT") return "warning";
+  return "neutral";
+};
+
+export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const router = useRouter();
   const [ts, setTs] = useState<TimesheetDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -50,27 +53,21 @@ export default function MyTimesheetDetailPage({
     load();
   }, [id]);
 
-  if (error) return <Banner>{error}</Banner>;
-  if (!ts) return <p className="text-[var(--color-muted)]">Loading…</p>;
+  if (isNoEmployeeLink(error)) return <div className="px-4 sm:px-5 md:px-7 pb-10 max-w-[1320px] mx-auto w-full"><NotLinkedNotice /></div>;
 
-  const isHourly = ts.mode === "HOURLY";
-  const editable = ts.status === "DRAFT" || ts.status === "REJECTED";
+  const isHourly = ts?.mode === "HOURLY";
+  const editable = ts?.status === "DRAFT" || ts?.status === "REJECTED";
   const dirty = Object.keys(edits).length > 0;
 
   const canMark = (e: TimesheetDetail["entries"][number]) =>
-    editable &&
-    !NON_WORKING.includes(e.day_status) &&
-    !LEAVE_LOCKED.includes(e.day_status) &&
-    e.entry_date <= TODAY;
+    !!editable && !NON_WORKING.includes(e.day_status) && !LEAVE_LOCKED.includes(e.day_status) && e.entry_date <= TODAY;
 
-  const statusFor = (date: string, server: DayStatus): DayStatus =>
-    (edits[date]?.day_status as DayStatus) ?? server;
+  const statusFor = (date: string, server: DayStatus): DayStatus => (edits[date]?.day_status as DayStatus) ?? server;
   const hoursFor = (date: string, server: number | string | null): string => {
     const e = edits[date];
     if (e && e.hours !== undefined) return e.hours === null ? "" : String(e.hours);
     return server === null ? "" : String(server);
   };
-
   function setStatus(date: string, value: DayStatus) {
     setEdits((p) => ({ ...p, [date]: { ...p[date], entry_date: date, day_status: value } }));
   }
@@ -78,7 +75,6 @@ export default function MyTimesheetDetailPage({
     const hours = value === "" ? null : Number(value);
     setEdits((p) => ({ ...p, [date]: { ...p[date], entry_date: date, hours } }));
   }
-
   async function save() {
     setBusy(true);
     try {
@@ -91,122 +87,94 @@ export default function MyTimesheetDetailPage({
     }
   }
 
-  const summary = isHourly
-    ? [{ label: "Total hours", value: ts.total_hours }]
-    : [
-        { label: "Worked days", value: ts.worked_days },
-        { label: "LOP days", value: ts.lop_days },
-        { label: "Half days", value: ts.half_days },
-      ];
+  const summary = !ts
+    ? []
+    : isHourly
+      ? [{ label: "Total hours", value: ts.total_hours, icon: "timer", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" }]
+      : [
+          { label: "Worked days", value: ts.worked_days, icon: "task_alt", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+          { label: "LOP days", value: ts.lop_days, icon: "money_off", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+          { label: "Half days", value: ts.half_days, icon: "hourglass_bottom", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+        ];
 
   return (
-    <div>
-      <Link
-        href="/employee/timesheets"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]"
-      >
-        <span className="material-symbols-rounded text-[18px]">arrow_back</span>{" "}
-        My Timesheets
-      </Link>
-
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            {ts.period_start} → {ts.period_end}
-          </h1>
-          <p className="mt-1 text-sm text-[var(--color-muted)]">
-            {editable
-              ? "Mark your working days Present or Work From Home. HR reviews and finalises."
-              : `This timesheet is ${ts.status.toLowerCase()} and read-only.`}
-          </p>
-        </div>
-        <StatusBadge status={ts.status} />
-      </div>
-
-      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {summary.map((s) => (
-          <div
-            key={s.label}
-            className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-4"
-          >
-            <div className="text-xs uppercase tracking-wide text-[var(--color-muted)]">{s.label}</div>
-            <div className="text-xl font-bold">
-              {Number(s.value).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
-            </div>
+    <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+      <PageHeader
+        title={ts ? `${ts.period_start} → ${ts.period_end}` : "Timesheet"}
+        subtitle={ts ? (editable ? "Mark your working days Present or Work From Home — HR finalises" : `This timesheet is ${ts.status.toLowerCase()} and read-only`) : undefined}
+        onBack={() => router.push("/employee/timesheets")}
+        actions={ts && (
+          <div className="flex items-center gap-2.5">
+            <Badge tone={statusTone(ts.status)} dot>{ts.status.charAt(0) + ts.status.slice(1).toLowerCase()}</Badge>
+            {editable && <Button icon="save" disabled={!dirty || busy} onClick={save}>{busy ? "Saving…" : "Save attendance"}</Button>}
           </div>
-        ))}
-      </div>
+        )}
+      />
 
-      {editable && (
-        <div className="mb-4">
-          <button
-            onClick={save}
-            disabled={!dirty || busy}
-            className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
-          >
-            {busy ? "Saving…" : "Save attendance"}
-          </button>
+      {error && (
+        <div className="flex items-center gap-2.5 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+          <span className="material-symbols-rounded text-[18px]">error</span> {error}
         </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
-        <table className="w-full text-sm">
-          <thead className="border-b border-[var(--color-border)] bg-[var(--color-surface)] text-left text-xs uppercase tracking-wide text-[var(--color-muted)]">
-            <tr>
-              <th className="px-4 py-3">Date</th>
-              <th className="px-4 py-3">Day</th>
-              <th className="px-4 py-3">{isHourly ? "Hours" : "Status"}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ts.entries.map((e) => {
-              const dow = DOW[new Date(e.entry_date + "T00:00:00").getDay()];
-              const markable = canMark(e);
-              return (
-                <tr key={e.id} className="border-b border-[var(--color-border)] last:border-0">
-                  <td className="px-4 py-2.5 font-medium">{e.entry_date}</td>
-                  <td className="px-4 py-2.5 text-[var(--color-muted)]">{dow}</td>
-                  <td className="px-4 py-2.5">
-                    {isHourly ? (
-                      markable ? (
-                        <input
-                          type="number"
-                          min={0}
-                          max={24}
-                          step="0.25"
-                          value={hoursFor(e.entry_date, e.hours)}
-                          onChange={(ev) => setHours(e.entry_date, ev.target.value)}
-                          className="w-28 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5"
-                        />
-                      ) : (
-                        <span className="text-[var(--color-dim)]">
-                          {e.hours === null ? "—" : Number(e.hours)}
-                        </span>
-                      )
-                    ) : markable ? (
-                      <select
-                        value={statusFor(e.entry_date, e.day_status)}
-                        onChange={(ev) => setStatus(e.entry_date, ev.target.value as DayStatus)}
-                        className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5"
-                      >
-                        {SELF_MARK.map((o) => (
-                          <option key={o.value} value={o.value}>
-                            {o.label}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <span className="text-[var(--color-dim)]">
-                        {STATUS_LABEL[e.day_status] ?? e.day_status}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      {!ts && !error ? (
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">{[1, 2, 3].map((i) => <div key={i} className="h-24 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />)}</div>
+          <div className="h-64 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />
+        </div>
+      ) : ts ? (
+        <>
+          <StatGrid className={summary.length === 1 ? "lg:grid-cols-3" : "lg:grid-cols-3"}>
+            {summary.map((s) => (
+              <StatCard key={s.label} label={s.label} value={Number(s.value).toLocaleString("en-IN", { maximumFractionDigits: 2 })} icon={s.icon} gradient={s.grad} glow={s.glow} />
+            ))}
+          </StatGrid>
+
+          <Card padding="none" className="overflow-hidden">
+            <CardHeader className="px-6 pt-6" title="Daily attendance" subtitle={editable ? "Editable — mark Present / WFH on working days" : "Read-only"} />
+            <div className="overflow-x-auto">
+              <table className="w-full text-[13px]">
+                <thead>
+                  <tr className="border-y border-[#E8EAED] bg-[#F7F8FA] text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
+                    <th className="px-6 py-3">Date</th>
+                    <th className="px-6 py-3">Day</th>
+                    <th className="px-6 py-3">{isHourly ? "Hours" : "Status"}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#F0F0F1]">
+                  {ts.entries.map((e) => {
+                    const dow = DOW[new Date(e.entry_date + "T00:00:00").getDay()];
+                    const markable = canMark(e);
+                    return (
+                      <tr key={e.id} className="hover:bg-[#F7F7F8] transition-colors">
+                        <td className={`px-6 py-3 font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{e.entry_date}</td>
+                        <td className="px-6 py-3 text-[#8A929E]">{dow}</td>
+                        <td className="px-6 py-3">
+                          {isHourly ? (
+                            markable ? (
+                              <input type="number" min={0} max={24} step="0.25" value={hoursFor(e.entry_date, e.hours)} onChange={(ev) => setHours(e.entry_date, ev.target.value)}
+                                className="w-28 rounded-[9px] border border-[#E1E4E8] bg-white px-3 py-1.5 text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20" />
+                            ) : (
+                              <span className="text-[#9AA3AF]">{e.hours === null ? "—" : Number(e.hours)}</span>
+                            )
+                          ) : markable ? (
+                            <select value={statusFor(e.entry_date, e.day_status)} onChange={(ev) => setStatus(e.entry_date, ev.target.value as DayStatus)}
+                              className="rounded-[9px] border border-[#E1E4E8] bg-white px-3 py-1.5 text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20">
+                              {SELF_MARK.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                            </select>
+                          ) : (
+                            <span className="text-[#374151]">{STATUS_LABEL[e.day_status] ?? e.day_status}</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      ) : null}
     </div>
   );
 }

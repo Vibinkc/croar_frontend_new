@@ -14,8 +14,7 @@ export default function SuperAdminSidebar() {
             title: "Platform Mgmt",
             items: [
                 { label: "Overview", icon: "grid_view", path: "/super-admin" },
-                { label: "Tenants Inventory", icon: "corporate_fare", path: "/super-admin/colleges/list" },
-                { label: "Provision Tenant", icon: "add_business", path: "/super-admin/colleges" },
+                { label: "Organizations", icon: "corporate_fare", path: "/super-admin/organizations" },
             ],
         },
         {
@@ -29,7 +28,6 @@ export default function SuperAdminSidebar() {
             title: "System Config",
             items: [
                 { label: "Global Roles", icon: "security", path: "/super-admin/roles" },
-                { label: "Organizations", icon: "business", path: "/super-admin/organizations" },
                 { label: "Platform Settings", icon: "settings_suggest", path: "/super-admin/settings" },
             ],
         },

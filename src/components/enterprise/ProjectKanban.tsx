@@ -44,7 +44,9 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
     const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
     const handleDragStart = (e: React.DragEvent, taskId: string) => {
-        if (!canAccess("tasks:moderate")) {
+        // Moving a task hits PATCH /projects/tasks/{id}, which the backend gates
+        // on projects:update (not tasks:*). Match it so the UI and API agree.
+        if (!canAccess("projects:update")) {
             e.preventDefault();
             return;
         }
@@ -146,7 +148,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 {tasks.filter(t => t.column === col).length}
                             </span>
                         </div>
-                        {canAccess("tasks:moderate") && (
+                        {canAccess("projects:create") && (
                             <button
                                 onClick={() => setIsAddingTask({ isOpen: true, column: col })}
                                 className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#7C3AED] hover:border-[#7C3AED] transition-all flex items-center justify-center font-black"
@@ -177,8 +179,8 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 >
                                     <div className="flex items-start justify-between mb-2">
                                         <h4 className="text-xs font-bold text-slate-800 leading-snug">{task.title}</h4>
-                                        {canAccess("tasks:delete") && (
-                                            <button 
+                                        {canAccess("projects:delete") && (
+                                            <button
                                                 onClick={() => {
                                                     setTaskToDelete(task.id);
                                                     setIsDeleteModalOpen(true);
@@ -216,7 +218,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     </div>
 
                                     {/* Quick Move Logic (Fallback for Drag/Drop) */}
-                                    {canAccess("tasks:moderate") && (
+                                    {canAccess("projects:update") && (
                                         <div className="mt-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all overflow-x-auto no-scrollbar pt-1">
                                             {columns.filter(c => c !== col).map(c => (
                                                 <button

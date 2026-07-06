@@ -209,7 +209,10 @@ export default function TaxesPage() {
     if (!ok) return;
     try {
       await taxesApi.deleteChallan(ch.id);
-      setChallans((prev) => prev.filter((c) => c.id !== ch.id));
+      // Reload rather than just dropping the row locally: the server-computed
+      // TDS Liabilities (deposited/difference) and the "TDS Due" stat depend on
+      // challans, so a local filter would leave the reconciliation stale.
+      await load();
     } catch (err) {
       setError((err as Error).message);
     }

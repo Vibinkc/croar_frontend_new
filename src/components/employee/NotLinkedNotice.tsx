@@ -1,0 +1,33 @@
+"use client";
+
+/**
+ * Shown on employee self-service pages when the signed-in user has no linked
+ * Employee record. Every `/api/v1/me` endpoint 404s with "No employee record is
+ * linked to your account." for such users (admins, recruiters, self-registered
+ * accounts). Without this they'd see a raw red error banner on every page.
+ */
+
+/** True when an error is the backend's "your account isn't an employee" signal. */
+export function isNoEmployeeLink(message: string | null | undefined): boolean {
+  if (!message) return false;
+  const m = message.toLowerCase();
+  return m.includes("employee record") || m.includes("not associated with a company");
+}
+
+export default function NotLinkedNotice() {
+  return (
+    <div className="mx-auto flex max-w-lg flex-col items-center justify-center rounded-2xl border border-[#E8EAED] bg-white px-6 py-16 text-center">
+      <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-[18px] bg-[#ECEBFB] text-[#5B53E0]">
+        <span className="material-symbols-rounded text-[32px]">badge</span>
+      </span>
+      <h2 className="text-[18px] font-bold tracking-tight text-[#15171C]">
+        No employee profile linked
+      </h2>
+      <p className="mt-2 max-w-sm text-[13.5px] leading-relaxed text-[#8A929E]">
+        Your account isn&apos;t connected to an employee record yet, so there&apos;s nothing to show
+        here. Ask your HR team to add you as an employee using this same email address — then your
+        leave, payslips, timesheets and reviews will appear automatically.
+      </p>
+    </div>
+  );
+}

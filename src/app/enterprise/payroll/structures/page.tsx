@@ -112,7 +112,9 @@ export default function StructuresPage() {
   const [currency, setCurrency] = useState("INR");
   const [payFrequency, setPayFrequency] = useState<PayFrequency>("MONTHLY");
   const [hourlyRate, setHourlyRate] = useState("");
-  const [effectiveFrom, setEffectiveFrom] = useState(new Date().toISOString().slice(0, 10));
+  // Local calendar date (en-CA → YYYY-MM-DD); toISOString() would give the UTC
+  // date, which reads as "yesterday" for +TZ users late in the day.
+  const [effectiveFrom, setEffectiveFrom] = useState(new Date().toLocaleDateString("en-CA"));
   const [earnings, setEarnings] = useState<LineDraft[]>([]);
   const [deductions, setDeductions] = useState<LineDraft[]>([]);
   const [lopDays, setLopDays] = useState("0");
@@ -161,7 +163,20 @@ export default function StructuresPage() {
       ),
     [earnings, deductions, lopDays, ctc, payFrequency]
   );
-  const earningCodes = earnings.map((e) => e.code).filter(Boolean);
+  // Which codes a `percent … of X` line may reference, matching the engine's
+  // resolution order (compute_payslip / estimateSalary):
+  //  - Earnings resolve top-to-bottom with balance lines deferred to a last
+  //    pass, so an earning percent-line can only reference an EARLIER,
+  //    non-balance earning — a balance line or a line below always resolves to 0.
+  //  - Deductions resolve after ALL earnings (incl. balance), so a deduction may
+  //    reference any earning code.
+  const earningRefCodesFor = (rowIndex: number, rowCode: string) =>
+    earnings
+      .slice(0, rowIndex)
+      .filter((e) => e.type !== "balance" && e.code && e.code !== rowCode)
+      .map((e) => e.code);
+  const deductionRefCodesFor = (_rowIndex: number, rowCode: string) =>
+    earnings.map((e) => e.code).filter((c) => c && c !== rowCode);
 
   // Authoritative live preview from the backend — same engine a payroll run
   // uses, so PF/ESI/PT/TDS deductions update in real time as toggles change.
@@ -218,7 +233,7 @@ export default function StructuresPage() {
     setCurrency("INR");
     setPayFrequency("MONTHLY");
     setHourlyRate("");
-    setEffectiveFrom(new Date().toISOString().slice(0, 10));
+    setEffectiveFrom(new Date().toLocaleDateString("en-CA"));
     setEarnings([
       { ...emptyLine(), code: "BASIC", label: "Basic", type: "fixed", amount: "40000" },
       { ...emptyLine(), code: "HRA", label: "HRA", type: "percent", percent: "40", percent_of: "BASIC" },
@@ -627,13 +642,13 @@ export default function StructuresPage() {
                   title="Earnings"
                   rows={earnings}
                   setRows={setEarnings}
-                  earningCodes={earningCodes}
+                  refCodesFor={earningRefCodesFor}
                 />
                 <LineSection
                   title="Deductions"
                   rows={deductions}
                   setRows={setDeductions}
-                  earningCodes={earningCodes}
+                  refCodesFor={deductionRefCodesFor}
                   footer={
                     <Field
                       label="Loss of Pay (LOP days)"
@@ -848,13 +863,13 @@ function LineSection({
   title,
   rows,
   setRows,
-  earningCodes,
+  refCodesFor,
   footer,
 }: {
   title: string;
   rows: LineDraft[];
   setRows: (r: LineDraft[]) => void;
-  earningCodes: string[];
+  refCodesFor: (rowIndex: number, rowCode: string) => string[];
   footer?: React.ReactNode;
 }) {
   const update = (i: number, patch: Partial<LineDraft>) =>
@@ -924,13 +939,11 @@ function LineSection({
                 >
                   <option value="">of gross</option>
                   <option value="CTC">of CTC</option>
-                  {earningCodes
-                    .filter((c) => c && c !== r.code)
-                    .map((c) => (
-                      <option key={c} value={c}>
-                        of {c}
-                      </option>
-                    ))}
+                  {refCodesFor(i, r.code).map((c) => (
+                    <option key={c} value={c}>
+                      of {c}
+                    </option>
+                  ))}
                 </Select>
               </>
             )}

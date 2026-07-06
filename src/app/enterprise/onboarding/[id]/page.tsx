@@ -17,10 +17,10 @@ interface OnboardingDocument {
 
 interface OnboardingActivity {
     id: string;
-    action: string;
-    description?: string;
+    activity_type: string;
+    description: string;
     performed_by: string;
-    timestamp: string;
+    created_at: string;
 }
 
 interface OnboardingField {
@@ -55,6 +55,24 @@ interface Onboarding {
     form_data: Record<string, any>;
     documents: OnboardingDocument[];
     activities: OnboardingActivity[];
+    notes?: OnboardingNote[];
+    tasks?: OnboardingTask[];
+}
+
+interface OnboardingNote {
+    id: string;
+    content: string;
+    author_name: string;
+    created_at: string;
+}
+
+interface OnboardingTask {
+    id: string;
+    title: string;
+    description?: string;
+    priority: string;
+    status: string;
+    due_date?: string;
 }
 
 // date-fns format() throws RangeError on an Invalid Date; guard before formatting.
@@ -72,6 +90,7 @@ export default function OnboardingDetailsPage() {
 
     const [onboarding, setOnboarding] = useState<Onboarding | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [loadFailed, setLoadFailed] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [activeTab, setActiveTab] = useState("Employee");
     const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["Job Information", "Personal Information"]));
@@ -81,6 +100,11 @@ export default function OnboardingDetailsPage() {
     const [rejectedDocIds, setRejectedDocIds] = useState<Set<string>>(new Set());
     const [rejectedFieldNames, setRejectedFieldNames] = useState<Set<string>>(new Set());
 
+    // Add-note / add-task / request-document forms (wired to existing backend endpoints).
+    const [newNote, setNewNote] = useState("");
+    const [newTask, setNewTask] = useState({ title: "", priority: "Medium", due_date: "" });
+    const [newDocName, setNewDocName] = useState("");
+
     useEffect(() => {
         if (token && id) {
             fetchOnboardingDetails();
@@ -89,16 +113,19 @@ export default function OnboardingDetailsPage() {
 
     const fetchOnboardingDetails = async () => {
         setIsLoading(true);
+        setLoadFailed(false);
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/onboarding/${id}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
-                const data = await res.json();
-                setOnboarding(data);
+                setOnboarding(await res.json());
+            } else {
+                setLoadFailed(true);
             }
         } catch (error) {
             console.error("Error fetching onboarding details:", error);
+            setLoadFailed(true);
         } finally {
             setIsLoading(false);
         }
@@ -178,6 +205,47 @@ export default function OnboardingDetailsPage() {
         }
     };
 
+    // Generic POST for the note/task/document-request actions; refetches on success.
+    const runAction = async (path: string, body: object): Promise<boolean> => {
+        if (!token) return false;
+        setIsProcessing(true);
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/onboarding/${id}${path}`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            });
+            if (res.ok) { fetchOnboardingDetails(); return true; }
+            const err = await res.json().catch(() => ({}));
+            alert(err.detail || "Action failed");
+            return false;
+        } catch {
+            alert("Action failed. Please try again.");
+            return false;
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const addNote = async () => {
+        if (!newNote.trim()) return;
+        if (await runAction("/notes", { content: newNote.trim() })) setNewNote("");
+    };
+
+    const addTask = async () => {
+        if (!newTask.title.trim()) return;
+        if (await runAction("/tasks", {
+            title: newTask.title.trim(),
+            priority: newTask.priority,
+            due_date: newTask.due_date || null,
+        })) setNewTask({ title: "", priority: "Medium", due_date: "" });
+    };
+
+    const requestDocument = async () => {
+        if (!newDocName.trim()) return;
+        if (await runAction("/documents/request", { name: newDocName.trim() })) setNewDocName("");
+    };
+
     const toggleDocRejection = (docId: string) => {
         setRejectedDocIds(prev => {
             const next = new Set(prev);
@@ -204,9 +272,30 @@ export default function OnboardingDetailsPage() {
         );
     }
 
-    if (!onboarding) return null;
+    if (!onboarding) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen bg-[#F8F9FA] text-center px-6">
+                <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mb-4">
+                    <span className="material-symbols-rounded text-3xl">error</span>
+                </div>
+                <h2 className="text-lg font-black text-slate-800 mb-1">
+                    {loadFailed ? "Couldn't load this onboarding" : "Onboarding not found"}
+                </h2>
+                <p className="text-sm text-slate-500 max-w-xs mb-5">
+                    It may have been removed, or you don&apos;t have access to it.
+                </p>
+                <div className="flex items-center gap-3">
+                    {loadFailed && (
+                        <button onClick={fetchOnboardingDetails} className="px-4 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all">Retry</button>
+                    )}
+                    <button onClick={() => router.push("/enterprise/onboarding")} className="px-4 h-10 rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black transition-all">Back to Onboarding</button>
+                </div>
+            </div>
+        );
+    }
 
-    const tabs = ["Employee", "Documents", "Activity Log"];
+    const tabs = ["Employee", "Documents", "Tasks & Notes", "Activity Log"];
+    const canModerate = canAccess("onboarding:moderate") && onboarding.status?.name !== "Completed";
 
     // Combine template sections with potentially missing data sections
     const templateSections = onboarding.template?.form_config?.sections || [];
@@ -394,6 +483,32 @@ export default function OnboardingDetailsPage() {
                     )}
 
                     {activeTab === "Documents" && (
+                     <div className="space-y-6">
+                        {/* Request a document from the candidate (backend: POST /{id}/documents/request) */}
+                        {canModerate && (
+                            <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-3">
+                                <input
+                                    type="text"
+                                    value={newDocName}
+                                    onChange={(e) => setNewDocName(e.target.value)}
+                                    placeholder="Document name to request (e.g. Aadhar Card)"
+                                    className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
+                                />
+                                <button
+                                    onClick={requestDocument}
+                                    disabled={isProcessing || !newDocName.trim()}
+                                    className="px-5 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black transition-all disabled:opacity-50 shrink-0"
+                                >
+                                    Request document
+                                </button>
+                            </div>
+                        )}
+                        {(!onboarding.documents || onboarding.documents.length === 0) ? (
+                            <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
+                                <span className="material-symbols-rounded text-4xl text-slate-200 mb-3">folder_open</span>
+                                <p className="text-slate-400 text-xs font-black">No documents yet</p>
+                            </div>
+                        ) : (
                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {onboarding.documents?.map((doc: OnboardingDocument) => (
                                 <div key={doc.id} className="bg-white border border-slate-100 rounded-2xl p-6 flex items-center justify-between hover:border-[#7C3AED]/30 hover:shadow-xl hover:shadow-[#7C3AED]/5 transition-all group">
@@ -434,6 +549,86 @@ export default function OnboardingDetailsPage() {
                                 </div>
                             ))}
                          </div>
+                        )}
+                     </div>
+                    )}
+
+                    {activeTab === "Tasks & Notes" && (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Tasks */}
+                            <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+                                <h3 className="text-sm font-black text-slate-800 mb-4">Tasks</h3>
+                                {canModerate && (
+                                    <div className="space-y-2 mb-4">
+                                        <input
+                                            type="text"
+                                            value={newTask.title}
+                                            onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                                            placeholder="Task title (e.g. Set up laptop)"
+                                            className="w-full h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
+                                        />
+                                        <div className="flex gap-2">
+                                            <select
+                                                value={newTask.priority}
+                                                onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                                                className="h-10 px-2 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                                            >
+                                                <option>Low</option><option>Medium</option><option>High</option>
+                                            </select>
+                                            <input
+                                                type="date"
+                                                value={newTask.due_date}
+                                                onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
+                                                className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none"
+                                            />
+                                            <button onClick={addTask} disabled={isProcessing || !newTask.title.trim()} className="px-4 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">Add</button>
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="space-y-2">
+                                    {(onboarding.tasks || []).map((t) => (
+                                        <div key={t.id} className="flex items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-bold text-slate-800 truncate">{t.title}</p>
+                                                <p className="text-[10px] font-black text-slate-400">{t.priority}{t.due_date ? ` · due ${safeFormat(t.due_date, "MMM dd")}` : ""}</p>
+                                            </div>
+                                            <span className="text-[10px] font-black text-slate-500 shrink-0">{t.status}</span>
+                                        </div>
+                                    ))}
+                                    {(!onboarding.tasks || onboarding.tasks.length === 0) && (
+                                        <p className="text-xs text-slate-400 font-medium py-4 text-center">No tasks yet.</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Notes */}
+                            <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+                                <h3 className="text-sm font-black text-slate-800 mb-4">Notes</h3>
+                                {canAccess("onboarding:moderate") && (
+                                    <div className="flex gap-2 mb-4">
+                                        <input
+                                            type="text"
+                                            value={newNote}
+                                            onChange={(e) => setNewNote(e.target.value)}
+                                            placeholder="Add an internal note…"
+                                            className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
+                                        />
+                                        <button onClick={addNote} disabled={isProcessing || !newNote.trim()} className="px-4 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">Add</button>
+                                    </div>
+                                )}
+                                <div className="space-y-2">
+                                    {(onboarding.notes || []).map((n) => (
+                                        <div key={n.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                            <p className="text-sm font-medium text-slate-700">{n.content}</p>
+                                            <p className="text-[10px] font-black text-slate-400 mt-1">{n.author_name} · {safeFormat(n.created_at, "MMM dd, HH:mm")}</p>
+                                        </div>
+                                    ))}
+                                    {(!onboarding.notes || onboarding.notes.length === 0) && (
+                                        <p className="text-xs text-slate-400 font-medium py-4 text-center">No notes yet.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     )}
 
                     {activeTab === "Activity Log" && (
@@ -445,10 +640,12 @@ export default function OnboardingDetailsPage() {
                                             <span className="material-symbols-rounded text-base">history</span>
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-black text-slate-800">{act.action}</h4>
-                                            <p className="text-xs font-medium text-slate-400 mt-1">{act.description || `Action performed by ${act.performed_by}`}</p>
+                                            <h4 className="text-sm font-black text-slate-800">{act.description}</h4>
+                                            <p className="text-xs font-medium text-slate-400 mt-1">
+                                                {act.performed_by ? `By ${act.performed_by}` : act.activity_type}
+                                            </p>
                                             <p className="text-[10px] font-black text-[#7C3AED] bg-[#7C3AED]/5 inline-block px-2 py-1 rounded-xl   mt-3">
-                                                {safeFormat(act.timestamp, "MMM dd, HH:mm")}
+                                                {safeFormat(act.created_at, "MMM dd, HH:mm")}
                                             </p>
                                         </div>
                                     </div>

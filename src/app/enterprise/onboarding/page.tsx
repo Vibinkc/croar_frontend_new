@@ -228,7 +228,7 @@ export default function OnboardingDashboard() {
                                                 {candidateName}
                                             </h3>
                                             <p className="text-[12.5px] text-[#6B6F76] font-medium truncate">
-                                                {ob.candidate_email}
+                                                {ob.candidate_email || ob.application?.candidate?.email || "—"}
                                             </p>
                                         </div>
 
@@ -240,7 +240,7 @@ export default function OnboardingDashboard() {
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <p className="text-[12px] font-bold text-[#15171C] truncate leading-tight">
-                                                        {ob.job_title || "Unspecified Role"}
+                                                        {ob.job_title || ob.application?.job_requirement?.title || "Unspecified Role"}
                                                     </p>
                                                     <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mt-0.5 leading-none">Hired Role</p>
                                                 </div>

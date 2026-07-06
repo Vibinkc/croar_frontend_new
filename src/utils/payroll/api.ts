@@ -255,6 +255,23 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+// FastAPI returns 422 validation errors as `detail: [{loc, msg, type}, …]` — a plain
+// `body.detail || body.message` then leaks raw JSON into alerts/banners. Flatten to a
+// readable string (string detail passes straight through).
+function extractError(body: unknown, statusCode: number): string {
+  const fallback = `Request failed (${statusCode})`;
+  const b = body as { detail?: unknown; message?: unknown } | null;
+  const detail = b?.detail ?? b?.message;
+  if (typeof detail === "string" && detail.trim()) return detail;
+  if (Array.isArray(detail)) {
+    const msgs = detail
+      .map((e) => (typeof e === "string" ? e : (e as { msg?: string })?.msg))
+      .filter(Boolean) as string[];
+    if (msgs.length) return msgs.join(", ");
+  }
+  return fallback;
+}
+
 async function handle<T>(res: Response): Promise<T> {
   if (!res.ok) {
     // Token missing/expired/invalid: drop the session and bounce to login.
@@ -266,12 +283,11 @@ async function handle<T>(res: Response): Promise<T> {
     }
     let msg = `Request failed (${res.status})`;
     try {
-      const body = await res.json();
-      msg = body.detail || body.message || msg;
+      msg = extractError(await res.json(), res.status);
     } catch {
       /* ignore */
     }
-    throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
+    throw new Error(msg);
   }
   if (res.status === 204) return {} as T;
   return res.json();
@@ -329,12 +345,11 @@ async function downloadFile(path: string): Promise<void> {
     }
     let msg = `Request failed (${res.status})`;
     try {
-      const body = await res.json();
-      msg = body.detail || body.message || msg;
+      msg = extractError(await res.json(), res.status);
     } catch {
       /* ignore */
     }
-    throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
+    throw new Error(msg);
   }
   const blob = await res.blob();
   const disposition = res.headers.get("Content-Disposition") || "";
@@ -939,8 +954,58 @@ export interface MyLeaveRequestInput {
   reason?: string | null;
 }
 
+/** A 360 assignment where the signed-in employee is the rater (list row). */
+export interface My360Assignment {
+  id: string;
+  relation: string;
+  ratee_name: string;
+  cycle_name: string;
+}
+
+/** One question in a 360 assessment or a survey (self-service fill view). */
+export interface SelfServiceQuestion {
+  id: string;
+  text: string;
+  type: string; // RATING | TEXT | MCQ
+  category?: string;
+  scale_min?: number | null;
+  scale_max?: number | null;
+  options?: string[] | null;
+}
+
+export interface My360Detail {
+  id: string;
+  ratee_name: string;
+  relation: string;
+  status: string;
+  questions: SelfServiceQuestion[];
+}
+
+/** A survey invite addressed to the signed-in employee (list row). */
+export interface MySurveyInvite {
+  id: string;
+  instance_name: string;
+  template_title: string;
+}
+
+export interface MySurveyDetail {
+  id: string;
+  status: string;
+  instance_name: string;
+  template_title: string;
+  questions: SelfServiceQuestion[];
+}
+
+/** One answer in a feedback/survey submission. */
+export interface SelfServiceAnswer {
+  question_id: string;
+  answer_value?: number | null;
+  answer_text?: string | null;
+}
+
 /** Access to the signed-in employee's OWN records. The backend scopes every
- *  response to their linked employee_id. Reads + own leave apply/cancel. */
+ *  response to their linked employee_id. Reads + own leave apply/cancel, plus
+ *  360 feedback + survey tasks addressed to them. */
 export const meApi = {
   timesheets: () => apiClient.get<Timesheet[]>(`${ME}/timesheets`),
   timesheet: (id: string) => apiClient.get<TimesheetDetail>(`${ME}/timesheets/${id}`),
@@ -956,7 +1021,54 @@ export const meApi = {
     apiClient.post<LeaveRequest>(`${ME}/leave/requests`, body),
   cancelLeave: (id: string, note?: string) =>
     apiClient.post<LeaveRequest>(`${ME}/leave/requests/${id}/cancel`, { note: note ?? null }),
+  // 360 feedback (as a rater)
+  my360Assignments: () => apiClient.get<My360Assignment[]>(`${ME}/360-assignments`),
+  my360Assignment: (id: string) => apiClient.get<My360Detail>(`${ME}/360-assignments/${id}`),
+  submit360: (id: string, responses: SelfServiceAnswer[]) =>
+    apiClient.post<{ status: string }>(`${ME}/360-assignments/${id}/submit`, { responses }),
+  // Survey invites (addressed to me)
+  mySurveyInvites: () => apiClient.get<MySurveyInvite[]>(`${ME}/survey-invites`),
+  mySurveyInvite: (id: string) => apiClient.get<MySurveyDetail>(`${ME}/survey-invites/${id}`),
+  submitSurvey: (id: string, responses: SelfServiceAnswer[]) =>
+    apiClient.post<{ message: string }>(`${ME}/survey-invites/${id}/submit`, { responses }),
+  // Skill assessments assigned to me (timed aptitude/coding tests)
+  mySkillAssessments: () => apiClient.get<SkillAssessmentSummary[]>(`${ME}/skill-assessments`),
+  mySkillAssessment: (id: string) => apiClient.get<SkillAssessmentDetail>(`${ME}/skill-assessments/${id}`),
+  submitSkillAssessment: (id: string, answers: Record<string, string>) =>
+    apiClient.post<{ status: string; score: number }>(`${ME}/skill-assessments/${id}/submit`, answers),
 };
+
+export interface SkillAssessmentSummary {
+  id: string;
+  name: string;
+  topic: string;
+  type: string;
+  duration: number;
+  question_count: number;
+  status: string;
+  score: number | null;
+}
+
+export interface SkillQuestion {
+  id: string;
+  type: string;
+  title?: string;
+  question?: string;
+  problem_statement?: string;
+  question_text?: string;
+  options?: string[];
+  initial_code?: Record<string, string>;
+}
+
+export interface SkillAssessmentDetail {
+  id: string;
+  name: string;
+  topic: string;
+  type: string;
+  duration: number;
+  status: string;
+  questions: SkillQuestion[];
+}
 
 // --- Helpers ---------------------------------------------------------------
 

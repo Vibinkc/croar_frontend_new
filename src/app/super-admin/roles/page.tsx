@@ -196,7 +196,7 @@ function RolesContent() {
                                     </div>
                                     <div className="text-right">
                                         <div className="text-[10px] font-semibold text-[#8A929E] uppercase tracking-[0.06em]">Rank</div>
-                                        <div className="text-[20px] font-extrabold text-[#15171C] tracking-tight leading-none">0{role.role_rank}</div>
+                                        <div className="text-[20px] font-extrabold text-[#15171C] tracking-tight leading-none">{String(role.role_rank).padStart(2, "0")}</div>
                                     </div>
                                 </div>
 
@@ -221,8 +221,8 @@ function RolesContent() {
                             </div>
 
                             <div className="flex gap-2 pt-4 mt-4 border-t border-[#E8EAED]">
-                                <Button variant="secondary" size="sm" icon="edit_note" className="flex-1" onClick={() => handleOpenEdit(role)}>
-                                    Configure
+                                <Button variant="secondary" size="sm" icon={role.is_system ? "visibility" : "edit_note"} className="flex-1" onClick={() => handleOpenEdit(role)}>
+                                    {role.is_system ? "View" : "Configure"}
                                 </Button>
                                 {!role.is_system && (
                                     <button
@@ -277,10 +277,20 @@ function RolesContent() {
                                         <Input
                                             id="role-rank"
                                             type="number"
-                                            value={rank} onChange={e => setRank(Number.parseInt(e.target.value))} required
+                                            value={rank} onChange={e => setRank(Number.parseInt(e.target.value) || 0)} required
+                                            disabled={selectedRole?.is_system}
                                         />
                                     </Field>
                                 </div>
+
+                                {selectedRole?.is_system && (
+                                    <div className="flex items-start gap-2.5 rounded-[10px] border border-[#E8EAED] bg-[#F7F8FA] px-3.5 py-2.5">
+                                        <span className="material-symbols-rounded text-[18px] text-[#8A929E] mt-0.5">lock</span>
+                                        <p className="text-[12px] text-[#6B7280] leading-relaxed">
+                                            This is a <span className="font-semibold text-[#374151]">system role</span>. It's seeded and load-bearing, so its name, rank and permissions are read-only.
+                                        </p>
+                                    </div>
+                                )}
 
                                 <Field label="Capabilities Summary" htmlFor="role-description">
                                     <Textarea
@@ -288,6 +298,7 @@ function RolesContent() {
                                         className="min-h-[90px]"
                                         placeholder="Describe what this role manages..."
                                         value={description} onChange={e => setDescription(e.target.value)}
+                                        disabled={selectedRole?.is_system}
                                     />
                                 </Field>
 
@@ -315,7 +326,8 @@ function RolesContent() {
                                                             key={perm.id}
                                                             type="button"
                                                             onClick={() => togglePermission(perm.id)}
-                                                            className={`w-full flex items-center justify-between p-2.5 rounded-[8px] border text-[11px] font-bold transition-all ${selectedPermIds.includes(perm.id) ? "bg-[#15171C] border-[#15171C] text-white shadow-md" : "bg-white border-[#E1E4E8] text-[#8A929E] hover:border-[#9AA3AF]"}`}
+                                                            disabled={selectedRole?.is_system}
+                                                            className={`w-full flex items-center justify-between p-2.5 rounded-[8px] border text-[11px] font-bold transition-all disabled:cursor-not-allowed disabled:opacity-70 ${selectedPermIds.includes(perm.id) ? "bg-[#15171C] border-[#15171C] text-white shadow-md" : "bg-white border-[#E1E4E8] text-[#8A929E] hover:border-[#9AA3AF]"}`}
                                                         >
                                                             <div className="flex items-center gap-2">
                                                                 <div className={`w-1.5 h-1.5 rounded-full ${selectedPermIds.includes(perm.id) ? "bg-[#5B53E0]" : "bg-slate-300"}`} />
@@ -333,11 +345,13 @@ function RolesContent() {
 
                             <div className="flex gap-3 p-6 border-t border-[#E8EAED]">
                                 <Button type="button" variant="secondary" onClick={() => setIsEditing(false)} className="flex-1">
-                                    Cancel
+                                    {selectedRole?.is_system ? "Close" : "Cancel"}
                                 </Button>
-                                <Button type="submit" disabled={isLoading} icon="verified_user" className="flex-1">
-                                    {isLoading ? "Saving..." : (selectedRole ? "Update Role" : "Create Role")}
-                                </Button>
+                                {!selectedRole?.is_system && (
+                                    <Button type="submit" disabled={isLoading} icon="verified_user" className="flex-1">
+                                        {isLoading ? "Saving..." : (selectedRole ? "Update Role" : "Create Role")}
+                                    </Button>
+                                )}
                             </div>
                         </form>
                     </Card>

@@ -292,12 +292,18 @@ function EnterpriseRolesContent() {
                                     <div className="pt-2">
                                         <button
                                             type="submit"
-                                            disabled={isLoading || (!!selectedRole && !isDirty)}
-                                            title={selectedRole && !isDirty ? "No changes to save yet" : undefined}
+                                            disabled={isLoading || !!selectedRole?.is_system || (!!selectedRole && !isDirty)}
+                                            title={
+                                                selectedRole?.is_system
+                                                    ? "System roles are read-only"
+                                                    : selectedRole && !isDirty
+                                                        ? "No changes to save yet"
+                                                        : undefined
+                                            }
                                             className="w-full bg-[#5B53E0] text-white h-10 rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
                                         >
                                             {isLoading ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                                            {isLoading ? "Saving..." : (selectedRole ? "Update Permissions" : "Create Role")}
+                                            {isLoading ? "Saving..." : selectedRole?.is_system ? "Read-only" : selectedRole ? "Update Permissions" : "Create Role"}
                                         </button>
                                     </div>
                                 </div>
@@ -310,6 +316,13 @@ function EnterpriseRolesContent() {
                                         </div>
                                         <span className="text-[11.5px] font-bold text-[#5B53E0] bg-[#ECEBFB] px-3 py-1 rounded-full border border-[#DAD7F6]/60">{selectedPermIds.length} actions selected</span>
                                     </div>
+
+                                    {selectedRole?.is_system && (
+                                        <div className="flex items-center gap-2 rounded-[10px] border border-[#E8EAED] bg-[#F4F5F7] px-3.5 py-2.5 text-[12.5px] font-semibold text-[#6B6F76]">
+                                            <Lock className="w-3.5 h-3.5 shrink-0" />
+                                            This is a built-in system role — its permissions are read-only.
+                                        </div>
+                                    )}
                                     
                                     <div className="relative group">
                                         <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
@@ -336,8 +349,9 @@ function EnterpriseRolesContent() {
                                                         <button
                                                             key={perm.id}
                                                             type="button"
+                                                            disabled={selectedRole?.is_system}
                                                             onClick={() => togglePermission(perm.id)}
-                                                            className={`p-3.5 rounded-[10px] border text-left transition-all flex items-center justify-between group/node ${selectedPermIds.includes(perm.id) ? 'bg-[#15171C] border-[#15171C] text-white shadow-sm' : 'bg-white text-[#374151] border-[#E1E4E8] hover:border-[#9AA3AF]'}`}
+                                                            className={`p-3.5 rounded-[10px] border text-left transition-all flex items-center justify-between group/node disabled:opacity-60 disabled:cursor-not-allowed ${selectedPermIds.includes(perm.id) ? 'bg-[#15171C] border-[#15171C] text-white shadow-sm' : 'bg-white text-[#374151] border-[#E1E4E8] hover:border-[#9AA3AF]'}`}
                                                         >
                                                             <div className="space-y-0.5">
                                                                 <p className="text-[10px] font-bold opacity-50 uppercase tracking-wider">{perm.resource}</p>

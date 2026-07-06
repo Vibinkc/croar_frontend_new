@@ -135,7 +135,21 @@ export default function TemplatesPage() {
     load();
   }, []);
 
-  const earningCodes = earnings.map((e) => e.code).filter(Boolean);
+  // Which codes a `percent … of X` line may reference, matching the engine's
+  // resolution order (see compute_payslip):
+  //  - Earnings resolve top-to-bottom, with balance lines deferred to a last
+  //    pass. So an earning percent-line can only reference an EARLIER,
+  //    non-balance earning — referencing a balance line or a line below it
+  //    always resolves to 0. Offer only the safe refs.
+  //  - Deductions resolve after ALL earnings (incl. balance), so a deduction
+  //    may reference any earning code.
+  const earningRefCodesFor = (rowIndex: number, rowCode: string) =>
+    earnings
+      .slice(0, rowIndex)
+      .filter((e) => e.type !== "balance" && e.code && e.code !== rowCode)
+      .map((e) => e.code);
+  const deductionRefCodesFor = (_rowIndex: number, rowCode: string) =>
+    earnings.map((e) => e.code).filter((c) => c && c !== rowCode);
 
   // The sample CTC only moves the numbers when at least one earning line is
   // anchored to CTC — a "balance" line (absorbs the CTC remainder) or a
@@ -503,8 +517,8 @@ export default function TemplatesPage() {
                     </Field>
                   </div>
 
-                  <LineSection title="Earnings" rows={earnings} setRows={setEarnings} earningCodes={earningCodes} />
-                  <LineSection title="Deductions" rows={deductions} setRows={setDeductions} earningCodes={earningCodes} />
+                  <LineSection title="Earnings" rows={earnings} setRows={setEarnings} refCodesFor={earningRefCodesFor} />
+                  <LineSection title="Deductions" rows={deductions} setRows={setDeductions} refCodesFor={deductionRefCodesFor} />
 
                   <div className="rounded-[14px] border border-[#E8EAED] bg-[#F7F8FA]/60 p-4">
                     <div className="mb-3 flex items-center gap-2">
@@ -624,7 +638,9 @@ function ApplyModal({
   onApplied: () => void | Promise<void>;
 }) {
   const { alert } = useDialog();
-  const today = new Date().toISOString().slice(0, 10);
+  // Local calendar date (en-CA → YYYY-MM-DD). Using toISOString() would give the
+  // UTC date, which can read as "yesterday" for +TZ users late in the day.
+  const today = new Date().toLocaleDateString("en-CA");
   const [defaultCtc, setDefaultCtc] = useState("1200000");
   const [effectiveFrom, setEffectiveFrom] = useState(today);
   const [replaceExisting, setReplaceExisting] = useState(true);
@@ -828,12 +844,12 @@ function LineSection({
   title,
   rows,
   setRows,
-  earningCodes,
+  refCodesFor,
 }: {
   title: string;
   rows: LineDraft[];
   setRows: (r: LineDraft[]) => void;
-  earningCodes: string[];
+  refCodesFor: (rowIndex: number, rowCode: string) => string[];
 }) {
   const update = (i: number, patch: Partial<LineDraft>) =>
     setRows(rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
@@ -873,7 +889,7 @@ function LineSection({
                 <Select className="col-span-2 h-10" value={r.percent_of} onChange={(e) => update(i, { percent_of: e.target.value })}>
                   <option value="">of gross</option>
                   <option value="CTC">of CTC</option>
-                  {earningCodes.filter((c) => c && c !== r.code).map((c) => (
+                  {refCodesFor(i, r.code).map((c) => (
                     <option key={c} value={c}>of {c}</option>
                   ))}
                 </Select>

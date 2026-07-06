@@ -68,7 +68,7 @@ const EMPTY_FORM: FormState = {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function ScreeningAutomationPage() {
-  const { token } = useAuth();
+  const { token, canAccess } = useAuth();
 
   const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
@@ -139,7 +139,11 @@ export default function ScreeningAutomationPage() {
       if (res.ok) {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
+      } else {
+        showToast("Failed to load automations.", "error");
       }
+    } catch {
+      showToast("Failed to load automations.", "error");
     } finally {
       setLoading(false);
     }
@@ -158,6 +162,16 @@ export default function ScreeningAutomationPage() {
     setShowModal(true);
   };
 
+  // Stored send_at is naive UTC → render as a LOCAL wall-clock for the datetime-local input, so editing
+  // shows the right local time and re-saving doesn't drift the stored time by the UTC offset each edit.
+  const toLocalInput = (raw: string): string => {
+    const iso = /[zZ]|[+-]\d\d:?\d\d$/.test(raw) ? raw : `${raw.replace(" ", "T")}Z`;
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+  };
+
   const openEdit = (a: Automation) => {
     setEditingId(a.id);
     setForm({
@@ -169,7 +183,7 @@ export default function ScreeningAutomationPage() {
       auto_move: a.auto_move,
       is_enabled: a.is_enabled,
       is_immediate: a.is_immediate,
-      send_at: a.send_at ? a.send_at.replace(' ', 'T').split('.')[0].slice(0, 16) : "",
+      send_at: a.send_at ? toLocalInput(a.send_at) : "",
     });
     setShowModal(true);
   };
@@ -234,6 +248,8 @@ export default function ScreeningAutomationPage() {
           prev.map((item) => (item.id === a.id ? { ...item, is_enabled: !a.is_enabled } : item))
         );
         showToast(a.is_enabled ? "Disabled" : "Enabled");
+      } else {
+        showToast("Failed to update status.", "error");
       }
     } finally {
       setTogglingId(null);
@@ -250,6 +266,8 @@ export default function ScreeningAutomationPage() {
       if (res.ok) {
         showToast("Automation deleted.");
         setAutomations((prev) => prev.filter((a) => a.id !== automationToDelete));
+      } else {
+        showToast("Failed to delete.", "error");
       }
     } finally {
       setIsDeleteModalOpen(false);
@@ -305,13 +323,15 @@ export default function ScreeningAutomationPage() {
             ))}
           </select>
         </div>
-        <button
-          onClick={openCreate}
-          className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#0F172A] text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
-        >
-          <span className="material-symbols-rounded text-lg">add_circle</span>
-          {"Add Rule"}
-        </button>
+        {canAccess("communications:moderate") && (
+          <button
+            onClick={openCreate}
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#0F172A] text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
+          >
+            <span className="material-symbols-rounded text-lg">add_circle</span>
+            {"Add Rule"}
+          </button>
+        )}
       </div>
 
       {/* List */}
@@ -381,12 +401,16 @@ export default function ScreeningAutomationPage() {
                   </span>
                 </div>
                 <div className="flex gap-1.5 pr-1 translate-x-2 group-hover:translate-x-0 transition-transform duration-300">
-                  <button onClick={() => openEdit(a)} className="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50 transition-all flex items-center justify-center group/btn shadow-sm">
-                    <span className="material-symbols-rounded text-base">edit</span>
-                  </button>
-                  <button onClick={() => { setAutomationToDelete(a.id); setIsDeleteModalOpen(true); }} className="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-100 hover:bg-rose-50 transition-all flex items-center justify-center shadow-sm">
-                    <span className="material-symbols-rounded text-base">delete</span>
-                  </button>
+                  {canAccess("communications:moderate") && (
+                    <button onClick={() => openEdit(a)} className="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50 transition-all flex items-center justify-center group/btn shadow-sm">
+                      <span className="material-symbols-rounded text-base">edit</span>
+                    </button>
+                  )}
+                  {canAccess("communications:delete") && (
+                    <button onClick={() => { setAutomationToDelete(a.id); setIsDeleteModalOpen(true); }} className="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-100 hover:bg-rose-50 transition-all flex items-center justify-center shadow-sm">
+                      <span className="material-symbols-rounded text-base">delete</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -435,10 +459,31 @@ export default function ScreeningAutomationPage() {
 
                   <div className="space-y-2">
                     <label htmlFor="screening-stage-index" className="text-[10px] font-black text-slate-400   ml-1">Connect to Hiring Round</label>
-                    <div className="grid grid-cols-5 gap-3">
-                      <input id="screening-stage-index" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder="Idx" />
-                      <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} className="col-span-4 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold outline-none focus:border-indigo-500 focus:bg-white" placeholder="Round Name (e.g. Technical Interview)" />
-                    </div>
+                    {jobRounds.length > 0 ? (
+                      // Pick from the selected job's real workflow stages (was a raw numeric input that
+                      // ignored the job's configured rounds).
+                      <select
+                        id="screening-stage-index"
+                        value={String(form.stage_index)}
+                        onChange={(e) => {
+                          const idx = Number(e.target.value);
+                          const r = jobRounds.find((rr, i) => (rr.order ?? rr.stage ?? i + 1) === idx);
+                          setForm((f) => ({ ...f, stage_index: idx, stage_name: r?.name ?? f.stage_name }));
+                        }}
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold text-slate-700 focus:bg-white focus:border-indigo-500 outline-none transition-all"
+                      >
+                        <option value="">Pick round…</option>
+                        {jobRounds.map((r, i) => {
+                          const idx = r.order ?? r.stage ?? i + 1;
+                          return <option key={i} value={idx}>{`Round ${idx}: ${r.name}`}</option>;
+                        })}
+                      </select>
+                    ) : (
+                      <div className="grid grid-cols-5 gap-3">
+                        <input id="screening-stage-index" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder="Idx" />
+                        <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} className="col-span-4 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold outline-none focus:border-indigo-500 focus:bg-white" placeholder="Round Name (e.g. Technical Interview)" />
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">

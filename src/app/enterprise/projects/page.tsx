@@ -108,7 +108,7 @@ export default function ProjectsPage() {
                     <p className="text-[12.5px] text-[#8A929E] mt-0.5">Track milestones, resources &amp; deployment progress</p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
-                    {canAccess("projects:moderate") && (
+                    {canAccess("projects:create") && (
                         <Link
                             href="/enterprise/projects/add"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
@@ -174,7 +174,7 @@ export default function ProjectsPage() {
                             title="Create your first project"
                             description="Group work into projects with their own team and board, then add tasks."
                             action={
-                                canAccess("projects:moderate") ? (
+                                canAccess("projects:create") ? (
                                     <Link href="/enterprise/projects/add">
                                         <Button icon="add">New Project</Button>
                                     </Link>
@@ -261,7 +261,7 @@ export default function ProjectsPage() {
                                     <div className="flex items-center gap-1 justify-end">
                                         <div className="md:hidden mr-1">{statusBadge(proj.status)}</div>
 
-                                        {canAccess("projects:moderate") && (
+                                        {canAccess("projects:update") && (
                                             <Link
                                                 href={`/enterprise/projects/${proj.id}/edit`}
                                                 className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"

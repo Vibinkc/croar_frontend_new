@@ -88,7 +88,7 @@ export default function SurveyTemplates() {
                         <p className="text-[12.5px] text-[#8A929E] mt-0.5 truncate">Manage and deploy specialized organizational pulse frameworks</p>
                     </div>
                 </div>
-                {canAccess("surveys:moderate") && (
+                {canAccess("surveys:create") && (
                     <Link
                         href="/enterprise/surveys/templates/new"
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors shrink-0 self-start sm:self-auto"

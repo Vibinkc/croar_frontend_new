@@ -218,7 +218,7 @@ export default function OrganizationProfilePage() {
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
-                    {canAccess("organization:moderate") && (
+                    {canAccess("organization:update") && (
                         <button
                             onClick={handleSave}
                             disabled={isSaving || !hasChanges}
@@ -262,7 +262,7 @@ export default function OrganizationProfilePage() {
                                         <Building2 className="w-10 h-10 text-[#9AA3AF]" />
                                     )}
                                 </div>
-                                {canAccess("organization:moderate") && (
+                                {canAccess("organization:update") && (
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
                                         title={logoUrl ? "Replace logo" : "Upload logo"}
@@ -271,7 +271,7 @@ export default function OrganizationProfilePage() {
                                         <Camera className="w-4 h-4" />
                                     </button>
                                 )}
-                                {canAccess("organization:moderate") && logoUrl && (
+                                {canAccess("organization:update") && logoUrl && (
                                     <button
                                         onClick={() => setLogoUrl("")}
                                         title="Remove logo"
@@ -362,7 +362,7 @@ export default function OrganizationProfilePage() {
                                         id="company-name"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
-                                        readOnly={!canAccess("organization:moderate")}
+                                        readOnly={!canAccess("organization:update")}
                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                         placeholder="Enter your legal company name"
                                     />
@@ -373,7 +373,7 @@ export default function OrganizationProfilePage() {
                                         id="company-industry"
                                         value={industry}
                                         onChange={e => setIndustry(e.target.value)}
-                                        readOnly={!canAccess("organization:moderate")}
+                                        readOnly={!canAccess("organization:update")}
                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                         placeholder="e.g. Technology, Healthcare"
                                     />
@@ -387,7 +387,7 @@ export default function OrganizationProfilePage() {
                                         id="company-location"
                                         value={location}
                                         onChange={e => setLocation(e.target.value)}
-                                        readOnly={!canAccess("organization:moderate")}
+                                        readOnly={!canAccess("organization:update")}
                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                         placeholder="e.g. London, United Kingdom"
                                     />
@@ -414,12 +414,12 @@ export default function OrganizationProfilePage() {
                                                 id="company-logo-url"
                                                 value={logoUrl}
                                                 onChange={e => setLogoUrl(e.target.value)}
-                                                readOnly={!canAccess("organization:moderate")}
+                                                readOnly={!canAccess("organization:update")}
                                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[13.5px] text-[#374151] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
                                                 placeholder="https://your-domain.com/logo.png"
                                             />
                                         </div>
-                                        {canAccess("organization:moderate") && (
+                                        {canAccess("organization:update") && (
                                             <button 
                                                 onClick={() => fileInputRef.current?.click()}
                                                 className="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] bg-[#15171C] text-white text-[13px] font-semibold hover:bg-[#252830] transition-all whitespace-nowrap shadow-sm"

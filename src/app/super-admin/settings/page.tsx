@@ -69,7 +69,7 @@ export default function PlatformSettingsPage() {
             if (res.ok) {
                 const updated = await res.json();
                 setSettings(prev => prev.map(s => s.key === key ? updated : s));
-                showToast(`${key.replace('_', ' ')} updated successfully.`);
+                showToast(`${key.replace(/_/g, ' ')} updated successfully.`);
             } else {
                 showToast("Failed to update setting.", "error");
             }
@@ -151,7 +151,7 @@ export default function PlatformSettingsPage() {
 
                         <div className="mt-4 space-y-1.5">
                             <h3 className="text-[15px] font-bold text-[#15171C] capitalize">
-                                {setting.key.replace('_', ' ')}
+                                {setting.key.replace(/_/g, ' ')}
                             </h3>
                             <p className="text-[12.5px] text-[#8A929E] leading-relaxed">
                                 {setting.description}

@@ -65,6 +65,8 @@ export default function EnterpriseJobsPage() {
     const [selectedLocation, setSelectedLocation] = useState<string>("ALL");
     const [selectedType, setSelectedType] = useState<string>("ALL");
     const [copiedJobId, setCopiedJobId] = useState<string | null>(null);
+    // Which row's "More" menu is open. Click-toggle (not hover) so it works on touch devices.
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
     // Publish Modal State
     const [publishModal, setPublishModal] = useState<{ isOpen: boolean; jobId: string; jobTitle: string }>({
@@ -147,11 +149,13 @@ export default function EnterpriseJobsPage() {
         return matchesSearch && matchesCompany && matchesLocation && matchesType;
     });
 
+    // job_statuses: 1 Draft · 2 Active · 3 On Hold · 4 Closed.
+    // "Closed / On hold" groups the two non-open states (3 + 4) so no job vanishes from view.
     const stats = {
         total: statsJobs.length,
         active: statsJobs.filter(j => j.status_id === 2).length,
         drafts: statsJobs.filter(j => j.status_id === 1).length,
-        closed: statsJobs.filter(j => j.status_id === 3).length
+        closed: statsJobs.filter(j => j.status_id === 3 || j.status_id === 4).length
     };
 
     const filteredJobs = jobs.filter(job => {
@@ -161,7 +165,7 @@ export default function EnterpriseJobsPage() {
         const matchesTab = activeTab === "ALL" ||
             (activeTab === "ACTIVE" && job.status_id === 2) ||
             (activeTab === "DRAFTS" && job.status_id === 1) ||
-            (activeTab === "CLOSED" && job.status_id === 3);
+            (activeTab === "CLOSED" && (job.status_id === 3 || job.status_id === 4));
 
         const matchesCompany = selectedCompanyId === "ALL" || job.company_id === selectedCompanyId;
         const matchesLocation = selectedLocation === "ALL" || (job.location && job.location === selectedLocation);
@@ -170,14 +174,14 @@ export default function EnterpriseJobsPage() {
         return matchesSearch && matchesTab && matchesCompany && matchesLocation && matchesType;
     });
 
-    const locations = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)));
-    const jobTypes = Array.from(new Set(jobs.map(j => j.job_type).filter(Boolean)));
+    const locations = Array.from(new Set(jobs.map(j => j.location).filter((l): l is string => Boolean(l))));
+    const jobTypes = Array.from(new Set(jobs.map(j => j.job_type).filter((t): t is string => Boolean(t))));
 
     const statCards = [
         { tab: "ALL" as TabStatus, label: "Total Positions", value: stats.total, Icon: Briefcase, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
         { tab: "ACTIVE" as TabStatus, label: "Active Jobs", value: stats.active, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
         { tab: "DRAFTS" as TabStatus, label: "Drafts", value: stats.drafts, Icon: Clock, grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-        { tab: "CLOSED" as TabStatus, label: "Closed / Filled", value: stats.closed, Icon: CheckCircle2, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+        { tab: "CLOSED" as TabStatus, label: "Closed / On hold", value: stats.closed, Icon: CheckCircle2, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
     ];
 
     const selectCls =
@@ -205,11 +209,14 @@ export default function EnterpriseJobsPage() {
         }
     };
 
+    // job_statuses: 1 Draft · 2 Active · 3 On Hold · 4 Closed.
     const statusBadge = (statusId: number) =>
         statusId === 2 ? (
             <Badge tone="success" dot>Active</Badge>
         ) : statusId === 1 ? (
             <Badge tone="neutral" dot>Draft</Badge>
+        ) : statusId === 3 ? (
+            <Badge tone="warning" dot>On Hold</Badge>
         ) : (
             <Badge tone="danger" dot>Closed</Badge>
         );
@@ -307,10 +314,40 @@ export default function EnterpriseJobsPage() {
                             <option value="ALL">Any status</option>
                             <option value="ACTIVE">Active</option>
                             <option value="DRAFTS">Draft</option>
-                            <option value="CLOSED">Closed</option>
+                            <option value="CLOSED">Closed / On hold</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
+
+                    {locations.length > 0 && (
+                        <div className="relative flex-1 md:flex-none">
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                            <select
+                                value={selectedLocation}
+                                onChange={(e) => setSelectedLocation(e.target.value)}
+                                className={`${selectCls} w-full md:min-w-[150px]`}
+                            >
+                                <option value="ALL">All locations</option>
+                                {locations.map((loc) => <option key={loc} value={loc}>{loc}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        </div>
+                    )}
+
+                    {jobTypes.length > 0 && (
+                        <div className="relative flex-1 md:flex-none">
+                            <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                            <select
+                                value={selectedType}
+                                onChange={(e) => setSelectedType(e.target.value)}
+                                className={`${selectCls} w-full md:min-w-[140px]`}
+                            >
+                                <option value="ALL">All types</option>
+                                {jobTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -353,7 +390,7 @@ export default function EnterpriseJobsPage() {
                             action={
                                 <Button
                                     variant="secondary"
-                                    onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); }}
+                                    onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); setSelectedLocation("ALL"); setSelectedType("ALL"); }}
                                 >
                                     Clear all filters
                                 </Button>
@@ -427,26 +464,36 @@ export default function EnterpriseJobsPage() {
                                             </Link>
                                         )}
 
-                                        <div className="relative group/menu">
-                                            <button className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#F1F2F5] hover:text-[#374151] transition-colors" title="More">
+                                        <div className="relative">
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === job.id ? null : job.id); }}
+                                                className={`w-9 h-9 flex items-center justify-center rounded-[9px] transition-colors ${openMenuId === job.id ? "bg-[#F1F2F5] text-[#374151]" : "text-[#9AA3AF] hover:bg-[#F1F2F5] hover:text-[#374151]"}`}
+                                                title="More"
+                                                aria-haspopup="menu"
+                                                aria-expanded={openMenuId === job.id}
+                                            >
                                                 <MoreHorizontal className="w-4 h-4" />
                                             </button>
-                                            <div className={`absolute right-0 w-48 bg-white rounded-[12px] shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] py-1.5 z-50 invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100 transition-all ${index >= filteredJobs.length - 2 ? "bottom-full mb-2" : "top-full mt-2"}`}>
-                                                <button
-                                                    onClick={() => setPublishModal({ isOpen: true, jobId: job.id, jobTitle: job.title })}
-                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#5B53E0] hover:bg-[#ECEBFB] transition-colors"
-                                                >
-                                                    <GlobeIcon className="w-4 h-4" /> Publish job
-                                                </button>
-                                                {canAccess("jobs:delete") && (
-                                                    <button
-                                                        onClick={() => handleDeleteJob(job.id)}
-                                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
-                                                    >
-                                                        <Archive className="w-4 h-4" /> Delete job
-                                                    </button>
-                                                )}
-                                            </div>
+                                            {openMenuId === job.id && (
+                                                <div className={`absolute right-0 w-48 bg-white rounded-[12px] shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] py-1.5 z-50 ${index >= filteredJobs.length - 2 ? "bottom-full mb-2" : "top-full mt-2"}`}>
+                                                    {canAccess("jobs:publish") && (
+                                                        <button
+                                                            onClick={() => { setPublishModal({ isOpen: true, jobId: job.id, jobTitle: job.title }); setOpenMenuId(null); }}
+                                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#5B53E0] hover:bg-[#ECEBFB] transition-colors"
+                                                        >
+                                                            <GlobeIcon className="w-4 h-4" /> Publish job
+                                                        </button>
+                                                    )}
+                                                    {canAccess("jobs:delete") && (
+                                                        <button
+                                                            onClick={() => { setOpenMenuId(null); handleDeleteJob(job.id); }}
+                                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                                                        >
+                                                            <Archive className="w-4 h-4" /> Delete job
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -455,6 +502,11 @@ export default function EnterpriseJobsPage() {
                     </>
                 )}
             </div>
+
+            {/* Invisible backdrop: click anywhere (incl. touch) to close an open row menu. */}
+            {openMenuId && (
+                <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} aria-hidden="true" />
+            )}
 
             {/* Publish Modal */}
             <PublishJobModal

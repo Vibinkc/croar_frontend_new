@@ -26,6 +26,7 @@ export default function X360NewCycle() {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [tplError, setTplError] = useState<string | null>(null);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -47,6 +48,12 @@ export default function X360NewCycle() {
                 if (tplRes.ok) {
                     const data = await tplRes.json();
                     setTemplates(Array.isArray(data) ? data : []);
+                } else {
+                    setTplError(
+                        tplRes.status === 403
+                            ? "You don't have permission to view assessment templates."
+                            : "Couldn't load templates. Please try again."
+                    );
                 }
                 if (empRes.ok) {
                     const data = await empRes.json();
@@ -54,6 +61,7 @@ export default function X360NewCycle() {
                 }
             } catch (error) {
                 console.error(error);
+                setTplError("Couldn't load templates. Check your connection and try again.");
             } finally {
                 setLoading(false);
             }
@@ -141,6 +149,34 @@ export default function X360NewCycle() {
 
                         <div className="pt-5 mt-5 border-t border-[#E8EAED]">
                             <label htmlFor="x360-template-list" className="block text-[12.5px] font-semibold text-[#374151] mb-3">Select Template</label>
+
+                            {/* Empty / error state — templates are scoped to the current organization,
+                                so a workspace with none (or a failed load) would otherwise show a blank area. */}
+                            {templates.length === 0 ? (
+                                <div className="rounded-[12px] border border-dashed border-[#D9DCE1] bg-[#F9FAFB] px-4 py-8 text-center">
+                                    <span className="material-symbols-rounded text-[26px] text-[#9AA3AF]">description</span>
+                                    <p className="mt-2 text-[13px] font-bold text-[#15171C]">
+                                        {tplError ? "Couldn't load templates" : "No templates in this workspace yet"}
+                                    </p>
+                                    <p className="mt-0.5 text-[12px] text-[#8A929E] max-w-xs mx-auto">
+                                        {tplError
+                                            ? tplError
+                                            : "Templates are specific to your organization. Create one (with its questions) before starting a cycle."}
+                                    </p>
+                                    {!tplError && (
+                                        <Button
+                                            type="button"
+                                            variant="secondary"
+                                            size="sm"
+                                            icon="add"
+                                            className="mt-3.5"
+                                            onClick={() => router.push("/enterprise/assessments-360/templates/new")}
+                                        >
+                                            Create Template
+                                        </Button>
+                                    )}
+                                </div>
+                            ) : (
                             <div id="x360-template-list" className="space-y-2.5">
                                 {templates.map(tpl => {
                                     const handleSelectTemplate = () => setFormData(prev => ({
@@ -170,6 +206,7 @@ export default function X360NewCycle() {
                                     );
                                 })}
                             </div>
+                            )}
                         </div>
 
                         <Button

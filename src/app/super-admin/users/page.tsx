@@ -40,8 +40,6 @@ export default function GlobalUsersPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
 
-    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-
     useEffect(() => {
         if (token) fetchUsers();
     }, [token]);
@@ -71,10 +69,12 @@ export default function GlobalUsersPage() {
             });
             if (res.ok) {
                 fetchUsers();
-                setActiveDropdown(null);
+            } else {
+                alert("Failed to update this account. Please try again.");
             }
         } catch (e) {
             console.error("Failed to toggle status", e);
+            alert("Connection error while updating the account.");
         }
     };
 
@@ -87,18 +87,22 @@ export default function GlobalUsersPage() {
             });
             if (res.ok) {
                 fetchUsers();
-                setActiveDropdown(null);
+            } else {
+                const err = await res.json().catch(() => null);
+                alert(err?.detail || "Failed to delete this user.");
             }
         } catch (e) {
             console.error("Failed to delete user", e);
+            alert("Connection error while deleting the user.");
         }
     };
 
     const filteredUsers = users.filter(u => {
+        const q = searchTerm.toLowerCase();
         const matchesSearch =
-            u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            u.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            u.last_name.toLowerCase().includes(searchTerm.toLowerCase());
+            (u.email || "").toLowerCase().includes(q) ||
+            (u.first_name || "").toLowerCase().includes(q) ||
+            (u.last_name || "").toLowerCase().includes(q);
         const matchesStatus =
             statusFilter === "all" ||
             (statusFilter === "active" && u.is_active) ||
@@ -114,17 +118,7 @@ export default function GlobalUsersPage() {
         "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
 
     return (
-        <div
-            role="button"
-            tabIndex={0}
-            className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500"
-            onClick={() => setActiveDropdown(null)}
-            onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                    setActiveDropdown(null);
-                }
-            }}
-        >
+        <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             {/* Header */}
             <PageHeader
                 title="Global Users"

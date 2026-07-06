@@ -188,7 +188,7 @@ export default function InterviewAutomationPage() {
       try {
         const [jRes, tRes] = await Promise.all([
           fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/`, { headers: authHeaders }),
-          fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates/`, { headers: authHeaders }),
+          fetch(`${BACKEND_URL}/api/v1/enterprise/communication/templates`, { headers: authHeaders }),
         ]);
         const jData = jRes.ok ? await jRes.json() : [];
         const tData = tRes.ok ? await tRes.json() : [];
@@ -213,7 +213,11 @@ export default function InterviewAutomationPage() {
       if (res.ok) {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
+      } else {
+        showToast("Failed to load automations.", "error");
       }
+    } catch {
+      showToast("Failed to load automations.", "error");
     } finally {
       setLoading(false);
     }
@@ -309,8 +313,21 @@ export default function InterviewAutomationPage() {
       showToast("Please fill in all required fields.", "error");
       return;
     }
-    if (form.start_date && new Date(form.start_date) < new Date(new Date().setHours(0,0,0,0))) {
+    // Compare ISO date strings in LOCAL time. `new Date("YYYY-MM-DD")` parses as UTC midnight, which
+    // in negative-offset zones is "yesterday" locally — so a valid "today" start date was wrongly
+    // rejected. `toLocaleDateString("en-CA")` yields local YYYY-MM-DD; ISO strings compare chronologically.
+    if (form.start_date && form.start_date < new Date().toLocaleDateString("en-CA")) {
       showToast("Start date cannot be in the past.", "error");
+      return;
+    }
+    // AI interviews need a template (marked required, but was only enforced by the backend).
+    // (GMEET interviewer email is intentionally optional — it falls back to the account email.)
+    if (form.interview_type === "AI" && !form.interview_template_id) {
+      showToast("Select an interview template for the AI interview.", "error");
+      return;
+    }
+    if (form.start_date && form.end_date && form.end_date < form.start_date) {
+      showToast("End date can't be before the start date.", "error");
       return;
     }
     // Authoritative slot-limit gate: slots can drift over the limit (e.g. the daily
@@ -517,7 +534,7 @@ export default function InterviewAutomationPage() {
           <p className="text-[12.5px] text-[#8A929E] mt-0.5">Automatically schedule AI or human technical interviews based on your hiring criteria.</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
-          {canAccess("automation:moderate") && (
+          {canAccess("interviews:moderate") && (
             <button
               onClick={openCreate}
               className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
@@ -614,7 +631,7 @@ export default function InterviewAutomationPage() {
           <p className="text-slate-400 text-[13px] mt-1 max-w-sm font-medium">
             {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Create your first interview automation to auto-schedule interviews.'}
           </p>
-          {!searchQuery && canAccess("automation:moderate") && (
+          {!searchQuery && canAccess("interviews:moderate") && (
             <button
               onClick={openCreate}
               className="mt-5 px-5 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-bold shadow-[0_4px_12px_rgba(91,83,224,0.25)] transition-all active:scale-95 cursor-pointer"
@@ -679,15 +696,15 @@ export default function InterviewAutomationPage() {
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleToggle(a)}
-                        disabled={togglingId === a.id || !canAccess("automation:moderate")}
-                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#0E8A6E]" : "bg-[#E1E4E8]"} ${togglingId === a.id || !canAccess("automation:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        disabled={togglingId === a.id || !canAccess("interviews:moderate")}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#0E8A6E]" : "bg-[#E1E4E8]"} ${togglingId === a.id || !canAccess("interviews:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       >
                         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                       </button>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        {canAccess("automation:moderate") && (
+                        {canAccess("interviews:moderate") && (
                           <button 
                             onClick={() => openEdit(a)} 
                             className="w-8 h-8 flex items-center justify-center rounded-[8px] border border-transparent hover:border-[#E1E4E8] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#5B53E0] transition-colors cursor-pointer"
@@ -695,7 +712,7 @@ export default function InterviewAutomationPage() {
                             <Edit2 className="w-4 h-4" />
                           </button>
                         )}
-                        {canAccess("automation:moderate") && (
+                        {canAccess("interviews:moderate") && (
                           <button 
                             onClick={() => {
                               setAutomationToDelete(a);

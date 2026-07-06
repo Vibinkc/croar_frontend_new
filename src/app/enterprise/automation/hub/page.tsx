@@ -15,9 +15,7 @@ export default function AutomationHubPage() {
             icon: "account_tree",
             path: "/enterprise/automation",
             description: "Visual workflow builder for end-to-end hiring pipelines.",
-            permission: "automation:read",
-            status: "Operational",
-            color: "indigo"
+            permission: "automation:read",            color: "indigo"
         },
         {
             id: "mail",
@@ -25,9 +23,7 @@ export default function AutomationHubPage() {
             icon: "mark_email_unread",
             path: "/enterprise/automation/mail",
             description: "Auto-send personalized emails based on candidate stage moves.",
-            permission: "communications:moderate",
-            status: "Active",
-            color: "blue"
+            permission: "communications:moderate",            color: "blue"
         },
         {
             id: "assessment",
@@ -35,9 +31,7 @@ export default function AutomationHubPage() {
             icon: "psychology",
             path: "/enterprise/automation/assessment",
             description: "Trigger AI-powered technical assessments and cognitive tests.",
-            permission: "assessments:moderate",
-            status: "Active",
-            color: "amber"
+            permission: "assessments:moderate",            color: "amber"
         },
         {
             id: "interview",
@@ -45,9 +39,7 @@ export default function AutomationHubPage() {
             icon: "event_available",
             path: "/enterprise/automation/interview",
             description: "Auto-schedule interviews with smart interviewer slot matching.",
-            permission: "interviews:moderate",
-            status: "Active",
-            color: "emerald"
+            permission: "interviews:moderate",            color: "emerald"
         },
         {
             id: "onboarding",
@@ -55,9 +47,7 @@ export default function AutomationHubPage() {
             icon: "person_add",
             path: "/enterprise/automation/onboarding",
             description: "Initiate employee onboarding flows and welcome sequences.",
-            permission: "onboarding:moderate",
-            status: "Active",
-            color: "purple"
+            permission: "onboarding:moderate",            color: "purple"
         }
     ].filter(m => canAccess(m.permission));
 
@@ -121,9 +111,12 @@ export default function AutomationHubPage() {
                                         </p>
                                     </td>
                                     <td className="px-6 py-4">
+                                        {/* Tiles are already filtered to modules the user can access, so "Available"
+                                            is an honest, static indicator — there's no real per-module health signal,
+                                            so we don't fake a live "Operational/Active" pulse. */}
                                         <div className="flex items-center gap-1.5">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                            <span className="text-[11px] font-black text-emerald-600 uppercase tracking-tight">{module.status}</span>
+                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                            <span className="text-[11px] font-black text-emerald-600 uppercase tracking-tight">Available</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-right">

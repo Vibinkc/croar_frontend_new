@@ -96,6 +96,7 @@ export default function EnterprisePortalLayout({
                 "/enterprise/employees": "employees:read",
                 "/enterprise/projects": "projects:read",
                 "/enterprise/tasks": "tasks:read",
+                "/enterprise/skill-assessments": "assessments:read",
                 "/enterprise/assessments-360": "assessments:read",
                 "/enterprise/surveys": "surveys:read",
                 "/enterprise/team": "organization:moderate",
@@ -174,6 +175,7 @@ export default function EnterprisePortalLayout({
                 { label: "Employees", icon: "badge", path: "/enterprise/employees", permission: "employees:read" },
                 { label: "Projects", icon: "workspaces", path: "/enterprise/projects", permission: "projects:read" },
                 { label: "Tasks", icon: "checklist", path: "/enterprise/tasks", permission: "tasks:read" },
+                { label: "Skill Assessments", icon: "quiz", path: "/enterprise/skill-assessments", permission: "assessments:read" },
                 { label: "360 Assessments", icon: "360", path: "/enterprise/assessments-360", permission: "assessments:read" },
                 { label: "HR Surveys", icon: "poll", path: "/enterprise/surveys", permission: "surveys:read" },
             ]

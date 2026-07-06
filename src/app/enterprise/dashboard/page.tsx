@@ -7,8 +7,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useAuth } from "@/context/AuthContext";
 import { BACKEND_URL } from "@/utils/api";
 import { useCachedFetch } from "@/hooks/useCachedFetch";
-import ThemeToggle from "@/components/enterprise/ThemeToggle";
 import { PageHelp } from "@/components/ds";
+import ThemeToggle from "@/components/ThemeToggle";
 
 // JetBrains Mono — the design system's numeric/data typeface for stats & counts.
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -37,11 +37,14 @@ export default function EnterpriseDashboard() {
 
     // Cached: revisiting the dashboard shows the last stats INSTANTLY, then refreshes
     // in the background instead of blocking on a fresh fetch every time.
-    const { data: statsData, isLoading } = useCachedFetch<Stats>(
+    const { data: statsData, isLoading, error, mutate } = useCachedFetch<Stats>(
         token ? `${BACKEND_URL}/api/v1/enterprise/dashboard/stats` : null,
         { token },
     );
     const stats = statsData ?? DEFAULT_STATS;
+    // Distinguish a genuine "brand-new org" (loaded, all zeros) from a failed fetch. On error
+    // with no cached data we must NOT render the zero-state as if the data really is empty.
+    const loadFailed = !!error && !statsData;
 
     useEffect(() => {
         const hour = new Date().getHours();
@@ -120,11 +123,11 @@ export default function EnterpriseDashboard() {
     const pipelineTotal = pipeline.reduce((sum, p) => sum + p.value, 0);
 
     const statCards = [
-        { label: "Active Jobs", value: stats.active_jobs, icon: "work", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
-        { label: "Total Candidates", value: stats.total_candidates, icon: "groups", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-        { label: "Applications", value: stats.total_applications, icon: "conversion_path", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-        { label: "Interviews", value: stats.interviews_scheduled, icon: "videocam", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-    ];
+        { label: "Active Jobs", value: stats.active_jobs, icon: "work", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)", perm: "jobs:read" },
+        { label: "Total Candidates", value: stats.total_candidates, icon: "groups", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)", perm: "candidates:read" },
+        { label: "Applications", value: stats.total_applications, icon: "conversion_path", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)", perm: "candidates:read" },
+        { label: "Interviews", value: stats.interviews_scheduled, icon: "videocam", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)", perm: "candidates:read" },
+    ].filter((s) => canAccess(s.perm));
 
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
@@ -157,6 +160,26 @@ export default function EnterpriseDashboard() {
                     <ThemeToggle />
                 </div>
             </header>
+
+            {/* Load-failure banner — without this a failed /stats fetch silently falls back to
+                all-zeros, making an established org look brand-new. Show it + offer a retry. */}
+            {loadFailed && (
+                <div className="flex items-center justify-between gap-4 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="material-symbols-rounded text-[#EF4444]">error</span>
+                        <div className="min-w-0">
+                            <p className="text-[13px] font-bold text-[#15171C]">Couldn&apos;t load your dashboard stats</p>
+                            <p className="text-[12px] text-[#8A929E] truncate">The numbers below may be unavailable. Check your connection and try again.</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => { void mutate(); }}
+                        className="shrink-0 px-3 py-1.5 rounded-[9px] bg-[#EF4444] text-white text-[12px] font-semibold hover:bg-[#DC2626] transition-colors"
+                    >
+                        Retry
+                    </button>
+                </div>
+            )}
 
             {/* Hero band */}
             <section
@@ -223,8 +246,10 @@ export default function EnterpriseDashboard() {
                 </div>
             </section>
 
-            {/* Getting Started checklist — guides a new user; hides once set up */}
-            {!isLoading && !(stats.active_jobs > 0 && stats.total_candidates > 0) && (
+            {/* Getting Started checklist — guides a new user; hides once set up.
+                Suppressed on load failure so we don't show it to an established org whose
+                stats merely failed to fetch (which would otherwise read as all-zeros). */}
+            {!isLoading && !loadFailed && !(stats.active_jobs > 0 && stats.total_candidates > 0) && (
                 <section className="bg-white border border-[#E8EAED] rounded-[14px] p-6">
                     <div className="flex items-center gap-2 mb-1">
                         <span className="material-symbols-rounded text-[#5B53E0]">rocket_launch</span>
@@ -299,8 +324,8 @@ export default function EnterpriseDashboard() {
                             <div className="lg:col-span-8 bg-white border border-[#E8EAED] rounded-[14px] p-6">
                                 <div className="flex items-center justify-between mb-6">
                                     <div>
-                                        <h3 className="text-[15px] font-bold text-[#15171C]">Hiring funnel</h3>
-                                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Stage-to-stage conversion</p>
+                                        <h3 className="text-[15px] font-bold text-[#15171C]">Pipeline overview</h3>
+                                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Live counts across stages</p>
                                     </div>
                                     <Link href="/enterprise/candidates/kanban" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">View pipeline</Link>
                                 </div>
@@ -308,7 +333,13 @@ export default function EnterpriseDashboard() {
                                     {rows.map((r, idx) => {
                                         const widthPct = isLoading ? 0 : Math.max((r.value / max) * 100, r.value > 0 ? 8 : 2);
                                         const prev = rows[idx - 1];
-                                        const conv = idx > 0 && prev.value > 0 ? Math.round((r.value / prev.value) * 100) : null;
+                                        // Only show a step ratio when it's a genuine narrowing (value <= prev).
+                                        // Candidates→Applications can grow (one candidate → many applications),
+                                        // so a ">100% conversion" there is meaningless — omit it instead.
+                                        const conv =
+                                            idx > 0 && prev.value > 0 && r.value <= prev.value
+                                                ? Math.round((r.value / prev.value) * 100)
+                                                : null;
                                         return (
                                             <div key={r.label}>
                                                 <div className="flex items-center justify-between mb-1.5">
@@ -341,9 +372,11 @@ export default function EnterpriseDashboard() {
                                         <p className={`text-[17px] font-extrabold text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>{isLoading ? '—' : stats.high_value_matches}</p>
                                     </div>
                                     <div className="bg-[#F8FAFC] border border-[#E8EAED]/60 rounded-[10px] p-2.5 text-center">
-                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">Conversion</p>
+                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">Recommended rate</p>
                                         <p className={`text-[17px] font-extrabold text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>
-                                            {isLoading ? '—' : (stats.total_candidates > 0 ? `${Math.round((stats.high_value_matches / stats.total_candidates) * 100)}%` : "0%")}
+                                            {/* Both scoped to applications (high_value_matches counts applications with
+                                                ai_match_score >= 80), so this is a true rate and can't exceed 100%. */}
+                                            {isLoading ? '—' : (stats.total_applications > 0 ? `${Math.min(100, Math.round((stats.high_value_matches / stats.total_applications) * 100))}%` : "0%")}
                                         </p>
                                     </div>
                                 </div>

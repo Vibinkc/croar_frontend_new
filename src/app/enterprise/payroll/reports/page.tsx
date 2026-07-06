@@ -54,7 +54,14 @@ export default function ReportsPage() {
     }
   }
 
-  const readyCount = cycles.filter((c) => c.status !== "DRAFT").length;
+  // A salary register exists only once a cycle has actually been run (payslips
+  // created → reflected in totals.headcount). Gating on this instead of
+  // "status !== DRAFT" keeps run-then-cancelled cycles exportable for audit
+  // while locking never-run ones (incl. cancelled-before-run) that would
+  // otherwise export an empty file.
+  const hasRegister = (c: PayrollCycle) => (c.totals?.headcount ?? 0) > 0;
+  const readyCount = cycles.filter(hasRegister).length;
+  const noCycles = cycles.length === 0;
 
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
@@ -113,7 +120,8 @@ export default function ReportsPage() {
             variant="secondary"
             size="sm"
             icon={busy === "summary-csv" ? "hourglass_empty" : "table_view"}
-            disabled={busy === "summary-csv"}
+            disabled={busy === "summary-csv" || noCycles}
+            title={noCycles ? "No payroll cycles to summarise yet" : undefined}
             onClick={() => download("summary-csv", () => reportsApi.payrollSummary("csv"))}
           >
             CSV
@@ -122,7 +130,8 @@ export default function ReportsPage() {
             variant="secondary"
             size="sm"
             icon={busy === "summary-pdf" ? "hourglass_empty" : "picture_as_pdf"}
-            disabled={busy === "summary-pdf"}
+            disabled={busy === "summary-pdf" || noCycles}
+            title={noCycles ? "No payroll cycles to summarise yet" : undefined}
             onClick={() => download("summary-pdf", () => reportsApi.payrollSummary("pdf"))}
           >
             PDF
@@ -159,7 +168,7 @@ export default function ReportsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cycles.map((c) => {
-              const ready = c.status !== "DRAFT";
+              const ready = hasRegister(c);
               return (
                 <Card
                   key={c.id}
@@ -218,7 +227,7 @@ export default function ReportsPage() {
                     ) : (
                       <div className="flex items-center gap-1.5 text-[12px] italic text-[#8A929E]">
                         <span className="material-symbols-rounded text-[16px]">lock</span>
-                        Run the cycle first
+                        {c.status === "CANCELLED" ? "Cancelled — no register" : "Run the cycle first"}
                       </div>
                     )}
                   </div>

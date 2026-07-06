@@ -9,24 +9,36 @@ import {
   type MyPayslip,
   type Timesheet,
 } from "@/utils/payroll/api";
-import { Banner, StatusBadge } from "@/components/payroll/ui";
 import { useAuth } from "@/components/payroll/AuthProvider";
+import {
+  Badge, Card, CardHeader, HeroBand, PageHeader, StatCard, jetbrainsMono,
+} from "@/components/ds";
+import NotLinkedNotice, { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const money = (n: number | string, currency = "INR") =>
   Number(n).toLocaleString("en-IN", { style: "currency", currency, maximumFractionDigits: 0 });
 
-const QUICK_LINKS = [
-  { label: "Mark Attendance", icon: "schedule", path: "/employee/timesheets", hint: "Fill your timesheet" },
-  { label: "Apply for Leave", icon: "event_available", path: "/employee/leave", hint: "Request & track" },
-  { label: "View Payslips", icon: "receipt_long", path: "/employee/payslips", hint: "Download & review" },
+// Module quick-access cards — mirrors the enterprise dashboard module grid.
+const MODULES = [
+  { title: "Timesheets", desc: "Mark attendance and review your work periods.", icon: "schedule", path: "/employee/timesheets", color: "indigo" },
+  { title: "Leave", desc: "Check balances and request time off.", icon: "event_available", path: "/employee/leave", color: "emerald" },
+  { title: "Payslips", desc: "Download and review your released payslips.", icon: "receipt_long", path: "/employee/payslips", color: "indigo" },
+  { title: "Skill Assessments", desc: "Take assigned aptitude & coding tests.", icon: "quiz", path: "/employee/skill-assessments", color: "amber" },
 ];
 
-// Per-card accent tints (chip bg + icon/value colour).
-const TONE: Record<string, { chip: string; icon: string }> = {
-  emerald: { chip: "bg-emerald-500/15", icon: "text-emerald-500" },
-  amber: { chip: "bg-amber-500/15", icon: "text-amber-500" },
-  violet: { chip: "bg-violet-500/15", icon: "text-violet-500" },
-  sky: { chip: "bg-sky-500/15", icon: "text-sky-500" },
+const moduleChip: Record<string, string> = {
+  indigo: "bg-[#ECEBFB] text-[#5B53E0]",
+  emerald: "bg-[#E6F4EA] text-[#15803D]",
+  amber: "bg-[#FEF3E2] text-[#D97706]",
+};
+
+const statusTone = (s: string): "success" | "warning" | "danger" | "neutral" => {
+  const u = (s || "").toUpperCase();
+  if (u === "APPROVED") return "success";
+  if (u === "PENDING") return "warning";
+  if (u === "REJECTED") return "danger";
+  return "neutral";
 };
 
 export default function EmployeeDashboard() {
@@ -35,8 +47,16 @@ export default function EmployeeDashboard() {
   const [requests, setRequests] = useState<LeaveRequest[]>([]);
   const [payslips, setPayslips] = useState<MyPayslip[]>([]);
   const [timesheets, setTimesheets] = useState<Timesheet[]>([]);
+  const [feedbackCount, setFeedbackCount] = useState(0);
+  const [surveyCount, setSurveyCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [greeting, setGreeting] = useState("Welcome back");
+
+  useEffect(() => {
+    const h = new Date().getHours();
+    setGreeting(h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening");
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -44,12 +64,16 @@ export default function EmployeeDashboard() {
       meApi.leaveRequests(),
       meApi.payslips(),
       meApi.timesheets(),
+      meApi.my360Assignments(),
+      meApi.mySurveyInvites(),
     ])
-      .then(([b, r, p, t]) => {
+      .then(([b, r, p, t, fb, sv]) => {
         setBalances(b);
         setRequests(r);
         setPayslips(p);
         setTimesheets(t);
+        setFeedbackCount(fb.length);
+        setSurveyCount(sv.length);
         setError(null);
       })
       .catch((err) => setError((err as Error).message))
@@ -57,173 +81,199 @@ export default function EmployeeDashboard() {
   }, []);
 
   const firstName = (user?.full_name || user?.email || "").split(" ")[0] || "there";
-  const leaveAvailable = balances
-    .filter((b) => b.is_paid !== false)
-    .reduce((sum, b) => sum + Number(b.balance), 0);
+  const leaveAvailable = balances.filter((b) => b.is_paid !== false).reduce((s, b) => s + Number(b.balance), 0);
   const pending = requests.filter((r) => r.status === "PENDING").length;
   const latestPayslip = payslips[0] ?? null;
   const latestTimesheet = timesheets[0] ?? null;
+  const pendingTasks = feedbackCount + surveyCount;
 
   const stats = [
-    { tone: "emerald", label: "Leave available", value: `${leaveAvailable}`, sub: "paid days", icon: "event_available" },
-    { tone: "amber", label: "Pending requests", value: `${pending}`, sub: "awaiting approval", icon: "hourglass_top" },
-    {
-      tone: "violet",
-      label: "Latest net pay",
-      value: latestPayslip ? money(latestPayslip.net_pay, latestPayslip.currency) : "—",
-      sub: latestPayslip?.cycle_name ?? "no payslips yet",
-      icon: "payments",
-    },
-    {
-      tone: "sky",
-      label: "Current timesheet",
-      value: latestTimesheet?.status ?? "—",
-      sub: latestTimesheet ? `${latestTimesheet.period_start} → ${latestTimesheet.period_end}` : "none yet",
-      icon: "schedule",
-    },
+    { label: "Leave available", value: leaveAvailable, icon: "event_available", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+    { label: "Pending requests", value: pending, icon: "hourglass_top", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+    { label: "Latest net pay", value: latestPayslip ? money(latestPayslip.net_pay, latestPayslip.currency) : "—", icon: "payments", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
+    { label: "Timesheet", value: latestTimesheet?.status ?? "—", icon: "schedule", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
   ];
 
-  if (loading) return <p className="text-[var(--color-muted)]">Loading…</p>;
-
-  return (
-    <div className="animate-fade-in mx-auto max-w-6xl">
-      {/* Hero */}
-      <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--color-primary)] to-violet-500 p-7 text-white shadow-lg">
-        <div className="absolute -right-8 -top-10 h-44 w-44 rounded-full bg-white/10" />
-        <div className="absolute -bottom-12 right-20 h-36 w-36 rounded-full bg-white/10" />
-        <div className="relative">
-          <p className="text-sm font-medium text-white/80">My Workspace</p>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight">Welcome back, {firstName} 👋</h1>
-          <p className="mt-1 text-sm text-white/80">Here's a snapshot of your records.</p>
+  if (loading) {
+    return (
+      <div className="px-4 sm:px-5 md:px-7 pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+        <div className="h-14 rounded-[14px] bg-[#F4F5F7] animate-pulse" />
+        <div className="h-52 rounded-[18px] bg-[#E8EAED] animate-pulse" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div className="lg:col-span-8 h-56 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />
+          <div className="lg:col-span-4 h-56 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />
         </div>
       </div>
+    );
+  }
 
-      {error && <Banner>{error}</Banner>}
+  if (isNoEmployeeLink(error)) {
+    return <div className="px-4 sm:px-5 md:px-7 pb-7 max-w-[1320px] mx-auto w-full"><NotLinkedNotice /></div>;
+  }
 
-      {/* Stat cards */}
-      <div className="mb-7 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {stats.map((s) => {
-          const tone = TONE[s.tone];
-          return (
-            <div
-              key={s.label}
-              className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-5 transition-shadow hover:shadow-md"
-            >
-              <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl ${tone.chip}`}>
-                <span className={`material-symbols-rounded ${tone.icon}`}>{s.icon}</span>
+  const needsAttention = [
+    { show: feedbackCount > 0, count: feedbackCount, label: "360 feedback request(s) awaiting you", icon: "rate_review", href: "/employee/feedback", color: "text-[#5B53E0] bg-[#ECEBFB]" },
+    { show: surveyCount > 0, count: surveyCount, label: "survey(s) to complete", icon: "poll", href: "/employee/surveys", color: "text-[#D97706] bg-[#FEF3E2]" },
+    { show: pending > 0, count: pending, label: "leave request(s) awaiting approval", icon: "hourglass_top", href: "/employee/leave", color: "text-[#15803D] bg-[#E6F4EA]" },
+  ].filter((i) => i.show);
+
+  return (
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+      <PageHeader
+        title="Dashboard"
+        subtitle="Your workspace — everything about you at a glance"
+        help={<><p>This is your personal HR workspace.</p><p>Track leave, payslips, timesheets and assigned tasks. Anything needing your attention surfaces here.</p></>}
+        actions={<ThemeToggle />}
+      />
+
+      {error && !isNoEmployeeLink(error) && (
+        <div className="flex items-center gap-2.5 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+          <span className="material-symbols-rounded text-[18px]">error</span> We couldn&apos;t load some of your data. {error}
+        </div>
+      )}
+
+      {/* Hero band with embedded stat cards (mirrors enterprise dashboard) */}
+      <HeroBand>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-7">
+          <div className="max-w-xl">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[20px] bg-white/[0.08] border border-white/10 text-[10px] font-semibold text-[#C7CCD4] mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse" />
+              My workspace
+            </div>
+            <h1 className="text-[30px] md:text-[38px] font-extrabold tracking-[-1px] leading-[1.05]" style={{ color: "#ffffff" }}>
+              {greeting}, <span style={{ color: "#8B7DFF" }}>{firstName}</span>
+            </h1>
+            <p className="text-[#A8AEB8] text-[14.5px] leading-relaxed mt-3 max-w-md">
+              {pendingTasks > 0 ? (
+                <>You have <span className={`text-white font-semibold ${jetbrainsMono.className}`}>{pendingTasks}</span> task{pendingTasks === 1 ? "" : "s"} to complete.</>
+              ) : (
+                "You're all caught up — here's a snapshot of your records."
+              )}
+            </p>
+            <div className="flex flex-wrap gap-2.5 mt-6">
+              <Link href="/employee/leave" className="h-[44px] px-5 bg-[#5B53E0] text-white rounded-[10px] text-[14px] font-semibold hover:bg-[#4A43C9] transition-colors shadow-[0_8px_20px_rgba(91,83,224,0.4)] flex items-center gap-2">
+                <span className="material-symbols-rounded text-[19px]">event_available</span> Request Leave
+              </Link>
+              <Link href="/employee/timesheets" className="h-[44px] px-5 bg-white/[0.08] border border-white/15 text-white rounded-[10px] text-[14px] font-semibold hover:bg-white/[0.14] transition-colors flex items-center gap-2">
+                <span className="material-symbols-rounded text-[19px]">schedule</span> Mark Attendance
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative z-10 w-full lg:w-[360px] shrink-0 grid grid-cols-2 gap-3">
+            {stats.map((s) => (
+              <StatCard key={s.label} dark label={s.label} value={s.value} icon={s.icon} gradient={s.grad} glow={s.glow} />
+            ))}
+          </div>
+        </div>
+      </HeroBand>
+
+      {/* Modules + needs-attention */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {MODULES.map((m) => (
+            <Link href={m.path} key={m.title} className="group h-full">
+              <Card interactive className="h-full flex flex-col">
+                <div className={`w-11 h-11 rounded-[11px] ${moduleChip[m.color]} flex items-center justify-center mb-4`}>
+                  <span className="material-symbols-rounded text-xl">{m.icon}</span>
+                </div>
+                <h3 className="text-[15px] font-bold text-[#15171C] tracking-[-0.2px] group-hover:text-[#5B53E0] transition-colors">{m.title}</h3>
+                <p className="text-[13px] text-[#8A929E] leading-relaxed mt-1 mb-4 flex-1">{m.desc}</p>
+                <div className="flex items-center gap-1 text-[12px] font-semibold text-[#5B53E0]">
+                  Open <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+              </Card>
+            </Link>
+          ))}
+        </div>
+
+        <div className="lg:col-span-4 h-full">
+          <Card className="h-full flex flex-col">
+            <div className="flex items-center justify-between mb-5">
+              <span className="text-[15px] font-bold text-[#15171C]">Needs your attention</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-[#34D399] border-4 border-[#E6F4EA]" />
+            </div>
+            {needsAttention.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
+                <div className="w-12 h-12 rounded-[12px] bg-[#E6F4EA] text-[#15803D] flex items-center justify-center mb-3">
+                  <span className="material-symbols-rounded text-2xl">task_alt</span>
+                </div>
+                <p className="text-[14px] font-semibold text-[#15171C]">You&apos;re all caught up</p>
+                <p className="text-[12px] text-[#8A929E] mt-1">Tasks and requests will show up here.</p>
               </div>
-              <div className="truncate text-2xl font-bold">{s.value}</div>
-              <div className="text-sm font-medium">{s.label}</div>
-              <div className="truncate text-xs text-[var(--color-dim)]">{s.sub}</div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Quick actions */}
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--color-muted)]">
-        Quick actions
-      </h2>
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {QUICK_LINKS.map((l) => (
-          <Link
-            key={l.path}
-            href={l.path}
-            className="group flex items-center gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 transition-all hover:border-[var(--color-primary)] hover:shadow-md"
-          >
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-primary)]/15 text-[var(--color-primary)] transition-colors group-hover:bg-[var(--color-primary)] group-hover:text-white">
-              <span className="material-symbols-rounded">{l.icon}</span>
-            </div>
-            <div className="min-w-0">
-              <div className="font-semibold">{l.label}</div>
-              <div className="truncate text-xs text-[var(--color-muted)]">{l.hint}</div>
-            </div>
-            <span className="material-symbols-rounded ml-auto text-[var(--color-dim)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--color-primary)]">
-              chevron_right
-            </span>
-          </Link>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Leave balances */}
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-muted)]">
-              Leave balances
-            </h2>
-            <Link href="/employee/leave" className="text-xs font-semibold text-[var(--color-primary)] hover:underline">
-              View all
-            </Link>
-          </div>
-          <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
-            {balances.length === 0 ? (
-              <p className="p-5 text-center text-sm text-[var(--color-muted)]">No leave balances yet.</p>
             ) : (
-              <table className="w-full text-sm">
-                <tbody>
-                  {balances.map((b) => {
-                    const left = Number(b.balance);
-                    const total = Number(b.accrued) || 1;
-                    const pct = Math.max(0, Math.min(100, (left / total) * 100));
-                    return (
-                      <tr key={b.id} className="border-b border-[var(--color-border)] last:border-0">
-                        <td className="px-4 py-3">
-                          <div className="mb-1.5 flex items-center justify-between">
-                            <span className="font-medium">{b.leave_type_name || b.leave_type_code}</span>
-                            <span className="text-xs text-[var(--color-muted)]">
-                              <span className="font-semibold text-[var(--color-text)]">{left}</span> left
-                              {" · "}
-                              {Number(b.used)} used
-                            </span>
-                          </div>
-                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-hover)]">
-                            <div className="h-full rounded-full bg-[var(--color-primary)]" style={{ width: `${pct}%` }} />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className="space-y-2.5 flex-1">
+                {needsAttention.map((i) => (
+                  <Link key={i.label} href={i.href} className="flex items-center gap-3 p-3 rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/40 hover:bg-[#F4F5F7]/60 transition-colors group">
+                    <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 ${i.color}`}>
+                      <span className="material-symbols-rounded text-xl">{i.icon}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className={`text-[19px] font-semibold text-[#15171C] leading-none ${jetbrainsMono.className}`}>{i.count}</span>
+                      <p className="text-[12px] text-[#8A929E] leading-tight mt-1">{i.label}</p>
+                    </div>
+                    <span className="material-symbols-rounded text-[#C7CCD4] group-hover:text-[#5B53E0] group-hover:translate-x-0.5 transition-all">chevron_right</span>
+                  </Link>
+                ))}
+              </div>
             )}
-          </div>
-        </section>
+          </Card>
+        </div>
+      </section>
 
-        {/* Recent leave requests */}
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-muted)]">
-              Recent leave requests
-            </h2>
-            <Link href="/employee/leave" className="text-xs font-semibold text-[var(--color-primary)] hover:underline">
-              View all
-            </Link>
-          </div>
-          <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
-            {requests.length === 0 ? (
-              <p className="p-5 text-center text-sm text-[var(--color-muted)]">No leave requests yet.</p>
-            ) : (
-              <table className="w-full text-sm">
-                <tbody>
-                  {requests.slice(0, 5).map((r) => (
-                    <tr key={r.id} className="border-b border-[var(--color-border)] last:border-0">
-                      <td className="px-4 py-3 font-medium">{r.leave_type_name || r.leave_type_code}</td>
-                      <td className="px-4 py-3 text-[var(--color-muted)]">
-                        {r.start_date}
-                        {r.start_date !== r.end_date ? ` → ${r.end_date}` : ""}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <StatusBadge status={r.status} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </section>
-      </div>
+      {/* Leave balances + recent requests */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <Card padding="none" className="overflow-hidden">
+          <CardHeader className="px-6 pt-6" title="Leave balances" subtitle="Your paid & unpaid entitlements"
+            action={<Link href="/employee/leave" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">View all</Link>} />
+          {balances.length === 0 ? (
+            <p className="px-6 pb-6 pt-1 text-center text-[13px] text-[#8A929E]">No leave balances yet.</p>
+          ) : (
+            <div className="divide-y divide-[#F0F0F1]">
+              {balances.map((b) => {
+                const left = Number(b.balance);
+                const total = Number(b.accrued) || 1;
+                const pct = Math.max(0, Math.min(100, (left / total) * 100));
+                return (
+                  <div key={b.id} className="px-6 py-3.5">
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <span className="text-[13px] font-semibold text-[#15171C]">{b.leave_type_name || b.leave_type_code}</span>
+                      <span className="text-[12px] text-[#8A929E]">
+                        <span className={`font-bold text-[#15171C] ${jetbrainsMono.className}`}>{left}</span> left · {Number(b.used)} used
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#F1F2F5]">
+                      <div className="h-full rounded-full bg-[#5B53E0]" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Card>
+
+        <Card padding="none" className="overflow-hidden">
+          <CardHeader className="px-6 pt-6" title="Recent leave requests" subtitle="Your latest time-off requests"
+            action={<Link href="/employee/leave" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">View all</Link>} />
+          {requests.length === 0 ? (
+            <p className="px-6 pb-6 pt-1 text-center text-[13px] text-[#8A929E]">No leave requests yet.</p>
+          ) : (
+            <div className="divide-y divide-[#F0F0F1]">
+              {requests.slice(0, 5).map((r) => (
+                <div key={r.id} className="flex items-center gap-3 px-6 py-3.5">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[13px] font-semibold text-[#15171C]">{r.leave_type_name || r.leave_type_code}</div>
+                    <div className={`text-[12px] text-[#8A929E] ${jetbrainsMono.className}`}>
+                      {r.start_date}{r.start_date !== r.end_date ? ` → ${r.end_date}` : ""}
+                    </div>
+                  </div>
+                  <Badge tone={statusTone(r.status)} dot>{r.status.charAt(0) + r.status.slice(1).toLowerCase()}</Badge>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      </section>
     </div>
   );
 }

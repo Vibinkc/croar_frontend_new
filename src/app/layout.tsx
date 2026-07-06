@@ -31,6 +31,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
+        {/* Apply the saved light/dark theme before first paint (no flash of wrong theme). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('croar-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}`,
+          }}
+        />
+
         {/* Start fetching the icon stylesheets early… */}
         <link rel="preload" as="style" href={MATERIAL_SYMBOLS_HREF} />
         <link rel="preload" as="style" href={MATERIAL_ICONS_HREF} />

@@ -884,6 +884,10 @@ export default function CroarPilotPage() {
                         // The agent's tool result arrives on msg.action → picker or built-pipeline card.
                         const sourceAction = msg.action?.ui === "candidate_picker" ? msg.action : undefined;
                         const builtAction = msg.action?.ui === "pipeline_built" ? msg.action : undefined;
+                        // Only the LATEST message may show an interactive setup form. Otherwise a
+                        // reloaded conversation (setupDone state is lost on load) would re-open a
+                        // submittable form for an old turn — letting the user build a duplicate pipeline.
+                        const isLastMessage = idx === messages.length - 1;
 
                         return (
                             <div key={idx} className="space-y-3">
@@ -917,7 +921,7 @@ export default function CroarPilotPage() {
                                     </div>
                                 </div>
 
-                                {wantsForm && !setupDone.has(idx) && (
+                                {wantsForm && isLastMessage && !setupDone.has(idx) && (
                                     <div className="pl-11 max-w-xl">
                                         <PilotSetupForm
                                             initial={prefill}
@@ -950,7 +954,9 @@ export default function CroarPilotPage() {
                                         <PipelineBuiltCard
                                             action={builtAction}
                                             onSource={() =>
-                                                send(`Source 10 candidates for this role (job ${builtAction.job_id}).`)
+                                                // No count here — let the Pilot ask "how many?" (source_candidates
+                                                // has no default), consistent with the sourcing flow.
+                                                send(`Source candidates for this role (job ${builtAction.job_id}).`)
                                             }
                                         />
                                     </div>

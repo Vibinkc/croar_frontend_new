@@ -344,7 +344,7 @@ export default function EmployeesPage() {
                 onClose={() => setIsConfirmModalOpen(false)}
                 onConfirm={handleDelete}
                 title="Delete Employee?"
-                message="Are you sure you want to delete this employee? This action is permanent and all associated records will be removed."
+                message="This removes the employee from your directory. Their historical records (payroll, timesheets, leave) are retained, and re-adding the same email or ID may require an admin. Continue?"
                 confirmLabel="Yes, Delete"
                 cancelLabel="No"
                 isDestructive={true}

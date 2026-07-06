@@ -77,7 +77,7 @@ interface FormState {
 
 const EMPTY_FORM: FormState = {
   job_requirement_id: "",
-  stage_index: 0,
+  stage_index: 1,
   stage_name: "",
   template_id: "",
   email_template_id: "",
@@ -162,7 +162,11 @@ export default function OnboardingAutomationPage() {
       if (res.ok) {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
+      } else {
+        showToast("Failed to load automations.", "error");
       }
+    } catch {
+      showToast("Failed to load automations.", "error");
     } finally {
       setLoading(false);
     }
@@ -211,7 +215,9 @@ export default function OnboardingAutomationPage() {
     // validated, so rules could be saved without picking a stage.
     const missing: string[] = [];
     if (!form.job_requirement_id) missing.push("Job Requirement");
-    const stageMissing = jobRounds.length > 0 ? !(Number(form.stage_index) > 0) : !String(form.stage_index).trim();
+    // When the job has rounds, require an actual round pick (sets stage_name). Checking only
+    // stage_index > 0 let the preselected default (1) pass with an empty stage_name.
+    const stageMissing = jobRounds.length > 0 ? !form.stage_name : !String(form.stage_index).trim();
     if (stageMissing) missing.push("Trigger Stage");
     if (!form.template_id) missing.push("Onboarding Template");
 
@@ -355,7 +361,7 @@ export default function OnboardingAutomationPage() {
           <p className="text-[12.5px] text-[#8A929E] mt-0.5">Automatically trigger onboarding processes when candidates reach specific hiring stages.</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
-          {canAccess("automation:moderate") && (
+          {canAccess("onboarding:moderate") && (
             <button
               onClick={openCreate}
               className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
@@ -452,7 +458,7 @@ export default function OnboardingAutomationPage() {
           <p className="text-slate-400 text-[13px] mt-1 max-w-sm font-medium">
             {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Set up an automation to auto-start onboarding when a candidate reaches a certain stage.'}
           </p>
-          {!searchQuery && canAccess("automation:moderate") && (
+          {!searchQuery && canAccess("onboarding:moderate") && (
             <button
               onClick={openCreate}
               className="mt-5 px-5 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-bold shadow-[0_4px_12px_rgba(91,83,224,0.25)] transition-all active:scale-95 cursor-pointer"
@@ -518,15 +524,15 @@ export default function OnboardingAutomationPage() {
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleToggle(a)}
-                        disabled={togglingId === a.id || !canAccess("automation:moderate")}
-                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#8B5CF6]" : "bg-[#E1E4E8]"} ${togglingId === a.id || !canAccess("automation:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        disabled={togglingId === a.id || !canAccess("onboarding:moderate")}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#8B5CF6]" : "bg-[#E1E4E8]"} ${togglingId === a.id || !canAccess("onboarding:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       >
                         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                       </button>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        {canAccess("automation:moderate") && (
+                        {canAccess("onboarding:moderate") && (
                           <button 
                             onClick={() => openEdit(a)} 
                             className="w-8 h-8 flex items-center justify-center rounded-[8px] border border-transparent hover:border-[#E1E4E8] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#5B53E0] transition-colors cursor-pointer"
@@ -534,7 +540,7 @@ export default function OnboardingAutomationPage() {
                             <Edit2 className="w-4 h-4" />
                           </button>
                         )}
-                        {canAccess("automation:moderate") && (
+                        {canAccess("onboarding:moderate") && (
                           <button 
                             onClick={() => {
                               setAutomationToDelete(a);

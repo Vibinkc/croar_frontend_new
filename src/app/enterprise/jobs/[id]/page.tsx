@@ -206,14 +206,15 @@ export default function JobDetailPage() {
 
     const { metrics } = job;
 
-    const getStatusLabel = (statusId: number) => {
-        switch (statusId) {
-            case 1: return "Active";
-            case 2: return "Draft";
-            case 3: return "Closed";
-            default: return "Active";
-        }
+    // job_statuses: 1 Draft · 2 Active · 3 On Hold · 4 Closed.
+    const STATUS_META: Record<number, { label: string; tone: "neutral" | "success" | "warning" | "danger" }> = {
+        1: { label: "Draft", tone: "neutral" },
+        2: { label: "Active", tone: "success" },
+        3: { label: "On Hold", tone: "warning" },
+        4: { label: "Closed", tone: "danger" },
     };
+    const statusMeta = (statusId: number) => STATUS_META[statusId] ?? { label: "Draft", tone: "neutral" as const };
+    const getStatusLabel = (statusId: number) => statusMeta(statusId).label;
 
     // Prepare pipeline data for the chart
     const pipelineData = (job.stages || []).map(s => {
@@ -274,7 +275,7 @@ export default function JobDetailPage() {
                         <div className="flex items-center gap-1.5">
                             <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex flex-wrap items-center gap-x-2.5 gap-y-1">
                                 <span className="truncate">{job.title}</span>
-                                <Badge tone="success" dot>{getStatusLabel(job.status_id)}</Badge>
+                                <Badge tone={statusMeta(job.status_id).tone} dot>{getStatusLabel(job.status_id)}</Badge>
                                 {job.location && (
                                     <span className="inline-flex items-center gap-1 text-[12.5px] font-medium text-[#8A929E]">
                                         <span className="material-symbols-rounded text-[15px]">location_on</span>

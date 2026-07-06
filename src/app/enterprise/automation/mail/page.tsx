@@ -157,7 +157,11 @@ export default function MailAutomationPage() {
       if (res.ok) {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
+      } else {
+        showToast("Failed to load automations.", "error");
       }
+    } catch {
+      showToast("Failed to load automations.", "error");
     } finally {
       setLoading(false);
     }
@@ -192,6 +196,17 @@ export default function MailAutomationPage() {
     setShowModal(true);
   };
 
+  // Stored send_at is naive UTC. Convert it to a LOCAL wall-clock string for the datetime-local input,
+  // so editing shows the correct local time and re-saving (new Date(local).toISOString()) doesn't drift
+  // the stored time by the user's UTC offset on every edit.
+  const toLocalInput = (raw: string): string => {
+    const iso = /[zZ]|[+-]\d\d:?\d\d$/.test(raw) ? raw : `${raw.replace(" ", "T")}Z`;
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+  };
+
   const openEdit = (a: Automation) => {
     setEditingId(a.id);
     setFormError(null);
@@ -204,7 +219,7 @@ export default function MailAutomationPage() {
       auto_move: a.auto_move,
       is_enabled: a.is_enabled,
       is_immediate: a.is_immediate,
-      send_at: a.send_at ? a.send_at.replace(' ', 'T').split('.')[0].slice(0, 16) : "", // Format for datetime-local input
+      send_at: a.send_at ? toLocalInput(a.send_at) : "",
     });
     setShowModal(true);
   };
@@ -548,7 +563,7 @@ export default function MailAutomationPage() {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#374151]">
                           <Clock className="w-4 h-4 text-[#8A929E]" />
-                          {a.is_immediate ? "Immediate" : new Date(a.send_at!).toLocaleString()}
+                          {a.is_immediate ? "Immediate" : new Date(/[zZ]|[+-]\d\d:?\d\d$/.test(a.send_at!) ? a.send_at! : `${a.send_at!.replace(" ", "T")}Z`).toLocaleString()}
                         </div>
                         {a.auto_move && (
                           <div className="flex items-center gap-1 mt-1 text-[10px] font-bold text-[#0E8A6E] uppercase tracking-wider">

@@ -299,14 +299,25 @@ export default function AutomationNodeModal({
       showToast("Please fill in trigger condition.", "error");
       return;
     }
+    // A round must be connected — stage_index defaults to 0, which matches no round, so an
+    // unconnected automation would save orphaned (silently vanishes on refetch).
+    if (Number(form.stage_index) < 1) {
+      showToast("Connect this action to a hiring round.", "error");
+      return;
+    }
     if (type === "interview") {
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      if (new Date(form.start_date) < now) {
+      // Dates are required, but `new Date("")` is Invalid Date and every comparison against it is
+      // false, so blank dates previously slipped through. Compare ISO strings in local time (the
+      // old Date()-vs-local-midnight compare also mis-rejected "today" in negative-offset zones).
+      if (!form.start_date || !form.end_date) {
+        showToast("Set the interview availability start and end dates.", "error");
+        return;
+      }
+      if (form.start_date < new Date().toLocaleDateString("en-CA")) {
         showToast("Start date cannot be in the past.", "error");
         return;
       }
-      if (new Date(form.start_date) > new Date(form.end_date)) {
+      if (form.end_date < form.start_date) {
         showToast("Available To date must be equal or after Available From date.", "error");
         return;
       }

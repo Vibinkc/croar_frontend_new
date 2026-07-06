@@ -19,13 +19,15 @@ function statusTone(code: number): StatusTone {
 
 // The backend derives a friendly label for known payroll actions (e.g.
 // "Ran payroll cycle"). Anything it can't map falls back to the raw request
-// signature "<METHOD> <path>" (e.g. "GET /api/v1/enterprise/payroll/cycles").
-// Those raw entries are system/integration "API activities" — noise that
-// shouldn't be surfaced to users, so we drop them and keep only real actions.
-const API_ACTIVITY = /^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+\/api\//i;
+// signature "<METHOD> <path>". The audit middleware only records *mutations*
+// (POST/PUT/PATCH/DELETE), so a raw entry is still a real action — we must NOT
+// hide it just because it lacks a label (that dropped genuine events like leave
+// approvals). We only filter raw *read* signatures (GET/HEAD/OPTIONS), which are
+// legacy noise from older builds that recorded reads.
+const RAW_READ_ACTIVITY = /^(GET|HEAD|OPTIONS)\s+\/api\//i;
 
-function isApiActivity(entry: AuditEntry): boolean {
-  return API_ACTIVITY.test(entry.action);
+function isRawRead(entry: AuditEntry): boolean {
+  return RAW_READ_ACTIVITY.test(entry.action);
 }
 
 function when(iso: string): string {
@@ -45,7 +47,7 @@ export default function ActivityPage() {
   useEffect(() => {
     auditApi
       .list(200)
-      .then((rows) => setEntries(rows.filter((row) => !isApiActivity(row))))
+      .then((rows) => setEntries(rows.filter((row) => !isRawRead(row))))
       .catch((err) => setError((err as Error).message))
       .finally(() => setLoading(false));
   }, []);

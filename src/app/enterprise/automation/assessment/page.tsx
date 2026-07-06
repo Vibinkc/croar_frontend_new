@@ -239,7 +239,11 @@ export default function AssessmentAutomationPage() {
       if (res.ok) {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
+      } else {
+        showToast("Failed to load automations.", "error");
       }
+    } catch {
+      showToast("Failed to load automations.", "error");
     } finally {
       setLoading(false);
     }
@@ -390,6 +394,13 @@ export default function AssessmentAutomationPage() {
   const handleFinalCreate = async () => {
     if (!form.job_requirement_id) {
       showToast("Job selection is required.", "error");
+      return;
+    }
+    // Require a real hiring round (marked required). Without this the default stage_index (1) or a
+    // cleared value (→ 0) was saved silently, so the assessment fired at the wrong round or never.
+    const stageMissing = jobRounds.length > 0 ? !form.stage_name : !(Number(form.stage_index) > 0);
+    if (stageMissing) {
+      showToast("Select the hiring round this assessment triggers on.", "error");
       return;
     }
     if (!form.generated_questions || form.generated_questions.length === 0) {
@@ -685,7 +696,7 @@ export default function AssessmentAutomationPage() {
           <p className="text-[12.5px] text-[#8A929E] mt-0.5">Generate AI-powered assessments for candidates reaching specific hiring rounds.</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
-          {canAccess("automation:moderate") && (
+          {canAccess("assessments:moderate") && (
             <button
               onClick={openCreate}
               className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
@@ -873,7 +884,7 @@ export default function AssessmentAutomationPage() {
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleToggle(a)}
-                        disabled={togglingId === a.id || !canAccess("automation:moderate")}
+                        disabled={togglingId === a.id || !canAccess("assessments:moderate")}
                         className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       >
                         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
@@ -881,7 +892,7 @@ export default function AssessmentAutomationPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {canAccess("automation:moderate") && (
+                        {canAccess("assessments:moderate") && (
                           <button
                             onClick={() => setRegenerateTarget(a)}
                             disabled={generatingId === a.id}
@@ -980,7 +991,9 @@ export default function AssessmentAutomationPage() {
                           id="assessment-target-job"
                           value={form.job_requirement_id}
                           onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value }))}
-                          className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all cursor-pointer"
+                          disabled={!!editingId}
+                          title={editingId ? "The job can't be changed after creation" : undefined}
+                          className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all cursor-pointer disabled:bg-[#F4F5F7] disabled:cursor-not-allowed"
                         >
                           <option value="">Select a job...</option>
                           {jobs.map((j) => (

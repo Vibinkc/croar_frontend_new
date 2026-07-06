@@ -59,6 +59,9 @@ const MailboxPage = () => {
     const [isSyncing, setIsSyncing] = useState(false);
     const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error', text: string } | null>(null);
     const [fit, setFit] = useState<{ open: boolean; loading: boolean; data: CandidateFit | null; error: string | null }>({ open: false, loading: false, data: null, error: null });
+    // Inbox unread badge — tracked independently of the active folder so it stays correct while
+    // viewing Sent/Favorites/Trash (previously it counted only the currently-loaded folder).
+    const [inboxUnread, setInboxUnread] = useState(0);
 
     const openCandidateFit = async () => {
         if (!selectedEmail || !token) return;
@@ -90,13 +93,33 @@ const MailboxPage = () => {
                 }
             });
             const data = await resp.json();
-            setEmails(Array.isArray(data) ? data : []);
+            const list: Email[] = Array.isArray(data) ? data : [];
+            setEmails(list);
+            // Keep the Inbox badge in sync whenever we load the inbox.
+            if (direction === 'INBOUND') {
+                setInboxUnread(list.filter(e => !e.is_read).length);
+            }
         } catch (err) {
             console.error("Failed to fetch emails", err);
             setEmails([]);
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // Refresh the Inbox unread count without changing the visible folder (e.g. after a sync while
+    // the user is on Sent/Trash).
+    const refreshInboxUnread = async () => {
+        if (!token) return;
+        try {
+            const resp = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/logs?direction=INBOUND`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                setInboxUnread(Array.isArray(data) ? data.filter((e: Email) => !e.is_read).length : 0);
+            }
+        } catch { /* ignore */ }
     };
 
     const syncEmails = async () => {
@@ -113,6 +136,7 @@ const MailboxPage = () => {
             if (data.status === "success") {
                 setStatusMsg({ type: 'success', text: `Sync complete! Fetched ${data.synced_count} new emails.` });
                 fetchEmails(activeTab);
+                refreshInboxUnread();
             } else {
                 setStatusMsg({ type: 'error', text: data.status || "Sync failed" });
             }
@@ -137,6 +161,7 @@ const MailboxPage = () => {
             });
             // Update local state to show as read
             setEmails(prev => prev.map(e => e.id === logId ? { ...e, is_read: true } : e));
+            setInboxUnread(c => Math.max(0, c - 1));
         } catch (err) {
             console.error("Failed to mark as read", err);
         }
@@ -196,7 +221,7 @@ const MailboxPage = () => {
                 const resp = await fetch(`${BACKEND_URL}/api/v1/enterprise/communication/sync-imap`, {
                     method: 'POST', headers: { "Authorization": `Bearer ${token}` }
                 });
-                if (resp.ok) fetchEmails(activeTab);
+                if (resp.ok) { fetchEmails(activeTab); refreshInboxUnread(); }
             } catch { /* IMAP may be unconfigured — ignore */ }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -240,7 +265,12 @@ const MailboxPage = () => {
                 body: JSON.stringify({
                     recipient_emails: [composeData.to], // Supporting direct emails if the backend allows
                     subject: composeData.subject,
-                    body: composeData.body
+                    // The body is sent + rendered as HTML. If the user typed plain text (no tags),
+                    // convert newlines to <br> so line breaks survive; leave real HTML (e.g. a quoted
+                    // reply) untouched.
+                    body: /<[a-z][\s\S]*>/i.test(composeData.body)
+                        ? composeData.body
+                        : composeData.body.replace(/\n/g, "<br>")
                 })
             });
 
@@ -332,7 +362,7 @@ const MailboxPage = () => {
                     label="Inbox"
                     active={activeTab === 'INBOUND'}
                     onClick={() => setActiveTab('INBOUND')}
-                    count={emails.filter(e => e.direction === 'INBOUND' && !e.is_read).length}
+                    count={inboxUnread}
                 />
                 <SidebarItem
                     icon={<Send className="w-4 h-4" />}
@@ -602,7 +632,7 @@ const MailboxPage = () => {
                                         )}
 
                                         <div className="flex gap-2 mt-2">
-                                            {selectedEmail.direction === 'INBOUND' && canAccess("communications:moderate") && (
+                                            {selectedEmail.direction === 'INBOUND' && canAccess("communications:generate") && (
                                                 <Button
                                                     size="sm"
                                                     className="bg-[#5B53E0] hover:bg-[#4A43C9] font-bold text-xs shadow-lg shadow-[#DAD7F6]"

@@ -34,6 +34,7 @@ interface Application {
     id: string;
     candidate_id: string;
     current_stage: number;
+    status_id?: number;
     ai_match_score?: number;
     assessment_score?: number;
     aptitude_score?: number;
@@ -71,6 +72,19 @@ interface OnboardingTemplate {
 }
 
 // --- Helpers ---
+// application_statuses (stable across ALL jobs). The per-job board groups by workflow
+// `current_stage`; the cross-job "All Job Requirements" view groups by these instead, because a
+// numeric stage index means different things in different jobs' pipelines.
+const APPLICATION_STATUSES: Stage[] = [
+    { id: 1, name: "Applied", color: "" },
+    { id: 2, name: "Screening", color: "" },
+    { id: 3, name: "Interviewing", color: "" },
+    { id: 4, name: "Offered", color: "" },
+    { id: 5, name: "Hired", color: "" },
+    { id: 6, name: "Rejected", color: "" },
+    { id: 7, name: "Withdrawn", color: "" },
+];
+
 const STAGE_COLORS = [
     'border-[#5B53E0]',
     'border-purple-500',
@@ -111,9 +125,11 @@ interface CandidateModalProps {
     onRefresh: () => void;
     onboardingTemplates: OnboardingTemplate[];
     stages: Stage[];
+    /** Whether stage moves are allowed here (false in the cross-job status view). */
+    allowStageMove?: boolean;
 }
 
-function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefresh, onboardingTemplates, stages }: CandidateModalProps) {
+function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefresh, onboardingTemplates, stages, allowStageMove }: CandidateModalProps) {
     const { token, canAccess } = useAuth();
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
     if (!isOpen || !application) return null;
@@ -151,6 +167,21 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                         </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
+                        {/* Touch/keyboard-accessible way to move a candidate between stages (drag is
+                            mouse-only). Shown only for a specific job's board. */}
+                        {allowStageMove && canAccess("candidates:update") && stages.length > 0 && (
+                            <select
+                                value={String(application.current_stage)}
+                                onChange={(e) => onStatusUpdate(application.id, Number(e.target.value))}
+                                title="Move to stage"
+                                aria-label="Move to stage"
+                                className="h-9 bg-white border border-[#E1E4E8] rounded-[9px] px-2.5 text-[12px] font-medium text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all max-w-[160px] cursor-pointer"
+                            >
+                                {stages.map(s => (
+                                    <option key={s.id} value={String(s.id)}>Move to: {s.name}</option>
+                                ))}
+                            </select>
+                        )}
                         {application.onboarding_id ? (
                             canAccess("onboarding:read") && (
                                 <button
@@ -371,6 +402,9 @@ export default function KanbanBoardPage() {
 
     useEffect(() => {
         if (token) {
+            // Clear any selection when the job filter changes — otherwise the bulk-action bar keeps
+            // counting apps that are no longer on screen (and acts on a stale, invisible set).
+            setSelectedApps(new Set());
             fetchStages();
             fetchApplications();
             fetchTemplates();
@@ -462,7 +496,6 @@ export default function KanbanBoardPage() {
             if (res.ok) {
                 const data = await res.json();
                 const list: Application[] = Array.isArray(data) ? data : [];
-                console.log("Fetched applications with scores:", list.map((a: Application) => ({ name: a.candidate?.full_name, ai: a.ai_match_score, inter: a.ai_interview_score })));
                 setApplications(list);
             }
         } catch (error) {
@@ -493,6 +526,9 @@ export default function KanbanBoardPage() {
             });
 
             if (!res.ok) throw new Error("Failed to update");
+            // Moving a stage can trigger automations server-side (auto-send assessment, auto-start
+            // onboarding, etc.). Refetch so derived data (scores, onboarding_id) reflects them.
+            await fetchApplications();
         } catch (error) {
             setApplications(originalApps);
             alert("Failed to move candidate.");
@@ -543,13 +579,24 @@ export default function KanbanBoardPage() {
         e.preventDefault();
         setDragOverStageId(null);
 
+        // Dragging changes `current_stage` (a per-job workflow index). In the cross-job status view
+        // that would be meaningless, so stage moves are disabled there (use a specific job to move).
+        if (isAllJobs) return;
+
         if (!canAccess("candidates:update")) {
             console.warn("Permission denied: cannot move candidate.");
             return;
         }
 
-        if (draggedAppId && draggedAppId !== stageId) {
-            handleStageChange(draggedAppId, stageId);
+        // Only move if the card is actually changing columns. The old `draggedAppId !== stageId`
+        // check compared an application id to a stage id (never equal), so dropping a card back
+        // into its own column still fired a stage change → re-triggering that stage's automations
+        // (duplicate emails/assessments). Compare the app's current stage to the target instead.
+        if (draggedAppId) {
+            const dragged = applications.find(a => a.id === draggedAppId);
+            if (dragged && String(dragged.current_stage) !== String(stageId)) {
+                handleStageChange(draggedAppId, stageId);
+            }
         }
         setDraggedAppId(null);
     };
@@ -590,6 +637,8 @@ export default function KanbanBoardPage() {
                     body: JSON.stringify({ new_stage: u.newStage })
                 }).catch(err => console.error("Failed to move app", u.appId, err))
             ));
+            // Reflect any automations triggered by the stage advance.
+            await fetchApplications();
         }
     };
 
@@ -661,13 +710,21 @@ export default function KanbanBoardPage() {
         [applications]
     );
 
-    const getStageApps = (stageId: number | string) => filteredApplications.filter(app => String(app.current_stage) === String(stageId));
+    // "All Job Requirements" is a cross-job view (no shared workflow), so it groups by application
+    // STATUS; a specific job groups by its workflow `current_stage`.
+    const isAllJobs = !selectedJobId || selectedJobId === "ALL";
 
-    // The backend only returns stages for a specific job, so "All Job Requirements"
-    // has no columns. In that case build a unified pipeline from the applications'
-    // own stage indices so every candidate stays visible across jobs.
+    const getStageApps = (stageId: number | string) =>
+        filteredApplications.filter(app =>
+            String(isAllJobs ? (app.status_id ?? 1) : app.current_stage) === String(stageId),
+        );
+
     const boardStages = useMemo<Stage[]>(() => {
+        // Cross-job overview → stable status columns (Applied … Withdrawn).
+        if (isAllJobs) return APPLICATION_STATUSES;
+        // A specific job → its real workflow stages.
         if (stages.length > 0) return stages;
+        // Specific job with no configured workflow → derive columns from the candidates' stages.
         const fallbackNames = ["Applied", "Screening", "Assessment", "Interview", "Offer", "Hired"];
         const maxStage = applications.reduce((m, a) => Math.max(m, Number(a.current_stage) || 1), 1);
         return Array.from({ length: maxStage }, (_, i) => ({
@@ -675,7 +732,7 @@ export default function KanbanBoardPage() {
             name: fallbackNames[i] || `Stage ${i + 1}`,
             color: STAGE_COLORS[i % STAGE_COLORS.length],
         }));
-    }, [stages, applications]);
+    }, [isAllJobs, stages, applications]);
 
     const locations = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)));
 
@@ -969,7 +1026,7 @@ export default function KanbanBoardPage() {
                                             <motion.div
                                                 key={app.id}
                                                 layout
-                                                draggable
+                                                draggable={!isAllJobs}
                                                 onDragStart={(e) => handleDragStart(e as unknown as React.DragEvent, app.id)}
                                                 onDragEnd={(e) => handleDragEnd(e as unknown as React.DragEvent)}
                                                 initial={{ opacity: 0, scale: 0.95 }}
@@ -981,7 +1038,7 @@ export default function KanbanBoardPage() {
                                                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setViewApplication(app); } }}
                                                 whileHover={{ y: -2 }}
                                                 className={`
-                                                    group relative bg-white border rounded-[12px] p-3.5 cursor-grab active:cursor-grabbing transition-all shadow-sm
+                                                    group relative bg-white border rounded-[12px] p-3.5 ${isAllJobs ? "cursor-pointer" : "cursor-grab active:cursor-grabbing"} transition-all shadow-sm
                                                     ${selectedApps.has(app.id) ? `border-[#5B53E0] shadow-sm ring-1 ring-[#5B53E0]` : `border-[#E1E4E8]/60 hover:border-[#5B53E0]/40 hover:shadow-md`}
                                                     ${draggedAppId === app.id ? 'opacity-40 grayscale border-dashed border-[#9AA3AF]' : ''}
                                                 `}
@@ -1078,6 +1135,7 @@ export default function KanbanBoardPage() {
                         onRefresh={fetchApplications}
                         onboardingTemplates={onboardingTemplates}
                         stages={boardStages}
+                        allowStageMove={!isAllJobs}
                     />
                 )}
             </AnimatePresence>
@@ -1096,14 +1154,14 @@ export default function KanbanBoardPage() {
                             </span>
                             <div className="w-px h-6 bg-[#E8EAED] shrink-0" />
 
-                            {canAccess("candidates:update") && (
+                            {canAccess("candidates:update") && !isAllJobs && (
                                 <button onClick={handleBulkMove} className="flex items-center gap-1.5 h-10 px-3.5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
                                     <span className="material-icons text-[18px]">arrow_forward</span>
                                     Move to next round
                                 </button>
                             )}
 
-                            {canAccess("communications:read") && (
+                            {canAccess("communications:create") && (
                                 <button onClick={() => setIsEmailModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
                                     <span className="material-icons text-[18px]">email</span>
                                     Send email

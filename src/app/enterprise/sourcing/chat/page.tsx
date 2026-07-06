@@ -53,8 +53,36 @@ interface Profile {
     hireable?: boolean;
     email?: string;
     raw_data?: any;
+    origin?: "client_db" | "croar_db" | "fresh";
+    last_scraped_at?: string | null;
     [key: string]: any;
 }
+
+/** Human-friendly "how long ago we last pulled this profile" (e.g. "3d ago"). */
+const timeAgo = (iso?: string | null): string | null => {
+    if (!iso) return null;
+    const then = new Date(iso).getTime();
+    if (isNaN(then)) return null;
+    const secs = Math.max(0, Math.floor((Date.now() - then) / 1000));
+    if (secs < 60) return "just now";
+    const mins = Math.floor(secs / 60);
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 30) return `${days}d ago`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months}mo ago`;
+    return `${Math.floor(months / 12)}y ago`;
+};
+
+/** Label + color for where a profile came from (client history vs global pool vs live). */
+const originMeta = (origin?: string): { label: string; cls: string } | null => {
+    if (origin === "client_db") return { label: "From your database", cls: "bg-[#ECFDF3] text-[#067647] border-[#ABEFC6]" };
+    if (origin === "croar_db") return { label: "From Croar database", cls: "bg-[#EFF4FF] text-[#3538CD] border-[#C7D7FE]" };
+    if (origin === "fresh") return { label: "Freshly sourced", cls: "bg-[#FEF6EE] text-[#B93815] border-[#F9DBAF]" };
+    return null;
+};
 
 const getPlatformDomain = (plat: string) => {
     if (!plat) return "google.com";
@@ -99,7 +127,6 @@ export default function ProfileSourcingChatPage() {
     const [isJobModalOpen, setIsJobModalOpen] = useState(false);
     const [isBooleanModalOpen, setIsBooleanModalOpen] = useState(false);
     const [isCompetitorModalOpen, setIsCompetitorModalOpen] = useState(false);
-    const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
     const [isShortlistModalOpen, setIsShortlistModalOpen] = useState(false);
     const [jobs, setJobs] = useState<{id: string, title: string}[]>([]);
     const [selectedJobId, setSelectedJobId] = useState("");
@@ -124,7 +151,24 @@ export default function ProfileSourcingChatPage() {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const [showCriteria, setShowCriteria] = useState(false);
+    const [searchError, setSearchError] = useState<string | null>(null);
     const itemsPerPage = 10;
+
+    // Sourcing can scrape live and take a while. Fetch with a generous client timeout so the request
+    // never hangs forever, and surface a clear message instead of a silent empty list.
+    const SEARCH_TIMEOUT_MS = 240000; // 4 min
+    const fetchSourcing = async (url: string): Promise<Response> => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), SEARCH_TIMEOUT_MS);
+        try {
+            return await fetch(url, {
+                signal: controller.signal,
+                ...(token ? { headers: { "Authorization": `Bearer ${token}` } } : {}),
+            });
+        } finally {
+            clearTimeout(timer);
+        }
+    };
 
     // Load sessions on mount
     useEffect(() => {
@@ -151,6 +195,7 @@ export default function ProfileSourcingChatPage() {
     const loadSession = async (sessionId: string) => {
         if (!token) return;
         setLoading(true);
+        setSearchError(null);
         try {
             const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/sessions/${sessionId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
@@ -286,9 +331,13 @@ export default function ProfileSourcingChatPage() {
                 alert(`Successfully shortlisted ${profileToShortlist.full_name} for ${job?.title}`);
                 setIsShortlistModalOpen(false);
                 setProfileToShortlist(null);
+            } else {
+                const err = await res.json().catch(() => ({}));
+                alert(err.detail || "Couldn't shortlist this profile. Please try again.");
             }
         } catch (e) {
             console.error("Failed to shortlist", e);
+            alert("Couldn't shortlist this profile. Please check your connection and try again.");
         } finally {
             setIsShortlisting(false);
         }
@@ -304,6 +353,7 @@ export default function ProfileSourcingChatPage() {
         setFullDistribution([]);
         setSearchPhase("initial");
         setQuery("");
+        setSearchError(null);
     };
 
     const handleChatSend = (text: string) => {
@@ -319,8 +369,9 @@ export default function ProfileSourcingChatPage() {
         
         const fetchProfiles = async () => {
             setLoading(true);
+            setSearchError(null);
             try {
-                const res = await fetch(
+                const res = await fetchSourcing(
                     `${API_BASE_URL}/api/v1/enterprise/sourcing/chat_db?q=${encodeURIComponent(text)}&page=1&limit=${itemsPerPage}`
                 );
                 if (!res.ok) throw new Error("Database query failed");
@@ -328,7 +379,7 @@ export default function ProfileSourcingChatPage() {
                 const newResults = data.profiles || [];
                 setResults(newResults);
                 setTotalCount(data.total_count || 0);
-                
+
                 // Fetch full distribution for map
                 fetchDistribution(text);
 
@@ -343,6 +394,12 @@ export default function ProfileSourcingChatPage() {
 
             } catch (e) {
                 console.error(e);
+                setResults([]);
+                setSearchError(
+                    e instanceof DOMException && e.name === "AbortError"
+                        ? "This search is taking longer than usual — live sourcing can take a few minutes. Please try again or narrow your query."
+                        : "Couldn't run that search just now. Please check your connection and try again."
+                );
             } finally {
                 setLoading(false);
             }
@@ -352,6 +409,7 @@ export default function ProfileSourcingChatPage() {
 
     const fetchProfilesByPage = async (pageIndex: number) => {
         setLoading(true);
+        setSearchError(null);
         try {
             let finalQuery = query;
             if (extractedFilters.title) {
@@ -364,7 +422,7 @@ export default function ProfileSourcingChatPage() {
                 finalQuery += ` in ${extractedFilters.location}`;
             }
 
-            const res = await fetch(
+            const res = await fetchSourcing(
                 `${API_BASE_URL}/api/v1/enterprise/sourcing/chat_db?q=${encodeURIComponent(finalQuery)}&page=${pageIndex}&limit=${itemsPerPage}`
             );
             if (!res.ok) throw new Error("Database query failed");
@@ -373,6 +431,12 @@ export default function ProfileSourcingChatPage() {
             setTotalCount(data.total_count || 0);
         } catch (e) {
             console.error(e);
+            setResults([]);
+            setSearchError(
+                e instanceof DOMException && e.name === "AbortError"
+                    ? "This search is taking longer than usual — live sourcing can take a few minutes. Please try again or narrow your query."
+                    : "Couldn't run that search just now. Please check your connection and try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -608,42 +672,43 @@ export default function ProfileSourcingChatPage() {
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M0 30 L30 30 L30 0 M0 0 L0 30' fill='none' stroke='%235B53E0' stroke-width='1'/%3E%3C/svg%3E")` }} />
                 
                 {searchPhase === "initial" && (
-                    <div className="space-y-6 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500 flex-1 flex flex-col justify-center relative z-10">
-                        <div className="text-center max-w-xl mx-auto py-4">
-                            <h2 className="text-[26px] font-extrabold text-center text-[#15171C] tracking-[-0.5px] mb-8">Hey VIBIN, who are you looking for?</h2>
+                    <div className="flex-1 overflow-y-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                      <div className="min-h-full flex flex-col justify-center space-y-4 max-w-4xl mx-auto w-full py-4">
+                        <div className="text-center max-w-xl mx-auto">
+                            <h2 className="text-[22px] font-extrabold text-center text-[#15171C] tracking-[-0.5px] mb-2">Hey VIBIN, who are you looking for?</h2>
                         </div>
 
-                        <div className="flex items-center justify-center gap-3 mb-4 flex-wrap">
+                        <div className="flex items-center justify-center gap-2.5 flex-wrap">
                             <button 
                                 onClick={() => setIsJobModalOpen(true)} 
-                                className="flex items-center gap-2 px-4 py-2 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
+                                className="flex items-center gap-2 px-3.5 py-1.5 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
                                 <FileText className="w-3.5 h-3.5 text-[#EF4444]" /> Job Description
                             </button>
                             <button 
                                 onClick={() => setIsBooleanModalOpen(true)} 
-                                className="flex items-center gap-2 px-4 py-2 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
+                                className="flex items-center gap-2 px-3.5 py-1.5 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
                                 <span className="text-[#15803D] font-bold text-xs">Σ</span> Boolean
                             </button>
                             <button 
                                 onClick={() => setIsCompetitorModalOpen(true)} 
-                                className="flex items-center gap-2 px-4 py-2 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
+                                className="flex items-center gap-2 px-3.5 py-1.5 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
                                 <Target className="w-3.5 h-3.5 text-[#5B53E0]" /> Skill Mapping
                             </button>
 
                             <button 
                                 onClick={() => setIsFilterModalOpen(true)} 
-                                className="flex items-center gap-2 px-4 py-2 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
+                                className="flex items-center gap-2 px-3.5 py-1.5 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
                                 <Wrench className="w-3.5 h-3.5 text-[#8A929E]" /> Select Manually
                             </button>
                         </div>
 
-                        <form onSubmit={(e) => { e.preventDefault(); if (query.trim()) handleChatSend(query); }} className="max-w-3xl mx-auto w-full pt-2">
+                        <form onSubmit={(e) => { e.preventDefault(); if (query.trim()) handleChatSend(query); }} className="max-w-3xl mx-auto w-full">
                             {showSuggestions && (
-                                <div className="bg-white border border-[#E8EAED] rounded-[14px] p-3 shadow-md mb-4 space-y-1 animate-in fade-in duration-500">
+                                <div className="bg-white border border-[#E8EAED] rounded-[12px] p-1.5 shadow-md mb-2.5 space-y-0.5 animate-in fade-in duration-500">
                                     {[
                                         "Software Engineers in SF working at Series B companies, skilled in Python and Node.js",
                                         "Marketing Manager in Europe, German-speaking, working at a large enterprise",
@@ -655,7 +720,7 @@ export default function ProfileSourcingChatPage() {
                                             key={rIdx}
                                             type="button"
                                             onClick={() => { setQuery(rec); handleChatSend(rec); setShowSuggestions(false); }}
-                                            className={`w-full text-left px-4 py-2.5 hover:bg-[#F4F5F7] text-[13px] font-semibold text-[#374151] rounded-[9px] transition-colors ${query === rec ? 'bg-[#F4F5F7]' : ''}`}
+                                            className={`w-full text-left px-3 py-1.5 hover:bg-[#F4F5F7] text-[12.5px] font-semibold text-[#374151] rounded-[8px] transition-colors ${query === rec ? 'bg-[#F4F5F7]' : ''}`}
                                         >
                                             {rec}
                                         </button>
@@ -663,17 +728,17 @@ export default function ProfileSourcingChatPage() {
                                 </div>
                             )}
 
-                            <div className="relative flex flex-col bg-white border border-[#E1E4E8] focus-within:border-[#5B53E0] focus-within:ring-2 focus-within:ring-[#5B53E0]/20 rounded-[14px] px-5 py-4 shadow-sm transition-all duration-300 animate-in fade-in duration-300">
-                                <input 
+                            <div className="relative flex flex-col bg-white border border-[#E1E4E8] focus-within:border-[#5B53E0] focus-within:ring-2 focus-within:ring-[#5B53E0]/20 rounded-[12px] px-4 py-3 shadow-sm transition-all duration-300 animate-in fade-in duration-300">
+                                <input
                                     type="text"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     onFocus={() => setShowSuggestions(true)}
                                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                                     placeholder="Software Engineers with 5+ yrs of experience at fintech companies in the Bay Area"
-                                    className="w-full bg-transparent border-none focus:outline-none text-[15px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] mb-4"
+                                    className="w-full bg-transparent border-none focus:outline-none text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] mb-2.5"
                                 />
-                                <div className="flex items-center justify-end mt-1">
+                                <div className="flex items-center justify-end">
                                     <button
                                         type="submit"
                                         disabled={!query.trim()}
@@ -684,6 +749,7 @@ export default function ProfileSourcingChatPage() {
                                 </div>
                             </div>
                         </form>
+                      </div>
                     </div>
                 )}
 
@@ -821,12 +887,28 @@ export default function ProfileSourcingChatPage() {
 
 
                         {results.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center p-12 text-center bg-[#F7F8FA] rounded-3xl border border-[#E8EAED]">
-                                <h3 className="text-md font-bold text-[#1F2127] mb-1">No matching profiles indexed</h3>
-                                <p className="text-[#9AA3AF] text-xs font-medium max-w-xs">
-                                    Trigger background automated scrapers or loosen standard keyword bindings.
-                                </p>
-                            </div>
+                            searchError ? (
+                                <div className="flex flex-col items-center justify-center p-12 text-center bg-[#FEF6EE] rounded-3xl border border-[#F9DBAF]">
+                                    <div className="w-11 h-11 rounded-[12px] bg-white text-[#B93815] flex items-center justify-center mb-3 border border-[#F9DBAF]">
+                                        <X className="w-5 h-5" />
+                                    </div>
+                                    <h3 className="text-md font-bold text-[#1F2127] mb-1">Search couldn&apos;t complete</h3>
+                                    <p className="text-[#8A5A2B] text-xs font-medium max-w-sm mb-4">{searchError}</p>
+                                    <button
+                                        onClick={() => runSearch()}
+                                        className="px-5 h-9 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-colors"
+                                    >
+                                        Try again
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center p-12 text-center bg-[#F7F8FA] rounded-3xl border border-[#E8EAED]">
+                                    <h3 className="text-md font-bold text-[#1F2127] mb-1">No matching profiles indexed</h3>
+                                    <p className="text-[#9AA3AF] text-xs font-medium max-w-xs">
+                                        Trigger background automated scrapers or loosen standard keyword bindings.
+                                    </p>
+                                </div>
+                            )
                         ) : (
                             <>
                                 <div className="flex items-center justify-between py-2 border-b border-[#E8EAED]/50">
@@ -973,6 +1055,17 @@ export default function ProfileSourcingChatPage() {
                                                                 />
                                                                 <span className="capitalize">{profile.platform}</span>
                                                             </div>
+                                                        )}
+                                                        {originMeta(profile.origin) && (
+                                                            <span
+                                                                title={profile.last_scraped_at ? `Last updated ${new Date(profile.last_scraped_at).toLocaleString()}` : undefined}
+                                                                className={`shrink-0 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold ${originMeta(profile.origin)!.cls}`}
+                                                            >
+                                                                {originMeta(profile.origin)!.label}
+                                                                {profile.origin !== "fresh" && timeAgo(profile.last_scraped_at) && (
+                                                                    <span className="opacity-70">· {timeAgo(profile.last_scraped_at)}</span>
+                                                                )}
+                                                            </span>
                                                         )}
                                                     </div>
                                                     

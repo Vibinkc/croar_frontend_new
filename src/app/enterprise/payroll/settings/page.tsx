@@ -323,6 +323,7 @@ export default function SettingsPage() {
                   <input
                     className={INPUT_CLS}
                     autoFocus
+                    required
                     maxLength={8}
                     placeholder="Enter currency code (e.g. KWD)"
                     disabled={!canEdit}
@@ -603,7 +604,13 @@ function StatutoryComplianceSection({ canEdit }: { canEdit: boolean }) {
     try {
       const body = {} as StatutoryConfigUpdate;
       (Object.keys(form) as (RateKey | AmountKey)[]).forEach((k) => {
-        const n = Number(form[k]);
+        // A blank field means "leave this one unchanged" — send only real values.
+        // Coercing "" via Number() yields 0, which would silently zero a
+        // statutory rate/threshold for the whole company; the backend applies a
+        // partial merge, so omitting a field preserves the stored value.
+        const raw = (form[k] ?? "").trim();
+        if (raw === "") return;
+        const n = Number(raw);
         if (Number.isFinite(n)) {
           body[k] = RATE_KEYS.includes(k as RateKey) ? n / 100 : n;
         }

@@ -168,10 +168,74 @@ export default function ShortlistedTalentPage() {
             });
             if (res.ok) {
                 setShortlists(prev => prev.filter(s => s.shortlist_id !== id));
+            } else {
+                alert("Couldn't remove this candidate. Please try again.");
             }
         } catch (e) {
             console.error("Failed to remove shortlist", e);
+            alert("Couldn't remove this candidate. Please check your connection and try again.");
         }
+    };
+
+    // --- Bulk actions (wired to the existing per-item endpoints) ---
+    const bulkRemove = async () => {
+        if (selectedIds.size === 0 || !token) return;
+        const ids = Array.from(selectedIds);
+        if (!confirm(`Remove ${ids.length} candidate${ids.length === 1 ? "" : "s"} from the shortlist?`)) return;
+        const results = await Promise.allSettled(
+            ids.map(id => fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/shortlisted/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            }))
+        );
+        const okIds = ids.filter((_, i) => {
+            const r = results[i];
+            return r.status === "fulfilled" && r.value.ok;
+        });
+        setShortlists(prev => prev.filter(s => !okIds.includes(s.shortlist_id)));
+        setSelectedIds(new Set());
+        setIsSelectionMode(false);
+        if (okIds.length < ids.length) {
+            alert(`Removed ${okIds.length} of ${ids.length}. Some couldn't be removed — please retry.`);
+        }
+    };
+
+    const bulkSendJD = async () => {
+        if (selectedIds.size === 0 || !token) return;
+        const items = shortlists.filter(s => selectedIds.has(s.shortlist_id));
+        const withEmail = items.filter(s => s.profile?.email);
+        const noEmail = items.length - withEmail.length;
+        if (withEmail.length === 0) {
+            alert("None of the selected candidates have an email address, so no JD can be sent.");
+            return;
+        }
+        if (!confirm(`Send the job description to ${withEmail.length} candidate${withEmail.length === 1 ? "" : "s"}?`)) return;
+        const results = await Promise.allSettled(
+            withEmail.map(s => fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/send-jd`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({
+                    email: s.profile.email,
+                    full_name: s.profile.full_name,
+                    job_title: s.job_title,
+                    job_id: s.job_id,
+                    profile_url: s.profile.profile_url,
+                })
+            }))
+        );
+        const sentIds = new Set<string>();
+        results.forEach((r, i) => {
+            if (r.status === "fulfilled" && r.value.ok) sentIds.add(withEmail[i].shortlist_id);
+        });
+        setShortlists(prev => prev.map(s => sentIds.has(s.shortlist_id) ? { ...s, status: "mail_sent" } : s));
+        setSelectedIds(new Set());
+        setIsSelectionMode(false);
+        const failed = withEmail.length - sentIds.size;
+        alert(
+            `Sent the JD to ${sentIds.size} candidate${sentIds.size === 1 ? "" : "s"}.` +
+            (noEmail ? ` ${noEmail} skipped (no email).` : "") +
+            (failed ? ` ${failed} failed.` : "")
+        );
     };
 
     const [isSendingJD, setIsSendingJD] = useState<string | null>(null);
@@ -337,8 +401,6 @@ export default function ShortlistedTalentPage() {
 
         return matchesSearch && matchesJob && matchesSource;
     });
-
-    console.log("Shortlists:", shortlists.length, "Filtered:", filteredShortlists.length, "Search:", searchQuery);
 
     const jobOptions = allJobs.length > 0 ? allJobs : Array.from(new Set(shortlists.map(s => JSON.stringify({ id: s.job_id, title: s.job_title }))))
         .map(j => JSON.parse(j));
@@ -519,7 +581,7 @@ export default function ShortlistedTalentPage() {
                         </div>
                         <h3 className="text-[18px] font-bold text-[#15171C] mb-1.5">No candidates found</h3>
                         <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-6">Try adjusting your filters or search terms to find specific talent.</p>
-                        <button onClick={() => { setSearchQuery(""); setSelectedJobId("ALL"); }} className="px-6 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all">Clear All Filters</button>
+                        <button onClick={() => { setSearchQuery(""); setSelectedJobId("ALL"); setSelectedSource("ALL"); }} className="px-6 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all">Clear All Filters</button>
                     </div>
                 ) : (
                     <table className="w-full border-collapse">
@@ -549,7 +611,7 @@ export default function ShortlistedTalentPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#F0F0F1]">
-                            {filteredShortlists.map((item, index) => (
+                            {filteredShortlists.map((item) => (
                                 <tr key={item.shortlist_id} className={`hover:bg-[#F7F8FA]/60 transition-colors group ${selectedIds.has(item.shortlist_id) ? 'bg-[#ECEBFB]/30' : ''}`}>
                                     {isSelectionMode && (
                                         <td className="px-6 py-4">
@@ -743,21 +805,15 @@ export default function ShortlistedTalentPage() {
 
                             <div className="flex items-center gap-3 flex-1">
                                 <button
-                                    onClick={() => {
-                                        alert(`Sending JDs to ${selectedIds.size} candidates...`);
-                                        // Implementation for bulk JD send
-                                    }}
+                                    onClick={bulkSendJD}
                                     className="h-11 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold flex items-center gap-2 hover:bg-[#4A43C9] transition-all hover:shadow-[0_4px_12px_rgba(91,83,224,0.24)] active:scale-95 whitespace-nowrap"
                                 >
                                     <Send className="w-4 h-4" />
-                                    Send JD to All
+                                    Send JD to Selected
                                 </button>
 
                                 <button
-                                    onClick={() => {
-                                        alert(`Bulk removing ${selectedIds.size} candidates...`);
-                                        // Implementation for bulk remove
-                                    }}
+                                    onClick={bulkRemove}
                                     className="h-11 px-4 rounded-[10px] bg-white/10 text-white text-[13px] font-semibold flex items-center gap-2 hover:bg-rose-600 transition-all active:scale-95 whitespace-nowrap"
                                 >
                                     <Trash2 className="w-4 h-4" />

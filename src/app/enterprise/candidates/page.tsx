@@ -35,16 +35,16 @@ interface Candidate {
     phone: string;
     skills: string[];
     created_at: string;
+    resume_file_path?: string;
     resume_url?: string;
     applied_jobs?: { id: string; title: string }[];
     parsed_data?: Record<string, unknown>;
 }
 
-interface Application {
-    id: string;
-    job_requirement_id: string;
-    candidate: Candidate;
-}
+// Uploaded files are served statically at `/uploads` (mounted in backend main.py). Build a
+// viewable URL from the stored path (strip the /api/v1 API suffix, normalize backslashes).
+const resumeUrlFromPath = (path?: string): string | undefined =>
+    path ? `${BACKEND_URL.replace("/api/v1", "")}/${path.replaceAll("\\", "/").replace(/^\/+/, "")}` : undefined;
 
 const AVATAR_PALETTE = [
     "bg-[#ECEBFB] text-[#5B53E0]",
@@ -172,94 +172,77 @@ export default function AllCandidatesPage() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
     const [selectedJobId, setSelectedJobId] = useState<string>("ALL");
     const [viewCandidate, setViewCandidate] = useState<Candidate | null>(null);
+    const [page, setPage] = useState(1);
+    const [total, setTotal] = useState(0);
+    const [stats, setStats] = useState({ total: 0, multi_role: 0, highly_skilled: 0, with_resume: 0 });
+    const PAGE_SIZE = 25;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+    // Debounce the search box so we query the server as the user pauses, not on every keystroke.
+    useEffect(() => {
+        const t = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 350);
+        return () => clearTimeout(t);
+    }, [searchQuery]);
+
+    // Any change to the query/filter resets to the first page.
+    useEffect(() => { setPage(1); }, [debouncedQuery, selectedJobId]);
+
+    useEffect(() => { if (token) fetchJobs(); }, [token]);
 
     useEffect(() => {
-        if (token) {
-            fetchData();
-        }
-    }, [token]);
+        if (token) fetchCandidates();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token, debouncedQuery, selectedJobId, page]);
 
-    const fetchData = async () => {
-        setIsLoading(true);
+    const fetchJobs = async () => {
         try {
-            const [appsRes, jobsRes] = await Promise.all([
-                fetch(`${BACKEND_URL}/api/v1/enterprise/applications/`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                }),
-                fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                })
-            ]);
-
-            if (appsRes.ok) {
-                const appsRaw = await appsRes.json();
-                const appsData: Application[] = Array.isArray(appsRaw) ? appsRaw : [];
-                let currentJobs: Job[] = [];
-                if (jobsRes.ok) {
-                    const jobsRaw = await jobsRes.json();
-                    currentJobs = Array.isArray(jobsRaw) ? jobsRaw : [];
-                    setJobs(currentJobs);
-                }
-
-                const jobsMap = new Map(currentJobs.map((j: Job) => [j.id, j]));
-                const candidateMap = new Map<string, Candidate>();
-
-                appsData.forEach((app: Application) => {
-                    const cand = app.candidate;
-                    if (!cand) return;
-                    if (!candidateMap.has(cand.id)) {
-                        candidateMap.set(cand.id, {
-                            ...cand,
-                            applied_jobs: []
-                        });
-                    }
-
-                    const jobId = app.job_requirement_id;
-                    if (jobId && jobsMap.has(jobId)) {
-                        const jobInfo = jobsMap.get(jobId);
-                        const candidateEntry = candidateMap.get(cand.id);
-                        if (candidateEntry && !candidateEntry.applied_jobs?.some(j => j.id === jobId)) {
-                            candidateEntry.applied_jobs?.push({
-                                id: jobId,
-                                title: jobInfo!.title
-                            });
-                        }
-                    }
-                });
-
-                setCandidates(Array.from(candidateMap.values()));
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const d = await res.json();
+                setJobs(Array.isArray(d) ? d : []);
             }
         } catch (error) {
-            console.error("Error fetching data:", error);
+            console.error("Error fetching jobs:", error);
+        }
+    };
+
+    const fetchCandidates = async () => {
+        setIsLoading(true);
+        try {
+            const params = new URLSearchParams({ page: String(page), page_size: String(PAGE_SIZE) });
+            if (debouncedQuery) params.set("q", debouncedQuery);
+            if (selectedJobId !== "ALL") params.set("job_id", selectedJobId);
+
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/candidates/?${params.toString()}`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const d = await res.json();
+                const items: Candidate[] = (Array.isArray(d.items) ? d.items : []).map((c: Candidate) => ({
+                    ...c,
+                    resume_url: c.resume_url || resumeUrlFromPath(c.resume_file_path),
+                }));
+                setCandidates(items);
+                setTotal(d.total || 0);
+                if (d.stats) setStats(d.stats);
+            }
+        } catch (error) {
+            console.error("Error fetching candidates:", error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const filteredCandidates = candidates.filter(candidate => {
-        const matchesSearch = candidate.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            candidate.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            candidate.skills?.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()));
-
-        const matchesJob = selectedJobId === "ALL" || candidate.applied_jobs?.some(job => job.id === selectedJobId);
-
-        return matchesSearch && matchesJob;
-    });
-
-    const stats = {
-        total: candidates.length,
-        fastTrack: candidates.filter((c: Candidate) => c.applied_jobs && c.applied_jobs.length > 1).length,
-        topTalent: candidates.filter((c: Candidate) => c.skills && c.skills.length > 5).length,
-        qualified: candidates.filter((c: Candidate) => c.resume_url).length
-    };
-
     const statCards = [
         { label: "Total Profiles", value: stats.total, Icon: Users, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.3)" },
-        { label: "Active Pipeline", value: stats.fastTrack, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.3)" },
-        { label: "Highly Skilled", value: stats.topTalent, Icon: Star, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.3)" },
-        { label: "With Resume", value: stats.qualified, Icon: CheckCircle2, grad: "linear-gradient(135deg,#60A5FA,#3559C7)", glow: "rgba(53,89,199,0.3)" },
+        { label: "Multi-Role Applicants", value: stats.multi_role, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.3)" },
+        { label: "Highly Skilled", value: stats.highly_skilled, Icon: Star, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.3)" },
+        { label: "With Resume", value: stats.with_resume, Icon: CheckCircle2, grad: "linear-gradient(135deg,#60A5FA,#3559C7)", glow: "rgba(53,89,199,0.3)" },
     ];
 
     return (
@@ -333,7 +316,7 @@ export default function AllCandidatesPage() {
                             <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
                         ))}
                     </div>
-                ) : filteredCandidates.length === 0 ? (
+                ) : candidates.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-20 text-center">
                         <div className="relative mb-6">
                             <div className="absolute -inset-3 rounded-full bg-[#5B53E0]/12 blur-2xl" />
@@ -356,7 +339,7 @@ export default function AllCandidatesPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#F0F0F1]">
-                            {filteredCandidates.map((candidate) => (
+                            {candidates.map((candidate) => (
                                 <tr key={candidate.id} className="hover:bg-[#F7F8FA] transition-colors group">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3.5">
@@ -423,6 +406,32 @@ export default function AllCandidatesPage() {
                     </table>
                 )}
             </div>
+
+            {/* Pagination — server-side, so this pages through the full result set, not just what's loaded. */}
+            {!isLoading && total > PAGE_SIZE && (
+                <div className="flex items-center justify-between gap-3">
+                    <span className="text-[12.5px] text-[#8A929E]">
+                        Showing <span className="font-semibold text-[#374151]">{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)}</span> of <span className="font-semibold text-[#374151]">{total}</span>
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page <= 1}
+                            className="h-9 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Previous
+                        </button>
+                        <span className="text-[12.5px] font-semibold text-[#6B6F76] px-1">Page {page} of {totalPages}</span>
+                        <button
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page >= totalPages}
+                            className="h-9 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <AnimatePresence>
                 {viewCandidate && (

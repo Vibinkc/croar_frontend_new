@@ -78,7 +78,7 @@ export default function SurveyDashboard() {
                     </div>
                     <p className="text-[12.5px] text-[#8A929E] mt-0.5">Measure engagement and culture</p>
                 </div>
-                {canAccess("surveys:moderate") && (
+                {canAccess("surveys:create") && (
                     <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap sm:shrink-0">
                         <Link
                             href="/enterprise/surveys/templates"
@@ -150,14 +150,14 @@ export default function SurveyDashboard() {
                         title="Launch your first survey"
                         description="Measure engagement and culture. Create a template, then launch a campaign to your team."
                         action={
-                            canAccess("surveys:moderate") ? (
+                            canAccess("surveys:create") ? (
                                 <Link href="/enterprise/surveys/new">
                                     <Button icon="rocket_launch">Launch Survey</Button>
                                 </Link>
                             ) : undefined
                         }
                         secondary={
-                            canAccess("surveys:moderate") ? (
+                            canAccess("surveys:create") ? (
                                 <Link href="/enterprise/surveys/templates">
                                     <Button variant="secondary" icon="description">Templates</Button>
                                 </Link>

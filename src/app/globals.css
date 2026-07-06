@@ -528,3 +528,84 @@ button, a, span, p, label {
 .payroll-scope .bg-\[var\(--color-card\)\] {
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DARK MODE — global overrides keyed off <html data-theme="dark">.
+   The app is built on the design system's hardcoded neutral palette, so we
+   remap those specific values (surfaces / text / borders) here. Accent
+   colours (indigo, status tints) and intentionally-dark surfaces
+   (sidebar #090A0C, hero #0E1014) are left untouched.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Surfaces */
+:root[data-theme="dark"] .bg-white {
+  background-color: #16191f;
+}
+:root[data-theme="dark"] .bg-\[\#F4F5F7\] {
+  background-color: #0b0c0f;
+}
+:root[data-theme="dark"] .bg-\[\#F4F5F7\]\/95 {
+  background-color: rgba(11, 12, 15, 0.95);
+}
+:root[data-theme="dark"] .bg-\[\#F7F7F8\],
+:root[data-theme="dark"] .bg-\[\#F7F8FA\],
+:root[data-theme="dark"] .bg-\[\#F8FAFC\],
+:root[data-theme="dark"] .bg-\[\#F9FAFB\],
+:root[data-theme="dark"] .bg-\[\#F1F2F5\] {
+  background-color: #1b1f27;
+}
+:root[data-theme="dark"] .hover\:bg-\[\#F4F5F7\]:hover,
+:root[data-theme="dark"] .hover\:bg-\[\#F7F7F8\]:hover,
+:root[data-theme="dark"] .hover\:bg-\[\#F7F8FA\]:hover,
+:root[data-theme="dark"] .hover\:bg-\[\#F1F2F5\]:hover {
+  background-color: #20252f;
+}
+
+/* Text */
+:root[data-theme="dark"] .text-\[\#15171C\] {
+  color: #eceef1;
+}
+:root[data-theme="dark"] .text-\[\#374151\] {
+  color: #c7ccd4;
+}
+:root[data-theme="dark"] .text-\[\#4B5563\] {
+  color: #aeb4be;
+}
+
+/* Borders */
+:root[data-theme="dark"] .border-\[\#E8EAED\],
+:root[data-theme="dark"] .border-\[\#E1E4E8\],
+:root[data-theme="dark"] .border-\[\#F0F0F1\],
+:root[data-theme="dark"] .border-\[\#F1F2F5\],
+:root[data-theme="dark"] .border-\[\#D9DCE1\] {
+  border-color: #272c36;
+}
+:root[data-theme="dark"] .hover\:border-\[\#D4D7DC\]:hover {
+  border-color: #333a45;
+}
+
+/* Row separators (divide-*) */
+:root[data-theme="dark"] .divide-\[\#F0F0F1\] > :not([hidden]) ~ :not([hidden]),
+:root[data-theme="dark"] .divide-\[\#E8EAED\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #272c36;
+}
+
+/* Form controls */
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] select {
+  color: #eceef1;
+}
+
+/* payroll-scope forces dark heading/table colours — flip for a dark background */
+:root[data-theme="dark"] .payroll-scope h1,
+:root[data-theme="dark"] .payroll-scope h2,
+:root[data-theme="dark"] .payroll-scope h3 {
+  color: #eceef1;
+}
+:root[data-theme="dark"] .payroll-scope thead {
+  background-color: #1b1f27;
+}

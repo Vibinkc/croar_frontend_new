@@ -76,6 +76,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const { token } = useAuth();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(isEdit);
+    const [loadError, setLoadError] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
@@ -138,6 +139,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
     const fetchJobDetails = useCallback(async () => {
         setIsLoading(true);
+        setLoadError(false);
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}`, {
                 headers: {
@@ -166,9 +168,14 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     application_fields: (data.application_fields && data.application_fields.length > 0) ? data.application_fields : DEFAULT_APPLICATION_FIELDS,
                     workflow_stages: (data.workflow_stages && data.workflow_stages.length > 0) ? data.workflow_stages : DEFAULT_WORKFLOW_STAGES
                 });
+            } else {
+                // Don't silently leave the form on its DEFAULT values — that would let the user
+                // submit and overwrite the real job with defaults. Surface a not-found/error state.
+                setLoadError(true);
             }
         } catch (error) {
             console.error("Error fetching job:", error);
+            setLoadError(true);
         } finally {
             setIsLoading(false);
         }
@@ -378,6 +385,24 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
         );
     }
 
+    if (isEdit && loadError) {
+        return (
+            <div className="min-h-[60vh] w-full flex items-center justify-center px-4">
+                <div className="text-center max-w-sm">
+                    <div className="w-14 h-14 rounded-[16px] bg-[#FDECEC] text-[#C0383C] flex items-center justify-center mx-auto mb-4">
+                        <span className="material-symbols-rounded text-3xl">error</span>
+                    </div>
+                    <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">Couldn&apos;t load this job</h2>
+                    <p className="text-[13.5px] text-[#8A929E] leading-relaxed mb-5">It may have been removed, or you don&apos;t have access to it. Editing is disabled to avoid overwriting it with blank values.</p>
+                    <div className="flex items-center justify-center gap-2.5">
+                        <Button variant="secondary" onClick={() => fetchJobDetails()}>Retry</Button>
+                        <Button onClick={() => router.push("/enterprise/jobs")}>Back to Jobs</Button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-6 max-w-[1400px] mx-auto w-full h-full flex flex-col gap-6 animate-in fade-in duration-500 relative">
             {/* Header */}
@@ -535,19 +560,24 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                         </div>
                                         {isEdit ? (
                                             <div className="flex items-center gap-2.5">
+                                                {/* job_statuses: 1 Draft · 2 Active · 3 On Hold · 4 Closed.
+                                                    Active → green, Closed → red, On Hold → amber, Draft → grey. */}
                                                 <Select
                                                     value={formData.status_id}
                                                     onChange={(e) => setFormData({ ...formData, status_id: Number.parseInt(e.target.value) })}
                                                     className={`h-10 text-[12px] font-semibold cursor-pointer text-center ${formData.status_id === 2
                                                             ? "bg-[#E6F4EA] text-[#15803D] border-[#CDEAD7]"
-                                                            : formData.status_id === 3
+                                                            : formData.status_id === 4
                                                                 ? "bg-[#FDECEC] text-[#C0383C] border-[#F5C9C9]"
-                                                                : "bg-[#F4F5F7] text-[#6B6F76] border-[#E8EAED]"
+                                                                : formData.status_id === 3
+                                                                    ? "bg-[#FEF3E2] text-[#B45309] border-[#F5D9A8]"
+                                                                    : "bg-[#F4F5F7] text-[#6B6F76] border-[#E8EAED]"
                                                         }`}
                                                 >
                                                     <option value={1}>Draft</option>
                                                     <option value={2}>Active</option>
-                                                    <option value={3}>Closed</option>
+                                                    <option value={3}>On Hold</option>
+                                                    <option value={4}>Closed</option>
                                                 </Select>
                                                 <Button onClick={generateAIDescription} disabled={isGeneratingAI} className="h-10">
                                                     {isGeneratingAI ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}

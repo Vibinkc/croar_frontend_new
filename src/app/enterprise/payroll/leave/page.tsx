@@ -119,8 +119,11 @@ export default function LeavePage() {
   }
 
   async function createRequest() {
-    const { employee_id, leave_type_id, start_date, end_date } = reqForm;
-    if (!employee_id || !leave_type_id || !start_date || !end_date) return;
+    const { employee_id, leave_type_id, start_date, end_date, half_day } = reqForm;
+    // A half-day request derives its end date from the start date (the "To"
+    // field is disabled and never sets end_date), so don't require end_date then —
+    // otherwise the half-day submit silently no-ops.
+    if (!employee_id || !leave_type_id || !start_date || (!half_day && !end_date)) return;
     await run(async () => {
       await leaveApi.createRequest({
         employee_id,
