@@ -8,6 +8,7 @@ import {
     ChevronRight, Brain, ChevronLeft, X
 } from 'lucide-react';
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
@@ -46,6 +47,7 @@ interface CandidateFit {
 
 const MailboxPage = () => {
     const { token, canAccess } = useAuth();
+    const { t } = useI18n();
     const [activeTab, setActiveTab] = useState<'INBOUND' | 'OUTBOUND' | 'FAVORITE' | 'TRASH'>('INBOUND');
     const [emails, setEmails] = useState<Email[]>([]);
     const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
@@ -73,10 +75,10 @@ const MailboxPage = () => {
             if (resp.ok) {
                 setFit({ open: true, loading: false, data: await resp.json() as CandidateFit, error: null });
             } else {
-                setFit({ open: true, loading: false, data: null, error: "Couldn't load candidate fit for this email." });
+                setFit({ open: true, loading: false, data: null, error: t("mail.fitLoadError") });
             }
         } catch {
-            setFit({ open: true, loading: false, data: null, error: "Couldn't load candidate fit for this email." });
+            setFit({ open: true, loading: false, data: null, error: t("mail.fitLoadError") });
         }
     };
 
@@ -134,16 +136,16 @@ const MailboxPage = () => {
             });
             const data = await resp.json();
             if (data.status === "success") {
-                setStatusMsg({ type: 'success', text: `Sync complete! Fetched ${data.synced_count} new emails.` });
+                setStatusMsg({ type: 'success', text: t("mail.syncComplete", { count: data.synced_count }) });
                 fetchEmails(activeTab);
                 refreshInboxUnread();
             } else {
-                setStatusMsg({ type: 'error', text: data.status || "Sync failed" });
+                setStatusMsg({ type: 'error', text: data.status || t("mail.syncFailed") });
             }
             setTimeout(() => setStatusMsg(null), 5000);
         } catch (err) {
             console.error("Sync failed", err);
-            setStatusMsg({ type: 'error', text: "Sync connection error" });
+            setStatusMsg({ type: 'error', text: t("mail.syncConnectionError") });
             setTimeout(() => setStatusMsg(null), 5000);
         } finally {
             setIsSyncing(false);
@@ -184,7 +186,7 @@ const MailboxPage = () => {
             ? prev.filter(e => e.id !== email.id)
             : prev.map(e => e.id === email.id ? { ...e, is_favorite: fav } : e));
         setSelectedEmail(s => (s && s.id === email.id) ? { ...s, is_favorite: fav } : s);
-        setStatusMsg({ type: 'success', text: fav ? 'Added to Favorites' : 'Removed from Favorites' });
+        setStatusMsg({ type: 'success', text: fav ? t("mail.addedToFavorites") : t("mail.removedFromFavorites") });
         setTimeout(() => setStatusMsg(null), 2500);
     };
 
@@ -192,7 +194,7 @@ const MailboxPage = () => {
         if (!(await callLog(`${logsBase}/${email.id}/trash`, 'PATCH'))) return;
         setEmails(prev => prev.filter(e => e.id !== email.id));
         if (selectedEmail?.id === email.id) setSelectedEmail(null);
-        setStatusMsg({ type: 'success', text: 'Moved to Trash' });
+        setStatusMsg({ type: 'success', text: t("mail.movedToTrash") });
         setTimeout(() => setStatusMsg(null), 2500);
     };
 
@@ -200,7 +202,7 @@ const MailboxPage = () => {
         if (!(await callLog(`${logsBase}/${email.id}/trash?trashed=false`, 'PATCH'))) return;
         setEmails(prev => prev.filter(e => e.id !== email.id));
         if (selectedEmail?.id === email.id) setSelectedEmail(null);
-        setStatusMsg({ type: 'success', text: 'Restored to its folder' });
+        setStatusMsg({ type: 'success', text: t("mail.restoredToFolder") });
         setTimeout(() => setStatusMsg(null), 2500);
     };
 
@@ -208,7 +210,7 @@ const MailboxPage = () => {
         if (!(await callLog(`${logsBase}/${email.id}`, 'DELETE'))) return;
         setEmails(prev => prev.filter(e => e.id !== email.id));
         if (selectedEmail?.id === email.id) setSelectedEmail(null);
-        setStatusMsg({ type: 'success', text: 'Deleted permanently' });
+        setStatusMsg({ type: 'success', text: t("mail.deletedPermanently") });
         setTimeout(() => setStatusMsg(null), 2500);
     };
 
@@ -277,17 +279,17 @@ const MailboxPage = () => {
             if (resp.ok) {
                 setIsComposeOpen(false);
                 setComposeData({ to: '', subject: '', body: '' });
-                setStatusMsg({ type: 'success', text: 'Email sent successfully!' });
+                setStatusMsg({ type: 'success', text: t("mail.emailSent") });
                 if (activeTab === 'OUTBOUND') fetchEmails('OUTBOUND');
                 setTimeout(() => setStatusMsg(null), 3000);
             } else {
                 const errData = await resp.json();
-                setStatusMsg({ type: 'error', text: errData.detail || 'Failed to send email' });
+                setStatusMsg({ type: 'error', text: errData.detail || t("mail.failedSendEmail") });
                 setTimeout(() => setStatusMsg(null), 5000);
             }
         } catch (err) {
             console.error("Failed to send email", err);
-            setStatusMsg({ type: 'error', text: 'Connection error. Please try again.' });
+            setStatusMsg({ type: 'error', text: t("mail.connectionError") });
             setTimeout(() => setStatusMsg(null), 5000);
         } finally {
             setIsSending(false);
@@ -335,19 +337,19 @@ const MailboxPage = () => {
             <header className="px-6 py-4 bg-white border-b border-[#E8EAED] flex items-center justify-between gap-3 shrink-0">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Mail</h1>
-                        <PageHelp title="Mail">
-                            <p>Email candidates and keep every conversation in one place.</p>
+                        <h1 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{t("mail.title")}</h1>
+                        <PageHelp title={t("mail.title")}>
+                            <p>{t("mail.help")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[13.5px] text-[#8A929E] mt-0.5">Candidate &amp; team conversations</p>
+                    <p className="text-[13.5px] text-[#8A929E] mt-0.5">{t("mail.subtitle")}</p>
                 </div>
                 {canAccess("communications:create") && (
                     <button
                         onClick={() => { setComposeData({ to: '', subject: '', body: '' }); setIsComposeOpen(true); }}
                         className="inline-flex items-center gap-2 h-11 px-4 bg-[#5B53E0] text-white rounded-[10px] text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
                     >
-                        <Send className="w-4 h-4" /> Compose
+                        <Send className="w-4 h-4" /> {t("mail.compose")}
                     </button>
                 )}
             </header>
@@ -356,29 +358,29 @@ const MailboxPage = () => {
             <div className="flex flex-1 min-h-0 bg-white overflow-hidden">
                 {/* Mailbox Sidebar */}
                 <div className="w-60 bg-white border-r border-[#E8EAED] flex flex-col p-3 gap-1 shrink-0">
-                    <p className="px-3 pt-2 pb-1 text-[10px] font-bold text-[#9AA3AF] uppercase tracking-[0.1em]">Folders</p>
+                    <p className="px-3 pt-2 pb-1 text-[10px] font-bold text-[#9AA3AF] uppercase tracking-[0.1em]">{t("mail.folders")}</p>
                     <SidebarItem
                     icon={<Inbox className="w-4 h-4" />}
-                    label="Inbox"
+                    label={t("mail.inbox")}
                     active={activeTab === 'INBOUND'}
                     onClick={() => setActiveTab('INBOUND')}
                     count={inboxUnread}
                 />
                 <SidebarItem
                     icon={<Send className="w-4 h-4" />}
-                    label="Sent"
+                    label={t("mail.sent")}
                     active={activeTab === 'OUTBOUND'}
                     onClick={() => setActiveTab('OUTBOUND')}
                 />
                 <SidebarItem
                     icon={<Star className="w-4 h-4" />}
-                    label="Favorites"
+                    label={t("mail.favorites")}
                     active={activeTab === 'FAVORITE'}
                     onClick={() => setActiveTab('FAVORITE')}
                 />
                 <SidebarItem
                     icon={<Trash2 className="w-4 h-4" />}
-                    label="Trash"
+                    label={t("mail.trash")}
                     active={activeTab === 'TRASH'}
                     onClick={() => setActiveTab('TRASH')}
                 />
@@ -393,14 +395,14 @@ const MailboxPage = () => {
                         </div>
                     )}
                     <h2 className="text-xl font-bold text-[#1F2127] mb-4">
-                        {activeTab === 'INBOUND' ? 'Inbox' : 
-                         activeTab === 'OUTBOUND' ? 'Sent' :
-                         activeTab === 'FAVORITE' ? 'Favorites' : 'Trash'}
+                        {activeTab === 'INBOUND' ? t("mail.inbox") :
+                         activeTab === 'OUTBOUND' ? t("mail.sent") :
+                         activeTab === 'FAVORITE' ? t("mail.favorites") : t("mail.trash")}
                     </h2>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF]" />
                         <Input
-                            placeholder="Search conversations..."
+                            placeholder={t("mail.searchPlaceholder")}
                             className="pl-10 bg-[#F7F8FA] border-none rounded-[10px]"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -410,11 +412,11 @@ const MailboxPage = () => {
 
                 <div className="flex-1 overflow-y-auto">
                     {isLoading ? (
-                        <div className="p-8 text-center text-[#9AA3AF]">Loading...</div>
+                        <div className="p-8 text-center text-[#9AA3AF]">{t("common.loading")}</div>
                     ) : filteredEmails.length === 0 ? (
                         <div className="p-12 text-center text-[#D4D7DC]">
                             <Mail className="w-12 h-12 mb-4 mx-auto opacity-10" />
-                            <p className="text-sm font-medium">No messages found here</p>
+                            <p className="text-sm font-medium">{t("mail.noMessages")}</p>
                         </div>
                     ) : filteredEmails.map((email: Email) => {
                         const who = (email.direction === 'INBOUND' ? email.sender_email : email.recipient_email) || "?";
@@ -471,7 +473,7 @@ const MailboxPage = () => {
                                 <span className="w-8 h-8 rounded-[10px] flex items-center justify-center text-white shadow-[0_6px_16px_rgba(91,83,224,0.3)]" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>
                                     <Mail className="w-4 h-4" />
                                 </span>
-                                New Message
+                                {t("mail.newMessage")}
                             </h3>
                             <button
                                 onClick={() => setIsComposeOpen(false)}
@@ -484,10 +486,10 @@ const MailboxPage = () => {
                         <div className="flex-1 overflow-y-auto p-6">
                             <div className="max-w-2xl mx-auto space-y-4">
                                 <div>
-                                    <label htmlFor="compose-recipient" className="block text-[10px] font-bold text-[#9AA3AF] uppercase tracking-[0.08em] mb-1.5">Recipient Email</label>
+                                    <label htmlFor="compose-recipient" className="block text-[10px] font-bold text-[#9AA3AF] uppercase tracking-[0.08em] mb-1.5">{t("mail.recipientEmail")}</label>
                                     <Input
                                         id="compose-recipient"
-                                        placeholder="e.g. candidate@example.com"
+                                        placeholder={t("mail.recipientPlaceholder")}
                                         value={composeData.to}
                                         onChange={(e) => setComposeData({ ...composeData, to: e.target.value })}
                                         className="h-10 text-sm font-medium border-[#E8EAED] bg-[#F7F8FA]/50"
@@ -495,10 +497,10 @@ const MailboxPage = () => {
                                 </div>
 
                                 <div>
-                                    <label htmlFor="compose-subject" className="block text-[10px] font-bold text-[#9AA3AF] uppercase tracking-[0.08em] mb-1.5">Subject</label>
+                                    <label htmlFor="compose-subject" className="block text-[10px] font-bold text-[#9AA3AF] uppercase tracking-[0.08em] mb-1.5">{t("mail.subject")}</label>
                                     <Input
                                         id="compose-subject"
-                                        placeholder="Enter subject..."
+                                        placeholder={t("mail.subjectPlaceholder")}
                                         value={composeData.subject}
                                         onChange={(e) => setComposeData({ ...composeData, subject: e.target.value })}
                                         className="h-10 text-sm font-medium border-[#E8EAED] bg-[#F7F8FA]/50"
@@ -506,11 +508,11 @@ const MailboxPage = () => {
                                 </div>
 
                                 <div>
-                                    <label htmlFor="compose-body" className="block text-[10px] font-bold text-[#9AA3AF] uppercase tracking-[0.08em] mb-1.5">Message Content</label>
+                                    <label htmlFor="compose-body" className="block text-[10px] font-bold text-[#9AA3AF] uppercase tracking-[0.08em] mb-1.5">{t("mail.messageContent")}</label>
                                     <textarea
                                         id="compose-body"
                                         className="w-full h-72 p-4 rounded-[10px] border border-[#E8EAED] bg-[#F7F8FA]/50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5B53E0] focus:bg-white transition-all resize-none"
-                                        placeholder="Type your message here..."
+                                        placeholder={t("mail.messagePlaceholder")}
                                         value={composeData.body}
                                         onChange={(e) => setComposeData({ ...composeData, body: e.target.value })}
                                     />
@@ -519,13 +521,13 @@ const MailboxPage = () => {
                         </div>
 
                         <div className="px-6 py-4 border-t border-[#E8EAED] bg-[#F7F8FA]/60 flex justify-end gap-3 shrink-0">
-                            <Button variant="ghost" onClick={() => setIsComposeOpen(false)}>Cancel</Button>
+                            <Button variant="ghost" onClick={() => setIsComposeOpen(false)}>{t("mail.cancel")}</Button>
                             <Button
                                 className="bg-[#5B53E0] hover:bg-[#4A43C9] px-8 font-bold text-xs"
                                 onClick={handleSendEmail}
                                 disabled={isSending || !composeData.to || !composeData.subject || !composeData.body}
                             >
-                                {isSending ? 'Sending...' : 'Send Message'}
+                                {isSending ? t("mail.sending") : t("mail.sendMessage")}
                                 <Send className="w-4 h-4 ml-2" />
                             </Button>
                         </div>
@@ -535,19 +537,19 @@ const MailboxPage = () => {
                         <div className="p-4 border-b border-[#E8EAED] flex justify-between items-center bg-[#F7F8FA]/50">
                             <div className="flex gap-2">
                                 {canAccess("communications:create") && (
-                                    <Button variant="outline" size="sm" className="rounded-full" onClick={openReply}><Reply className="w-3 h-3 mr-2" /> Reply</Button>
+                                    <Button variant="outline" size="sm" className="rounded-full" onClick={openReply}><Reply className="w-3 h-3 mr-2" /> {t("mail.reply")}</Button>
                                 )}
-                                <Button variant="outline" size="sm" className={`rounded-full ${selectedEmail.is_favorite ? 'text-[#D97706]' : ''}`} title={selectedEmail.is_favorite ? 'Remove from favorites' : 'Add to favorites'} onClick={() => toggleFavorite(selectedEmail)}><Star className={`w-3 h-3 ${selectedEmail.is_favorite ? 'fill-current' : ''}`} /></Button>
+                                <Button variant="outline" size="sm" className={`rounded-full ${selectedEmail.is_favorite ? 'text-[#D97706]' : ''}`} title={selectedEmail.is_favorite ? t("mail.removeFromFavorites") : t("mail.addToFavorites")} onClick={() => toggleFavorite(selectedEmail)}><Star className={`w-3 h-3 ${selectedEmail.is_favorite ? 'fill-current' : ''}`} /></Button>
                                 {activeTab === 'TRASH' ? (
                                     <>
-                                        <Button variant="outline" size="sm" className="rounded-full" title="Restore" onClick={() => restoreFromTrash(selectedEmail)}><RotateCcw className="w-3 h-3" /></Button>
+                                        <Button variant="outline" size="sm" className="rounded-full" title={t("mail.restore")} onClick={() => restoreFromTrash(selectedEmail)}><RotateCcw className="w-3 h-3" /></Button>
                                         {canAccess("communications:delete") && (
-                                            <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" title="Delete permanently" onClick={() => deletePermanently(selectedEmail)}><Trash2 className="w-3 h-3" /></Button>
+                                            <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" title={t("mail.deletePermanently")} onClick={() => deletePermanently(selectedEmail)}><Trash2 className="w-3 h-3" /></Button>
                                         )}
                                     </>
                                 ) : (
                                     canAccess("communications:delete") && (
-                                        <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" title="Move to trash" onClick={() => moveToTrash(selectedEmail)}><Trash2 className="w-3 h-3" /></Button>
+                                        <Button variant="outline" size="sm" className="rounded-full text-red-500 hover:text-red-600" title={t("mail.moveToTrash")} onClick={() => moveToTrash(selectedEmail)}><Trash2 className="w-3 h-3" /></Button>
                                     )
                                 )}
                             </div>
@@ -587,8 +589,8 @@ const MailboxPage = () => {
                                                 {selectedEmail.direction === 'INBOUND' ? (selectedEmail.sender_email?.[0] || '?').toUpperCase() : 'Y'}
                                             </div>
                                             <div>
-                                                <div className="text-sm font-semibold text-[#15171C]">{selectedEmail.direction === 'INBOUND' ? selectedEmail.sender_email : 'Me'}</div>
-                                                <div className="text-xs text-[#6B6F76]">to {selectedEmail.direction === 'INBOUND' ? 'Me' : selectedEmail.recipient_email}</div>
+                                                <div className="text-sm font-semibold text-[#15171C]">{selectedEmail.direction === 'INBOUND' ? selectedEmail.sender_email : t("mail.me")}</div>
+                                                <div className="text-xs text-[#6B6F76]">{t("mail.to")} {selectedEmail.direction === 'INBOUND' ? t("mail.me") : selectedEmail.recipient_email}</div>
                                             </div>
                                         </div>
                                         <div className="text-xs text-[#9AA3AF]">
@@ -610,24 +612,24 @@ const MailboxPage = () => {
                                     <div className="relative z-10">
                                         <div className="flex items-center gap-3 mb-4">
                                             <Badge variant="outline" className="bg-white/80 border-[#DAD7F6] text-[#4A43C9] py-1">
-                                                <Brain className="w-3 h-3 mr-1" /> AI Agent Analysis
+                                                <Brain className="w-3 h-3 mr-1" /> {t("mail.aiAgentAnalysis")}
                                             </Badge>
                                         </div>
                                         {selectedEmail.direction === 'INBOUND' ? (
                                             <>
                                                 <p className="text-sm text-[#374151] mb-4">
-                                                    The AI can draft a reply to this message using the candidate&apos;s details and the job context.
+                                                    {t("mail.aiDraftInfo")}
                                                 </p>
                                                 {smartReply && (
                                                     <div className="mb-4 p-4 bg-white/50 rounded-[10px] border border-[#DAD7F6] text-sm text-[#374151] animate-in slide-in-from-top-2">
-                                                        <div className="font-bold text-xs text-[#5B53E0] mb-2">Suggested Reply:</div>
+                                                        <div className="font-bold text-xs text-[#5B53E0] mb-2">{t("mail.suggestedReply")}</div>
                                                         {smartReply}
                                                     </div>
                                                 )}
                                             </>
                                         ) : (
                                             <p className="text-sm text-[#374151] mb-4">
-                                                Smart replies are generated only for incoming messages from candidates. You can still review this candidate&apos;s fit below.
+                                                {t("mail.smartReplyOutbound")}
                                             </p>
                                         )}
 
@@ -639,7 +641,7 @@ const MailboxPage = () => {
                                                     onClick={handleSmartReply}
                                                     disabled={isGenerating}
                                                 >
-                                                    {isGenerating ? 'Analyzing...' : smartReply ? 'Regenerate Draft' : 'Draft Smart Reply'}
+                                                    {isGenerating ? t("mail.analyzing") : smartReply ? t("mail.regenerateDraft") : t("mail.draftSmartReply")}
                                                 </Button>
                                             )}
                                             
@@ -658,7 +660,7 @@ const MailboxPage = () => {
                                                         setIsComposeOpen(true);
                                                     }}
                                                 >
-                                                    Apply to Reply
+                                                    {t("mail.applyToReply")}
                                                 </Button>
                                             )}
 
@@ -668,7 +670,7 @@ const MailboxPage = () => {
                                                 className="text-[#5B53E0]"
                                                 onClick={openCandidateFit}
                                             >
-                                                View Candidate Fit
+                                                {t("mail.viewCandidateFit")}
                                             </Button>
                                         </div>
                                     </div>
@@ -684,8 +686,8 @@ const MailboxPage = () => {
                                 <Mail className="w-7 h-7" />
                             </div>
                         </div>
-                        <h3 className="text-[17px] font-bold text-[#15171C] mb-1">No conversation selected</h3>
-                        <p className="text-[#8A929E] text-[14px] max-w-xs">Pick a message from the list to read it, or compose a new one.</p>
+                        <h3 className="text-[17px] font-bold text-[#15171C] mb-1">{t("mail.noConversation")}</h3>
+                        <p className="text-[#8A929E] text-[14px] max-w-xs">{t("mail.noConversationDesc")}</p>
                     </div>
                 )}
             </div>
@@ -699,8 +701,8 @@ const MailboxPage = () => {
                             <div className="flex items-center gap-2.5 min-w-0">
                                 <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0"><Brain className="w-[18px] h-[18px]" /></span>
                                 <div className="min-w-0">
-                                    <h3 className="text-[15px] font-bold text-[#15171C] leading-tight truncate">Candidate fit</h3>
-                                    <p className="text-[12px] text-[#8A929E] truncate">{fit.data?.candidate_name || selectedEmail?.candidate_name || "Candidate"}{fit.data?.job_title ? ` · ${fit.data.job_title}` : ""}</p>
+                                    <h3 className="text-[15px] font-bold text-[#15171C] leading-tight truncate">{t("mail.candidateFit")}</h3>
+                                    <p className="text-[12px] text-[#8A929E] truncate">{fit.data?.candidate_name || selectedEmail?.candidate_name || t("mail.candidate")}{fit.data?.job_title ? ` · ${fit.data.job_title}` : ""}</p>
                                 </div>
                             </div>
                             <button onClick={() => setFit(f => ({ ...f, open: false }))} className="w-7 h-7 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors shrink-0"><X className="w-4 h-4" /></button>
@@ -714,15 +716,15 @@ const MailboxPage = () => {
                             ) : !fit.data?.available ? (
                                 <div className="text-center py-10">
                                     <div className="w-12 h-12 rounded-[12px] bg-[#F4F5F7] text-[#9AA3AF] flex items-center justify-center mx-auto mb-3"><Brain className="w-6 h-6" /></div>
-                                    <p className="text-[13.5px] font-semibold text-[#15171C]">No AI fit analysis yet</p>
-                                    <p className="text-[12.5px] text-[#8A929E] mt-1 max-w-xs mx-auto">This candidate doesn&apos;t have an AI fit score for this role yet — it&apos;s generated when they apply with a resume.</p>
+                                    <p className="text-[13.5px] font-semibold text-[#15171C]">{t("mail.noAiFit")}</p>
+                                    <p className="text-[12.5px] text-[#8A929E] mt-1 max-w-xs mx-auto">{t("mail.noFitScoreDesc")}</p>
                                 </div>
                             ) : (
                                 <div className="space-y-5">
                                     {fit.data.ai_match_score != null && (
                                         <div>
                                             <div className="flex items-end justify-between mb-1.5">
-                                                <span className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E]">Overall match</span>
+                                                <span className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E]">{t("mail.overallMatch")}</span>
                                                 <span className="text-[22px] font-bold text-[#15171C] leading-none">{Math.round(fit.data.ai_match_score)}<span className="text-[13px] text-[#9AA3AF] font-semibold"> / 100</span></span>
                                             </div>
                                             <div className="h-2.5 rounded-full bg-[#F1F2F5] overflow-hidden"><div className="h-full rounded-full" style={{ width: `${Math.min(100, Math.max(0, fit.data.ai_match_score))}%`, background: "linear-gradient(90deg,#8B7DFF,#5B53E0)" }} /></div>
@@ -733,13 +735,13 @@ const MailboxPage = () => {
                                         <div className="grid grid-cols-2 gap-3">
                                             {fit.data.skill_match_percent != null && (
                                                 <div className="rounded-[12px] border border-[#E8EAED] p-3">
-                                                    <p className="text-[10.5px] font-bold uppercase tracking-wider text-[#8A929E]">Skill match</p>
+                                                    <p className="text-[10.5px] font-bold uppercase tracking-wider text-[#8A929E]">{t("mail.skillMatch")}</p>
                                                     <p className="text-[18px] font-bold text-[#15171C] mt-1">{Math.round(fit.data.skill_match_percent)}%</p>
                                                 </div>
                                             )}
                                             {fit.data.experience_fit != null && (
                                                 <div className="rounded-[12px] border border-[#E8EAED] p-3">
-                                                    <p className="text-[10.5px] font-bold uppercase tracking-wider text-[#8A929E]">Experience fit</p>
+                                                    <p className="text-[10.5px] font-bold uppercase tracking-wider text-[#8A929E]">{t("mail.experienceFit")}</p>
                                                     <p className="text-[18px] font-bold text-[#15171C] mt-1">{Math.round(fit.data.experience_fit)}%</p>
                                                 </div>
                                             )}
@@ -748,21 +750,21 @@ const MailboxPage = () => {
 
                                     {fit.data.fit_reason && (
                                         <div>
-                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#15803D] mb-1.5">Why they fit</p>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#15803D] mb-1.5">{t("mail.whyFit")}</p>
                                             <p className="text-[13px] text-[#374151] leading-relaxed">{fit.data.fit_reason}</p>
                                         </div>
                                     )}
 
                                     {fit.data.not_fit_reason && (
                                         <div>
-                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#C0383C] mb-1.5">Gaps to probe</p>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#C0383C] mb-1.5">{t("mail.gapsToProbe")}</p>
                                             <p className="text-[13px] text-[#374151] leading-relaxed">{fit.data.not_fit_reason}</p>
                                         </div>
                                     )}
 
                                     {fit.data.highlights && fit.data.highlights.length > 0 && (
                                         <div>
-                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">Highlights</p>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">{t("mail.highlights")}</p>
                                             <ul className="space-y-1.5">
                                                 {fit.data.highlights.map((h, i) => (
                                                     <li key={i} className="flex gap-2 text-[13px] text-[#374151] leading-relaxed"><span className="text-[#5B53E0] mt-0.5">•</span><span>{h}</span></li>
@@ -773,7 +775,7 @@ const MailboxPage = () => {
 
                                     {fit.data.skills && fit.data.skills.length > 0 && (
                                         <div>
-                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">Key skills</p>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">{t("mail.keySkills")}</p>
                                             <div className="flex flex-wrap gap-1.5">
                                                 {fit.data.skills.slice(0, 12).map((s, i) => (
                                                     <span key={i} className="px-2.5 py-1 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] text-[11px] font-semibold">{s}</span>

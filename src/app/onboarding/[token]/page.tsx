@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button, Card, Input, Select, Field, Badge, CroarMark, cn } from "@/components/ds";
+import { useI18n } from "@/context/I18nContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -39,8 +41,8 @@ interface OnboardingData {
 }
 
 export default function CandidateOnboardingPage() {
+    const { t } = useI18n();
     const params = useParams();
-    const router = useRouter();
     const { token } = params;
 
     const [onboarding, setOnboarding] = useState<OnboardingData | null>(null);
@@ -51,7 +53,7 @@ export default function CandidateOnboardingPage() {
 
     const [formData, setFormData] = useState<Record<string, Record<string, unknown>>>({});
     const [formConfig, setFormConfig] = useState<{ sections: OnboardingSection[] }>({ sections: [] });
-    
+
     // Verification State
     const [verificationEmail, setVerificationEmail] = useState("");
     const [verificationError, setVerificationError] = useState("");
@@ -81,12 +83,12 @@ export default function CandidateOnboardingPage() {
 
     const handleVerify = () => {
         if (!onboarding) return;
-        
+
         if (verificationEmail.toLowerCase().trim() === onboarding.candidate_email?.toLowerCase().trim()) {
             setStep(1);
             setVerificationError("");
         } else {
-            setVerificationError("Email does not match our records. Please check and try again.");
+            setVerificationError(t("candidate.emailNoMatch"));
         }
     };
 
@@ -105,7 +107,7 @@ export default function CandidateOnboardingPage() {
         try {
             const uploadFormData = new FormData();
             uploadFormData.append("file", file);
-            
+
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/public/onboarding/${token}/upload-dynamic/${fieldName}`, {
                 method: "POST",
                 body: uploadFormData
@@ -143,10 +145,10 @@ export default function CandidateOnboardingPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center p-6 text-slate-400 font-bold text-xs  ">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="animate-spin material-icons-outlined text-indigo-600 text-4xl">sync</div>
-                    <span>Loading your profile...</span>
+            <div className="min-h-screen bg-[#F6F7F9] flex items-center justify-center p-6">
+                <div className="flex flex-col items-center gap-4 text-[#8A929E]">
+                    <span className="animate-spin material-icons-outlined text-[#5B53E0] text-4xl">progress_activity</span>
+                    <span className="text-[13px] font-semibold">{t("candidate.loadingProfile")}</span>
                 </div>
             </div>
         );
@@ -154,17 +156,20 @@ export default function CandidateOnboardingPage() {
 
     if (!onboarding) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-                <h1 className="text-2xl font-black text-slate-900 mb-2">Process Not Found</h1>
-                <p className="text-slate-500 max-w-sm mb-8">This link may have expired or is incorrect.</p>
+            <div className="min-h-screen bg-[#F6F7F9] flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-16 h-16 rounded-[16px] bg-[#FDECEC] text-[#C0383C] flex items-center justify-center mb-6">
+                    <span className="material-icons-outlined text-3xl">link_off</span>
+                </div>
+                <h1 className="text-2xl font-extrabold text-[#15171C] mb-2 tracking-[-0.3px]">{t("candidate.processNotFound")}</h1>
+                <p className="text-[#8A929E] max-w-sm text-[14px]">{t("candidate.linkExpired")}</p>
             </div>
         );
     }
 
     const dynamicSections = formConfig.sections || [];
     const steps = [
-        { id: "verify", name: "Verify", icon: "security" },
-        { id: "welcome", name: "Welcome", icon: "wave" },
+        { id: "verify", name: t("candidate.verify"), icon: "verified_user" },
+        { id: "welcome", name: t("candidate.welcome"), icon: "waving_hand" },
         ...dynamicSections.map((s: OnboardingSection) => ({
             id: s.id,
             name: s.title,
@@ -175,287 +180,291 @@ export default function CandidateOnboardingPage() {
     const currentStep = steps[step];
     const currentSection = dynamicSections.find((s: OnboardingSection) => s.id === currentStep?.id);
 
-    const renderDynamicSection = (section: OnboardingSection) => {
-        return (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-black text-indigo-600  tracking-[0.2em]">Section {step - 1} of {steps.length - 2}</span>
-                    <h3 className="text-2xl font-black text-slate-900  tracking-tight">
-                        {section.title}
-                    </h3>
-                    {(onboarding.rejected_fields?.length ?? 0) > 0 && (
-                        <p className="text-[10px] font-bold text-rose-500   mt-1 flex items-center gap-1">
-                            <span className="material-icons-outlined text-xs">info</span>
-                            {"Some fields in this section require correction."}
-                        </p>
-                    )}
+    const renderControl = (section: OnboardingSection, field: OnboardingField) => {
+        const isRejected = onboarding.rejected_fields?.includes(field.name);
+        const isCorrectionMode = (onboarding.rejected_fields?.length ?? 0) > 0;
+        const isDisabled = isCorrectionMode && !isRejected;
+        const rejectedRing = isRejected ? "border-[#EF4444] focus:border-[#EF4444] focus:ring-[#EF4444]/15" : "";
+
+        if (field.type === "select") {
+            return (
+                <div className="relative">
+                    <Select
+                        className={cn("pr-10 cursor-pointer", rejectedRing)}
+                        value={(formData[section.id]?.[field.name] as string) || ""}
+                        onChange={(e) => handleUpdate(section.id, field.name, e.target.value)}
+                        required={field.required}
+                        disabled={isDisabled}
+                    >
+                        <option value="">{t("candidate.selectField", { label: field.label })}</option>
+                        {field.options?.map((opt: string) => (
+                            <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                    </Select>
+                    <span className="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">expand_more</span>
                 </div>
+            );
+        }
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                    {section.fields?.map((field: OnboardingField) => (
-                        <div key={field.name} className="flex flex-col gap-1.5">
-                            <label className="text-[10px] font-black text-slate-500   ml-1">
-                                {field.label} {field.required && <span className="text-red-500 font-bold">*</span>}
-                            </label>
-                            
-                            {(() => {
-                                const isRejected = onboarding.rejected_fields?.includes(field.name);
-                                const isCorrectionMode = (onboarding.rejected_fields?.length ?? 0) > 0;
-                                const isDisabled = isCorrectionMode && !isRejected;
-
-                                if (field.type === "select") {
-                                    return (
-                                        <div className="relative">
-                                            <select 
-                                                className={`w-full bg-white border ${isRejected ? 'border-rose-300 ring-4 ring-rose-500/5' : 'border-slate-200'} rounded-xl px-4 py-3 text-slate-700 font-bold text-sm outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/5 transition-all appearance-none cursor-pointer disabled:bg-slate-50 disabled:text-slate-400`}
-                                                value={(formData[section.id]?.[field.name] as string) || ""}
-                                                onChange={(e) => handleUpdate(section.id, field.name, e.target.value)}
-                                                required={field.required}
-                                                disabled={isDisabled}
-                                            >
-                                                <option value="">Select {field.label}</option>
-                                                {field.options?.map((opt: string) => (
-                                                    <option key={opt} value={opt}>{opt}</option>
-                                                ))}
-                                            </select>
-                                            <span className="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
-                                        </div>
-                                    );
-                                } else if (field.type === "file") {
-                                    const fileUploaded = formData[section.id]?.[field.name];
-                                    // Special case: if it's a file, we check the onboarding.documents for its status if applicable, 
-                                    // but granular rejected_fields covers it too
-                                    return (
-                                        <div className="relative">
-                                            {fileUploaded && !isRejected ? (
-                                                <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-between group transition-all">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 bg-emerald-500 text-white rounded-lg flex items-center justify-center">
-                                                            <span className="material-icons-outlined text-sm">check</span>
-                                                        </div>
-                                                        <div className="flex flex-col">
-                                                            <span className="text-[11px] font-bold text-emerald-900 leading-none">File Uploaded</span>
-                                                            <span className="text-[9px] font-bold text-emerald-600  mt-0.5">Verified</span>
-                                                        </div>
-                                                    </div>
-                                                    {!isDisabled && (
-                                                        <button 
-                                                            onClick={() => handleUpdate(section.id, field.name, "")} 
-                                                            className="w-7 h-7 rounded-lg bg-emerald-200/30 flex items-center justify-center text-emerald-700 hover:bg-red-500 hover:text-white transition-all"
-                                                        >
-                                                            <span className="material-icons-outlined text-xs">close</span>
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <div className="relative group">
-                                                    <input 
-                                                        type="file" 
-                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed" 
-                                                        onChange={(e) => e.target.files?.[0] && handleFileUpload(section.id, field.name, e.target.files[0])}
-                                                        disabled={isDisabled}
-                                                    />
-                                                    <div className={`w-full py-4 ${isRejected ? 'bg-rose-50 border-rose-300' : 'bg-slate-50 border-slate-200'} border-dashed rounded-xl flex flex-col items-center justify-center transition-all ${!isDisabled && 'group-hover:bg-slate-100 group-hover:border-indigo-400 group-hover:ring-4 group-hover:ring-indigo-500/5'}`}>
-                                                        <span className={`material-icons-outlined ${isRejected ? 'text-rose-500' : 'text-slate-400'} transition-colors text-lg`}>{isRejected ? 'error' : 'upload'}</span>
-                                                        <p className={`text-[9px] font-black ${isRejected ? 'text-rose-600' : 'text-slate-500'}   mt-1`}>
-                                                            {isDisabled ? 'Field Locked' : isRejected ? 'Upload corrected file' : 'Click to upload file'}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                } else {
-                                    return (
-                                        <input 
-                                            type={field.type === "phone" ? "tel" : field.type === "email" ? "email" : field.type === "number" ? "number" : field.type === "date" ? "date" : "text"} 
-                                            className={`w-full bg-white border ${isRejected ? 'border-rose-300 ring-4 ring-rose-500/5' : 'border-slate-200'} rounded-xl px-4 py-3 text-slate-700 font-bold text-sm outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/5 transition-all placeholder:text-slate-300 disabled:bg-slate-50 disabled:text-slate-400/70`}
-                                            placeholder={`e.g. ${field.label}...`}
-                                            value={(formData[section.id]?.[field.name] as string) || ""}
-                                            onChange={(e) => handleUpdate(section.id, field.name, e.target.value)}
-                                            required={field.required}
-                                            disabled={isDisabled}
-                                        />
-                                    );
-                                }
-                            })()}
+        if (field.type === "file") {
+            const fileUploaded = formData[section.id]?.[field.name];
+            if (fileUploaded && !isRejected) {
+                return (
+                    <div className="flex items-center justify-between rounded-[10px] border border-[#CDEbe1] bg-[#E3F4EF] px-3.5 py-2.5">
+                        <div className="flex items-center gap-3">
+                            <span className="w-8 h-8 rounded-[8px] bg-[#0E8A6E] text-white flex items-center justify-center">
+                                <span className="material-icons-outlined text-[18px]">check</span>
+                            </span>
+                            <div className="flex flex-col leading-tight">
+                                <span className="text-[13px] font-semibold text-[#0B6B56]">{t("candidate.fileUploaded")}</span>
+                                <span className="text-[11px] text-[#0E8A6E]">{t("candidate.readyForReview")}</span>
+                            </div>
                         </div>
-                    ))}
+                        {!isDisabled && (
+                            <button
+                                onClick={() => handleUpdate(section.id, field.name, "")}
+                                className="w-7 h-7 rounded-[8px] bg-white/60 text-[#0E8A6E] flex items-center justify-center hover:bg-[#EF4444] hover:text-white transition-colors"
+                                aria-label={t("candidate.removeFile")}
+                            >
+                                <span className="material-icons-outlined text-[16px]">close</span>
+                            </button>
+                        )}
+                    </div>
+                );
+            }
+            return (
+                <div className="relative group">
+                    <input
+                        type="file"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed"
+                        onChange={(e) => e.target.files?.[0] && handleFileUpload(section.id, field.name, e.target.files[0])}
+                        disabled={isDisabled}
+                    />
+                    <div className={cn(
+                        "w-full py-5 rounded-[10px] border border-dashed flex flex-col items-center justify-center gap-1 transition-colors",
+                        isRejected ? "bg-[#FDECEC] border-[#EF9A9A]" : "bg-[#FAFBFC] border-[#D6DAE0]",
+                        !isDisabled && "group-hover:border-[#5B53E0] group-hover:bg-[#F3F2FD]"
+                    )}>
+                        <span className={cn("material-icons-outlined text-[22px]", isRejected ? "text-[#C0383C]" : "text-[#9AA3AF]")}>
+                            {isRejected ? "error" : "cloud_upload"}
+                        </span>
+                        <p className={cn("text-[12px] font-semibold", isRejected ? "text-[#C0383C]" : "text-[#6B7280]")}>
+                            {isDisabled ? t("candidate.fieldLocked") : isRejected ? t("candidate.uploadCorrectedFile") : t("candidate.clickToUpload")}
+                        </p>
+                    </div>
                 </div>
+            );
+        }
 
-                <div className="pt-8 flex gap-3 border-t border-slate-100">
-                    <button 
-                        onClick={() => setStep(step - 1)} 
-                        className="px-8 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-black text-[10px]   transition-all"
-                    >
-                        Back
-                    </button>
-                    <button 
-                        onClick={submitSection} 
-                        disabled={isSubmitting}
-                        className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-black text-xs   transition-all shadow-lg shadow-indigo-100"
-                    >
-                        {isSubmitting ? "Processing..." : step === steps.length - 1 ? "Submit Profile" : "Save & Continue"}
-                    </button>
-                </div>
-            </div>
+        return (
+            <Input
+                type={field.type === "phone" ? "tel" : field.type === "email" ? "email" : field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
+                className={rejectedRing}
+                placeholder={t("candidate.egField", { label: field.label })}
+                value={(formData[section.id]?.[field.name] as string) || ""}
+                onChange={(e) => handleUpdate(section.id, field.name, e.target.value)}
+                required={field.required}
+                disabled={isDisabled}
+            />
         );
     };
 
+    const renderDynamicSection = (section: OnboardingSection) => (
+        <motion.div
+            key={section.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-7"
+        >
+            <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-bold text-[#5B53E0] uppercase tracking-[0.14em]">
+                    {t("candidate.sectionXofY", { current: step - 1, total: steps.length - 2 })}
+                </span>
+                <h3 className="text-[22px] font-extrabold text-[#15171C] tracking-[-0.3px]">{section.title}</h3>
+                {(onboarding.rejected_fields?.length ?? 0) > 0 && (
+                    <Badge tone="warning" className="w-fit mt-1">
+                        <span className="material-icons-outlined text-[14px]">info</span>
+                        {t("candidate.someFieldsNeedCorrection")}
+                    </Badge>
+                )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-5">
+                {section.fields?.map((field: OnboardingField) => (
+                    <Field key={field.name} label={field.label} required={field.required}>
+                        {renderControl(section, field)}
+                    </Field>
+                ))}
+            </div>
+
+            <div className="pt-6 flex gap-3 border-t border-[#EEF0F2]">
+                <Button variant="secondary" onClick={() => setStep(step - 1)} icon="arrow_back">
+                    {t("candidate.back")}
+                </Button>
+                <Button
+                    variant="primary"
+                    className="flex-1"
+                    onClick={submitSection}
+                    disabled={isSubmitting}
+                    trailingIcon={isSubmitting ? undefined : "arrow_forward"}
+                >
+                    {isSubmitting ? t("candidate.processing") : step === steps.length - 1 ? t("candidate.submitProfile") : t("candidate.saveAndContinue")}
+                </Button>
+            </div>
+        </motion.div>
+    );
+
     return (
-        <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
+        <div className="min-h-screen bg-[#F6F7F9] text-[#15171C]">
             {/* Header */}
-            <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50 transition-all">
+            <nav className="fixed top-0 left-0 right-0 bg-white/85 backdrop-blur-md border-b border-[#E8EAED] z-50">
                 <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-lg overflow-hidden">
-                            {onboarding.company_logo ? (
+                        {onboarding.company_logo ? (
+                            <span className="w-9 h-9 rounded-[10px] overflow-hidden flex items-center justify-center bg-white border border-[#E8EAED]">
                                 <img src={onboarding.company_logo} alt={onboarding.company_name || "Company Logo"} className="w-full h-full object-contain" />
-                            ) : (
-                                (onboarding.company_name?.[0] || "C").toUpperCase()
-                            )}
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-xs font-black text-slate-900 leading-tight  tracking-tight">
-                                {onboarding.company_name || "Our"} Onboarding Portal
                             </span>
-                            <span className="text-[9px] font-black text-indigo-600  ">
-                                {onboarding.company_name || "Our Company"} • Process: {onboarding.onboarding_code}
+                        ) : (
+                            <CroarMark size={36} />
+                        )}
+                        <div className="flex flex-col leading-tight">
+                            <span className="text-[13px] font-extrabold text-[#15171C] tracking-[-0.2px]">
+                                {t("candidate.onboardingPortal", { company: onboarding.company_name || t("candidate.our") })}
+                            </span>
+                            <span className="text-[11px] font-semibold text-[#8A929E]">
+                                {t("candidate.processLabel", { code: onboarding.onboarding_code })}
                             </span>
                         </div>
                     </div>
+                    <Badge tone="indigo" dot className="hidden sm:inline-flex">{t("candidate.securePortal")}</Badge>
                 </div>
             </nav>
 
-            <main className="max-w-3xl mx-auto px-6 pt-32 pb-20 relative">
+            <main className="max-w-2xl mx-auto px-6 pt-28 pb-20">
                 {/* Progress Indicators */}
                 {!submitted && (
-                    <div className="mb-12">
-                        <div className="flex justify-between items-center mb-4 relative">
-                            {steps.map((s, idx) => (
-                                <div key={s.id} className="flex flex-col items-center flex-1 z-10">
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-500 ${
-                                        step > idx ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20" : 
-                                        step === idx ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 ring-4 ring-indigo-500/10" : 
-                                        "bg-white border border-slate-200 text-slate-400"
-                                    }`}>
-                                        <span className="material-icons-outlined text-base">
-                                            {step > idx ? "check" : s.icon}
+                    <div className="mb-10">
+                        <div className="flex justify-between items-start relative">
+                            {steps.map((s, idx) => {
+                                const done = step > idx;
+                                const active = step === idx;
+                                return (
+                                    <div key={s.id} className="flex flex-col items-center flex-1 z-10">
+                                        <div className={cn(
+                                            "w-9 h-9 rounded-[10px] flex items-center justify-center transition-all duration-500",
+                                            done ? "bg-[#0E8A6E] text-white shadow-[0_6px_16px_rgba(14,138,110,0.28)]" :
+                                            active ? "bg-[#5B53E0] text-white shadow-[0_6px_16px_rgba(91,83,224,0.28)] ring-4 ring-[#5B53E0]/12" :
+                                            "bg-white border border-[#E1E4E8] text-[#9AA3AF]"
+                                        )}>
+                                            <span className="material-icons-outlined text-[18px]">{done ? "check" : s.icon}</span>
+                                        </div>
+                                        <span className={cn(
+                                            "text-[10px] font-bold mt-2 text-center transition-colors duration-500",
+                                            active ? "text-[#5B53E0]" : done ? "text-[#0E8A6E]" : "text-[#9AA3AF]"
+                                        )}>
+                                            {s.name}
                                         </span>
                                     </div>
-                                    <span className={`text-[9px] font-black   mt-2 transition-colors duration-500 ${step === idx ? "text-indigo-600" : "text-slate-400"}`}>
-                                        {s.name}
-                                    </span>
-                                </div>
-                            ))}
-                            {/* Connector Line Background */}
-                            <div className="absolute top-4 left-0 right-0 h-[2px] bg-slate-200 -z-0"></div>
-                            {/* Active Connector Line */}
-                            <div 
-                                className="absolute top-4 left-0 h-[2px] bg-indigo-500 transition-all duration-700 -z-0"
+                                );
+                            })}
+                            {/* Connector background */}
+                            <div className="absolute top-[18px] left-0 right-0 h-[2px] bg-[#E1E4E8] -z-0" />
+                            {/* Active connector */}
+                            <div
+                                className="absolute top-[18px] left-0 h-[2px] bg-[#5B53E0] transition-all duration-700 -z-0"
                                 style={{ width: `${(step / (steps.length - 1)) * 100}%` }}
-                            ></div>
+                            />
                         </div>
                     </div>
                 )}
 
                 <AnimatePresence mode="wait">
                     {submitted ? (
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white border border-slate-200 rounded-[32px] p-12 text-center shadow-xl shadow-slate-200/40 relative overflow-hidden"
-                        >
-                            <div className="absolute top-0 left-0 w-full h-1.5 bg-emerald-500"></div>
-                            <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-bounce">
-                                <span className="material-icons-outlined text-4xl font-bold">check_circle</span>
-                            </div>
-                            <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight ">Onboarding Submitted</h2>
-                            <p className="text-slate-500 font-medium max-w-sm mx-auto leading-relaxed text-sm">
-                                Thank you for completing your profile. Our recruitment and HR team will review your details and contact you via email for the next steps.
-                            </p>
-                            <div className="mt-10 pt-8 border-t border-slate-100 flex flex-col items-center">
-                                <span className="text-[10px] font-black text-slate-400   mb-1">Process Reference</span>
-                                <span className="text-sm font-black text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full">{onboarding.onboarding_code}</span>
-                            </div>
+                        <motion.div key="done" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}>
+                            <Card padding="lg" className="text-center relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-[#0E8A6E]" />
+                                <div className="w-20 h-20 rounded-[20px] bg-[#E3F4EF] text-[#0E8A6E] flex items-center justify-center mx-auto mb-7 mt-2">
+                                    <span className="material-icons-outlined text-4xl">check_circle</span>
+                                </div>
+                                <h2 className="text-[26px] font-extrabold text-[#15171C] mb-3 tracking-[-0.4px]">{t("candidate.onboardingSubmitted")}</h2>
+                                <p className="text-[#6B7280] max-w-sm mx-auto leading-relaxed text-[14px]">
+                                    {t("candidate.onboardingSubmittedDesc")}
+                                </p>
+                                <div className="mt-8 pt-6 border-t border-[#EEF0F2] flex flex-col items-center gap-2">
+                                    <span className="text-[11px] font-bold text-[#9AA3AF] uppercase tracking-[0.12em]">{t("candidate.processReference")}</span>
+                                    <Badge tone="indigo" className="text-[13px] px-3 py-1">{onboarding.onboarding_code}</Badge>
+                                </div>
+                            </Card>
                         </motion.div>
                     ) : (
-                        <motion.div 
-                            key={step}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="bg-white border border-slate-200 rounded-[32px] p-8 md:p-12 shadow-xl shadow-slate-200/40 relative"
-                        >
-                            {currentStep?.id === "verify" && (
-                                <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
-                                    <div className="text-center">
-                                        <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                                            <span className="material-icons-outlined text-4xl">fingerprint</span>
+                        <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                            <Card padding="lg" className="md:p-9">
+                                {currentStep?.id === "verify" && (
+                                    <div className="space-y-7">
+                                        <div className="text-center">
+                                            <div className="w-16 h-16 rounded-[16px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center mx-auto mb-5">
+                                                <span className="material-icons-outlined text-3xl">fingerprint</span>
+                                            </div>
+                                            <h2 className="text-[26px] font-extrabold text-[#15171C] tracking-[-0.4px]">{t("candidate.identityVerification")}</h2>
+                                            <p className="text-[#8A929E] text-[13px] font-semibold mt-1">{t("candidate.secureGatewayAccess")}</p>
                                         </div>
-                                        <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight ">Identity Verification</h2>
-                                        <p className="text-slate-400 text-xs font-bold  ">Secure Gateway Access</p>
+
+                                        <div className="rounded-[12px] bg-[#FAFBFC] border border-[#EEF0F2] p-5 space-y-3">
+                                            <Field
+                                                label={t("candidate.candidateEmailAddress")}
+                                                htmlFor="candidate-verification-email"
+                                                error={verificationError || undefined}
+                                            >
+                                                <Input
+                                                    id="candidate-verification-email"
+                                                    type="email"
+                                                    icon="mail"
+                                                    className={verificationError ? "border-[#EF4444] focus:border-[#EF4444] focus:ring-[#EF4444]/15" : ""}
+                                                    placeholder={t("candidate.enterRegisteredEmail")}
+                                                    value={verificationEmail}
+                                                    onChange={(e) => setVerificationEmail(e.target.value)}
+                                                    onKeyDown={(e) => e.key === "Enter" && handleVerify()}
+                                                />
+                                            </Field>
+                                            <p className="text-[12px] text-[#8A929E] leading-relaxed">
+                                                {t("candidate.verifyInstruction")}{" "}
+                                                <span className="text-[#5B53E0] font-semibold">{onboarding.job_title || t("candidate.yourRole")}</span>.
+                                            </p>
+                                        </div>
+
+                                        <Button variant="dark" fullWidth size="lg" onClick={handleVerify} trailingIcon="arrow_forward"
+                                            className="!bg-[#15171C] hover:!bg-black !border-transparent">
+                                            {t("candidate.verifyAndEnterPortal")}
+                                        </Button>
                                     </div>
-                                    
-                                    <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
-                                        <div className="flex flex-col gap-1.5">
-                                            <label htmlFor="candidate-verification-email" className="text-[10px] font-black text-slate-500   ml-1">Candidate Email Address</label>
-                                            <input
-                                                id="candidate-verification-email"
-                                                type="email"
-                                                className={`w-full bg-white border ${verificationError ? 'border-red-500' : 'border-slate-200'} rounded-xl px-4 py-3 text-slate-700 font-bold text-sm outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all`}
-                                                placeholder="Enter your registered email..."
-                                                value={verificationEmail}
-                                                onChange={(e) => setVerificationEmail(e.target.value)}
-                                            />
-                                            {verificationError && (
-                                                <p className="text-red-500 text-[10px] font-bold mt-1 px-1 flex items-center gap-1">
-                                                    <span className="material-icons-outlined text-xs">error_outline</span>
-                                                    {verificationError}
-                                                </p>
-                                            )}
+                                )}
+
+                                {currentStep?.id === "welcome" && (
+                                    <div className="text-center py-4">
+                                        <div className="w-16 h-16 rounded-[16px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center mx-auto mb-6">
+                                            <span className="material-icons-outlined text-3xl">celebration</span>
                                         </div>
-                                        <p className="text-[10px] text-slate-400 leading-relaxed font-medium">
-                                            Please enter the email address used during your application to access the onboarding documents for <span className="text-indigo-600 font-bold">{onboarding.job_title}</span>.
+                                        <h2 className="text-[30px] font-extrabold text-[#15171C] tracking-[-0.6px] leading-none mb-3">{t("candidate.youreHired")}</h2>
+                                        <Badge tone="indigo" className="text-[13px] px-3 py-1 mb-6">{onboarding.job_title || t("candidate.newRole")}</Badge>
+                                        <p className="text-[#6B7280] mb-8 max-w-sm mx-auto leading-relaxed text-[14px]">
+                                            {t("candidate.welcomeMessage")}
                                         </p>
+                                        <Button variant="primary" fullWidth size="lg" onClick={() => setStep(step + 1)} trailingIcon="arrow_forward">
+                                            {t("candidate.initiateOnboarding")}
+                                        </Button>
                                     </div>
+                                )}
 
-                                    <button 
-                                        onClick={handleVerify}
-                                        className="w-full py-4 bg-slate-900 hover:bg-black text-white rounded-xl font-black text-xs   transition-all shadow-xl shadow-slate-200"
-                                    >
-                                        Verify & Enter Portal
-                                    </button>
-                                </div>
-                            )}
-
-                            {currentStep?.id === "welcome" && (
-                                <div className="text-center py-6 animate-in fade-in zoom-in-95 duration-500">
-                                    <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-8 rotate-3">
-                                        <span className="material-icons-outlined text-4xl">waving_hand</span>
-                                    </div>
-                                    <div className="space-y-2 mb-10">
-                                        <h2 className="text-4xl font-black text-slate-900 tracking-tighter  leading-none">Job Secured</h2>
-                                        <div className="inline-block px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-black   shadow-lg shadow-indigo-100 ">
-                                            {onboarding.job_title}
-                                        </div>
-                                    </div>
-                                    <p className="text-slate-500 font-medium mb-12 max-w-sm mx-auto leading-relaxed text-sm">
-                                        Congratulations on joining the team! We need a few more details to finalize your professional profile and digital workspace.
-                                    </p>
-                                    <button 
-                                        onClick={() => setStep(step + 1)}
-                                        className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black text-xs   transition-all shadow-2xl shadow-indigo-200"
-                                    >
-                                        Initiate Onboarding
-                                    </button>
-                                </div>
-                            )}
-
-                            {currentSection && renderDynamicSection(currentSection)}
+                                {currentSection && renderDynamicSection(currentSection)}
+                            </Card>
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                <p className="text-center text-[11px] text-[#B4BAC2] mt-6 flex items-center justify-center gap-1.5">
+                    <span className="material-icons-outlined text-[13px]">lock</span>
+                    {t("candidate.securedBy")} Croar
+                </p>
             </main>
         </div>
     );

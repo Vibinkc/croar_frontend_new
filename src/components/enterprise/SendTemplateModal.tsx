@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useI18n } from "@/context/I18nContext";
 
 interface SendTemplateModalTemplate {
     id: string;
@@ -44,6 +45,7 @@ export default function SendTemplateModal<T extends SendTemplateModalTemplate>({
     sendIcon,
     sendLabel,
 }: SendTemplateModalProps<T>) {
+    const { t: tr } = useI18n();
     return (
         <div
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
@@ -88,7 +90,7 @@ export default function SendTemplateModal<T extends SendTemplateModalTemplate>({
                         </div>
                     ) : templates.length === 0 ? (
                         <div className="py-4 text-center">
-                            <p className="text-sm text-slate-400 font-medium">No templates found. Go to settings to create one.</p>
+                            <p className="text-sm text-slate-400 font-medium">{tr("sharedUi.noTemplatesFound")}</p>
                         </div>
                     ) : (
                         <div id={listId} className="space-y-3 max-h-60 overflow-y-auto pr-2">
@@ -122,7 +124,7 @@ export default function SendTemplateModal<T extends SendTemplateModalTemplate>({
                         onClick={onClose}
                         className="px-5 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-lg transition-colors"
                     >
-                        CANCEL
+                        {tr("sharedUi.cancelUpper")}
                     </button>
                     <button
                         onClick={onSend}

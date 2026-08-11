@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import {
   payrollApi,
   reportsApi,
@@ -29,6 +30,7 @@ const STATUS_TONE: Record<
 };
 
 export default function ReportsPage() {
+    const { t: tr } = useI18n();
   const [cycles, setCycles] = useState<PayrollCycle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,9 +68,9 @@ export default function ReportsPage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Reports"
-        subtitle="Export payroll registers and summaries as CSV (opens in Excel) or PDF."
-        help={<><p>Export the payroll summary and salary register for a cycle.</p><p>Run the cycle first, then download CSV or PDF here.</p></>}
+        title={tr("payroll.reportsTitle")}
+        subtitle={tr("payroll.reportsSubtitle")}
+        help={<><p>{tr("payroll.exportSummaryHelp")}</p><p>{tr("payroll.runCycleFirstHelp")}</p></>}
       />
 
       {error && (
@@ -80,21 +82,21 @@ export default function ReportsPage() {
       {/* Stats */}
       <StatGrid className="grid-cols-2 lg:grid-cols-3">
         <StatCard
-          label="Payroll Cycles"
+          label={tr("payroll.statPayrollCycles")}
           value={loading ? "—" : cycles.length}
           icon="event_repeat"
           gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
           glow="rgba(91,83,224,0.28)"
         />
         <StatCard
-          label="Register Ready"
+          label={tr("payroll.statRegisterReady")}
           value={loading ? "—" : readyCount}
           icon="task_alt"
           gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
           glow="rgba(14,138,110,0.25)"
         />
         <StatCard
-          label="Export Formats"
+          label={tr("payroll.statExportFormats")}
           value="2"
           icon="download"
           gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
@@ -109,9 +111,9 @@ export default function ReportsPage() {
             <span className="material-symbols-rounded text-[22px]">summarize</span>
           </span>
           <div className="min-w-0">
-            <h3 className="text-[15px] font-bold text-[#15171C]">Payroll Summary</h3>
+            <h3 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.payrollSummary")}</h3>
             <p className="text-[12.5px] text-[#8A929E] mt-0.5">
-              Cycle-level totals across every payroll cycle.
+              {tr("payroll.cycleLevelTotals")}
             </p>
           </div>
         </div>
@@ -142,7 +144,7 @@ export default function ReportsPage() {
       {/* Salary register per cycle */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-[15px] font-bold text-[#15171C]">Salary Register</h2>
+          <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.salaryRegister")}</h2>
           <p className="text-[12.5px] text-[#8A929E] mt-0.5">
             Per-employee earnings, deductions and net pay for a cycle. Available once
             a cycle has been run.
@@ -160,7 +162,7 @@ export default function ReportsPage() {
             <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
               <span className="material-symbols-rounded text-[32px] text-[#C7CCD4]">receipt_long</span>
             </div>
-            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No payroll cycles yet</h3>
+            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noCyclesYet")}</h3>
             <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">
               Once you create and run a payroll cycle, its salary register will be available to export here.
             </p>

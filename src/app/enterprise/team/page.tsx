@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense, useCallback } from "react";
 import { apiClient } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Users,
@@ -43,6 +44,7 @@ interface Member {
 
 function TeamManagementContent() {
     const { canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [activeTab, setActiveTab] = useState<"members" | "roles">("members");
     const [members, setMembers] = useState<Member[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
@@ -212,14 +214,14 @@ function TeamManagementContent() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Team Management</h1>
-                        <PageHelp title="Team Management">
-                            <p>Control who can sign in to Croar and what they can do.</p>
-                            <p><strong>Members</strong> are the people with access. <strong>Roles</strong> bundle permissions — assign a role to grant the right level of access.</p>
-                            <p>Invite a member, then give them one or more roles.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("general.teamManagement")}</h1>
+                        <PageHelp title={tr("team.teamManagementHelpTitle")}>
+                            <p>{tr("team.controlWhoSignsIn")}</p>
+                            <p><strong>{tr("general.members")}</strong> are the people with access. <strong>{tr("general.roles")}</strong> bundle permissions — assign a role to grant the right level of access.</p>
+                            <p>{tr("team.inviteMemberThenRoles")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Organization personnel &amp; access</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("general.orgPersonnel")}</p>
                 </div>
 
                 <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap sm:shrink-0">
@@ -227,12 +229,12 @@ function TeamManagementContent() {
                     {activeTab === "members"
                         ? canAccess("employees:moderate") && (
                             <Button size="sm" icon="person_add" onClick={() => setShowInviteModal(true)}>
-                                Invite Member
+                                {tr("general.inviteMember")}
                             </Button>
                         )
                         : canAccess("employees:moderate") && (
                             <Button size="sm" icon="add_moderator" onClick={() => setShowRoleModal(true)}>
-                                Create Role
+                                {tr("general.createRole")}
                             </Button>
                         )}
 
@@ -241,14 +243,14 @@ function TeamManagementContent() {
                             onClick={() => setActiveTab("members")}
                             className={`h-8 px-4 rounded-[8px] text-[13px] font-semibold transition-all ${activeTab === "members" ? "bg-white text-[#15171C] shadow-sm" : "text-[#6B6F76] hover:text-[#374151]"}`}
                         >
-                            Members
+                            {tr("general.members")}
                         </button>
                         {canAccess("employees:moderate") && (
                             <button
                                 onClick={() => setActiveTab("roles")}
                                 className={`h-8 px-4 rounded-[8px] text-[13px] font-semibold transition-all ${activeTab === "roles" ? "bg-white text-[#15171C] shadow-sm" : "text-[#6B6F76] hover:text-[#374151]"}`}
                             >
-                                Roles
+                                {tr("general.roles")}
                             </button>
                         )}
                     </div>
@@ -257,10 +259,10 @@ function TeamManagementContent() {
 
             {/* Stat Cards */}
             <StatGrid>
-                <StatCard label="Total Members" value={members.length} icon="group" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
-                <StatCard label="Active Roles" value={roles.length} icon="verified_user" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="System Roles" value={roles.filter(r => r.is_system).length} icon="lock" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label="Global Permissions" value={permissions.length || "—"} icon="security" gradient="linear-gradient(135deg,#FBBF24,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("general.totalMembers")} value={members.length} icon="group" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
+                <StatCard label={tr("general.activeRoles")} value={roles.length} icon="verified_user" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("general.systemRoles")} value={roles.filter(r => r.is_system).length} icon="lock" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("general.globalPermissions")} value={permissions.length || "—"} icon="security" gradient="linear-gradient(135deg,#FBBF24,#D97706)" glow="rgba(217,119,6,0.25)" />
             </StatGrid>
 
             {/* Search and Filter Bar */}
@@ -269,7 +271,7 @@ function TeamManagementContent() {
                     <Input
                         icon="search"
                         type="text"
-                        placeholder="Search members by name or email..."
+                        placeholder={tr("general.searchMembersPlaceholder")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -282,7 +284,7 @@ function TeamManagementContent() {
                             value={selectedRoleFilter}
                             onChange={(e) => setSelectedRoleFilter(e.target.value)}
                         >
-                            <option value="ALL">All Roles</option>
+                            <option value="ALL">{tr("general.allRoles")}</option>
                             {roles.map(r => (
                                 <option key={r.id} value={r.name}>{r.name}</option>
                             ))}
@@ -291,7 +293,7 @@ function TeamManagementContent() {
                     <Button
                         variant="secondary"
                         onClick={fetchData}
-                        aria-label="Refresh"
+                        aria-label={tr("team.refresh")}
                         className="w-11 h-11 px-0 shrink-0"
                     >
                         <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
@@ -302,8 +304,8 @@ function TeamManagementContent() {
             {activeTab === "members" ? (
                 <div className="space-y-4">
                     <div className="flex items-center justify-between px-1">
-                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">Active Members</h2>
-                        <Badge tone="neutral">{filteredMembers.length} team members</Badge>
+                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">{tr("general.activeMembers")}</h2>
+                        <Badge tone="neutral">{tr("general.teamMembersCount", { count: filteredMembers.length })}</Badge>
                     </div>
 
                     {filteredMembers.length === 0 ? (
@@ -314,10 +316,10 @@ function TeamManagementContent() {
                                     <Users className="w-6 h-6" />
                                 </div>
                             </div>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No members found</h3>
-                            <p className="text-[#8A929E] text-[13px] max-w-xs mx-auto mb-5">Try adjusting your search query or role filter.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("general.noMembersFound")}</h3>
+                            <p className="text-[#8A929E] text-[13px] max-w-xs mx-auto mb-5">{tr("general.adjustSearchRole")}</p>
                             <Button size="sm" onClick={() => { setSearchQuery(""); setSelectedRoleFilter("ALL"); }}>
-                                Reset Filters
+                                {tr("general.resetFilters")}
                             </Button>
                         </div>
                     ) : (
@@ -325,11 +327,11 @@ function TeamManagementContent() {
                             <table className="w-full border-collapse">
                                 <thead>
                                     <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
-                                        <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Member Name</th>
-                                        <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Email Address</th>
-                                        <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Assigned Roles</th>
+                                        <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("general.memberName")}</th>
+                                        <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("general.emailAddress")}</th>
+                                        <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("general.assignedRoles")}</th>
                                         {canAccess("employees:moderate") && (
-                                            <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Actions</th>
+                                            <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("general.actions")}</th>
                                         )}
                                     </tr>
                                 </thead>
@@ -357,7 +359,7 @@ function TeamManagementContent() {
                                                         <Badge key={r.id} tone="indigo">{r.name}</Badge>
                                                     ))}
                                                     {(!member.roles || member.roles.length === 0) && (
-                                                        <Badge tone="neutral">Unassigned</Badge>
+                                                        <Badge tone="neutral">{tr("general.unassigned")}</Badge>
                                                     )}
                                                 </div>
                                             </td>
@@ -366,14 +368,14 @@ function TeamManagementContent() {
                                                     <div className="flex items-center justify-end gap-2">
                                                         <button
                                                             onClick={() => openReassign(member)}
-                                                            title="Reassign roles"
+                                                            title={tr("general.reassignRoles")}
                                                             className="w-8 h-8 flex items-center justify-center rounded-[8px] text-[#8A929E] hover:text-[#5B53E0] hover:bg-[#ECEBFB] border border-transparent hover:border-[#DAD7F6]/60 transition-all"
                                                         >
                                                             <ShieldCheck className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => setMemberToRemove(member)}
-                                                            title="Remove member"
+                                                            title={tr("general.removeMember")}
                                                             className="w-8 h-8 flex items-center justify-center rounded-[8px] text-[#8A929E] hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all"
                                                         >
                                                             <Trash2 className="w-4 h-4" />
@@ -391,8 +393,8 @@ function TeamManagementContent() {
             ) : (
                 <div className="space-y-4">
                     <div className="flex items-center justify-between px-1">
-                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">Access Control</h2>
-                        <Badge tone="neutral">{roles.length} available roles</Badge>
+                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">{tr("general.accessControl")}</h2>
+                        <Badge tone="neutral">{tr("general.availableRolesCount", { count: roles.length })}</Badge>
                     </div>
 
                     <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -420,7 +422,7 @@ function TeamManagementContent() {
                                     </div>
 
                                     <h3 className="text-[14px] font-bold text-[#15171C] mb-1">{role.name}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E] leading-normal line-clamp-2 h-9 mb-4">{role.description || "Standard organizational access control permissions."}</p>
+                                    <p className="text-[12.5px] text-[#8A929E] leading-normal line-clamp-2 h-9 mb-4">{role.description || tr("general.standardRoleDesc")}</p>
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-[#E8EAED]">
@@ -430,7 +432,7 @@ function TeamManagementContent() {
                                         </Badge>
                                     ))}
                                     {(role.permissions?.length ?? 0) > 3 && (
-                                        <span className="text-[10px] font-bold text-[#5B53E0] ml-0.5 self-center">+{(role.permissions?.length ?? 0) - 3} more</span>
+                                        <span className="text-[10px] font-bold text-[#5B53E0] ml-0.5 self-center">{tr("general.morePermissions", { count: (role.permissions?.length ?? 0) - 3 })}</span>
                                     )}
                                 </div>
                             </Card>
@@ -454,7 +456,7 @@ function TeamManagementContent() {
                                     <div className="p-1.5 bg-[#ECEBFB] text-[#5B53E0] rounded-[8px]">
                                         <UserPlus className="w-4 h-4" />
                                     </div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">Invite Member</h3>
+                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("general.inviteMember")}</h3>
                                 </div>
                                 <button 
                                     onClick={() => setShowInviteModal(false)}
@@ -466,33 +468,33 @@ function TeamManagementContent() {
 
                             <form onSubmit={handleAddMember} className="space-y-4">
                                 <div className="grid grid-cols-2 gap-3">
-                                    <Field label="First Name" htmlFor="modal-member-first-name">
+                                    <Field label={tr("general.firstName")} htmlFor="modal-member-first-name">
                                         <Input
                                             id="modal-member-first-name"
-                                            placeholder="John"
+                                            placeholder={tr("general.firstNamePlaceholder")}
                                             value={memberFirstName} onChange={e => setMemberFirstName(e.target.value)} required
                                         />
                                     </Field>
-                                    <Field label="Last Name" htmlFor="modal-member-last-name">
+                                    <Field label={tr("general.lastName")} htmlFor="modal-member-last-name">
                                         <Input
                                             id="modal-member-last-name"
-                                            placeholder="Doe"
+                                            placeholder={tr("general.lastNamePlaceholder")}
                                             value={memberLastName} onChange={e => setMemberLastName(e.target.value)} required
                                         />
                                     </Field>
                                 </div>
 
-                                <Field label="Email Address" htmlFor="modal-member-email">
+                                <Field label={tr("general.emailAddress")} htmlFor="modal-member-email">
                                     <Input
                                         id="modal-member-email"
                                         icon="mail"
-                                        placeholder="john@example.com"
+                                        placeholder={tr("general.emailPlaceholder")}
                                         type="email"
                                         value={memberEmail} onChange={e => setMemberEmail(e.target.value)} required
                                     />
                                 </Field>
 
-                                <Field label="Temporary Password" htmlFor="modal-member-password">
+                                <Field label={tr("general.temporaryPassword")} htmlFor="modal-member-password">
                                     <Input
                                         id="modal-member-password"
                                         icon="lock"
@@ -503,7 +505,7 @@ function TeamManagementContent() {
                                 </Field>
 
                                 <div className="space-y-3">
-                                    <label id="modal-assign-roles-label" htmlFor="modal-assign-roles-group" className="text-[12.5px] font-semibold text-[#374151]">Assign Roles</label>
+                                    <label id="modal-assign-roles-label" htmlFor="modal-assign-roles-group" className="text-[12.5px] font-semibold text-[#374151]">{tr("general.assignRolesLabel")}</label>
                                     <div id="modal-assign-roles-group" role="group" aria-labelledby="modal-assign-roles-label" className="flex flex-wrap gap-1.5">
                                         {roles.map(role => (
                                             <button
@@ -526,7 +528,7 @@ function TeamManagementContent() {
 
                                 <Button type="submit" fullWidth disabled={isLoading} className="mt-4">
                                     {isLoading ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                                    {isLoading ? "Inviting..." : "Invite Member"}
+                                    {isLoading ? tr("general.inviting") : tr("general.inviteMember")}
                                 </Button>
                             </form>
                         </motion.div>
@@ -549,7 +551,7 @@ function TeamManagementContent() {
                                     <div className="p-1.5 bg-[#ECEBFB] text-[#5B53E0] rounded-[8px]">
                                         <ShieldPlus className="w-4 h-4" />
                                     </div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">Create Custom Role</h3>
+                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("general.createCustomRole")}</h3>
                                 </div>
                                 <button 
                                     onClick={() => setShowRoleModal(false)}
@@ -560,24 +562,24 @@ function TeamManagementContent() {
                             </div>
 
                             <form onSubmit={handleCreateRole} className="space-y-4">
-                                <Field label="Role Name" htmlFor="modal-role-name">
+                                <Field label={tr("general.roleName")} htmlFor="modal-role-name">
                                     <Input
                                         id="modal-role-name"
-                                        placeholder="e.g. Marketing Manager"
+                                        placeholder={tr("general.roleNameExample")}
                                         value={roleName} onChange={e => setRoleName(e.target.value)} required
                                     />
                                 </Field>
-                                <Field label="Description" htmlFor="modal-role-description">
+                                <Field label={tr("general.description")} htmlFor="modal-role-description">
                                     <Textarea
                                         id="modal-role-description"
                                         className="min-h-[90px]"
-                                        placeholder="Clearly define what this role can access..."
+                                        placeholder={tr("general.roleAccessPlaceholder")}
                                         value={roleDescription} onChange={e => setRoleDescription(e.target.value)}
                                     />
                                 </Field>
 
                                 <div className="space-y-3">
-                                    <label id="modal-select-permissions-label" htmlFor="modal-select-permissions-group" className="text-[12.5px] font-semibold text-[#374151]">Select Permissions</label>
+                                    <label id="modal-select-permissions-label" htmlFor="modal-select-permissions-group" className="text-[12.5px] font-semibold text-[#374151]">{tr("general.selectPermissions")}</label>
                                     <div id="modal-select-permissions-group" role="group" aria-labelledby="modal-select-permissions-label" className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-3 max-h-[200px] overflow-y-auto custom-scrollbar space-y-1.5">
                                         {permissions.map(perm => (
                                             <button 
@@ -604,7 +606,7 @@ function TeamManagementContent() {
 
                                 <Button type="submit" fullWidth disabled={isLoading} className="mt-4">
                                     {isLoading ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                                    {isLoading ? "Saving..." : "Create Role"}
+                                    {isLoading ? tr("general.saving") : tr("general.createRole")}
                                 </Button>
                             </form>
                         </motion.div>
@@ -624,7 +626,7 @@ function TeamManagementContent() {
                         >
                             <div className="px-6 py-5 border-b border-[#E8EAED] flex items-center justify-between">
                                 <div>
-                                    <h3 className="text-[16px] font-extrabold text-[#15171C]">Reassign roles</h3>
+                                    <h3 className="text-[16px] font-extrabold text-[#15171C]">{tr("general.reassignRoles")}</h3>
                                     <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">{`${reassignTarget.first_name || ""} ${reassignTarget.last_name || ""}`.trim() || reassignTarget.email}</p>
                                 </div>
                                 <button onClick={() => setReassignTarget(null)} className="p-1.5 hover:bg-[#F4F5F7] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg transition-all">
@@ -641,20 +643,20 @@ function TeamManagementContent() {
                                     >
                                         <div className="min-w-0">
                                             <p className="text-[13px] font-bold truncate">{role.name}</p>
-                                            <p className={`text-[11px] truncate ${reassignRoleIds.includes(role.id) ? 'text-white/60' : 'text-[#8A929E]'}`}>{role.description || 'Organizational access role'}</p>
+                                            <p className={`text-[11px] truncate ${reassignRoleIds.includes(role.id) ? 'text-white/60' : 'text-[#8A929E]'}`}>{role.description || tr("general.orgAccessRole")}</p>
                                         </div>
                                         <div className={`w-2 h-2 rounded-full shrink-0 ml-3 ${reassignRoleIds.includes(role.id) ? 'bg-[#5B53E0] ring-4 ring-[#5B53E0]/30' : 'bg-[#E1E4E8]'}`} />
                                     </button>
                                 ))}
                                 {roles.length === 0 && (
-                                    <p className="text-[12.5px] text-[#8A929E] text-center py-6">No roles available — create a role first.</p>
+                                    <p className="text-[12.5px] text-[#8A929E] text-center py-6">{tr("general.noRolesAvailable")}</p>
                                 )}
                             </div>
                             <div className="px-6 py-4 border-t border-[#E8EAED] flex justify-end gap-3 bg-[#F7F8FA]/50">
-                                <Button variant="secondary" onClick={() => setReassignTarget(null)}>Cancel</Button>
+                                <Button variant="secondary" onClick={() => setReassignTarget(null)}>{tr("general.cancel")}</Button>
                                 <Button onClick={handleSaveReassign} disabled={isSavingMember}>
                                     {isSavingMember ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                                    Save roles
+                                    {tr("general.saveRoles")}
                                 </Button>
                             </div>
                         </motion.div>
@@ -666,19 +668,24 @@ function TeamManagementContent() {
                 isOpen={!!memberToRemove}
                 onClose={() => setMemberToRemove(null)}
                 onConfirm={handleRemoveMember}
-                title="Remove team member?"
-                message={`Remove ${`${memberToRemove?.first_name || ""} ${memberToRemove?.last_name || ""}`.trim() || memberToRemove?.email || "this member"} from the team? They will lose access immediately. This action cannot be undone.`}
-                confirmLabel="Remove member"
-                cancelLabel="Cancel"
+                title={tr("general.removeMemberTitle")}
+                message={tr("general.removeMemberMessage", { name: `${memberToRemove?.first_name || ""} ${memberToRemove?.last_name || ""}`.trim() || memberToRemove?.email || tr("general.thisMember") })}
+                confirmLabel={tr("general.removeMember")}
+                cancelLabel={tr("general.cancel")}
                 isDestructive={true}
             />
         </div>
     );
 }
 
+function TeamFallback() {
+    const { t: tr } = useI18n();
+    return <div className="p-8">{tr("general.loadingPortal")}</div>;
+}
+
 export default function TeamManagementPage() {
     return (
-        <Suspense fallback={<div className="p-8">Loading Portal...</div>}>
+        <Suspense fallback={<TeamFallback />}>
             <TeamManagementContent />
         </Suspense>
     );

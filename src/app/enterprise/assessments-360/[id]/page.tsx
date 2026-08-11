@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { Button, Card, Textarea, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
 
@@ -33,6 +34,7 @@ interface Assignment {
 
 export default function X360FillAssessment() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const params = useParams();
     const assignmentId = params.id as string;
@@ -121,7 +123,7 @@ export default function X360FillAssessment() {
                 setShowSuccess(true);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                alert("Failed to submit assessment");
+                alert(tr("assess360.submitFailed"));
             }
         } catch (error) {
             console.error(error);
@@ -159,15 +161,15 @@ export default function X360FillAssessment() {
                 <button onClick={() => router.back()} className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] transition-colors flex items-center justify-center shrink-0">
                     <span className="material-symbols-rounded text-[19px]">arrow_back</span>
                 </button>
-                <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Assessment</h1>
+                <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("nav.assessment")}</h1>
             </header>
             <Card className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
                 <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5 text-[#C7CCD4]">
                     <span className="material-symbols-rounded text-[32px]">search_off</span>
                 </div>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Assessment not found</h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">This assignment may have been completed, expired, or the link is no longer valid.</p>
-                <Button variant="secondary" size="sm" icon="arrow_back" onClick={() => router.back()}>Go back</Button>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("assess360.assessmentNotFound")}</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">{tr("assess360.assessmentNotFoundDesc")}</p>
+                <Button variant="secondary" size="sm" icon="arrow_back" onClick={() => router.back()}>{tr("assess360.goBack")}</Button>
             </Card>
         </div>
     );
@@ -183,17 +185,17 @@ export default function X360FillAssessment() {
                         </div>
 
                         <div className="space-y-3">
-                            <h2 className="text-[26px] font-extrabold tracking-[-0.6px] text-[#15171C]">Feedback Transmitted</h2>
+                            <h2 className="text-[26px] font-extrabold tracking-[-0.6px] text-[#15171C]">{tr("assess360.feedbackTransmitted")}</h2>
                             <p className="text-[#374151] text-[15px] leading-relaxed max-w-xl mx-auto">
-                                Thank you for providing your feedback for <span className="text-[#5B53E0] font-semibold">{assignment.ratee.first_name}</span>. Your insights are essential for their professional development.
+                                {tr("assess360.feedbackThanksPre")} <span className="text-[#5B53E0] font-semibold">{assignment.ratee.first_name}</span>{tr("assess360.feedbackThanksPost")}
                             </p>
                         </div>
 
                         {pendingTasks.length > 0 ? (
                             <div className="space-y-5 pt-7 border-t border-[#E8EAED] text-left">
                                 <div className="text-center space-y-2.5">
-                                    <Badge tone="indigo">Action Required</Badge>
-                                    <h3 className="text-[16px] font-bold text-[#15171C]">You have {pendingTasks.length} other pending {pendingTasks.length === 1 ? "assessment" : "assessments"}</h3>
+                                    <Badge tone="indigo">{tr("assess360.actionRequired")}</Badge>
+                                    <h3 className="text-[16px] font-bold text-[#15171C]">{tr("assess360.youHave")} {pendingTasks.length} {pendingTasks.length === 1 ? tr("assess360.otherPendingOne") : tr("assess360.otherPendingMany")}</h3>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -222,10 +224,10 @@ export default function X360FillAssessment() {
                             <div className="pt-7 border-t border-[#E8EAED] space-y-5">
                                 <p className="text-[#8A929E] text-[13.5px] flex items-center justify-center gap-2">
                                     <span className="material-symbols-rounded text-[#15803D] text-[19px]">verified</span>
-                                    All assignments complete for this cycle
+                                    {tr("assess360.allAssignmentsComplete")}
                                 </p>
                                 <Button variant="dark" className="bg-[#15171C] border-0 text-white hover:bg-[#5B53E0]" icon="grid_view" onClick={() => router.push('/enterprise/assessments-360/portal')}>
-                                    Return to Portal
+                                    {tr("assess360.returnToPortal")}
                                 </Button>
                             </div>
                         )}
@@ -249,8 +251,8 @@ export default function X360FillAssessment() {
                             <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">
                                 {assignment.ratee.first_name} {assignment.ratee.last_name}
                             </h1>
-                            <Badge tone="indigo">{assignment.relation} ASSESSMENT</Badge>
-                            <PageHelp title="Give Feedback">Rate each competency and add your comments, then submit your feedback.</PageHelp>
+                            <Badge tone="indigo">{assignment.relation} {tr("assess360.assessmentUpper")}</Badge>
+                            <PageHelp title={tr("assess360.giveFeedback")}>{tr("assess360.giveFeedbackHelp")}</PageHelp>
                         </div>
                         <p className="text-[12.5px] text-[#8A929E] mt-0.5 flex items-center gap-1.5">
                             <span className="material-symbols-rounded text-[15px]">event_repeat</span>
@@ -261,8 +263,8 @@ export default function X360FillAssessment() {
 
                 <div className="flex items-center gap-3 sm:shrink-0">
                     <div className="text-right">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Progress</p>
-                        <p className={`text-[15px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>{progress}% Complete</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("assess360.progress")}</p>
+                        <p className={`text-[15px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>{progress}% {tr("assess360.complete")}</p>
                     </div>
                     <span className="w-10 h-10 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
                         <span className="material-symbols-rounded text-[20px]">bolt</span>
@@ -304,14 +306,14 @@ export default function X360FillAssessment() {
                                                 ))}
                                             </div>
                                             <div className="flex justify-between px-1 text-[11px] font-semibold text-[#8A929E]">
-                                                <span>Needs Improvement</span>
-                                                <span>Exceptional</span>
+                                                <span>{tr("assess360.needsImprovement")}</span>
+                                                <span>{tr("assess360.exceptional")}</span>
                                             </div>
                                         </div>
                                     ) : (
                                         <Textarea
                                             className="min-h-[160px] text-[15px]"
-                                            placeholder="Share your detailed observations…"
+                                            placeholder={tr("assess360.shareObservations")}
                                             value={responses[q.id]?.answer_text || ""}
                                             onChange={(e) => setResponses({...responses, [q.id]: { answer_text: e.target.value }})}
                                             required
@@ -326,17 +328,17 @@ export default function X360FillAssessment() {
                 {/* Right Column: Summary / Sticky footer */}
                 <div className="lg:col-span-4 h-fit lg:sticky lg:top-20 space-y-4">
                     <div className="bg-[#15171C] p-6 rounded-[14px] text-white">
-                        <h4 className="text-[16px] font-bold tracking-tight mb-5">Submission Summary</h4>
+                        <h4 className="text-[16px] font-bold tracking-tight mb-5">{tr("assess360.submissionSummary")}</h4>
 
                         <div className="space-y-4 mb-6">
                             <div className="flex justify-between items-center py-3 border-b border-white/10">
-                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-white/50">Questions Noted</span>
+                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-white/50">{tr("assess360.questionsNoted")}</span>
                                 <span className={`text-[15px] font-bold ${jetbrainsMono.className}`}>{Object.keys(responses).length} / {questions.length}</span>
                             </div>
                             <p className="text-[12.5px] text-white/55 leading-relaxed">
                                 {assignment.relation === 'PEER' || assignment.relation === 'REPORT' ?
-                                    "🔒 Your responses are end-to-end encrypted and will be aggregated anonymously to help your colleague grow." :
-                                    "📢 Your feedback will be shared directly with the employee as part of their development plan."
+                                    tr("assess360.anonymousNote") :
+                                    tr("assess360.directNote")
                                 }
                             </p>
                         </div>
@@ -348,14 +350,14 @@ export default function X360FillAssessment() {
                             icon={submitting ? undefined : "send"}
                             disabled={submitting || Object.keys(responses).length < questions.length}
                         >
-                            {submitting ? 'Transmitting…' : 'Confirm Submission'}
+                            {submitting ? tr("assess360.transmitting") : tr("assess360.confirmSubmission")}
                         </Button>
                     </div>
 
                     <Card className="bg-[#FAFAFE] border-[#ECEBFB]">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5B53E0] mb-2">Support</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5B53E0] mb-2">{tr("assess360.support")}</p>
                         <p className="text-[12.5px] text-[#374151] leading-relaxed">
-                            Need help with the assessment? Contact the HR Business Partner team via the corporate internal helpdesk.
+                            {tr("assess360.supportDesc")}
                         </p>
                     </Card>
                 </div>

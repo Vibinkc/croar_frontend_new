@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import { useI18n } from "@/context/I18nContext";
 
 interface Feedback {
     fluency: number;
@@ -12,6 +13,7 @@ interface Feedback {
 }
 
 export default function AudioRecorder() {
+    const { t: tr } = useI18n();
     const [recording, setRecording] = useState(false);
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -24,7 +26,7 @@ export default function AudioRecorder() {
 
     const startRecording = async () => {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            setError("Microphone not supported. Please use HTTPS or localhost.");
+            setError(tr("general.micNotSupported"));
             return;
         }
 
@@ -58,7 +60,7 @@ export default function AudioRecorder() {
             setAudioBlob(null); // Clear previous blob when starting new recording
         } catch (err) {
             console.error("Error accessing microphone:", err);
-            setError("Could not access microphone.");
+            setError(tr("general.couldNotAccessMic"));
         }
     };
 
@@ -107,7 +109,7 @@ export default function AudioRecorder() {
             setFeedback(data);
         } catch (err) {
             console.error("Analysis failed:", err);
-            setError("Analysis failed. Ensure backend is running.");
+            setError(tr("general.analysisFailed"));
         } finally {
             setLoading(false);
         }
@@ -137,7 +139,7 @@ export default function AudioRecorder() {
                         </button>
                     </div>
                     <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                        {recording ? "Listening..." : audioBlob ? "Recording ready" : "Tap to speak"}
+                        {recording ? tr("general.listening") : audioBlob ? tr("general.recordingReady") : tr("general.tapToSpeak")}
                     </p>
                 </div>
 
@@ -151,10 +153,10 @@ export default function AudioRecorder() {
                         {loading ? (
                             <>
                                 <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                                Analyzing Response...
+                                {tr("general.analyzingResponse")}
                             </>
                         ) : (
-                            "Analyze Answer"
+                            tr("general.analyzeAnswer")
                         )}
                     </button>
                 )}
@@ -169,23 +171,23 @@ export default function AudioRecorder() {
             {/* Feedback Section */}
             {feedback && (
                 <div className="w-full bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-zinc-200 dark:border-zinc-800 p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <h3 className="text-xl font-bold mb-6 text-zinc-900 dark:text-white">AI Coach Feedback</h3>
+                    <h3 className="text-xl font-bold mb-6 text-zinc-900 dark:text-white">{tr("general.aiCoachFeedback")}</h3>
 
                     <div className="grid grid-cols-2 gap-4 mb-8">
-                        <ScoreCard label="Fluency" score={feedback.fluency} />
-                        <ScoreCard label="Grammar" score={feedback.grammar} />
-                        <ScoreCard label="Confidence" score={feedback.confidence} />
-                        <ScoreCard label="Relevance" score={feedback.relevance} />
+                        <ScoreCard label={tr("general.fluency")} score={feedback.fluency} />
+                        <ScoreCard label={tr("general.grammar")} score={feedback.grammar} />
+                        <ScoreCard label={tr("general.confidence")} score={feedback.confidence} />
+                        <ScoreCard label={tr("general.relevance")} score={feedback.relevance} />
                     </div>
 
                     <div className="space-y-4">
                         <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
-                            <h4 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2  tracking-wide">Transcript</h4>
+                            <h4 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-2  tracking-wide">{tr("general.transcript")}</h4>
                             <p className="text-zinc-700 dark:text-zinc-300 ">&quot;{feedback.transcription}&quot;</p>
                         </div>
 
                         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-900/30">
-                            <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2  tracking-wide">Coach&apos;s Tips</h4>
+                            <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2  tracking-wide">{tr("general.coachTips")}</h4>
                             <p className="text-zinc-700 dark:text-zinc-300 whitespace-pre-line">{feedback.feedback}</p>
                         </div>
                     </div>

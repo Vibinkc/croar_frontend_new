@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import { Search, Filter, ChevronDown } from "lucide-react";
 import { Button, StatCard, StatGrid, Badge, Card, EmptyState, jetbrainsMono, PageHelp } from "@/components/ds";
@@ -18,6 +19,7 @@ interface Cycle {
 
 export default function X360Dashboard() {
     const { canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [stats, setStats] = useState({
         activeCycles: 0,
@@ -83,13 +85,13 @@ export default function X360Dashboard() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">360 Assessments</h1>
-                        <PageHelp title="360 Assessments">
-                            <p>Run multi-rater performance feedback.</p>
-                            <p>Build a competency framework in <strong>Templates</strong>, start a <strong>New Cycle</strong> and pick raters, then read each person&apos;s report. Manage questions in the Question Bank.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("nav.assessments360")}</h1>
+                        <PageHelp title={tr("nav.assessments360")}>
+                            <p>{tr("postOnboarding.runMultiRater")}</p>
+                            <p>{tr("assess360.helpP2a")}<strong>{tr("postOnboarding.templates")}</strong>{tr("assess360.helpP2b")}<strong>{tr("postOnboarding.newCycle")}</strong>{tr("assess360.helpP2c")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Enterprise talent review hub</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("postOnboarding.talentReviewHub")}</p>
                 </div>
                 {canAccess("assessments:moderate") && (
                     <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap sm:shrink-0">
@@ -98,21 +100,21 @@ export default function X360Dashboard() {
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
                         >
                             <span className="material-symbols-rounded text-[17px]">quiz</span>
-                            Question Bank
+                            {tr("postOnboarding.questionBank")}
                         </Link>
                         <Link
                             href="/enterprise/assessments-360/templates"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
                         >
                             <span className="material-symbols-rounded text-[17px]">description</span>
-                            Templates
+                            {tr("postOnboarding.templates")}
                         </Link>
                         <Link
                             href="/enterprise/assessments-360/new"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
                         >
                             <span className="material-symbols-rounded text-[17px]">add</span>
-                            New Cycle
+                            {tr("postOnboarding.newCycle")}
                         </Link>
                     </div>
                 )}
@@ -120,10 +122,10 @@ export default function X360Dashboard() {
 
             {/* Stat cards */}
             <StatGrid>
-                <StatCard label="Active Cycles" value={loading ? "—" : stats.activeCycles} icon="sync" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Pending Action" value={loading ? "—" : stats.pendingMyAssessments} icon="pending_actions" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-                <StatCard label="Completed" value={loading ? "—" : stats.completedMyAssessments} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Participants" value={loading ? "—" : stats.totalParticipants} icon="groups" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("assess360.activeCycles")} value={loading ? "—" : stats.activeCycles} icon="sync" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label={tr("assess360.pendingAction")} value={loading ? "—" : stats.pendingMyAssessments} icon="pending_actions" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("postOnboarding.completed")} value={loading ? "—" : stats.completedMyAssessments} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("assess360.participants")} value={loading ? "—" : stats.totalParticipants} icon="groups" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
             </StatGrid>
 
             {/* Toolbar: search + filter */}
@@ -134,7 +136,7 @@ export default function X360Dashboard() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search cycles by name…"
+                        placeholder={tr("assess360.searchCycles")}
                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
@@ -147,10 +149,10 @@ export default function X360Dashboard() {
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className={`${selectCls} w-full md:min-w-[170px]`}
                         >
-                            <option value="all">All Cycles</option>
-                            <option value="ACTIVE">Active Only</option>
-                            <option value="DRAFT">Drafts</option>
-                            <option value="CLOSED">Closed</option>
+                            <option value="all">{tr("postOnboarding.allCycles")}</option>
+                            <option value="ACTIVE">{tr("postOnboarding.activeOnly")}</option>
+                            <option value="DRAFT">{tr("postOnboarding.drafts")}</option>
+                            <option value="CLOSED">{tr("postOnboarding.closed")}</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
@@ -162,10 +164,10 @@ export default function X360Dashboard() {
                 <div className="flex items-center justify-between px-5 py-3.5 bg-[#F7F8FA] border-b border-[#E8EAED]">
                     <div className="flex items-center gap-2.5">
                         <span className="material-symbols-rounded text-[#5B53E0] text-[19px]">dashboard_customize</span>
-                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">Assessment Cycles</h2>
+                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("postOnboarding.assessmentCycles")}</h2>
                     </div>
                     <Link href="/enterprise/assessments-360/cycles" className="text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4A43C9] transition-colors">
-                        View all cycles
+                        {tr("assess360.viewAllCycles")}
                     </Link>
                 </div>
 
@@ -180,11 +182,11 @@ export default function X360Dashboard() {
                         <EmptyState
                             icon="search_off"
                             tone="muted"
-                            title="No cycles match your filters"
-                            description="Try adjusting your filters or search terms to find what you're looking for."
+                            title={tr("payroll.noCyclesMatch")}
+                            description={tr("assess360.tryAdjusting")}
                             action={
                                 <Button size="sm" onClick={() => { setSearchQuery(""); setStatusFilter("all"); }}>
-                                    Clear all filters
+                                    {tr("assess360.clearAllFilters")}
                                 </Button>
                             }
                         />
@@ -192,19 +194,19 @@ export default function X360Dashboard() {
                         <EmptyState
                             icon="360"
                             tone="brand"
-                            title="Start your first 360° cycle"
-                            description="Run multi-rater feedback. Build a competency framework, then launch a review cycle."
+                            title={tr("assess360.startFirstCycle")}
+                            description={tr("assess360.startFirstCycleDesc")}
                             action={
                                 canAccess("assessments:moderate") && (
                                     <Link href="/enterprise/assessments-360/new">
-                                        <Button>New Cycle</Button>
+                                        <Button>{tr("postOnboarding.newCycle")}</Button>
                                     </Link>
                                 )
                             }
                             secondary={
                                 canAccess("assessments:moderate") && (
                                     <Link href="/enterprise/assessments-360/questions">
-                                        <Button variant="secondary">Question Bank</Button>
+                                        <Button variant="secondary">{tr("postOnboarding.questionBank")}</Button>
                                     </Link>
                                 )
                             }
@@ -214,10 +216,10 @@ export default function X360Dashboard() {
                     <>
                         {/* Column header (desktop) */}
                         <div className="hidden md:grid grid-cols-[2.4fr_1.4fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Cycle Details</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Timeline</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.cycleDetails")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.timeline")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.status")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("postOnboarding.actions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -234,7 +236,7 @@ export default function X360Dashboard() {
                                         </span>
                                         <div className="min-w-0">
                                             <p className="text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{cycle.name}</p>
-                                            <p className="text-[12px] text-[#8A929E] truncate">Enterprise talent review</p>
+                                            <p className="text-[12px] text-[#8A929E] truncate">{tr("assess360.enterpriseTalentReview")}</p>
                                             {/* mobile-only meta */}
                                             <div className="flex items-center gap-2.5 mt-1 md:hidden">
                                                 {statusBadge(cycle.status)}
@@ -263,7 +265,7 @@ export default function X360Dashboard() {
                                     {/* Actions */}
                                     <div className="flex items-center justify-end">
                                         <button className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12px] font-semibold hover:bg-[#15171C] hover:text-white hover:border-[#15171C] transition-colors">
-                                            Manage
+                                            {tr("payroll.manage")}
                                             <span className="material-symbols-rounded text-[15px]">trending_up</span>
                                         </button>
                                     </div>

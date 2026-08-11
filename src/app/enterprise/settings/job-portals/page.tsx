@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import {
     Globe,
     Zap,
@@ -22,7 +23,9 @@ const PORTALS = [
         id: "google-talent",
         name: "Google Jobs",
         description: "Direct indexing on Google Search Results globally.",
+        descKey: "jobPortals.descGoogle",
         status: "Free Indexing",
+        statusKey: "jobPortals.statusFreeIndexing",
         connected: false,
         logo: "https://www.gstatic.com/images/branding/product/2x/googleg_96dp.png",
         color: "text-blue-500",
@@ -33,17 +36,30 @@ const PORTALS = [
         id: "linkedin",
         name: "LinkedIn",
         description: "Post jobs as Limited Listings for free organic reach.",
+        descKey: "jobPortals.descLinkedin",
         status: "Free (Limited)",
+        statusKey: "jobPortals.statusFreeLimited",
         connected: false,
         logo: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
         color: "text-indigo-500",
         bg: "bg-white",
-        features: ["Company Page Sync", "Organic Search", "Brand Presence"]
+        features: ["Page Sync", "Organic Search", "Brand Presence"]
     }
 ];
 
+// Display-only translations for feature chips (keyed by their raw English label).
+const FEATURE_KEYS: Record<string, string> = {
+    "Global Reach": "jobPortals.featGlobalReach",
+    "Auto-indexing": "jobPortals.featAutoIndexing",
+    "Direct Apply": "jobPortals.featDirectApply",
+    "Page Sync": "jobPortals.featPageSync",
+    "Organic Search": "jobPortals.featOrganicSearch",
+    "Brand Presence": "jobPortals.featBrandPresence",
+};
+
 export default function JobPortalsPage() {
     const { token } = useAuth();
+    const { t } = useI18n();
     const [view, setView] = useState<'grid' | 'detail'>('grid');
     const [selectedPortal, setSelectedPortal] = useState<any>(null);
     const [showAddAccount, setShowAddAccount] = useState(false);
@@ -60,7 +76,7 @@ export default function JobPortalsPage() {
         setTimeout(() => {
             setIsSaving(false);
             setShowAddAccount(false);
-            alert("Account added successfully!");
+            alert(t("jobPortals.accountAdded"));
         }, 1500);
     };
 
@@ -73,28 +89,28 @@ export default function JobPortalsPage() {
 
     const statCards = [
         {
-            label: "Available Portals",
+            label: t("jobPortals.availablePortals"),
             value: PORTALS.length,
             Icon: Globe,
             grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)",
             glow: "rgba(91,83,224,0.3)",
         },
         {
-            label: "Connected",
+            label: t("jobPortals.connected"),
             value: connectedCount,
             Icon: CheckCircle2,
             grad: "linear-gradient(135deg,#34D399,#0E8A6E)",
             glow: "rgba(14,138,110,0.3)",
         },
         {
-            label: "Live Listings",
+            label: t("jobPortals.liveListings"),
             value: 0,
             Icon: Zap,
             grad: "linear-gradient(135deg,#60A5FA,#3559C7)",
             glow: "rgba(53,89,199,0.3)",
         },
         {
-            label: "Pending Sync",
+            label: t("jobPortals.pendingSync"),
             value: PORTALS.length - connectedCount,
             Icon: RefreshCw,
             grad: "linear-gradient(135deg,#FBBF24,#D97706)",
@@ -121,7 +137,7 @@ export default function JobPortalsPage() {
                             <div className="min-w-0">
                                 <h1 className="text-[20px] md:text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">{selectedPortal.name}</h1>
                                 <p className="text-[13px] text-[#8A929E] flex items-center gap-1.5">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Ready for integration
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> {t("jobPortals.readyForIntegration")}
                                 </p>
                             </div>
                         </div>
@@ -132,7 +148,7 @@ export default function JobPortalsPage() {
                             onClick={() => setShowAddAccount(true)}
                             className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
                         >
-                            <Link2 className="w-4 h-4" /> Connect {selectedPortal.name}
+                            <Link2 className="w-4 h-4" /> {t("jobPortals.connectPortalName", { name: selectedPortal.name })}
                         </button>
                     </div>
                 </header>
@@ -146,19 +162,19 @@ export default function JobPortalsPage() {
                                 <Info className="w-[18px] h-[18px]" />
                             </span>
                             <div>
-                                <h2 className="text-[17px] font-extrabold text-[#15171C] tracking-[-0.3px]">Configuration Steps</h2>
-                                <p className="text-[13px] text-[#8A929E]">Follow these steps to connect {selectedPortal.name}</p>
+                                <h2 className="text-[17px] font-extrabold text-[#15171C] tracking-[-0.3px]">{t("jobPortals.configurationSteps")}</h2>
+                                <p className="text-[13px] text-[#8A929E]">{t("jobPortals.followStepsToConnect", { name: selectedPortal.name })}</p>
                             </div>
                         </div>
 
                         <div className="space-y-5 pl-1 border-l-2 border-[#F0F0F1] ml-3">
                             {[
-                                `Contact your ${selectedPortal.name} Account Manager to initiate the process.`,
-                                "Request for Reference key & API Key.",
-                                `Click on "Connect ${selectedPortal.name}" and provide the details below.`,
-                                "Save the entered information to add your account successfully.",
-                                "Once saved, you can allocate credits to your team for utilization.",
-                                "Embark on your recruitment journey!"
+                                t("jobPortals.step1", { name: selectedPortal.name }),
+                                t("jobPortals.step2"),
+                                t("jobPortals.step3", { name: selectedPortal.name }),
+                                t("jobPortals.step4"),
+                                t("jobPortals.step5"),
+                                t("jobPortals.step6")
                             ].map((step, i) => (
                                 <div key={i} className="flex gap-4 items-start group -ml-[15px]">
                                     <div className={`w-7 h-7 rounded-full bg-[#ECEBFB] border border-[#DAD7F6] flex items-center justify-center text-[12px] font-bold text-[#5B53E0] shrink-0 group-hover:bg-[#5B53E0] group-hover:text-white group-hover:border-[#5B53E0] transition-colors ${jetbrainsMono.className}`}>
@@ -180,20 +196,20 @@ export default function JobPortalsPage() {
                                 <span className="w-11 h-11 rounded-[12px] flex items-center justify-center mb-4" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 8px 20px rgba(91,83,224,0.4)" }}>
                                     <ShieldCheck className="w-5 h-5" />
                                 </span>
-                                <h4 className="text-[15px] font-extrabold mb-2">Secure Integration</h4>
+                                <h4 className="text-[15px] font-extrabold mb-2">{t("jobPortals.secureIntegration")}</h4>
                                 <p className="text-[13px] text-white/65 leading-relaxed">
-                                    Your credentials are encrypted and stored securely. We only use these keys to synchronize job data with {selectedPortal.name}.
+                                    {t("jobPortals.credentialsSecure", { name: selectedPortal.name })}
                                 </p>
                             </div>
                         </div>
 
                         <div className="bg-white rounded-[16px] border border-[#E8EAED] p-7">
-                            <h4 className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.08em] mb-4">What you get</h4>
+                            <h4 className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.08em] mb-4">{t("jobPortals.whatYouGet")}</h4>
                             <div className="space-y-3">
                                 {selectedPortal.features.map((f: string) => (
                                     <div key={f} className="flex items-center gap-3">
                                         <CheckCircle2 className="w-[18px] h-[18px] text-[#0E8A6E] shrink-0" />
-                                        <span className="text-[14px] font-medium text-[#374151]">{f}</span>
+                                        <span className="text-[14px] font-medium text-[#374151]">{FEATURE_KEYS[f] ? t(FEATURE_KEYS[f]) : f}</span>
                                     </div>
                                 ))}
                             </div>
@@ -220,7 +236,7 @@ export default function JobPortalsPage() {
                                         <span className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 6px 14px rgba(91,83,224,0.3)" }}>
                                             <Plus className="w-[18px] h-[18px]" />
                                         </span>
-                                        <h3 className="text-[18px] font-extrabold text-[#15171C] tracking-[-0.3px]">Add Account</h3>
+                                        <h3 className="text-[18px] font-extrabold text-[#15171C] tracking-[-0.3px]">{t("jobPortals.addAccount")}</h3>
                                     </div>
                                     <button onClick={() => setShowAddAccount(false)} className="w-9 h-9 rounded-full hover:bg-[#E8EAED] flex items-center justify-center text-[#9AA3AF] hover:text-[#4B5563] transition-colors">
                                         <X className="w-5 h-5" />
@@ -229,37 +245,37 @@ export default function JobPortalsPage() {
 
                                 <div className="flex-1 overflow-y-auto px-7 py-6 space-y-5">
                                     <div className="space-y-1.5">
-                                        <label htmlFor="jp-username" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">User Name *</label>
-                                        <input id="jp-username" type="text" placeholder="Enter username" className="w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-medium focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] focus:bg-white transition-all outline-none" />
+                                        <label htmlFor="jp-username" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">{t("jobPortals.userName")} *</label>
+                                        <input id="jp-username" type="text" placeholder={t("jobPortals.usernamePlaceholder")} className="w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-medium focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] focus:bg-white transition-all outline-none" />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label htmlFor="jp-display-name" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">Display Name *</label>
-                                        <input id="jp-display-name" type="text" placeholder="Portal display name" className="w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-medium focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] focus:bg-white transition-all outline-none" />
+                                        <label htmlFor="jp-display-name" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">{t("jobPortals.displayName")} *</label>
+                                        <input id="jp-display-name" type="text" placeholder={t("jobPortals.displayNamePlaceholder")} className="w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-medium focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] focus:bg-white transition-all outline-none" />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label htmlFor="jp-api-key" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">API Key *</label>
+                                        <label htmlFor="jp-api-key" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">{t("jobPortals.apiKey")} *</label>
                                         <input id="jp-api-key" type="password" placeholder="••••••••••••••••" className="w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-medium focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] focus:bg-white transition-all outline-none" />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label htmlFor="jp-subscription" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">Subscription (Annually)</label>
-                                        <input id="jp-subscription" type="text" placeholder="Select subscription" className="w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-medium focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] focus:bg-white transition-all outline-none" />
+                                        <label htmlFor="jp-subscription" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">{t("jobPortals.subscriptionAnnually")}</label>
+                                        <input id="jp-subscription" type="text" placeholder={t("jobPortals.selectSubscriptionPlaceholder")} className="w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-medium focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] focus:bg-white transition-all outline-none" />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-1.5">
-                                            <label htmlFor="jp-available" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">Available</label>
+                                            <label htmlFor="jp-available" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">{t("jobPortals.available")}</label>
                                             <div id="jp-available" className={`w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-semibold text-[#9AA3AF] ${jetbrainsMono.className}`}>0</div>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label htmlFor="jp-posted" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">Posted</label>
+                                            <label htmlFor="jp-posted" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">{t("jobPortals.posted")}</label>
                                             <div id="jp-posted" className={`w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-semibold text-[#9AA3AF] ${jetbrainsMono.className}`}>0</div>
                                         </div>
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label htmlFor="jp-notification-to" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">Job Posting Notification To</label>
+                                        <label htmlFor="jp-notification-to" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] ml-0.5">{t("jobPortals.jobPostingNotification")}</label>
                                         <select id="jp-notification-to" className="w-full px-4 py-3 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] text-[14px] font-medium focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] focus:bg-white transition-all outline-none appearance-none">
-                                            <option>Default Recruiter</option>
+                                            <option>{t("jobPortals.defaultRecruiter")}</option>
                                         </select>
                                     </div>
 
@@ -268,7 +284,7 @@ export default function JobPortalsPage() {
                                             <input type="checkbox" className="peer h-5 w-5 cursor-pointer appearance-none rounded-[6px] border-2 border-[#D4D7DC] transition-all checked:border-[#5B53E0] checked:bg-[#5B53E0]" />
                                             <CheckCircle2 className="pointer-events-none absolute h-3.5 w-3.5 text-white opacity-0 transition-opacity peer-checked:opacity-100 ml-0.5" />
                                         </div>
-                                        <span className="text-[13px] font-medium text-[#4B5563] select-none group-hover:text-[#5B53E0] transition-colors leading-snug">Create candidate/Pipeline Directly (if applied)</span>
+                                        <span className="text-[13px] font-medium text-[#4B5563] select-none group-hover:text-[#5B53E0] transition-colors leading-snug">{t("jobPortals.createCandidateDirectly")}</span>
                                     </label>
                                 </div>
 
@@ -277,7 +293,7 @@ export default function JobPortalsPage() {
                                         onClick={() => setShowAddAccount(false)}
                                         className="px-5 h-11 rounded-[10px] text-[#6B6F76] font-semibold text-[13.5px] hover:text-[#15171C] hover:bg-[#E8EAED]/60 transition-colors"
                                     >
-                                        Cancel
+                                        {t("jobPortals.cancel")}
                                     </button>
                                     <button
                                         onClick={handleSave}
@@ -285,7 +301,7 @@ export default function JobPortalsPage() {
                                         className="inline-flex items-center gap-2 px-6 h-11 bg-[#5B53E0] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] hover:bg-[#4A43C9] transition-colors disabled:opacity-60"
                                     >
                                         {isSaving && <RefreshCw className="w-4 h-4 animate-spin" />}
-                                        Save Account
+                                        {t("jobPortals.saveAccount")}
                                     </button>
                                 </div>
                             </motion.div>
@@ -302,12 +318,12 @@ export default function JobPortalsPage() {
             <header className="sticky top-0 z-20 pt-4 sm:pt-5 md:pt-6 pb-4 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.6px] text-[#15171C] leading-tight">Job Portals</h1>
-                        <PageHelp title="Job Portals">
-                            <p>Connect job boards so you can publish your jobs to them.</p>
+                        <h1 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.6px] text-[#15171C] leading-tight">{t("jobPortals.title")}</h1>
+                        <PageHelp title={t("jobPortals.helpTitle")}>
+                            <p>{t("jobPortals.connectJobBoards")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[14px] text-[#8A929E] mt-1">Connect &amp; sync your listings with global talent platforms</p>
+                    <p className="text-[14px] text-[#8A929E] mt-1">{t("jobPortals.subtitle")}</p>
                 </div>
                 <button
                     onClick={handleSync}
@@ -315,7 +331,7 @@ export default function JobPortalsPage() {
                     className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors disabled:opacity-60 self-start sm:self-auto"
                 >
                     <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                    {isSyncing ? "Syncing Portals..." : "Sync Integrations"}
+                    {isSyncing ? t("jobPortals.syncing") : t("jobPortals.sync")}
                 </button>
             </header>
 
@@ -354,12 +370,12 @@ export default function JobPortalsPage() {
                             <div className="absolute top-5 right-5">
                                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#E3F4EF] text-[#0E8A6E] rounded-full">
                                     <CheckCircle2 className="w-3 h-3" />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider">Connected</span>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">{t("jobPortals.connected")}</span>
                                 </div>
                             </div>
                         ) : (
                             <div className="absolute top-5 right-5">
-                                <span className="px-2.5 py-1 bg-[#F4F5F7] text-[#8A929E] rounded-full text-[10px] font-bold uppercase tracking-wider border border-[#E8EAED]">{portal.status}</span>
+                                <span className="px-2.5 py-1 bg-[#F4F5F7] text-[#8A929E] rounded-full text-[10px] font-bold uppercase tracking-wider border border-[#E8EAED]">{t(portal.statusKey)}</span>
                             </div>
                         )}
 
@@ -371,14 +387,14 @@ export default function JobPortalsPage() {
                             <div className="space-y-1.5">
                                 <h3 className="text-[18px] font-extrabold text-[#15171C] tracking-[-0.3px]">{portal.name}</h3>
                                 <p className="text-[13.5px] text-[#6B6F76] font-medium leading-relaxed">
-                                    {portal.description}
+                                    {t(portal.descKey)}
                                 </p>
                             </div>
 
                             <div className="flex flex-wrap gap-1.5">
                                 {portal.features.map((f) => (
                                     <span key={f} className="px-2.5 py-1 bg-[#ECEBFB]/60 text-[#5B53E0] rounded-full text-[11px] font-semibold">
-                                        {f}
+                                        {FEATURE_KEYS[f] ? t(FEATURE_KEYS[f]) : f}
                                     </span>
                                 ))}
                             </div>
@@ -391,7 +407,7 @@ export default function JobPortalsPage() {
                                             ? "bg-[#F4F5F7] text-[#15171C] border border-[#E8EAED] hover:bg-[#ECEBFB]/60"
                                             : "bg-[#5B53E0] text-white hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.24)]"
                                     }`}>
-                                    {portal.connected ? "Configure Settings" : "Connect Portal"}
+                                    {portal.connected ? t("jobPortals.configureSettings") : t("jobPortals.connectPortal")}
                                 </button>
                             </div>
                         </div>

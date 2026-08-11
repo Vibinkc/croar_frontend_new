@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { SelfServiceAnswer, SelfServiceQuestion } from "@/utils/payroll/api";
+import { useI18n } from "@/context/I18nContext";
 
 /**
  * Modal that renders a set of self-service questions (RATING / TEXT / MCQ) and
@@ -24,6 +25,7 @@ export default function SelfServiceFiller({
   onCancel: () => void;
   onSubmit: (answers: SelfServiceAnswer[]) => void;
 }) {
+  const { t } = useI18n();
   const [answers, setAnswers] = useState<Record<string, { value?: number; text?: string }>>({});
 
   const setVal = (qid: string, patch: { value?: number; text?: string }) =>
@@ -67,7 +69,7 @@ export default function SelfServiceFiller({
           <button
             onClick={onCancel}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-700"
-            aria-label="Close"
+            aria-label={t("employee.close")}
           >
             <span className="material-symbols-rounded text-[22px]">close</span>
           </button>
@@ -76,7 +78,7 @@ export default function SelfServiceFiller({
         {/* Body */}
         <div className="max-h-[65vh] flex-1 overflow-y-auto px-6 py-5">
           {questions.length === 0 ? (
-            <p className="text-[13px] text-slate-400">This assessment has no questions configured.</p>
+            <p className="text-[13px] text-slate-400">{t("employee.noQuestionsConfigured")}</p>
           ) : (
             <div className="flex flex-col gap-6">
               {questions.map((q, idx) => (
@@ -150,7 +152,7 @@ export default function SelfServiceFiller({
                         rows={3}
                         value={answers[q.id]?.text ?? ""}
                         onChange={(e) => setVal(q.id, { text: e.target.value })}
-                        placeholder="Your answer…"
+                        placeholder={t("employee.yourAnswerPlaceholder")}
                         className="w-full resize-none rounded-xl border border-slate-200 bg-white p-3 text-[13.5px] text-slate-700 outline-none transition-all focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15"
                       />
                     </div>
@@ -164,7 +166,7 @@ export default function SelfServiceFiller({
         {/* Footer */}
         <div className="flex items-center justify-between gap-3 border-t border-slate-100 px-6 py-4">
           <span className="text-[12px] font-medium text-slate-400">
-            {requiredUnanswered > 0 ? `${requiredUnanswered} required question(s) left` : "All set"}
+            {requiredUnanswered > 0 ? t("employee.requiredQuestionsLeft", { count: requiredUnanswered }) : t("employee.allSet")}
           </span>
           <div className="flex gap-2">
             <button
@@ -173,7 +175,7 @@ export default function SelfServiceFiller({
               disabled={busy}
               className="rounded-lg border border-slate-200 px-4 py-2 text-[13px] font-bold text-slate-500 transition-colors hover:bg-slate-50 disabled:opacity-50"
             >
-              Cancel
+              {t("employee.cancel")}
             </button>
             <button
               type="button"
@@ -181,7 +183,7 @@ export default function SelfServiceFiller({
               disabled={busy || requiredUnanswered > 0 || questions.length === 0}
               className="rounded-lg bg-[#5B53E0] px-5 py-2 text-[13px] font-bold text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors hover:bg-[#4A42C8] disabled:opacity-50"
             >
-              {busy ? "Submitting…" : "Submit"}
+              {busy ? t("employee.submitting") : t("employee.submit")}
             </button>
           </div>
         </div>

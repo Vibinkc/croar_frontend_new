@@ -6,16 +6,13 @@ import { useDialog } from "@/components/payroll/DialogProvider";
 import SelfServiceFiller from "@/components/employee/SelfServiceFiller";
 import { PageHeader, Card, CardHeader, Button, Badge, EmptyState } from "@/components/ds";
 import NotLinkedNotice, { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
-
-const RELATION_LABEL: Record<string, string> = {
-  SELF: "Self-assessment",
-  MANAGER: "Manager review",
-  PEER: "Peer review",
-  SUBORDINATE: "Upward review",
-};
+import { useI18n } from "@/context/I18nContext";
 
 export default function EmployeeFeedbackPage() {
   const { alert } = useDialog();
+  const { t } = useI18n();
+  const relationLabel = (rel: string) =>
+    ["SELF", "MANAGER", "PEER", "SUBORDINATE"].includes(rel) ? t(`employee.relation_${rel}`) : rel;
   const [rows, setRows] = useState<My360Assignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +57,7 @@ export default function EmployeeFeedbackPage() {
     try {
       await meApi.submit360(active.id, answers);
       setActive(null);
-      await alert({ title: "Thank you", message: "Your feedback has been submitted." });
+      await alert({ title: t("employee.thankYou"), message: t("employee.feedbackSubmitted") });
       await load();
     } catch (e) {
       await alert({ message: (e as Error).message, tone: "danger" });
@@ -74,9 +71,9 @@ export default function EmployeeFeedbackPage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="360 Feedback"
-        subtitle="Assessments requesting your feedback — your responses are confidential"
-        help={<p>You&apos;ve been asked to give feedback as part of a 360 review cycle. Your individual responses are confidential.</p>}
+        title={t("employee.feedbackTitle")}
+        subtitle={t("employee.feedbackSubtitle")}
+        help={<p>{t("employee.feedbackHelp")}</p>}
       />
 
       {error && (
@@ -86,12 +83,12 @@ export default function EmployeeFeedbackPage() {
       )}
 
       <Card padding="none" className="overflow-hidden">
-        <CardHeader className="px-6 pt-6" title="Pending feedback" subtitle="Reviews awaiting your input"
+        <CardHeader className="px-6 pt-6" title={t("employee.pendingFeedback")} subtitle={t("employee.pendingFeedbackSubtitle")}
           action={<Badge tone="indigo">{rows.length}</Badge>} />
         {loading ? (
           <div className="px-6 pb-6 space-y-2.5">{[1, 2, 3].map((i) => <div key={i} className="h-16 rounded-[12px] bg-[#F4F5F7] animate-pulse" />)}</div>
         ) : rows.length === 0 ? (
-          <EmptyState tone="muted" icon="task_alt" title="You're all caught up" description="No feedback requests are pending. New ones appear here when a review cycle starts." />
+          <EmptyState tone="muted" icon="task_alt" title={t("employee.allCaughtUp")} description={t("employee.noFeedbackDesc")} />
         ) : (
           <div className="divide-y divide-[#F0F0F1]">
             {rows.map((r) => (
@@ -101,11 +98,11 @@ export default function EmployeeFeedbackPage() {
                     <span className="material-symbols-rounded text-[22px]">rate_review</span>
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-[14px] font-bold text-[#15171C]">{r.relation === "SELF" ? "Your self-assessment" : `Review: ${r.ratee_name}`}</p>
-                    <p className="truncate text-[12px] text-[#8A929E]">{RELATION_LABEL[r.relation] || r.relation} · {r.cycle_name}</p>
+                    <p className="truncate text-[14px] font-bold text-[#15171C]">{r.relation === "SELF" ? t("employee.yourSelfAssessment") : t("employee.reviewName", { name: r.ratee_name })}</p>
+                    <p className="truncate text-[12px] text-[#8A929E]">{relationLabel(r.relation)} · {r.cycle_name}</p>
                   </div>
                 </div>
-                <Button size="sm" icon="edit_note" disabled={opening} onClick={() => open(r)}>Give Feedback</Button>
+                <Button size="sm" icon="edit_note" disabled={opening} onClick={() => open(r)}>{t("employee.giveFeedback")}</Button>
               </div>
             ))}
           </div>
@@ -114,8 +111,8 @@ export default function EmployeeFeedbackPage() {
 
       {active && (
         <SelfServiceFiller
-          title={active.relation === "SELF" ? "Your self-assessment" : `Feedback: ${active.ratee_name}`}
-          subtitle={`${RELATION_LABEL[active.relation] || active.relation} · ${active.cycle_name}`}
+          title={active.relation === "SELF" ? t("employee.yourSelfAssessment") : t("employee.feedbackName", { name: active.ratee_name })}
+          subtitle={`${relationLabel(active.relation)} · ${active.cycle_name}`}
           questions={questions}
           busy={submitting}
           onCancel={() => setActive(null)}

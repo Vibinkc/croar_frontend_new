@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { apiClient } from "@/utils/api";
 import Link from "next/link";
 import { PageHeader, StatGrid, StatCard, Card, Badge } from "@/components/ds";
+import { useI18n } from "@/context/I18nContext";
 
 interface PlatformStats {
     tenants: number;
@@ -33,6 +34,7 @@ function timeAgo(iso: string): string {
 }
 
 function SuperAdminDashboardContent() {
+    const { t } = useI18n();
     const [stats, setStats] = useState<PlatformStats | null>(null);
     const [recent, setRecent] = useState<ActivityLog[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -71,33 +73,33 @@ function SuperAdminDashboardContent() {
                     : { gradient: "linear-gradient(135deg,#94A3B8,#64748B)", glow: "rgba(100,116,139,0.25)", icon: "dns", tone: "neutral" as const };
 
     const quickActions = [
-        { label: "New Organization", desc: "Provision a new tenant", icon: "add_business", href: "/super-admin/organizations" },
-        { label: "Global RBAC Editor", desc: "Manage platform roles", icon: "security", href: "/super-admin/roles" },
-        { label: "Organizations", desc: "Every org on the platform", icon: "corporate_fare", href: "/super-admin/organizations" },
-        { label: "Audit Logs", desc: "Review platform activity", icon: "receipt_long", href: "/super-admin/logs" },
+        { label: t("superAdmin.newOrganization"), desc: t("superAdmin.provisionNewTenant"), icon: "add_business", href: "/super-admin/organizations" },
+        { label: t("superAdmin.globalRbacEditor"), desc: t("superAdmin.managePlatformRoles"), icon: "security", href: "/super-admin/roles" },
+        { label: t("superAdmin.organizations"), desc: t("superAdmin.everyOrgOnPlatform"), icon: "corporate_fare", href: "/super-admin/organizations" },
+        { label: t("superAdmin.auditLogs"), desc: t("superAdmin.reviewPlatformActivity"), icon: "receipt_long", href: "/super-admin/logs" },
     ];
 
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             <PageHeader
-                title="Platform Overview"
-                subtitle="Platform-wide analytics and system controls for Croar"
-                help={<><p>The command centre for the whole platform.</p><p>Provision tenants, manage global roles and users, and monitor system health from here.</p></>}
-                actions={<Badge tone={isLoading ? "neutral" : healthStyle.tone} dot>{isLoading ? "Checking status…" : health === "Operational" ? "Live platform status" : health === "Degraded" ? "System degraded" : health === "Down" ? "System down" : "Status unknown"}</Badge>}
+                title={t("superAdmin.platformOverview")}
+                subtitle={t("superAdmin.platformOverviewSubtitle")}
+                help={<><p>{t("superAdmin.overviewHelp1")}</p><p>{t("superAdmin.overviewHelp2")}</p></>}
+                actions={<Badge tone={isLoading ? "neutral" : healthStyle.tone} dot>{isLoading ? t("superAdmin.checkingStatus") : health === "Operational" ? t("superAdmin.livePlatformStatus") : health === "Degraded" ? t("superAdmin.systemDegraded") : health === "Down" ? t("superAdmin.systemDown") : t("superAdmin.statusUnknown")}</Badge>}
             />
 
             {/* Stats */}
             <StatGrid>
-                <StatCard label="Total Organizations" value={isLoading ? "—" : stats?.tenants ?? 0} icon="corporate_fare" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Platform Users" value={isLoading ? "—" : stats?.users ?? 0} icon="groups" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Global Roles" value={isLoading ? "—" : stats?.global_roles ?? 0} icon="security" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label="System Health" value={isLoading ? "—" : stats?.system_status ?? "Unknown"} icon={healthStyle.icon} gradient={healthStyle.gradient} glow={healthStyle.glow} />
+                <StatCard label={t("superAdmin.totalOrganizations")} value={isLoading ? "—" : stats?.tenants ?? 0} icon="corporate_fare" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label={t("superAdmin.platformUsers")} value={isLoading ? "—" : stats?.users ?? 0} icon="groups" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={t("superAdmin.globalRoles")} value={isLoading ? "—" : stats?.global_roles ?? 0} icon="security" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={t("superAdmin.systemHealth")} value={isLoading ? "—" : stats?.system_status ?? t("superAdmin.unknown")} icon={healthStyle.icon} gradient={healthStyle.gradient} glow={healthStyle.glow} />
             </StatGrid>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {/* Quick actions */}
                 <div className="lg:col-span-2">
-                    <h3 className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-3 px-1">Administrative actions</h3>
+                    <h3 className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-3 px-1">{t("superAdmin.administrativeActions")}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {quickActions.map((a) => (
                             <Link key={a.label} href={a.href} className="group">
@@ -117,7 +119,7 @@ function SuperAdminDashboardContent() {
 
                 {/* Recent activity */}
                 <div>
-                    <h3 className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-3 px-1">Recent activity</h3>
+                    <h3 className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-3 px-1">{t("superAdmin.recentActivity")}</h3>
                     <Card padding="none" className="overflow-hidden">
                         {logsLoading ? (
                             <div className="p-4 space-y-2.5">
@@ -126,7 +128,7 @@ function SuperAdminDashboardContent() {
                                 ))}
                             </div>
                         ) : recent.length === 0 ? (
-                            <p className="px-5 py-8 text-center text-[12.5px] text-[#8A929E]">No recent activity yet.</p>
+                            <p className="px-5 py-8 text-center text-[12.5px] text-[#8A929E]">{t("superAdmin.noRecentActivity")}</p>
                         ) : (
                             <div className="divide-y divide-[#F0F0F1]">
                                 {recent.map((log) => (
@@ -141,7 +143,7 @@ function SuperAdminDashboardContent() {
                             </div>
                         )}
                         <Link href="/super-admin/logs" className="block text-center py-3 text-[12.5px] font-semibold text-[#5B53E0] hover:bg-[#F7F8FA] transition-colors border-t border-[#F0F0F1]">
-                            View detailed logs
+                            {t("superAdmin.viewDetailedLogs")}
                         </Link>
                     </Card>
                 </div>
@@ -151,8 +153,9 @@ function SuperAdminDashboardContent() {
 }
 
 export default function SuperAdminDashboard() {
+    const { t } = useI18n();
     return (
-        <Suspense fallback={<div className="p-8 text-[13px] text-[#8A929E]">Loading system metrics…</div>}>
+        <Suspense fallback={<div className="p-8 text-[13px] text-[#8A929E]">{t("superAdmin.loadingSystemMetrics")}</div>}>
             <SuperAdminDashboardContent />
         </Suspense>
     );

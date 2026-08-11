@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { BACKEND_URL } from "@/utils/api";
+import { useI18n } from "@/context/I18nContext";
 import Editor from "@monaco-editor/react";
 import { 
   Timer, 
@@ -79,6 +80,7 @@ type TestStatus = "VERIFY" | "INTRO" | "TESTING" | "COMPLETED" | "ERROR";
 
 export default function CandidateAssessmentPage() {
   const { id: automationId } = useParams();
+  const { t: tr } = useI18n();
   const [status, setStatus] = useState<TestStatus>("VERIFY");
   const [email, setEmail] = useState("");
   const [attempt, setAttempt] = useState<Attempt | null>(null);
@@ -120,10 +122,10 @@ export default function CandidateAssessmentPage() {
         }
       } else {
         const err = await res.json();
-        setError(err.detail || "Verification failed. Please check your email or contact the recruiter.");
+        setError(err.detail || tr("candidate.verificationFailedLong"));
       }
     } catch (e) {
-      setError("Connection error. Please try again.");
+      setError(tr("candidate.connectionError"));
     } finally {
       setLoading(false);
     }
@@ -150,7 +152,7 @@ export default function CandidateAssessmentPage() {
         setStatus("TESTING");
       }
     } catch (e) {
-      setError("Failed to load test data.");
+      setError(tr("candidate.failedLoadTest"));
     } finally {
       setLoading(false);
     }
@@ -172,7 +174,7 @@ export default function CandidateAssessmentPage() {
         setStatus("COMPLETED");
       }
     } catch (e) {
-      setError("Failed to submit results.");
+      setError(tr("candidate.failedSubmit"));
     } finally {
       setLoading(false);
     }
@@ -230,14 +232,14 @@ export default function CandidateAssessmentPage() {
               )}
             </div>
             <h1 className="text-3xl font-black text-white tracking-tight ">
-              {testData?.organization?.name || "Technical"} Assessment
+              {testData?.organization?.name || tr("candidate.technical")} {tr("candidate.assessment")}
             </h1>
-            <p className="text-slate-500 text-sm">Verify your application to begin the test with {testData?.organization?.name || "us"}.</p>
+            <p className="text-slate-500 text-sm">{tr("candidate.verifyAppDesc", { org: testData?.organization?.name || tr("candidate.us") })}</p>
           </div>
           
           <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
             <div className="space-y-2">
-              <label htmlFor="verify-email" className="text-[10px] font-black text-slate-500  tracking-[0.2em] ml-1">Email Address</label>
+              <label htmlFor="verify-email" className="text-[10px] font-black text-slate-500  tracking-[0.2em] ml-1">{tr("candidate.emailAddress")}</label>
               <input
                 id="verify-email"
                 type="email"
@@ -255,7 +257,7 @@ export default function CandidateAssessmentPage() {
               disabled={loading || !email}
               className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl py-4 font-black text-sm   transition-all disabled:opacity-50 shadow-lg shadow-indigo-500/20"
             >
-              {loading ? "Verifying..." : "Continue"}
+              {loading ? tr("candidate.verifying") : tr("candidate.continue")}
             </button>
           </div>
         </div>
@@ -268,8 +270,8 @@ export default function CandidateAssessmentPage() {
       <div className="min-h-screen bg-[#0A0A0B] flex flex-col items-center justify-center p-6 text-slate-300">
         <div className="w-full max-w-2xl space-y-8">
           <div className="text-center space-y-4">
-            <h2 className="text-4xl font-black text-white  tracking-tight">Ready to start?</h2>
-            <p className="text-slate-500">Please review the instructions before beginning your assessment.</p>
+            <h2 className="text-4xl font-black text-white  tracking-tight">{tr("candidate.readyToStart")}</h2>
+            <p className="text-slate-500">{tr("candidate.reviewInstructions")}</p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
@@ -279,11 +281,11 @@ export default function CandidateAssessmentPage() {
                   <Clock className="w-5 h-5 text-indigo-500" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-slate-500  ">Duration</h4>
-                  <p className="text-lg font-black text-white">30 Minutes</p>
+                  <h4 className="text-xs font-black text-slate-500  ">{tr("candidate.duration")}</h4>
+                  <p className="text-lg font-black text-white">{tr("candidate.thirtyMinutes")}</p>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">Once you start, the timer will begin and cannot be paused. Ensure you have a stable connection.</p>
+              <p className="text-xs text-slate-500 leading-relaxed">{tr("candidate.durationNote")}</p>
             </div>
             <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-4">
@@ -291,11 +293,11 @@ export default function CandidateAssessmentPage() {
                   <Activity className="w-5 h-5 text-emerald-500" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-slate-500  ">Questions</h4>
-                  <p className="text-lg font-black text-white">{attempt?.generated_questions?.length || 0} Total</p>
+                  <h4 className="text-xs font-black text-slate-500  ">{tr("candidate.questions")}</h4>
+                  <p className="text-lg font-black text-white">{attempt?.generated_questions?.length || 0} {tr("candidate.total")}</p>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">You will be tested on {attempt?.topic}. This assessment contains {attempt?.type === 'BOTH' ? 'coding and technical' : attempt?.type?.toLowerCase()} rounds.</p>
+              <p className="text-xs text-slate-500 leading-relaxed">{tr("candidate.testedOn", { topic: attempt?.topic ?? "" })} {tr("candidate.assessmentContains", { rounds: attempt?.type === 'BOTH' ? tr("candidate.codingAndTechnical") : (attempt?.type?.toLowerCase() ?? "") })}</p>
             </div>
           </div>
 
@@ -304,7 +306,7 @@ export default function CandidateAssessmentPage() {
             disabled={loading}
             className="w-full bg-white text-slate-950 rounded-2xl py-5 font-black text-base   hover:bg-slate-200 transition-all flex items-center justify-center gap-3 group"
           >
-            Start Assessment
+            {tr("candidate.startAssessment")}
             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
@@ -320,7 +322,7 @@ export default function CandidateAssessmentPage() {
         <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center text-slate-500">
            <div className="flex flex-col items-center gap-4">
               <AlertCircle className="w-12 h-12 text-slate-800" />
-              <p className="text-sm font-black  ">No questions found in this assessment</p>
+              <p className="text-sm font-black  ">{tr("candidate.noQuestions")}</p>
            </div>
         </div>
       );
@@ -346,7 +348,7 @@ export default function CandidateAssessmentPage() {
             <div className="h-6 w-px bg-slate-800 mx-2" />
             <div className="flex items-center gap-3">
               <span className="text-xs font-black text-slate-500  ">
-                Question {currentIdx + 1} / {testData.questions.length}
+                {tr("candidate.question")} {currentIdx + 1} / {testData.questions.length}
               </span>
               <span className="text-xs font-bold text-slate-400">· {testData.topic}</span>
             </div>
@@ -374,12 +376,12 @@ export default function CandidateAssessmentPage() {
             <div className="h-12 border-b border-slate-800/50 flex items-center px-6 shrink-0">
               <div className="flex items-center gap-2 text-[#7C3AED]">
                 <Info className="w-4 h-4" />
-                <span className="text-[10px] font-black  ">Instructions</span>
+                <span className="text-[10px] font-black  ">{tr("candidate.instructions")}</span>
               </div>
             </div>
             <div className="flex-1 p-8 overflow-y-auto custom-scrollbar space-y-8">
               <h2 className="text-2xl font-black text-white leading-tight">
-                {currentQuestion?.title || "Problem Statement"}
+                {currentQuestion?.title || tr("candidate.problemStatement")}
               </h2>
               
               <div className="prose prose-invert prose-sm max-w-none text-slate-400 font-medium leading-relaxed">
@@ -387,7 +389,7 @@ export default function CandidateAssessmentPage() {
                 
                 {currentQuestion.content?.constraints && (
                   <div className="mt-8">
-                    <h4 className="text-white text-xs font-black   mb-3">Constraints</h4>
+                    <h4 className="text-white text-xs font-black   mb-3">{tr("candidate.constraints")}</h4>
                     <ul className="space-y-2 list-none p-0">
                       {(Array.isArray(currentQuestion?.content?.constraints) ? currentQuestion.content.constraints : [currentQuestion?.content?.constraints]).map((c: string, i: number) => (
                         <li key={i} className="flex items-center gap-2">
@@ -401,15 +403,15 @@ export default function CandidateAssessmentPage() {
                 
                 {currentQuestion.content?.examples && (
                   <div className="mt-8 space-y-6">
-                    <h4 className="text-white text-xs font-black   mb-3">Examples</h4>
+                    <h4 className="text-white text-xs font-black   mb-3">{tr("candidate.examples")}</h4>
                     {currentQuestion.content.examples.map((ex, i) => (
                       <div key={i} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 space-y-3 font-mono text-[13px]">
                         <div className="flex gap-4">
-                          <span className="text-slate-500 w-16  text-[10px] font-bold">Input</span>
+                          <span className="text-slate-500 w-16  text-[10px] font-bold">{tr("candidate.inputLabel")}</span>
                           <span className="text-indigo-400">{ex.input}</span>
                         </div>
                         <div className="flex gap-4 border-t border-slate-800/50 pt-2">
-                          <span className="text-slate-500 w-16  text-[10px] font-bold">Output</span>
+                          <span className="text-slate-500 w-16  text-[10px] font-bold">{tr("candidate.outputLabel")}</span>
                           <span className="text-emerald-400">{ex.output}</span>
                         </div>
                         {ex.explanation && (
@@ -430,7 +432,7 @@ export default function CandidateAssessmentPage() {
                 <div className="h-12 flex items-center mb-8">
                   <div className="flex items-center gap-2 text-indigo-500">
                     <Layout className="w-4 h-4" />
-                    <span className="text-[10px] font-black  ">Select Answer</span>
+                    <span className="text-[10px] font-black  ">{tr("candidate.selectAnswer")}</span>
                   </div>
                 </div>
                 <div className="grid gap-3">
@@ -461,10 +463,10 @@ export default function CandidateAssessmentPage() {
                 <div className="h-12 border-b border-slate-800/50 flex items-center justify-between px-6 shrink-0">
                   <div className="flex items-center gap-2 text-emerald-500">
                     <Terminal className="w-4 h-4" />
-                    <span className="text-[10px] font-black  ">Code Editor</span>
+                    <span className="text-[10px] font-black  ">{tr("candidate.codeEditor")}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-black text-slate-500 ">{currentQuestion.difficulty || "Medium"}</span>
+                    <span className="text-[10px] font-black text-slate-500 ">{currentQuestion.difficulty || tr("candidate.medium")}</span>
                     <select 
                       value={selectedLanguage}
                       onChange={(e) => setSelectedLanguage(e.target.value)}
@@ -498,15 +500,15 @@ export default function CandidateAssessmentPage() {
                   <div className="h-10 border-b border-slate-800/50 flex items-center justify-between px-6 shrink-0">
                      <div className="flex items-center gap-2 text-slate-500">
                       <Activity className="w-3.5 h-3.5" />
-                      <span className="text-[10px] font-black  ">Tests</span>
+                      <span className="text-[10px] font-black  ">{tr("candidate.tests")}</span>
                     </div>
-                    {runningTests && <span className="text-[10px] font-bold text-indigo-500 animate-pulse">Running...</span>}
+                    {runningTests && <span className="text-[10px] font-bold text-indigo-500 animate-pulse">{tr("candidate.running")}</span>}
                   </div>
                   <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-2">
                     {testResults.length === 0 ? (
                       <div className="h-full flex flex-col items-center justify-center text-slate-600 gap-2 opacity-50">
                         <Play className="w-8 h-8" />
-                        <p className="text-xs font-bold">Run tests to see results</p>
+                        <p className="text-xs font-bold">{tr("candidate.runTestsToSee")}</p>
                       </div>
                     ) : (
                       testResults.map((res, i) => (
@@ -516,11 +518,11 @@ export default function CandidateAssessmentPage() {
                           <div className="flex items-center gap-3">
                             {res.passed ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <AlertCircle className="w-4 h-4 text-red-500" />}
                             <span className="text-xs font-bold text-slate-300">
-                              {res.isHidden ? `Hidden Case #${i+1}` : `Case #${i+1}`}
+                              {res.isHidden ? tr("candidate.hiddenCase", { n: i+1 }) : tr("candidate.case", { n: i+1 })}
                             </span>
                           </div>
                           {!res.isHidden && (
-                            <span className="text-[10px] font-mono text-slate-500">In: {res.input}</span>
+                            <span className="text-[10px] font-mono text-slate-500">{tr("candidate.inLabel")} {res.input}</span>
                           )}
                         </div>
                       ))
@@ -559,7 +561,7 @@ export default function CandidateAssessmentPage() {
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl border border-emerald-500/30 text-emerald-500 text-xs font-black   hover:bg-emerald-500/10 transition-all"
               >
                 <Play className="w-4 h-4" />
-                Run Tests
+                {tr("candidate.runTests")}
               </button>
             )}
             <button 
@@ -568,7 +570,7 @@ export default function CandidateAssessmentPage() {
               className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-white text-slate-950 text-xs font-black   hover:bg-slate-200 transition-all shadow-lg shadow-white/5 active:scale-95"
             >
               <Send className="w-4 h-4" />
-              Submit Test
+              {tr("candidate.submitTest")}
             </button>
           </div>
         </footer>
@@ -600,20 +602,20 @@ export default function CandidateAssessmentPage() {
           <div className="w-20 h-20 bg-emerald-500/10 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-emerald-500/20">
             <CheckCircle2 className="w-10 h-10" />
           </div>
-          <h2 className="text-3xl font-black text-white mb-4  tracking-tight ">Successfully Submitted!</h2>
+          <h2 className="text-3xl font-black text-white mb-4  tracking-tight ">{tr("candidate.successfullySubmitted")}</h2>
           <p className="text-slate-500 text-sm leading-relaxed mb-8">
-            Your assessment has been recorded. Our team will review your solutions and get back to you shortly.
+            {tr("candidate.assessmentRecorded")}
           </p>
           
           {score !== null && (
             <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 mb-8 inline-block">
-              <p className="text-[10px] font-black text-slate-500   mb-1">Final Score</p>
+              <p className="text-[10px] font-black text-slate-500   mb-1">{tr("candidate.finalScore")}</p>
               <p className="text-4xl font-black text-white">{score}%</p>
             </div>
           )}
           
           <div className="pt-4 border-t border-slate-800 flex flex-col gap-2">
-            <p className="text-[10px] font-black text-slate-600  ">Assessment ID</p>
+            <p className="text-[10px] font-black text-slate-600  ">{tr("candidate.assessmentId")}</p>
             <p className="text-[10px] font-mono text-slate-700 truncate px-4">{attempt?.id}</p>
           </div>
         </div>

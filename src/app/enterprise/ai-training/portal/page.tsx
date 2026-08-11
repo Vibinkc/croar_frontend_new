@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
 import { BACKEND_URL } from "@/utils/api";
 import { PageHelp } from "@/components/ds";
@@ -27,6 +28,7 @@ interface Assignment {
 
 function SimulationPortalContent() {
     const { token, userId } = useAuth();
+    const { t: tr } = useI18n();
     const searchParams = useSearchParams();
     const router = useRouter();
     
@@ -120,14 +122,14 @@ function SimulationPortalContent() {
                     </button>
                     <div>
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1 ">Neural Coaching Lab</h1>
-                            <PageHelp title="Practice Portal">
-                                <p>Sign in to start the practice sessions assigned to you.</p>
+                            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1 ">{tr("aiTraining.neuralCoachingLab")}</h1>
+                            <PageHelp title={tr("aiTraining.practicePortal")}>
+                                <p>{tr("aiTraining.practicePortalHelp")}</p>
                             </PageHelp>
                         </div>
                         <p className="text-slate-500 font-bold   text-[9px] flex items-center gap-2">
                             <span className="material-symbols-rounded text-sm text-indigo-500">neurology</span>
-                            {"Active AI-Driven Practice Laboratory"}
+                            {tr("aiTraining.practiceLabSubtitle")}
                         </p>
                     </div>
                 </div>
@@ -138,13 +140,13 @@ function SimulationPortalContent() {
                 <section className="space-y-8">
                     <div className="flex items-center gap-3">
                         <div className="w-2 h-8 bg-indigo-600 rounded-full"></div>
-                        <h2 className="text-xl font-black text-slate-900 tracking-tight ">Assigned Protocols</h2>
+                        <h2 className="text-xl font-black text-slate-900 tracking-tight ">{tr("aiTraining.assignedProtocols")}</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {assignments.map((as) => (
                             <div key={as.id} className="relative group bg-indigo-600 rounded-2xl p-8 flex flex-col gap-6 shadow-2xl shadow-indigo-200 transition-all hover:scale-[1.02]">
                                 <div className="absolute top-6 right-8 px-3 py-1 bg-white/20 text-white rounded-xl text-[9px] font-black   backdrop-blur-md">
-                                    Priority Assignment
+                                    {tr("aiTraining.priorityAssignment")}
                                 </div>
                                 <div className="w-12 h-12 rounded-xl bg-white/20 text-white font-black flex items-center justify-center">
                                     <span className="material-symbols-rounded text-xl">verified_user</span>
@@ -159,7 +161,7 @@ function SimulationPortalContent() {
                                         className="flex-1 py-4 bg-white text-indigo-600 rounded-xl font-black text-[10px]   hover:bg-slate-900 hover:text-white transition-all shadow-xl flex items-center justify-center gap-2"
                                     >
                                         <span className="material-symbols-rounded text-lg">play_arrow</span>
-                                        {"Engage AI"}
+                                        {tr("aiTraining.engageAi")}
                                     </button>
                                 </div>
                             </div>
@@ -172,7 +174,7 @@ function SimulationPortalContent() {
             <section className="space-y-8">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-8 bg-slate-900 rounded-full"></div>
-                    <h2 className="text-xl font-black text-slate-900 tracking-tight ">Practice Library</h2>
+                    <h2 className="text-xl font-black text-slate-900 tracking-tight ">{tr("aiTraining.practiceLibrary")}</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {scenarios.map((sc) => (
@@ -190,7 +192,7 @@ function SimulationPortalContent() {
                                 className="w-full py-4 bg-slate-50 text-slate-900 border border-slate-100 rounded-xl font-black text-[10px]   hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
                             >
                                 <span className="material-symbols-rounded text-lg">forum</span>
-                                {"Practice Chat"}
+                                {tr("aiTraining.practiceChat")}
                             </button>
                         </div>
                     ))}

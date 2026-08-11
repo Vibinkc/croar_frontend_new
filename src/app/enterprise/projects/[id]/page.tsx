@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import ProjectForm from "@/components/enterprise/ProjectForm";
 import { Button, Card } from "@/components/ds";
@@ -10,6 +11,7 @@ import { Button, Card } from "@/components/ds";
 export default function ProjectDetailsPage() {
     const params = useParams();
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [project, setProject] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -94,11 +96,11 @@ export default function ProjectDetailsPage() {
                         className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm shrink-0"
                     >
                         <span className="material-symbols-rounded text-[18px]">arrow_back</span>
-                        Back
+                        {tr("common.back")}
                     </button>
                     <div className="min-w-0">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Project</h1>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Project console &amp; settings</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("postOnboarding.project")}</h1>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("postOnboarding.projectConsoleSettings")}</p>
                     </div>
                 </header>
 
@@ -107,12 +109,12 @@ export default function ProjectDetailsPage() {
                     <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
                         <span className="material-symbols-rounded text-[#C7CCD4] text-[34px]">folder_off</span>
                     </div>
-                    <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Project Not Found</h2>
+                    <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("postOnboarding.projectNotFound")}</h2>
                     <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
-                        The project you are looking for does not exist or has been deleted.
+                        {tr("postOnboarding.projectNotFoundDesc")}
                     </p>
                     <Button variant="secondary" icon="arrow_back" onClick={() => window.history.back()}>
-                        Go Back
+                        {tr("postOnboarding.goBack")}
                     </Button>
                 </Card>
             </div>

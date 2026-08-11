@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import {
     Button,
@@ -47,6 +48,7 @@ interface X360TemplateFormProps {
 export default function X360TemplateForm({ mode, templateId }: X360TemplateFormProps) {
     const isEdit = mode === "edit";
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [questions, setQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
@@ -217,9 +219,9 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
         <div className="max-w-[1100px] mx-auto w-full px-4 sm:px-5 md:px-7 pb-24 space-y-6 animate-in fade-in duration-500">
             {/* Page header (sticky) */}
             <PageHeader
-                help={<><p>Build a competency framework: pick the competencies and questions raters will answer.</p><p>Save it, then choose it when you start a 360 cycle.</p></>}
-                title={isEdit ? 'Refine 360 Framework' : 'Construct 360 Framework'}
-                subtitle={isEdit ? 'Optimizing professional competencies for feedback cycles' : 'Design professional competencies for organizational feedback'}
+                help={<><p>{tr("forms.x360Help1")}</p><p>{tr("forms.x360Help2")}</p></>}
+                title={isEdit ? tr("forms.refineFramework") : tr("forms.constructFramework")}
+                subtitle={isEdit ? tr("forms.refineSubtitle") : tr("forms.constructSubtitle")}
                 onBack={() => router.push('/enterprise/assessments-360/templates')}
                 actions={
                     <Button
@@ -228,7 +230,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                         onClick={handleSave}
                         disabled={submitting || formData.question_ids.length === 0}
                     >
-                        {isEdit ? (submitting ? 'Updating...' : 'Update Framework') : (submitting ? 'Deploying...' : 'Deploy Framework')}
+                        {isEdit ? (submitting ? tr("forms.updatingEllipsis") : tr("forms.updateFramework")) : (submitting ? tr("forms.deployingEllipsis") : tr("forms.deployFramework"))}
                     </Button>
                 }
             />
@@ -236,25 +238,25 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
             {/* Meta Config */}
             <Card padding="lg">
                 <CardHeader
-                    title={isEdit ? 'Framework Details' : 'Framework Setup'}
-                    subtitle={isEdit ? 'Update the designation and context of this framework' : 'Name your framework and define its strategic objective'}
+                    title={isEdit ? tr("forms.frameworkDetails") : tr("forms.frameworkSetup")}
+                    subtitle={isEdit ? tr("forms.frameworkDetailsSubtitle") : tr("forms.frameworkSetupSubtitle")}
                 />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <Field label="Framework Designation" htmlFor={`${isEdit ? 'edit' : 'new'}-framework-name`} required>
+                    <Field label={tr("forms.frameworkDesignation")} htmlFor={`${isEdit ? 'edit' : 'new'}-framework-name`} required>
                         <Input
                             id={`${isEdit ? 'edit' : 'new'}-framework-name`}
                             value={formData.name}
                             onChange={(e) => setFormData({...formData, name: e.target.value})}
                             required
-                            placeholder="e.g. Executive Leadership Quarterly"
+                            placeholder={tr("forms.frameworkDesignationPlaceholder")}
                         />
                     </Field>
-                    <Field label={isEdit ? 'Organization Context' : 'Strategic Objective'} htmlFor={`${isEdit ? 'edit' : 'new'}-framework-description`}>
+                    <Field label={isEdit ? tr("forms.organizationContext") : tr("forms.strategicObjective")} htmlFor={`${isEdit ? 'edit' : 'new'}-framework-description`}>
                         <Input
                             id={`${isEdit ? 'edit' : 'new'}-framework-description`}
                             value={formData.description}
                             onChange={(e) => setFormData({...formData, description: e.target.value})}
-                            placeholder={isEdit ? 'Strategic summary for management stakeholders...' : 'Define the core purpose of this assessment...'}
+                            placeholder={isEdit ? tr("forms.orgContextPlaceholder") : tr("forms.strategicObjectivePlaceholder")}
                         />
                     </Field>
                 </div>
@@ -268,13 +270,13 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                             <span className="material-symbols-rounded text-[22px]">account_tree</span>
                         </span>
                         <div className="min-w-0">
-                            <h3 className="text-[15px] font-bold text-[#15171C]">{isEdit ? 'Competency Refinement' : 'Competency Architecture'}</h3>
-                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{isEdit ? 'Adjust competencies for specific organizational needs' : 'Select questions by category for a balanced assessment'}</p>
+                            <h3 className="text-[15px] font-bold text-[#15171C]">{isEdit ? tr("forms.competencyRefinement") : tr("forms.competencyArchitecture")}</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{isEdit ? tr("forms.competencyRefinementSubtitle") : tr("forms.competencyArchitectureSubtitle")}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                         <div className="flex flex-col items-end leading-none">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[#5B53E0] mb-1">Total Selected</span>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[#5B53E0] mb-1">{tr("forms.totalSelected")}</span>
                             <span className={`text-[24px] font-semibold tracking-[-1px] text-[#15171C] ${jetbrainsMono.className}`}>{formData.question_ids.length}</span>
                         </div>
                         <Button
@@ -284,7 +286,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                             onClick={() => setIsAiWizardOpen(true)}
                             className="bg-[#5B53E0] border-transparent text-white hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)]"
                         >
-                            {isEdit ? 'AI Strategy Wizard' : 'Strategy Wizard'}
+                            {isEdit ? tr("forms.aiStrategyWizard") : tr("forms.strategyWizard")}
                         </Button>
                     </div>
                 </div>
@@ -303,11 +305,11 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                                         </div>
                                         <div className="min-w-0">
                                             <h4 className="text-[14px] font-bold text-[#15171C]">{cat.replaceAll('_', ' ')}</h4>
-                                            <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A929E]">{catQuestions.length} Total Options</p>
+                                            <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A929E]">{catQuestions.length} {tr("forms.totalOptions")}</p>
                                         </div>
                                     </div>
                                     {selectedInCat > 0 && (
-                                        <Badge tone="indigo">{selectedInCat} chosen</Badge>
+                                        <Badge tone="indigo">{selectedInCat} {tr("forms.chosen")}</Badge>
                                     )}
                                 </div>
 
@@ -350,11 +352,11 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
 
             {/* Finalize */}
             <Card padding="lg" className="flex flex-col items-center text-center">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A929E] mb-3">{isEdit ? 'Final Architecture' : 'Framework Readiness'}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A929E] mb-3">{isEdit ? tr("forms.finalArchitecture") : tr("forms.frameworkReadiness")}</span>
                 <h4 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#15171C] mb-1.5">
-                    <span className={jetbrainsMono.className}>{formData.question_ids.length}</span> {isEdit ? 'Questions Configured' : 'Questions Selected'}
+                    <span className={jetbrainsMono.className}>{formData.question_ids.length}</span> {isEdit ? tr("forms.questionsConfigured") : tr("forms.questionsSelected")}
                 </h4>
-                <p className="text-[13px] text-[#8A929E] max-w-sm mb-6">{isEdit ? 'Verify your selection and competency weightings before finalizing the update.' : 'Review your competency mix above before deploying to your organization.'}</p>
+                <p className="text-[13px] text-[#8A929E] max-w-sm mb-6">{isEdit ? tr("forms.verifySelection") : tr("forms.reviewCompetencyMix")}</p>
                 <Button
                     size="lg"
                     icon={submitting ? undefined : (isEdit ? 'published_with_changes' : 'rocket_launch')}
@@ -365,10 +367,10 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                     {submitting ? (
                         <>
                             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                            {isEdit ? 'Persisting...' : 'Sequencing...'}
+                            {isEdit ? tr("forms.persistingEllipsis") : tr("forms.sequencingEllipsis")}
                         </>
                     ) : (
-                        <span>{isEdit ? 'Update Framework Structure' : 'Deploy Assessment Framework'}</span>
+                        <span>{isEdit ? tr("forms.updateFrameworkStructure") : tr("forms.deployAssessmentFramework")}</span>
                     )}
                 </Button>
             </Card>
@@ -382,7 +384,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                                 <span className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
                                     <span className="material-symbols-rounded text-[19px]">psychology</span>
                                 </span>
-                                <h2 className="text-[15px] font-bold text-[#15171C]">AI Strategy Wizard</h2>
+                                <h2 className="text-[15px] font-bold text-[#15171C]">{tr("forms.aiStrategyWizard")}</h2>
                             </div>
                             <button onClick={() => setIsAiWizardOpen(false)} className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors">
                                 <span className="material-symbols-rounded text-[19px]">close</span>
@@ -390,15 +392,15 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                         </div>
                         <div className="p-6 space-y-5">
                             <Field
-                                label={isEdit ? 'Describe Your Industry' : 'Industry for Context'}
+                                label={isEdit ? tr("forms.describeYourIndustry") : tr("forms.industryForContext")}
                                 htmlFor={`${isEdit ? 'edit' : 'new'}-industry-nature`}
-                                hint={isEdit ? 'Generated items will reflect industry nuances.' : 'Generated items will be calibrated for this segment.'}
+                                hint={isEdit ? tr("forms.industryHintEdit") : tr("forms.industryHintNew")}
                             >
                                 <Input
                                     id={`${isEdit ? 'edit' : 'new'}-industry-nature`}
                                     value={industryNature}
                                     onChange={(e) => setIndustryNature(e.target.value)}
-                                    placeholder={isEdit ? 'e.g. High-Tech, Social, Retail...' : 'e.g. Fintech, Manufacturing...'}
+                                    placeholder={isEdit ? tr("forms.industryPlaceholderEdit") : tr("forms.industryPlaceholderNew")}
                                     autoFocus
                                 />
                             </Field>
@@ -412,12 +414,12 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                                 {generatingAi ? (
                                     <>
                                         <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                        Generating...
+                                        {tr("forms.generatingEllipsis")}
                                     </>
                                 ) : (
                                     <>
                                         <span className="material-symbols-rounded text-[19px]">magic_button</span>
-                                        <span>Inject AI Insights</span>
+                                        <span>{tr("forms.injectAiInsights")}</span>
                                     </>
                                 )}
                             </Button>

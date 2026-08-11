@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Script from "next/script";
@@ -11,9 +12,14 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
+function LoginFallback() {
+    const { t: tr } = useI18n();
+    return <div className="min-h-screen bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] font-semibold">{tr("auth.loading")}</div>;
+}
+
 export default function EnterpriseLoginPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] font-semibold">Loading…</div>}>
+        <Suspense fallback={<LoginFallback />}>
             <EnterpriseLoginContent />
         </Suspense>
     );
@@ -23,6 +29,7 @@ function EnterpriseLoginContent() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { login } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -67,7 +74,7 @@ function EnterpriseLoginContent() {
     useEffect(() => {
         const authError = searchParams.get("error");
         if (authError === "unauthorized") {
-            setError("Access Denied: This portal is restricted to Enterprise Users only.");
+            setError(tr("auth.accessDenied"));
         }
     }, [searchParams]);
 
@@ -82,7 +89,7 @@ function EnterpriseLoginContent() {
 
             if (!res.ok) {
                 const errData = await res.json();
-                throw new Error(errData.detail || "Google Login failed");
+                throw new Error(errData.detail || tr("auth.googleLoginFailed"));
             }
 
             const data = await res.json();
@@ -172,7 +179,7 @@ function EnterpriseLoginContent() {
 
             if (!res.ok) {
                 const errData = await res.json();
-                throw new Error(errData.detail || "Invalid credentials");
+                throw new Error(errData.detail || tr("auth.invalidCredentials"));
             }
 
             const data = await res.json();
@@ -183,7 +190,7 @@ function EnterpriseLoginContent() {
 
         } catch (err) {
             const error = err as Error;
-            setError(error.message || "Invalid credentials");
+            setError(error.message || tr("auth.invalidCredentials"));
         }
     };
 
@@ -219,8 +226,8 @@ function EnterpriseLoginContent() {
                             transition={{ delay: 0.2 }}
                             className="mt-7 text-center"
                         >
-                            <h3 className="text-lg font-extrabold text-[#15171C] tracking-[-0.3px]">Verifying account</h3>
-                            <p className="text-sm text-[#8A929E] mt-1">Connecting to Microsoft Office 365…</p>
+                            <h3 className="text-lg font-extrabold text-[#15171C] tracking-[-0.3px]">{tr("auth.verifyingAccount")}</h3>
+                            <p className="text-sm text-[#8A929E] mt-1">{tr("auth.connectingMicrosoft")}</p>
                         </motion.div>
                     </motion.div>
                 )}
@@ -245,15 +252,15 @@ function EnterpriseLoginContent() {
                         </div>
                         <div className="flex flex-col leading-none">
                             <span className="text-[20px] font-extrabold tracking-[-0.3px] text-white">Croar</span>
-                            <span className="text-[11px] text-[#8A929E] mt-0.5">HR Cloud</span>
+                            <span className="text-[11px] text-[#8A929E] mt-0.5">{tr("auth.hrCloud")}</span>
                         </div>
                     </div>
-                    <h1 className="text-[40px] font-extrabold tracking-[-1.2px] leading-[1.05] text-white mb-5">Hire smarter.</h1>
+                    <h1 className="text-[40px] font-extrabold tracking-[-1.2px] leading-[1.05] text-white mb-5">{tr("auth.hireSmarter")}</h1>
                     <p className="text-[15px] leading-[1.6] text-[#A8AEB8] max-w-[460px]">
-                        Manage your organization&apos;s talent pipeline, access advanced analytics, and streamline your recruitment process with the Croar enterprise platform.
+                        {tr("auth.loginMarketing")}
                     </p>
                     <div className="flex gap-2.5 mt-8 flex-wrap">
-                        {["AI sourcing", "Assessments", "Analytics"].map((t) => (
+                        {[tr("auth.tagAiSourcing"), tr("auth.tagAssessments"), tr("auth.tagAnalytics")].map((t) => (
                             <span key={t} className="text-[12px] font-semibold text-[#C7CCD4] bg-white/[0.08] border border-white/10 px-3 py-1.5 rounded-[20px]">{t}</span>
                         ))}
                     </div>
@@ -272,15 +279,15 @@ function EnterpriseLoginContent() {
                     </div>
 
                     <div className="mb-8">
-                        <h2 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-1.5">Welcome back</h2>
-                        <p className="text-[#8A929E] text-sm">Sign in to your recruiter account</p>
+                        <h2 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-1.5">{tr("auth.welcomeBack")}</h2>
+                        <p className="text-[#8A929E] text-sm">{tr("auth.signInSubtitle")}</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         {/* Email Input */}
                         <div>
                             <label className="block text-[12.5px] font-semibold text-[#374151] mb-1.5" htmlFor="email">
-                                Email address
+                                {tr("auth.emailAddress")}
                             </label>
                             <div className="relative">
                                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] material-icons-outlined text-[19px]">email</span>
@@ -288,7 +295,7 @@ function EnterpriseLoginContent() {
                                     className="w-full h-11 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] focus:outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                     id="email"
                                     type="email"
-                                    placeholder="name@company.com"
+                                    placeholder={tr("auth.emailPlaceholder")}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
@@ -300,13 +307,13 @@ function EnterpriseLoginContent() {
                         <div>
                             <div className="flex items-center justify-between mb-1.5">
                                 <label className="block text-[12.5px] font-semibold text-[#374151]" htmlFor="password">
-                                    Password
+                                    {tr("auth.password")}
                                 </label>
                                 <Link
                                     href="/enterprise/forgot-password"
                                     className="text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4A43C9] transition-colors"
                                 >
-                                    Forgot password?
+                                    {tr("auth.forgotPassword")}
                                 </Link>
                             </div>
                             <div className="relative">
@@ -343,7 +350,7 @@ function EnterpriseLoginContent() {
                             type="submit"
                             className="w-full h-[46px] bg-[#5B53E0] hover:bg-[#4A43C9] text-white font-bold text-[14.5px] rounded-[10px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors flex items-center justify-center gap-2"
                         >
-                            <span>Sign in to dashboard</span>
+                            <span>{tr("auth.signInDashboard")}</span>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                         </button>
                     </form>
@@ -354,7 +361,7 @@ function EnterpriseLoginContent() {
                                 <div className="w-full border-t border-[#E8EAED]"></div>
                             </div>
                             <div className="relative flex justify-center text-[10px] uppercase">
-                                <span className="bg-white px-4 text-[#9AA3AF] font-bold tracking-[0.1em]">Or continue with</span>
+                                <span className="bg-white px-4 text-[#9AA3AF] font-bold tracking-[0.1em]">{tr("auth.orContinueWith")}</span>
                             </div>
                         </div>
                     )}
@@ -376,7 +383,7 @@ function EnterpriseLoginContent() {
                                         <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/>
                                         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
                                     </svg>
-                                    <span>Sign in with Google</span>
+                                    <span>{tr("auth.signInGoogle")}</span>
                                 </button>
                                 <div id="google-hidden-btn" className="hidden opacity-0 absolute pointer-events-none"></div>
                                 <Script
@@ -411,16 +418,16 @@ function EnterpriseLoginContent() {
                                     <path d="M1 12H11V22H1V12Z" fill="#00A4EF"/>
                                     <path d="M12 12H22V22H12V12Z" fill="#FFB900"/>
                                 </svg>
-                                <span>Sign in with Office 365</span>
+                                <span>{tr("auth.signInOffice")}</span>
                             </button>
                         )}
                     </div>
 
                     {signupEnabled && (
                         <p className="text-center text-sm text-[#8A929E] mt-7">
-                            Don&apos;t have an account?{" "}
+                            {tr("auth.noAccount")}{" "}
                             <Link href="/enterprise/signup" className="text-[#5B53E0] font-semibold hover:underline">
-                                Create one now
+                                {tr("auth.createOne")}
                             </Link>
                         </p>
                     )}

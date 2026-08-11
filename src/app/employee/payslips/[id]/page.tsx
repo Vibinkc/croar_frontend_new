@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/context/I18nContext";
 import { meApi, type MyPayslip, type ResolvedLine } from "@/utils/payroll/api";
 import { PageHeader, StatCard, StatGrid, Card, CardHeader, jetbrainsMono } from "@/components/ds";
 import NotLinkedNotice, { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
@@ -29,6 +30,7 @@ function LineTable({ title, lines, currency }: { title: string; lines: ResolvedL
 export default function MyPayslipDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const { t } = useI18n();
   const [ps, setPs] = useState<MyPayslip | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,14 +64,14 @@ export default function MyPayslipDetailPage({ params }: { params: Promise<{ id: 
       ) : ps ? (
         <>
           <StatGrid className="lg:grid-cols-3">
-            <StatCard label="Gross earnings" value={money(ps.gross_earnings, currency)} icon="trending_up" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-            <StatCard label="Total deductions" value={money(ps.total_deductions, currency)} icon="trending_down" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-            <StatCard label="Net pay" value={money(ps.net_pay, currency)} icon="payments" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+            <StatCard label={t("employee.grossEarnings")} value={money(ps.gross_earnings, currency)} icon="trending_up" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+            <StatCard label={t("employee.totalDeductions")} value={money(ps.total_deductions, currency)} icon="trending_down" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+            <StatCard label={t("employee.netPay")} value={money(ps.net_pay, currency)} icon="payments" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
           </StatGrid>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <LineTable title="Earnings" lines={ps.earnings ?? []} currency={currency} />
-            <LineTable title="Deductions" lines={ps.deductions ?? []} currency={currency} />
+            <LineTable title={t("employee.earnings")} lines={ps.earnings ?? []} currency={currency} />
+            <LineTable title={t("employee.deductions")} lines={ps.deductions ?? []} currency={currency} />
           </div>
         </>
       ) : null}

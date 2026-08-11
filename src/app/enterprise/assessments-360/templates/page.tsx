@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { Card, Input, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
 
@@ -27,6 +28,7 @@ interface Template {
 
 export default function X360Templates() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
@@ -55,7 +57,7 @@ export default function X360Templates() {
     }, [fetchTemplates]);
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm("Are you sure you want to delete this template?")) return;
+        if (!window.confirm(tr("assess360.confirmDeleteTemplate"))) return;
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/x360/templates/${id}`, {
                 method: 'DELETE',
@@ -84,16 +86,16 @@ export default function X360Templates() {
                     <button
                         onClick={() => router.push('/enterprise/assessments-360')}
                         className="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-[10px] text-[#8A929E] hover:bg-white hover:text-[#15171C] border border-transparent hover:border-[#E1E4E8] transition-colors"
-                        title="Back to 360 Assessments"
+                        title={tr("assess360.backToAssessments")}
                     >
                         <span className="material-symbols-rounded text-[20px]">arrow_back</span>
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">Assessment Library</h1>
-                            <PageHelp title="Assessment Library">Your 360 competency frameworks. Create one, then choose it when starting a cycle.</PageHelp>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">{tr("assess360.assessmentLibrary")}</h1>
+                            <PageHelp title={tr("assess360.assessmentLibrary")}>{tr("assess360.libraryHelp")}</PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Design &amp; manage templates for 360 feedback cycles</p>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.librarySubtitle")}</p>
                     </div>
                 </div>
                 {canAccess("assessments:moderate") && (
@@ -103,7 +105,7 @@ export default function X360Templates() {
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
                         >
                             <span className="material-symbols-rounded text-[17px]">add</span>
-                            New Template
+                            {tr("assess360.newTemplate")}
                         </button>
                     </div>
                 )}
@@ -115,7 +117,7 @@ export default function X360Templates() {
                     <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }} />
                     <div className="flex items-start justify-between">
                         <div>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Templates</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("assess360.templates")}</span>
                             <div className={`text-[28px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{loading ? "—" : templates.length}</div>
                         </div>
                         <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 6px 14px rgba(91,83,224,0.28)" }}>
@@ -127,7 +129,7 @@ export default function X360Templates() {
                     <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: "linear-gradient(135deg,#6E8BEA,#3559C7)" }} />
                     <div className="flex items-start justify-between">
                         <div>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Total Questions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("assess360.totalQuestions")}</span>
                             <div className={`text-[28px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{loading ? "—" : totalQuestions}</div>
                         </div>
                         <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#6E8BEA,#3559C7)", boxShadow: "0 6px 14px rgba(53,89,199,0.25)" }}>
@@ -142,7 +144,7 @@ export default function X360Templates() {
                 <Input
                     icon="search"
                     type="text"
-                    placeholder="Search templates by name or context…"
+                    placeholder={tr("assess360.searchTemplatesPlaceholder")}
                     className="flex-1"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -162,19 +164,19 @@ export default function X360Templates() {
                         <span className="material-symbols-rounded text-[32px]">description</span>
                     </div>
                     <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
-                        {searchQuery ? "No templates match your search" : "No templates yet"}
+                        {searchQuery ? tr("assess360.noTemplatesSearch") : tr("assess360.noTemplatesYet")}
                     </h3>
                     <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
                         {searchQuery
-                            ? "Try adjusting your search terms to find what you're looking for."
-                            : "Build your first assessment template to power your 360 feedback cycles."}
+                            ? tr("assess360.adjustSearchTerms")
+                            : tr("assess360.buildFirstTemplate")}
                     </p>
                     {searchQuery ? (
                         <button
                             onClick={() => setSearchQuery("")}
                             className="inline-flex items-center h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] transition-colors"
                         >
-                            Clear search
+                            {tr("assess360.clearSearch")}
                         </button>
                     ) : (
                         canAccess("assessments:moderate") && (
@@ -182,7 +184,7 @@ export default function X360Templates() {
                                 onClick={() => router.push('/enterprise/assessments-360/templates/new')}
                                 className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
                             >
-                                <span className="material-symbols-rounded text-[19px]">add</span> New Template
+                                <span className="material-symbols-rounded text-[19px]">add</span> {tr("assess360.newTemplate")}
                             </button>
                         )
                     )}
@@ -210,19 +212,19 @@ export default function X360Templates() {
                             </div>
 
                             <p className="text-[12.5px] text-[#374151] mt-3.5 line-clamp-2 min-h-[36px]">
-                                {tpl.description || "Performance architecture template."}
+                                {tpl.description || tr("assess360.perfArchTemplate")}
                             </p>
 
                             <div className="flex items-center justify-between gap-2 mt-4 pt-4 border-t border-[#F0F0F1]">
                                 <Badge tone="indigo">
-                                    {tpl.questions?.length || 0} Questions
+                                    {tpl.questions?.length || 0} {tr("assess360.questionsSuffix")}
                                 </Badge>
                                 <div className="flex items-center gap-1">
                                     {canAccess("assessments:moderate") && (
                                         <button
                                             onClick={(e) => { e.stopPropagation(); router.push(`/enterprise/assessments-360/templates/${tpl.id}/edit`); }}
                                             className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
-                                            title="Edit template"
+                                            title={tr("assess360.editTemplate")}
                                         >
                                             <span className="material-symbols-rounded text-[19px]">edit</span>
                                         </button>
@@ -231,7 +233,7 @@ export default function X360Templates() {
                                         <button
                                             onClick={(e) => { e.stopPropagation(); handleDelete(tpl.id); }}
                                             className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
-                                            title="Delete template"
+                                            title={tr("assess360.deleteTemplate")}
                                         >
                                             <span className="material-symbols-rounded text-[19px]">delete</span>
                                         </button>

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { apiClient } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 interface Member {
@@ -32,6 +33,7 @@ interface ProjectKanbanProps {
 
 export default function ProjectKanban({ projectId, columns, tasks, members, onRefresh }: ProjectKanbanProps) {
     const { canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [isAddingTask, setIsAddingTask] = useState<{ isOpen: boolean; column: string }>({ isOpen: false, column: "" });
     const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
     const [newTaskData, setNewTaskData] = useState({
@@ -206,7 +208,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                         ) : (
                                             <div className="flex items-center gap-1 text-[9px] font-black text-slate-300  tracking-tight">
                                                 <span className="material-symbols-rounded text-[14px]">person_off</span>
-                                                <span>Unassigned</span>
+                                                <span>{tr("forms.unassigned")}</span>
                                             </div>
                                         )}
                                         {task.due_date && (
@@ -226,7 +228,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                                     onClick={() => handleMoveTask(task.id, c)}
                                                     className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded text-[8px] font-black text-slate-400 hover:text-[#7C3AED] hover:border-[#7C3AED] hover:bg-white transition-all whitespace-nowrap"
                                                 >
-                                                    To {c}
+                                                    {tr("forms.toColumn")} {c}
                                                 </button>
                                             ))}
                                         </div>
@@ -245,7 +247,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                     <div
                         role="button"
                         tabIndex={0}
-                        aria-label="Close"
+                        aria-label={tr("common.close")}
                         className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in"
                         onClick={() => setIsAddingTask({ isOpen: false, column: "" })}
                         onKeyDown={(e) => {
@@ -265,8 +267,8 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                     <span className="material-symbols-rounded text-[20px]">add_task</span>
                                 </div>
                                 <div>
-                                    <h3 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-tight">Add New Task</h3>
-                                    <p className="text-[12px] text-[#8A929E] mt-0.5">Column: <span className="font-semibold text-[#5B53E0]">{isAddingTask.column}</span></p>
+                                    <h3 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-tight">{tr("forms.addNewTask")}</h3>
+                                    <p className="text-[12px] text-[#8A929E] mt-0.5">{tr("forms.columnLabel")} <span className="font-semibold text-[#5B53E0]">{isAddingTask.column}</span></p>
                                 </div>
                             </div>
                             <button
@@ -281,19 +283,19 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                         <div className="flex-1 overflow-y-auto px-6 py-6 custom-scrollbar">
                             <form onSubmit={handleAddTask} id="add-task-form" className="space-y-5">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="task-title" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Task Title <span className="text-rose-500">*</span></label>
+                                    <label htmlFor="task-title" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("forms.taskTitle")} <span className="text-rose-500">*</span></label>
                                     <input
                                         id="task-title"
                                         required
                                         value={newTaskData.title}
                                         onChange={(e) => setNewTaskData(prev => ({ ...prev, title: e.target.value }))}
                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all placeholder:text-[#9AA3AF]"
-                                        placeholder="What needs to be done?"
+                                        placeholder={tr("forms.taskTitlePlaceholder")}
                                     />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="task-assignee" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Assign To</label>
+                                    <label htmlFor="task-assignee" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("forms.assignTo")}</label>
                                     <div className="relative">
                                         <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[20px] pointer-events-none">person</span>
                                         <select
@@ -302,7 +304,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                             onChange={(e) => setNewTaskData(prev => ({ ...prev, employee_id: e.target.value }))}
                                             className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-9 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all appearance-none cursor-pointer"
                                         >
-                                            <option value="">Select Assignee</option>
+                                            <option value="">{tr("forms.selectAssignee")}</option>
                                             {members.map(m => (
                                                 <option key={m.id} value={m.id}>{m.first_name} {m.last_name}</option>
                                             ))}
@@ -312,7 +314,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="task-due-date" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Due Date</label>
+                                    <label htmlFor="task-due-date" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("forms.dueDate")}</label>
                                     <div className="relative">
                                         <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[20px] pointer-events-none">calendar_month</span>
                                         <input
@@ -326,14 +328,14 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="task-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Description</label>
+                                    <label htmlFor="task-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("forms.description")}</label>
                                     <textarea
                                         id="task-description"
                                         rows={5}
                                         value={newTaskData.description}
                                         onChange={(e) => setNewTaskData(prev => ({ ...prev, description: e.target.value }))}
                                         className="w-full bg-white border border-[#E1E4E8] rounded-[10px] p-3.5 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none leading-relaxed placeholder:text-[#9AA3AF]"
-                                        placeholder="Provide any additional details or context for this task..."
+                                        placeholder={tr("forms.taskDescriptionPlaceholder")}
                                     />
                                 </div>
                             </form>
@@ -347,7 +349,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 className="w-full h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(91,83,224,0.25)] transition-all flex items-center justify-center gap-2"
                             >
                                 <span className="material-symbols-rounded text-[18px]">send</span>
-                                Assign &amp; Notify Team
+                                {tr("forms.assignNotifyTeam")}
                             </button>
                         </div>
                     </div>
@@ -358,10 +360,10 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDeleteTask}
-                title="Delete Task?"
-                message="Are you sure you want to delete this task? All progress will be lost."
-                confirmLabel="Yes, Delete"
-                cancelLabel="No"
+                title={tr("forms.deleteTaskTitle")}
+                message={tr("forms.deleteTaskMessage")}
+                confirmLabel={tr("forms.yesDelete")}
+                cancelLabel={tr("forms.no")}
                 isDestructive={true}
             />
         </div>

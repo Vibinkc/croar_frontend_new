@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
     Search, 
@@ -9,11 +11,10 @@ import {
     Send, 
     Zap, 
     ExternalLink, 
-    MapPin, 
+    MapPin,
     Award,
-    Briefcase,
     ArrowRight,
-    Users,
+    CircleCheck,
     Edit,
     Linkedin,
     Github,
@@ -26,7 +27,8 @@ import {
     FileText,
     Wrench,
     Target,
-    UploadCloud,
+    Share,
+    Eye,
     Building,
     Pin,
     Trash2,
@@ -34,7 +36,12 @@ import {
     Mail,
     Phone,
     Globe,
-    BarChart
+    BarChart,
+    ThumbsUp,
+    Plus,
+    List,
+    Table2,
+    ChevronUp
 } from "lucide-react";
 import { Chart } from "react-google-charts";
 import { API_BASE_URL } from "@/lib/api-config";
@@ -113,8 +120,98 @@ const getPlatformDomain = (plat: string) => {
     return `${p}.com`;
 };
 
+// ---------------------------------------------------------------------------
+// Criteria engine — rank/evaluate each profile against user-defined ranking criteria.
+// Croar has no per-criterion LLM grader, so we evaluate deterministically from the
+// data we DO have (skills, headline, ai_summary, company, raw_data). Each criterion
+// yields a pass ("👍" + a short reason) or "unknown" (no clear signal).
+// ---------------------------------------------------------------------------
+
+type CriterionVerdict = { status: "pass" | "unknown"; reason: string };
+
+/** A short display label for a criterion string (e.g. the full sentence → "Python"). */
+const criterionLabel = (c: string): string => {
+    const t = (c || "").trim();
+    // Pull a likely skill/keyword: last capitalized-or-tech token, else first few words.
+    const m = t.match(/\b([A-Za-z][A-Za-z0-9+.#]{1,}(?:\.js)?)\b(?=[^A-Za-z0-9]*$)/);
+    if (t.length <= 22) return t;
+    return (m?.[1] || t.split(/\s+/).slice(0, 2).join(" ")).replace(/[.]$/, "");
+};
+
+/** The keywords we scan a profile for, derived from a criterion. */
+const criterionKeywords = (c: string): string[] => {
+    const label = criterionLabel(c).toLowerCase();
+    const extra = label.replace(/\.js$/, "").replace(/[^a-z0-9+.# ]/g, " ").trim();
+    return Array.from(new Set([label, extra].filter(Boolean)));
+};
+
+const evaluateCriterion = (profile: Profile, criterion: string): CriterionVerdict => {
+    const kws = criterionKeywords(criterion);
+    const skills = (profile.skills || []).map((s) => (s || "").toLowerCase());
+    const inSkills = kws.some((k) => skills.some((s) => s.includes(k)));
+    if (inSkills) {
+        return { status: "pass", reason: `${criterionLabel(criterion)} is listed in Skills, indicating hands-on experience.` };
+    }
+    const hay = [profile.headline, profile.ai_summary, profile.company, profile.raw_data?.bio, profile.raw_data?.title]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+    if (kws.some((k) => hay.includes(k))) {
+        return { status: "pass", reason: `${criterionLabel(criterion)} appears in their profile, suggesting relevant experience.` };
+    }
+    return { status: "unknown", reason: `No clear signal for ${criterionLabel(criterion)} in this profile.` };
+};
+
+/** 0–100 match score = share of criteria this profile passes. No criteria → null. */
+const profileMatchPercent = (profile: Profile, criteria: string[]): number | null => {
+    if (!criteria.length) return null;
+    const passed = criteria.filter((c) => evaluateCriterion(profile, c).status === "pass").length;
+    return Math.round((passed / criteria.length) * 100);
+};
+
+/** Short role label for the filters chip (e.g. "Marketing Manager in Europe…" → "Marketing Manager"). */
+const deriveRoleLabel = (text: string): string => {
+    const t = (text || "").trim();
+    const head = t.split(/\s+(?:in|with|working|skilled|based|at)\b|,/i)[0].trim();
+    return head.length >= 2 && head.length <= 40 ? head : t.slice(0, 28);
+};
+
+/** Best-effort location for the filters chip ("…in Europe, German-speaking" → "Europe"). */
+const deriveLocationLabel = (text: string): string | null => {
+    const m = (text || "").match(/\bin\s+([A-Za-z][A-Za-z .'-]+?)(?:\s*,|\s+(?:with|working|skilled|and|at)\b|$)/i);
+    const loc = m?.[1]?.trim();
+    return loc && loc.length <= 30 ? loc : null;
+};
+
+/** Best-effort: pull ranking criteria (skills + notable qualifiers) out of a free-text query. */
+const deriveCriteriaFromQuery = (text: string): string[] => {
+    const t = (text || "").trim();
+    if (!t) return [];
+    const out: string[] = [];
+    // Skills clause: "skilled in X, Y and Z" / "experience in X" / "expertise in X".
+    const m = t.match(/(?:skilled in|proficient in|experience (?:in|with)|expertise in|using|knows)\s+(.+?)(?:\.|$)/i);
+    if (m?.[1]) {
+        out.push(
+            ...m[1]
+                .split(/,|\band\b|\bor\b|\/|&|\+/i)
+                .map((s) => s.replace(/[.]+$/, "").trim())
+                .filter((s) => s.length > 1 && s.length < 32),
+        );
+    }
+    // Language ("German-speaking" → "German").
+    const lang = t.match(/\b([A-Z][a-z]+)-speaking\b/);
+    if (lang?.[1]) out.push(lang[1]);
+    // Company size / funding-stage qualifiers used to rank ("large enterprise" → "Enterprise").
+    if (/\benterprise\b/i.test(t)) out.push("Enterprise");
+    if (/\bstart-?up\b/i.test(t)) out.push("Startup");
+    const stage = t.match(/\bSeries [A-D]\b/i);
+    if (stage) out.push(stage[0]);
+    return Array.from(new Set(out.map((s) => s.trim()).filter(Boolean))).slice(0, 6);
+};
+
 export default function ProfileSourcingChatPage() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const [searchPhase, setSearchPhase] = useState<"initial" | "filters" | "results">("initial");
     const [query, setQuery] = useState("");
     const [extractedFilters, setExtractedFilters] = useState({
@@ -130,8 +227,21 @@ export default function ProfileSourcingChatPage() {
     const [isShortlistModalOpen, setIsShortlistModalOpen] = useState(false);
     const [jobs, setJobs] = useState<{id: string, title: string}[]>([]);
     const [selectedJobId, setSelectedJobId] = useState("");
+    // When we arrived here sourcing FOR a specific job (from the Pipeline / a job page), lock the
+    // shortlist to that one job. When the user came in freely and searched, this stays null (all jobs).
+    const [lockedJobId, setLockedJobId] = useState<string | null>(null);
+    // Mirror of lockedJobId that's always current — saveSession runs inside an async search closure
+    // and would otherwise capture a stale (null) lockedJobId, saving the session without its job.
+    const lockedJobIdRef = useRef<string | null>(null);
+    const lockJob = (id: string | null) => {
+        lockedJobIdRef.current = id;
+        setLockedJobId(id);
+    };
     const [profileToShortlist, setProfileToShortlist] = useState<Profile | null>(null);
     const [isShortlisting, setIsShortlisting] = useState(false);
+    // profile_url -> the job id it was shortlisted to, so the card can show "Shortlisted" + a link
+    // to that job's Profile Sourcing tab.
+    const [shortlisted, setShortlisted] = useState<Record<string, string>>({});
 
 
     const [jobDescription, setJobDescription] = useState("");
@@ -149,9 +259,23 @@ export default function ProfileSourcingChatPage() {
     const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+    // "New Search" dropdown (saved searches + filter), matching the reference searches menu.
+    const [isSearchMenuOpen, setIsSearchMenuOpen] = useState(false);
+    const [searchMenuFilter, setSearchMenuFilter] = useState("");
+    const [shareCopied, setShareCopied] = useState(false);
+    // Public "Share link" modal.
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const [shareUrl, setShareUrl] = useState("");
+    const [shareCreating, setShareCreating] = useState(false);
+    const [shareError, setShareError] = useState<string | null>(null);
     const [totalCount, setTotalCount] = useState(0);
-    const [showCriteria, setShowCriteria] = useState(false);
     const [searchError, setSearchError] = useState<string | null>(null);
+    // Ranking criteria (ordered most→least important) used to score & explain each match.
+    const [criteria, setCriteria] = useState<string[]>([]);
+    const [isCriteriaModalOpen, setIsCriteriaModalOpen] = useState(false);
+    const [newCriterion, setNewCriterion] = useState("");
+    // Results layout: "list" (rich cards) or "table" (per-criterion columns + Match %).
+    const [viewMode, setViewMode] = useState<"list" | "table">("list");
     const itemsPerPage = 10;
 
     // Sourcing can scrape live and take a while. Fetch with a generous client timeout so the request
@@ -174,8 +298,31 @@ export default function ProfileSourcingChatPage() {
     useEffect(() => {
         if (token) {
             fetchSessions();
+            fetchShortlisted();
         }
     }, [token]);
+
+    // Load which candidates are already shortlisted (and to which job) so cards show "Shortlisted"
+    // even after reloading / reopening a search from History.
+    const fetchShortlisted = async () => {
+        if (!token) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/shortlisted`, {
+                headers: { "Authorization": `Bearer ${token}` },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                const map: Record<string, string> = {};
+                (Array.isArray(data) ? data : []).forEach((s: { profile?: { profile_url?: string }; job_id?: string }) => {
+                    const url = s?.profile?.profile_url;
+                    if (url && s.job_id) map[url] = s.job_id;
+                });
+                setShortlisted(map);
+            }
+        } catch {
+            /* ignore */
+        }
+    };
 
     const fetchSessions = async () => {
         if (!token) return;
@@ -204,6 +351,14 @@ export default function ProfileSourcingChatPage() {
                 const data = await res.json();
                 setCurrentSessionId(sessionId);
                 setChatMessages(data.messages || []);
+                // Re-lock the shortlist to the session's job (if it was a job-specific search); a free
+                // search has no job_id, so unlock and let the user pick any job.
+                if (data.job_id) {
+                    setSelectedJobId(data.job_id);
+                    lockJob(data.job_id);
+                } else {
+                    lockJob(null);
+                }
                 // If there were results in the last message, show them
                 const lastMsg = data.messages?.[data.messages.length - 1];
                 if (lastMsg && lastMsg.results) {
@@ -221,6 +376,49 @@ export default function ProfileSourcingChatPage() {
             console.error("Failed to load session", e);
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Create a PUBLIC read-only snapshot of the current search (up to 30 profiles) and open the
+    // "Share public link" modal with the shareable URL.
+    const openShareModal = async () => {
+        setIsShareModalOpen(true);
+        setShareError(null);
+        setShareUrl("");
+        setShareCreating(true);
+        try {
+            const q = query || extractedFilters.title || "";
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/share`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({
+                    query: q,
+                    title: q.slice(0, 60),
+                    criteria,
+                    profiles: results.slice(0, 30).map((p) => {
+                        const { raw_data, html, ...rest } = p as any;
+                        void raw_data; void html;
+                        return rest;
+                    }),
+                }),
+            });
+            if (!res.ok) throw new Error("share failed");
+            const data = await res.json();
+            setShareUrl(`${window.location.origin}/share/sourcing/${data.share_id}`);
+        } catch {
+            setShareError(tr("sourcingChat.shareCreateError"));
+        } finally {
+            setShareCreating(false);
+        }
+    };
+
+    const copyShareUrl = async () => {
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+            setShareCopied(true);
+            setTimeout(() => setShareCopied(false), 1500);
+        } catch {
+            /* ignore */
         }
     };
 
@@ -253,7 +451,10 @@ export default function ProfileSourcingChatPage() {
                 body: JSON.stringify({
                     session_id: currentSessionId,
                     title: title,
-                    messages: slimMessages
+                    // The original query text — shown as the subtitle in the New Search dropdown.
+                    query: messages.find((m: any) => m?.role === "user")?.content || title,
+                    messages: slimMessages,
+                    job_id: lockedJobIdRef.current, // ref = always current (state may be stale in this async closure)
                 })
             });
             if (res.ok) {
@@ -271,7 +472,7 @@ export default function ProfileSourcingChatPage() {
     const deleteSession = async (e: React.MouseEvent, sessionId: string) => {
         e.stopPropagation();
         if (!token) return;
-        if (!window.confirm("Are you sure you want to delete this search history? This action cannot be undone.")) return;
+        if (!window.confirm(tr("sourcingChat.confirmDeleteHistory"))) return;
         try {
             const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/sessions/${sessionId}`, {
                 method: "DELETE",
@@ -297,7 +498,10 @@ export default function ProfileSourcingChatPage() {
             if (res.ok) {
                 const data = await res.json();
                 setJobs(Array.isArray(data) ? data : []);
-                if (data.length > 0) setSelectedJobId(data[0].id);
+                // Don't default to the first job when we arrived sourcing FOR a specific job
+                // (Pipeline / freshly-created job hand-off) — that would silently switch the search
+                // to the wrong job.
+                if (data.length > 0 && !lockedJobIdRef.current) setSelectedJobId(data[0].id);
             }
         } catch (e) {
             console.error("Failed to fetch jobs", e);
@@ -328,16 +532,18 @@ export default function ProfileSourcingChatPage() {
                 })
             });
             if (res.ok) {
-                alert(`Successfully shortlisted ${profileToShortlist.full_name} for ${job?.title}`);
+                // Mark the candidate on the card (shows "Shortlisted" + a link to the job's tab).
+                const url = profileToShortlist.profile_url;
+                if (url) setShortlisted(prev => ({ ...prev, [url]: selectedJobId }));
                 setIsShortlistModalOpen(false);
                 setProfileToShortlist(null);
             } else {
                 const err = await res.json().catch(() => ({}));
-                alert(err.detail || "Couldn't shortlist this profile. Please try again.");
+                alert(err.detail || tr("sourcingChat.shortlistError"));
             }
         } catch (e) {
             console.error("Failed to shortlist", e);
-            alert("Couldn't shortlist this profile. Please check your connection and try again.");
+            alert(tr("sourcingChat.shortlistErrorConn"));
         } finally {
             setIsShortlisting(false);
         }
@@ -354,6 +560,29 @@ export default function ProfileSourcingChatPage() {
         setSearchPhase("initial");
         setQuery("");
         setSearchError(null);
+        setCriteria([]); // fresh search starts with no ranking criteria
+        // A fresh manual search is a FREE search (not tied to any job) — drop any job lock carried in
+        // from a job hand-off/history so the shortlist modal shows ALL jobs to choose from.
+        lockJob(null);
+    };
+
+    // Step 1 of the flow: from the launcher, a typed query opens the SEARCH BUILDER (review the
+    // auto-set filters + ranking criteria, then Run Search). It does NOT fetch yet — that happens on
+    // Run Search. (The direct-fetch path `handleChatSend` is still used by Run Search, the JD/Boolean
+    // modals, and the job hand-off auto-start.)
+    const openSearchBuilder = (text: string) => {
+        const t = (text || "").trim();
+        if (!t) return;
+        setQuery(t);
+        setExtractedFilters({
+            title: t, // full query drives the search; the chips DISPLAY short derived labels
+            location: deriveLocationLabel(t) || "Global",
+            minExp: "3",
+            platform: "All",
+        });
+        setCriteria((prev) => (prev.length ? prev : deriveCriteriaFromQuery(t)));
+        setShowSuggestions(false);
+        setSearchPhase("filters");
     };
 
     const handleChatSend = (text: string) => {
@@ -364,6 +593,9 @@ export default function ProfileSourcingChatPage() {
             minExp: "3",
             platform: "All"
         });
+        // Auto-seed ranking criteria from the query (e.g. "…skilled in Python and Node.js") unless
+        // the user already curated their own criteria for this session.
+        setCriteria((prev) => (prev.length ? prev : deriveCriteriaFromQuery(text)));
         setSearchPhase("results");
         setCurrentPage(1);
         
@@ -397,8 +629,8 @@ export default function ProfileSourcingChatPage() {
                 setResults([]);
                 setSearchError(
                     e instanceof DOMException && e.name === "AbortError"
-                        ? "This search is taking longer than usual — live sourcing can take a few minutes. Please try again or narrow your query."
-                        : "Couldn't run that search just now. Please check your connection and try again."
+                        ? tr("sourcingChat.searchTimeout")
+                        : tr("sourcingChat.searchError2")
                 );
             } finally {
                 setLoading(false);
@@ -407,7 +639,7 @@ export default function ProfileSourcingChatPage() {
         fetchProfiles();
     };
 
-    const fetchProfilesByPage = async (pageIndex: number) => {
+    const fetchProfilesByPage = async (pageIndex: number, persist: boolean = false) => {
         setLoading(true);
         setSearchError(null);
         try {
@@ -427,15 +659,30 @@ export default function ProfileSourcingChatPage() {
             );
             if (!res.ok) throw new Error("Database query failed");
             const data = await res.json();
-            setResults(data.profiles || []);
+            const newResults = data.profiles || [];
+            setResults(newResults);
             setTotalCount(data.total_count || 0);
+
+            // On the initial run (from the builder's "Run Search"), persist this search to history
+            // and refresh the map. Pagination re-fetches don't persist (persist=false).
+            if (persist) {
+                const q = query || extractedFilters.title || finalQuery;
+                const title = q.substring(0, 40) + (q.length > 40 ? "..." : "");
+                const newMessages = [
+                    { role: "user", content: q, timestamp: new Date().toISOString() },
+                    { role: "ai", content: `Found ${data.total_count || newResults.length} matches for "${q}"`, results: newResults, timestamp: new Date().toISOString() },
+                ];
+                setChatMessages(newMessages);
+                saveSession(newMessages, title);
+                fetchDistribution(q);
+            }
         } catch (e) {
             console.error(e);
             setResults([]);
             setSearchError(
                 e instanceof DOMException && e.name === "AbortError"
-                    ? "This search is taking longer than usual — live sourcing can take a few minutes. Please try again or narrow your query."
-                    : "Couldn't run that search just now. Please check your connection and try again."
+                    ? tr("sourcingChat.searchTimeout")
+                    : tr("sourcingChat.searchError2")
             );
         } finally {
             setLoading(false);
@@ -567,32 +814,54 @@ export default function ProfileSourcingChatPage() {
     const runSearch = () => {
         setSearchPhase("results");
         setCurrentPage(1);
-        fetchProfilesByPage(1);
+        fetchProfilesByPage(1, true); // persist to history + populate the Insights map
     };
 
+    // Reset to page 1 whenever the platform filter changes so the paginated view stays in range.
     useEffect(() => {
-        if (searchPhase === "results") {
-            fetchProfilesByPage(currentPage);
-        }
-    }, [currentPage]);
+        setCurrentPage(1);
+    }, [extractedFilters.platform]);
 
-    // Hand-off from job creation: a freshly created job can launch sourcing here.
+    // Hand-off from job creation / pipeline: a job can launch sourcing here.
     // "autostart" runs the JD-based AI search immediately; otherwise we just
     // pre-select the job and prefill the search box for a manual search.
+    // Guarded so it runs EXACTLY once — otherwise React StrictMode's double-invoke (dev) runs the
+    // hand-off, deletes the flag, then re-runs and wrongly restores a previous search.
+    const initRan = useRef(false);
     useEffect(() => {
-        if (!token) return;
+        if (!token || initRan.current) return;
+        initRan.current = true;
         let raw: string | null = null;
-        try { raw = sessionStorage.getItem("croar_source_job"); } catch { return; }
-        if (!raw) return;
+        try { raw = sessionStorage.getItem("croar_source_job"); } catch { /* ignore */ }
+        if (!raw) {
+            // No fresh hand-off → restore the last in-progress search so it survives leaving the page
+            // (e.g. clicking "View in job") and coming back, instead of resetting to a blank page.
+            let sid: string | null = null;
+            try { sid = sessionStorage.getItem("croar.sourcing.session"); } catch { /* ignore */ }
+            if (sid) loadSession(sid);
+            return;
+        }
         try { sessionStorage.removeItem("croar_source_job"); } catch { /* ignore */ }
         try {
             const ctx = JSON.parse(raw);
-            if (ctx?.id) setSelectedJobId(ctx.id);
+            if (ctx?.id) {
+                setSelectedJobId(ctx.id);
+                lockJob(ctx.id); // came in FOR this job → shortlist only to it (ref set synchronously)
+            }
+            // Strip HTML/entities so a rich-text JD never leaks tags into the search query.
+            const clean = (s: string) => (s || "")
+                .replace(/<[^>]*>/g, " ")
+                .replace(/&nbsp;|&amp;|&lt;|&gt;/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
             const jd = (ctx?.description || "").trim();
-            const title = (ctx?.title || "").trim();
-            if (ctx?.autostart && (jd || title)) {
-                if (jd) setJobDescription(jd);
-                handleChatSend(jd || title);
+            const title = clean(ctx?.title || "");
+            const skills = clean(ctx?.skills || "");
+            if (ctx?.autostart && (title || skills || jd)) {
+                if (jd) setJobDescription(jd); // keep the full JD for the JD box / context
+                // Search on the ROLE + SKILLS only — the raw JD is messy HTML and matches poorly.
+                const searchQuery = [title, skills].filter(Boolean).join(" ") || clean(jd);
+                handleChatSend(searchQuery);
             } else if (title) {
                 setQuery(title);
             }
@@ -602,14 +871,82 @@ export default function ProfileSourcingChatPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
-    // The profile list is narrowed client-side by the platform filter, so the
-    // "Profiles (N)" count must reflect the displayed rows, not the raw total.
-    const displayedResults = results.filter(
+    // Remember the current session id so the hand-off effect above can restore it on return. Skip the
+    // first run so we don't wipe the stored id before the restore has read it.
+    const sessionPersistReady = useRef(false);
+    useEffect(() => {
+        if (!sessionPersistReady.current) {
+            sessionPersistReady.current = true;
+            return;
+        }
+        try {
+            if (currentSessionId) sessionStorage.setItem("croar.sourcing.session", currentSessionId);
+            else sessionStorage.removeItem("croar.sourcing.session");
+        } catch {
+            /* ignore */
+        }
+    }, [currentSessionId]);
+
+    // A search returns the FULL match set in one call; the platform filter narrows it client-side.
+    const filteredResults = results.filter(
         profile => extractedFilters.platform === "All"
             || (profile.platform && profile.platform.toLowerCase().includes(extractedFilters.platform.toLowerCase()))
     );
     const platformFilterActive = extractedFilters.platform !== "All";
-    const profilesCount = platformFilterActive ? displayedResults.length : (totalCount || results.length);
+    // "Profiles (N)" is the full (filtered) match count; the list below is paginated 10 per page.
+    const profilesCount = filteredResults.length || totalCount;
+    // When ranking criteria are set, order matches best-first by their Match % (stable otherwise).
+    const rankedResults = useMemo(() => {
+        if (!criteria.length) return filteredResults;
+        return filteredResults
+            .map((p, i) => ({ p, i, score: profileMatchPercent(p, criteria) ?? 0 }))
+            .sort((a, b) => b.score - a.score || a.i - b.i)
+            .map((x) => x.p);
+    }, [filteredResults, criteria]);
+    // Pagination is CLIENT-SIDE over the already-fetched set — page 2 shows the next 10, etc. (No
+    // re-fetch per page, which previously re-ran the whole search and returned an inconsistent set.)
+    const displayedResults = rankedResults.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    // Skills frequency across the current match pool (for the Insights "Skills" bar chart).
+    const skillStats = useMemo(() => {
+        const counts = new Map<string, number>();
+        for (const p of filteredResults) {
+            const seen = new Set<string>();
+            for (const raw of p.skills || []) {
+                const s = (raw || "").trim();
+                if (!s) continue;
+                const key = s.toLowerCase();
+                if (seen.has(key)) continue; // count each skill once per profile
+                seen.add(key);
+                counts.set(s, (counts.get(s) || 0) + 1);
+            }
+        }
+        const total = filteredResults.length || 1;
+        return Array.from(counts.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([skill, count]) => ({ skill, count, pct: Math.round((count / total) * 100) }));
+    }, [filteredResults]);
+
+    // AI-style key takeaways, derived from the match pool (top skills, top location, seniority mix).
+    const keyTakeaways = useMemo(() => {
+        const out: string[] = [];
+        const n = filteredResults.length;
+        if (!n) return out;
+        if (skillStats.length) {
+            const top = skillStats.slice(0, 3).map((s) => `${s.skill} (${s.pct}%)`).join(", ");
+            out.push(tr("sourcingChat.takeawaySkills").replace("{skills}", top));
+        }
+        if (countryCounts.length) {
+            const [code, count] = countryCounts[0];
+            out.push(tr("sourcingChat.takeawayCountry").replace("{country}", COUNTRY_NAMES[code] || code).replace("{count}", String(count)));
+        }
+        const senior = filteredResults.filter((p) => /senior|lead|principal|staff|head|director/i.test(`${p.headline || ""} ${p.ai_summary || ""}`)).length;
+        if (senior) out.push(tr("sourcingChat.takeawaySenior").replace("{pct}", String(Math.round((senior / n) * 100))));
+        const withEmail = filteredResults.filter((p) => p.email).length;
+        if (withEmail) out.push(tr("sourcingChat.takeawayEmail").replace("{withEmail}", String(withEmail)).replace("{total}", String(n)));
+        return out;
+    }, [filteredResults, skillStats, countryCounts]);
 
     // Active-filter count for the "Filters" badge (was hardcoded to 2).
     const activeFilterCount = [
@@ -632,32 +969,91 @@ export default function ProfileSourcingChatPage() {
                 <div>
                     <div className="flex items-center gap-1.5">
                         <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2.5">
-                            AI Sourcing
-                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>Beta</span>
+                            {tr("sourcingChat.aiSourcingTitle")}
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>{tr("sourcingChat.beta")}</span>
                         </h1>
-                        <PageHelp title="Profile Sourcing">
-                            <p>Describe who you&apos;re looking for and let AI source matching profiles for you.</p>
+                        <PageHelp title={tr("sourcingChat.helpTitle")}>
+                            <p>{tr("sourcingChat.helpBody")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Search across 30+ public sources to discover the best talent</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("sourcingChat.subtitle")}</p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
-                    <button
-                        onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                        className={`inline-flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-semibold transition-all border shadow-sm ${
-                            isHistoryOpen
-                                ? "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]"
-                                : "bg-white text-[#4B5563] border-[#E8EAED] hover:bg-[#F7F8FA]"
-                        }`}
+                    <Link
+                        href="/enterprise/sourcing/shortlisted"
+                        title={tr("sourcingChat.viewShortlistedTitle")}
+                        className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-semibold transition-all border shadow-sm bg-white text-[#4B5563] border-[#E8EAED] hover:bg-[#F7F8FA]"
                     >
-                        <Bookmark className="w-4 h-4" /> History
-                    </button>
-                    <button
-                        onClick={createNewChat}
-                        className="inline-flex items-center gap-2 h-9 px-4 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors shrink-0"
-                    >
-                        <Edit className="w-4 h-4" /> New Search
-                    </button>
+                        <Bookmark className="w-4 h-4" /> {tr("sourcingChat.shortlist")}
+                    </Link>
+                    {searchPhase === "results" && (
+                        <button
+                            onClick={openShareModal}
+                            title={tr("sourcingChat.shareTitle")}
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-semibold transition-all border shadow-sm bg-white text-[#4B5563] border-[#E8EAED] hover:bg-[#F7F8FA]"
+                        >
+                            <Share className="w-4 h-4" /> {tr("sourcingChat.share")}
+                        </button>
+                    )}
+                    <div className="relative">
+                        <div className="flex items-center bg-[#5B53E0] rounded-[10px] shadow-[0_4px_12px_rgba(91,83,224,0.28)]">
+                            <button
+                                onClick={createNewChat}
+                                className="inline-flex items-center gap-2 h-9 pl-4 pr-3 text-white text-[13px] font-semibold hover:bg-[#4A43C9] rounded-l-[10px] transition-colors"
+                            >
+                                <Plus className="w-4 h-4" /> {tr("sourcingChat.newSearch")}
+                            </button>
+                            <button
+                                onClick={() => setIsSearchMenuOpen((v) => !v)}
+                                aria-label={tr("sourcingChat.showSavedSearches")}
+                                aria-expanded={isSearchMenuOpen}
+                                className="h-9 px-2 border-l border-white/25 text-white hover:bg-[#4A43C9] rounded-r-[10px] transition-colors"
+                            >
+                                <ChevronDown className={`w-4 h-4 transition-transform ${isSearchMenuOpen ? "rotate-180" : ""}`} />
+                            </button>
+                        </div>
+                        {isSearchMenuOpen && (
+                            <>
+                                <div className="fixed inset-0 z-40" onClick={() => setIsSearchMenuOpen(false)} aria-hidden />
+                                <div className="absolute right-0 top-11 z-50 w-[380px] bg-white rounded-[14px] border border-[#E8EAED] shadow-[0_16px_40px_rgba(15,23,42,0.18)] p-3 animate-in fade-in slide-in-from-top-1 duration-150">
+                                    <input
+                                        value={searchMenuFilter}
+                                        onChange={(e) => setSearchMenuFilter(e.target.value)}
+                                        placeholder={tr("sourcingChat.findSearches")}
+                                        autoFocus
+                                        className="w-full h-10 px-3 rounded-[10px] border border-[#5B53E0]/50 focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 text-[13px] text-[#1F2127] placeholder:text-[#9AA3AF] outline-none mb-2"
+                                    />
+                                    <div className="max-h-[300px] overflow-y-auto -mx-1 px-1">
+                                        {(() => {
+                                            const q = searchMenuFilter.trim().toLowerCase();
+                                            const list = sessions.filter((s) => !q || `${s.title || ""} ${s.query || ""}`.toLowerCase().includes(q));
+                                            if (list.length === 0) {
+                                                return <p className="text-[12.5px] text-[#8A929E] px-3 py-8 text-center">{sessions.length ? tr("sourcingChat.noMatchingSearches") : tr("sourcingChat.noSavedSearches")}</p>;
+                                            }
+                                            return list.map((s) => (
+                                                <button
+                                                    key={s.session_id}
+                                                    onClick={() => { loadSession(s.session_id); setIsSearchMenuOpen(false); setSearchMenuFilter(""); }}
+                                                    className={`w-full text-left px-3 py-2.5 rounded-[10px] hover:bg-[#F7F8FA] transition-colors ${currentSessionId === s.session_id ? "bg-[#F4F3FD]" : ""}`}
+                                                >
+                                                    <div className="text-[14px] font-semibold text-[#15171C] truncate">{s.title || tr("sourcingChat.untitledSearch")}</div>
+                                                    {s.query && <div className="text-[12px] text-[#8A929E] truncate mt-0.5">{s.query}</div>}
+                                                </button>
+                                            ));
+                                        })()}
+                                    </div>
+                                    <div className="border-t border-[#E8EAED] mt-2 pt-2">
+                                        <button
+                                            onClick={() => { createNewChat(); setIsSearchMenuOpen(false); setSearchMenuFilter(""); }}
+                                            className="w-full flex items-center justify-between px-3 py-2 rounded-[10px] hover:bg-[#F7F8FA] text-[#5B53E0] text-[14px] font-semibold transition-colors"
+                                        >
+                                            {tr("sourcingChat.newSearchMenu")} <ArrowRight className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
             </header>
 
@@ -668,14 +1064,11 @@ export default function ProfileSourcingChatPage() {
                 {/* Main Chat Area */}
                 <div className="flex-1 flex flex-col relative overflow-hidden">
 
-                {/* Subtle tech grid tile background */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M0 30 L30 30 L30 0 M0 0 L0 30' fill='none' stroke='%235B53E0' stroke-width='1'/%3E%3C/svg%3E")` }} />
-                
                 {searchPhase === "initial" && (
                     <div className="flex-1 overflow-y-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
                       <div className="min-h-full flex flex-col justify-center space-y-4 max-w-4xl mx-auto w-full py-4">
                         <div className="text-center max-w-xl mx-auto">
-                            <h2 className="text-[22px] font-extrabold text-center text-[#15171C] tracking-[-0.5px] mb-2">Hey VIBIN, who are you looking for?</h2>
+                            <h2 className="text-[22px] font-extrabold text-center text-[#15171C] tracking-[-0.5px] mb-2">{tr("sourcingChat.greetingWhoLooking")}</h2>
                         </div>
 
                         <div className="flex items-center justify-center gap-2.5 flex-wrap">
@@ -683,43 +1076,43 @@ export default function ProfileSourcingChatPage() {
                                 onClick={() => setIsJobModalOpen(true)} 
                                 className="flex items-center gap-2 px-3.5 py-1.5 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
-                                <FileText className="w-3.5 h-3.5 text-[#EF4444]" /> Job Description
+                                <FileText className="w-3.5 h-3.5 text-[#EF4444]" /> {tr("sourcingChat.jobDescriptionBtn")}
                             </button>
                             <button 
                                 onClick={() => setIsBooleanModalOpen(true)} 
                                 className="flex items-center gap-2 px-3.5 py-1.5 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
-                                <span className="text-[#15803D] font-bold text-xs">Σ</span> Boolean
+                                <span className="text-[#15803D] font-bold text-xs">Σ</span> {tr("sourcingChat.boolean")}
                             </button>
                             <button 
                                 onClick={() => setIsCompetitorModalOpen(true)} 
                                 className="flex items-center gap-2 px-3.5 py-1.5 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
-                                <Target className="w-3.5 h-3.5 text-[#5B53E0]" /> Skill Mapping
+                                <Target className="w-3.5 h-3.5 text-[#5B53E0]" /> {tr("sourcingChat.skillMapping")}
                             </button>
 
                             <button 
                                 onClick={() => setIsFilterModalOpen(true)} 
                                 className="flex items-center gap-2 px-3.5 py-1.5 border border-[#E1E4E8] rounded-[10px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] hover:border-[#DAD7F6]/80 transition-colors shadow-sm"
                             >
-                                <Wrench className="w-3.5 h-3.5 text-[#8A929E]" /> Select Manually
+                                <Wrench className="w-3.5 h-3.5 text-[#8A929E]" /> {tr("sourcingChat.selectManually")}
                             </button>
                         </div>
 
-                        <form onSubmit={(e) => { e.preventDefault(); if (query.trim()) handleChatSend(query); }} className="max-w-3xl mx-auto w-full">
+                        <form onSubmit={(e) => { e.preventDefault(); if (query.trim()) openSearchBuilder(query); }} className="max-w-3xl mx-auto w-full">
                             {showSuggestions && (
                                 <div className="bg-white border border-[#E8EAED] rounded-[12px] p-1.5 shadow-md mb-2.5 space-y-0.5 animate-in fade-in duration-500">
                                     {[
-                                        "Software Engineers in SF working at Series B companies, skilled in Python and Node.js",
-                                        "Marketing Manager in Europe, German-speaking, working at a large enterprise",
-                                        "Senior Scientist in Australia, 8+ years experience",
-                                        "Consultant in London with 2+ years experience at top consulting firms",
-                                        "Sales Manager in Dallas with experience in ERP"
+                                        tr("sourcingChat.suggestion1"),
+                                        tr("sourcingChat.suggestion2"),
+                                        tr("sourcingChat.suggestion3"),
+                                        tr("sourcingChat.suggestion4"),
+                                        tr("sourcingChat.suggestion5")
                                     ].map((rec, rIdx) => (
                                         <button
                                             key={rIdx}
                                             type="button"
-                                            onClick={() => { setQuery(rec); handleChatSend(rec); setShowSuggestions(false); }}
+                                            onClick={() => { openSearchBuilder(rec); }}
                                             className={`w-full text-left px-3 py-1.5 hover:bg-[#F4F5F7] text-[12.5px] font-semibold text-[#374151] rounded-[8px] transition-colors ${query === rec ? 'bg-[#F4F5F7]' : ''}`}
                                         >
                                             {rec}
@@ -735,7 +1128,7 @@ export default function ProfileSourcingChatPage() {
                                     onChange={(e) => setQuery(e.target.value)}
                                     onFocus={() => setShowSuggestions(true)}
                                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                                    placeholder="Software Engineers with 5+ yrs of experience at fintech companies in the Bay Area"
+                                    placeholder={tr("sourcingChat.searchPlaceholder")}
                                     className="w-full bg-transparent border-none focus:outline-none text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] mb-2.5"
                                 />
                                 <div className="flex items-center justify-end">
@@ -753,62 +1146,87 @@ export default function ProfileSourcingChatPage() {
                     </div>
                 )}
 
-                {searchPhase === "filters" && (
-                    <div className="space-y-6 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500 flex-1 flex flex-col justify-center">
-                        <div className="flex justify-end">
-                            <div className="bg-gradient-to-r from-[#5B53E0] to-[#4A43C9] text-white p-5 rounded-2xl text-sm font-bold shadow-xl shadow-indigo-100 max-w-xl flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center font-bold text-xs text-white">ME</div>
-                                <p>{query}</p>
-                            </div>
-                        </div>
-
-                        <div className="flex justify-start gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1B1D24] to-[#0E1014] flex items-center justify-center text-white shrink-0 font-bold text-xs shadow-lg border border-[#2A2D35]">AI</div>
-                            <div className="bg-white p-6 rounded-3xl border border-[#E8EAED] shadow-xl shadow-slate-200/10 max-w-2xl w-full space-y-4">
-                                <p className="text-sm font-bold text-[#374151] flex items-center gap-2">
-                                    <span className="w-2.5 h-2.5 bg-[#5B53E0] rounded-full animate-pulse shadow-glow" />
-                                    {" "}<span>I've mapped out targeted search rules matching your directives:</span>
-                                </p>
-
-                                <div className="flex flex-wrap items-center gap-2 p-4 bg-[#F7F8FA]/80 rounded-2xl border border-[#E8EAED]/50 shadow-inner">
-                                    <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
-                                        <Briefcase className="w-3.5 h-3.5" /> {extractedFilters.title}
-                                    </span>
-                                    <span className="text-[#C4C9D0] font-bold text-xs">&middot;</span>
-                                    <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
-                                        <MapPin className="w-3.5 h-3.5" /> {extractedFilters.location}
-                                    </span>
-                                    <span className="text-[#C4C9D0] font-bold text-xs">&middot;</span>
-                                    <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
-                                        <Zap className="w-3.5 h-3.5" /> {extractedFilters.minExp}+ years
-                                    </span>
-
-                                    <button
-                                        onClick={() => setIsFilterModalOpen(true)}
-                                        className="ml-auto px-4 py-1.5 bg-white hover:bg-[#F7F8FA] border border-[#E1E4E8] text-[#5B53E0] text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-all"
-                                    >
-                                        Edit Rule
-                                    </button>
+                {searchPhase === "filters" && (() => {
+                    const roleChip = deriveRoleLabel(query);
+                    const locChip = deriveLocationLabel(query) || (extractedFilters.location !== "Global" ? extractedFilters.location : null);
+                    const moreFilters = [Number(extractedFilters.minExp) > 0, extractedFilters.platform !== "All"].filter(Boolean).length;
+                    return (
+                    <div className="flex-1 overflow-y-auto no-scrollbar animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="min-h-full flex flex-col justify-center max-w-3xl mx-auto w-full py-8 space-y-5">
+                            {/* User message */}
+                            <div className="flex items-start gap-3">
+                                <div className="w-9 h-9 rounded-full bg-[#E8EAED] text-[#6B6F76] flex items-center justify-center font-bold text-[13px] shrink-0 overflow-hidden">
+                                    <User className="w-4 h-4" />
+                                </div>
+                                <div className="flex-1 bg-white border border-[#E8EAED] rounded-[16px] px-5 py-4 shadow-sm">
+                                    <p className="text-[14px] text-[#1F2127]">{query}</p>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex justify-end gap-3 mt-6 border-t border-[#F0F0F1] pt-4">
-                            <button
-                                onClick={() => setSearchPhase("initial")}
-                                className="px-6 py-3 bg-[#F7F8FA] hover:bg-[#F0F0F1] border border-[#E8EAED] text-[#4B5563] text-sm font-bold rounded-xl transition-all"
-                            >
-                                Reset Search
-                            </button>
-                            <button
-                                onClick={runSearch}
-                                className="px-8 py-3 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-indigo-200"
-                            >
-                                Run Search
-                            </button>
+                            {/* AI: filters */}
+                            <div className="flex items-start gap-3">
+                                <div className="w-9 h-9 rounded-full bg-[#15171C] text-white flex items-center justify-center shrink-0">
+                                    <Sparkles className="w-4 h-4" />
+                                </div>
+                                <div className="flex-1 bg-white border border-[#E8EAED] rounded-[16px] px-5 py-4 shadow-sm space-y-3">
+                                    <p className="text-[14px] text-[#1F2127]">
+                                        {tr("sourcingChat.filtersMsgPre")} <span className="inline-flex items-center gap-1 font-semibold text-[#5B53E0]"><Filter className="w-3.5 h-3.5" />{tr("sourcingChat.filtersLabel")}</span> {tr("sourcingChat.filtersMsgPost")}
+                                    </p>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <button onClick={() => setIsFilterModalOpen(true)} title={tr("sourcingChat.editThisFilter")} className="px-3 py-1.5 rounded-[10px] bg-[#F4F3FD] text-[#4B4794] text-[13px] font-semibold hover:bg-[#E4E1F7] transition-colors">{roleChip}</button>
+                                        {locChip && (
+                                            <>
+                                                <span className="text-[13px] text-[#8A929E]">{tr("sourcingChat.inWord")}</span>
+                                                <button onClick={() => setIsFilterModalOpen(true)} title={tr("sourcingChat.editThisFilter")} className="px-3 py-1.5 rounded-[10px] bg-[#F4F3FD] text-[#4B4794] text-[13px] font-semibold hover:bg-[#E4E1F7] transition-colors">{locChip}</button>
+                                            </>
+                                        )}
+                                        {moreFilters > 0 && (
+                                            <button onClick={() => setIsFilterModalOpen(true)} className="px-3 py-1.5 rounded-[10px] bg-[#F4F3FD] text-[#4B4794] text-[13px] font-semibold hover:bg-[#E4E1F7] transition-colors">
+                                                {tr("sourcingChat.moreFilters").replace("{count}", String(moreFilters))}
+                                            </button>
+                                        )}
+                                        <button onClick={() => setIsFilterModalOpen(true)} className="text-[13px] font-semibold text-[#5B53E0] hover:underline ml-1">{tr("sourcingChat.editFilters")}</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Criteria */}
+                            <div className="flex items-start gap-3">
+                                <div className="w-9 h-9 shrink-0" />
+                                <div className="flex-1 bg-white border border-[#E8EAED] rounded-[16px] px-5 py-4 shadow-sm space-y-3">
+                                    <p className="text-[14px] text-[#1F2127]">
+                                        {tr("sourcingChat.criteriaMsgPre")} <span className="inline-flex items-center gap-1 font-semibold text-[#5B53E0]"><Sparkles className="w-3.5 h-3.5" />{tr("sourcingChat.criteriaLabel")}</span> {tr("sourcingChat.criteriaMsgPost")}
+                                    </p>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        {criteria.map((c, i) => (
+                                            <button key={i} onClick={() => setIsCriteriaModalOpen(true)} title={tr("sourcingChat.editThisCriterion")} className="px-3 py-1.5 rounded-[10px] bg-[#F4F3FD] text-[#4B4794] text-[13px] font-semibold hover:bg-[#E4E1F7] transition-colors">{criterionLabel(c)}</button>
+                                        ))}
+                                        <button onClick={() => setIsCriteriaModalOpen(true)} className="text-[13px] font-semibold text-[#5B53E0] hover:underline ml-1">
+                                            {criteria.length ? tr("sourcingChat.editCriteria") : tr("sourcingChat.addCriteria")}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex items-center justify-end gap-4 pt-2">
+                                <button
+                                    onClick={() => { setSearchPhase("initial"); setQuery(""); setCriteria([]); }}
+                                    className="text-[14px] font-semibold text-[#4B5563] hover:text-[#1F2127] transition-colors"
+                                >
+                                    {tr("sourcingChat.resetSearch")}
+                                </button>
+                                <button
+                                    onClick={runSearch}
+                                    className="px-6 py-2.5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-[14px] font-bold rounded-[10px] transition-all shadow-[0_6px_16px_rgba(91,83,224,0.28)]"
+                                >
+                                    {tr("sourcingChat.runSearch")}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                )}
+                    );
+                })()}
 
                 {loading && (
                     <div className="flex flex-col items-center justify-center py-20 animate-in fade-in duration-300">
@@ -817,73 +1235,43 @@ export default function ProfileSourcingChatPage() {
                             <div className="absolute inset-0 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
                             <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-[#5B53E0] animate-pulse" />
                         </div>
-                        <h3 className="text-base font-bold text-[#1F2127] tracking-tight">Gathering Talent Intel...</h3>
-                        <p className="text-xs text-[#9AA3AF] font-bold mt-1">Cross-referencing indexed MongoDB structures.</p>
+                        <h3 className="text-base font-bold text-[#1F2127] tracking-tight">{tr("sourcingChat.gathering")}</h3>
+                        <p className="text-xs text-[#9AA3AF] font-bold mt-1">{tr("sourcingChat.searchingPlatforms")}</p>
                     </div>
                 )}
 
                 {searchPhase === "results" && !loading && (
                     <div className="flex-1 overflow-y-auto no-scrollbar space-y-6 max-w-full w-full animate-in fade-in duration-500 pr-1">
-                        {/* Search Input bar */}
+                        {/* Search summary bar — query pill + Filters / Criteria pills. */}
                         <div className="flex flex-col md:flex-row md:items-center gap-3 py-1">
-                            <div className="flex-1 relative">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF]" />
+                            <div className="flex-1 flex items-center gap-3 bg-white border border-[#E1E4E8] rounded-[14px] pl-3 pr-4 h-14 shadow-sm focus-within:border-[#5B53E0] focus-within:ring-2 focus-within:ring-[#5B53E0]/15 transition-all">
+                                <div className="w-9 h-9 rounded-full bg-[#E8EAED] text-[#6B6F76] flex items-center justify-center shrink-0">
+                                    <User className="w-4 h-4" />
+                                </div>
                                 <input
                                     type="text"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            runSearch();
-                                        }
-                                    }}
-                                    placeholder="Refine your search..."
-                                    className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-11 pr-4 text-sm font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/30 focus:border-[#5B53E0] transition-all shadow-sm"
+                                    onKeyDown={(e) => { if (e.key === 'Enter') runSearch(); }}
+                                    placeholder={tr("sourcingChat.refinePlaceholder")}
+                                    className="flex-1 bg-transparent border-none outline-none text-[14px] text-[#1F2127] placeholder:text-[#9AA3AF]"
                                 />
                             </div>
                             <div className="flex items-center gap-2.5 self-end md:self-center">
-                                <button onClick={() => setIsFilterModalOpen(true)} className="h-11 px-4 bg-white border border-[#E1E4E8] rounded-[12px] text-[13px] font-semibold text-[#4B5563] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm">
-                                    <Filter className="w-4 h-4 text-[#5B53E0]" /> Filters
-                                    {activeFilterCount > 0 && (
-                                        <span className="bg-[#ECEBFB] text-[#5B53E0] px-1.5 py-0.5 rounded-md text-[10px] font-bold">{activeFilterCount}</span>
-                                    )}
+                                <button onClick={() => setIsFilterModalOpen(true)} className="h-12 px-5 bg-white border border-[#E1E4E8] rounded-[12px] text-[14px] font-semibold text-[#374151] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm">
+                                    <Filter className="w-4 h-4 text-[#4B5563]" /> {tr("sourcingChat.filters")}
+                                    <span className="bg-[#ECEBFB] text-[#5B53E0] w-6 h-6 rounded-full text-[12px] font-bold flex items-center justify-center">{activeFilterCount}</span>
                                 </button>
-                                <div className="relative">
-                                    <button
-                                        onClick={() => setShowCriteria(v => !v)}
-                                        title="View the active search criteria extracted from your query"
-                                        aria-expanded={showCriteria}
-                                        className="h-11 px-4 bg-white border border-[#E1E4E8] rounded-[12px] text-[13px] font-semibold text-[#4B5563] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm"
-                                    >
-                                        <Sparkles className="w-4 h-4 text-[#5B53E0]" /> Criteria
-                                    </button>
-                                    {showCriteria && (
-                                        <>
-                                            <div className="fixed inset-0 z-40" onClick={() => setShowCriteria(false)} aria-hidden />
-                                            <div className="absolute right-0 top-12 z-50 w-64 bg-white rounded-[12px] border border-[#E8EAED] shadow-[0_16px_40px_rgba(15,23,42,0.18)] p-4">
-                                                <div className="flex items-center gap-1.5 mb-3">
-                                                    <Sparkles className="w-3.5 h-3.5 text-[#5B53E0]" />
-                                                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E]">Active search criteria</span>
-                                                </div>
-                                                <dl className="space-y-2 text-[12.5px]">
-                                                    <div className="flex justify-between gap-3"><dt className="text-[#8A929E]">Title</dt><dd className="font-semibold text-[#15171C] text-right truncate">{extractedFilters.title || "Any"}</dd></div>
-                                                    <div className="flex justify-between gap-3"><dt className="text-[#8A929E]">Location</dt><dd className="font-semibold text-[#15171C] text-right">{extractedFilters.location || "Global"}</dd></div>
-                                                    <div className="flex justify-between gap-3"><dt className="text-[#8A929E]">Min experience</dt><dd className="font-semibold text-[#15171C] text-right">{extractedFilters.minExp ? `${extractedFilters.minExp}+ yrs` : "Any"}</dd></div>
-                                                    <div className="flex justify-between gap-3"><dt className="text-[#8A929E]">Platform</dt><dd className="font-semibold text-[#15171C] text-right">{extractedFilters.platform || "All"}</dd></div>
-                                                </dl>
-                                                <button
-                                                    onClick={() => { setShowCriteria(false); setIsFilterModalOpen(true); }}
-                                                    className="mt-3 w-full h-8 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] text-[12px] font-semibold hover:bg-[#DAD7F6]/60 transition-colors"
-                                                >
-                                                    Edit in Filters
-                                                </button>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
+                                <button
+                                    onClick={() => setIsCriteriaModalOpen(true)}
+                                    title={tr("sourcingChat.criteriaTooltip")}
+                                    className="h-12 px-5 bg-white border border-[#E1E4E8] rounded-[12px] text-[14px] font-semibold text-[#374151] hover:bg-[#F7F8FA] hover:border-[#DAD7F6] transition-colors flex items-center gap-2 shadow-sm"
+                                >
+                                    <Sparkles className="w-4 h-4 text-[#5B53E0]" /> {tr("sourcingChat.criteria")}
+                                    <span className="bg-[#ECEBFB] text-[#5B53E0] w-6 h-6 rounded-full text-[12px] font-bold flex items-center justify-center">{criteria.length}</span>
+                                </button>
                             </div>
                         </div>
-
 
 
                         {results.length === 0 ? (
@@ -892,47 +1280,69 @@ export default function ProfileSourcingChatPage() {
                                     <div className="w-11 h-11 rounded-[12px] bg-white text-[#B93815] flex items-center justify-center mb-3 border border-[#F9DBAF]">
                                         <X className="w-5 h-5" />
                                     </div>
-                                    <h3 className="text-md font-bold text-[#1F2127] mb-1">Search couldn&apos;t complete</h3>
+                                    <h3 className="text-md font-bold text-[#1F2127] mb-1">{tr("sourcingChat.searchFailed")}</h3>
                                     <p className="text-[#8A5A2B] text-xs font-medium max-w-sm mb-4">{searchError}</p>
                                     <button
                                         onClick={() => runSearch()}
                                         className="px-5 h-9 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-colors"
                                     >
-                                        Try again
+                                        {tr("sourcingChat.tryAgain")}
                                     </button>
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center p-12 text-center bg-[#F7F8FA] rounded-3xl border border-[#E8EAED]">
-                                    <h3 className="text-md font-bold text-[#1F2127] mb-1">No matching profiles indexed</h3>
+                                    <h3 className="text-md font-bold text-[#1F2127] mb-1">{tr("sourcingChat.noProfilesIndexed")}</h3>
                                     <p className="text-[#9AA3AF] text-xs font-medium max-w-xs">
-                                        Trigger background automated scrapers or loosen standard keyword bindings.
+                                        {tr("sourcingChat.noProfilesHint")}
                                     </p>
                                 </div>
                             )
                         ) : (
                             <>
-                                <div className="flex items-center justify-between py-2 border-b border-[#E8EAED]/50">
+                                {/* Tabs + toolbar (matches count · view toggle · pagination) — one row */}
+                                <div className="flex items-center justify-between gap-4 border-b border-[#E8EAED]/50">
                                     <div className="flex items-center gap-6">
-                                        <button 
+                                        <button
                                             onClick={() => setResultsTab("profiles")}
                                             className={`pb-3 text-sm font-bold transition-all relative ${resultsTab === 'profiles' ? 'text-[#5B53E0]' : 'text-[#9AA3AF] hover:text-[#4B5563]'}`}
                                         >
-                                            <div className="flex items-center gap-2">
-                                                <Users className="w-4 h-4" /> Profiles ({profilesCount})
-                                            </div>
+                                            {tr("sourcingChat.resultsTab")}
                                             {resultsTab === 'profiles' && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B53E0] rounded-full" />}
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => setResultsTab("insights")}
                                             className={`pb-3 text-sm font-bold transition-all relative ${resultsTab === 'insights' ? 'text-[#5B53E0]' : 'text-[#9AA3AF] hover:text-[#4B5563]'}`}
                                         >
-                                            <div className="flex items-center gap-2">
-                                                <Globe className="w-4 h-4" /> Global Insights
-                                            </div>
+                                            {tr("sourcingChat.insightsTab")}
                                             {resultsTab === 'insights' && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B53E0] rounded-full" />}
                                         </button>
+                                        {resultsTab === "profiles" && (
+                                            <div className="flex items-center gap-3 pb-2">
+                                                <span className="text-[14px] font-extrabold text-[#15171C] tracking-[-0.2px]">{tr("sourcingChat.matches")} ({profilesCount.toLocaleString()})</span>
+                                                <div className="flex items-center bg-[#F4F3FD] border border-[#E4E1F7] rounded-[10px] p-0.5">
+                                                    <button
+                                                        onClick={() => setViewMode("list")}
+                                                        title={tr("sourcingChat.listView")}
+                                                        className={`w-7 h-7 rounded-[8px] flex items-center justify-center transition-all ${viewMode === "list" ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#9AA3AF] hover:text-[#4B5563]"}`}
+                                                    >
+                                                        <List className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setViewMode("table")}
+                                                        title={tr("sourcingChat.tableView")}
+                                                        className={`w-7 h-7 rounded-[8px] flex items-center justify-center transition-all ${viewMode === "table" ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#9AA3AF] hover:text-[#4B5563]"}`}
+                                                    >
+                                                        <Table2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                    <span className="text-[10px] font-bold text-[#9AA3AF] uppercase tracking-widest bg-[#F7F8FA] px-3 py-1 rounded-full border border-[#E8EAED]">Live Intel</span>
+                                    {resultsTab === "profiles" && profilesCount > 0 && (
+                                        <span className="text-[13px] font-semibold text-[#6B6F76] pb-2">
+                                            {(currentPage - 1) * itemsPerPage + 1}–{Math.min(currentPage * itemsPerPage, profilesCount)} {tr("sourcingChat.of")} {profilesCount.toLocaleString()}
+                                        </span>
+                                    )}
                                 </div>
                                 {resultsTab === "insights" ? (
                                     <motion.div 
@@ -943,9 +1353,9 @@ export default function ProfileSourcingChatPage() {
                                         <div className="bg-white rounded-[14px] border border-[#E8EAED] p-6 shadow-sm overflow-hidden">
                                             <div className="flex flex-col gap-6">
                                                 <div className="text-center max-w-2xl mx-auto space-y-1">
-                                                    <h3 className="text-xl font-bold text-[#15171C] tracking-tight">Geospatial Distribution</h3>
+                                                    <h3 className="text-xl font-bold text-[#15171C] tracking-tight">{tr("sourcingChat.geospatial")}</h3>
                                                     <p className="text-[#6B6F76] text-xs font-medium">
-                                                        Deep-dive into your global talent clusters. Every color on the map represents a high-density candidate market.
+                                                        {tr("sourcingChat.geospatialDesc")}
                                                     </p>
                                                 </div>
  
@@ -966,7 +1376,7 @@ export default function ProfileSourcingChatPage() {
                                                                         {COUNTRY_NAMES[code] || code}
                                                                     </span>
                                                                     <span className="text-[8px] font-bold text-[#9AA3AF]">
-                                                                        {count} Candidates
+                                                                        {count} {tr("sourcingChat.candidatesLabel")}
                                                                     </span>
                                                                 </div>
                                                             </div>
@@ -977,9 +1387,9 @@ export default function ProfileSourcingChatPage() {
                                                 {countryCounts.length === 0 ? (
                                                     <div className="w-full min-h-[500px] bg-[#F7F8FA]/60 rounded-xl border border-[#E8EAED] flex flex-col items-center justify-center text-center gap-2 px-6">
                                                         <Globe className="w-10 h-10 text-[#C4C9D0]" />
-                                                        <h4 className="text-sm font-bold text-[#1F2127]">No location data available</h4>
+                                                        <h4 className="text-sm font-bold text-[#1F2127]">{tr("sourcingChat.noLocationData")}</h4>
                                                         <p className="text-[#9AA3AF] text-xs font-medium max-w-xs">
-                                                            We couldn&apos;t derive any candidate locations from this search. Refine your query to surface geospatial intel.
+                                                            {tr("sourcingChat.noLocationHint")}
                                                         </p>
                                                     </div>
                                                 ) : (
@@ -993,7 +1403,7 @@ export default function ProfileSourcingChatPage() {
                                                         loader={
                                                             <div className="flex flex-col items-center justify-center gap-4">
                                                                 <div className="w-8 h-8 border-4 border-indigo-50 border-t-indigo-600 rounded-full animate-spin"></div>
-                                                                <span className="text-[10px] font-bold text-[#9AA3AF] uppercase tracking-widest">Generating Global Map...</span>
+                                                                <span className="text-[10px] font-bold text-[#9AA3AF] uppercase tracking-widest">{tr("sourcingChat.generatingMap")}</span>
                                                             </div>
                                                         }
                                                         options={{
@@ -1015,7 +1425,115 @@ export default function ProfileSourcingChatPage() {
                                                 )}
                                             </div>
                                         </div>
+
+                                        {/* Talent insights: skills breakdown + AI key takeaways. */}
+                                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                                            <div className="lg:col-span-3 bg-white rounded-[14px] border border-[#E8EAED] p-6 shadow-sm">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <BarChart className="w-4 h-4 text-[#5B53E0]" />
+                                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("sourcingChat.skills")}</h3>
+                                                </div>
+                                                <p className="text-[12px] text-[#8A929E] mb-4">{tr("sourcingChat.commonSkills")}</p>
+                                                {skillStats.length === 0 ? (
+                                                    <p className="text-[13px] text-[#9AA3AF] py-8 text-center">{tr("sourcingChat.noSkillData")}</p>
+                                                ) : (
+                                                    <div className="space-y-2.5">
+                                                        {skillStats.map((s) => (
+                                                            <div key={s.skill} className="flex items-center gap-3">
+                                                                <span className="w-32 shrink-0 text-[12.5px] font-semibold text-[#374151] truncate" title={s.skill}>{s.skill}</span>
+                                                                <div className="flex-1 h-5 bg-[#F1F2F5] rounded-[6px] overflow-hidden">
+                                                                    <div className="h-full rounded-[6px] bg-gradient-to-r from-[#8B7DFF] to-[#5B53E0]" style={{ width: `${Math.max(s.pct, 3)}%` }} />
+                                                                </div>
+                                                                <span className="w-20 shrink-0 text-right text-[11.5px] font-bold text-[#6B6F76]">{s.count} ({s.pct}%)</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div className="lg:col-span-2 bg-white rounded-[14px] border border-[#E8EAED] p-6 shadow-sm">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <Sparkles className="w-4 h-4 text-[#5B53E0]" />
+                                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("sourcingChat.keyTakeaways")}</h3>
+                                                </div>
+                                                <p className="text-[12px] text-[#8A929E] mb-4">{tr("sourcingChat.signalsPool")}</p>
+                                                {keyTakeaways.length === 0 ? (
+                                                    <p className="text-[13px] text-[#9AA3AF] py-8 text-center">{tr("sourcingChat.runSearchTakeaways")}</p>
+                                                ) : (
+                                                    <ul className="space-y-3">
+                                                        {keyTakeaways.map((t, i) => (
+                                                            <li key={i} className="flex items-start gap-2.5 text-[12.5px] text-[#374151] leading-relaxed">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-[#5B53E0] mt-1.5 shrink-0" />
+                                                                <span>{t}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
+                                        </div>
                                     </motion.div>
+                                ) : viewMode === "table" ? (
+                                    <div className="w-full animate-in fade-in duration-500 bg-white rounded-[14px] border border-[#E8EAED] shadow-sm overflow-x-auto">
+                                        <table className="w-full text-left border-collapse min-w-[760px]">
+                                            <thead>
+                                                <tr className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em] border-b border-[#E8EAED] bg-[#FAFBFC]">
+                                                    <th className="px-4 py-3">{tr("sourcingChat.colName")}</th>
+                                                    <th className="px-4 py-3">{tr("sourcingChat.colProfiles")}</th>
+                                                    <th className="px-4 py-3">{tr("sourcingChat.colJobTitle")}</th>
+                                                    <th className="px-4 py-3">{tr("sourcingChat.colCompany")}</th>
+                                                    <th className="px-4 py-3">{tr("sourcingChat.colShortlistStatus")}</th>
+                                                    {criteria.length > 0 && <th className="px-4 py-3">{tr("sourcingChat.colMatch")}</th>}
+                                                    {criteria.map((c, ci) => <th key={ci} className="px-4 py-3 text-center whitespace-nowrap">{criterionLabel(c)}</th>)}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {displayedResults.map((profile, index) => {
+                                                    const pct = profileMatchPercent(profile, criteria);
+                                                    const isShort = profile.profile_url ? shortlisted[profile.profile_url] : undefined;
+                                                    const pctCls = pct === null ? "" : pct >= 100 ? "text-[#15803D]" : pct >= 50 ? "text-[#B93815]" : "text-[#6B6F76]";
+                                                    return (
+                                                        <tr key={index} onClick={() => setSelectedProfile(profile)} className="border-b border-[#F0F0F1] last:border-b-0 hover:bg-[#F7F8FA]/60 transition-colors cursor-pointer">
+                                                            <td className="px-4 py-3">
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <span className="font-bold text-[13px] text-[#15171C] whitespace-nowrap">{profile.full_name}</span>
+                                                                    <a href={profile.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#9AA3AF] hover:text-[#5B53E0]"><ExternalLink className="w-3.5 h-3.5" /></a>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-4 py-3">
+                                                                {profile.profile_url ? (
+                                                                    <a href={profile.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} title={profile.platform}>
+                                                                        <img src={`https://www.google.com/s2/favicons?sz=64&domain=${getPlatformDomain(profile.platform)}`} alt={profile.platform} className="w-4 h-4 rounded-sm object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                                                                    </a>
+                                                                ) : <span className="text-[#C4C9D0]">—</span>}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-[12.5px] text-[#4B5563] max-w-[220px] truncate">{profile.headline || "—"}</td>
+                                                            <td className="px-4 py-3 text-[12.5px] text-[#4B5563] whitespace-nowrap">{profile.company || "—"}</td>
+                                                            <td className="px-4 py-3">
+                                                                {isShort ? (
+                                                                    <Link href={`/enterprise/jobs/${isShort}?tab=sourcing`} onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-[12px] font-bold text-[#15803D] whitespace-nowrap"><CircleCheck className="w-3.5 h-3.5" /> {tr("sourcingChat.shortlisted")}</Link>
+                                                                ) : (
+                                                                    <button onClick={(e) => { e.stopPropagation(); openShortlistModal(profile); }} className="inline-flex items-center gap-1 text-[12px] font-bold text-[#5B53E0] hover:underline whitespace-nowrap"><Bookmark className="w-3.5 h-3.5" /> {tr("sourcingChat.shortlist")}</button>
+                                                                )}
+                                                            </td>
+                                                            {criteria.length > 0 && <td className={`px-4 py-3 text-[13px] font-bold ${pctCls}`}>{pct}%</td>}
+                                                            {criteria.map((c, ci) => {
+                                                                const v = evaluateCriterion(profile, c);
+                                                                return (
+                                                                    <td key={ci} className="px-4 py-3 text-center" title={v.reason}>
+                                                                        {v.status === "pass" ? (
+                                                                            <span className="inline-flex items-center justify-center w-7 h-6 rounded-md bg-[#E6F4EA] text-[#15803D]"><ThumbsUp className="w-3.5 h-3.5" /></span>
+                                                                        ) : (
+                                                                            <span className="text-[#C4C9D0] font-bold">–</span>
+                                                                        )}
+                                                                    </td>
+                                                                );
+                                                            })}
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 ) : (
                                     <div className="flex flex-col w-full animate-in fade-in duration-500 bg-white rounded-[14px] border border-[#E8EAED] shadow-sm overflow-hidden">
                                         {displayedResults
@@ -1043,6 +1561,18 @@ export default function ProfileSourcingChatPage() {
                                                         <a href={profile.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#5B53E0] hover:text-[#4A43C9]">
                                                             <ExternalLink className="w-4 h-4" />
                                                         </a>
+                                                        {Array.isArray(profile.social_links) && profile.social_links.map((s: any, si: number) => {
+                                                            const prov = (s?.provider || "").toLowerCase();
+                                                            const url = s?.url;
+                                                            if (!url) return null;
+                                                            const Icon = prov.includes("linkedin") ? Linkedin : prov.includes("github") ? Github : (prov.includes("twitter") || prov === "x") ? Twitter : null;
+                                                            if (!Icon) return null;
+                                                            return (
+                                                                <a key={si} href={url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} title={prov} className="text-[#6B6F76] hover:text-[#5B53E0]">
+                                                                    <Icon className="w-4 h-4" />
+                                                                </a>
+                                                            );
+                                                        })}
                                                         {profile.platform && (
                                                             <div className="flex items-center gap-1.5 shrink-0 text-[#6B6F76] font-bold text-[10px]">
                                                                 <img 
@@ -1058,19 +1588,25 @@ export default function ProfileSourcingChatPage() {
                                                         )}
                                                         {originMeta(profile.origin) && (
                                                             <span
-                                                                title={profile.last_scraped_at ? `Last updated ${new Date(profile.last_scraped_at).toLocaleString()}` : undefined}
+                                                                title={profile.last_scraped_at ? tr("sourcingChat.lastUpdated").replace("{date}", new Date(profile.last_scraped_at).toLocaleString()) : undefined}
                                                                 className={`shrink-0 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold ${originMeta(profile.origin)!.cls}`}
                                                             >
-                                                                {originMeta(profile.origin)!.label}
+                                                                {profile.origin === "client_db" ? tr("sourcingChat.originClientDb") : profile.origin === "croar_db" ? tr("sourcingChat.originCroarDb") : tr("sourcingChat.originFresh")}
                                                                 {profile.origin !== "fresh" && timeAgo(profile.last_scraped_at) && (
                                                                     <span className="opacity-70">· {timeAgo(profile.last_scraped_at)}</span>
                                                                 )}
                                                             </span>
                                                         )}
+                                                        {(() => {
+                                                            const pct = profileMatchPercent(profile, criteria);
+                                                            if (pct === null) return null;
+                                                            const cls = pct >= 100 ? "bg-[#E6F4EA] text-[#15803D]" : pct >= 50 ? "bg-[#FEF6EE] text-[#B93815]" : "bg-[#F1F2F5] text-[#6B6F76]";
+                                                            return <span className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${cls}`}>{pct}% {tr("sourcingChat.matchWord")}</span>;
+                                                        })()}
                                                     </div>
                                                     
                                                     <p className="text-xs font-bold text-[#4B5563] flex items-center gap-2">
-                                                        <Building className="w-4 h-4 text-[#9AA3AF]" /> {profile.headline || "Professional Role"} {profile.company ? ` at ${profile.company}` : ""}
+                                                        <Building className="w-4 h-4 text-[#9AA3AF]" /> {profile.headline || tr("sourcingChat.professionalRole")} {profile.company ? ` ${tr("sourcingChat.at")} ${profile.company}` : ""}
                                                     </p>
                                                     {profile.location && (
                                                         <span className="text-[10px] font-bold text-[#9AA3AF] flex items-center gap-2">
@@ -1080,23 +1616,63 @@ export default function ProfileSourcingChatPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center self-end md:self-start" role="button" tabIndex={0} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); } }}>
+                                            <div className="flex items-center gap-2 self-end md:self-start" role="button" tabIndex={0} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); } }}>
                                                 <button
-                                                    onClick={() => openShortlistModal(profile)}
-                                                    className={`flex items-center rounded-xl border font-bold text-xs shadow-sm bg-white border-[#E1E4E8]/80 transition-all hover:bg-[#F7F8FA]`}
+                                                    onClick={(e) => { e.stopPropagation(); setSelectedProfile(profile); }}
+                                                    title={tr("sourcingChat.previewProfile")}
+                                                    className="w-9 h-9 rounded-xl border border-[#E1E4E8] bg-white text-[#6B6F76] hover:text-[#5B53E0] hover:bg-[#F7F8FA] flex items-center justify-center transition-all shadow-sm"
                                                 >
-                                                    <div className="flex items-center gap-2 px-3 py-2 text-[#1F2127] font-bold">
-                                                        <Bookmark className={`w-4 h-4 text-[#9AA3AF]`} /> 
-                                                        <span>
-                                                            Shortlist
-                                                        </span>
-                                                    </div>
-                                                    <div className="border-l border-[#E1E4E8]/80 h-full py-3 px-2 flex items-center justify-center">
-                                                        <ChevronDown className="w-3.5 h-3.5 text-[#1F2127]" />
-                                                    </div>
+                                                    <Eye className="w-4 h-4" />
                                                 </button>
+                                                {profile.profile_url && shortlisted[profile.profile_url] ? (
+                                                    <>
+                                                        <span className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#CDEAD7] bg-[#E6F4EA] text-[#15803D] font-bold text-xs">
+                                                            <CircleCheck className="w-4 h-4" /> {tr("sourcingChat.shortlisted")}
+                                                        </span>
+                                                        <Link
+                                                            href={`/enterprise/jobs/${shortlisted[profile.profile_url]}?tab=sourcing`}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            title={tr("sourcingChat.viewJobShortlisted")}
+                                                            className="flex items-center gap-1 px-3 py-2 rounded-xl border border-[#E1E4E8] bg-white text-[#5B53E0] font-bold text-xs shadow-sm hover:bg-[#F7F8FA] transition-all"
+                                                        >
+                                                            {tr("sourcingChat.viewInJob")} <ArrowRight className="w-3.5 h-3.5" />
+                                                        </Link>
+                                                    </>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => openShortlistModal(profile)}
+                                                        className={`flex items-center rounded-xl border font-bold text-xs shadow-sm bg-white border-[#E1E4E8]/80 transition-all hover:bg-[#F7F8FA]`}
+                                                    >
+                                                        <div className="flex items-center gap-2 px-3 py-2 text-[#1F2127] font-bold">
+                                                            <Bookmark className={`w-4 h-4 text-[#9AA3AF]`} />
+                                                            <span>
+                                                                {tr("sourcingChat.shortlist")}
+                                                            </span>
+                                                        </div>
+                                                        <div className="border-l border-[#E1E4E8]/80 h-full py-3 px-2 flex items-center justify-center">
+                                                            <ChevronDown className="w-3.5 h-3.5 text-[#1F2127]" />
+                                                        </div>
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
+
+                                        {criteria.length > 0 && (
+                                            <div className="pl-8 flex flex-col gap-1.5">
+                                                {criteria.map((c, ci) => {
+                                                    const v = evaluateCriterion(profile, c);
+                                                    return (
+                                                        <div key={ci} className="flex items-start gap-2.5">
+                                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold shrink-0 min-w-[74px] justify-center ${v.status === "pass" ? "bg-[#E6F4EA] text-[#15803D]" : "bg-[#F1F2F5] text-[#9AA3AF]"}`}>
+                                                                {v.status === "pass" ? <ThumbsUp className="w-3 h-3" /> : <span className="text-[13px] leading-none">–</span>}
+                                                                {criterionLabel(c)}
+                                                            </span>
+                                                            <span className="text-[11.5px] text-[#6B6F76] leading-relaxed pt-0.5">{v.reason}</span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
 
                                         {profile.ai_summary && (
                                             <div className="pl-8 text-xs font-medium text-[#4B5563] leading-relaxed flex items-start gap-3">
@@ -1111,18 +1687,18 @@ export default function ProfileSourcingChatPage() {
                                     </div>
                                 )}
 
-                            {Math.ceil(totalCount / itemsPerPage) > 1 && (
+                            {resultsTab === "profiles" && Math.ceil(profilesCount / itemsPerPage) > 1 && (
                                 <div className="flex justify-center items-center gap-2 mt-8 py-4 border-t border-[#F0F0F1]">
                                     <button 
                                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                         disabled={currentPage === 1}
                                         className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${currentPage === 1 ? 'text-[#C4C9D0] bg-[#F7F8FA] border-[#E8EAED] cursor-not-allowed' : 'text-[#4B5563] bg-white border-[#E1E4E8] hover:bg-[#F7F8FA]'}`}
                                     >
-                                        Prev
+                                        {tr("sourcingChat.prev")}
                                     </button>
                                     
                                     {(() => {
-                                        const totalPages = Math.ceil(totalCount / itemsPerPage);
+                                        const totalPages = Math.ceil(profilesCount / itemsPerPage);
                                         const maxVisible = 5;
                                         let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
                                         let endPage = Math.min(totalPages, startPage + maxVisible - 1);
@@ -1176,11 +1752,11 @@ export default function ProfileSourcingChatPage() {
                                     })()}
 
                                     <button 
-                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(totalCount / itemsPerPage)))}
-                                        disabled={currentPage === Math.ceil(totalCount / itemsPerPage)}
-                                        className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${currentPage === Math.ceil(totalCount / itemsPerPage) ? 'text-[#C4C9D0] bg-[#F7F8FA] border-[#E8EAED] cursor-not-allowed' : 'text-[#4B5563] bg-white border-[#E1E4E8] hover:bg-[#F7F8FA]'}`}
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(profilesCount / itemsPerPage)))}
+                                        disabled={currentPage === Math.ceil(profilesCount / itemsPerPage)}
+                                        className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${currentPage === Math.ceil(profilesCount / itemsPerPage) ? 'text-[#C4C9D0] bg-[#F7F8FA] border-[#E8EAED] cursor-not-allowed' : 'text-[#4B5563] bg-white border-[#E1E4E8] hover:bg-[#F7F8FA]'}`}
                                     >
-                                        Next
+                                        {tr("sourcingChat.next")}
                                     </button>
                                 </div>
                             )}
@@ -1192,17 +1768,118 @@ export default function ProfileSourcingChatPage() {
             </div>
             </div>
 
+            {/* Share public link modal. */}
+            {isShareModalOpen && (
+                <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsShareModalOpen(false)}>
+                    <div className="bg-white p-6 rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-xl w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-start justify-between">
+                            <h3 className="text-[17px] font-bold text-[#15171C]">{tr("sourcingChat.sharePublic")}</h3>
+                            <button onClick={() => setIsShareModalOpen(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg"><X className="w-4 h-4" /></button>
+                        </div>
+                        <p className="text-[13.5px] text-[#6B6F76] -mt-1">{tr("sourcingChat.shareDesc")}</p>
+
+                        {shareError ? (
+                            <div className="flex items-center justify-between gap-3 rounded-[10px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3">
+                                <p className="text-[13px] text-[#C0383C] font-semibold">{shareError}</p>
+                                <button onClick={openShareModal} className="text-[12px] font-bold text-[#5B53E0] hover:underline shrink-0">{tr("sourcingChat.retry")}</button>
+                            </div>
+                        ) : (
+                            <>
+                                <input
+                                    readOnly
+                                    value={shareCreating ? tr("sourcingChat.creatingLink") : shareUrl}
+                                    onFocus={(e) => e.currentTarget.select()}
+                                    className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-[#F7F8FA] text-[13px] text-[#374151] outline-none focus:border-[#5B53E0]"
+                                />
+                                <div className="flex items-center justify-end gap-2.5">
+                                    <button
+                                        onClick={copyShareUrl}
+                                        disabled={!shareUrl}
+                                        className="h-10 px-4 rounded-[10px] border border-[#E1E4E8] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F7F8FA] transition-colors disabled:opacity-50"
+                                    >
+                                        {shareCopied ? tr("sourcingChat.copied") : tr("sourcingChat.copyToClipboard")}
+                                    </button>
+                                    <button
+                                        onClick={() => shareUrl && window.open(shareUrl, "_blank", "noopener")}
+                                        disabled={!shareUrl}
+                                        className="h-10 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-bold hover:bg-[#4A43C9] transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                                    >
+                                        {tr("sourcingChat.openUrl")} <ArrowRight className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Criteria Modal — ranking criteria, most→least important. */}
+            {isCriteriaModalOpen && (
+                <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsCriteriaModalOpen(false)}>
+                    <div className="bg-white p-6 rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-lg w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#5B53E0]" /> {tr("sourcingChat.criteria")}</h3>
+                            <button onClick={() => setIsCriteriaModalOpen(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg"><X className="w-4 h-4" /></button>
+                        </div>
+                        <p className="text-[12.5px] text-[#8A929E] -mt-1">{tr("sourcingChat.criteriaModalDesc")}</p>
+
+                        {criteria.length > 0 && (
+                            <div className="space-y-2">
+                                <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A929E]">{tr("sourcingChat.mostImportant")}</span>
+                                {criteria.map((c, i) => (
+                                    <div key={i} className="flex items-center gap-2">
+                                        <div className="flex flex-col">
+                                            <button disabled={i === 0} onClick={() => setCriteria((prev) => { const n = [...prev]; [n[i - 1], n[i]] = [n[i], n[i - 1]]; return n; })} className="text-[#C4C9D0] hover:text-[#5B53E0] disabled:opacity-30 disabled:hover:text-[#C4C9D0]"><ChevronUp className="w-3.5 h-3.5" /></button>
+                                            <button disabled={i === criteria.length - 1} onClick={() => setCriteria((prev) => { const n = [...prev]; [n[i + 1], n[i]] = [n[i], n[i + 1]]; return n; })} className="text-[#C4C9D0] hover:text-[#5B53E0] disabled:opacity-30 disabled:hover:text-[#C4C9D0]"><ChevronDown className="w-3.5 h-3.5" /></button>
+                                        </div>
+                                        <span className="w-5 text-center text-[12px] font-bold text-[#8A929E]">{i + 1}</span>
+                                        <input
+                                            value={c}
+                                            onChange={(e) => setCriteria((prev) => prev.map((x, j) => (j === i ? e.target.value : x)))}
+                                            className="flex-1 h-9 px-3 rounded-[9px] border border-[#E1E4E8] text-[13px] text-[#1F2127] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/25 focus:border-[#5B53E0]"
+                                        />
+                                        <button onClick={() => setCriteria((prev) => prev.filter((_, j) => j !== i))} className="text-[#EF4444]/70 hover:text-[#EF4444] p-1"><Trash2 className="w-4 h-4" /></button>
+                                    </div>
+                                ))}
+                                <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A929E] block pt-1">{tr("sourcingChat.leastImportant")}</span>
+                            </div>
+                        )}
+
+                        <div className="flex items-center gap-2 pt-1">
+                            <input
+                                value={newCriterion}
+                                onChange={(e) => setNewCriterion(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === "Enter" && newCriterion.trim()) { setCriteria((prev) => [...prev, newCriterion.trim()]); setNewCriterion(""); } }}
+                                placeholder={tr("sourcingChat.criterionPlaceholder")}
+                                className="flex-1 h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/25 focus:border-[#5B53E0]"
+                            />
+                            <button
+                                onClick={() => { if (newCriterion.trim()) { setCriteria((prev) => [...prev, newCriterion.trim()]); setNewCriterion(""); } }}
+                                disabled={!newCriterion.trim()}
+                                className="h-10 px-3 rounded-[10px] border border-[#E1E4E8] bg-white text-[#5B53E0] text-[13px] font-bold hover:bg-[#F7F8FA] transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                            >
+                                <Plus className="w-4 h-4" /> {tr("sourcingChat.add")}
+                            </button>
+                        </div>
+
+                        <div className="flex justify-end pt-1">
+                            <button onClick={() => setIsCriteriaModalOpen(false)} className="h-10 px-6 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-bold hover:bg-[#4A43C9] transition-colors">{tr("sourcingChat.update")}</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Edit Rule Filter Modal */}
             {isFilterModalOpen && (
                 <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
                     <div className="bg-white p-6 rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-md w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2"><Filter className="w-4 h-4 text-[#5B53E0]" /> Refine Constraints</h3>
+                            <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2"><Filter className="w-4 h-4 text-[#5B53E0]" /> {tr("sourcingChat.refineConstraints")}</h3>
                             <button onClick={() => setIsFilterModalOpen(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg"><X className="w-4 h-4" /></button>
                         </div>
                         <div className="space-y-3">
                             <div className="space-y-1">
-                                <label htmlFor="filter-target-role" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">Target Role</label>
+                                <label htmlFor="filter-target-role" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">{tr("sourcingChat.targetRole")}</label>
                                 <input
                                     id="filter-target-role"
                                     type="text"
@@ -1212,7 +1889,7 @@ export default function ProfileSourcingChatPage() {
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label htmlFor="filter-location-area" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">Location Area</label>
+                                <label htmlFor="filter-location-area" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">{tr("sourcingChat.locationArea")}</label>
                                 <input
                                     id="filter-location-area"
                                     type="text"
@@ -1222,11 +1899,11 @@ export default function ProfileSourcingChatPage() {
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label htmlFor="filter-target-platform" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">Target Platform</label>
+                                <label htmlFor="filter-target-platform" className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF] ml-1">{tr("sourcingChat.targetPlatform")}</label>
                                 <div id="filter-target-platform" className="max-h-60 overflow-y-auto p-2 border border-[#E8EAED]/80 rounded-[10px] bg-[#F7F8FA]/50 space-y-1 custom-scrollbar">
                                     <div className="grid grid-cols-2 gap-2">
                                         {[
-                                            { id: "All", name: "All Platforms" },
+                                            { id: "All", name: tr("sourcingChat.allPlatforms") },
                                             { id: "github", name: "GitHub" },
                                             { id: "linkedin", name: "LinkedIn" },
                                             { id: "stackoverflow", name: "Stack Overflow" },
@@ -1280,7 +1957,7 @@ export default function ProfileSourcingChatPage() {
                             }} 
                             className="w-full h-10 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-[13px] font-semibold rounded-[9px] transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)]"
                         >
-                            Save Rule Adjustments
+                            {tr("sourcingChat.saveRuleAdjustments")}
                         </button>
                     </div>
                 </div>
@@ -1290,7 +1967,7 @@ export default function ProfileSourcingChatPage() {
                     <div className="bg-white rounded-[14px] p-6 max-w-2xl w-full shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] flex flex-col space-y-4 max-h-[90vh]">
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-[#EF4444]" /> Search by Job Description
+                                <FileText className="w-5 h-5 text-[#EF4444]" /> {tr("sourcingChat.searchByJD")}
                             </h3>
                             <button 
                                 onClick={() => {
@@ -1301,35 +1978,35 @@ export default function ProfileSourcingChatPage() {
                                 }}
                                 className="h-10 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)] flex items-center gap-1.5"
                             >
-                                Save & Search <ArrowRight className="w-4 h-4" />
+                                {tr("sourcingChat.saveAndSearch")} <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
                         <div className="overflow-y-auto space-y-4">
                             <div className="space-y-1">
-                                <label htmlFor="job-description-textarea" className="text-[13px] font-semibold text-[#15171C]">Paste Job Description</label>
-                                <p className="text-xs text-[#9AA3AF] font-medium mb-2">Don't worry about the formatting, we'll take care of that for you</p>
+                                <label htmlFor="job-description-textarea" className="text-[13px] font-semibold text-[#15171C]">{tr("sourcingChat.pasteJD")}</label>
+                                <p className="text-xs text-[#9AA3AF] font-medium mb-2">{tr("sourcingChat.jdFormattingNote")}</p>
                                 <textarea
                                     id="job-description-textarea"
                                     rows={8}
                                     value={jobDescription}
                                     onChange={(e) => setJobDescription(e.target.value)}
-                                    placeholder="Paste job details here..."
+                                    placeholder={tr("sourcingChat.pasteJDPlaceholder")}
                                     className="w-full bg-white border border-[#E1E4E8] rounded-[10px] px-4 py-3 text-[13.5px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                 />
                             </div>
                             <div className="border-t border-[#E8EAED] pt-3 space-y-2">
-                                <label htmlFor="job-upload-button" className="text-[13px] font-semibold text-[#15171C] flex items-center gap-2">Upload Job Description</label>
-                                <p className="text-xs text-[#9AA3AF] font-medium">You can upload PDF or text documents like .docx, .txt, or formatted text</p>
+                                <label htmlFor="job-upload-button" className="text-[13px] font-semibold text-[#15171C] flex items-center gap-2">{tr("sourcingChat.uploadJD")}</label>
+                                <p className="text-xs text-[#9AA3AF] font-medium">{tr("sourcingChat.uploadJDNote")}</p>
                                 <button id="job-upload-button" className="h-9 px-4 border border-[#E1E4E8] rounded-[9px] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm">
-                                    Upload
+                                    {tr("sourcingChat.upload")}
                                 </button>
                             </div>
                         </div>
                         <button 
-                            onClick={() => setIsJobModalOpen(false)} 
+                            onClick={() => setIsJobModalOpen(false)}
                             className="w-full h-10 bg-[#F4F5F7] hover:bg-[#E8EAED] text-[#4B5563] text-[13px] font-semibold rounded-[9px] transition-colors border border-[#E8EAED]"
                         >
-                            Cancel
+                            {tr("sourcingChat.cancel")}
                         </button>
                     </div>
                 </div>
@@ -1340,7 +2017,7 @@ export default function ProfileSourcingChatPage() {
                     <div className="bg-white rounded-[14px] p-6 max-w-xl w-full shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] flex flex-col space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2">
-                                <span className="text-[#15803D] font-bold text-xl">Σ</span> Search by Boolean Expression
+                                <span className="text-[#15803D] font-bold text-xl">Σ</span> {tr("sourcingChat.searchByBoolean")}
                             </h3>
                             <button 
                                 onClick={() => {
@@ -1351,10 +2028,10 @@ export default function ProfileSourcingChatPage() {
                                 }}
                                 className="h-10 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)] flex items-center gap-1.5"
                             >
-                                Save & Search <ArrowRight className="w-4 h-4" />
+                                {tr("sourcingChat.saveAndSearch")} <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
-                        <p className="text-xs text-[#6B6F76] font-bold">Enter a boolean expression to search for candidates.</p>
+                        <p className="text-xs text-[#6B6F76] font-bold">{tr("sourcingChat.booleanDesc")}</p>
                         <textarea 
                             rows={5}
                             value={booleanExpression}
@@ -1363,10 +2040,10 @@ export default function ProfileSourcingChatPage() {
                             className="w-full bg-white border border-[#E1E4E8] rounded-[10px] px-4 py-3 text-[13.5px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                         />
                         <button 
-                            onClick={() => setIsBooleanModalOpen(false)} 
+                            onClick={() => setIsBooleanModalOpen(false)}
                             className="w-full h-10 bg-[#F4F5F7] hover:bg-[#E8EAED] text-[#4B5563] text-[13px] font-semibold rounded-[9px] transition-colors border border-[#E8EAED]"
                         >
-                            Cancel
+                            {tr("sourcingChat.cancel")}
                         </button>
                     </div>
                 </div>
@@ -1377,7 +2054,7 @@ export default function ProfileSourcingChatPage() {
                     <div className="bg-white rounded-[14px] p-6 max-w-xl w-full shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] flex flex-col space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2">
-                                <Target className="w-5 h-5 text-[#5B53E0]" /> Skill Mapping
+                                <Target className="w-5 h-5 text-[#5B53E0]" /> {tr("sourcingChat.skillMapping")}
                             </h3>
                             <button 
                                 onClick={() => {
@@ -1388,22 +2065,22 @@ export default function ProfileSourcingChatPage() {
                                 }}
                                 className="h-10 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold transition-colors shadow-[0_6px_16px_rgba(91,83,224,0.28)] flex items-center gap-1.5"
                             >
-                                Save & Search <ArrowRight className="w-4 h-4" />
+                                {tr("sourcingChat.saveAndSearch")} <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
-                        <p className="text-xs text-[#6B6F76] font-bold">Search candidates by providing specific technical skills or domain expertise.</p>
+                        <p className="text-xs text-[#6B6F76] font-bold">{tr("sourcingChat.skillMappingDesc")}</p>
                         <textarea 
                             rows={3}
                             value={competitors}
                             onChange={(e) => setCompetitors(e.target.value)}
-                            placeholder="e.g., Python, React, AWS, Docker, Machine Learning"
+                            placeholder={tr("sourcingChat.skillMappingPlaceholder")}
                             className="w-full bg-white border border-[#E1E4E8] rounded-[10px] px-4 py-3 text-[13.5px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                         />
                         <button 
-                            onClick={() => setIsCompetitorModalOpen(false)} 
+                            onClick={() => setIsCompetitorModalOpen(false)}
                             className="w-full h-10 bg-[#F4F5F7] hover:bg-[#E8EAED] text-[#4B5563] text-[13px] font-semibold rounded-[9px] transition-colors border border-[#E8EAED]"
                         >
-                            Cancel
+                            {tr("sourcingChat.cancel")}
                         </button>
                     </div>
                 </div>
@@ -1417,7 +2094,7 @@ export default function ProfileSourcingChatPage() {
                     <div className="relative bg-white w-full max-w-lg h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
                         <div className="p-6 border-b border-[#E8EAED] flex items-center justify-between">
                             <h3 className="text-base font-bold text-[#15171C] flex items-center gap-2">
-                                <User className="w-5 h-5 text-[#5B53E0]" /> Candidate Dossier
+                                <User className="w-5 h-5 text-[#5B53E0]" /> {tr("sourcingChat.candidateDossier")}
                             </h3>
                             <button 
                                 onClick={() => setSelectedProfile(null)} 
@@ -1440,20 +2117,20 @@ export default function ProfileSourcingChatPage() {
                                 <div>
                                     <h2 className="text-lg font-extrabold text-[#15171C]">{selectedProfile.full_name}</h2>
                                     <p className="text-[11px] font-bold text-[#5B53E0] mt-1 uppercase tracking-wider flex items-center gap-1">
-                                        {selectedProfile.platform} Sourced
+                                        {selectedProfile.platform} {tr("sourcingChat.sourced")}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="space-y-4 pt-4 border-t border-[#E8EAED]">
                                 <div className="space-y-1">
-                                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">Professional Role</span>
-                                    <p className="text-[14px] font-semibold text-[#15171C]">{selectedProfile.headline || "Unspecified Specialty"}</p>
+                                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">{tr("sourcingChat.professionalRole")}</span>
+                                    <p className="text-[14px] font-semibold text-[#15171C]">{selectedProfile.headline || tr("sourcingChat.unspecifiedSpecialty")}</p>
                                 </div>
 
                                 {selectedProfile.location && (
                                     <div className="space-y-1">
-                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">Geography</span>
+                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">{tr("sourcingChat.geography")}</span>
                                         <p className="text-[13px] font-medium text-[#374151] flex items-center gap-2">
                                             <MapPin className="w-4 h-4 text-[#9AA3AF]" /> {selectedProfile.location}
                                         </p>
@@ -1462,7 +2139,7 @@ export default function ProfileSourcingChatPage() {
 
                                 {selectedProfile.company && (
                                     <div className="space-y-1">
-                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">Organization</span>
+                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">{tr("sourcingChat.organization")}</span>
                                         <p className="text-[13px] font-medium text-[#374151] flex items-center gap-2">
                                             <Building className="w-4 h-4 text-[#9AA3AF]" /> {selectedProfile.company}
                                         </p>
@@ -1471,7 +2148,7 @@ export default function ProfileSourcingChatPage() {
 
                                 {selectedProfile.email && (
                                     <div className="space-y-1">
-                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">Contact Email</span>
+                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9AA3AF]">{tr("sourcingChat.contactEmail")}</span>
                                         <p className="text-[13px] font-medium text-[#374151] flex items-center gap-2">
                                             <Mail className="w-4 h-4 text-[#9AA3AF]" /> {selectedProfile.email}
                                         </p>
@@ -1480,7 +2157,7 @@ export default function ProfileSourcingChatPage() {
 
                                 {selectedProfile.raw_data && selectedProfile.raw_data.phone && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Phone Number</span>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">{tr("sourcingChat.phoneNumber")}</span>
                                         <p className="text-xs font-bold text-[#4B5563] flex items-center gap-1">
                                             <Phone className="w-4 h-4 text-[#C4C9D0]" /> {selectedProfile.raw_data.phone}
                                         </p>
@@ -1492,25 +2169,25 @@ export default function ProfileSourcingChatPage() {
                             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#F0F0F1]">
                                 {selectedProfile.followers !== undefined && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Followers</span>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">{tr("sourcingChat.followers")}</span>
                                         <p className="text-xs font-bold text-[#374151]">{selectedProfile.followers}</p>
                                     </div>
                                 )}
                                 {selectedProfile.following !== undefined && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Following</span>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">{tr("sourcingChat.following")}</span>
                                         <p className="text-xs font-bold text-[#374151]">{selectedProfile.following}</p>
                                     </div>
                                 )}
                                 {selectedProfile.public_repos !== undefined && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Public Repos</span>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">{tr("sourcingChat.publicRepos")}</span>
                                         <p className="text-xs font-bold text-[#374151]">{selectedProfile.public_repos}</p>
                                     </div>
                                 )}
                                 {selectedProfile.blog && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Website / Blog</span>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">{tr("sourcingChat.websiteBlog")}</span>
                                         <a href={selectedProfile.blog} target="_blank" rel="noreferrer" className="text-xs font-bold text-[#5B53E0] hover:underline block truncate">
                                             {selectedProfile.blog}
                                         </a>
@@ -1518,8 +2195,8 @@ export default function ProfileSourcingChatPage() {
                                 )}
                                 {selectedProfile.hireable !== undefined && (
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Open to Work</span>
-                                        <p className="text-xs font-bold text-[#374151]">{selectedProfile.hireable ? "Yes ✅" : "No ❌"}</p>
+                                        <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">{tr("sourcingChat.openToWork")}</span>
+                                        <p className="text-xs font-bold text-[#374151]">{selectedProfile.hireable ? tr("sourcingChat.yes") : tr("sourcingChat.no")}</p>
                                     </div>
                                 )}
                             </div>
@@ -1527,7 +2204,7 @@ export default function ProfileSourcingChatPage() {
                             {/* Social Links */}
                             {selectedProfile.social_links && selectedProfile.social_links.length > 0 && (
                                 <div className="space-y-2 pt-4 border-t border-[#F0F0F1]">
-                                    <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Associated Profiles</span>
+                                    <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">{tr("sourcingChat.associatedProfiles")}</span>
                                     <div className="flex flex-wrap gap-2">
                                         {selectedProfile.social_links.map((link: any, lIdx: number) => (
                                             <a 
@@ -1537,7 +2214,7 @@ export default function ProfileSourcingChatPage() {
                                                 rel="noreferrer" 
                                                 className="px-2.5 py-1 bg-[#F7F8FA] text-[#4B5563] hover:text-[#5B53E0] text-[10px] font-bold rounded-lg border border-[#E8EAED] hover:border-[#DAD7F6] transition-all flex items-center gap-1"
                                             >
-                                                <ExternalLink className="w-3 h-3" /> {link.provider || "Link"}
+                                                <ExternalLink className="w-3 h-3" /> {link.provider || tr("sourcingChat.link")}
                                             </a>
                                         ))}
                                     </div>
@@ -1547,7 +2224,7 @@ export default function ProfileSourcingChatPage() {
                             {selectedProfile.ai_summary && (
                                 <div className="space-y-2 pt-4 border-t border-[#F0F0F1]">
                                     <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider flex items-center gap-1">
-                                        <Zap className="w-3.5 h-3.5 text-[#5B53E0]" /> AI Summary Assessment
+                                        <Zap className="w-3.5 h-3.5 text-[#5B53E0]" /> {tr("sourcingChat.aiSummaryAssessment")}
                                     </span>
                                     <div className="bg-[#F7F8FA]/80 p-4 rounded-2xl text-xs font-semibold text-[#4B5563] leading-relaxed border border-[#E8EAED]/30 shadow-inner">
                                         {selectedProfile.ai_summary}
@@ -1557,7 +2234,7 @@ export default function ProfileSourcingChatPage() {
 
                             {selectedProfile.skills && selectedProfile.skills.length > 0 && (
                                 <div className="space-y-2 pt-4 border-t border-[#F0F0F1]">
-                                    <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">Key proficiencies</span>
+                                    <span className="text-[10px] font-bold uppercase text-[#9AA3AF] tracking-wider">{tr("sourcingChat.keyProficiencies")}</span>
                                     <div className="flex flex-wrap gap-1.5">
                                         {selectedProfile.skills.map((skill, sIdx) => (
                                             <span key={sIdx} className="px-2.5 py-1 bg-[#F7F8FA] text-[#4B5563] text-[10px] font-bold rounded-lg border border-[#E8EAED]">
@@ -1576,7 +2253,7 @@ export default function ProfileSourcingChatPage() {
                                 rel="noreferrer" 
                                 className="flex-1 h-[42px] bg-[#15171C] hover:bg-[#1F2127] text-white rounded-[9px] text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
                             >
-                                Visit Source Profile <ExternalLink className="w-4 h-4" />
+                                {tr("sourcingChat.visitSourceProfile")} <ExternalLink className="w-4 h-4" />
                             </a>
                         </div>
                     </div>
@@ -1589,23 +2266,25 @@ export default function ProfileSourcingChatPage() {
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <h3 className="text-[15px] font-bold text-[#15171C] flex items-center gap-2">
-                                    <Bookmark className="w-4 h-4 text-[#5B53E0]" /> Shortlist to Job Role
+                                    <Bookmark className="w-4 h-4 text-[#5B53E0]" /> {tr("sourcingChat.shortlistToJob")}
                                 </h3>
-                                <p className="text-[11px] font-bold text-[#9AA3AF] uppercase tracking-wider">Assigning {profileToShortlist?.full_name}</p>
+                                <p className="text-[11px] font-bold text-[#9AA3AF] uppercase tracking-wider">{tr("sourcingChat.assigning")} {profileToShortlist?.full_name}</p>
                             </div>
                             <button onClick={() => setIsShortlistModalOpen(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg"><X className="w-4 h-4" /></button>
                         </div>
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label htmlFor="shortlist-job-role" className="text-[11px] font-bold uppercase tracking-wider text-[#6B6F76] ml-1">Choose Job Role</label>
+                                <label htmlFor="shortlist-job-role" className="text-[11px] font-bold uppercase tracking-wider text-[#6B6F76] ml-1">{tr("sourcingChat.chooseJobRole")}</label>
                                 <div id="shortlist-job-role" className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto no-scrollbar pr-1">
                                     {jobs.length === 0 ? (
                                         <div className="p-4 bg-[#F7F8FA] rounded-[10px] border border-[#E8EAED] text-center">
-                                            <p className="text-[12px] font-bold text-[#6B6F76] italic">No active jobs found. Create one in Jobs hub first.</p>
+                                            <p className="text-[12px] font-bold text-[#6B6F76] italic">{tr("sourcingChat.noActiveJobs")}</p>
                                         </div>
                                     ) : (
-                                        jobs.map(job => (
+                                        // When sourcing for a specific job (from the Pipeline), only that job is
+                                        // shortlistable; otherwise the user can pick any job.
+                                        (lockedJobId ? jobs.filter(j => j.id === lockedJobId) : jobs).map(job => (
                                             <button
                                                 key={job.id}
                                                 onClick={() => setSelectedJobId(job.id)}
@@ -1629,14 +2308,14 @@ export default function ProfileSourcingChatPage() {
                                 onClick={() => setIsShortlistModalOpen(false)}
                                 className="flex-1 h-10 px-4 bg-[#F4F5F7] border border-[#E8EAED] text-[#4B5563] text-[13px] font-semibold rounded-[9px] transition-colors"
                             >
-                                Cancel
+                                {tr("sourcingChat.cancel")}
                             </button>
                             <button
                                 onClick={handleShortlistConfirm}
                                 disabled={!selectedJobId || isShortlisting}
                                 className="flex-2 h-10 px-5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-[13px] font-semibold rounded-[9px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors disabled:opacity-50"
                             >
-                                {isShortlisting ? "Adding..." : "Confirm Shortlist"}
+                                {isShortlisting ? tr("sourcingChat.adding") : tr("sourcingChat.confirmShortlist")}
                             </button>
                         </div>
                     </div>
@@ -1667,15 +2346,15 @@ export default function ProfileSourcingChatPage() {
                             <div className="px-6 py-4 bg-white border-b border-[#E8EAED] flex items-center justify-between gap-3 shrink-0">
                                 <div>
                                     <h2 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2">
-                                        <Sparkles className="w-4 h-4 text-[#5B53E0]" /> History
+                                        <Sparkles className="w-4 h-4 text-[#5B53E0]" /> {tr("sourcingChat.history")}
                                     </h2>
-                                    <p className="text-[13px] text-[#8A929E] mt-0.5">Your past search sessions & queries</p>
+                                    <p className="text-[13px] text-[#8A929E] mt-0.5">{tr("sourcingChat.historySubtitle")}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button 
                                         onClick={createNewChat}
                                         className="p-2 hover:bg-[#F4F5F7] rounded-[10px] text-[#5B53E0] transition-colors animate-in fade-in"
-                                        title="New Chat"
+                                        title={tr("sourcingChat.newChat")}
                                     >
                                         <Edit className="w-4.5 h-4.5" />
                                     </button>
@@ -1695,8 +2374,8 @@ export default function ProfileSourcingChatPage() {
                                         <div className="w-12 h-12 rounded-[14px] bg-[#ECEBFB] flex items-center justify-center text-[#5B53E0] mb-3">
                                             <Bookmark className="w-6 h-6" />
                                         </div>
-                                        <p className="text-[13px] font-semibold text-[#15171C]">No chat history yet</p>
-                                        <p className="text-[11.5px] text-[#8A929E] mt-1">Start a search to save history</p>
+                                        <p className="text-[13px] font-semibold text-[#15171C]">{tr("sourcingChat.noChatHistory")}</p>
+                                        <p className="text-[11.5px] text-[#8A929E] mt-1">{tr("sourcingChat.startSearchToSave")}</p>
                                     </div>
                                 ) : (
                                     sessions.map((session) => (
@@ -1719,7 +2398,7 @@ export default function ProfileSourcingChatPage() {
                                                 <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${currentSessionId === session.session_id ? 'bg-[#5B53E0] animate-pulse' : 'bg-[#E1E4E8]'}`} />
                                                 <div className="flex-1 min-w-0">
                                                     <p className={`text-[12.5px] font-semibold truncate ${currentSessionId === session.session_id ? 'text-[#15171C]' : 'text-[#374151]'}`}>
-                                                        {session.title || "Untitled Search"}
+                                                        {session.title || tr("sourcingChat.untitledSearch")}
                                                     </p>
                                                     <p className="text-[9px] font-medium text-[#9AA3AF] mt-0.5">
                                                         {new Date(session.updated_at).toLocaleDateString()}
@@ -1727,7 +2406,7 @@ export default function ProfileSourcingChatPage() {
                                                 </div>
                                                 <button 
                                                     onClick={(e) => deleteSession(e, session.session_id)}
-                                                    title="Delete History"
+                                                    title={tr("sourcingChat.deleteHistory")}
                                                     className="p-1.5 hover:bg-red-50 text-[#9AA3AF] hover:text-[#C0383C] rounded-lg transition-all"
                                                 >
                                                     <Trash2 className="w-3.5 h-3.5" />
@@ -1742,7 +2421,7 @@ export default function ProfileSourcingChatPage() {
                             <div className="p-4 bg-white border-t border-[#E8EAED] shrink-0">
                                 <div className="bg-[#ECEBFB]/60 rounded-[10px] p-3 border border-[#DAD7F6]/85">
                                     <p className="text-[12px] font-bold text-[#5B53E0] flex items-center gap-2">
-                                        <Zap className="w-3.5 h-3.5 text-[#5B53E0]" /> Pro Sourcing Active
+                                        <Zap className="w-3.5 h-3.5 text-[#5B53E0]" /> {tr("sourcingChat.proSourcingActive")}
                                     </p>
                                 </div>
                             </div>

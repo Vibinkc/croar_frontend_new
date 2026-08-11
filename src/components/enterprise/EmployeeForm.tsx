@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient, BACKEND_URL } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { Button, Card, CardHeader, Input, Textarea, Select, Field, Badge, PageHeader, jetbrainsMono } from "@/components/ds";
 
 interface EmployeeFormProps {
@@ -91,6 +92,7 @@ interface EmployeeFormData {
 export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormProps) {
     const router = useRouter();
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const [activeTab, setActiveTab] = useState("job");
     const [isLoading, setIsLoading] = useState(false);
     const [departments, setDepartments] = useState<Department[]>([]);
@@ -247,10 +249,10 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 router.push("/enterprise/employees");
             } else {
                 const err = await res.json();
-                let errMsg = "Failed to save employee";
+                let errMsg = tr("forms.failedSaveEmployee");
                 if (err.detail) {
                     if (Array.isArray(err.detail)) {
-                        errMsg = err.detail.map((e: { loc?: string[]; msg: string }) => `${e.loc?.slice(-1)[0] || 'Field'}: ${e.msg}`).join('\n');
+                        errMsg = err.detail.map((e: { loc?: string[]; msg: string }) => `${e.loc?.slice(-1)[0] || tr("forms.fieldFallback")}: ${e.msg}`).join('\n');
                     } else {
                         errMsg = err.detail;
                     }
@@ -259,7 +261,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
             }
         } catch (error) {
             console.error("Error saving employee:", error);
-            alert("An error occurred");
+            alert(tr("forms.errorOccurred"));
         } finally {
             setIsLoading(false);
         }
@@ -267,7 +269,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
     const handleAddDepartment = async () => {
         if (!newDeptName || !formData.company_id) {
-            alert("Please select a company and enter a department name");
+            alert(tr("forms.alertSelectCompanyDept"));
             return;
         }
         try {
@@ -286,7 +288,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 setNewDeptName("");
             } else {
                 const err = await res.json();
-                alert(err.detail || "Failed to create department");
+                alert(err.detail || tr("forms.failedCreateDepartment"));
             }
         } catch (error) {
             console.error("Error adding department:", error);
@@ -294,26 +296,26 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
     };
 
     const tabs = [
-        { id: "job", label: "Job Information", icon: "work" },
-        { id: "personal", label: "Personal Information", icon: "person" },
-        { id: "contact", label: "Contact Info", icon: "location_on" },
-        { id: "documents", label: "Documents & Others", icon: "folder" },
+        { id: "job", label: tr("forms.tabJobInformation"), icon: "work" },
+        { id: "personal", label: tr("forms.tabPersonalInformation"), icon: "person" },
+        { id: "contact", label: tr("forms.tabContactInfo"), icon: "location_on" },
+        { id: "documents", label: tr("forms.tabDocumentsOthers"), icon: "folder" },
     ];
 
     if (isLoading && !formData.first_name) {
-        return <div className="p-10 text-center text-[13px] font-semibold text-[#8A929E] animate-pulse">Loading form...</div>;
+        return <div className="p-10 text-center text-[13px] font-semibold text-[#8A929E] animate-pulse">{tr("forms.loadingForm")}</div>;
     }
 
     return (
         <form onSubmit={handleSubmit} className="max-w-5xl mx-auto px-4 sm:px-5 md:px-7 space-y-6 animate-in fade-in duration-500">
             <PageHeader
-                help={<><p>Enter the person&apos;s details and assign a department.</p><p>Save to add them to your directory. You can create a workspace login for them later from their record.</p></>}
-                title={employeeId ? "Edit Employee" : "Add New Employee"}
-                subtitle={`Fill in all the details to ${employeeId ? "update" : "create"} the employee record.`}
+                help={<><p>{tr("forms.empHelp1")}</p><p>{tr("forms.empHelp2")}</p></>}
+                title={employeeId ? tr("forms.editEmployee") : tr("forms.addNewEmployee")}
+                subtitle={employeeId ? tr("forms.empSubtitleUpdate") : tr("forms.empSubtitleCreate")}
                 onBack={() => router.back()}
                 actions={
                     <Button type="submit" disabled={isLoading} icon={isLoading ? undefined : "check"}>
-                        {isLoading ? "Saving..." : employeeId ? "Update Employee" : "Create Employee"}
+                        {isLoading ? tr("forms.saving") : employeeId ? tr("forms.updateEmployee") : tr("forms.createEmployee")}
                     </Button>
                 }
             />
@@ -339,135 +341,135 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
             {activeTab === "job" && (
                 <Card padding="lg" className="space-y-6 animate-in fade-in duration-300">
-                    <CardHeader title="Job Information" subtitle="Role, company, and employment details." />
+                    <CardHeader title={tr("forms.tabJobInformation")} subtitle={tr("forms.jobInfoSubtitle")} />
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="Employee ID" htmlFor="emp-employee_id" required hint={employeeId ? "Fixed after creation." : undefined}>
+                        <Field label={tr("forms.employeeId")} htmlFor="emp-employee_id" required hint={employeeId ? tr("forms.fixedAfterCreation") : undefined}>
                             <Input id="emp-employee_id" name="employee_id" value={formData.employee_id} onChange={handleChange} required disabled={!!employeeId} placeholder="EMP-1001" className={jetbrainsMono.className} />
                         </Field>
-                        <Field label="Designation" htmlFor="emp-designation">
-                            <Input id="emp-designation" name="designation" value={formData.designation} onChange={handleChange} placeholder="Software Engineer" />
+                        <Field label={tr("forms.designation")} htmlFor="emp-designation">
+                            <Input id="emp-designation" name="designation" value={formData.designation} onChange={handleChange} placeholder={tr("forms.designationPlaceholder")} />
                         </Field>
-                        <Field label="Employment Type" htmlFor="emp-employment_type">
+                        <Field label={tr("forms.employmentType")} htmlFor="emp-employment_type">
                             <Select id="emp-employment_type" name="employment_type" value={formData.employment_type} onChange={handleChange}>
-                                <option value="">Select</option>
-                                <option value="Full-time">Full-time</option>
-                                <option value="Part-time">Part-time</option>
-                                <option value="Contract">Contract</option>
-                                <option value="Intern">Intern</option>
+                                <option value="">{tr("forms.select")}</option>
+                                <option value="Full-time">{tr("forms.fullTime")}</option>
+                                <option value="Part-time">{tr("forms.partTime")}</option>
+                                <option value="Contract">{tr("forms.contract")}</option>
+                                <option value="Intern">{tr("forms.intern")}</option>
                             </Select>
                         </Field>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="Company" htmlFor="emp-company_id" required hint={employeeId ? "Fixed after creation." : undefined}>
+                        <Field label={tr("forms.company")} htmlFor="emp-company_id" required hint={employeeId ? tr("forms.fixedAfterCreation") : undefined}>
                             <Select id="emp-company_id" name="company_id" value={formData.company_id} onChange={handleChange} required disabled={!!employeeId}>
-                                <option value="">Select Company</option>
+                                <option value="">{tr("forms.selectCompany")}</option>
                                 {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </Select>
                         </Field>
                         <div className="w-full">
                             <div className="flex items-center justify-between mb-1.5">
-                                <label htmlFor="emp-department_id" className="block text-[12.5px] font-semibold text-[#374151]">Department</label>
+                                <label htmlFor="emp-department_id" className="block text-[12.5px] font-semibold text-[#374151]">{tr("forms.department")}</label>
                                 <button
                                     type="button"
                                     onClick={() => setIsDeptModalOpen(true)}
                                     className="text-[11px] font-semibold text-[#5B53E0] hover:text-[#4A43C9] hover:underline"
                                 >
-                                    + Add New
+                                    {tr("forms.addNew")}
                                 </button>
                             </div>
                             <Select id="emp-department_id" name="department_id" value={formData.department_id} onChange={handleChange}>
-                                <option value="">Select Department</option>
+                                <option value="">{tr("forms.selectDepartment")}</option>
                                 {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                             </Select>
                         </div>
-                        <Field label="Status" htmlFor="emp-status">
+                        <Field label={tr("forms.status")} htmlFor="emp-status">
                             <Select id="emp-status" name="status" value={formData.status} onChange={handleChange}>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="On Leave">On Leave</option>
-                                <option value="Terminated">Terminated</option>
+                                <option value="Active">{tr("forms.active")}</option>
+                                <option value="Inactive">{tr("forms.inactive")}</option>
+                                <option value="On Leave">{tr("forms.onLeave")}</option>
+                                <option value="Terminated">{tr("forms.terminated")}</option>
                             </Select>
                         </Field>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="Hire Date" htmlFor="emp-hire_date">
+                        <Field label={tr("forms.hireDate")} htmlFor="emp-hire_date">
                             <Input id="emp-hire_date" type="date" name="hire_date" value={formData.hire_date} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
-                        <Field label="Probation End Date" htmlFor="emp-probation_end_date">
+                        <Field label={tr("forms.probationEndDate")} htmlFor="emp-probation_end_date">
                             <Input id="emp-probation_end_date" type="date" name="probation_end_date" value={formData.probation_end_date} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
-                        <Field label="Notice Period (Days)" htmlFor="emp-notice_period">
+                        <Field label={tr("forms.noticePeriodDays")} htmlFor="emp-notice_period">
                             <Input id="emp-notice_period" type="number" name="notice_period" value={formData.notice_period} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
                     </div>
 
-                    <Field label="About Yourself" htmlFor="emp-about_yourself">
-                        <Textarea id="emp-about_yourself" name="about_yourself" value={formData.about_yourself} onChange={handleChange} placeholder="Brief professional summary..." className="min-h-[100px]" />
+                    <Field label={tr("forms.aboutYourself")} htmlFor="emp-about_yourself">
+                        <Textarea id="emp-about_yourself" name="about_yourself" value={formData.about_yourself} onChange={handleChange} placeholder={tr("forms.aboutYourselfPlaceholder")} className="min-h-[100px]" />
                     </Field>
                 </Card>
             )}
 
             {activeTab === "personal" && (
                 <Card padding="lg" className="space-y-6 animate-in fade-in duration-300">
-                    <CardHeader title="Personal Information" subtitle="Identity and statutory details." />
+                    <CardHeader title={tr("forms.tabPersonalInformation")} subtitle={tr("forms.personalInfoSubtitle")} />
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="First Name" htmlFor="emp-first_name" required>
+                        <Field label={tr("forms.firstName")} htmlFor="emp-first_name" required>
                             <Input id="emp-first_name" name="first_name" value={formData.first_name} onChange={handleChange} required />
                         </Field>
-                        <Field label="Middle Name" htmlFor="emp-middle_name">
+                        <Field label={tr("forms.middleName")} htmlFor="emp-middle_name">
                             <Input id="emp-middle_name" name="middle_name" value={formData.middle_name} onChange={handleChange} />
                         </Field>
-                        <Field label="Last Name" htmlFor="emp-last_name" required>
+                        <Field label={tr("forms.lastName")} htmlFor="emp-last_name" required>
                             <Input id="emp-last_name" name="last_name" value={formData.last_name} onChange={handleChange} required />
                         </Field>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="Email" htmlFor="emp-email" required hint={employeeId ? "Fixed after creation." : undefined}>
+                        <Field label={tr("forms.email")} htmlFor="emp-email" required hint={employeeId ? tr("forms.fixedAfterCreation") : undefined}>
                             <Input id="emp-email" type="email" name="email" value={formData.email} onChange={handleChange} required disabled={!!employeeId} />
                         </Field>
-                        <Field label="Mobile" htmlFor="emp-mobile">
+                        <Field label={tr("forms.mobile")} htmlFor="emp-mobile">
                             <Input id="emp-mobile" name="mobile" value={formData.mobile} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
-                        <Field label="Phone Number" htmlFor="emp-phone_number">
+                        <Field label={tr("forms.phoneNumber")} htmlFor="emp-phone_number">
                             <Input id="emp-phone_number" name="phone_number" value={formData.phone_number} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="Date of Birth" htmlFor="emp-date_of_birth">
+                        <Field label={tr("forms.dateOfBirth")} htmlFor="emp-date_of_birth">
                             <Input id="emp-date_of_birth" type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
-                        <Field label="Gender" htmlFor="emp-gender">
+                        <Field label={tr("forms.gender")} htmlFor="emp-gender">
                             <Select id="emp-gender" name="gender" value={formData.gender} onChange={handleChange}>
-                                <option value="">Select</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
+                                <option value="">{tr("forms.select")}</option>
+                                <option value="Male">{tr("forms.male")}</option>
+                                <option value="Female">{tr("forms.female")}</option>
+                                <option value="Other">{tr("forms.other")}</option>
                             </Select>
                         </Field>
-                        <Field label="Marital Status" htmlFor="emp-marital_status">
+                        <Field label={tr("forms.maritalStatus")} htmlFor="emp-marital_status">
                             <Select id="emp-marital_status" name="marital_status" value={formData.marital_status} onChange={handleChange}>
-                                <option value="">Select</option>
-                                <option value="Single">Single</option>
-                                <option value="Married">Married</option>
-                                <option value="Divorced">Divorced</option>
+                                <option value="">{tr("forms.select")}</option>
+                                <option value="Single">{tr("forms.single")}</option>
+                                <option value="Married">{tr("forms.married")}</option>
+                                <option value="Divorced">{tr("forms.divorced")}</option>
                             </Select>
                         </Field>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <Field label="PAN Card Number" htmlFor="emp-pan_card_number">
+                        <Field label={tr("forms.panCardNumber")} htmlFor="emp-pan_card_number">
                             <Input id="emp-pan_card_number" name="pan_card_number" value={formData.pan_card_number} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
-                        <Field label="Aadhar Card Number" htmlFor="emp-aadhar_card_number">
+                        <Field label={tr("forms.aadharCardNumber")} htmlFor="emp-aadhar_card_number">
                             <Input id="emp-aadhar_card_number" name="aadhar_card_number" value={formData.aadhar_card_number} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
-                        <Field label="Passport Number" htmlFor="emp-passport_number">
+                        <Field label={tr("forms.passportNumber")} htmlFor="emp-passport_number">
                             <Input id="emp-passport_number" name="passport_number" value={formData.passport_number} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
                     </div>
@@ -476,25 +478,25 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
             {activeTab === "contact" && (
                 <Card padding="lg" className="space-y-6 animate-in fade-in duration-300">
-                    <CardHeader title="Contact Information" subtitle="Address and location details." />
+                    <CardHeader title={tr("forms.contactInformation")} subtitle={tr("forms.contactInfoSubtitle")} />
 
-                    <Field label="Address Line 1" htmlFor="emp-address_line_1">
+                    <Field label={tr("forms.addressLine1")} htmlFor="emp-address_line_1">
                         <Input id="emp-address_line_1" name="address_line_1" value={formData.address_line_1} onChange={handleChange} />
                     </Field>
-                    <Field label="Address Line 2" htmlFor="emp-address_line_2">
+                    <Field label={tr("forms.addressLine2")} htmlFor="emp-address_line_2">
                         <Input id="emp-address_line_2" name="address_line_2" value={formData.address_line_2} onChange={handleChange} />
                     </Field>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                        <Field label="City" htmlFor="emp-city">
+                        <Field label={tr("forms.city")} htmlFor="emp-city">
                             <Input id="emp-city" name="city" value={formData.city} onChange={handleChange} />
                         </Field>
-                        <Field label="State" htmlFor="emp-state">
+                        <Field label={tr("forms.state")} htmlFor="emp-state">
                             <Input id="emp-state" name="state" value={formData.state} onChange={handleChange} />
                         </Field>
-                        <Field label="Country" htmlFor="emp-country">
+                        <Field label={tr("forms.country")} htmlFor="emp-country">
                             <Input id="emp-country" name="country" value={formData.country} onChange={handleChange} />
                         </Field>
-                        <Field label="Pincode" htmlFor="emp-pincode">
+                        <Field label={tr("forms.pincode")} htmlFor="emp-pincode">
                             <Input id="emp-pincode" name="pincode" value={formData.pincode} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
                     </div>
@@ -504,26 +506,26 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
             {activeTab === "documents" && (
                 <div className="space-y-6 animate-in fade-in duration-300">
                     <Card padding="lg" className="space-y-6">
-                        <CardHeader title="Documents & Others" subtitle="Roles, skills, and synced onboarding records." />
+                        <CardHeader title={tr("forms.tabDocumentsOthers")} subtitle={tr("forms.documentsOthersSubtitle")} />
 
-                        <Field label="Roles & Responsibilities" htmlFor="emp-roles_responsibilities">
-                            <Textarea id="emp-roles_responsibilities" name="roles_responsibilities" value={formData.roles_responsibilities} onChange={handleChange} placeholder="List key roles and responsibilities..." className="min-h-[120px]" />
+                        <Field label={tr("forms.rolesResponsibilities")} htmlFor="emp-roles_responsibilities">
+                            <Textarea id="emp-roles_responsibilities" name="roles_responsibilities" value={formData.roles_responsibilities} onChange={handleChange} placeholder={tr("forms.rolesResponsibilitiesPlaceholder")} className="min-h-[120px]" />
                         </Field>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-3">
-                                <h3 className="text-[14px] font-bold text-[#15171C]">Skills</h3>
-                                <p className="text-[12.5px] text-[#8A929E]">Employee skills will be managed here. (Currently viewing as text list)</p>
+                                <h3 className="text-[14px] font-bold text-[#15171C]">{tr("forms.skills")}</h3>
+                                <p className="text-[12.5px] text-[#8A929E]">{tr("forms.skillsManagedHere")}</p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {formData.skills.map((skill: string, idx: number) => (
                                         <Badge key={idx} tone="indigo">{skill}</Badge>
                                     ))}
-                                    {formData.skills.length === 0 && <span className="text-[12.5px] text-[#9AA3AF]">No skills added.</span>}
+                                    {formData.skills.length === 0 && <span className="text-[12.5px] text-[#9AA3AF]">{tr("forms.noSkillsAdded")}</span>}
                                 </div>
                             </div>
                             <div className="space-y-3">
-                                <h3 className="text-[14px] font-bold text-[#15171C]">Documents</h3>
-                                <p className="text-[12.5px] text-[#8A929E] leading-relaxed">Onboarding documents and related details are managed entirely through the Candidate Onboarding Portal. Records here are read-only references synced securely from their onboarding session.</p>
+                                <h3 className="text-[14px] font-bold text-[#15171C]">{tr("forms.documents")}</h3>
+                                <p className="text-[12.5px] text-[#8A929E] leading-relaxed">{tr("forms.documentsSyncedNote")}</p>
                                 <div className="space-y-2">
                                     {formData.documents.map((doc, idx) => (
                                         <a key={idx} href={doc.file_path} target="_blank" className="flex items-center justify-between p-3 bg-[#F7F8FA] rounded-[10px] border border-[#E8EAED] hover:border-[#D4D7DC] hover:bg-white transition-all">
@@ -531,7 +533,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                                             <span className="material-symbols-rounded text-[18px] text-[#9AA3AF]">download</span>
                                         </a>
                                     ))}
-                                    {formData.documents.length === 0 && <span className="text-[12.5px] text-[#9AA3AF]">No documents found.</span>}
+                                    {formData.documents.length === 0 && <span className="text-[12.5px] text-[#9AA3AF]">{tr("forms.noDocumentsFound")}</span>}
                                 </div>
                             </div>
                         </div>
@@ -539,25 +541,25 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
                     <Card padding="lg" className="bg-[#F7F8FA] space-y-4">
                         <div>
-                            <h3 className="text-[13px] font-bold text-[#15171C]">Other Records</h3>
-                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">Dependents, Education, Emergency Contacts, and Payment Info are currently stored as encrypted JSON data.</p>
+                            <h3 className="text-[13px] font-bold text-[#15171C]">{tr("forms.otherRecords")}</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("forms.otherRecordsNote")}</p>
                         </div>
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                             <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
-                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">Dependents</p>
+                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">{tr("forms.dependents")}</p>
                                 <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.dependents.length}</p>
                             </div>
                             <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
-                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">Education</p>
+                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">{tr("forms.education")}</p>
                                 <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.educational_details.length}</p>
                             </div>
                             <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
-                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">Emergency</p>
+                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">{tr("forms.emergency")}</p>
                                 <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.emergency_contacts.length}</p>
                             </div>
                             <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
-                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">Payment info</p>
-                                <p className="text-[15px] font-bold text-[#0E8A6E]">{formData.payment_information.length > 0 ? "Linked" : "Missing"}</p>
+                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">{tr("forms.paymentInfo")}</p>
+                                <p className="text-[15px] font-bold text-[#0E8A6E]">{formData.payment_information.length > 0 ? tr("forms.linked") : tr("forms.missing")}</p>
                             </div>
                         </div>
                     </Card>
@@ -569,16 +571,16 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm animate-in fade-in duration-300">
                     <Card padding="lg" className="w-full max-w-md shadow-xl animate-in zoom-in-95 duration-200">
                         <div className="mb-6">
-                            <h3 className="text-[16px] font-bold text-[#15171C]">Add Department</h3>
-                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">Create a new department for the selected company.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C]">{tr("forms.addDepartment")}</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("forms.addDepartmentSubtitle")}</p>
                         </div>
                         <div className="space-y-5">
-                            <Field label="Department Name" htmlFor="emp-new_dept_name">
+                            <Field label={tr("forms.departmentName")} htmlFor="emp-new_dept_name">
                                 <Input
                                     id="emp-new_dept_name"
                                     value={newDeptName}
                                     onChange={(e) => setNewDeptName(e.target.value)}
-                                    placeholder="e.g. Technical Operations"
+                                    placeholder={tr("forms.departmentNamePlaceholder")}
                                 />
                             </Field>
                             <div className="flex gap-3">
@@ -588,14 +590,14 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                                     fullWidth
                                     onClick={() => setIsDeptModalOpen(false)}
                                 >
-                                    Cancel
+                                    {tr("common.cancel")}
                                 </Button>
                                 <Button
                                     type="button"
                                     fullWidth
                                     onClick={handleAddDepartment}
                                 >
-                                    Add Department
+                                    {tr("forms.addDepartment")}
                                 </Button>
                             </div>
                         </div>

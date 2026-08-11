@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import {
   payrollApi,
   inr,
@@ -87,6 +88,7 @@ const selectCls =
 
 export default function TemplatesPage() {
   const { can } = useAuth();
+    const { t: tr } = useI18n();
   const { confirm, alert } = useDialog();
   const canEdit = can("payroll:configure");
 
@@ -202,9 +204,9 @@ export default function TemplatesPage() {
     setCurrency("INR");
     setPayFrequency("MONTHLY");
     setEarnings([
-      { ...emptyLine(), code: "BASIC", label: "Basic", type: "percent", percent: "40", percent_of: "CTC" },
+      { ...emptyLine(), code: "BASIC", label: tr("payroll.componentBasic"), type: "percent", percent: "40", percent_of: "CTC" },
       { ...emptyLine(), code: "HRA", label: "HRA", type: "percent", percent: "50", percent_of: "BASIC" },
-      { ...emptyLine(), code: "SPECIAL", label: "Special Allowance", type: "balance" },
+      { ...emptyLine(), code: "SPECIAL", label: tr("payroll.componentSpecialAllowance"), type: "balance" },
     ]);
     setDeductions([]);
     setPfEnabled(false);
@@ -239,7 +241,7 @@ export default function TemplatesPage() {
     e.preventDefault();
     setFormErr(null);
     if (!name.trim()) {
-      setFormErr("Give the template a name.");
+      setFormErr(tr("payroll.giveTemplateName"));
       return;
     }
     const body = {
@@ -270,9 +272,9 @@ export default function TemplatesPage() {
 
   async function remove(t: SalaryTemplate) {
     const ok = await confirm({
-      title: "Delete template",
-      message: `Delete "${t.name}"? Structures already created from it are unaffected.`,
-      confirmLabel: "Delete",
+      title: tr("payroll.deleteTemplateTitle"),
+      message: tr("payroll.deleteTemplateConfirm", { name: t.name }),
+      confirmLabel: tr("common.delete"),
       tone: "danger",
     });
     if (!ok) return;
@@ -310,22 +312,22 @@ export default function TemplatesPage() {
   });
 
   const statCards = [
-    { label: "Templates", value: templates.length, icon: "content_copy", gradient: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-    { label: "With Statutory", value: templates.filter(hasStatutory).length, icon: "verified_user", gradient: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-    { label: "Employees", value: employees.length, icon: "group", gradient: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-    { label: "Avg. Components", value: templates.length ? Math.round(templates.reduce((a, t) => a + t.components.length, 0) / templates.length) : "—", icon: "layers", gradient: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+    { label: tr("payroll.templatesLabel"), value: templates.length, icon: "content_copy", gradient: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+    { label: tr("payroll.withStatutoryLabel"), value: templates.filter(hasStatutory).length, icon: "verified_user", gradient: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+    { label: tr("payroll.employeesLabel"), value: employees.length, icon: "group", gradient: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+    { label: tr("payroll.avgComponents"), value: templates.length ? Math.round(templates.reduce((a, t) => a + t.components.length, 0) / templates.length) : "—", icon: "layers", gradient: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
   ];
 
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Salary Templates"
-        subtitle="Reusable, CTC-driven packages. Define the rules once, apply to many employees."
-        help={<><p>Create reusable salary templates — earnings, deductions and statutory items.</p><p>Apply a template to employees from Salary Structures.</p></>}
+        title={tr("payroll.salaryTemplates")}
+        subtitle={tr("payroll.salaryTemplatesSubtitle")}
+        help={<><p>{tr("payroll.templatesHelp1")}</p><p>{tr("payroll.templatesHelp2")}</p></>}
         actions={
           canEdit && (
             <Button icon="add" onClick={openCreate}>
-              New Template
+              {tr("payroll.newTemplate")}
             </Button>
           )
         }
@@ -353,7 +355,7 @@ export default function TemplatesPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search templates by name, description or code…"
+            placeholder={tr("payroll.searchTemplates")}
             className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
           />
         </div>
@@ -364,9 +366,9 @@ export default function TemplatesPage() {
             onChange={(e) => setStatutoryFilter(e.target.value as "ALL" | "WITH" | "WITHOUT")}
             className={`${selectCls} w-full md:min-w-[170px]`}
           >
-            <option value="ALL">Any statutory</option>
-            <option value="WITH">With statutory</option>
-            <option value="WITHOUT">Without statutory</option>
+            <option value="ALL">{tr("payroll.anyStatutory")}</option>
+            <option value="WITH">{tr("payroll.withStatutory")}</option>
+            <option value="WITHOUT">{tr("payroll.withoutStatutory")}</option>
           </select>
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
         </div>
@@ -387,21 +389,21 @@ export default function TemplatesPage() {
             </div>
             {templates.length === 0 ? (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No salary templates yet</h3>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noTemplatesYet")}</h3>
                 <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
-                  Create a template (e.g. &ldquo;Engineer L1&rdquo;) with percentage-of-CTC rules, then apply it to employees at their own CTC.
+                  {tr("payroll.noTemplatesYetDesc")}
                 </p>
                 {canEdit && (
                   <Button icon="add" onClick={openCreate}>
-                    Create your first template
+                    {tr("payroll.createFirstTemplate")}
                   </Button>
                 )}
               </>
             ) : (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No templates match your filters</h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Try adjusting your search or filter to find what you&apos;re looking for.</p>
-                <Button onClick={() => { setSearchQuery(""); setStatutoryFilter("ALL"); }}>Clear filters</Button>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noTemplatesMatch")}</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.noTemplatesMatchDesc")}</p>
+                <Button onClick={() => { setSearchQuery(""); setStatutoryFilter("ALL"); }}>{tr("payroll.clearFilters")}</Button>
               </>
             )}
           </div>
@@ -409,10 +411,10 @@ export default function TemplatesPage() {
           <>
             {/* Column header (desktop) */}
             <div className="hidden md:grid grid-cols-[2.4fr_1.6fr_1.2fr_200px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Template</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Earnings</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Statutory</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.template")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.earnings")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.statutory")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
             </div>
 
             <div className="divide-y divide-[#F0F0F1]">
@@ -446,22 +448,22 @@ export default function TemplatesPage() {
                     {t.pt_enabled && <Badge tone="teal">PT</Badge>}
                     {t.tds_enabled && <Badge tone="teal">TDS</Badge>}
                     {!t.pf_enabled && !t.esi_enabled && !t.pt_enabled && !t.tds_enabled && (
-                      <span className="text-[12px] text-[#9AA3AF]">None</span>
+                      <span className="text-[12px] text-[#9AA3AF]">{tr("payroll.none")}</span>
                     )}
                   </div>
 
                   {/* Actions */}
                   <div className="flex items-center justify-start md:justify-end gap-2">
                     {canEdit && (
-                      <Button size="sm" onClick={() => setApplyFor(t)}>Apply</Button>
+                      <Button size="sm" onClick={() => setApplyFor(t)}>{tr("payroll.apply")}</Button>
                     )}
                     {canEdit && (
-                      <Button size="sm" variant="secondary" onClick={() => openEdit(t)}>Edit</Button>
+                      <Button size="sm" variant="secondary" onClick={() => openEdit(t)}>{tr("payroll.edit")}</Button>
                     )}
                     {canEdit && (
                       <button
                         onClick={() => remove(t)}
-                        title="Delete template"
+                        title={tr("payroll.deleteTemplateTitle")}
                         className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -483,7 +485,7 @@ export default function TemplatesPage() {
                 <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
                   <Copy className="w-[18px] h-[18px]" />
                 </span>
-                <h3 className="text-[16px] font-bold text-[#15171C]">{editingId ? "Edit Template" : "New Template"}</h3>
+                <h3 className="text-[16px] font-bold text-[#15171C]">{editingId ? tr("payroll.editTemplate") : tr("payroll.newTemplate")}</h3>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -503,40 +505,40 @@ export default function TemplatesPage() {
               <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
                 <div className="flex min-w-0 flex-col gap-5">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field label="Template Name" htmlFor="tpl-name" required>
-                      <Input id="tpl-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Engineer L1" required />
+                    <Field label={tr("payroll.templateName")} htmlFor="tpl-name" required>
+                      <Input id="tpl-name" value={name} onChange={(e) => setName(e.target.value)} placeholder={tr("payroll.engineerL1Example")} required />
                     </Field>
-                    <Field label="Pay Frequency" htmlFor="tpl-freq">
+                    <Field label={tr("payroll.payFrequency")} htmlFor="tpl-freq">
                       <Select id="tpl-freq" value={payFrequency} onChange={(e) => setPayFrequency(e.target.value as PayFrequency)}>
-                        <option value="MONTHLY">MONTHLY</option>
-                        <option value="WEEKLY">WEEKLY</option>
+                        <option value="MONTHLY">{tr("payroll.freqMonthly")}</option>
+                        <option value="WEEKLY">{tr("payroll.freqWeekly")}</option>
                       </Select>
                     </Field>
-                    <Field label="Description (optional)" htmlFor="tpl-desc" className="sm:col-span-2">
-                      <Input id="tpl-desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Standard package for L1 engineers" />
+                    <Field label={tr("payroll.descriptionOptional")} htmlFor="tpl-desc" className="sm:col-span-2">
+                      <Input id="tpl-desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder={tr("payroll.descriptionExample")} />
                     </Field>
                   </div>
 
-                  <LineSection title="Earnings" rows={earnings} setRows={setEarnings} refCodesFor={earningRefCodesFor} />
-                  <LineSection title="Deductions" rows={deductions} setRows={setDeductions} refCodesFor={deductionRefCodesFor} />
+                  <LineSection title={tr("payroll.earnings")} rows={earnings} setRows={setEarnings} refCodesFor={earningRefCodesFor} />
+                  <LineSection title={tr("payroll.deductions")} rows={deductions} setRows={setDeductions} refCodesFor={deductionRefCodesFor} />
 
                   <div className="rounded-[14px] border border-[#E8EAED] bg-[#F7F8FA]/60 p-4">
                     <div className="mb-3 flex items-center gap-2">
                       <ShieldCheck className="w-[18px] h-[18px] text-[#5B53E0]" />
-                      <span className="text-[14px] font-bold text-[#15171C]">Statutory Compliance</span>
+                      <span className="text-[14px] font-bold text-[#15171C]">{tr("payroll.statutoryCompliance")}</span>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <ToggleRow icon="savings" title="Provident Fund (EPF)" desc="12% employee + employer." checked={pfEnabled} onChange={setPfEnabled}>
+                      <ToggleRow icon="savings" title={tr("payroll.providentFund")} desc={tr("payroll.pfDescTemplates")} checked={pfEnabled} onChange={setPfEnabled}>
                         {pfEnabled && (
                           <label className="mt-2 flex items-center gap-2 text-[12px] text-[#8A929E]">
                             <input type="checkbox" className="accent-[#5B53E0]" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
-                            <span>Cap PF wage at the ₹15,000 ceiling</span>
+                            <span>{tr("payroll.capPfWageCeiling")}</span>
                           </label>
                         )}
                       </ToggleRow>
-                      <ToggleRow icon="health_and_safety" title="ESI" desc="When gross ≤ ₹21,000." checked={esiEnabled} onChange={setEsiEnabled} />
-                      <ToggleRow icon="account_balance_wallet" title="Professional Tax" desc="By the employee's state slab." checked={ptEnabled} onChange={setPtEnabled} />
-                      <ToggleRow icon="account_balance" title="Income Tax (TDS)" desc="Estimated from the IT declaration." checked={tdsEnabled} onChange={setTdsEnabled} />
+                      <ToggleRow icon="health_and_safety" title={tr("payroll.esi")} desc={tr("payroll.esiDescTemplates")} checked={esiEnabled} onChange={setEsiEnabled} />
+                      <ToggleRow icon="account_balance_wallet" title={tr("payroll.professionalTax")} desc={tr("payroll.ptDescTemplates")} checked={ptEnabled} onChange={setPtEnabled} />
+                      <ToggleRow icon="account_balance" title={tr("payroll.incomeTaxTds")} desc={tr("payroll.tdsDescTemplates")} checked={tdsEnabled} onChange={setTdsEnabled} />
                     </div>
                   </div>
                 </div>
@@ -547,29 +549,29 @@ export default function TemplatesPage() {
                     <div className="border-b border-[#E8EAED] px-4 py-3">
                       <span className="flex items-center gap-2 text-[13.5px] font-bold text-[#15171C]">
                         <Calculator className="w-4 h-4 text-[#5B53E0]" />
-                        Preview at sample CTC
-                        {previewing && <span className="text-[11px] font-medium text-[#8A929E]">updating…</span>}
+                        {tr("payroll.previewAtSampleCtc")}
+                        {previewing && <span className="text-[11px] font-medium text-[#8A929E]">{tr("payroll.updating")}</span>}
                       </span>
                     </div>
                     <div className="px-4 py-3">
-                      <Field label="Sample Annual CTC" htmlFor="tpl-sample-ctc">
+                      <Field label={tr("payroll.sampleAnnualCtc")} htmlFor="tpl-sample-ctc">
                         <Input id="tpl-sample-ctc" type="number" value={sampleCtc} onChange={(e) => setSampleCtc(e.target.value)} />
                       </Field>
                       {!ctcDriven && (
                         <p className="mt-1.5 text-[12px] text-[#D97706]">
-                          No earning line is anchored to CTC, so changing this won&apos;t affect the numbers. Add a{" "}
-                          <strong>Balance (CTC)</strong> line or a <strong>Percent … of CTC</strong> line to make the package CTC-driven.
+                          {tr("payroll.ctcWarnA")}{" "}
+                          <strong>{tr("payroll.lineBalanceCtc")}</strong> {tr("payroll.ctcWarnB")} <strong>{tr("payroll.percentOfCtc")}</strong> {tr("payroll.ctcWarnC")}
                         </p>
                       )}
                     </div>
                     <div className="grid grid-cols-3 gap-4 px-4 pb-3">
-                      <PreviewStat label="Gross" value={inr(gross, currency)} />
-                      <PreviewStat label="Deductions" value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C0383C]" />
-                      <PreviewStat label="Net" value={inr(net, currency)} tone="text-[#0E8A6E]" big />
+                      <PreviewStat label={tr("payroll.gross")} value={inr(gross, currency)} />
+                      <PreviewStat label={tr("payroll.deductions")} value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C0383C]" />
+                      <PreviewStat label={tr("payroll.net")} value={inr(net, currency)} tone="text-[#0E8A6E]" big />
                     </div>
                     {earningLines.length > 0 && (
                       <div className="border-t border-[#E8EAED] px-4 py-3">
-                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Earnings breakdown</div>
+                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.earningsBreakdown")}</div>
                         <div className="flex flex-col gap-1">
                           {earningLines.map((l) => (
                             <div key={l.code} className="flex justify-between text-[13px]">
@@ -582,7 +584,7 @@ export default function TemplatesPage() {
                     )}
                     {deductionLines.length > 0 && (
                       <div className="border-t border-[#E8EAED] px-4 py-3">
-                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Deduction breakdown</div>
+                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.deductionBreakdown")}</div>
                         <div className="flex flex-col gap-1">
                           {deductionLines.map((l) => (
                             <div key={l.code} className="flex justify-between text-[13px]">
@@ -598,9 +600,9 @@ export default function TemplatesPage() {
               </div>
 
               <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
-                <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+                <Button type="button" variant="ghost" onClick={() => setOpen(false)}>{tr("common.cancel")}</Button>
                 <Button type="submit" disabled={saving}>
-                  {saving ? "Saving…" : editingId ? "Update Template" : "Save Template"}
+                  {saving ? tr("payroll.saving") : editingId ? tr("payroll.updateTemplate") : tr("payroll.saveTemplate")}
                 </Button>
               </div>
             </form>
@@ -638,6 +640,7 @@ function ApplyModal({
   onApplied: () => void | Promise<void>;
 }) {
   const { alert } = useDialog();
+  const { t: tr } = useI18n();
   // Local calendar date (en-CA → YYYY-MM-DD). Using toISOString() would give the
   // UTC date, which can read as "yesterday" for +TZ users late in the day.
   const today = new Date().toLocaleDateString("en-CA");
@@ -659,7 +662,7 @@ function ApplyModal({
   async function submit() {
     setErr(null);
     if (selected.length === 0) {
-      setErr("Select at least one employee.");
+      setErr(tr("payroll.selectAtLeastOne"));
       return;
     }
     const assignments: TemplateAssignment[] = selected.map((e) => ({
@@ -668,17 +671,17 @@ function ApplyModal({
       effective_from: effectiveFrom,
     }));
     if (assignments.some((a) => a.ctc <= 0)) {
-      setErr("Every selected employee needs a CTC greater than zero.");
+      setErr(tr("payroll.ctcGreaterThanZero"));
       return;
     }
     setBusy(true);
     try {
       const res = await payrollApi.applyTemplate(template.id, assignments, replaceExisting);
       await alert({
-        title: "Template applied",
+        title: tr("payroll.templateApplied"),
         message:
-          `${res.created.length} structure(s) created.` +
-          (res.skipped.length ? ` ${res.skipped.length} skipped (already configured).` : ""),
+          tr("payroll.structuresCreated", { count: res.created.length }) +
+          (res.skipped.length ? " " + tr("payroll.structuresSkipped", { count: res.skipped.length }) : ""),
         tone: res.skipped.length ? "danger" : "default",
       });
       await onApplied();
@@ -697,7 +700,7 @@ function ApplyModal({
             <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-[18px] h-[18px]" />
             </span>
-            <h3 className="text-[16px] font-bold text-[#15171C]">Apply &ldquo;{template.name}&rdquo;</h3>
+            <h3 className="text-[16px] font-bold text-[#15171C]">{tr("payroll.applyQuoted", { name: template.name })}</h3>
           </div>
           <button
             onClick={onClose}
@@ -715,13 +718,13 @@ function ApplyModal({
             </div>
           )}
           <p className="text-[13px] text-[#8A929E]">
-            Each selected employee gets a salary structure generated from this template, scaled to their own CTC. Leave an employee&apos;s CTC blank to use the default.
+            {tr("payroll.applyModalIntro")}
           </p>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field label="Default Annual CTC" htmlFor="apply-default-ctc">
+            <Field label={tr("payroll.defaultAnnualCtc")} htmlFor="apply-default-ctc">
               <Input id="apply-default-ctc" type="number" value={defaultCtc} onChange={(e) => setDefaultCtc(e.target.value)} />
             </Field>
-            <Field label="Effective From" htmlFor="apply-effective-from">
+            <Field label={tr("payroll.effectiveFrom")} htmlFor="apply-effective-from">
               <Input id="apply-effective-from" type="date" value={effectiveFrom} onChange={(e) => setEffectiveFrom(e.target.value)} />
             </Field>
           </div>
@@ -731,13 +734,13 @@ function ApplyModal({
               <thead className="sticky top-0 bg-[#F7F8FA] text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
                 <tr className="border-b border-[#E8EAED]">
                   <th className="px-4 py-2.5 w-10" />
-                  <th className="px-4 py-2.5">Employee</th>
-                  <th className="px-4 py-2.5 text-right">CTC (override)</th>
+                  <th className="px-4 py-2.5">{tr("payroll.employee")}</th>
+                  <th className="px-4 py-2.5 text-right">{tr("payroll.ctcOverride")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0F0F1]">
                 {employees.length === 0 && (
-                  <tr><td colSpan={3} className="px-4 py-6 text-center text-[#8A929E]">No employees.</td></tr>
+                  <tr><td colSpan={3} className="px-4 py-6 text-center text-[#8A929E]">{tr("payroll.noEmployees")}</td></tr>
                 )}
                 {employees.map((e) => (
                   <tr key={e.id} className="hover:bg-[#F7F8FA]/60 transition-colors">
@@ -765,13 +768,13 @@ function ApplyModal({
 
           <label className="flex items-center gap-2 text-[13px] text-[#374151]">
             <input type="checkbox" className="accent-[#5B53E0]" checked={replaceExisting} onChange={(e) => setReplaceExisting(e.target.checked)} />
-            <span>Replace an existing active structure (otherwise that employee is skipped)</span>
+            <span>{tr("payroll.replaceExisting")}</span>
           </label>
 
           <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
-            <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button type="button" variant="ghost" onClick={onClose}>{tr("common.cancel")}</Button>
             <Button type="button" onClick={submit} disabled={busy}>
-              {busy ? "Applying…" : `Apply to ${selected.length || ""} employee${selected.length === 1 ? "" : "s"}`.trim()}
+              {busy ? tr("payroll.applying") : tr("payroll.applyToEmployees", { count: selected.length || "" }).trim()}
             </Button>
           </div>
         </div>
@@ -851,6 +854,7 @@ function LineSection({
   setRows: (r: LineDraft[]) => void;
   refCodesFor: (rowIndex: number, rowCode: string) => string[];
 }) {
+  const { t: tr } = useI18n();
   const update = (i: number, patch: Partial<LineDraft>) =>
     setRows(rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   return (
@@ -865,32 +869,32 @@ function LineSection({
           onClick={() => setRows([...rows, emptyLine()])}
           className="inline-flex items-center gap-1 rounded-[8px] border border-[#E1E4E8] bg-white px-2.5 py-1 text-[12px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors"
         >
-          <Plus className="w-3.5 h-3.5" /> Add line
+          <Plus className="w-3.5 h-3.5" /> {tr("payroll.addLine")}
         </button>
       </div>
       <div className="flex flex-col gap-2">
-        {rows.length === 0 && <p className="text-[12px] text-[#8A929E]">No lines.</p>}
+        {rows.length === 0 && <p className="text-[12px] text-[#8A929E]">{tr("payroll.noLines")}</p>}
         {rows.map((r, i) => (
           <div key={i} className="grid grid-cols-12 items-center gap-2">
-            <Input className="col-span-2 h-10" placeholder="CODE" value={r.code} onChange={(e) => update(i, { code: e.target.value.toUpperCase() })} />
-            <Input className="col-span-3 h-10" placeholder="Label" value={r.label} onChange={(e) => update(i, { label: e.target.value })} />
+            <Input className="col-span-2 h-10" placeholder={tr("payroll.codePlaceholder")} value={r.code} onChange={(e) => update(i, { code: e.target.value.toUpperCase() })} />
+            <Input className="col-span-3 h-10" placeholder={tr("payroll.label")} value={r.label} onChange={(e) => update(i, { label: e.target.value })} />
             <Select className="col-span-2 h-10" value={r.type} onChange={(e) => update(i, { type: e.target.value as LineDraft["type"] })}>
-              <option value="fixed">Fixed</option>
-              <option value="percent">Percent</option>
-              <option value="balance">Balance (CTC)</option>
+              <option value="fixed">{tr("payroll.lineFixed")}</option>
+              <option value="percent">{tr("payroll.linePercent")}</option>
+              <option value="balance">{tr("payroll.lineBalanceCtc")}</option>
             </Select>
             {r.type === "fixed" ? (
-              <Input className="col-span-4 h-10" type="number" placeholder="Amount" value={r.amount} onChange={(e) => update(i, { amount: e.target.value })} />
+              <Input className="col-span-4 h-10" type="number" placeholder={tr("payroll.amount")} value={r.amount} onChange={(e) => update(i, { amount: e.target.value })} />
             ) : r.type === "balance" ? (
-              <span className="col-span-4 self-center text-[12px] text-[#8A929E]">Absorbs the remaining CTC.</span>
+              <span className="col-span-4 self-center text-[12px] text-[#8A929E]">{tr("payroll.absorbsRemaining")}</span>
             ) : (
               <>
                 <Input className="col-span-2 h-10" type="number" placeholder="%" value={r.percent} onChange={(e) => update(i, { percent: e.target.value })} />
                 <Select className="col-span-2 h-10" value={r.percent_of} onChange={(e) => update(i, { percent_of: e.target.value })}>
-                  <option value="">of gross</option>
-                  <option value="CTC">of CTC</option>
+                  <option value="">{tr("payroll.ofGross")}</option>
+                  <option value="CTC">{tr("payroll.ofCtc")}</option>
                   {refCodesFor(i, r.code).map((c) => (
-                    <option key={c} value={c}>of {c}</option>
+                    <option key={c} value={c}>{tr("payroll.ofCode", { code: c })}</option>
                   ))}
                 </Select>
               </>
@@ -899,7 +903,7 @@ function LineSection({
               type="button"
               onClick={() => setRows(rows.filter((_, idx) => idx !== i))}
               className="col-span-1 flex justify-center text-[#9AA3AF] hover:text-[#C0383C] transition-colors"
-              title="Remove line"
+              title={tr("payroll.removeLine")}
             >
               <Trash2 className="w-4 h-4" />
             </button>

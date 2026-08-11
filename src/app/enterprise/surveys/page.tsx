@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import {
     Search,
@@ -20,6 +21,7 @@ import { StatGrid, StatCard, Badge, Button, EmptyState, PageHelp, jetbrainsMono 
 
 export default function SurveyDashboard() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [instances, setInstances] = useState<any[]>([]);
@@ -57,9 +59,9 @@ export default function SurveyDashboard() {
 
     const statusBadge = (status: string) =>
         status === 'ACTIVE' ? (
-            <Badge tone="success" dot>ACTIVE</Badge>
+            <Badge tone="success" dot>{tr("surveysExt.statusActive")}</Badge>
         ) : status === 'CLOSED' ? (
-            <Badge tone="neutral" dot>CLOSED</Badge>
+            <Badge tone="neutral" dot>{tr("surveysExt.statusClosed")}</Badge>
         ) : (
             <Badge tone="warning" dot>{status}</Badge>
         );
@@ -70,13 +72,13 @@ export default function SurveyDashboard() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">HR Surveys</h1>
-                        <PageHelp title="HR Surveys">
-                            <p>Measure engagement and culture.</p>
-                            <p>Create a template, <strong>Launch</strong> a campaign to your team, and read participation and results. Recipients respond via a secure link.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("postOnboarding.surveysTitle")}</h1>
+                        <PageHelp title={tr("postOnboarding.surveysTitle")}>
+                            <p>{tr("postOnboarding.measureEngagement")}</p>
+                            <p>{tr("surveysExt.helpCreatePre")} <strong>{tr("surveysExt.helpLaunchWord")}</strong> {tr("surveysExt.helpCreatePost")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Measure engagement and culture</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("surveysExt.measureEngagementSubtitle")}</p>
                 </div>
                 {canAccess("surveys:create") && (
                     <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap sm:shrink-0">
@@ -84,13 +86,13 @@ export default function SurveyDashboard() {
                             href="/enterprise/surveys/templates"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
                         >
-                            <FileText className="w-3.5 h-3.5 text-[#5B53E0]" /> Templates
+                            <FileText className="w-3.5 h-3.5 text-[#5B53E0]" /> {tr("postOnboarding.templates")}
                         </Link>
                         <Link
                             href="/enterprise/surveys/new"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
                         >
-                            <Plus className="w-3.5 h-3.5" /> Launch Survey
+                            <Plus className="w-3.5 h-3.5" /> {tr("postOnboarding.launchSurvey")}
                         </Link>
                     </div>
                 )}
@@ -98,10 +100,10 @@ export default function SurveyDashboard() {
 
             {/* Stat cards */}
             <StatGrid>
-                <StatCard label="Active Campaigns" value={instances.filter(i => i.status === 'ACTIVE').length} icon="rocket_launch" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
-                <StatCard label="In Progress" value={instances.filter(i => i.status === 'DRAFT').length} icon="hourglass_empty" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-                <StatCard label="Total Completed" value={instances.filter(i => i.status === 'CLOSED').length} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Frameworks" value={templates.length} icon="poll" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("surveysExt.activeCampaigns")} value={instances.filter(i => i.status === 'ACTIVE').length} icon="rocket_launch" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
+                <StatCard label={tr("surveysExt.inProgress")} value={instances.filter(i => i.status === 'DRAFT').length} icon="hourglass_empty" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("surveysExt.totalCompleted")} value={instances.filter(i => i.status === 'CLOSED').length} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("surveysExt.frameworks")} value={templates.length} icon="poll" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
             </StatGrid>
 
             {/* Toolbar: search + filter */}
@@ -112,7 +114,7 @@ export default function SurveyDashboard() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search surveys by name…"
+                        placeholder={tr("surveysExt.searchSurveys")}
                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
@@ -125,10 +127,10 @@ export default function SurveyDashboard() {
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className={`${selectCls} w-full md:min-w-[170px]`}
                         >
-                            <option value="all">All Campaigns</option>
-                            <option value="ACTIVE">Active Only</option>
-                            <option value="DRAFT">Drafts</option>
-                            <option value="CLOSED">Closed</option>
+                            <option value="all">{tr("postOnboarding.allCampaigns")}</option>
+                            <option value="ACTIVE">{tr("postOnboarding.activeOnly")}</option>
+                            <option value="DRAFT">{tr("postOnboarding.drafts")}</option>
+                            <option value="CLOSED">{tr("postOnboarding.closed")}</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
@@ -147,19 +149,19 @@ export default function SurveyDashboard() {
                     <EmptyState
                         tone="brand"
                         icon="poll"
-                        title="Launch your first survey"
-                        description="Measure engagement and culture. Create a template, then launch a campaign to your team."
+                        title={tr("surveysExt.launchFirstSurvey")}
+                        description={tr("surveysExt.launchFirstSurveyDesc")}
                         action={
                             canAccess("surveys:create") ? (
                                 <Link href="/enterprise/surveys/new">
-                                    <Button icon="rocket_launch">Launch Survey</Button>
+                                    <Button icon="rocket_launch">{tr("postOnboarding.launchSurvey")}</Button>
                                 </Link>
                             ) : undefined
                         }
                         secondary={
                             canAccess("surveys:create") ? (
                                 <Link href="/enterprise/surveys/templates">
-                                    <Button variant="secondary" icon="description">Templates</Button>
+                                    <Button variant="secondary" icon="description">{tr("postOnboarding.templates")}</Button>
                                 </Link>
                             ) : undefined
                         }
@@ -168,8 +170,8 @@ export default function SurveyDashboard() {
                     <EmptyState
                         tone="muted"
                         icon="search_off"
-                        title="No surveys match your filters"
-                        description="Try a different search term or status, or clear your filters to see every campaign."
+                        title={tr("surveysExt.noSurveysMatch")}
+                        description={tr("surveysExt.noSurveysMatchDesc")}
                         action={
                             <Button
                                 variant="secondary"
@@ -179,7 +181,7 @@ export default function SurveyDashboard() {
                                     setStatusFilter("all");
                                 }}
                             >
-                                Clear filters
+                                {tr("payroll.clearFilters")}
                             </Button>
                         }
                     />
@@ -187,10 +189,10 @@ export default function SurveyDashboard() {
                     <>
                         {/* Column header (desktop) */}
                         <div className="hidden md:grid grid-cols-[2.4fr_1.2fr_1fr_140px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Campaign Details</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Timeline</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.campaignDetails")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.timeline")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.status")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("postOnboarding.actions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -207,7 +209,7 @@ export default function SurveyDashboard() {
                                         </span>
                                         <div className="min-w-0">
                                             <p className="text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{instance.name}</p>
-                                            <p className="text-[12px] text-[#8A929E] mt-0.5 truncate">Target: {instance.target_group}</p>
+                                            <p className="text-[12px] text-[#8A929E] mt-0.5 truncate">{tr("surveysExt.targetLabel")} {instance.target_group}</p>
                                             {/* mobile-only timeline */}
                                             <div className="flex items-center gap-2.5 mt-1 text-[12px] text-[#8A929E] md:hidden">
                                                 <span className={`inline-flex items-center gap-1 ${jetbrainsMono.className}`}>
@@ -241,12 +243,12 @@ export default function SurveyDashboard() {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     apiClient.post(`/api/v1/enterprise/surveys/instances/${instance.id}/notify`, {})
-                                                        .then(() => alert("Reminder sent successfully!"))
-                                                        .catch(() => alert("Failed to send reminder."));
+                                                        .then(() => alert(tr("surveysExt.reminderSent")))
+                                                        .catch(() => alert(tr("surveysExt.reminderFailed")));
                                                 }}
                                                 className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[9px] bg-[#ECEBFB] text-[#5B53E0] text-[12.5px] font-semibold hover:bg-[#5B53E0] hover:text-white transition-colors"
                                             >
-                                                Remind <Send className="w-3.5 h-3.5" />
+                                                {tr("surveysExt.remind")} <Send className="w-3.5 h-3.5" />
                                             </button>
                                         )}
                                         <button
@@ -256,7 +258,7 @@ export default function SurveyDashboard() {
                                             }}
                                             className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#15171C] hover:text-white hover:border-[#15171C] transition-colors"
                                         >
-                                            View <BarChart3 className="w-3.5 h-3.5" />
+                                            {tr("postOnboarding.view")} <BarChart3 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
                                 </div>

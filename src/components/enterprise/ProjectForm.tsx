@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import ProjectKanban from "./ProjectKanban";
 import { Reorder } from "framer-motion";
@@ -52,6 +53,7 @@ interface ProjectFormProps {
 export default function ProjectForm({ projectId, initialData }: ProjectFormProps) {
     const router = useRouter();
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("basic");
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -147,12 +149,12 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                     router.push(`/enterprise/projects/${data.id}`);
                 } else {
                     fetchProjectData();
-                    alert("Project updated successfully!");
+                    alert(tr("forms.projectUpdatedSuccess"));
                     router.push("/enterprise/projects");
                 }
             } else {
                 const err = await res.json();
-                alert(err.detail || "Something went wrong");
+                alert(err.detail || tr("forms.somethingWentWrong"));
             }
         } catch (error) {
             console.error("Error saving project:", error);
@@ -163,7 +165,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
     const handleAddMember = async (employeeId: string) => {
         if (!projectId) {
-            alert("Please save the project basics first before adding members.");
+            alert(tr("forms.alertSaveProjectFirst"));
             return;
         }
         try {
@@ -191,7 +193,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
     const handleAddColumn = () => {
         if (!newColumnName.trim()) return;
         if (formData.kanban_columns.includes(newColumnName.trim())) {
-            alert("Column already exists");
+            alert(tr("forms.alertColumnExists"));
             return;
         }
         setFormData((prev) => ({
@@ -203,7 +205,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
     const handleRemoveColumn = (col: string) => {
         if (formData.tasks.some((t) => t.column === col)) {
-            alert("Cannot remove column while it has tasks. Move or delete tasks first.");
+            alert(tr("forms.alertCannotRemoveColumn"));
             return;
         }
         setFormData((prev) => ({
@@ -215,9 +217,9 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
     return (
         <div className="max-w-[1100px] mx-auto w-full px-4 sm:px-5 md:px-7 pb-10 space-y-6 animate-in fade-in duration-500">
             <PageHeader
-                help={<><p>Name the project, set up its board columns and add team members.</p><p>Save to create it, then add and track tasks from the board.</p></>}
-                title={projectId ? "Project Console" : "New Project"}
-                subtitle={projectId ? (formData.name || "Manage project settings, team & board") : "Fill in the basic project information"}
+                help={<><p>{tr("forms.projHelp1")}</p><p>{tr("forms.projHelp2")}</p></>}
+                title={projectId ? tr("forms.projectConsole") : tr("forms.newProject")}
+                subtitle={projectId ? (formData.name || tr("forms.manageProjectSubtitle")) : tr("forms.fillBasicProjectInfo")}
                 onBack={() => router.push("/enterprise/projects")}
                 actions={
                     <Button
@@ -226,7 +228,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                         disabled={isLoading}
                         icon={projectId ? "save" : "add"}
                     >
-                        {isLoading ? "Saving..." : projectId ? "Save Changes" : "Create Project"}
+                        {isLoading ? tr("forms.saving") : projectId ? tr("forms.saveChanges") : tr("forms.createProject")}
                     </Button>
                 }
             />
@@ -239,14 +241,14 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                     className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
                         activeTab === "basic" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
                     }`}
-                >Settings</button>
+                >{tr("forms.tabSettings")}</button>
                 <button
                     type="button"
                     onClick={() => setActiveTab("members")}
                     className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
                         activeTab === "members" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
                     }`}
-                >Team</button>
+                >{tr("forms.tabTeam")}</button>
                 {projectId && (
                     <button
                         type="button"
@@ -254,7 +256,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                         className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
                             activeTab === "tasks" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
                         }`}
-                    >Tasks &amp; Board</button>
+                    >{tr("forms.tabTasksBoard")}</button>
                 )}
             </div>
 
@@ -262,20 +264,20 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                 <div className="space-y-6 animate-in fade-in duration-300">
                     {/* General Information */}
                     <Card padding="lg">
-                        <CardHeader title="General Information" subtitle="Core details that describe this project." />
+                        <CardHeader title={tr("forms.generalInformation")} subtitle={tr("forms.generalInfoSubtitle")} />
                         <div className="space-y-5">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <Field label="Project Name" htmlFor="project-name" required>
+                                <Field label={tr("forms.projectName")} htmlFor="project-name" required>
                                     <Input
                                         id="project-name"
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
                                         required
-                                        placeholder="Enter project name"
+                                        placeholder={tr("forms.projectNamePlaceholder")}
                                     />
                                 </Field>
-                                <Field label="Company" htmlFor="project-company" required>
+                                <Field label={tr("forms.company")} htmlFor="project-company" required>
                                     <Select
                                         id="project-company"
                                         name="company_id"
@@ -283,38 +285,38 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                         onChange={handleChange}
                                         required
                                     >
-                                        <option value="">Select Company</option>
+                                        <option value="">{tr("forms.selectCompany")}</option>
                                         {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                     </Select>
                                 </Field>
                             </div>
 
-                            <Field label="Description" htmlFor="project-description">
+                            <Field label={tr("forms.description")} htmlFor="project-description">
                                 <Textarea
                                     id="project-description"
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
                                     rows={3}
-                                    placeholder="Describe the project goals..."
+                                    placeholder={tr("forms.descriptionPlaceholder")}
                                     className="resize-none"
                                 />
                             </Field>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                                <Field label="Status" htmlFor="project-status">
+                                <Field label={tr("forms.status")} htmlFor="project-status">
                                     <Select
                                         id="project-status"
                                         name="status"
                                         value={formData.status}
                                         onChange={handleChange}
                                     >
-                                        <option value="Active">Active</option>
-                                        <option value="Completed">Completed</option>
-                                        <option value="On Hold">On Hold</option>
+                                        <option value="Active">{tr("forms.active")}</option>
+                                        <option value="Completed">{tr("forms.completed")}</option>
+                                        <option value="On Hold">{tr("forms.onHold")}</option>
                                     </Select>
                                 </Field>
-                                <Field label="Start Date" htmlFor="project-start-date">
+                                <Field label={tr("forms.startDate")} htmlFor="project-start-date">
                                     <Input
                                         id="project-start-date"
                                         type="date"
@@ -324,7 +326,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                         className={jetbrainsMono.className}
                                     />
                                 </Field>
-                                <Field label="End Date" htmlFor="project-end-date">
+                                <Field label={tr("forms.endDate")} htmlFor="project-end-date">
                                     <Input
                                         id="project-end-date"
                                         type="date"
@@ -341,8 +343,8 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                     {/* Kanban Workflow Configuration */}
                     <Card padding="lg">
                         <CardHeader
-                            title="Kanban Workflow"
-                            subtitle="Define the custom stages for your project's task board."
+                            title={tr("forms.kanbanWorkflow")}
+                            subtitle={tr("forms.kanbanWorkflowSubtitle")}
                         />
                         <div className="flex flex-wrap gap-3">
                             <Reorder.Group
@@ -375,7 +377,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     value={newColumnName}
                                     onChange={(e) => setNewColumnName(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddColumn())}
-                                    placeholder="Add new stage..."
+                                    placeholder={tr("forms.addNewStagePlaceholder")}
                                     className="h-10 bg-white border border-dashed border-[#E1E4E8] rounded-[10px] px-3.5 text-[13px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all w-44"
                                 />
                                 <button
@@ -395,11 +397,11 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in duration-300">
                     {/* Current Members */}
                     <Card padding="lg">
-                        <CardHeader title="Project Team" subtitle="People currently assigned to this project." />
+                        <CardHeader title={tr("forms.projectTeam")} subtitle={tr("forms.projectTeamSubtitle")} />
                         <div className="grid gap-3">
                             {(formData.members || []).length === 0 ? (
                                 <div className="p-10 border border-dashed border-[#E1E4E8] rounded-[12px] text-center">
-                                    <p className="text-[13px] font-medium text-[#8A929E]">No members assigned yet.</p>
+                                    <p className="text-[13px] font-medium text-[#8A929E]">{tr("forms.noMembersAssigned")}</p>
                                 </div>
                             ) : (
                                 formData.members.map((m) => (
@@ -410,7 +412,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                             </div>
                                             <div>
                                                 <p className="text-[14px] font-bold text-[#15171C] capitalize">{m.first_name} {m.last_name}</p>
-                                                <p className="text-[12px] font-medium text-[#8A929E]">{m.designation || "Project Member"}</p>
+                                                <p className="text-[12px] font-medium text-[#8A929E]">{m.designation || tr("forms.projectMember")}</p>
                                             </div>
                                         </div>
                                         <button
@@ -428,7 +430,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
                     {/* Add Members */}
                     <Card padding="lg">
-                        <CardHeader title="Assign Talent" subtitle="Add available employees to the project." />
+                        <CardHeader title={tr("forms.assignTalent")} subtitle={tr("forms.assignTalentSubtitle")} />
                         <div className="max-h-[500px] overflow-y-auto pr-1 space-y-3 custom-scrollbar">
                             {employees
                                 .filter(emp => !(formData.members || []).some((m) => m.id === emp.id))
@@ -440,7 +442,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                             </div>
                                             <div>
                                                 <p className="text-[14px] font-bold text-[#15171C] capitalize">{emp.first_name} {emp.last_name}</p>
-                                                <p className="text-[12px] font-medium text-[#8A929E]">{emp.designation || "Available"}</p>
+                                                <p className="text-[12px] font-medium text-[#8A929E]">{emp.designation || tr("forms.available")}</p>
                                             </div>
                                         </div>
                                         <Button
@@ -449,7 +451,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                             type="button"
                                             onClick={() => handleAddMember(emp.id)}
                                         >
-                                            Assign
+                                            {tr("forms.assign")}
                                         </Button>
                                     </div>
                                 ))

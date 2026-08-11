@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import {
     Search,
@@ -35,6 +36,7 @@ interface UserRecord {
 
 export default function GlobalUsersPage() {
     const { token } = useAuth();
+    const { t } = useI18n();
     const [isLoading, setIsLoading] = useState(true);
     const [users, setUsers] = useState<UserRecord[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -70,16 +72,16 @@ export default function GlobalUsersPage() {
             if (res.ok) {
                 fetchUsers();
             } else {
-                alert("Failed to update this account. Please try again.");
+                alert(t("superAdmin.failedUpdateAccount"));
             }
         } catch (e) {
             console.error("Failed to toggle status", e);
-            alert("Connection error while updating the account.");
+            alert(t("superAdmin.connErrorUpdating"));
         }
     };
 
     const deleteUser = async (userId: string) => {
-        if (!confirm("Are you sure you want to permanently delete this user?")) return;
+        if (!confirm(t("superAdmin.deleteUserConfirm"))) return;
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/super-admin/system/users/${userId}`, {
                 method: "DELETE",
@@ -89,11 +91,11 @@ export default function GlobalUsersPage() {
                 fetchUsers();
             } else {
                 const err = await res.json().catch(() => null);
-                alert(err?.detail || "Failed to delete this user.");
+                alert(err?.detail || t("superAdmin.failedDeleteUser"));
             }
         } catch (e) {
             console.error("Failed to delete user", e);
-            alert("Connection error while deleting the user.");
+            alert(t("superAdmin.connErrorDeleting"));
         }
     };
 
@@ -121,22 +123,22 @@ export default function GlobalUsersPage() {
         <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             {/* Header */}
             <PageHeader
-                title="Global Users"
-                subtitle={`Monitoring ${users.length} self-registered accounts`}
-                help={<><p>Every user across all tenants.</p><p>Search, filter and manage platform-wide accounts.</p></>}
+                title={t("superAdmin.globalUsersTitle")}
+                subtitle={t("superAdmin.monitoringAccounts", { count: users.length })}
+                help={<><p>{t("superAdmin.globalUsersHelp1")}</p><p>{t("superAdmin.globalUsersHelp2")}</p></>}
                 actions={
                     <Button variant="secondary" size="sm" onClick={fetchUsers}>
-                        <RefreshCcw className="w-3.5 h-3.5" /> Refresh
+                        <RefreshCcw className="w-3.5 h-3.5" /> {t("superAdmin.refresh")}
                     </Button>
                 }
             />
 
             {/* Stat cards */}
             <StatGrid>
-                <StatCard label="Total Users" value={users.length} icon="group" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Active" value={activeCount} icon="verified_user" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Disabled" value={disabledCount} icon="person_off" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-                <StatCard label="Organizations" value={orgCount} icon="domain" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={t("superAdmin.statTotalUsers")} value={users.length} icon="group" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label={t("superAdmin.active")} value={activeCount} icon="verified_user" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={t("superAdmin.disabled")} value={disabledCount} icon="person_off" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={t("superAdmin.organizations")} value={orgCount} icon="domain" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
             </StatGrid>
 
             {/* Toolbar: search + filter */}
@@ -147,7 +149,7 @@ export default function GlobalUsersPage() {
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search by name or email..."
+                        placeholder={t("superAdmin.searchNameEmailPlaceholder")}
                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
@@ -160,9 +162,9 @@ export default function GlobalUsersPage() {
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className={`${selectCls} w-full md:min-w-[170px]`}
                         >
-                            <option value="all">All Accounts</option>
-                            <option value="active">Active Only</option>
-                            <option value="disabled">Disabled</option>
+                            <option value="all">{t("superAdmin.allAccounts")}</option>
+                            <option value="active">{t("superAdmin.activeOnly")}</option>
+                            <option value="disabled">{t("superAdmin.disabled")}</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
@@ -182,15 +184,15 @@ export default function GlobalUsersPage() {
                         <EmptyState
                             tone="brand"
                             icon="group"
-                            title="No users yet"
-                            description="Once people register across tenants, their accounts will appear here for platform-wide management."
+                            title={t("superAdmin.noUsersYet")}
+                            description={t("superAdmin.noUsersDescGlobal")}
                         />
                     ) : (
                         <EmptyState
                             tone="muted"
                             icon="search_off"
-                            title="No users match your filters"
-                            description="Try a different search term or status, or reset your filters to see everyone."
+                            title={t("superAdmin.noUsersMatchFilters")}
+                            description={t("superAdmin.noUsersMatchFiltersDesc")}
                             action={
                                 <Button
                                     variant="secondary"
@@ -199,7 +201,7 @@ export default function GlobalUsersPage() {
                                         setStatusFilter("all");
                                     }}
                                 >
-                                    Reset filters
+                                    {t("superAdmin.resetFilters")}
                                 </Button>
                             }
                         />
@@ -208,11 +210,11 @@ export default function GlobalUsersPage() {
                     <>
                         {/* Column header (desktop) */}
                         <div className="hidden md:grid grid-cols-[2.4fr_1.4fr_0.9fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">User Profile</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Organization ID</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Joined Date</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.colUserProfile")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.colOrgId")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.status")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.colJoinedDate")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{t("superAdmin.actions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -250,9 +252,9 @@ export default function GlobalUsersPage() {
                                     {/* Status (desktop) */}
                                     <div className="hidden md:flex items-center">
                                         {user.is_active ? (
-                                            <Badge tone="success" dot>Active</Badge>
+                                            <Badge tone="success" dot>{t("superAdmin.active")}</Badge>
                                         ) : (
-                                            <Badge tone="danger" dot>Disabled</Badge>
+                                            <Badge tone="danger" dot>{t("superAdmin.disabled")}</Badge>
                                         )}
                                     </div>
 
@@ -265,15 +267,15 @@ export default function GlobalUsersPage() {
                                     <div className="flex items-center gap-1 justify-end">
                                         <div className="md:hidden mr-1">
                                             {user.is_active ? (
-                                                <Badge tone="success" dot>Active</Badge>
+                                                <Badge tone="success" dot>{t("superAdmin.active")}</Badge>
                                             ) : (
-                                                <Badge tone="danger" dot>Disabled</Badge>
+                                                <Badge tone="danger" dot>{t("superAdmin.disabled")}</Badge>
                                             )}
                                         </div>
 
                                         <button
                                             onClick={() => toggleUserStatus(user.id)}
-                                            title={user.is_active ? "Deactivate User" : "Activate User"}
+                                            title={user.is_active ? t("superAdmin.deactivateUser") : t("superAdmin.activateUser")}
                                             className={`w-9 h-9 flex items-center justify-center rounded-[9px] transition-colors ${
                                                 user.is_active
                                                     ? "text-[#9AA3AF] hover:bg-[#FEF3E2] hover:text-[#D97706]"
@@ -285,7 +287,7 @@ export default function GlobalUsersPage() {
 
                                         <button
                                             onClick={() => deleteUser(user.id)}
-                                            title="Delete Permanently"
+                                            title={t("superAdmin.deletePermanently")}
                                             className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
                                         >
                                             <Trash2 className="w-4 h-4" />

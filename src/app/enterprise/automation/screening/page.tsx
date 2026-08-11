@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { AnimatePresence, motion } from "framer-motion";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
@@ -69,6 +70,7 @@ const EMPTY_FORM: FormState = {
 
 export default function ScreeningAutomationPage() {
   const { token, canAccess } = useAuth();
+  const { t: tr } = useI18n();
 
   const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
@@ -101,7 +103,7 @@ export default function ScreeningAutomationPage() {
     } else if (msg && typeof msg === "object") {
       finalMsg = (msg as { msg?: string; detail?: string }).msg || (msg as { msg?: string; detail?: string }).detail || JSON.stringify(msg);
     } else {
-      finalMsg = String(msg || "An error occurred");
+      finalMsg = String(msg || tr("automation.errorOccurred"));
     }
     setToast({ msg: finalMsg, type });
     setTimeout(() => setToast(null), 3000);
@@ -140,10 +142,10 @@ export default function ScreeningAutomationPage() {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
       } else {
-        showToast("Failed to load automations.", "error");
+        showToast(tr("automation.failedLoadAutomations"), "error");
       }
     } catch {
-      showToast("Failed to load automations.", "error");
+      showToast(tr("automation.failedLoadAutomations"), "error");
     } finally {
       setLoading(false);
     }
@@ -196,12 +198,12 @@ export default function ScreeningAutomationPage() {
 
   const handleSave = async () => {
     if (!form.job_requirement_id || !form.criteria.trim() || !form.template_id) {
-      showToast("Please fill in all required fields.", "error");
+      showToast(tr("automation.fillRequiredFields"), "error");
       return;
     }
     if (!form.is_immediate && form.send_at) {
       if (new Date(form.send_at) < new Date()) {
-        showToast("Scheduled time cannot be in the past.", "error");
+        showToast(tr("automation.scheduledPast"), "error");
         return;
       }
     }
@@ -223,12 +225,12 @@ export default function ScreeningAutomationPage() {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
-        showToast(editingId ? "Automation updated!" : "Automation created!");
+        showToast(editingId ? tr("automation.automationUpdated") : tr("automation.automationCreated"));
         closeModal();
         fetchAutomations(selectedJobId || undefined);
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast((err as { detail?: string })?.detail || "Failed to save automation.", "error");
+        showToast((err as { detail?: string })?.detail || tr("automation.failedSaveAutomation"), "error");
       }
     } finally {
       setSaving(false);
@@ -247,9 +249,9 @@ export default function ScreeningAutomationPage() {
         setAutomations((prev) =>
           prev.map((item) => (item.id === a.id ? { ...item, is_enabled: !a.is_enabled } : item))
         );
-        showToast(a.is_enabled ? "Disabled" : "Enabled");
+        showToast(a.is_enabled ? tr("automation.disabled") : tr("automation.enabled"));
       } else {
-        showToast("Failed to update status.", "error");
+        showToast(tr("automation.failedUpdateStatus"), "error");
       }
     } finally {
       setTogglingId(null);
@@ -264,10 +266,10 @@ export default function ScreeningAutomationPage() {
         headers: authHeaders,
       });
       if (res.ok) {
-        showToast("Automation deleted.");
+        showToast(tr("automation.automationDeleted"));
         setAutomations((prev) => prev.filter((a) => a.id !== automationToDelete));
       } else {
-        showToast("Failed to delete.", "error");
+        showToast(tr("automation.failedDelete"), "error");
       }
     } finally {
       setIsDeleteModalOpen(false);
@@ -298,12 +300,12 @@ export default function ScreeningAutomationPage() {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">Screening Automation</h1>
-              <PageHelp title="Screening Automation">
-                <p>Automatically screen incoming applicants against the role.</p>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">{tr("automation.screeningTitle")}</h1>
+              <PageHelp title={tr("automation.screeningTitle")}>
+                <p>{tr("automation.screeningHelp")}</p>
               </PageHelp>
             </div>
-            <p className="text-[10px] font-black text-indigo-500   mt-0.5">Rules-Based Candidate Filtering</p>
+            <p className="text-[10px] font-black text-indigo-500   mt-0.5">{tr("automation.rulesBasedFiltering")}</p>
           </div>
         </div>
       </div>
@@ -317,7 +319,7 @@ export default function ScreeningAutomationPage() {
             onChange={(e) => setSelectedJobId(e.target.value)}
             className="bg-transparent border-none outline-none text-xs font-black text-slate-700 w-full cursor-pointer"
           >
-            <option value="">All Job Requirements</option>
+            <option value="">{tr("automation.allJobRequirements")}</option>
             {jobs.map((j) => (
               <option key={j.id} value={j.id}>{j.title}</option>
             ))}
@@ -329,7 +331,7 @@ export default function ScreeningAutomationPage() {
             className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#0F172A] text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
           >
             <span className="material-symbols-rounded text-lg">add_circle</span>
-            {"Add Rule"}
+            {tr("automation.addRule")}
           </button>
         )}
       </div>
@@ -338,15 +340,15 @@ export default function ScreeningAutomationPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-32 gap-4">
           <div className="w-10 h-10 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
-          <p className="text-[10px] font-black text-slate-400  tracking-[0.2em]">Synchronizing Rules...</p>
+          <p className="text-[10px] font-black text-slate-400  tracking-[0.2em]">{tr("automation.synchronizingRules")}</p>
         </div>
       ) : automations.length === 0 ? (
         <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-20 text-center">
           <div className="w-20 h-20 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-6">
             <span className="material-symbols-rounded text-4xl text-slate-200">fact_check</span>
           </div>
-          <h3 className="text-lg font-black text-slate-800  tracking-tight">No Screening Rules</h3>
-          <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">Deploy your first automated screening rule to streamline your recruitment pipeline.</p>
+          <h3 className="text-lg font-black text-slate-800  tracking-tight">{tr("automation.noScreeningRules")}</h3>
+          <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">{tr("automation.deployFirstScreening")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -370,12 +372,12 @@ export default function ScreeningAutomationPage() {
                 
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-slate-400  ">Round {a.stage_index}</span>
+                    <span className="text-[10px] font-black text-slate-400  ">{tr("automation.round")} {a.stage_index}</span>
                     <span className="w-1 h-3 rounded-full bg-slate-100" />
-                    <span className="text-[10px] font-black text-indigo-500   truncate max-w-[120px]">{a.stage_name || "SCREENING"}</span>
+                    <span className="text-[10px] font-black text-indigo-500   truncate max-w-[120px]">{a.stage_name || tr("automation.screeningLabel")}</span>
                   </div>
                   <p className="text-sm font-black text-slate-800 tracking-tight line-clamp-2 md:h-10 leading-tight">
-                    <span className="text-slate-400 font-medium">IF: </span>{a.criteria}
+                    <span className="text-slate-400 font-medium">{tr("automation.ifCaps")} </span>{a.criteria}
                   </p>
                 </div>
 
@@ -394,10 +396,10 @@ export default function ScreeningAutomationPage() {
               <div className="bg-slate-50/50 rounded-xl p-2 flex items-center justify-between gap-2 overflow-hidden border border-slate-50">
                 <div className="flex gap-2 pl-2">
                   {a.auto_move && (
-                    <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black text-indigo-500  tracking-tight shadow-sm">Auto-Move</span>
+                    <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black text-indigo-500  tracking-tight shadow-sm">{tr("automation.autoMove")}</span>
                   )}
                   <span className={`px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[8px] font-black  tracking-tight shadow-sm ${a.is_immediate ? "text-emerald-500" : "text-slate-500"}`}>
-                    {a.is_immediate ? "Immediate" : "Scheduled"}
+                    {a.is_immediate ? tr("automation.immediate") : tr("automation.scheduled")}
                   </span>
                 </div>
                 <div className="flex gap-1.5 pr-1 translate-x-2 group-hover:translate-x-0 transition-transform duration-300">
@@ -432,8 +434,8 @@ export default function ScreeningAutomationPage() {
                     <span className="material-symbols-rounded text-indigo-600 text-2xl">settings_input_component</span>
                   </div>
                   <div>
-                    <h2 className="text-xl font-black text-slate-800 leading-tight   tracking-tight">{editingId ? "Edit Rule" : "Configure Rule"}</h2>
-                    <p className="text-[10px] font-black text-slate-300   mt-0.5">Automation Action</p>
+                    <h2 className="text-xl font-black text-slate-800 leading-tight   tracking-tight">{editingId ? tr("automation.editRuleTitle") : tr("automation.configureRule")}</h2>
+                    <p className="text-[10px] font-black text-slate-300   mt-0.5">{tr("automation.automationAction")}</p>
                   </div>
                 </div>
                 <button onClick={closeModal} className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
@@ -445,20 +447,20 @@ export default function ScreeningAutomationPage() {
               <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8 custom-scrollbar">
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label htmlFor="screening-job-requirement" className="text-[10px] font-black text-slate-400   ml-1">Target Job Requirement*</label>
+                    <label htmlFor="screening-job-requirement" className="text-[10px] font-black text-slate-400   ml-1">{tr("automation.targetJobRequirement")}*</label>
                     <select
                       id="screening-job-requirement"
                       value={form.job_requirement_id}
                       onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
                       className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold text-slate-700 focus:bg-white focus:border-indigo-500 outline-none transition-all"
                     >
-                      <option value="">Select requirement...</option>
+                      <option value="">{tr("automation.selectRequirement")}</option>
                       {jobs.map((j) => <option key={j.id} value={j.id}>{j.title}</option>)}
                     </select>
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="screening-stage-index" className="text-[10px] font-black text-slate-400   ml-1">Connect to Hiring Round</label>
+                    <label htmlFor="screening-stage-index" className="text-[10px] font-black text-slate-400   ml-1">{tr("automation.connectHiringRound")}</label>
                     {jobRounds.length > 0 ? (
                       // Pick from the selected job's real workflow stages (was a raw numeric input that
                       // ignored the job's configured rounds).
@@ -472,30 +474,30 @@ export default function ScreeningAutomationPage() {
                         }}
                         className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold text-slate-700 focus:bg-white focus:border-indigo-500 outline-none transition-all"
                       >
-                        <option value="">Pick round…</option>
+                        <option value="">{tr("automation.pickRound")}</option>
                         {jobRounds.map((r, i) => {
                           const idx = r.order ?? r.stage ?? i + 1;
-                          return <option key={i} value={idx}>{`Round ${idx}: ${r.name}`}</option>;
+                          return <option key={i} value={idx}>{`${tr("automation.round")} ${idx}: ${r.name}`}</option>;
                         })}
                       </select>
                     ) : (
                       <div className="grid grid-cols-5 gap-3">
-                        <input id="screening-stage-index" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder="Idx" />
-                        <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} className="col-span-4 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold outline-none focus:border-indigo-500 focus:bg-white" placeholder="Round Name (e.g. Technical Interview)" />
+                        <input id="screening-stage-index" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))} className="col-span-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-3.5 text-sm font-bold text-center outline-none focus:border-indigo-500 focus:bg-white" placeholder={tr("automation.idxPlaceholder")} />
+                        <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} className="col-span-4 bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-sm font-bold outline-none focus:border-indigo-500 focus:bg-white" placeholder={tr("automation.roundNamePlaceholder")} />
                       </div>
                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="screening-criteria" className="text-[10px] font-black text-slate-400   ml-1">Trigger Condition*</label>
-                    <textarea id="screening-criteria" rows={4} value={form.criteria} onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all resize-none" placeholder="IF candidate meets this criteria (e.g. 'Shortlisted' or 'Score > 80')..." />
+                    <label htmlFor="screening-criteria" className="text-[10px] font-black text-slate-400   ml-1">{tr("automation.triggerCondition")}*</label>
+                    <textarea id="screening-criteria" rows={4} value={form.criteria} onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all resize-none" placeholder={tr("automation.criteriaPlaceholderScreening")} />
                   </div>
 
                   <div className="space-y-4 pt-4 border-t border-slate-50">
                     <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                       <div>
-                        <p className="text-sm font-black text-slate-800 tracking-tight  ">Active Status</p>
-                        <p className="text-[10px] font-bold text-slate-400  ">Rule is currently operational</p>
+                        <p className="text-sm font-black text-slate-800 tracking-tight  ">{tr("automation.activeStatus")}</p>
+                        <p className="text-[10px] font-bold text-slate-400  ">{tr("automation.ruleOperational")}</p>
                       </div>
                       <button onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_enabled ? "bg-indigo-500" : "bg-slate-200"}`}>
                         <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 ${form.is_enabled ? "translate-x-5" : ""}`} />
@@ -504,8 +506,8 @@ export default function ScreeningAutomationPage() {
 
                     <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                       <div>
-                        <p className="text-sm font-black text-slate-800 tracking-tight  ">Auto-Move Candidate</p>
-                        <p className="text-[10px] font-bold text-slate-400  ">Advance workflow on trigger</p>
+                        <p className="text-sm font-black text-slate-800 tracking-tight  ">{tr("automation.autoMoveCandidate")}</p>
+                        <p className="text-[10px] font-bold text-slate-400  ">{tr("automation.advanceWorkflow")}</p>
                       </div>
                       <button onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.auto_move ? "bg-indigo-500" : "bg-slate-200"}`}>
                         <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 ${form.auto_move ? "translate-x-5" : ""}`} />
@@ -522,7 +524,7 @@ export default function ScreeningAutomationPage() {
                   disabled={saving}
                   className="w-full py-4 bg-[#0F172A] text-white rounded-xl text-[11px] font-black  tracking-[0.2em] hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-slate-200"
                 >
-                  {saving ? "SAVING..." : editingId ? "UPDATE RULE" : "SAVE RULE"}
+                  {saving ? tr("automation.savingCaps") : editingId ? tr("automation.updateRule") : tr("automation.saveRule")}
                 </button>
               </div>
             </motion.div>
@@ -534,10 +536,10 @@ export default function ScreeningAutomationPage() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDelete}
-        title="Delete Automation Rule?"
-        message="Are you sure you want to delete this screening rule?"
-        confirmLabel="Yes, Delete"
-        cancelLabel="No"
+        title={tr("automation.deleteRuleTitle")}
+        message={tr("automation.deleteScreeningMsg")}
+        confirmLabel={tr("automation.yesDelete")}
+        cancelLabel={tr("automation.no")}
         isDestructive={true}
       />
     </div>

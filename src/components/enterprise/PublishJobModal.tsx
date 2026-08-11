@@ -12,6 +12,7 @@ import {
     Send
 } from "lucide-react";
 import { BACKEND_URL } from "@/utils/api";
+import { useI18n } from "@/context/I18nContext";
 
 interface PublishJobModalProps {
     isOpen: boolean;
@@ -28,7 +29,7 @@ const PLATFORMS = [
         icon: Search, 
         color: "text-blue-500", 
         bg: "bg-blue-50",
-        description: "Free indexing on Google Search Results globally."
+        descKey: "forms2.platformGoogleDesc"
     },
     { 
         id: "LinkedIn", 
@@ -36,7 +37,7 @@ const PLATFORMS = [
         icon: Zap, 
         color: "text-indigo-500", 
         bg: "bg-indigo-50",
-        description: "Post to your company feed and network (Organic)."
+        descKey: "forms2.platformLinkedinDesc"
     },
     { 
         id: "Naukri", 
@@ -44,12 +45,13 @@ const PLATFORMS = [
         icon: Globe, 
         color: "text-orange-600", 
         bg: "bg-orange-50",
-        description: "India's #1 Job Portal (Requires Subscription).",
-        disabled: true 
+        descKey: "forms2.platformNaukriDesc",
+        disabled: true
     }
 ];
 
 export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, token }: PublishJobModalProps) {
+    const { t: tr } = useI18n();
     const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(["Google Jobs"]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -118,8 +120,8 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                     <Globe className="w-4.5 h-4.5" />
                                 </div>
                                 <div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C] leading-tight">Publish Job</h3>
-                                    <p className="text-[12px] text-[#8A929E] mt-0.5">Distribute to external portals</p>
+                                    <h3 className="text-[15px] font-bold text-[#15171C] leading-tight">{tr("forms2.publishJob")}</h3>
+                                    <p className="text-[12px] text-[#8A929E] mt-0.5">{tr("forms2.distributePortals")}</p>
                                 </div>
                             </div>
                             <button onClick={onClose} className="w-7 h-7 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors">
@@ -130,12 +132,12 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                         {/* Content */}
                         <div className="p-5 space-y-4">
                             <div className="p-3 bg-[#ECEBFB]/50 border border-[#DAD7F6]/60 rounded-[12px]">
-                                <p className="text-[10.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-0.5">Target Position</p>
+                                <p className="text-[10.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-0.5">{tr("forms2.targetPosition")}</p>
                                 <p className="text-[14px] font-bold text-[#15171C]">{jobTitle}</p>
                             </div>
 
                             <div className="space-y-2">
-                                <p className="text-[10.5px] font-bold text-[#8A929E] uppercase tracking-wider ml-0.5">Select Platforms</p>
+                                <p className="text-[10.5px] font-bold text-[#8A929E] uppercase tracking-wider ml-0.5">{tr("forms2.selectPlatforms")}</p>
                                 {PLATFORMS.map((platform) => (
                                     <button
                                         key={platform.id}
@@ -152,7 +154,7 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                             </div>
                                             <div className="text-left min-w-0">
                                                 <p className="text-[13px] font-bold text-[#15171C]">{platform.name}</p>
-                                                <p className="text-[11.5px] text-[#8A929E] leading-snug">{platform.description}</p>
+                                                <p className="text-[11.5px] text-[#8A929E] leading-snug">{tr(platform.descKey)}</p>
                                             </div>
                                         </div>
                                         {!platform.disabled && (
@@ -163,7 +165,7 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                             </div>
                                         )}
                                         {platform.disabled && (
-                                            <span className="text-[9px] font-bold text-[#8A929E] bg-[#F1F2F5] px-2 py-1 rounded-[6px] uppercase tracking-wider shrink-0">Coming Soon</span>
+                                            <span className="text-[9px] font-bold text-[#8A929E] bg-[#F1F2F5] px-2 py-1 rounded-[6px] uppercase tracking-wider shrink-0">{tr("forms2.comingSoon")}</span>
                                         )}
                                     </button>
                                 ))}
@@ -173,7 +175,7 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                         {/* Footer */}
                         <div className="px-5 py-4 bg-[#F7F8FA] border-t border-[#E8EAED] flex items-center justify-between gap-3">
                             <p className="text-[11px] text-[#8A929E] max-w-[190px] leading-snug">
-                                Shared according to each platform&apos;s indexing schedule.
+                                {tr("forms2.indexingSchedule")}
                             </p>
 
                             <button
@@ -194,7 +196,7 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                 ) : (
                                     <Send className="w-4 h-4" />
                                 )}
-                                {isSubmitting ? "Publishing..." : status === "success" ? "Published!" : status === "error" ? "Failed" : "Confirm & Publish"}
+                                {isSubmitting ? tr("forms2.publishing") : status === "success" ? tr("forms2.published") : status === "error" ? tr("forms2.failed") : tr("forms2.confirmPublish")}
                             </button>
                         </div>
                     </motion.div>

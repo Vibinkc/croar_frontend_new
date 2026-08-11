@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
@@ -87,6 +88,7 @@ export default function OnboardingDetailsPage() {
     const router = useRouter();
     const { id } = params;
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
 
     const [onboarding, setOnboarding] = useState<Onboarding | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -141,7 +143,7 @@ export default function OnboardingDetailsPage() {
     };
 
     const handleApproveHire = async () => {
-        if (!window.confirm("Are you sure you want to approve this onboarding and hire the candidate?")) return;
+        if (!window.confirm(tr("onboardingDetail.confirmApprove"))) return;
         
         setIsProcessing(true);
         try {
@@ -154,11 +156,11 @@ export default function OnboardingDetailsPage() {
                 body: JSON.stringify({ notes: "Approved via dashboard" })
             });
             if (res.ok) {
-                alert("Candidate has been hired successfully!");
+                alert(tr("onboardingDetail.hiredSuccess"));
                 fetchOnboardingDetails();
             } else {
                 const err = await res.json();
-                alert(`Error: ${err.detail || "Failed to approve"}`);
+                alert(`${tr("onboardingDetail.error")}: ${err.detail || tr("onboardingDetail.failedApprove")}`);
             }
         } catch (error) {
             console.error("Error approving onboarding:", error);
@@ -169,7 +171,7 @@ export default function OnboardingDetailsPage() {
 
     const handleConfirmResubmit = async () => {
         if (!rejectReason.trim()) {
-            alert("Please provide a reason for the correction request.");
+            alert(tr("onboardingDetail.provideReason"));
             return;
         }
 
@@ -188,7 +190,7 @@ export default function OnboardingDetailsPage() {
                 })
             });
             if (res.ok) {
-                alert("Correction request sent to candidate.");
+                alert(tr("onboardingDetail.correctionSent"));
                 setIsRejectModalOpen(false);
                 setRejectReason("");
                 setRejectedDocIds(new Set());
@@ -196,7 +198,7 @@ export default function OnboardingDetailsPage() {
                 fetchOnboardingDetails();
             } else {
                 const err = await res.json();
-                alert(`Error: ${err.detail || "Failed to request correction"}`);
+                alert(`${tr("onboardingDetail.error")}: ${err.detail || tr("onboardingDetail.failedRequestCorrection")}`);
             }
         } catch (error) {
             console.error("Error requesting correction:", error);
@@ -217,10 +219,10 @@ export default function OnboardingDetailsPage() {
             });
             if (res.ok) { fetchOnboardingDetails(); return true; }
             const err = await res.json().catch(() => ({}));
-            alert(err.detail || "Action failed");
+            alert(err.detail || tr("onboardingDetail.actionFailed"));
             return false;
         } catch {
-            alert("Action failed. Please try again.");
+            alert(tr("onboardingDetail.actionFailedRetry"));
             return false;
         } finally {
             setIsProcessing(false);
@@ -279,22 +281,31 @@ export default function OnboardingDetailsPage() {
                     <span className="material-symbols-rounded text-3xl">error</span>
                 </div>
                 <h2 className="text-lg font-black text-slate-800 mb-1">
-                    {loadFailed ? "Couldn't load this onboarding" : "Onboarding not found"}
+                    {loadFailed ? tr("onboardingDetail.couldntLoad") : tr("onboardingDetail.notFound")}
                 </h2>
                 <p className="text-sm text-slate-500 max-w-xs mb-5">
-                    It may have been removed, or you don&apos;t have access to it.
+                    {tr("onboardingDetail.notFoundDesc")}
                 </p>
                 <div className="flex items-center gap-3">
                     {loadFailed && (
-                        <button onClick={fetchOnboardingDetails} className="px-4 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all">Retry</button>
+                        <button onClick={fetchOnboardingDetails} className="px-4 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all">{tr("postOnboarding.retry")}</button>
                     )}
-                    <button onClick={() => router.push("/enterprise/onboarding")} className="px-4 h-10 rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black transition-all">Back to Onboarding</button>
+                    <button onClick={() => router.push("/enterprise/onboarding")} className="px-4 h-10 rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black transition-all">{tr("onboardingDetail.backToOnboarding")}</button>
                 </div>
             </div>
         );
     }
 
     const tabs = ["Employee", "Documents", "Tasks & Notes", "Activity Log"];
+    const tabLabel = (tab: string): string => {
+        switch (tab) {
+            case "Employee": return tr("onboardingDetail.tabEmployee");
+            case "Documents": return tr("onboardingDetail.tabDocuments");
+            case "Tasks & Notes": return tr("onboardingDetail.tabTasksNotes");
+            case "Activity Log": return tr("onboardingDetail.tabActivityLog");
+            default: return tab;
+        }
+    };
     const canModerate = canAccess("onboarding:moderate") && onboarding.status?.name !== "Completed";
 
     // Combine template sections with potentially missing data sections
@@ -312,9 +323,9 @@ export default function OnboardingDetailsPage() {
                         <span className="material-symbols-rounded">arrow_back</span>
                     </button>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-xl font-black text-slate-800 tracking-tight">Onboarding</h1>
-                        <PageHelp title="Onboarding">
-                            <p>Track and complete this new hire&apos;s onboarding steps and paperwork.</p>
+                        <h1 className="text-xl font-black text-slate-800 tracking-tight">{tr("onboardingDetail.onboarding")}</h1>
+                        <PageHelp title={tr("onboardingDetail.onboarding")}>
+                            <p>{tr("onboardingDetail.helpBody")}</p>
                         </PageHelp>
                     </div>
                 </div>
@@ -326,14 +337,14 @@ export default function OnboardingDetailsPage() {
                                 disabled={isProcessing}
                                 className="px-5 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 text-xs font-black   hover:bg-slate-50 transition-all disabled:opacity-50"
                             >
-                                Reject / Request Correction
+                                {tr("onboardingDetail.rejectRequestCorrection")}
                             </button>
                             <button 
                                 onClick={handleApproveHire}
                                 disabled={isProcessing}
                                 className="px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black   shadow-lg shadow-[#7C3AED]/20 transition-all disabled:opacity-50"
                             >
-                                {isProcessing ? "Processing..." : "Approve & Hire"}
+                                {isProcessing ? tr("onboardingDetail.processing") : tr("onboardingDetail.approveHire")}
                             </button>
                         </>
                     )}
@@ -343,7 +354,7 @@ export default function OnboardingDetailsPage() {
                             className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black   shadow-lg shadow-emerald-200 transition-all flex items-center gap-2"
                         >
                             <span className="material-symbols-rounded text-sm">badge</span>
-                            <span>Convert to Employee</span>
+                            <span>{tr("onboardingDetail.convertToEmployee")}</span>
                         </button>
                     )}
                 </div>
@@ -375,7 +386,7 @@ export default function OnboardingDetailsPage() {
                             </div>
                         </div>
                         <div className="flex flex-col items-end gap-1 text-right">
-                            <span className="text-[9px] font-black text-slate-400  tracking-[0.2em]">Initiated On</span>
+                            <span className="text-[9px] font-black text-slate-400  tracking-[0.2em]">{tr("onboardingDetail.initiatedOn")}</span>
                             <span className="text-xs font-black text-slate-700">{safeFormat(onboarding.initiation_date, "MMMM dd, yyyy")}</span>
                         </div>
                     </div>
@@ -388,7 +399,7 @@ export default function OnboardingDetailsPage() {
                                 onClick={() => setActiveTab(tab)}
                                 className={`pb-4 text-xs font-black  tracking-[0.1em] transition-all relative ${activeTab === tab ? "text-[#7C3AED]" : "text-slate-400 hover:text-slate-600"}`}
                             >
-                                {tab}
+                                {tabLabel(tab)}
                                 {activeTab === tab && (
                                     <motion.div 
                                         layoutId="activeTab" 
@@ -437,7 +448,7 @@ export default function OnboardingDetailsPage() {
                                                                                     ? "bg-rose-500 text-white opacity-100" 
                                                                                     : "bg-slate-50 text-slate-400 hover:bg-rose-100 hover:text-rose-600"
                                                                             }`}
-                                                                            title={rejectedFieldNames.has(field.name) ? "Selected for correction" : "Request correction for this field"}
+                                                                            title={rejectedFieldNames.has(field.name) ? tr("onboardingDetail.selectedForCorrection") : tr("onboardingDetail.requestCorrectionField")}
                                                                         >
                                                                             <span className="material-symbols-rounded text-xs">{rejectedFieldNames.has(field.name) ? "close" : "edit_square"}</span>
                                                                         </button>
@@ -448,7 +459,7 @@ export default function OnboardingDetailsPage() {
                                                                         const val = onboarding.form_data?.[section.id]?.[field.name] || 
                                                                                     onboarding.form_data?.[field.name];
                                                                         
-                                                                        if (!val) return <span className="text-slate-200  font-medium">Not provided</span>;
+                                                                        if (!val) return <span className="text-slate-200  font-medium">{tr("onboardingDetail.notProvided")}</span>;
                                                                         
                                                                         if (field.type === 'file') {
                                                                             return (
@@ -457,7 +468,7 @@ export default function OnboardingDetailsPage() {
                                                                                     className="flex items-center gap-2 text-[#7C3AED] hover:underline"
                                                                                 >
                                                                                     <span className="material-symbols-rounded text-sm">attach_file</span>
-                                                                                    <span className="text-xs">View Upload</span>
+                                                                                    <span className="text-xs">{tr("onboardingDetail.viewUpload")}</span>
                                                                                 </button>
                                                                             );
                                                                         }
@@ -476,7 +487,7 @@ export default function OnboardingDetailsPage() {
                             ) : (
                                 <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-200">
                                     <span className="material-symbols-rounded text-4xl text-slate-200 mb-4">description</span>
-                                    <p className="text-slate-400 text-xs font-black  ">No Profile Data Available</p>
+                                    <p className="text-slate-400 text-xs font-black  ">{tr("onboardingDetail.noProfileData")}</p>
                                 </div>
                             )}
                         </div>
@@ -491,7 +502,7 @@ export default function OnboardingDetailsPage() {
                                     type="text"
                                     value={newDocName}
                                     onChange={(e) => setNewDocName(e.target.value)}
-                                    placeholder="Document name to request (e.g. Aadhar Card)"
+                                    placeholder={tr("onboardingDetail.docNamePlaceholder")}
                                     className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
                                 />
                                 <button
@@ -499,14 +510,14 @@ export default function OnboardingDetailsPage() {
                                     disabled={isProcessing || !newDocName.trim()}
                                     className="px-5 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black transition-all disabled:opacity-50 shrink-0"
                                 >
-                                    Request document
+                                    {tr("onboardingDetail.requestDocument")}
                                 </button>
                             </div>
                         )}
                         {(!onboarding.documents || onboarding.documents.length === 0) ? (
                             <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
                                 <span className="material-symbols-rounded text-4xl text-slate-200 mb-3">folder_open</span>
-                                <p className="text-slate-400 text-xs font-black">No documents yet</p>
+                                <p className="text-slate-400 text-xs font-black">{tr("onboardingDetail.noDocuments")}</p>
                             </div>
                         ) : (
                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -530,7 +541,7 @@ export default function OnboardingDetailsPage() {
                                                         ? "bg-rose-500 border-rose-500 text-white" 
                                                         : "bg-white border-slate-200 text-rose-500 hover:bg-rose-50"
                                                 }`}
-                                                title={rejectedDocIds.has(doc.id) ? "Marked for rejection" : "Reject this document"}
+                                                title={rejectedDocIds.has(doc.id) ? tr("onboardingDetail.markedForRejection") : tr("onboardingDetail.rejectDocument")}
                                             >
                                                 <span className="material-symbols-rounded text-lg">
                                                     {rejectedDocIds.has(doc.id) ? "close" : "error"}
@@ -557,14 +568,14 @@ export default function OnboardingDetailsPage() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {/* Tasks */}
                             <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
-                                <h3 className="text-sm font-black text-slate-800 mb-4">Tasks</h3>
+                                <h3 className="text-sm font-black text-slate-800 mb-4">{tr("onboardingDetail.tasks")}</h3>
                                 {canModerate && (
                                     <div className="space-y-2 mb-4">
                                         <input
                                             type="text"
                                             value={newTask.title}
                                             onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                                            placeholder="Task title (e.g. Set up laptop)"
+                                            placeholder={tr("onboardingDetail.taskTitlePlaceholder")}
                                             className="w-full h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
                                         />
                                         <div className="flex gap-2">
@@ -573,7 +584,7 @@ export default function OnboardingDetailsPage() {
                                                 onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
                                                 className="h-10 px-2 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none cursor-pointer"
                                             >
-                                                <option>Low</option><option>Medium</option><option>High</option>
+                                                <option value="Low">{tr("onboardingDetail.priorityLow")}</option><option value="Medium">{tr("onboardingDetail.priorityMedium")}</option><option value="High">{tr("onboardingDetail.priorityHigh")}</option>
                                             </select>
                                             <input
                                                 type="date"
@@ -581,7 +592,7 @@ export default function OnboardingDetailsPage() {
                                                 onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
                                                 className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none"
                                             />
-                                            <button onClick={addTask} disabled={isProcessing || !newTask.title.trim()} className="px-4 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">Add</button>
+                                            <button onClick={addTask} disabled={isProcessing || !newTask.title.trim()} className="px-4 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">{tr("onboardingDetail.add")}</button>
                                         </div>
                                     </div>
                                 )}
@@ -590,30 +601,30 @@ export default function OnboardingDetailsPage() {
                                         <div key={t.id} className="flex items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
                                             <div className="min-w-0">
                                                 <p className="text-sm font-bold text-slate-800 truncate">{t.title}</p>
-                                                <p className="text-[10px] font-black text-slate-400">{t.priority}{t.due_date ? ` · due ${safeFormat(t.due_date, "MMM dd")}` : ""}</p>
+                                                <p className="text-[10px] font-black text-slate-400">{t.priority}{t.due_date ? ` · ${tr("onboardingDetail.due")} ${safeFormat(t.due_date, "MMM dd")}` : ""}</p>
                                             </div>
                                             <span className="text-[10px] font-black text-slate-500 shrink-0">{t.status}</span>
                                         </div>
                                     ))}
                                     {(!onboarding.tasks || onboarding.tasks.length === 0) && (
-                                        <p className="text-xs text-slate-400 font-medium py-4 text-center">No tasks yet.</p>
+                                        <p className="text-xs text-slate-400 font-medium py-4 text-center">{tr("onboardingDetail.noTasks")}</p>
                                     )}
                                 </div>
                             </div>
 
                             {/* Notes */}
                             <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
-                                <h3 className="text-sm font-black text-slate-800 mb-4">Notes</h3>
+                                <h3 className="text-sm font-black text-slate-800 mb-4">{tr("onboardingDetail.notes")}</h3>
                                 {canAccess("onboarding:moderate") && (
                                     <div className="flex gap-2 mb-4">
                                         <input
                                             type="text"
                                             value={newNote}
                                             onChange={(e) => setNewNote(e.target.value)}
-                                            placeholder="Add an internal note…"
+                                            placeholder={tr("onboardingDetail.addNotePlaceholder")}
                                             className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
                                         />
-                                        <button onClick={addNote} disabled={isProcessing || !newNote.trim()} className="px-4 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">Add</button>
+                                        <button onClick={addNote} disabled={isProcessing || !newNote.trim()} className="px-4 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">{tr("onboardingDetail.add")}</button>
                                     </div>
                                 )}
                                 <div className="space-y-2">
@@ -624,7 +635,7 @@ export default function OnboardingDetailsPage() {
                                         </div>
                                     ))}
                                     {(!onboarding.notes || onboarding.notes.length === 0) && (
-                                        <p className="text-xs text-slate-400 font-medium py-4 text-center">No notes yet.</p>
+                                        <p className="text-xs text-slate-400 font-medium py-4 text-center">{tr("onboardingDetail.noNotes")}</p>
                                     )}
                                 </div>
                             </div>
@@ -642,7 +653,7 @@ export default function OnboardingDetailsPage() {
                                         <div>
                                             <h4 className="text-sm font-black text-slate-800">{act.description}</h4>
                                             <p className="text-xs font-medium text-slate-400 mt-1">
-                                                {act.performed_by ? `By ${act.performed_by}` : act.activity_type}
+                                                {act.performed_by ? `${tr("onboardingDetail.by")} ${act.performed_by}` : act.activity_type}
                                             </p>
                                             <p className="text-[10px] font-black text-[#7C3AED] bg-[#7C3AED]/5 inline-block px-2 py-1 rounded-xl   mt-3">
                                                 {safeFormat(act.created_at, "MMM dd, HH:mm")}
@@ -675,7 +686,7 @@ export default function OnboardingDetailsPage() {
                         >
                             <div className="p-8">
                                 <div className="flex items-center justify-between mb-6">
-                                    <h3 className="text-xl font-black text-slate-900 tracking-tight">Request Correction</h3>
+                                    <h3 className="text-xl font-black text-slate-900 tracking-tight">{tr("onboardingDetail.requestCorrection")}</h3>
                                     <button 
                                         onClick={() => setIsRejectModalOpen(false)}
                                         className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 rounded-xl text-slate-400"
@@ -689,7 +700,7 @@ export default function OnboardingDetailsPage() {
                                         <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl max-h-48 overflow-y-auto">
                                             {rejectedDocIds.size > 0 && (
                                                 <div className="mb-4">
-                                                    <p className="text-[10px] font-black text-rose-600   mb-2">Documents Rejection ({rejectedDocIds.size})</p>
+                                                    <p className="text-[10px] font-black text-rose-600   mb-2">{tr("onboardingDetail.documentsRejection")} ({rejectedDocIds.size})</p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {Array.from(rejectedDocIds).map(id => {
                                                             const doc = onboarding.documents.find((d: OnboardingDocument) => d.id === id);
@@ -706,7 +717,7 @@ export default function OnboardingDetailsPage() {
 
                                             {rejectedFieldNames.size > 0 && (
                                                 <div>
-                                                    <p className="text-[10px] font-black text-indigo-600   mb-2">Form Fields Rejection ({rejectedFieldNames.size})</p>
+                                                    <p className="text-[10px] font-black text-indigo-600   mb-2">{tr("onboardingDetail.formFieldsRejection")} ({rejectedFieldNames.size})</p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {Array.from(rejectedFieldNames).map(name => (
                                                             <span key={name} className="px-3 py-1 bg-white border border-indigo-200 text-indigo-600 text-[10px] font-bold rounded-xl flex items-center gap-2">
@@ -721,12 +732,12 @@ export default function OnboardingDetailsPage() {
                                     )}
 
                                     <div>
-                                        <label htmlFor="correction-feedback" className="text-[10px] font-black text-slate-400   block mb-2">Feedback / Reason for Correction</label>
+                                        <label htmlFor="correction-feedback" className="text-[10px] font-black text-slate-400   block mb-2">{tr("onboardingDetail.feedbackReason")}</label>
                                         <textarea
                                             id="correction-feedback"
                                             value={rejectReason}
                                             onChange={(e) => setRejectReason(e.target.value)}
-                                            placeholder="Explain what needs to be changed or why specific documents were rejected..."
+                                            placeholder={tr("onboardingDetail.feedbackPlaceholder")}
                                             className="w-full h-32 p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] outline-none transition-all resize-none"
                                         />
                                     </div>
@@ -737,14 +748,14 @@ export default function OnboardingDetailsPage() {
                                         onClick={() => setIsRejectModalOpen(false)}
                                         className="flex-1 py-4 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl text-xs font-black   transition-all"
                                     >
-                                        Cancel
+                                        {tr("postOnboarding.cancel")}
                                     </button>
                                     <button 
                                         onClick={handleConfirmResubmit}
                                         disabled={isProcessing || !rejectReason.trim()}
                                         className="flex-1 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-black   shadow-lg shadow-rose-200 transition-all disabled:opacity-50"
                                     >
-                                        {isProcessing ? "Sending..." : "Send Request"}
+                                        {isProcessing ? tr("onboardingDetail.sending") : tr("onboardingDetail.sendRequest")}
                                     </button>
                                 </div>
                             </div>

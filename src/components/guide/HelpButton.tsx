@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useGuide } from "./GuideProvider";
 import { useLocalStorage } from "./storage";
+import { useI18n } from "@/context/I18nContext";
 
 /** Getting-started checklist. Links go to the action that completes each step. */
 const CHECKLIST: { id: string; label: string; href: string }[] = [
@@ -21,8 +22,16 @@ const CHECKLIST: { id: string; label: string; href: string }[] = [
  */
 export function HelpButton() {
     const { startTour, helpOpen, setHelpOpen, setGuideOpen } = useGuide();
+    const { t: tr } = useI18n();
     const [done, setDone] = useLocalStorage<Record<string, boolean>>("croar.guide.checklist.v1", {});
     const completed = CHECKLIST.filter((i) => done[i.id]).length;
+    const checklistLabels: Record<string, string> = {
+        company: tr("sharedUi.checklistCompany"),
+        job: tr("sharedUi.checklistJob"),
+        employees: tr("sharedUi.checklistEmployees"),
+        survey: tr("sharedUi.checklistSurvey"),
+        payroll: tr("sharedUi.checklistPayroll"),
+    };
 
     return (
         <>
@@ -38,8 +47,8 @@ export function HelpButton() {
                                 style={{ background: "radial-gradient(120% 120% at 100% 0%, rgba(91,83,224,0.45), transparent 60%)" }}
                             />
                             <div className="relative">
-                                <h3 className="text-[15.5px] font-bold">Help &amp; getting started</h3>
-                                <p className="text-[12px] text-white/55 mt-0.5">Find your way around Croar.</p>
+                                <h3 className="text-[15.5px] font-bold">{tr("sharedUi.helpGettingStarted")}</h3>
+                                <p className="text-[12px] text-white/55 mt-0.5">{tr("sharedUi.findYourWay")}</p>
                             </div>
                         </div>
 
@@ -52,8 +61,8 @@ export function HelpButton() {
                                     <span className="material-symbols-rounded text-[20px]">menu_book</span>
                                 </span>
                                 <span className="min-w-0">
-                                    <span className="block text-[13px] font-bold text-[#15171C]">Browse the full guide</span>
-                                    <span className="block text-[11.5px] text-[#8A929E]">Every module &amp; workflow, explained in detail.</span>
+                                    <span className="block text-[13px] font-bold text-[#15171C]">{tr("sharedUi.browseFullGuide")}</span>
+                                    <span className="block text-[11.5px] text-[#8A929E]">{tr("sharedUi.everyModuleWorkflow")}</span>
                                 </span>
                             </button>
 
@@ -65,14 +74,14 @@ export function HelpButton() {
                                     <span className="material-symbols-rounded text-[20px]">play_circle</span>
                                 </span>
                                 <span className="min-w-0">
-                                    <span className="block text-[13px] font-bold text-[#15171C]">Take the product tour</span>
-                                    <span className="block text-[11.5px] text-[#8A929E]">A 30-second walkthrough of the basics.</span>
+                                    <span className="block text-[13px] font-bold text-[#15171C]">{tr("sharedUi.takeProductTour")}</span>
+                                    <span className="block text-[11.5px] text-[#8A929E]">{tr("sharedUi.thirtySecondWalkthrough")}</span>
                                 </span>
                             </button>
 
                             <div>
                                 <div className="flex items-center justify-between mb-2 px-0.5">
-                                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E]">Getting started</span>
+                                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E]">{tr("sharedUi.gettingStarted")}</span>
                                     <span className="text-[11px] font-semibold text-[#5B53E0]">{completed}/{CHECKLIST.length}</span>
                                 </div>
                                 <div className="space-y-0.5">
@@ -80,7 +89,7 @@ export function HelpButton() {
                                         <div key={item.id} className="flex items-center gap-2.5">
                                             <button
                                                 onClick={() => setDone((d) => ({ ...d, [item.id]: !d[item.id] }))}
-                                                aria-label={done[item.id] ? "Mark incomplete" : "Mark complete"}
+                                                aria-label={done[item.id] ? tr("sharedUi.markIncomplete") : tr("sharedUi.markComplete")}
                                                 className={`w-5 h-5 rounded-[6px] border flex items-center justify-center shrink-0 transition-colors ${done[item.id] ? "bg-[#5B53E0] border-[#5B53E0] text-white" : "border-[#CBD0D8] text-transparent hover:border-[#5B53E0]"}`}
                                             >
                                                 <span className="material-symbols-rounded text-[15px]">check</span>
@@ -90,7 +99,7 @@ export function HelpButton() {
                                                 onClick={() => setHelpOpen(false)}
                                                 className={`flex-1 text-[13px] py-1.5 transition-colors ${done[item.id] ? "text-[#9AA3AF] line-through" : "text-[#374151] hover:text-[#5B53E0]"}`}
                                             >
-                                                {item.label}
+                                                {checklistLabels[item.id] ?? item.label}
                                             </Link>
                                         </div>
                                     ))}
@@ -98,14 +107,14 @@ export function HelpButton() {
                             </div>
 
                             <div>
-                                <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] block mb-2 px-0.5">Tips</span>
+                                <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] block mb-2 px-0.5">{tr("sharedUi.tips")}</span>
                                 <div className="rounded-[12px] bg-[#F7F8FA] border border-[#E8EAED] p-3 space-y-2">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[12.5px] text-[#374151]">Search &amp; jump to anything</span>
+                                        <span className="text-[12.5px] text-[#374151]">{tr("sharedUi.searchJumpAnything")}</span>
                                         <kbd className="text-[10.5px] font-bold bg-white border border-[#E1E4E8] text-[#6B6F76] rounded-[5px] px-1.5 h-5 inline-flex items-center">⌘K</kbd>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[12.5px] text-[#374151]">Close dialogs &amp; this tour</span>
+                                        <span className="text-[12.5px] text-[#374151]">{tr("sharedUi.closeDialogsTour")}</span>
                                         <kbd className="text-[10.5px] font-bold bg-white border border-[#E1E4E8] text-[#6B6F76] rounded-[5px] px-1.5 h-5 inline-flex items-center">Esc</kbd>
                                     </div>
                                 </div>
@@ -118,8 +127,8 @@ export function HelpButton() {
             <button
                 data-tour="help"
                 onClick={() => setHelpOpen(!helpOpen)}
-                aria-label="Help"
-                title="Help & getting started"
+                aria-label={tr("sharedUi.help")}
+                title={tr("sharedUi.helpGettingStarted")}
                 className="fixed bottom-5 right-5 z-[60] w-12 h-12 rounded-full bg-[#5B53E0] text-white shadow-[0_10px_28px_rgba(91,83,224,0.4)] hover:bg-[#4A43C9] transition-colors flex items-center justify-center"
             >
                 <span className="material-symbols-rounded text-[24px]">{helpOpen ? "close" : "question_mark"}</span>

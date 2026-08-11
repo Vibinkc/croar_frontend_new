@@ -40,6 +40,7 @@ import {
     Link as LinkIcon
 } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api-config";
+import { useI18n } from "@/context/I18nContext";
 import { PageHelp } from "@/components/ds";
 
 const PLATFORM_LOGOS: Record<string, React.FC<{ className?: string }>> = {
@@ -212,6 +213,7 @@ interface Profile {
 }
 
 export default function ProfileSourcingPage() {
+    const { t: tr } = useI18n();
     const [query, setQuery] = useState("");
     const [location, setLocation] = useState("");
     const [selectedPlatform, setSelectedPlatform] = useState("github");
@@ -225,7 +227,7 @@ export default function ProfileSourcingPage() {
     const [pinnedProfiles, setPinnedProfiles] = useState<Profile[]>([]);
     const [viewMode, setViewMode] = useState<"search" | "chat">("search");
     const [chatMessages, setChatMessages] = useState<{ sender: "user" | "bot"; text: string; profiles?: Profile[] }[]>([
-        { sender: "bot", text: "Hello! I am your AI Sourcing Assistant. Tell me who you're looking for, e.g., 'Find me React Engineers on GitHub'." }
+        { sender: "bot", text: tr("sourcingIndex.assistantGreeting") }
     ]);
     const [chatInput, setChatInput] = useState("");
     const [chatLoading, setChatLoading] = useState(false);
@@ -366,17 +368,17 @@ export default function ProfileSourcingPage() {
                 <div>
                     <div className="flex items-center gap-1.5">
                         <h1 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.6px] text-[#15171C] leading-tight flex items-center gap-3">
-                            Profile Sourcing
+                            {tr("sourcingIndex.title")}
                             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}>
-                                New
+                                {tr("sourcingIndex.new")}
                             </span>
                         </h1>
-                        <PageHelp title="Profile Sourcing">
-                            <p>Find new candidate profiles to add to your pipeline.</p>
+                        <PageHelp title={tr("sourcingIndex.helpTitle")}>
+                            <p>{tr("sourcingIndex.helpBody")}</p>
                         </PageHelp>
                     </div>
                     <p className="text-[14px] text-[#8A929E] mt-1">
-                        Search across 30+ public sources including GitHub and LinkedIn to find the best talent.
+                        {tr("sourcingIndex.subtitle")}
                     </p>
                 </div>
 
@@ -389,7 +391,7 @@ export default function ProfileSourcingPage() {
                             }`}
                     >
                         <Search className="w-4 h-4" />
-                        Search View
+                        {tr("sourcingIndex.searchView")}
                     </button>
                     <button
                         onClick={() => setViewMode("chat")}
@@ -399,7 +401,7 @@ export default function ProfileSourcingPage() {
                             }`}
                     >
                         <MessageSquare className="w-4 h-4" />
-                        AI Chat
+                        {tr("sourcingIndex.aiChat")}
                     </button>
                 </div>
             </header>
@@ -411,7 +413,7 @@ export default function ProfileSourcingPage() {
                             <div className="flex-1 relative group">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
                                 <input
-                                    placeholder="e.g. Senior Frontend Engineer with WebGL experience..."
+                                    placeholder={tr("sourcingIndex.searchPlaceholder")}
                                     className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-4 focus:ring-[#5B53E0]/10 focus:border-[#5B53E0] transition-all"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
@@ -422,7 +424,7 @@ export default function ProfileSourcingPage() {
                                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
                                 <input
                                     type="text"
-                                    placeholder="Location (optional)"
+                                    placeholder={tr("sourcingIndex.locationPlaceholder")}
                                     className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-4 focus:ring-[#5B53E0]/10 focus:border-[#5B53E0] transition-all"
                                     value={location}
                                     onChange={(e) => setLocation(e.target.value)}
@@ -436,16 +438,16 @@ export default function ProfileSourcingPage() {
                                 {loading ? (
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                                 ) : (
-                                    "Sourcing Data"
+                                    tr("sourcingIndex.sourcingData")
                                 )}
                             </button>
                         </form>
 
                         <div className="flex flex-col gap-4 border-t border-[#F0F0F1] pt-4">
-                            <p className="text-[11px] font-bold text-[#9AA3AF] uppercase tracking-widest">Sourcing From:</p>
+                            <p className="text-[11px] font-bold text-[#9AA3AF] uppercase tracking-widest">{tr("sourcingIndex.sourcingFrom")}</p>
                             <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
                                 {[
-                                    { id: "all", label: "All Platforms", icon: Globe },
+                                    { id: "all", label: tr("sourcingIndex.allPlatforms"), icon: Globe },
                                     { id: "github", label: "GitHub", icon: Github },
                                     { id: "linkedin", label: "LinkedIn", icon: Linkedin },
                                     { id: "stackoverflow", label: "Stack Overflow", icon: Code },
@@ -500,7 +502,7 @@ export default function ProfileSourcingPage() {
                                     className="w-4 h-4 rounded accent-[#5B53E0]"
                                 />
                                 <span className="text-[11px] font-bold text-[#6B6F76] uppercase tracking-widest">
-                                    Has contact info only
+                                    {tr("sourcingIndex.hasContactOnly")}
                                 </span>
                             </label>
                         </div>
@@ -513,9 +515,9 @@ export default function ProfileSourcingPage() {
                                 <div className="w-20 h-20 bg-[#ECEBFB] rounded-3xl flex items-center justify-center mb-6">
                                     <SearchCode className="w-10 h-10 text-[#5B53E0]" />
                                 </div>
-                                <h3 className="text-xl font-bold text-[#15171C] mb-2">Ready to Source Talent?</h3>
+                                <h3 className="text-xl font-bold text-[#15171C] mb-2">{tr("sourcingIndex.readyToSource")}</h3>
                                 <p className="text-[#6B6F76] max-w-xs mx-auto">
-                                    Enter a search query to discover professional profiles from across the web.
+                                    {tr("sourcingIndex.readyToSourceDesc")}
                                 </p>
                             </div>
                         ) : loading && results.length === 0 ? (
@@ -529,7 +531,7 @@ export default function ProfileSourcingPage() {
                                 {pinnedProfiles.length > 0 && (
                                     <div className="bg-amber-50/40 border border-amber-100 p-6 rounded-3xl space-y-4">
                                         <p className="text-[11px] font-bold text-amber-600 uppercase tracking-widest flex items-center gap-2">
-                                            <Pin className="w-3.5 h-3.5" /> Pinned Candidates ({pinnedProfiles.length})
+                                            <Pin className="w-3.5 h-3.5" /> {tr("sourcingIndex.pinnedCandidates")} ({pinnedProfiles.length})
                                         </p>
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {pinnedProfiles.map((profile, index) => (
@@ -610,7 +612,7 @@ export default function ProfileSourcingPage() {
                                                     <PlatformLogoRenderer platform={profile.platform} className="w-5 h-5 shrink-0" />
                                                 </div>
                                                 <h3 className="text-lg font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors line-clamp-1">
-                                                    {profile.full_name || "Anonymous Profile"}
+                                                    {profile.full_name || tr("sourcingIndex.anonymousProfile")}
                                                 </h3>
                                                 {profile.headline && (
                                                     <p className="text-xs font-bold text-[#9AA3AF] mt-1 line-clamp-2 min-h-[32px]">
@@ -636,7 +638,7 @@ export default function ProfileSourcingPage() {
                                                 {profile.hireable && (
                                                     <div className="mt-4 flex justify-end">
                                                         <span className="px-2 py-0.5 bg-green-50 text-green-600 text-[8px] font-bold uppercase rounded-full border border-green-100">
-                                                            Available
+                                                            {tr("sourcingIndex.available")}
                                                         </span>
                                                     </div>
                                                 )}
@@ -673,7 +675,7 @@ export default function ProfileSourcingPage() {
                                                 {/* Dynamic API Metadata for non-GitHub platforms */}
                                                 {profile.platform !== 'github' && profile.raw_data && (
                                                     <div className="mt-4 pt-4 border-t border-[#F0F0F1]">
-                                                        <p className="text-[9px] font-bold text-[#9AA3AF] uppercase tracking-widest mb-3">Platform Metadata</p>
+                                                        <p className="text-[9px] font-bold text-[#9AA3AF] uppercase tracking-widest mb-3">{tr("sourcingIndex.platformMetadata")}</p>
                                                         <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
                                                             {Object.entries(profile.raw_data).map(([key, value]) => {
                                                                 // Skip complex types and display-only fields
@@ -721,7 +723,7 @@ export default function ProfileSourcingPage() {
                                                         disabled={fetchingDetails}
                                                         className="flex-1 h-11 flex items-center justify-center gap-2 rounded-xl bg-[#F0F0F1] hover:bg-[#E1E4E8] text-[#1F2127] text-[11px] font-bold transition-all active:scale-95 border border-[#E1E4E8] disabled:opacity-50 w-full"
                                                     >
-                                                        {fetchingDetails ? "Scraping Details..." : "View Profile Info"}
+                                                        {fetchingDetails ? tr("sourcingIndex.scrapingDetails") : tr("sourcingIndex.viewProfileInfo")}
                                                     </button>
                                                     <a
                                                         href={profile.profile_url}
@@ -729,7 +731,7 @@ export default function ProfileSourcingPage() {
                                                         rel="noopener noreferrer"
                                                         className="flex-1 h-11 flex items-center justify-center gap-2 rounded-xl bg-[#5B53E0] text-white text-[11px] font-bold hover:bg-[#4A43C9] transition-all active:scale-95 shadow-lg shadow-indigo-200"
                                                     >
-                                                        View Profile
+                                                        {tr("sourcingIndex.viewProfile")}
                                                         <ExternalLink className="w-3.5 h-3.5" />
                                                     </a>
                                                 </div>
@@ -788,9 +790,9 @@ export default function ProfileSourcingPage() {
                                 <div className="w-20 h-20 bg-[#F7F8FA] rounded-3xl flex items-center justify-center mb-6">
                                     <Users className="w-10 h-10 text-[#C4C9D0]" />
                                 </div>
-                                <h3 className="text-xl font-bold text-[#15171C] mb-2">No profiles found</h3>
+                                <h3 className="text-xl font-bold text-[#15171C] mb-2">{tr("sourcingIndex.noProfilesFound")}</h3>
                                 <p className="text-[#6B6F76] max-w-xs mx-auto mb-8">
-                                    Try adjusting your search query or location to find more results.
+                                    {tr("sourcingIndex.noProfilesDesc")}
                                 </p>
                                 <button
                                     onClick={() => {
@@ -800,7 +802,7 @@ export default function ProfileSourcingPage() {
                                     }}
                                     className="px-8 py-3 bg-[#15171C] text-white rounded-2xl font-bold text-sm shadow-lg shadow-slate-200"
                                 >
-                                    Reset Search
+                                    {tr("sourcingIndex.resetSearch")}
                                 </button>
                             </div>
                         )}
@@ -813,15 +815,15 @@ export default function ProfileSourcingPage() {
                         {searchPhase === "initial" && (
                             <div className="space-y-6">
                                 <div className="text-center max-w-xl mx-auto py-8">
-                                    <h2 className="text-2xl font-bold text-[#1F2127] tracking-tight mb-2">How can I help you build your team?</h2>
-                                    <p className="text-sm text-[#9AA3AF] font-bold">Describe your ideal candidate constraints below or get started with a recommendation.</p>
+                                    <h2 className="text-2xl font-bold text-[#1F2127] tracking-tight mb-2">{tr("sourcingIndex.howCanIHelp")}</h2>
+                                    <p className="text-sm text-[#9AA3AF] font-bold">{tr("sourcingIndex.chatSubtitle")}</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {[
-                                        { title: "Python/Node.js Experts", desc: "Software Engineers in SF working at Series B companies", text: "Software Engineers in SF working at Series B companies, skilled in Python and Node.js" },
-                                        { title: "Product Leaders", desc: "Marketing Managers in Europe at large consumer brands", text: "Marketing Manager in Europe, German-speaking, working at a large enterprise" },
-                                        { title: "Senior Researchers", desc: "Senior Scientists in Australia with 8+ years experience", text: "Senior Scientist in Australia, 8+ years experience" },
-                                        { title: "Operations Analysts", desc: "Consultants in London at top management firms", text: "Consultant in London with 2+ years experience at top consulting firms" }
+                                        { title: tr("sourcingIndex.ex1Title"), desc: tr("sourcingIndex.ex1Desc"), text: "Software Engineers in SF working at Series B companies, skilled in Python and Node.js" },
+                                        { title: tr("sourcingIndex.ex2Title"), desc: tr("sourcingIndex.ex2Desc"), text: "Marketing Manager in Europe, German-speaking, working at a large enterprise" },
+                                        { title: tr("sourcingIndex.ex3Title"), desc: tr("sourcingIndex.ex3Desc"), text: "Senior Scientist in Australia, 8+ years experience" },
+                                        { title: tr("sourcingIndex.ex4Title"), desc: tr("sourcingIndex.ex4Desc"), text: "Consultant in London with 2+ years experience at top consulting firms" }
                                     ].map((ex, exIdx) => (
                                         <button
                                             key={exIdx}
@@ -833,7 +835,7 @@ export default function ProfileSourcingPage() {
                                                 <p className="text-xs text-[#9AA3AF] font-bold leading-normal">{ex.desc}</p>
                                             </div>
                                             <div className="flex items-center gap-1 text-[10px] text-[#5B53E0] font-bold opacity-0 group-hover:opacity-100 transition-all pt-2 mt-auto">
-                                                Generate Workflow <ArrowRight className="w-3 h-3" />
+                                                {tr("sourcingIndex.generateWorkflow")} <ArrowRight className="w-3 h-3" />
                                             </div>
                                         </button>
                                     ))}
@@ -857,7 +859,7 @@ export default function ProfileSourcingPage() {
                                     <div className="bg-white p-6 rounded-3xl border border-[#E8EAED] shadow-xl shadow-slate-200/10 max-w-2xl w-full space-y-4">
                                         <p className="text-sm font-bold text-[#374151] flex items-center gap-2">
                                             <span className="w-2.5 h-2.5 bg-[#5B53E0] rounded-full animate-pulse shadow-glow" />
-                                            {"I've mapped out targeted search rules matching your directives:"}
+                                            {tr("sourcingIndex.mappedRules")}
                                         </p>
 
                                         <div className="flex flex-wrap items-center gap-2 p-4 bg-[#F7F8FA]/80 rounded-2xl border border-[#E8EAED]/50 shadow-inner">
@@ -870,14 +872,14 @@ export default function ProfileSourcingPage() {
                                             </span>
                                             <span className="text-[#C4C9D0] font-bold text-xs">&middot;</span>
                                             <span className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-xs rounded-xl border border-[#DAD7F6] shadow-sm flex items-center gap-1.5">
-                                                <Zap className="w-3.5 h-3.5" /> {extractedFilters.minExp}+ years
+                                                <Zap className="w-3.5 h-3.5" /> {extractedFilters.minExp}+ {tr("sourcingIndex.years")}
                                             </span>
 
                                             <button
                                                 onClick={() => setIsFilterModalOpen(true)}
                                                 className="ml-auto px-4 py-1.5 bg-white hover:bg-[#F7F8FA] border border-[#E1E4E8] text-[#5B53E0] text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-all"
                                             >
-                                                Edit Rule
+                                                {tr("sourcingIndex.editRule")}
                                             </button>
                                         </div>
                                     </div>
@@ -889,7 +891,7 @@ export default function ProfileSourcingPage() {
                                         onClick={() => setSearchPhase("initial")}
                                         className="px-6 py-3 bg-[#F7F8FA] hover:bg-[#F0F0F1] border border-[#E8EAED] text-[#4B5563] text-sm font-bold rounded-xl transition-all"
                                     >
-                                        Reset Search
+                                        {tr("sourcingIndex.resetSearch")}
                                     </button>
                                     <button
                                         onClick={async () => {
@@ -909,7 +911,7 @@ export default function ProfileSourcingPage() {
                                         }}
                                         className="px-8 py-3 bg-[#5B53E0] hover:bg-[#4A43C9] text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-indigo-200"
                                     >
-                                        Run Search
+                                        {tr("sourcingIndex.runSearch")}
                                     </button>
                                 </div>
                             </div>
@@ -922,15 +924,15 @@ export default function ProfileSourcingPage() {
                                     <div className="absolute inset-0 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
                                     <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-[#5B53E0] animate-pulse" />
                                 </div>
-                                <h3 className="text-base font-bold text-[#1F2127] tracking-tight">Gathering Talent Intel...</h3>
-                                <p className="text-xs text-[#9AA3AF] font-bold mt-1">Cross-referencing global platforms in parallel.</p>
+                                <h3 className="text-base font-bold text-[#1F2127] tracking-tight">{tr("sourcingIndex.gathering")}</h3>
+                                <p className="text-xs text-[#9AA3AF] font-bold mt-1">{tr("sourcingIndex.crossReferencing")}</p>
                             </div>
                         )}
 
                         {searchPhase === "results" && !loading && (
                             <div className="space-y-6">
                                 <p className="text-xs font-bold text-[#9AA3AF] uppercase tracking-widest flex items-center gap-2 mb-4">
-                                    <Users className="w-4 h-4" /> AI Generated Results ({results.length})
+                                    <Users className="w-4 h-4" /> {tr("sourcingIndex.aiGeneratedResults")} ({results.length})
                                 </p>
                                 <div className="flex flex-col gap-6 max-w-5xl mx-auto w-full">
                                     {results.map((profile, index) => (
@@ -940,7 +942,7 @@ export default function ProfileSourcingPage() {
                                                 <div className="flex items-center gap-3">
                                                     <input type="checkbox" className="rounded text-[#5B53E0] border-[#E1E4E8] focus:ring-[#5B53E0]" />
                                                     <h3 className="text-base font-bold text-[#1F2127] flex items-center gap-2">
-                                                        {profile.full_name || "Anonymous"}
+                                                        {profile.full_name || tr("sourcingIndex.anonymous")}
                                                         {profile.platform && (
                                                             <PlatformLogoRenderer platform={profile.platform} className="w-4 h-4" />
                                                         )}
@@ -968,7 +970,7 @@ export default function ProfileSourcingPage() {
                                                             }`}
                                                     >
                                                         <Pin className="w-3.5 h-3.5" />
-                                                        {pinnedProfiles.some(p => p.profile_url === profile.profile_url) ? "Shortlisted" : "Shortlist"}
+                                                        {pinnedProfiles.some(p => p.profile_url === profile.profile_url) ? tr("sourcingIndex.shortlisted") : tr("sourcingIndex.shortlist")}
                                                     </button>
                                                 </div>
                                             </div>
@@ -983,9 +985,9 @@ export default function ProfileSourcingPage() {
                                                     </div>
                                                 )}
                                                 <div className="space-y-1">
-                                                    <p className="text-sm font-bold text-[#374151]">{profile.headline || "Professional Profile"}</p>
+                                                    <p className="text-sm font-bold text-[#374151]">{profile.headline || tr("sourcingIndex.professionalProfile")}</p>
                                                     <p className="text-xs text-[#9AA3AF] font-bold flex items-center gap-1">
-                                                        <MapPin className="w-3 h-3 text-[#C4C9D0]" /> {profile.location || "Global"}
+                                                        <MapPin className="w-3 h-3 text-[#C4C9D0]" /> {profile.location || tr("sourcingIndex.global")}
                                                     </p>
                                                 </div>
                                             </div>
@@ -996,7 +998,7 @@ export default function ProfileSourcingPage() {
                                                 <p className="text-xs text-[#4B5563] font-medium leading-relaxed">
                                                     {profile.ai_summary || (
                                                         <>
-                                                            <strong className="text-[#1F2127]">{profile.full_name}</strong>, based in <span className="px-1.5 py-0.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-[10px] rounded border border-[#DAD7F6]">{profile.location || "Global"}</span>, is an accomplished expert with core platform experience in <span className="px-1.5 py-0.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-[10px] rounded border border-[#DAD7F6]">{profile.platform}</span>.
+                                                            <strong className="text-[#1F2127]">{profile.full_name}</strong> {tr("sourcingIndex.basedIn")} <span className="px-1.5 py-0.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-[10px] rounded border border-[#DAD7F6]">{profile.location || tr("sourcingIndex.global")}</span> {tr("sourcingIndex.accomplishedExpert")} <span className="px-1.5 py-0.5 bg-[#ECEBFB] text-[#5B53E0] font-bold text-[10px] rounded border border-[#DAD7F6]">{profile.platform}</span>.
                                                         </>
                                                     )}
                                                 </p>
@@ -1022,7 +1024,7 @@ export default function ProfileSourcingPage() {
                         <form onSubmit={handleChatSend} className="max-w-4xl mx-auto relative group w-full">
                             <div className="border-2 border-[#5B53E0]/20 group-focus-within:border-[#5B53E0] rounded-2xl bg-white shadow-xl shadow-slate-200/5 p-6 transition-all">
                                 <textarea
-                                    placeholder="Software Engineers with 5+ yrs of experience at fintech companies in the Bay Area"
+                                    placeholder={tr("sourcingIndex.chatPlaceholder")}
                                     className="w-full bg-transparent border-0 focus:outline-none focus:ring-0 text-[#374151] font-bold text-base placeholder:text-[#C4C9D0] resize-none h-16"
                                     value={chatInput}
                                     onChange={(e) => setChatInput(e.target.value)}
@@ -1059,14 +1061,14 @@ export default function ProfileSourcingPage() {
                         {/* Modal Header */}
                         <div className="flex justify-between items-center p-6 border-b border-[#E8EAED]">
                             <div>
-                                <h3 className="text-lg font-bold text-[#15171C]">Edit Your Search Filters</h3>
-                                <p className="text-xs text-[#9AA3AF] font-bold mt-0.5">approx. 6.1k matches</p>
+                                <h3 className="text-lg font-bold text-[#15171C]">{tr("sourcingIndex.editFilters")}</h3>
+                                <p className="text-xs text-[#9AA3AF] font-bold mt-0.5">{tr("sourcingIndex.approxMatches")}</p>
                             </div>
                             <button
                                 onClick={() => setIsFilterModalOpen(false)}
                                 className="px-5 py-2 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-xl text-xs font-bold flex items-center gap-1 transition-all"
                             >
-                                Save Changes
+                                {tr("sourcingIndex.saveChanges")}
                             </button>
                         </div>
 
@@ -1075,14 +1077,14 @@ export default function ProfileSourcingPage() {
                             {/* Left Sidebar */}
                             <div className="w-56 bg-[#F7F8FA] border-r border-[#E8EAED] p-4 space-y-1">
                                 {[
-                                    { id: "general", label: "General", icon: Users },
-                                    { id: "location", label: "Locations", icon: MapPin },
-                                    { id: "job", label: "Job", icon: Briefcase },
-                                    { id: "company", label: "Company", icon: Building },
-                                    { id: "industry", label: "Industry", icon: Trophy },
-                                    { id: "funding", label: "Funding & Revenue", icon: DollarSign },
-                                    { id: "skills", label: "Skills or Keywords", icon: Code },
-                                    { id: "power", label: "Power Filters", icon: Zap }
+                                    { id: "general", label: tr("sourcingIndex.filterGeneral"), icon: Users },
+                                    { id: "location", label: tr("sourcingIndex.filterLocations"), icon: MapPin },
+                                    { id: "job", label: tr("sourcingIndex.filterJob"), icon: Briefcase },
+                                    { id: "company", label: tr("sourcingIndex.filterCompany"), icon: Building },
+                                    { id: "industry", label: tr("sourcingIndex.filterIndustry"), icon: Trophy },
+                                    { id: "funding", label: tr("sourcingIndex.filterFunding"), icon: DollarSign },
+                                    { id: "skills", label: tr("sourcingIndex.filterSkills"), icon: Code },
+                                    { id: "power", label: tr("sourcingIndex.filterPower"), icon: Zap }
                                 ].map((tab) => (
                                     <button
                                         key={tab.id}
@@ -1101,7 +1103,7 @@ export default function ProfileSourcingPage() {
                             <div className="flex-1 p-8 space-y-6 overflow-y-auto custom-scrollbar">
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label htmlFor="sourcing-min-exp" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Min Experience (Years)</label>
+                                        <label htmlFor="sourcing-min-exp" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">{tr("sourcingIndex.minExp")}</label>
                                         <input
                                             id="sourcing-min-exp"
                                             type="number"
@@ -1111,18 +1113,18 @@ export default function ProfileSourcingPage() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="sourcing-max-exp" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Max Experience (Years)</label>
+                                        <label htmlFor="sourcing-max-exp" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">{tr("sourcingIndex.maxExp")}</label>
                                         <input
                                             id="sourcing-max-exp"
                                             type="text"
-                                            placeholder="Example: 10 years"
+                                            placeholder={tr("sourcingIndex.maxExpPlaceholder")}
                                             className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-xl py-3 px-4 text-sm font-semibold text-[#374151] focus:outline-none focus:border-indigo-500"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="sourcing-job-title" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Job Title</label>
+                                    <label htmlFor="sourcing-job-title" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">{tr("sourcingIndex.jobTitle")}</label>
                                     <input
                                         id="sourcing-job-title"
                                         type="text"
@@ -1133,7 +1135,7 @@ export default function ProfileSourcingPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="sourcing-location" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Location</label>
+                                    <label htmlFor="sourcing-location" className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">{tr("sourcingIndex.location")}</label>
                                     <input
                                         id="sourcing-location"
                                         type="text"
@@ -1169,7 +1171,7 @@ export default function ProfileSourcingPage() {
                         <div className="flex justify-between items-start mb-6">
                             <div>
                                 <h2 className="text-lg font-bold text-[#15171C] tracking-tight">
-                                    {selectedProfileDetails.title || "Scraped Profile"}
+                                    {selectedProfileDetails.title || tr("sourcingIndex.scrapedProfile")}
                                 </h2>
                                 <a
                                     href={selectedProfileDetails.url}
@@ -1177,7 +1179,7 @@ export default function ProfileSourcingPage() {
                                     rel="noopener noreferrer"
                                     className="text-[10px] text-[#5B53E0] hover:underline font-bold mt-1 inline-flex items-center gap-1 uppercase tracking-wider"
                                 >
-                                    View Original
+                                    {tr("sourcingIndex.viewOriginal")}
                                     <ExternalLink className="w-2.5 h-2.5" />
                                 </a>
                             </div>
@@ -1263,7 +1265,7 @@ export default function ProfileSourcingPage() {
                                 onClick={() => setSelectedProfileDetails(null)}
                                 className="w-full py-3.5 bg-slate-950 text-white rounded-xl font-bold text-xs hover:bg-[#1F2127] transition-all active:scale-98 shadow-lg shadow-slate-200 uppercase tracking-widest"
                             >
-                                Dismiss
+                                {tr("sourcingIndex.dismiss")}
                             </button>
                         </div>
                     </motion.div>

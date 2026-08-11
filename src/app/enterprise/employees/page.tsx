@@ -13,6 +13,7 @@ import {
     X,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { Button, StatCard, StatGrid, Badge, Input, PageHelp, EmptyState, jetbrainsMono } from "@/components/ds";
@@ -36,6 +37,7 @@ interface Employee {
 
 export default function EmployeesPage() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -74,7 +76,7 @@ export default function EmployeesPage() {
         try {
             const res = await apiClient.delete(`/api/v1/enterprise/employees/${employeeToDelete}`);
             if (res.ok) fetchEmployees();
-            else alert("Failed to delete employee");
+            else alert(tr("postOnboarding.failedDeleteEmployee"));
         } catch (e) {
             console.error(e);
         } finally {
@@ -95,15 +97,15 @@ export default function EmployeesPage() {
             if (res.ok) {
                 setAccountMsg({
                     ok: true,
-                    text: `Login created. ${accountEmp.email} can now sign in at the login page and will land on their own workspace.`,
+                    text: tr("postOnboarding.loginCreated", { email: accountEmp.email }),
                 });
                 setAccountPassword("");
             } else {
                 const e = await res.json().catch(() => ({}));
-                setAccountMsg({ ok: false, text: e.detail || "Failed to create login." });
+                setAccountMsg({ ok: false, text: e.detail || tr("postOnboarding.failedCreateLogin") });
             }
         } catch {
-            setAccountMsg({ ok: false, text: "Network error. Please try again." });
+            setAccountMsg({ ok: false, text: tr("postOnboarding.networkError") });
         } finally {
             setAccountBusy(false);
         }
@@ -130,19 +132,19 @@ export default function EmployeesPage() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Employee Directory</h1>
-                        <PageHelp title="Employee Directory">
-                            <p>Your single source of truth for everyone in the organisation.</p>
-                            <p><strong>Add employees</strong> (or convert hired candidates), assign them to <strong>departments</strong>, and open a record to manage details and documents.</p>
-                            <p>Use search and the status filter to find people fast.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("postOnboarding.employeeDirectory")}</h1>
+                        <PageHelp title={tr("postOnboarding.employeeDirectory")}>
+                            <p>{tr("postOnboarding.employeesHelp1")}</p>
+                            <p><strong>{tr("postOnboarding.addEmployees")}</strong> {tr("postOnboarding.employeesHelp2a")} <strong>{tr("postOnboarding.departmentsInline")}</strong>{tr("postOnboarding.employeesHelp2b")}</p>
+                            <p>{tr("postOnboarding.employeesHelp3")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your workforce, departments &amp; records</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("postOnboarding.employeesSubtitle")}</p>
                 </div>
                 <div className="flex items-center gap-2.5 sm:shrink-0">
                     {canAccess("employees:create") && (
                         <Link href="/enterprise/employees/add">
-                            <Button size="sm" icon="add">Add Employee</Button>
+                            <Button size="sm" icon="add">{tr("postOnboarding.addEmployee")}</Button>
                         </Link>
                     )}
                 </div>
@@ -150,10 +152,10 @@ export default function EmployeesPage() {
 
             {/* Stat cards */}
             <StatGrid>
-                <StatCard label="Total Employees" value={employees.length} icon="group" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Active Workforce" value={activeCount} icon="verified_user" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Departments" value={departmentCount} icon="domain" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-                <StatCard label="New Hires" value={newHires} icon="person_add" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("postOnboarding.totalEmployees")} value={employees.length} icon="group" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label={tr("postOnboarding.activeWorkforce")} value={activeCount} icon="verified_user" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("postOnboarding.departments")} value={departmentCount} icon="domain" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("postOnboarding.newHires")} value={newHires} icon="person_add" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
             </StatGrid>
 
             {/* Toolbar: search + filter */}
@@ -164,7 +166,7 @@ export default function EmployeesPage() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by name, ID, or email..."
+                        placeholder={tr("postOnboarding.searchEmployeesPlaceholder")}
                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
@@ -177,9 +179,9 @@ export default function EmployeesPage() {
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className={`${selectCls} w-full md:min-w-[170px]`}
                         >
-                            <option value="all">All Workforce</option>
-                            <option value="Active">Active Only</option>
-                            <option value="Inactive">Inactive</option>
+                            <option value="all">{tr("postOnboarding.allWorkforce")}</option>
+                            <option value="Active">{tr("postOnboarding.activeOnly")}</option>
+                            <option value="Inactive">{tr("postOnboarding.inactive")}</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
@@ -199,18 +201,18 @@ export default function EmployeesPage() {
                         <EmptyState
                             tone="brand"
                             icon="badge"
-                            title="Add your first employee"
-                            description="Your directory is empty. Add people manually, or convert hired candidates from the Onboarding Hub."
+                            title={tr("postOnboarding.addFirstEmployee")}
+                            description={tr("postOnboarding.addFirstEmployeeDesc")}
                             action={
                                 canAccess("employees:create") ? (
                                     <Link href="/enterprise/employees/add">
-                                        <Button icon="add">Add Employee</Button>
+                                        <Button icon="add">{tr("postOnboarding.addEmployee")}</Button>
                                     </Link>
                                 ) : undefined
                             }
                             secondary={
                                 <Link href="/enterprise/onboarding">
-                                    <Button variant="secondary" icon="badge">Onboarding Hub</Button>
+                                    <Button variant="secondary" icon="badge">{tr("onboarding.title")}</Button>
                                 </Link>
                             }
                         />
@@ -218,8 +220,8 @@ export default function EmployeesPage() {
                         <EmptyState
                             tone="muted"
                             icon="search_off"
-                            title="No employees match your filters"
-                            description="Try a different search term or status, or reset your filters to see everyone."
+                            title={tr("postOnboarding.noEmployeesMatch")}
+                            description={tr("postOnboarding.noEmployeesMatchDesc")}
                             action={
                                 <Button
                                     variant="secondary"
@@ -228,7 +230,7 @@ export default function EmployeesPage() {
                                         setStatusFilter("all");
                                     }}
                                 >
-                                    Reset filters
+                                    {tr("postOnboarding.resetFilters")}
                                 </Button>
                             }
                         />
@@ -237,12 +239,12 @@ export default function EmployeesPage() {
                     <>
                         {/* Column header (desktop) */}
                         <div className="hidden md:grid grid-cols-[2.4fr_1.2fr_1.1fr_1fr_0.9fr_130px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Designation</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Department</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Hire Date</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.colEmployee")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.colDesignation")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.colDepartment")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.colHireDate")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.status")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("postOnboarding.actions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -265,7 +267,7 @@ export default function EmployeesPage() {
                                             </span>
                                             {/* mobile-only meta */}
                                             <div className="flex flex-wrap items-center gap-2 mt-1 text-[12px] text-[#8A929E] md:hidden">
-                                                <span>{emp.designation || "N/A"}</span>
+                                                <span>{emp.designation || tr("postOnboarding.na")}</span>
                                                 {emp.department?.name && <span>· {emp.department.name}</span>}
                                             </div>
                                         </div>
@@ -273,17 +275,17 @@ export default function EmployeesPage() {
 
                                     {/* Designation (desktop) */}
                                     <div className="hidden md:block text-[13px] text-[#374151] truncate">
-                                        {emp.designation || "N/A"}
+                                        {emp.designation || tr("postOnboarding.na")}
                                     </div>
 
                                     {/* Department (desktop) */}
                                     <div className="hidden md:block text-[13px] text-[#374151] truncate">
-                                        {emp.department?.name || "N/A"}
+                                        {emp.department?.name || tr("postOnboarding.na")}
                                     </div>
 
                                     {/* Hire Date (desktop) */}
                                     <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
-                                        {emp.hire_date ? new Date(emp.hire_date).toLocaleDateString() : "N/A"}
+                                        {emp.hire_date ? new Date(emp.hire_date).toLocaleDateString() : tr("postOnboarding.na")}
                                     </div>
 
                                     {/* Status (desktop) */}
@@ -301,7 +303,7 @@ export default function EmployeesPage() {
                                             <Link
                                                 href={`/enterprise/employees/${emp.id}`}
                                                 className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
-                                                title="Edit Employee"
+                                                title={tr("postOnboarding.editEmployee")}
                                             >
                                                 <Edit3 className="w-4 h-4" />
                                             </Link>
@@ -314,7 +316,7 @@ export default function EmployeesPage() {
                                                     setAccountMsg(null);
                                                 }}
                                                 className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
-                                                title="Create Workspace Login"
+                                                title={tr("postOnboarding.createWorkspaceLogin")}
                                             >
                                                 <KeyRound className="w-4 h-4" />
                                             </button>
@@ -326,7 +328,7 @@ export default function EmployeesPage() {
                                                     setIsConfirmModalOpen(true);
                                                 }}
                                                 className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
-                                                title="Delete Employee"
+                                                title={tr("postOnboarding.deleteEmployee")}
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
@@ -343,10 +345,10 @@ export default function EmployeesPage() {
                 isOpen={isConfirmModalOpen}
                 onClose={() => setIsConfirmModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Delete Employee?"
-                message="This removes the employee from your directory. Their historical records (payroll, timesheets, leave) are retained, and re-adding the same email or ID may require an admin. Continue?"
-                confirmLabel="Yes, Delete"
-                cancelLabel="No"
+                title={tr("postOnboarding.deleteEmployeeConfirm")}
+                message={tr("postOnboarding.deleteEmployeeMessage")}
+                confirmLabel={tr("postOnboarding.yesDelete")}
+                cancelLabel={tr("postOnboarding.no")}
                 isDestructive={true}
             />
 
@@ -365,7 +367,7 @@ export default function EmployeesPage() {
                                     <KeyRound className="w-[18px] h-[18px]" />
                                 </div>
                                 <div className="min-w-0">
-                                    <h2 className="text-[15px] font-bold text-[#15171C]">Create Workspace Login</h2>
+                                    <h2 className="text-[15px] font-bold text-[#15171C]">{tr("postOnboarding.createWorkspaceLogin")}</h2>
                                     <p className="truncate text-[12.5px] text-[#8A929E]">
                                         {accountEmp.first_name} {accountEmp.last_name} · {accountEmp.email}
                                     </p>
@@ -379,14 +381,13 @@ export default function EmployeesPage() {
                             </button>
                         </div>
                         <p className="mb-3 text-[12.5px] text-[#8A929E] leading-relaxed">
-                            The employee signs in with <b className="text-[#374151]">{accountEmp.email}</b> and this password, and lands on
-                            their own workspace (timesheets, payslips, leave) — not the admin area.
+                            {tr("postOnboarding.signsInWith1")} <b className="text-[#374151]">{accountEmp.email}</b> {tr("postOnboarding.signsInWith2")}
                         </p>
                         <Input
                             type="text"
                             value={accountPassword}
                             onChange={(e) => setAccountPassword(e.target.value)}
-                            placeholder="Temporary password (min 6 characters)"
+                            placeholder={tr("postOnboarding.tempPasswordPlaceholder")}
                         />
                         {accountMsg && (
                             <p className={`mt-3 text-[13px] ${accountMsg.ok ? "text-[#15803D]" : "text-[#C0383C]"}`}>
@@ -395,14 +396,14 @@ export default function EmployeesPage() {
                         )}
                         <div className="mt-5 flex justify-end gap-3">
                             <Button variant="secondary" size="sm" onClick={() => setAccountEmp(null)}>
-                                Close
+                                {tr("common.close")}
                             </Button>
                             <Button
                                 size="sm"
                                 onClick={handleCreateAccount}
                                 disabled={accountBusy || accountPassword.length < 6}
                             >
-                                {accountBusy ? "Creating…" : "Create Login"}
+                                {accountBusy ? tr("postOnboarding.creating") : tr("postOnboarding.createLogin")}
                             </Button>
                         </div>
                     </div>

@@ -5,6 +5,7 @@ import { apiClient } from "@/utils/api";
 import AIGenerationOverlay from "@/components/ui/AIGenerationOverlay";
 import { useAuth } from "@/context/AuthContext";
 import { useDivision } from "@/context/DivisionContext";
+import { useI18n } from "@/context/I18nContext";
 
 interface TestCase {
     input: string;
@@ -50,6 +51,7 @@ interface QuestionFormProps {
 export default function QuestionForm({ onSuccess, onCancel, initialType = "APTITUDE", lockType = false, initialData, departmentId }: QuestionFormProps) {
     const { batch: creatorBatch } = useAuth();
     const { selectedBatch } = useDivision();
+    const { t: tr } = useI18n();
     const [type, setType] = useState(initialData?.type || initialType);
     const [topic, setTopic] = useState(initialData?.topic || "");
     const [customTopic, setCustomTopic] = useState("");
@@ -87,7 +89,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
     }, [type]);
 
     const handleGenerateAI = async () => {
-        if (!topic) return alert("Please enter a topic first");
+        if (!topic) return alert(tr("superAdmin.pleaseEnterTopic"));
         setGenerating(true);
         try {
             const res = await apiClient.post(`/api/v1/evaluator/generate`, { topic, difficulty });
@@ -97,11 +99,11 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 setQuestionText(data.question);
                 setExplanation(data.model_answer);
             } else {
-                alert("Failed to generate question");
+                alert(tr("superAdmin.failedGenerateQuestion"));
             }
         } catch (e) {
             console.error(e);
-            alert("Error generating question");
+            alert(tr("superAdmin.errorGeneratingQuestion"));
         } finally {
             setGenerating(false);
         }
@@ -116,10 +118,10 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
 
         let payload;
         if (type === "CODING") {
-            if (!questionText.trim()) return alert("Please enter a problem description");
-            if (testCases.length === 0) return alert("Please add at least one test case");
+            if (!questionText.trim()) return alert(tr("superAdmin.pleaseEnterProblemDescription"));
+            if (testCases.length === 0) return alert(tr("superAdmin.pleaseAddTestCase"));
             if (testCases.some(tc => !tc.input.trim() || !tc.output.trim())) {
-                return alert("All test cases must have both input and output");
+                return alert(tr("superAdmin.allTestCasesInputOutput"));
             }
             payload = {
                 type: "CODING",
@@ -227,11 +229,11 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 const newQ = await res.json();
                 onSuccess(newQ);
             } else {
-                alert(`Failed to ${initialData?.id ? 'update' : 'create'} question`);
+                alert(initialData?.id ? tr("superAdmin.failedUpdateQuestion") : tr("superAdmin.failedCreateQuestion"));
             }
         } catch (e) {
             console.error(e);
-            alert("Error creating question");
+            alert(tr("superAdmin.errorCreatingQuestion"));
         } finally {
             setLoading(false);
         }
@@ -239,11 +241,11 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
 
     return (
         <div className="bg-white rounded-3xl p-0">
-            <AIGenerationOverlay isOpen={generating} title="Synchronizing Neural Link" />
+            <AIGenerationOverlay isOpen={generating} title={tr("superAdmin.synchronizingNeuralLink")} />
             <form onSubmit={handleSubmit} className="space-y-4">
                 {!lockType && (
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-lg font-bold text-gray-900  tracking-tight">Add Custom Question</h3>
+                        <h3 className="text-lg font-bold text-gray-900  tracking-tight">{tr("superAdmin.addCustomQuestion")}</h3>
                         <button
                             type="button"
                             onClick={onCancel}
@@ -256,31 +258,31 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {!lockType && (
                         <div>
-                            <label htmlFor="qf-category" className="block text-[10px] font-black text-gray-400   mb-1">Category</label>
+                            <label htmlFor="qf-category" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.category")}</label>
                             <select
                                 id="qf-category"
                                 value={type}
                                 onChange={(e) => setType(e.target.value)}
                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black text-slate-900 focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all outline-none"
                             >
-                                <option value="APTITUDE">Aptitude (MCQ)</option>
-                                <option value="CODING">Coding</option>
-                                <option value="COMMUNICATION">Communication</option>
-                                <option value="PERSONALITY">Personality Test</option>
-                                <option value="BEHAVIORAL">Behavioral &amp; Emotional</option>
-                                <option value="SUBJECTIVE">Subjective (AI Evaluator)</option>
+                                <option value="APTITUDE">{tr("superAdmin.aptitudeMcq")}</option>
+                                <option value="CODING">{tr("superAdmin.coding")}</option>
+                                <option value="COMMUNICATION">{tr("superAdmin.communication")}</option>
+                                <option value="PERSONALITY">{tr("superAdmin.personalityTest")}</option>
+                                <option value="BEHAVIORAL">{tr("superAdmin.behavioralEmotional")}</option>
+                                <option value="SUBJECTIVE">{tr("superAdmin.subjectiveAiEvaluator")}</option>
                             </select>
                         </div>
                     )}
                     <div className={lockType ? "col-span-2" : ""}>
-                        <label className="block text-[10px] font-black text-gray-400   mb-1">{type === "SUBJECTIVE" ? "Domain / Topic" : "Topic"}</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1">{type === "SUBJECTIVE" ? tr("superAdmin.domainTopic") : tr("superAdmin.topic")}</label>
                         <input
                             type="text"
                             list="topic-suggestions"
                             value={topic}
                             onChange={(e) => setTopic(e.target.value)}
                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black text-slate-900 focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all outline-none placeholder:text-slate-300"
-                            placeholder={type === "SUBJECTIVE" ? "e.g., System Design" : "e.g., Leadership style"}
+                            placeholder={type === "SUBJECTIVE" ? tr("superAdmin.egSystemDesign") : tr("superAdmin.egLeadershipStyle")}
                         />
                         <datalist id="topic-suggestions">
                             {availableTopics.map(t => (
@@ -295,28 +297,28 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                 className="mt-2 text-[10px] font-black   text-slate-600 hover:text-slate-700 flex items-center gap-1 disabled:opacity-50"
                             >
                                 <span className="material-icons-outlined text-sm">auto_awesome</span>{" "}
-                                Generate with AI
+                                {tr("superAdmin.generateWithAi")}
                             </button>
                         )}
                     </div>
                     <div>
-                        <label htmlFor="qf-difficulty" className="block text-[10px] font-black text-gray-400   mb-1">Difficulty</label>
+                        <label htmlFor="qf-difficulty" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.difficulty")}</label>
                         <select
                             id="qf-difficulty"
                             value={difficulty}
                             onChange={(e) => setDifficulty(e.target.value)}
                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black text-slate-900 focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all outline-none"
                         >
-                            <option value="EASY">Easy</option>
-                            <option value="MEDIUM">Medium</option>
-                            <option value="HARD">Hard</option>
+                            <option value="EASY">{tr("superAdmin.easy")}</option>
+                            <option value="MEDIUM">{tr("superAdmin.medium")}</option>
+                            <option value="HARD">{tr("superAdmin.hard")}</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
                     <label className="block text-[10px] font-black text-gray-400   mb-1">
-                        {type === "CODING" ? "Problem Description" : type === "COMMUNICATION" ? "Scenario Prompt" : type === "SUBJECTIVE" ? "Scenario / Task Instructions" : "Question Text"}
+                        {type === "CODING" ? tr("superAdmin.problemDescription") : type === "COMMUNICATION" ? tr("superAdmin.scenarioPrompt") : type === "SUBJECTIVE" ? tr("superAdmin.scenarioTaskInstructions") : tr("superAdmin.questionText")}
                     </label>
                     <textarea
                         value={questionText}
@@ -324,18 +326,18 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         required
                         className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-xs font-medium text-slate-700 focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all outline-none placeholder:text-slate-300 min-h-[120px]"
                         rows={3}
-                        placeholder={type === "SUBJECTIVE" ? "Describe the task or scenario for the candidate..." : "Enter your question here..."}
+                        placeholder={type === "SUBJECTIVE" ? tr("superAdmin.describeTaskPlaceholder") : tr("superAdmin.enterQuestionPlaceholder")}
                     />
                 </div>
 
                 {type === "SUBJECTIVE" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in duration-700">
                         <div>
-                            <label htmlFor="qf-min-words" className="block text-[10px] font-black text-gray-400   mb-1">Min Word Limit</label>
+                            <label htmlFor="qf-min-words" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.minWordLimit")}</label>
                             <input id="qf-min-words" name="min_words" type="number" value={minWords} onChange={e => setMinWords(Number.parseInt(e.target.value, 10))} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                         </div>
                         <div>
-                            <label htmlFor="qf-max-words" className="block text-[10px] font-black text-gray-400   mb-1">Max Word Limit</label>
+                            <label htmlFor="qf-max-words" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.maxWordLimit")}</label>
                             <input id="qf-max-words" name="max_words" type="number" value={maxWords} onChange={e => setMaxWords(Number.parseInt(e.target.value, 10))} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                         </div>
                     </div>
@@ -345,30 +347,30 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label htmlFor="qf-option-a" className="block text-[10px] font-black text-gray-400   mb-1">Option A</label>
+                                <label htmlFor="qf-option-a" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.optionA")}</label>
                                 <input id="qf-option-a" type="text" value={optionA} onChange={(e) => setOptionA(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label htmlFor="qf-option-b" className="block text-[10px] font-black text-gray-400   mb-1">Option B</label>
+                                <label htmlFor="qf-option-b" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.optionB")}</label>
                                 <input id="qf-option-b" type="text" value={optionB} onChange={(e) => setOptionB(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label htmlFor="qf-option-c" className="block text-[10px] font-black text-gray-400   mb-1">Option C</label>
+                                <label htmlFor="qf-option-c" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.optionC")}</label>
                                 <input id="qf-option-c" type="text" value={optionC} onChange={(e) => setOptionC(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                             <div>
-                                <label htmlFor="qf-option-d" className="block text-[10px] font-black text-gray-400   mb-1">Option D</label>
+                                <label htmlFor="qf-option-d" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.optionD")}</label>
                                 <input id="qf-option-d" type="text" value={optionD} onChange={(e) => setOptionD(e.target.value)} required className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900" />
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label htmlFor="qf-correct-option" className="block text-[10px] font-black text-gray-400   mb-1">Correct Answer</label>
+                                <label htmlFor="qf-correct-option" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.correctAnswer")}</label>
                                 <select id="qf-correct-option" value={correctOption} onChange={(e) => setCorrectOption(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-bold text-gray-900">
-                                    <option value="A">Option A</option>
-                                    <option value="B">Option B</option>
-                                    <option value="C">Option C</option>
-                                    <option value="D">Option D</option>
+                                    <option value="A">{tr("superAdmin.optionA")}</option>
+                                    <option value="B">{tr("superAdmin.optionB")}</option>
+                                    <option value="C">{tr("superAdmin.optionC")}</option>
+                                    <option value="D">{tr("superAdmin.optionD")}</option>
                                 </select>
                             </div>
                         </div>
@@ -378,7 +380,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                 {type === "CODING" && (
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="qf-initial-code" className="block text-[10px] font-black text-gray-400   mb-1">Initial Code (Python)</label>
+                            <label htmlFor="qf-initial-code" className="block text-[10px] font-black text-gray-400   mb-1">{tr("superAdmin.initialCodePython")}</label>
                             <textarea
                                 id="qf-initial-code"
                                 value={initialCode}
@@ -390,20 +392,20 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         </div>
                         <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                             <div className="flex justify-between items-center mb-3">
-                                <span className="block text-[10px] font-black text-gray-400  ">Test Cases</span>
+                                <span className="block text-[10px] font-black text-gray-400  ">{tr("superAdmin.testCases")}</span>
                                 <button
                                     type="button"
                                     onClick={() => setTestCases([...testCases, { input: "", output: "" }])}
                                     className="text-[10px] font-black   text-slate-800 hover:text-slate-600"
                                 >
-                                    + Add Test Case
+                                    {tr("superAdmin.addTestCase")}
                                 </button>
                             </div>
                             <div className="space-y-3">
                                 {testCases.map((tc, idx) => (
                                     <div key={idx} className="flex gap-2 items-start bg-white p-3 rounded-lg border border-gray-100 relative group">
                                         <div className="flex-1">
-                                            <span className="text-[8px] font-black text-gray-400  block mb-1">Input</span>
+                                            <span className="text-[8px] font-black text-gray-400  block mb-1">{tr("superAdmin.input")}</span>
                                             <textarea
                                                 value={tc.input}
                                                 onChange={(e) => {
@@ -416,7 +418,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                             />
                                         </div>
                                         <div className="flex-1">
-                                            <span className="text-[8px] font-black text-gray-400  block mb-1">Output</span>
+                                            <span className="text-[8px] font-black text-gray-400  block mb-1">{tr("superAdmin.output")}</span>
                                             <textarea
                                                 value={tc.output}
                                                 onChange={(e) => {
@@ -438,7 +440,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                     </div>
                                 ))}
                                 {testCases.length === 0 && (
-                                    <p className="text-[10px] text-gray-400  text-center py-2">No test cases added yet.</p>
+                                    <p className="text-[10px] text-gray-400  text-center py-2">{tr("superAdmin.noTestCases")}</p>
                                 )}
                             </div>
                         </div>
@@ -447,13 +449,13 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
 
                 {(type === "APTITUDE" || type === "PERSONALITY" || type === "BEHAVIORAL" || type === "SUBJECTIVE") && (
                     <div className={type === "SUBJECTIVE" && !explanation ? "hidden" : "animate-in slide-in-from-top-4 duration-700 delay-100"}>
-                        <label className="block text-[10px] font-black text-gray-400   mb-1">{type === "SUBJECTIVE" ? "Target Answer (Sample Response for AI Reference)" : "Explanation"}</label>
+                        <label className="block text-[10px] font-black text-gray-400   mb-1">{type === "SUBJECTIVE" ? tr("superAdmin.targetAnswerSample") : tr("superAdmin.explanation")}</label>
                         <textarea
                             value={explanation}
                             onChange={(e) => setExplanation(e.target.value)}
                             className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs font-medium text-gray-900 focus:ring-2 focus:ring-slate-500"
                             rows={3}
-                            placeholder={type === "SUBJECTIVE" ? "Enter the ideal response that AI should look for..." : "Explain why the answer is correct..."}
+                            placeholder={type === "SUBJECTIVE" ? tr("superAdmin.idealResponsePlaceholder") : tr("superAdmin.explainAnswerPlaceholder")}
                         />
                     </div>
                 )}
@@ -464,14 +466,14 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                         onClick={onCancel}
                         className="px-6 py-3 border border-slate-200 text-slate-400 text-[10px] font-black  tracking-[0.2em] rounded-xl hover:bg-slate-50 transition-all"
                     >
-                        Cancel
+                        {tr("superAdmin.cancel")}
                     </button>
                     <button
                         type="submit"
                         disabled={loading}
                         className="px-8 py-3 bg-slate-900 text-white text-[10px] font-black  tracking-[0.2em] rounded-xl hover:bg-slate-800 transition-all shadow-xl shadow-slate-100 disabled:opacity-50 active:scale-95"
                     >
-                        {loading ? 'Processing...' : 'Save Configuration'}
+                        {loading ? tr("superAdmin.processing") : tr("superAdmin.saveConfiguration")}
                     </button>
                 </div>
             </form>

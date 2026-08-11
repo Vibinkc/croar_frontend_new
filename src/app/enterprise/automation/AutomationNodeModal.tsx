@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
+import { GenLanguage, localeToLanguageName } from "@/i18n/config";
+import GenLanguageSelect from "@/components/ds/GenLanguageSelect";
 import { BACKEND_URL } from "@/utils/api";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -94,6 +97,8 @@ export default function AutomationNodeModal({
   initialData = null,
 }: AutomationNodeModalProps) {
   const { token } = useAuth();
+  const { t: tr, locale } = useI18n();
+  const [genLang, setGenLang] = useState<GenLanguage>(localeToLanguageName(locale));
   const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -192,19 +197,19 @@ export default function AutomationNodeModal({
   // Assessment Question Generation
   const handleGeneratePreview = async () => {
     if (!form.topic?.trim()) {
-      showToast("Please enter a topic for the assessment.", "error");
+      showToast(tr("automation.enterTopicAssessment"), "error");
       return;
     }
 
     if (!form.is_immediate && form.send_at) {
       if (new Date(form.send_at) < new Date()) {
-        showToast("Scheduled time cannot be in the past.", "error");
+        showToast(tr("automation.scheduledTimePast"), "error");
         return;
       }
     }
     setLoading(true);
     try {
-      const qs = `type=${form.assessment_type}&topic=${encodeURIComponent(form.topic)}&count=${form.question_count}`;
+      const qs = `type=${form.assessment_type}&topic=${encodeURIComponent(form.topic)}&count=${form.question_count}&language=${encodeURIComponent(genLang)}`;
       const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/generate-preview?${qs}`, {
         method: "POST",
         headers: authHeaders,
@@ -213,9 +218,9 @@ export default function AutomationNodeModal({
         const questions = await res.json();
         setForm((f: FormState) => ({ ...f, generated_questions: questions }));
         setActiveTab("sub"); // Switch to questions tab
-        showToast("Questions generated! Please review questions.");
+        showToast(tr("automation.questionsGenerated"));
       } else {
-        showToast("Failed to generate questions.", "error");
+        showToast(tr("automation.failedGenerateQuestions"), "error");
       }
     } finally {
       setLoading(false);
@@ -226,7 +231,7 @@ export default function AutomationNodeModal({
   const handleGenerateTimeSlots = () => {
     const limit = Number(form.daily_limit);
     if (!limit || limit <= 0) {
-      showToast("Please set a daily limit > 0", "error");
+      showToast(tr("automation.setDailyLimitPositive"), "error");
       return;
     }
     const [sh, sm] = form.start_time.split(":").map(Number);
@@ -234,7 +239,7 @@ export default function AutomationNodeModal({
     const startMins = sh * 60 + sm;
     const endMins = eh * 60 + em;
     if (startMins >= endMins) {
-      showToast("End time must be after start time", "error");
+      showToast(tr("automation.endTimeAfterStart"), "error");
       return;
     }
     const interval = Number(form.duration) || 30;
@@ -248,7 +253,7 @@ export default function AutomationNodeModal({
     }
     setForm((f: FormState) => ({ ...f, time_slots: slots }));
     setActiveTab("sub"); // Switch to slots tab
-    showToast("Time slots generated!");
+    showToast(tr("automation.timeSlotsGenerated"));
   };
 
   const showToast = (msg: string | { msg?: string; detail?: string } | Array<{ msg?: string } | string>, type: "success" | "error" = "success") => {
@@ -260,7 +265,7 @@ export default function AutomationNodeModal({
     } else if (msg && typeof msg === "object") {
       finalMsg = msg.msg || msg.detail || JSON.stringify(msg);
     } else {
-      finalMsg = String(msg || "An error occurred");
+      finalMsg = String(msg || tr("automation.errorOccurred"));
     }
     setToast({ msg: finalMsg, type });
     setTimeout(() => setToast(null), 5000);
@@ -291,18 +296,18 @@ export default function AutomationNodeModal({
 
   const handleSave = async () => {
     if (!form.job_requirement_id || form.job_requirement_id === "undefined") {
-      showToast("Please select a target job.", "error");
+      showToast(tr("automation.selectTargetJob"), "error");
       return;
     }
 
     if (type !== 'onboarding' && (!form.criteria || !form.criteria.trim())) {
-      showToast("Please fill in trigger condition.", "error");
+      showToast(tr("automation.fillTriggerCondition"), "error");
       return;
     }
     // A round must be connected — stage_index defaults to 0, which matches no round, so an
     // unconnected automation would save orphaned (silently vanishes on refetch).
     if (Number(form.stage_index) < 1) {
-      showToast("Connect this action to a hiring round.", "error");
+      showToast(tr("automation.connectToRound"), "error");
       return;
     }
     if (type === "interview") {
@@ -310,30 +315,30 @@ export default function AutomationNodeModal({
       // false, so blank dates previously slipped through. Compare ISO strings in local time (the
       // old Date()-vs-local-midnight compare also mis-rejected "today" in negative-offset zones).
       if (!form.start_date || !form.end_date) {
-        showToast("Set the interview availability start and end dates.", "error");
+        showToast(tr("automation.setInterviewDates"), "error");
         return;
       }
       if (form.start_date < new Date().toLocaleDateString("en-CA")) {
-        showToast("Start date cannot be in the past.", "error");
+        showToast(tr("automation.startDatePast"), "error");
         return;
       }
       if (form.end_date < form.start_date) {
-        showToast("Available To date must be equal or after Available From date.", "error");
+        showToast(tr("automation.availableToAfterFrom"), "error");
         return;
       }
       if (form.interview_type === "AI" && !form.interview_template_id) {
-        showToast("Please select an AI template.", "error");
+        showToast(tr("automation.selectAiTemplateMsg"), "error");
         return;
       }
       if (form.interview_type === "GMEET" && !form.interviewer_email?.trim()) {
-        showToast("Please provide interviewer email for Google Meet.", "error");
+        showToast(tr("automation.provideInterviewerEmail"), "error");
         return;
       }
     }
 
     if (!form.is_immediate && form.send_at) {
       if (new Date(form.send_at) < new Date()) {
-        showToast("Scheduled time cannot be in the past.", "error");
+        showToast(tr("automation.scheduledTimePast"), "error");
         return;
       }
     }
@@ -349,7 +354,7 @@ export default function AutomationNodeModal({
       };
 
       if (type === "mail") {
-        if (!form.template_id) throw new Error("Template is required.");
+        if (!form.template_id) throw new Error(tr("automation.templateRequired"));
         endpoint = editingId ? `/api/v1/enterprise/automation/mail/${editingId}` : "/api/v1/enterprise/automation/mail/";
         payload = { 
           ...payload, 
@@ -361,7 +366,7 @@ export default function AutomationNodeModal({
         };
       } 
       else if (type === "assessment") {
-        if (!form.topic.trim()) throw new Error("Topic is required.");
+        if (!form.topic.trim()) throw new Error(tr("automation.topicRequired"));
         endpoint = editingId ? `/api/v1/enterprise/assessment/${editingId}` : "/api/v1/enterprise/assessment/";
         payload = { 
           ...payload, 
@@ -423,7 +428,7 @@ export default function AutomationNodeModal({
         };
       } 
       else if (type === "onboarding") {
-        if (!form.template_id) throw new Error("Onboarding Template is required.");
+        if (!form.template_id) throw new Error(tr("automation.onboardingTemplateRequired"));
         endpoint = editingId ? `/api/v1/enterprise/onboarding-automation/${editingId}` : "/api/v1/enterprise/onboarding-automation/";
         payload = { 
           ...payload, 
@@ -440,18 +445,18 @@ export default function AutomationNodeModal({
       });
 
       if (res.ok) {
-        showToast(editingId ? "Automation Updated!" : "Automation Created!");
+        showToast(editingId ? tr("automation.automationUpdated") : tr("automation.automationCreated"));
         setTimeout(() => {
           onSave();
           onClose();
         }, 800);
       } else {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || "Failed to create automation.");
+        throw new Error(err.detail || tr("automation.failedCreateAutomation"));
       }
     } catch (err) {
       const error = err as Error;
-      showToast(error.message || "An error occurred", "error");
+      showToast(error.message || tr("automation.errorOccurred"), "error");
     } finally {
       setSaving(false);
     }
@@ -459,12 +464,12 @@ export default function AutomationNodeModal({
 
   const headerMeta = useMemo(() => {
     switch (type) {
-      case "mail": return { title: "Mail Action", icon: "mark_email_unread", color: "#6366f1", bg: "#eef2ff" };
-      case "assessment": return { title: "Assessment Action", icon: "psychology", color: "#f59e0b", bg: "#fffbeb" };
-      case "interview": return { title: "Interview Action", icon: "event_available", color: "#10b981", bg: "#ecfdf5" };
-      case "onboarding": return { title: "Onboarding Action", icon: "person_add", color: "#a855f7", bg: "#faf5ff" };
+      case "mail": return { title: tr("automation.mailAction"), icon: "mark_email_unread", color: "#6366f1", bg: "#eef2ff" };
+      case "assessment": return { title: tr("automation.assessmentAction"), icon: "psychology", color: "#f59e0b", bg: "#fffbeb" };
+      case "interview": return { title: tr("automation.interviewAction"), icon: "event_available", color: "#10b981", bg: "#ecfdf5" };
+      case "onboarding": return { title: tr("automation.onboardingAction"), icon: "person_add", color: "#a855f7", bg: "#faf5ff" };
     }
-  }, [type]);
+  }, [type, tr]);
 
   return (
     <AnimatePresence>
@@ -487,7 +492,7 @@ export default function AutomationNodeModal({
                   <span className="material-symbols-rounded text-[20px]">{headerMeta.icon}</span>
                 </div>
                 <div>
-                  <h2 className="text-[18px] font-extrabold text-[#15171C] leading-tight">{editingId ? "Edit Action" : "Create Action"}</h2>
+                  <h2 className="text-[18px] font-extrabold text-[#15171C] leading-tight">{editingId ? tr("automation.editAction") : tr("automation.createAction")}</h2>
                   <p className="text-[11.5px] font-bold mt-0.5 uppercase tracking-wider" style={{ color: headerMeta.color }}>{headerMeta.title}</p>
                 </div>
               </div>
@@ -505,13 +510,13 @@ export default function AutomationNodeModal({
                   onClick={() => setActiveTab("config")}
                   className={`px-6 py-3 text-[12px] font-bold transition-all border-b-2 ${activeTab === "config" ? "border-[#5B53E0] text-[#5B53E0]" : "border-transparent text-[#8A929E] hover:text-[#15171C]"}`}
                 >
-                  1. Configuration
+                  {tr("automation.configurationStep")}
                 </button>
                 <button
                   onClick={() => setActiveTab("sub")}
                   className={`px-6 py-3 text-[12px] font-bold transition-all border-b-2 ${activeTab === "sub" ? "border-[#5B53E0] text-[#5B53E0]" : "border-transparent text-[#8A929E] hover:text-[#15171C]"}`}
                 >
-                  2. {type === "assessment" ? `Questions (${form.generated_questions?.length || 0})` : `Time Slots (${form.time_slots?.length || 0})`}
+                  {type === "assessment" ? tr("automation.questionsTab", { count: form.generated_questions?.length || 0 }) : tr("automation.timeSlotsTab", { count: form.time_slots?.length || 0 })}
                 </button>
               </div>
             )}
@@ -532,21 +537,21 @@ export default function AutomationNodeModal({
                     <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
                       <div className="flex flex-col items-center gap-2">
                         <div className="w-8 h-8 border-4 border-slate-200 border-t-[#5B53E0] rounded-full animate-spin" />
-                        <p className="text-[11.5px] font-bold text-[#8A929E] tracking-wider uppercase">Loading data...</p>
+                        <p className="text-[11.5px] font-bold text-[#8A929E] tracking-wider uppercase">{tr("automation.loadingData")}</p>
                       </div>
                     </div>
                   )}
                   {/* Job Info */}
                   <div className="opacity-70">
-                    <label htmlFor="automation-target-job" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Target Job</label>
+                    <label htmlFor="automation-target-job" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.targetJob")}</label>
                     <div id="automation-target-job" className="w-full h-11 flex items-center bg-[#F4F5F7]/80 border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] font-semibold text-[#8A929E]">
-                      {selectedJob?.title || "No Job Selected"}
+                      {selectedJob?.title || tr("automation.noJobSelected")}
                     </div>
                   </div>
 
                   {/* Round Selection */}
                   <div>
-                    <label htmlFor="automation-round-select" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Connect to Round <span className="text-red-400">*</span></label>
+                    <label htmlFor="automation-round-select" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.connectToRoundLabel")} <span className="text-red-400">*</span></label>
                     {jobRounds.length > 0 ? (
                       <select
                         id="automation-round-select"
@@ -554,13 +559,13 @@ export default function AutomationNodeModal({
                         onChange={handleRoundSelect}
                         className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer"
                       >
-                        <option value="" className="text-slate-900 bg-white">Select a stage...</option>
-                        {jobRounds.map((r, i) => <option key={i} value={`${i + 1}|${r.name}`} className="text-slate-900 bg-white">Stage {i + 1}: {r.name}</option>)}
+                        <option value="" className="text-slate-900 bg-white">{tr("automation.selectStage")}</option>
+                        {jobRounds.map((r, i) => <option key={i} value={`${i + 1}|${r.name}`} className="text-slate-900 bg-white">{tr("automation.stageColon", { index: i + 1, name: r.name })}</option>)}
                       </select>
                     ) : (
                       <div className="grid grid-cols-2 gap-3">
-                        <input type="number" min={1} value={form.stage_index || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, stage_index: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder="Idx" />
-                        <input type="text" value={form.stage_name || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, stage_name: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder="Stage Name" />
+                        <input type="number" min={1} value={form.stage_index || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, stage_index: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder={tr("automation.idxPlaceholder")} />
+                        <input type="text" value={form.stage_name || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, stage_name: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder={tr("automation.stageNamePlaceholder")} />
                       </div>
                     )}
                   </div>
@@ -568,16 +573,16 @@ export default function AutomationNodeModal({
                   {/* Trigger Criteria */}
                   {type !== "onboarding" && (
                     <div>
-                      <label htmlFor="automation-trigger-criteria" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Trigger Condition {type === "mail" && <span className="text-red-400">*</span>}</label>
+                      <label htmlFor="automation-trigger-criteria" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.triggerConditionLabel")} {type === "mail" && <span className="text-red-400">*</span>}</label>
                       <textarea
                         id="automation-trigger-criteria"
                         value={form.criteria || ""}
                         onChange={(e) => setForm((f: FormState) => ({ ...f, criteria: e.target.value }))} 
                         className="w-full px-3.5 py-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all resize-none" 
                         rows={3}
-                        placeholder="e.g. 'Score > 80' or 'Shortlisted'" 
+                        placeholder={tr("automation.criteriaPlaceholderScore")}
                       />
-                      <p className="text-[11px] text-[#8A929E] mt-1.5 ml-0.5">Clear conditions help trigger the automation correctly.</p>
+                      <p className="text-[11px] text-[#8A929E] mt-1.5 ml-0.5">{tr("automation.clearConditionsHelp")}</p>
                     </div>
                   )}
 
@@ -587,9 +592,9 @@ export default function AutomationNodeModal({
                     {/* MAIL Action */}
                     {type === "mail" && (
                       <div>
-                        <label htmlFor="automation-email-template" className="block text-[11.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-2 ml-0.5">Email Template <span className="text-red-400">*</span></label>
+                        <label htmlFor="automation-email-template" className="block text-[11.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.emailTemplate")} <span className="text-red-400">*</span></label>
                         <select id="automation-email-template" value={form.template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
-                          <option value="" className="text-slate-900 bg-white">Select template…</option>
+                          <option value="" className="text-slate-900 bg-white">{tr("automation.selectTemplateEllipsis")}</option>
                           {emailTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                         </select>
                       </div>
@@ -599,7 +604,7 @@ export default function AutomationNodeModal({
                     {type === "assessment" && (
                       <>
                         <div className="bg-[#FEF3E2]/50 p-4 rounded-[12px] border border-[#FCE1BF] shadow-sm">
-                          <label htmlFor="automation-assessment-template" className="block text-[11.5px] font-bold text-[#D97706] uppercase tracking-wider mb-2 ml-0.5">Use Template (Optional)</label>
+                          <label htmlFor="automation-assessment-template" className="block text-[11.5px] font-bold text-[#D97706] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.useTemplateOptional")}</label>
                           <select
                             id="automation-assessment-template"
                             value={form.template_id || ""}
@@ -618,46 +623,49 @@ export default function AutomationNodeModal({
                             }}
                             className="w-full h-10 px-3 rounded-[10px] border border-[#FCE1BF] bg-white text-[13.5px] font-medium text-[#374151] outline-none focus:border-[#D97706] focus:ring-2 focus:ring-[#D97706]/20 transition-all cursor-pointer"
                           >
-                            <option value="" className="text-slate-900 bg-white">-- Custom Config --</option>
+                            <option value="" className="text-slate-900 bg-white">{tr("automation.customConfig")}</option>
                             {assessmentTemplates.map((t) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-assessment-type" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Type</label>
+                            <label htmlFor="automation-assessment-type" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.typeLabel")}</label>
                             <select id="automation-assessment-type" value={form.assessment_type || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, assessment_type: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
-                              <option value="APTITUDE" className="text-slate-900 bg-white">Aptitude</option>
-                              <option value="CODING" className="text-slate-900 bg-white">Coding</option>
-                              <option value="BOTH" className="text-slate-900 bg-white">Both</option>
+                              <option value="APTITUDE" className="text-slate-900 bg-white">{tr("automation.aptitude")}</option>
+                              <option value="CODING" className="text-slate-900 bg-white">{tr("automation.coding")}</option>
+                              <option value="BOTH" className="text-slate-900 bg-white">{tr("automation.both")}</option>
                             </select>
                           </div>
                           <div>
-                            <label htmlFor="automation-topic" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Topic <span className="text-red-400">*</span></label>
-                            <input id="automation-topic" type="text" value={form.topic || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, topic: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder="e.g. Python, SQL" />
+                            <label htmlFor="automation-topic" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.topicLabel")} <span className="text-red-400">*</span></label>
+                            <input id="automation-topic" type="text" value={form.topic || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, topic: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder={tr("automation.topicPlaceholder")} />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-question-count" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Questions</label>
+                            <label htmlFor="automation-question-count" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.questionsLabel")}</label>
                             <input id="automation-question-count" type="number" value={form.question_count || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, question_count: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
                           </div>
                           <div>
-                            <label htmlFor="automation-test-duration" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Duration (Min)</label>
+                            <label htmlFor="automation-test-duration" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.durationMin")}</label>
                             <input id="automation-test-duration" type="number" value={form.test_duration || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, test_duration: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
                           </div>
                         </div>
 
                         <div>
-                          <label htmlFor="automation-assessment-email-template" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Invite Email Template</label>
+                          <label htmlFor="automation-assessment-email-template" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.inviteEmailTemplate")}</label>
                           <select id="automation-assessment-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
-                            <option value="" className="text-slate-900 bg-white">Default Invite Email</option>
+                            <option value="" className="text-slate-900 bg-white">{tr("automation.defaultInviteEmail")}</option>
                             {emailTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
 
-                        <div className="pt-2">
+                        <div className="pt-2 flex items-center justify-end mb-2">
+                          <GenLanguageSelect value={genLang} onChange={setGenLang} />
+                        </div>
+                        <div>
                           <button
                             onClick={handleGeneratePreview}
                             disabled={loading}
@@ -668,7 +676,7 @@ export default function AutomationNodeModal({
                              ) : (
                                <span className="material-symbols-rounded text-lg">auto_awesome</span>
                              )}
-                             {form.generated_questions?.length ? "Regenerate Draft with AI" : "Draft Questions with AI"}
+                             {form.generated_questions?.length ? tr("automation.regenerateDraftAI") : tr("automation.draftQuestionsAI")}
                           </button>
                         </div>
                       </>
@@ -679,26 +687,26 @@ export default function AutomationNodeModal({
                       <>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-interview-type" className="block text-[11.5px] font-bold text-[#0E8A6E] uppercase tracking-wider mb-2 ml-0.5">Interview Type</label>
+                            <label htmlFor="automation-interview-type" className="block text-[11.5px] font-bold text-[#0E8A6E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.interviewType")}</label>
                             <select id="automation-interview-type" value={form.interview_type || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, interview_type: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
                               <option value="GMEET" className="text-slate-900 bg-white">Google Meet</option>
-                              <option value="AI" className="text-slate-900 bg-white">AI Interview</option>
+                              <option value="AI" className="text-slate-900 bg-white">{tr("automation.aiInterview")}</option>
                             </select>
                           </div>
                           {form.interview_type === "AI" && (
                             <div>
                                <div className="flex items-center justify-between mb-2 ml-0.5">
-                                 <label htmlFor="automation-interview-template" className="block text-[11.5px] font-bold text-[#0E8A6E] uppercase tracking-wider">AI Template</label>
-                                 <button 
+                                 <label htmlFor="automation-interview-template" className="block text-[11.5px] font-bold text-[#0E8A6E] uppercase tracking-wider">{tr("automation.aiTemplate")}</label>
+                                 <button
                                    onClick={() => window.open('/enterprise/templates/interview-templates', '_blank')}
                                    className="text-[11px] font-semibold text-[#5B53E0] hover:underline"
                                  >
-                                   + Create New
+                                   + {tr("automation.createNew")}
                                  </button>
                                </div>
                               <select id="automation-interview-template" value={form.interview_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, interview_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
-                                <option value="" className="text-slate-900 bg-white">Select AI Template</option>
-                                {interviewTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.title || t.name || "Untitled template"}</option>)}
+                                <option value="" className="text-slate-900 bg-white">{tr("automation.selectAiTemplateOption")}</option>
+                                {interviewTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.title || t.name || tr("automation.untitledTemplate")}</option>)}
                               </select>
                             </div>
                           )}
@@ -706,26 +714,26 @@ export default function AutomationNodeModal({
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-start-date" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Available From <span className="text-red-400">*</span></label>
+                            <label htmlFor="automation-start-date" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.availableFrom")} <span className="text-red-400">*</span></label>
                             <input id="automation-start-date" type="date" value={form.start_date || ""} min={new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: FormState) => ({ ...f, start_date: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
                           </div>
                           <div>
-                            <label htmlFor="automation-end-date" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Available To <span className="text-red-400">*</span></label>
+                            <label htmlFor="automation-end-date" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.availableTo")} <span className="text-red-400">*</span></label>
                             <input id="automation-end-date" type="date" value={form.end_date || ""} min={form.start_date || new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: FormState) => ({ ...f, end_date: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-4 gap-4">
                           <div>
-                            <label htmlFor="automation-start-time" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Start <span className="text-red-400">*</span></label>
+                            <label htmlFor="automation-start-time" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.startShort")} <span className="text-red-400">*</span></label>
                             <input id="automation-start-time" type="time" value={form.start_time || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, start_time: e.target.value }))} className="w-full h-11 px-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
                           </div>
                           <div>
-                            <label htmlFor="automation-end-time" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">End <span className="text-red-400">*</span></label>
+                            <label htmlFor="automation-end-time" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.endShort")} <span className="text-red-400">*</span></label>
                             <input id="automation-end-time" type="time" value={form.end_time || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, end_time: e.target.value }))} className="w-full h-11 px-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
                           </div>
                           <div>
-                            <label htmlFor="automation-interview-duration" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Duration <span className="text-red-400">*</span></label>
+                            <label htmlFor="automation-interview-duration" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.duration")} <span className="text-red-400">*</span></label>
                             <select id="automation-interview-duration" value={form.duration || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, duration: e.target.value }))} className="w-full h-11 px-2 rounded-[10px] border border-[#E1E4E8] bg-white text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
                               <option value="15" className="text-slate-900 bg-white">15m</option>
                               <option value="30" className="text-slate-900 bg-white">30m</option>
@@ -734,27 +742,27 @@ export default function AutomationNodeModal({
                             </select>
                           </div>
                           <div>
-                            <label htmlFor="automation-daily-limit" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Limit <span className="text-red-400">*</span></label>
+                            <label htmlFor="automation-daily-limit" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.limitShort")} <span className="text-red-400">*</span></label>
                             <input id="automation-daily-limit" type="number" min={1} value={form.daily_limit || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, daily_limit: Number(e.target.value) }))} className="w-full h-11 px-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-interviewer-email" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Interviewer Email</label>
+                            <label htmlFor="automation-interviewer-email" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.interviewerEmail")}</label>
                             <input
                               id="automation-interviewer-email"
                               type="email"
                               value={form.interviewer_email || ""} 
                               onChange={(e) => setForm((f: FormState) => ({ ...f, interviewer_email: e.target.value }))} 
                               className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" 
-                              placeholder="johndoe@email.com" 
+                              placeholder="johndoe@email.com"
                             />
                           </div>
                           <div>
-                            <label htmlFor="automation-interview-email-template" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Invite Template</label>
+                            <label htmlFor="automation-interview-email-template" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.inviteTemplate")}</label>
                             <select id="automation-interview-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
-                              <option value="" className="text-slate-900 bg-white">Default Invite</option>
+                              <option value="" className="text-slate-900 bg-white">{tr("automation.defaultInvite")}</option>
                               {emailTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                             </select>
                           </div>
@@ -765,7 +773,7 @@ export default function AutomationNodeModal({
                              className="w-full h-11 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] shadow-md shadow-[#5B53E0]/15 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#5B53E0]/20"
                            >
                               <span className="material-symbols-rounded text-lg">schedule</span>
-                              {"Next: Configure Time Slots"}
+                              {tr("automation.nextConfigureTimeSlots")}
                            </button>
                         </div>
                       </>
@@ -775,16 +783,16 @@ export default function AutomationNodeModal({
                     {type === "onboarding" && (
                       <>
                         <div>
-                          <label htmlFor="automation-onboarding-template" className="block text-[11.5px] font-bold text-[#8B5CF6] uppercase tracking-wider mb-2 ml-0.5">Onboarding Template <span className="text-red-400">*</span></label>
+                          <label htmlFor="automation-onboarding-template" className="block text-[11.5px] font-bold text-[#8B5CF6] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.onboardingTemplate")} <span className="text-red-400">*</span></label>
                           <select id="automation-onboarding-template" value={form.template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
-                            <option value="" className="text-slate-900 bg-white">Select template…</option>
+                            <option value="" className="text-slate-900 bg-white">{tr("automation.selectTemplateEllipsis")}</option>
                             {onboardingTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
                         <div>
-                          <label htmlFor="automation-onboarding-email-template" className="block text-[11.5px] font-bold text-[#8B5CF6] uppercase tracking-wider mb-2 ml-0.5">Intro Email Template</label>
+                          <label htmlFor="automation-onboarding-email-template" className="block text-[11.5px] font-bold text-[#8B5CF6] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.introEmailTemplate")}</label>
                           <select id="automation-onboarding-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
-                            <option value="" className="text-slate-900 bg-white">No Intro Email</option>
+                            <option value="" className="text-slate-900 bg-white">{tr("automation.noIntroEmail")}</option>
                             {emailTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
@@ -794,12 +802,12 @@ export default function AutomationNodeModal({
 
                   {/* AUTOMATION SETTINGS (Common) */}
                   <div className="pt-6 border-t border-[#E8EAED] flex flex-col gap-4">
-                    <span className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-1 ml-0.5">Automation Logic</span>
+                    <span className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-1 ml-0.5">{tr("automation.automationLogic")}</span>
                     
                     <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E1E4E8] rounded-[12px]">
                         <div>
-                          <p className="text-[14px] font-bold text-[#15171C]">Enabled Status</p>
-                          <p className="text-[11px] text-[#8A929E] mt-0.5">This action will trigger automations</p>
+                          <p className="text-[14px] font-bold text-[#15171C]">{tr("automation.enabledStatus")}</p>
+                          <p className="text-[11px] text-[#8A929E] mt-0.5">{tr("automation.triggerAutomationsDesc")}</p>
                         </div>
                         <button onClick={() => setForm((f: FormState) => ({ ...f, is_enabled: !f.is_enabled }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_enabled ? "bg-[#5B53E0]" : "bg-slate-200"}`}>
                           <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${form.is_enabled ? "translate-x-5" : ""}`} />
@@ -809,8 +817,8 @@ export default function AutomationNodeModal({
                     {(type === "mail" || type === "assessment" || type === "interview" || type === "onboarding") && (
                       <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E1E4E8] rounded-[12px]">
                           <div>
-                            <p className="text-[14px] font-bold text-[#15171C]">Auto-Move Candidate</p>
-                            <p className="text-[11px] text-[#8A929E] mt-0.5">Automatically advance candidate after trigger</p>
+                            <p className="text-[14px] font-bold text-[#15171C]">{tr("automation.autoMoveCandidate")}</p>
+                            <p className="text-[11px] text-[#8A929E] mt-0.5">{tr("automation.advanceAfterTrigger")}</p>
                           </div>
                           <button onClick={() => setForm((f: FormState) => ({ ...f, auto_move: !f.auto_move }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.auto_move ? "bg-[#5B53E0]" : "bg-slate-200"}`}>
                             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${form.auto_move ? "translate-x-5" : ""}`} />
@@ -822,8 +830,8 @@ export default function AutomationNodeModal({
                       <div className="space-y-4">
                         <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E1E4E8] rounded-[12px]">
                             <div>
-                              <p className="text-[14px] font-bold text-[#15171C]">Schedule Mode</p>
-                              <p className="text-[11px] text-[#8A929E] mt-0.5">{form.is_immediate ? "Immediate execution" : "Scheduled execution"}</p>
+                              <p className="text-[14px] font-bold text-[#15171C]">{tr("automation.scheduleMode")}</p>
+                              <p className="text-[11px] text-[#8A929E] mt-0.5">{form.is_immediate ? tr("automation.immediateExecution") : tr("automation.scheduledExecution")}</p>
                             </div>
                             <button onClick={() => setForm((f: FormState) => ({ ...f, is_immediate: !f.is_immediate }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_immediate ? "bg-[#5B53E0]" : "bg-slate-200"}`}>
                               <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${form.is_immediate ? "translate-x-5" : ""}`} />
@@ -832,7 +840,7 @@ export default function AutomationNodeModal({
 
                         {!form.is_immediate && (
                           <div className="px-1 animate-in slide-in-from-top-2 duration-300">
-                              <label htmlFor="automation-send-at" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Send Date & Time</label>
+                              <label htmlFor="automation-send-at" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.sendDateTime")}</label>
                               <input id="automation-send-at" type="datetime-local" value={form.send_at || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, send_at: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
                           </div>
                         )}
@@ -845,19 +853,19 @@ export default function AutomationNodeModal({
                    {type === "assessment" && (
                      <div className="space-y-4">
                         <div className="flex items-center justify-between mb-2">
-                           <h3 className="text-[13px] font-bold text-[#15171C]">Question Bank</h3>
+                           <h3 className="text-[13px] font-bold text-[#15171C]">{tr("automation.questionBank")}</h3>
                            <button 
                                onClick={() => {
                                  const newQ = form.assessment_type === 'CODING' ? {
                                    id: crypto.randomUUID(),
                                    type: 'CODING',
-                                   title: 'New Coding Task',
+                                   title: tr("automation.newCodingTask"),
                                    problem_statement: '',
                                    difficulty: 'Medium'
                                  } : {
                                    id: crypto.randomUUID(),
                                    type: 'APTITUDE',
-                                   question: 'New Question',
+                                   question: tr("automation.newQuestion"),
                                    options: ['', '', '', ''],
                                    correct_answer: '',
                                    explanation: ''
@@ -867,14 +875,14 @@ export default function AutomationNodeModal({
                                className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#E1E4E8] rounded-[10px] text-[12px] font-semibold text-[#5B53E0] hover:bg-[#5B53E0] hover:text-white transition-all shadow-sm"
                              >
                                <span className="material-symbols-rounded text-sm">add</span>
-                               {"Add Question"}
+                               {tr("automation.addQuestion")}
                              </button>
                         </div>
                         {(!form.generated_questions || form.generated_questions.length === 0) ? (
                           <div className="py-12 flex flex-col items-center justify-center bg-[#F7F8FA]/50 rounded-[14px] border-2 border-dashed border-[#E1E4E8]">
                              <span className="material-symbols-rounded text-[#9AA3AF] text-3xl mb-2">auto_awesome</span>
-                             <p className="text-[13px] font-semibold text-[#8A929E]">No questions generated yet.</p>
-                             <button onClick={() => setActiveTab("config")} className="mt-2 text-[12px] text-[#5B53E0] font-bold hover:underline">Go to Config to Generate</button>
+                             <p className="text-[13px] font-semibold text-[#8A929E]">{tr("automation.noQuestionsYet")}</p>
+                             <button onClick={() => setActiveTab("config")} className="mt-2 text-[12px] text-[#5B53E0] font-bold hover:underline">{tr("automation.goToConfigGenerate")}</button>
                           </div>
                         ) : (
                           <div className="space-y-6">
@@ -884,7 +892,7 @@ export default function AutomationNodeModal({
                                   
                                   <div className="flex justify-between gap-2 mb-4">
                                      <span className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider ml-6">
-                                       {q.type || form.assessment_type} Task
+                                       {tr("automation.taskLabel", { type: q.type || form.assessment_type })}
                                      </span>
                                      <button 
                                        onClick={() => {
@@ -900,7 +908,7 @@ export default function AutomationNodeModal({
                                     {(q.type === 'APTITUDE' || (!q.type && form.assessment_type === 'APTITUDE')) ? (
                                       <>
                                         <div>
-                                          <label htmlFor={`automation-question-text-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Question Text</label>
+                                          <label htmlFor={`automation-question-text-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.questionText")}</label>
                                           <textarea
                                             id={`automation-question-text-${i}`}
                                             value={q.question}
@@ -910,7 +918,7 @@ export default function AutomationNodeModal({
                                               setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                             }}
                                             className="w-full px-3.5 py-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all h-20 resize-none font-medium"
-                                            placeholder="Enter question text..."
+                                            placeholder={tr("automation.enterQuestionText")}
                                           />
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -924,7 +932,7 @@ export default function AutomationNodeModal({
                                                   setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                                 }}
                                                 className={`w-full h-11 pl-11 pr-4 rounded-[10px] border-2 text-[13.5px] font-semibold transition-all ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB]/50 text-[#5B53E0]" : "border-[#E1E4E8] bg-white text-[#374151] focus:border-[#5B53E0]"}`}
-                                                placeholder={`Option ${optIdx + 1}`}
+                                                placeholder={tr("automation.optionN", { n: optIdx + 1 })}
                                               />
                                               <button 
                                                 onClick={() => {
@@ -943,7 +951,7 @@ export default function AutomationNodeModal({
                                     ) : (
                                       <>
                                         <div>
-                                          <label htmlFor={`automation-problem-title-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Problem Title</label>
+                                          <label htmlFor={`automation-problem-title-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.problemTitle")}</label>
                                           <input
                                             id={`automation-problem-title-${i}`}
                                             type="text"
@@ -954,11 +962,11 @@ export default function AutomationNodeModal({
                                               setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                             }}
                                             className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all font-medium"
-                                            placeholder="e.g. Implement a Binary Search"
+                                            placeholder={tr("automation.problemTitlePlaceholder")}
                                           />
                                         </div>
                                         <div>
-                                          <label htmlFor={`automation-problem-statement-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">Problem Statement</label>
+                                          <label htmlFor={`automation-problem-statement-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.problemStatement")}</label>
                                           <textarea
                                             id={`automation-problem-statement-${i}`}
                                             value={q.problem_statement || ''}
@@ -968,7 +976,7 @@ export default function AutomationNodeModal({
                                               setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                             }}
                                             className="w-full px-3.5 py-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all h-32 resize-none font-medium"
-                                            placeholder="Enter the problem details..."
+                                            placeholder={tr("automation.enterProblemDetails")}
                                           />
                                         </div>
                                       </>
@@ -984,12 +992,12 @@ export default function AutomationNodeModal({
                    {type === "interview" && (
                      <div className="space-y-4">
                         <div className="flex items-center justify-between mb-2">
-                           <h3 className="text-[13px] font-bold text-[#15171C]">Time Slots</h3>
+                           <h3 className="text-[13px] font-bold text-[#15171C]">{tr("automation.timeSlots")}</h3>
                            <button 
                              onClick={() => {
                                const limit = Number(form.daily_limit) || 0;
                                if (limit > 0 && form.time_slots?.length >= limit) {
-                                  showToast(`Daily limit of ${limit} slots reached.`, "error");
+                                  showToast(tr("automation.dailyLimitReached", { limit }), "error");
                                   return;
                                }
                                setForm((f: FormState) => ({ ...f, time_slots: [...(f.time_slots || []), "09:00"] }));
@@ -997,14 +1005,14 @@ export default function AutomationNodeModal({
                              disabled={Number(form.daily_limit) > 0 && form.time_slots?.length >= Number(form.daily_limit)}
                              className="text-[12px] font-bold text-[#5B53E0] hover:underline disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:no-underline"
                            >
-                             + Add Slot
+                             {tr("automation.addSlotPlus")}
                            </button>
                         </div>
                         {(!form.time_slots || form.time_slots.length === 0) ? (
                           <div className="py-12 flex flex-col items-center justify-center bg-[#F7F8FA]/50 rounded-[14px] border-2 border-dashed border-[#E1E4E8]">
                              <span className="material-symbols-rounded text-[#9AA3AF] text-3xl mb-2">schedule</span>
-                             <p className="text-[13px] font-semibold text-[#8A929E]">No time slots generated.</p>
-                             <button onClick={handleGenerateTimeSlots} className="mt-2 text-[12px] text-[#5B53E0] font-bold hover:underline">Auto-Generate Slots</button>
+                             <p className="text-[13px] font-semibold text-[#8A929E]">{tr("automation.noTimeSlotsGenerated")}</p>
+                             <button onClick={handleGenerateTimeSlots} className="mt-2 text-[12px] text-[#5B53E0] font-bold hover:underline">{tr("automation.autoGenerateSlotsPlain")}</button>
                           </div>
                         ) : (
                           <div className="grid grid-cols-3 gap-3">
@@ -1037,7 +1045,7 @@ export default function AutomationNodeModal({
                              onClick={handleGenerateTimeSlots}
                              className="w-full h-11 bg-[#15171C] hover:bg-[#1F2127] text-white rounded-[10px] text-[13px] font-semibold transition-all shadow-sm"
                            >
-                              Refresh / Regenerate Slots
+                              {tr("automation.refreshRegenerateSlots")}
                            </button>
                         </div>
                      </div>
@@ -1061,7 +1069,7 @@ export default function AutomationNodeModal({
                 ) : (
                   <>
                     <span className="material-symbols-rounded text-lg">{editingId ? "save" : "add_circle"}</span>
-                    {editingId ? "UPDATE" : "ADD"} {type.toUpperCase()} NODE
+                    {editingId ? tr("automation.updateNode", { type: type.toUpperCase() }) : tr("automation.addNode", { type: type.toUpperCase() })}
                   </>
                 )}
               </button>

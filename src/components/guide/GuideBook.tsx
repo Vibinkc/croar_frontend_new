@@ -8,6 +8,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useGuide } from "./GuideProvider";
 import { GUIDE_TOPICS, type GuideTopic } from "./guideContent";
+import { useI18n } from "@/context/I18nContext";
 
 /** Flatten a topic to a single searchable string. */
 function topicText(t: GuideTopic): string {
@@ -29,6 +30,7 @@ function topicText(t: GuideTopic): string {
  */
 export function GuideBook() {
     const { guideOpen, setGuideOpen } = useGuide();
+    const { t: tr } = useI18n();
     const [mounted, setMounted] = useState(false);
     const [activeId, setActiveId] = useState(GUIDE_TOPICS[0].id);
     const [query, setQuery] = useState("");
@@ -69,11 +71,11 @@ export function GuideBook() {
                                 <span className="material-symbols-rounded text-[20px] text-[#8B7DFF]">menu_book</span>
                             </span>
                             <div className="min-w-0">
-                                <h2 className="text-[16px] font-bold leading-tight">Croar guide</h2>
-                                <p className="text-[12px] text-white/55">Everything the app can do, explained.</p>
+                                <h2 className="text-[16px] font-bold leading-tight">{tr("sharedUi.croarGuide")}</h2>
+                                <p className="text-[12px] text-white/55">{tr("sharedUi.everythingExplained")}</p>
                             </div>
                         </div>
-                        <button onClick={close} aria-label="Close guide" className="w-8 h-8 rounded-[9px] hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0">
+                        <button onClick={close} aria-label={tr("sharedUi.closeGuide")} className="w-8 h-8 rounded-[9px] hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0">
                             <span className="material-symbols-rounded text-[20px]">close</span>
                         </button>
                     </div>
@@ -83,7 +85,7 @@ export function GuideBook() {
                         <input
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Search the guide…"
+                            placeholder={tr("sharedUi.searchGuide")}
                             className="w-full h-9 pl-9 pr-3 rounded-[9px] bg-white/[0.08] border border-white/15 text-[13px] text-white placeholder:text-white/40 outline-none focus:border-[#8B7DFF] focus:bg-white/[0.12] transition-colors"
                         />
                     </div>
@@ -94,7 +96,7 @@ export function GuideBook() {
                     {/* Topic nav */}
                     <nav className="flex md:flex-col gap-1 p-2.5 md:w-[208px] shrink-0 border-b md:border-b-0 md:border-r border-[#E8EAED] overflow-x-auto md:overflow-y-auto bg-[#FAFAFB]">
                         {filtered.length === 0 && (
-                            <p className="text-[12px] text-[#8A929E] px-2 py-1.5">No matches.</p>
+                            <p className="text-[12px] text-[#8A929E] px-2 py-1.5">{tr("sharedUi.noMatches")}</p>
                         )}
                         {filtered.map((t) => {
                             const on = t.id === active.id;
@@ -162,7 +164,7 @@ export function GuideBook() {
                                             <div className="mt-2.5 rounded-[12px] border border-[#DAD7F6] bg-[#FAFAFE] overflow-hidden">
                                                 <div className="flex items-center gap-1.5 px-4 pt-3">
                                                     <span className="material-symbols-rounded text-[16px] text-[#5B53E0]">lightbulb</span>
-                                                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#5B53E0]">Example</span>
+                                                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#5B53E0]">{tr("sharedUi.example")}</span>
                                                 </div>
                                                 <p className="px-4 pt-1.5 text-[13px] font-semibold text-[#15171C]">{b.example.scenario}</p>
                                                 <ol className="px-4 pb-4 pt-2.5 space-y-2">

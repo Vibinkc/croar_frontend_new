@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import { Search, Filter, ChevronDown } from "lucide-react";
 import {
   payrollApi,
@@ -32,23 +33,24 @@ const num = (v: number | string) =>
 
 const empName = (e: Employee) => `${e.first_name} ${e.last_name}`.trim() || e.email;
 
-const statusBadge = (status: string) => {
-  const s = status.toUpperCase();
-  if (s === "APPROVED") return <Badge tone="success" dot>Approved</Badge>;
-  if (s === "REJECTED") return <Badge tone="danger" dot>Rejected</Badge>;
-  if (s === "CANCELLED") return <Badge tone="neutral" dot>Cancelled</Badge>;
-  if (s === "PENDING") return <Badge tone="warning" dot>Pending</Badge>;
-  return <Badge tone="neutral" dot>{status}</Badge>;
-};
-
 const selectCls =
   "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
 
 export default function LeavePage() {
   const { can } = useAuth();
+    const { t: tr } = useI18n();
   const { confirm } = useDialog();
   const canEdit = can("payroll:configure");
   const canApprove = can("payroll:approve");
+
+  const statusBadge = (status: string) => {
+    const s = status.toUpperCase();
+    if (s === "APPROVED") return <Badge tone="success" dot>{tr("payroll.approved")}</Badge>;
+    if (s === "REJECTED") return <Badge tone="danger" dot>{tr("payroll.rejected")}</Badge>;
+    if (s === "CANCELLED") return <Badge tone="neutral" dot>{tr("payroll.cancelled")}</Badge>;
+    if (s === "PENDING") return <Badge tone="warning" dot>{tr("payroll.pending")}</Badge>;
+    return <Badge tone="neutral" dot>{status}</Badge>;
+  };
 
   const [types, setTypes] = useState<LeaveType[]>([]);
   const [balances, setBalances] = useState<LeaveBalance[]>([]);
@@ -156,8 +158,9 @@ export default function LeavePage() {
     r: LeaveRequest,
     action: "approve" | "reject" | "cancel",
   ) {
-    const verb = action === "approve" ? "Approve" : action === "reject" ? "Reject" : "Cancel";
-    if (!(await confirm({ title: `${verb} leave`, message: `${verb} this leave request?` }))) return;
+    const verb =
+      action === "approve" ? tr("payroll.approve") : action === "reject" ? tr("payroll.reject") : tr("common.cancel");
+    if (!(await confirm({ title: tr("payroll.confirmLeaveTitle", { action: verb }), message: tr("payroll.confirmLeaveMsg", { action: verb }) }))) return;
     await run(() =>
       action === "approve"
         ? leaveApi.approveRequest(r.id)
@@ -191,9 +194,9 @@ export default function LeavePage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Leave"
-        subtitle="Leave types and balances drive paid-vs-unpaid decisions. Approving a request decrements the balance and marks the matching timesheet days (paid leave = no LOP, unpaid = LOP)."
-        help={<><p>Review and approve leave requests and manage balances.</p><p>Approvals update balances and flow into payroll automatically.</p></>}
+        title={tr("nav.leave")}
+        subtitle={tr("payroll.leaveSubtitle")}
+        help={<><p>{tr("payroll.leaveHelp1")}</p><p>{tr("payroll.leaveHelp2")}</p></>}
       />
 
       {error && (
@@ -205,28 +208,28 @@ export default function LeavePage() {
       {/* Balance metrics */}
       <StatGrid>
         <StatCard
-          label="Pending Requests"
+          label={tr("payroll.pendingRequests")}
           value={pending.length}
           icon="pending_actions"
           gradient="linear-gradient(135deg,#F6B65C,#D97706)"
           glow="rgba(217,119,6,0.25)"
         />
         <StatCard
-          label="Days Entitled"
+          label={tr("payroll.daysEntitled")}
           value={num(totalEntitled)}
           icon="event_available"
           gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
           glow="rgba(91,83,224,0.28)"
         />
         <StatCard
-          label="Days Used"
+          label={tr("payroll.daysUsed")}
           value={num(totalUsed)}
           icon="event_busy"
           gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
           glow="rgba(53,89,199,0.25)"
         />
         <StatCard
-          label="Days Remaining"
+          label={tr("payroll.daysRemaining")}
           value={num(totalRemaining)}
           icon="account_balance_wallet"
           gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
@@ -237,14 +240,14 @@ export default function LeavePage() {
       {/* File a leave request */}
       {canEdit && (
         <Card>
-          <CardHeader title="Apply for leave" subtitle="File a request on behalf of an employee." />
+          <CardHeader title={tr("payroll.applyForLeave")} subtitle={tr("payroll.applyForLeaveSub")} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Field label="Employee">
+            <Field label={tr("payroll.employee")}>
               <Select
                 value={reqForm.employee_id}
                 onChange={(e) => setReqForm({ ...reqForm, employee_id: e.target.value })}
               >
-                <option value="">Select…</option>
+                <option value="">{tr("payroll.selectDots")}</option>
                 {employees.map((e) => (
                   <option key={e.id} value={e.id}>
                     {empName(e)}
@@ -252,29 +255,29 @@ export default function LeavePage() {
                 ))}
               </Select>
             </Field>
-            <Field label="Leave type">
+            <Field label={tr("payroll.leaveType")}>
               <Select
                 value={reqForm.leave_type_id}
                 onChange={(e) => setReqForm({ ...reqForm, leave_type_id: e.target.value })}
               >
-                <option value="">Select…</option>
+                <option value="">{tr("payroll.selectDots")}</option>
                 {types
                   .filter((t) => t.is_active)
                   .map((t) => (
                     <option key={t.id} value={t.id}>
-                      {t.name} ({t.is_paid ? "paid" : "unpaid"})
+                      {t.name} ({t.is_paid ? tr("payroll.paidLower") : tr("payroll.unpaidLower")})
                     </option>
                   ))}
               </Select>
             </Field>
-            <Field label="From">
+            <Field label={tr("payroll.from")}>
               <Input
                 type="date"
                 value={reqForm.start_date}
                 onChange={(e) => setReqForm({ ...reqForm, start_date: e.target.value })}
               />
             </Field>
-            <Field label="To">
+            <Field label={tr("payroll.to")}>
               <Input
                 type="date"
                 value={reqForm.half_day ? reqForm.start_date : reqForm.end_date}
@@ -291,10 +294,10 @@ export default function LeavePage() {
                 onChange={(e) => setReqForm({ ...reqForm, half_day: e.target.checked })}
                 className="h-4 w-4 rounded accent-[#5B53E0]"
               />
-              Half day
+              {tr("payroll.halfDay")}
             </label>
             <Button onClick={createRequest} disabled={busy} size="sm" icon="send">
-              Submit request
+              {tr("payroll.submitRequest")}
             </Button>
           </div>
         </Card>
@@ -308,7 +311,7 @@ export default function LeavePage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search requests by employee or leave type…"
+            placeholder={tr("payroll.searchRequestsPlaceholder")}
             className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
           />
         </div>
@@ -320,7 +323,7 @@ export default function LeavePage() {
               onChange={(e) => setTypeFilter(e.target.value)}
               className={`${selectCls} w-full md:min-w-[170px]`}
             >
-              <option value="ALL">All leave types</option>
+              <option value="ALL">{tr("payroll.allLeaveTypes")}</option>
               {types.map((t) => (
                 <option key={t.id} value={t.code}>
                   {t.name}
@@ -334,7 +337,7 @@ export default function LeavePage() {
 
       {/* Pending requests */}
       <section className="space-y-3">
-        <h2 className="text-[15px] font-bold text-[#15171C]">Pending approvals</h2>
+        <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.pendingApprovals")}</h2>
         <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden">
           {loading ? (
             <div className="p-4 space-y-2.5">
@@ -347,18 +350,18 @@ export default function LeavePage() {
               <div className="w-14 h-14 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-4">
                 <span className="material-symbols-rounded text-[28px] text-[#C7CCD4]">pending_actions</span>
               </div>
-              <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">No pending leave requests</h3>
-              <p className="text-[#8A929E] text-[13.5px] max-w-xs mx-auto">All caught up — new requests will appear here for approval.</p>
+              <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">{tr("payroll.noPendingLeave")}</h3>
+              <p className="text-[#8A929E] text-[13.5px] max-w-xs mx-auto">{tr("payroll.pendingLeaveEmpty")}</p>
             </div>
           ) : (
             <>
               {/* Column header (desktop) */}
               <div className="hidden md:grid grid-cols-[2fr_1.2fr_1.4fr_0.7fr_180px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Type</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Dates</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Days</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.type")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.dates")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.days")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
               </div>
               <div className="divide-y divide-[#F0F0F1]">
                 {pendingShown.map((r) => (
@@ -411,7 +414,7 @@ export default function LeavePage() {
                             variant="primary"
                             className="bg-[#16A34A] hover:bg-[#15803D] shadow-[0_6px_16px_rgba(22,163,74,0.22)]"
                           >
-                            Approve
+                            {tr("payroll.approve")}
                           </Button>
                           <Button
                             onClick={() => decide(r, "reject")}
@@ -419,7 +422,7 @@ export default function LeavePage() {
                             size="sm"
                             variant="danger"
                           >
-                            Reject
+                            {tr("payroll.reject")}
                           </Button>
                         </>
                       )}
@@ -430,7 +433,7 @@ export default function LeavePage() {
                           size="sm"
                           variant="secondary"
                         >
-                          Cancel
+                          {tr("common.cancel")}
                         </Button>
                       )}
                     </div>
@@ -444,7 +447,7 @@ export default function LeavePage() {
 
       {/* Balances */}
       <section className="space-y-3">
-        <h2 className="text-[15px] font-bold text-[#15171C]">Leave balances</h2>
+        <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.leaveBalances")}</h2>
         <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden">
           {loading ? (
             <div className="p-4 space-y-2.5">
@@ -457,19 +460,19 @@ export default function LeavePage() {
               <div className="w-14 h-14 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-4">
                 <span className="material-symbols-rounded text-[28px] text-[#C7CCD4]">account_balance_wallet</span>
               </div>
-              <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">No balances yet</h3>
-              <p className="text-[#8A929E] text-[13.5px] max-w-xs mx-auto">Add a paid leave type below to start accruing balances.</p>
+              <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">{tr("payroll.noBalances")}</h3>
+              <p className="text-[#8A929E] text-[13.5px] max-w-xs mx-auto">{tr("payroll.balancesEmpty")}</p>
             </div>
           ) : (
             <>
               {/* Column header (desktop) */}
               <div className="hidden md:grid grid-cols-[2fr_1fr_repeat(4,0.8fr)] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Type</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Entitled</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Accrued</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Used</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Balance</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.type")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.entitled")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.accrued")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.used")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.balance")}</span>
               </div>
               <div className="divide-y divide-[#F0F0F1]">
                 {balances.map((b) => (
@@ -490,16 +493,16 @@ export default function LeavePage() {
                       {b.leave_type_code || b.leave_type_name}
                     </div>
 
-                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Entitled</div>
+                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.entitled")}</div>
                     <div className={`text-[13px] text-[#374151] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.entitled)}</div>
 
-                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Accrued</div>
+                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.accrued")}</div>
                     <div className={`text-[13px] text-[#374151] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.accrued)}</div>
 
-                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Used</div>
+                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.used")}</div>
                     <div className={`text-[13px] text-[#374151] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.used)}</div>
 
-                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Balance</div>
+                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.balance")}</div>
                     <div className={`text-[13px] font-bold text-[#15171C] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.balance)}</div>
                   </div>
                 ))}
@@ -512,8 +515,8 @@ export default function LeavePage() {
       {/* Leave types config */}
       <Card>
         <CardHeader
-          title="Leave types"
-          subtitle="Paid types carry an annual quota that accrues into each employee's balance. Unpaid types (loss of pay) always land as LOP."
+          title={tr("payroll.leaveTypes")}
+          subtitle={tr("payroll.leaveTypesSub")}
         />
 
         {types.length > 0 && (
@@ -527,16 +530,16 @@ export default function LeavePage() {
                   <span className="text-[14px] font-bold text-[#15171C]">{t.name}</span>
                   <Badge tone="neutral" className={jetbrainsMono.className}>{t.code}</Badge>
                   <span className="text-[12.5px] text-[#8A929E]">
-                    {t.is_paid ? `${num(t.annual_quota)} days/yr · ${t.accrual.toLowerCase()}` : "unpaid (LOP)"}
+                    {t.is_paid ? `${num(t.annual_quota)} ${tr("payroll.daysPerYear")} · ${t.accrual.toLowerCase()}` : tr("payroll.unpaidLop")}
                   </span>
-                  {!t.is_active && <Badge tone="danger">inactive</Badge>}
+                  {!t.is_active && <Badge tone="danger">{tr("payroll.inactiveLower")}</Badge>}
                 </div>
                 {canEdit && (
                   <button
                     onClick={() => run(() => leaveApi.updateType(t.id, { is_active: !t.is_active }))}
                     className="text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4A43C9] hover:underline shrink-0"
                   >
-                    {t.is_active ? "Deactivate" : "Activate"}
+                    {t.is_active ? tr("payroll.deactivate") : tr("payroll.activate")}
                   </button>
                 )}
               </li>
@@ -547,25 +550,25 @@ export default function LeavePage() {
         {canEdit && (
           <div className="rounded-[10px] border border-dashed border-[#E1E4E8] bg-[#FBFBFC] p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Field label="Name">
+              <Field label={tr("payroll.name")}>
                 <Input
                   type="text"
-                  placeholder="Casual Leave"
+                  placeholder={tr("payroll.casualLeavePlaceholder")}
                   value={typeForm.name}
                   onChange={(e) => setTypeForm({ ...typeForm, name: e.target.value })}
                 />
               </Field>
-              <Field label="Code">
+              <Field label={tr("payroll.code")}>
                 <Input
                   type="text"
-                  placeholder="CL"
+                  placeholder={tr("payroll.codePlaceholder")}
                   value={typeForm.code}
                   onChange={(e) => setTypeForm({ ...typeForm, code: e.target.value })}
                 />
               </Field>
               {typeForm.is_paid && (
                 <>
-                  <Field label="Quota / yr">
+                  <Field label={tr("payroll.quotaPerYear")}>
                     <Input
                       type="number"
                       min={0}
@@ -575,15 +578,15 @@ export default function LeavePage() {
                       }
                     />
                   </Field>
-                  <Field label="Accrual">
+                  <Field label={tr("payroll.accrual")}>
                     <Select
                       value={typeForm.accrual}
                       onChange={(e) =>
                         setTypeForm({ ...typeForm, accrual: e.target.value as AccrualMethod })
                       }
                     >
-                      <option value="ANNUAL">Annual (full up front)</option>
-                      <option value="MONTHLY">Monthly (1/12 per month)</option>
+                      <option value="ANNUAL">{tr("payroll.accrualAnnual")}</option>
+                      <option value="MONTHLY">{tr("payroll.accrualMonthly")}</option>
                     </Select>
                   </Field>
                 </>
@@ -597,10 +600,10 @@ export default function LeavePage() {
                   onChange={(e) => setTypeForm({ ...typeForm, is_paid: e.target.checked })}
                   className="h-4 w-4 rounded accent-[#5B53E0]"
                 />
-                Paid
+                {tr("payroll.paid")}
               </label>
               <Button onClick={createType} disabled={busy} size="sm" icon="add">
-                Add leave type
+                {tr("payroll.addLeaveType")}
               </Button>
             </div>
           </div>
@@ -610,15 +613,15 @@ export default function LeavePage() {
       {/* History */}
       {historyShown.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-[15px] font-bold text-[#15171C]">Recent decisions</h2>
+          <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.recentDecisions")}</h2>
           <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden">
             {/* Column header (desktop) */}
             <div className="hidden md:grid grid-cols-[2fr_1fr_1.4fr_0.7fr_1fr] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Type</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Dates</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Days</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Status</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.type")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.dates")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.days")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.status")}</span>
             </div>
             <div className="divide-y divide-[#F0F0F1]">
               {historyShown.slice(0, 20).map((r) => (

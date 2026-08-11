@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useI18n } from "@/context/I18nContext";
 import { 
     Briefcase, 
     Building, 
@@ -22,6 +23,7 @@ export default function CandidateEngagementPage() {
     const params = useParams();
     const router = useRouter();
     const shortlistId = params.shortlist_id as string;
+    const { t } = useI18n();
 
     const [loading, setLoading] = useState(true);
     const [source, setSource] = useState<string | null>(null);
@@ -102,7 +104,7 @@ export default function CandidateEngagementPage() {
             <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" />
-                    <p className="text-slate-500 font-bold text-sm">Preparing your opportunity...</p>
+                    <p className="text-slate-500 font-bold text-sm">{t("candidate.preparingOpportunity")}</p>
                 </div>
             </div>
         );
@@ -115,9 +117,9 @@ export default function CandidateEngagementPage() {
                     <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <FileText className="w-8 h-8" />
                     </div>
-                    <h1 className="text-xl font-black text-slate-900 mb-2">Link Expired or Invalid</h1>
-                    <p className="text-slate-500 text-sm mb-8">This engagement link is no longer valid. Please contact the recruiting team for a new one.</p>
-                    <button onClick={() => router.push('/')} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-sm">Go to Homepage</button>
+                    <h1 className="text-xl font-black text-slate-900 mb-2">{t("candidate.linkExpiredTitle")}</h1>
+                    <p className="text-slate-500 text-sm mb-8">{t("candidate.linkExpiredDesc")}</p>
+                    <button onClick={() => router.push('/')} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-sm">{t("candidate.goToHomepage")}</button>
                 </div>
             </div>
         );
@@ -138,7 +140,7 @@ export default function CandidateEngagementPage() {
                     </div>
                     <div className="px-4 py-2 bg-white rounded-full border border-slate-100 shadow-sm flex items-center gap-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Opportunity</span>
+                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{t("candidate.activeOpportunity")}</span>
                     </div>
                 </div>
 
@@ -153,12 +155,11 @@ export default function CandidateEngagementPage() {
                         >
                             <div className="mb-8">
                                 <h1 className="text-3xl font-black text-slate-900 leading-tight mb-4">
-                                    Hello {profile.full_name}, <br/> 
-                                    A New Opportunity Awaits!
+                                    {t("candidate.helloName", { name: profile.full_name })} <br/>
+                                    {t("candidate.opportunityAwaits")}
                                 </h1>
                                 <p className="text-slate-500 font-medium leading-relaxed">
-                                    We've been impressed by your profile and would love to explore your potential as our next <strong className="text-indigo-600">{job_title}</strong>. 
-                                    Before we share the full details of the role, we'd like to get to know your current professional landscape better.
+                                    {t("candidate.impressedIntro")}<strong className="text-indigo-600">{job_title}</strong>{t("candidate.impressedOutro")}
                                 </p>
                             </div>
 
@@ -168,7 +169,7 @@ export default function CandidateEngagementPage() {
                                         <Briefcase className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-black text-slate-900">Role</h4>
+                                        <h4 className="text-sm font-black text-slate-900">{t("candidate.role")}</h4>
                                         <p className="text-xs font-bold text-slate-400">{job_title}</p>
                                     </div>
                                 </div>
@@ -177,8 +178,8 @@ export default function CandidateEngagementPage() {
                                         <UserCheck className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-black text-slate-900">Status</h4>
-                                        <p className="text-xs font-bold text-slate-400">Direct Invitation</p>
+                                        <h4 className="text-sm font-black text-slate-900">{t("candidate.status")}</h4>
+                                        <p className="text-xs font-bold text-slate-400">{t("candidate.directInvitation")}</p>
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +188,7 @@ export default function CandidateEngagementPage() {
                                 onClick={() => setStep(2)}
                                 className="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-base transition-all active:scale-95 shadow-xl shadow-indigo-100 flex items-center justify-center gap-3"
                             >
-                                Get Started
+                                {t("candidate.getStarted")}
                                 <ChevronRight className="w-5 h-5" />
                             </button>
                         </motion.div>
@@ -203,8 +204,8 @@ export default function CandidateEngagementPage() {
                         >
                             <div className="mb-10 flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-black text-slate-900 mb-1">Basic Information</h2>
-                                    <p className="text-sm font-medium text-slate-400">Please provide a few details to proceed to the Job Description.</p>
+                                    <h2 className="text-2xl font-black text-slate-900 mb-1">{t("candidate.basicInformation")}</h2>
+                                    <p className="text-sm font-medium text-slate-400">{t("candidate.basicInfoDesc")}</p>
                                 </div>
                                 <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-black">
                                     2/3
@@ -214,7 +215,7 @@ export default function CandidateEngagementPage() {
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label htmlFor="total_experience" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Total Experience (Years)</label>
+                                        <label htmlFor="total_experience" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.totalExperience")}</label>
                                         <div className="relative">
                                             <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                             <input
@@ -224,13 +225,13 @@ export default function CandidateEngagementPage() {
                                                 name="total_experience"
                                                 value={formData.total_experience}
                                                 onChange={handleInputChange}
-                                                placeholder="e.g. 8"
+                                                placeholder={t("candidate.egEight")}
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="relevant_experience" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Relevant Experience (Years)</label>
+                                        <label htmlFor="relevant_experience" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.relevantExperience")}</label>
                                         <div className="relative">
                                             <CheckCircle2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                             <input
@@ -240,7 +241,7 @@ export default function CandidateEngagementPage() {
                                                 name="relevant_experience"
                                                 value={formData.relevant_experience}
                                                 onChange={handleInputChange}
-                                                placeholder="e.g. 5"
+                                                placeholder={t("candidate.egFive")}
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
                                             />
                                         </div>
@@ -249,7 +250,7 @@ export default function CandidateEngagementPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label htmlFor="previous_company" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Previous/Current Company</label>
+                                        <label htmlFor="previous_company" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.previousCompany")}</label>
                                         <div className="relative">
                                             <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                             <input
@@ -258,14 +259,14 @@ export default function CandidateEngagementPage() {
                                                 name="previous_company"
                                                 value={formData.previous_company}
                                                 onChange={handleInputChange}
-                                                placeholder="e.g. Acme Corp"
+                                                placeholder={t("candidate.egCompany")}
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
                                             />
                                         </div>
                                     </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label htmlFor="notice_period" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Notice Period</label>
+                                        <label htmlFor="notice_period" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.noticePeriod")}</label>
                                         <div className="relative">
                                             <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                             <select
@@ -276,17 +277,17 @@ export default function CandidateEngagementPage() {
                                                 onChange={handleInputChange}
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all appearance-none"
                                             >
-                                                <option value="">Select Notice Period</option>
-                                                <option value="Immediate">Immediate</option>
-                                                <option value="15 Days">15 Days</option>
-                                                <option value="30 Days">30 Days</option>
-                                                <option value="60 Days">60 Days</option>
-                                                <option value="90 Days">90 Days</option>
+                                                <option value="">{t("candidate.selectNoticePeriod")}</option>
+                                                <option value="Immediate">{t("candidate.immediate")}</option>
+                                                <option value="15 Days">{t("candidate.days15")}</option>
+                                                <option value="30 Days">{t("candidate.days30")}</option>
+                                                <option value="60 Days">{t("candidate.days60")}</option>
+                                                <option value="90 Days">{t("candidate.days90")}</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="work_preference" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Work Preference</label>
+                                        <label htmlFor="work_preference" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.workPreference")}</label>
                                         <div className="relative">
                                             <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                             <select
@@ -297,16 +298,16 @@ export default function CandidateEngagementPage() {
                                                 onChange={handleInputChange}
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all appearance-none"
                                             >
-                                                <option value="Remote">Remote</option>
-                                                <option value="Hybrid">Hybrid</option>
-                                                <option value="On-site">On-site</option>
+                                                <option value="Remote">{t("candidate.remote")}</option>
+                                                <option value="Hybrid">{t("candidate.hybrid")}</option>
+                                                <option value="On-site">{t("candidate.onsite")}</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="top_skills" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Top 3 Skills & Proficiency</label>
+                                    <label htmlFor="top_skills" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.topSkills")}</label>
                                     <div className="relative">
                                         <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                         <input
@@ -315,7 +316,7 @@ export default function CandidateEngagementPage() {
                                             name="top_skills"
                                             value={formData.top_skills}
                                             onChange={handleInputChange}
-                                            placeholder="e.g. React (Expert), Node.js (Mid), AWS (Beginner)"
+                                            placeholder={t("candidate.egSkills")}
                                             className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
                                         />
                                     </div>
@@ -324,7 +325,7 @@ export default function CandidateEngagementPage() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label htmlFor="current_salary" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Current Salary (Annual)</label>
+                                        <label htmlFor="current_salary" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.currentSalary")}</label>
                                         <div className="relative">
                                             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                             <input
@@ -333,13 +334,13 @@ export default function CandidateEngagementPage() {
                                                 name="current_salary"
                                                 value={formData.current_salary}
                                                 onChange={handleInputChange}
-                                                placeholder="e.g. $80,000"
+                                                placeholder={t("candidate.egCurrentSalary")}
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="expected_salary" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Expected Salary (Annual)</label>
+                                        <label htmlFor="expected_salary" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.expectedSalary")}</label>
                                         <div className="relative">
                                             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                             <input
@@ -348,7 +349,7 @@ export default function CandidateEngagementPage() {
                                                 name="expected_salary"
                                                 value={formData.expected_salary}
                                                 onChange={handleInputChange}
-                                                placeholder="e.g. $100,000"
+                                                placeholder={t("candidate.egExpectedSalary")}
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
                                             />
                                         </div>
@@ -356,13 +357,13 @@ export default function CandidateEngagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="reason_for_change" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">Reason for Change (Optional)</label>
+                                    <label htmlFor="reason_for_change" className="text-xs font-black text-slate-500 uppercase tracking-widest px-1">{t("candidate.reasonForChange")}</label>
                                     <textarea
                                         id="reason_for_change"
                                         name="reason_for_change"
                                         value={formData.reason_for_change}
                                         onChange={handleInputChange}
-                                        placeholder="Briefly tell us why you're looking for a new opportunity..."
+                                        placeholder={t("candidate.reasonPlaceholder")}
                                         rows={3}
                                         className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all resize-none"
                                     />
@@ -381,7 +382,7 @@ export default function CandidateEngagementPage() {
                                         disabled={submitting}
                                         className="flex-1 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-base transition-all active:scale-95 shadow-xl shadow-indigo-100 flex items-center justify-center gap-3 disabled:opacity-50"
                                     >
-                                        {submitting ? "Saving..." : "Show Job Description"}
+                                        {submitting ? t("candidate.saving") : t("candidate.showJobDescription")}
                                         <Send className="w-5 h-5" />
                                     </button>
                                 </div>
@@ -402,8 +403,8 @@ export default function CandidateEngagementPage() {
                                     <CheckCircle2 className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h4 className="text-emerald-900 font-black text-sm">Interest Registered!</h4>
-                                    <p className="text-emerald-700/70 text-xs font-bold">Your details have been saved. You can now review the full Job Description below.</p>
+                                    <h4 className="text-emerald-900 font-black text-sm">{t("candidate.interestRegistered")}</h4>
+                                    <p className="text-emerald-700/70 text-xs font-bold">{t("candidate.interestRegisteredDesc")}</p>
                                 </div>
                             </div>
 
@@ -412,8 +413,8 @@ export default function CandidateEngagementPage() {
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-10 border-b border-slate-50">
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-full border border-indigo-100">Full Time</span>
-                                            <span className="px-3 py-1 bg-slate-50 text-slate-500 text-[10px] font-black uppercase rounded-full border border-slate-100">Engineering</span>
+                                            <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-full border border-indigo-100">{t("candidate.fullTime")}</span>
+                                            <span className="px-3 py-1 bg-slate-50 text-slate-500 text-[10px] font-black uppercase rounded-full border border-slate-100">{t("candidate.engineering")}</span>
                                         </div>
                                         <h1 className="text-3xl font-black text-slate-900 tracking-tight">{job_title}</h1>
                                         <div className="flex items-center gap-4 text-sm font-bold text-slate-400 mt-2">
@@ -421,7 +422,7 @@ export default function CandidateEngagementPage() {
                                                 <Building className="w-4 h-4" /> Croar Tech
                                             </div>
                                             <div className="flex items-center gap-1.5">
-                                                <MapPin className="w-4 h-4" /> Remote / Global
+                                                <MapPin className="w-4 h-4" /> {t("candidate.remoteGlobal")}
                                             </div>
                                         </div>
                                     </div>
@@ -429,25 +430,24 @@ export default function CandidateEngagementPage() {
                                         onClick={() => router.push(`/jobs/${shortlist.job_id}?email=${profile.email}${source ? `&source=${source}` : ''}`)}
                                         className="py-5 px-10 bg-slate-900 text-white rounded-2xl font-black text-base hover:bg-slate-800 transition-all active:scale-95 shadow-xl shadow-slate-200 flex items-center justify-center gap-3"
                                     >
-                                        Final Application
+                                        {t("candidate.finalApplication")}
                                         <ChevronRight className="w-5 h-5" />
                                     </button>
                                 </div>
 
                                 <div className="prose prose-slate max-w-none">
-                                    <h3 className="text-xl font-black text-slate-900 mb-4">About the Role</h3>
+                                    <h3 className="text-xl font-black text-slate-900 mb-4">{t("candidate.aboutRole")}</h3>
                                     <p className="text-slate-600 leading-relaxed font-medium mb-6">
-                                        We are looking for a visionary {job_title} to join our growing team. You will be responsible for building state-of-the-art products that impact thousands of users daily. 
-                                        Our culture values innovation, ownership, and rapid iteration.
+                                        {t("candidate.aboutRoleDesc", { jobTitle: job_title })}
                                     </p>
 
-                                    <h3 className="text-xl font-black text-slate-900 mb-4">Core Responsibilities</h3>
+                                    <h3 className="text-xl font-black text-slate-900 mb-4">{t("candidate.coreResponsibilities")}</h3>
                                     <ul className="space-y-3 mb-8">
                                         {[
-                                            "Lead technical architecture and implementation",
-                                            "Collaborate with cross-functional teams to define product roadmap",
-                                            "Mentor junior team members and maintain high code quality standards",
-                                            "Drive innovation in development processes and tools"
+                                            t("candidate.resp1"),
+                                            t("candidate.resp2"),
+                                            t("candidate.resp3"),
+                                            t("candidate.resp4")
                                         ].map((item, idx) => (
                                             <li key={idx} className="flex items-start gap-3 text-slate-600 font-medium">
                                                 <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
@@ -457,13 +457,13 @@ export default function CandidateEngagementPage() {
                                     </ul>
 
                                     <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100">
-                                        <h4 className="text-slate-900 font-black mb-2">Ready to take the next step?</h4>
-                                        <p className="text-slate-500 text-sm font-bold mb-6">Click the button below to complete your final application and schedule a sync with our hiring managers.</p>
+                                        <h4 className="text-slate-900 font-black mb-2">{t("candidate.readyNextStep")}</h4>
+                                        <p className="text-slate-500 text-sm font-bold mb-6">{t("candidate.readyNextStepDesc")}</p>
                                         <button 
                                             onClick={() => router.push(`/jobs/${shortlist.job_id}?email=${profile.email}${source ? `&source=${source}` : ''}`)}
                                             className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all"
                                         >
-                                            Continue to Final Application
+                                            {t("candidate.continueToFinalApp")}
                                         </button>
                                     </div>
                                 </div>
@@ -474,7 +474,7 @@ export default function CandidateEngagementPage() {
 
                 {/* Footer Credits */}
                 <div className="mt-12 text-center">
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Powered by Croar Talent Sourcing Platform</p>
+                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{t("candidate.poweredBy")}</p>
                 </div>
             </div>
         </div>

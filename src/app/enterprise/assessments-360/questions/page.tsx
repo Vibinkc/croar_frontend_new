@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { Button, Card, Textarea, Select, Field, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
 
@@ -22,6 +23,7 @@ interface GeneratedQuestion {
 
 export default function X360QuestionBank() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [questions, setQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
@@ -149,15 +151,15 @@ export default function X360QuestionBank() {
     };
 
     const categories = [
-        { id: 'PERFORMANCE', label: 'Performance' },
-        { id: 'ENGAGEMENT', label: 'Engagement' },
-        { id: 'CORE_VALUES', label: 'Core Values' },
-        { id: 'LEADERSHIP', label: 'Leadership' },
-        { id: 'TECHNICAL_SKILLS', label: 'Technical Skills' },
-        { id: 'SOFT_SKILLS', label: 'Soft Skills' },
-        { id: 'COMMUNICATION', label: 'Communication' },
-        { id: 'TEAMWORK', label: 'Teamwork' },
-        { id: 'ADAPTABILITY', label: 'Adaptability' }
+        { id: 'PERFORMANCE', label: tr('assess360.catPerformance') },
+        { id: 'ENGAGEMENT', label: tr('assess360.catEngagement') },
+        { id: 'CORE_VALUES', label: tr('assess360.catCoreValues') },
+        { id: 'LEADERSHIP', label: tr('assess360.catLeadership') },
+        { id: 'TECHNICAL_SKILLS', label: tr('assess360.catTechnicalSkills') },
+        { id: 'SOFT_SKILLS', label: tr('assess360.catSoftSkills') },
+        { id: 'COMMUNICATION', label: tr('assess360.catCommunication') },
+        { id: 'TEAMWORK', label: tr('assess360.catTeamwork') },
+        { id: 'ADAPTABILITY', label: tr('assess360.catAdaptability') }
     ];
 
     const categoryIcons: Record<string, string> = {
@@ -184,17 +186,17 @@ export default function X360QuestionBank() {
                 <div className="flex items-center gap-3 min-w-0">
                     <button
                         onClick={() => router.push('/enterprise/assessments-360')}
-                        aria-label="Back"
+                        aria-label={tr("common.back")}
                         className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#8A929E] hover:text-[#5B53E0] hover:border-[#D4D7DC] transition-all flex items-center justify-center shrink-0 shadow-sm"
                     >
                         <span className="material-symbols-rounded text-[20px]">arrow_back</span>
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Question Bank</h1>
-                            <PageHelp title="Question Bank">Manage the 360 question bank by competency. Add questions or generate them with AI — they feed your frameworks.</PageHelp>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("postOnboarding.questionBank")}</h1>
+                            <PageHelp title={tr("postOnboarding.questionBank")}>{tr("assess360.qbHelp")}</PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Build and manage your feedback framework with AI assistance</p>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.qbSubtitle")}</p>
                     </div>
                 </div>
 
@@ -204,7 +206,7 @@ export default function X360QuestionBank() {
                         icon="add"
                         onClick={() => router.push('/enterprise/assessments-360/questions/new')}
                     >
-                        Add Question
+                        {tr("jobForm.addQuestion")}
                     </Button>
                 </div>
             </header>
@@ -212,10 +214,10 @@ export default function X360QuestionBank() {
             {/* Stat cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
-                    { label: "Total Questions", value: questions.length, icon: "quiz", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
-                    { label: "Categories", value: allCategoryIds.length, icon: "category", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                    { label: "Rating Items", value: questions.filter(q => q.type === 'RATING').length, icon: "star_rate", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-                    { label: "Open Text Items", value: questions.filter(q => q.type === 'TEXT').length, icon: "edit_note", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: tr("assess360.totalQuestions"), value: questions.length, icon: "quiz", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
+                    { label: tr("assess360.categoriesStat"), value: allCategoryIds.length, icon: "category", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: tr("assess360.ratingItems"), value: questions.filter(q => q.type === 'RATING').length, icon: "star_rate", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: tr("assess360.openTextItems"), value: questions.filter(q => q.type === 'TEXT').length, icon: "edit_note", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
                 ].map((s) => (
                     <div key={s.label} className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden transition-colors hover:border-[#D4D7DC]">
                         <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
@@ -244,8 +246,8 @@ export default function X360QuestionBank() {
                                 <span className="material-symbols-rounded text-white text-[22px]">auto_awesome</span>
                             </div>
                             <div>
-                                <h2 className="text-[17px] font-extrabold tracking-[-0.3px] leading-tight">Scenario Architect</h2>
-                                <p className="text-white/70 text-[12px] mt-0.5">AI-assisted question generation</p>
+                                <h2 className="text-[17px] font-extrabold tracking-[-0.3px] leading-tight">{tr("nav.scenarioArchitect")}</h2>
+                                <p className="text-white/70 text-[12px] mt-0.5">{tr("assess360.aiAssistedGen")}</p>
                             </div>
                         </div>
                         <Button
@@ -254,14 +256,14 @@ export default function X360QuestionBank() {
                             icon="add"
                             onClick={() => router.push('/enterprise/assessments-360/questions/new')}
                         >
-                            Create Manual
+                            {tr("assess360.createManual")}
                         </Button>
                     </div>
 
                     <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-10">
                         {/* Categories Selection */}
                         <div className="xl:col-span-7">
-                            <label htmlFor="ai-target-categories" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-3">Target Competencies &amp; Categories</label>
+                            <label htmlFor="ai-target-categories" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-3">{tr("assess360.targetCompetencies")}</label>
                             <div id="ai-target-categories" className="flex flex-wrap gap-2">
                                 {categories.map(cat => (
                                     <button
@@ -298,7 +300,7 @@ export default function X360QuestionBank() {
                         <div className="xl:col-span-5 flex flex-col justify-between gap-5">
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label htmlFor="ai-quantity" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">Quantity</label>
+                                    <label htmlFor="ai-quantity" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">{tr("assess360.quantity")}</label>
                                     <div className="relative">
                                         <input
                                             id="ai-quantity"
@@ -311,11 +313,11 @@ export default function X360QuestionBank() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="ai-business-context" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">Business Context</label>
+                                    <label htmlFor="ai-business-context" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">{tr("assess360.businessContext")}</label>
                                     <input
                                         id="ai-business-context"
                                         type="text"
-                                        placeholder="e.g. Sales, Health..."
+                                        placeholder={tr("assess360.businessContextPlaceholder")}
                                         className="w-full h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[10px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
                                         value={aiConfig.context}
                                         onChange={(e) => setAiConfig({...aiConfig, context: e.target.value})}
@@ -324,12 +326,12 @@ export default function X360QuestionBank() {
                             </div>
                             <div className="space-y-4">
                                 <div>
-                                    <label htmlFor="ai-new-category" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">Add New Category</label>
+                                    <label htmlFor="ai-new-category" className="block text-[11px] font-semibold uppercase tracking-[0.04em] text-white/70 mb-2">{tr("assess360.addNewCategory")}</label>
                                     <div className="flex gap-2">
                                         <input
                                             id="ai-new-category"
                                             type="text"
-                                            placeholder="Type and hit + to add..."
+                                            placeholder={tr("assess360.newCategoryPlaceholder")}
                                             className="flex-1 h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[10px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
                                             value={aiConfig.customCategory}
                                             onChange={(e) => setAiConfig({...aiConfig, customCategory: e.target.value})}
@@ -348,7 +350,7 @@ export default function X360QuestionBank() {
                                                     setAiConfig(prev => ({ ...prev, customCategory: "" }));
                                                 }
                                             }}
-                                            aria-label="Add category"
+                                            aria-label={tr("assess360.addCategory")}
                                             className="w-11 h-11 shrink-0 bg-white text-[#5B53E0] rounded-[10px] flex items-center justify-center hover:bg-white/90 active:scale-95 transition-all shadow-sm"
                                         >
                                             <span className="material-symbols-rounded">add</span>
@@ -363,12 +365,12 @@ export default function X360QuestionBank() {
                                     {isGenerating ? (
                                         <>
                                             <div className="w-4 h-4 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
-                                            <span>Synthesizing...</span>
+                                            <span>{tr("assess360.synthesizing")}</span>
                                         </>
                                     ) : (
                                         <>
                                             <span className="material-symbols-rounded text-[20px]">bolt</span>
-                                            <span>Generate Questions</span>
+                                            <span>{tr("assess360.generateQuestions")}</span>
                                         </>
                                     )}
                                 </button>
@@ -387,16 +389,16 @@ export default function X360QuestionBank() {
                                 <span className="material-symbols-rounded text-[22px]">auto_awesome</span>
                             </div>
                             <div>
-                                <h3 className="text-[16px] font-bold text-[#15171C] tracking-tight">AI Suggestions Ready</h3>
-                                <p className="text-[12.5px] text-[#8A929E] mt-0.5">Review, refine, and add these AI-curated questions.</p>
+                                <h3 className="text-[16px] font-bold text-[#15171C] tracking-tight">{tr("assess360.aiSuggestionsReady")}</h3>
+                                <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.aiSuggestionsDesc")}</p>
                             </div>
                         </div>
                         <div className="flex gap-2.5 shrink-0">
                             <Button variant="secondary" size="sm" onClick={() => setGeneratedQuestions([])}>
-                                Discard All
+                                {tr("assess360.discardAll")}
                             </Button>
                             <Button size="sm" icon="library_add" onClick={saveGenerated}>
-                                Add to Library ({generatedQuestions.length})
+                                {tr("assess360.addToLibrary")} ({generatedQuestions.length})
                             </Button>
                         </div>
                     </div>
@@ -420,8 +422,8 @@ export default function X360QuestionBank() {
             {/* Category directory */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between px-1">
-                    <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">Competency Categories</h2>
-                    <Badge tone="neutral">{allCategoryIds.length} categories</Badge>
+                    <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">{tr("assess360.competencyCategories")}</h2>
+                    <Badge tone="neutral">{allCategoryIds.length} {tr("assess360.categoriesLower")}</Badge>
                 </div>
 
                 {loading ? (
@@ -447,8 +449,8 @@ export default function X360QuestionBank() {
                             <div className="w-14 h-14 bg-white rounded-[14px] flex items-center justify-center text-[#5B53E0] shadow-sm border border-[#E8EAED] group-hover:scale-105 transition-transform mb-3">
                                 <span className="material-symbols-rounded text-[26px]">add_circle</span>
                             </div>
-                            <h3 className="text-[14px] font-bold text-[#15171C] tracking-tight mb-0.5">Create Competency</h3>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Manual Entry</p>
+                            <h3 className="text-[14px] font-bold text-[#15171C] tracking-tight mb-0.5">{tr("assess360.createCompetency")}</h3>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("assess360.manualEntry")}</p>
                         </div>
 
                         {allCategoryIds.map(cat => {
@@ -477,10 +479,10 @@ export default function X360QuestionBank() {
                                     </div>
 
                                     <h3 className="text-[14px] font-bold text-[#15171C] tracking-tight mb-0.5">{label}</h3>
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] mb-3">Competencies</p>
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] mb-3">{tr("assess360.competencies")}</p>
 
                                     <div className={`px-4 py-1 bg-[#F1F2F5] border border-[#E8EAED] rounded-[20px] text-[12px] font-semibold text-[#4B5563] transition-all group-hover:bg-[#5B53E0] group-hover:text-white group-hover:border-[#5B53E0] ${jetbrainsMono.className}`}>
-                                        {catQuestions.length} Items
+                                        {catQuestions.length} {tr("assess360.items")}
                                     </div>
 
                                     <div className="absolute bottom-4 right-5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
@@ -496,8 +498,8 @@ export default function X360QuestionBank() {
                                 <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mx-auto mb-5">
                                     <span className="material-symbols-rounded text-[#C7CCD4] text-[32px]">inventory_2</span>
                                 </div>
-                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Your knowledge base is empty</h3>
-                                <p className="text-[#8A929E] text-[14px] max-w-sm mx-auto mb-7">Your professional framework library is currently dormant. Use the AI generator above to populate it with high-fidelity questions.</p>
+                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("assess360.knowledgeBaseEmpty")}</h3>
+                                <p className="text-[#8A929E] text-[14px] max-w-sm mx-auto mb-7">{tr("assess360.knowledgeBaseEmptyDesc")}</p>
                             </div>
                         )}
                     </div>
@@ -511,36 +513,36 @@ export default function X360QuestionBank() {
                         <span className="material-symbols-rounded text-[20px]">edit_note</span>
                     </div>
                     <div>
-                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">New Question</h2>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Add a question directly to the bank</p>
+                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">{tr("assess360.newQuestion")}</h2>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.newQuestionDesc")}</p>
                     </div>
                 </div>
                 <form onSubmit={handleAdd} className="space-y-4">
-                    <Field label="Question Content" htmlFor="manual-question-content">
+                    <Field label={tr("assess360.questionContent")} htmlFor="manual-question-content">
                         <Textarea
                             id="manual-question-content"
                             className="min-h-[110px] leading-relaxed"
                             value={newQuestion.text}
                             onChange={(e) => setNewQuestion({...newQuestion, text: e.target.value})}
                             required
-                            placeholder="e.g. Handle stress..."
+                            placeholder={tr("assess360.questionContentPlaceholder")}
                         />
                     </Field>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Field label="Response Type" htmlFor="manual-response-type">
+                        <Field label={tr("assess360.responseType")} htmlFor="manual-response-type">
                             <div className="relative">
                                 <Select
                                     id="manual-response-type"
                                     value={newQuestion.type}
                                     onChange={(e) => setNewQuestion({...newQuestion, type: e.target.value})}
                                 >
-                                    <option value="RATING">Rating (1-5)</option>
-                                    <option value="TEXT">Open Text</option>
+                                    <option value="RATING">{tr("assess360.ratingType")}</option>
+                                    <option value="TEXT">{tr("assess360.openText")}</option>
                                 </Select>
                                 <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">unfold_more</span>
                             </div>
                         </Field>
-                        <Field label="Core Category" htmlFor="manual-core-category">
+                        <Field label={tr("assess360.coreCategory")} htmlFor="manual-core-category">
                             <div className="relative">
                                 <Select
                                     id="manual-core-category"
@@ -554,7 +556,7 @@ export default function X360QuestionBank() {
                         </Field>
                     </div>
                     <Button type="submit" block icon="save">
-                        Save to Bank
+                        {tr("assess360.saveToBank")}
                     </Button>
                 </form>
             </Card>

@@ -24,6 +24,9 @@ import {
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
+import { GenLanguage, localeToLanguageName } from "@/i18n/config";
+import GenLanguageSelect from "@/components/ds/GenLanguageSelect";
 import { BACKEND_URL } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { PageHelp } from "@/components/ds";
@@ -141,6 +144,8 @@ const EMPTY_FORM: FormState = {
 
 export default function AssessmentAutomationPage() {
   const { token, canAccess } = useAuth();
+    const { t: tr, locale } = useI18n();
+  const [genLang, setGenLang] = useState<GenLanguage>(localeToLanguageName(locale));
 
   const authHeaders = {
     "Content-Type": "application/json",
@@ -179,7 +184,7 @@ export default function AssessmentAutomationPage() {
       const obj = msg as { msg?: string, detail?: string };
       finalMsg = obj.msg || obj.detail || JSON.stringify(msg);
     } else {
-      finalMsg = String(msg || "An error occurred");
+      finalMsg = String(msg || tr("automation.errorOccurred"));
     }
     setToast({ msg: finalMsg, type });
     setTimeout(() => setToast(null), 5000);
@@ -240,10 +245,10 @@ export default function AssessmentAutomationPage() {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
       } else {
-        showToast("Failed to load automations.", "error");
+        showToast(tr("automation.failedLoadAutomations"), "error");
       }
     } catch {
-      showToast("Failed to load automations.", "error");
+      showToast(tr("automation.failedLoadAutomations"), "error");
     } finally {
       setLoading(false);
     }
@@ -305,22 +310,22 @@ export default function AssessmentAutomationPage() {
 
   const handleGeneratePreview = async () => {
     if (!form.job_requirement_id) {
-      showToast("Please select a target job first.", "error");
+      showToast(tr("automation.selectTargetJobFirst"), "error");
       return;
     }
     if (!form.topic.trim()) {
-      showToast("Please enter a topic for the assessment.", "error");
+      showToast(tr("automation.enterTopicFirst"), "error");
       return;
     }
     if (!form.is_immediate && form.send_at) {
       if (new Date(form.send_at) < new Date()) {
-        showToast("Scheduled time cannot be in the past.", "error");
+        showToast(tr("automation.scheduledPast"), "error");
         return;
       }
     }
     setSaving(true);
     try {
-      const qs = `type=${form.type}&topic=${encodeURIComponent(form.topic)}&count=${form.question_count}`;
+      const qs = `type=${form.type}&topic=${encodeURIComponent(form.topic)}&count=${form.question_count}&language=${encodeURIComponent(genLang)}`;
       const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/generate-preview?${qs}`, {
         method: "POST",
         headers: authHeaders,
@@ -340,9 +345,9 @@ export default function AssessmentAutomationPage() {
         // template so we never persist a template_id alongside foreign questions.
         setForm(f => ({ ...f, generated_questions: finalQuestions, template_id: "" }));
         setActiveTab('questions');
-        showToast("Questions generated! Please review questions.");
+        showToast(tr("automation.questionsGenerated"));
       } else {
-        showToast("Failed to generate questions.", "error");
+        showToast(tr("automation.failedGenerateQuestions"), "error");
       }
     } finally {
       setSaving(false);
@@ -354,11 +359,11 @@ export default function AssessmentAutomationPage() {
   // switch the automation to a custom (template-less) configuration.
   const requestGeneratePreview = () => {
     if (!form.job_requirement_id) {
-      showToast("Please select a target job first.", "error");
+      showToast(tr("automation.selectTargetJobFirst"), "error");
       return;
     }
     if (!form.topic.trim()) {
-      showToast("Please enter a topic for the assessment.", "error");
+      showToast(tr("automation.enterTopicFirst"), "error");
       return;
     }
     if (form.template_id) {
@@ -368,7 +373,7 @@ export default function AssessmentAutomationPage() {
     handleGeneratePreview();
   };
 
-  const selectedTemplateName = assessmentTemplates.find(t => t.id === form.template_id)?.name || "selected";
+  const selectedTemplateName = assessmentTemplates.find(t => t.id === form.template_id)?.name || tr("automation.selected");
 
   // Blocks saving incomplete/empty questions. Returns the first problem (with the
   // question number) or null when every question is complete.
@@ -377,15 +382,15 @@ export default function AssessmentAutomationPage() {
       const q = (questions as Question[])[i];
       const n = i + 1;
       if (q.type === 'CODING') {
-        if (!(q.title || "").trim()) return `Question ${n}: add a problem title.`;
+        if (!(q.title || "").trim()) return tr("automation.qErrTitle", { n });
         if (!((q.description || q.problem_statement || "") as string).trim())
-          return `Question ${n}: add a problem description or statement.`;
+          return tr("automation.qErrDescription", { n });
       } else {
-        if (!(q.question || "").trim()) return `Question ${n}: add the question text.`;
+        if (!(q.question || "").trim()) return tr("automation.qErrText", { n });
         const opts = (q.options || []).map(o => (o || "").trim());
-        if (opts.length < 2 || opts.some(o => !o)) return `Question ${n}: fill in every answer option.`;
+        if (opts.length < 2 || opts.some(o => !o)) return tr("automation.qErrOptions", { n });
         if (!(q.correct_answer || "").trim() || !opts.includes((q.correct_answer || "").trim()))
-          return `Question ${n}: mark which option is the correct answer.`;
+          return tr("automation.qErrCorrect", { n });
       }
     }
     return null;
@@ -393,18 +398,18 @@ export default function AssessmentAutomationPage() {
 
   const handleFinalCreate = async () => {
     if (!form.job_requirement_id) {
-      showToast("Job selection is required.", "error");
+      showToast(tr("automation.jobSelectionRequired"), "error");
       return;
     }
     // Require a real hiring round (marked required). Without this the default stage_index (1) or a
     // cleared value (→ 0) was saved silently, so the assessment fired at the wrong round or never.
     const stageMissing = jobRounds.length > 0 ? !form.stage_name : !(Number(form.stage_index) > 0);
     if (stageMissing) {
-      showToast("Select the hiring round this assessment triggers on.", "error");
+      showToast(tr("automation.selectHiringRound"), "error");
       return;
     }
     if (!form.generated_questions || form.generated_questions.length === 0) {
-      showToast("Add at least one question — draft with AI or add manually — before creating.", "error");
+      showToast(tr("automation.addAtLeastOne"), "error");
       setActiveTab('questions');
       return;
     }
@@ -416,7 +421,7 @@ export default function AssessmentAutomationPage() {
     }
     if (!form.is_immediate && form.send_at) {
       if (new Date(form.send_at) < new Date()) {
-        showToast("Scheduled time cannot be in the past.", "error");
+        showToast(tr("automation.scheduledPast"), "error");
         return;
       }
     }
@@ -445,12 +450,12 @@ export default function AssessmentAutomationPage() {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
-        showToast("Assessment Automation created successfully!");
+        showToast(tr("automation.assessmentCreated"));
         setForm(EMPTY_FORM);
         fetchAutomations(selectedJobId || undefined);
         closeModal();
       } else {
-        showToast("Failed to create automation.", "error");
+        showToast(tr("automation.failedCreate"), "error");
       }
     } finally {
       setSaving(false);
@@ -467,7 +472,7 @@ export default function AssessmentAutomationPage() {
     }
     if (!form.is_immediate && form.send_at) {
       if (new Date(form.send_at) < new Date()) {
-        showToast("Scheduled time cannot be in the past.", "error");
+        showToast(tr("automation.scheduledPast"), "error");
         return;
       }
     }
@@ -496,11 +501,11 @@ export default function AssessmentAutomationPage() {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
-        showToast("Automation updated!");
+        showToast(tr("automation.automationUpdated"));
         closeModal();
         fetchAutomations(selectedJobId || undefined);
       } else {
-        showToast("Failed to update.", "error");
+        showToast(tr("automation.failedUpdate"), "error");
       }
     } finally {
       setSaving(false);
@@ -520,7 +525,7 @@ export default function AssessmentAutomationPage() {
           prev.map((item) => (item.id === a.id ? { ...item, is_enabled: !a.is_enabled } : item))
         );
       } else {
-        showToast("Failed to update status.", "error");
+        showToast(tr("automation.failedUpdateStatus"), "error");
       }
     } finally {
       setTogglingId(null);
@@ -537,10 +542,10 @@ export default function AssessmentAutomationPage() {
         headers: authHeaders,
       });
       if (res.ok) {
-        showToast("Automation deleted.");
+        showToast(tr("automation.automationDeleted"));
         setAutomations((prev) => prev.filter((item) => item.id !== automationToDelete.id));
       } else {
-        showToast("Failed to delete.", "error");
+        showToast(tr("automation.failedDelete"), "error");
       }
     } finally {
       setIsDeleteModalOpen(false);
@@ -562,7 +567,7 @@ export default function AssessmentAutomationPage() {
       ...f,
       generated_questions: (f.generated_questions || []).filter((q: Question) => q.id !== id)
     }));
-    showToast("Question removed.");
+    showToast(tr("automation.questionRemoved"));
   };
 
   const handleAddQuestion = () => {
@@ -592,14 +597,14 @@ export default function AssessmentAutomationPage() {
       template_id: "",
     }));
     showToast(detaching
-      ? "Switched to a custom question set — no longer linked to the template."
-      : "Blank question added — fill it in before saving.");
+      ? tr("automation.switchedCustom")
+      : tr("automation.blankAdded"));
   };
 
   const handleGenerateQuestions = async (a: Automation) => {
     setGeneratingId(a.id);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${a.id}/generate`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/${a.id}/generate?language=${encodeURIComponent(genLang)}`, {
         method: "POST",
         headers: authHeaders,
       });
@@ -613,10 +618,10 @@ export default function AssessmentAutomationPage() {
             body: JSON.stringify({ template_id: null }),
           }).catch(() => {});
         }
-        showToast("AI questions generated successfully!");
+        showToast(tr("automation.aiQuestionsGenerated"));
         fetchAutomations(selectedJobId || undefined);
       } else {
-        showToast("AI Generation failed.", "error");
+        showToast(tr("automation.aiGenerationFailed"), "error");
       }
     } finally {
       setGeneratingId(null);
@@ -687,13 +692,13 @@ export default function AssessmentAutomationPage() {
         <div>
           <div className="flex items-center gap-1.5">
             <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
-              Assessment Automation
+              {tr("automation.assessmentTitle")}
             </h1>
-            <PageHelp title="Assessment Automation">
-              <p>Automatically send assessments to candidates at the right stage.</p>
+            <PageHelp title={tr("automation.assessmentTitle")}>
+              <p>{tr("automation.assessmentHelp")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Generate AI-powered assessments for candidates reaching specific hiring rounds.</p>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.assessmentSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
           {canAccess("assessments:moderate") && (
@@ -702,7 +707,7 @@ export default function AssessmentAutomationPage() {
               className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" />
-              New Automation
+              {tr("automation.newAutomation")}
             </button>
           )}
         </div>
@@ -711,10 +716,10 @@ export default function AssessmentAutomationPage() {
       {/* Stats Section */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {[
-          { label: "Total Rules", value: automations.length, Icon: Briefcase, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-          { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#059669)", glow: "rgba(5,150,105,0.25)" },
-          { label: "Ready Assessments", value: automations.filter(a => a.generated_questions?.length).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
-          { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, Icon: Brain, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" }
+          { label: tr("automation.totalRules"), value: automations.length, Icon: Briefcase, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+          { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#059669)", glow: "rgba(5,150,105,0.25)" },
+          { label: tr("automation.readyAssessments"), value: automations.filter(a => a.generated_questions?.length).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+          { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: Brain, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" }
         ].map((s, i) => (
           <motion.div
             key={s.label}
@@ -745,7 +750,7 @@ export default function AssessmentAutomationPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by topic, round name, or criteria..."
+            placeholder={tr("automation.searchTopicRound")}
             className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-11 pr-4 text-sm font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
           />
         </div>
@@ -756,7 +761,7 @@ export default function AssessmentAutomationPage() {
               onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
               className="text-[12.5px] font-bold text-[#5B53E0] hover:underline px-2 tracking-tight"
             >
-              Reset Filters
+              {tr("automation.resetFiltersShort")}
             </button>
           )}
           <div className="relative w-full md:w-64">
@@ -768,7 +773,7 @@ export default function AssessmentAutomationPage() {
               onChange={(e) => setSelectedJobId(e.target.value)}
               className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-9 pr-9 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
             >
-              <option value="">All Job Requirements</option>
+              <option value="">{tr("automation.allJobRequirements")}</option>
               {jobs.map((j) => (
                 <option key={j.id} value={j.id}>{j.title}</option>
               ))}
@@ -792,17 +797,17 @@ export default function AssessmentAutomationPage() {
             </div>
           </div>
           <h3 className="text-[18px] font-bold text-[#15171C] mb-1.5">
-            {searchQuery ? 'No matching assessments' : 'No assessment automations yet'}
+            {searchQuery ? tr("automation.noMatchingAssessments") : tr("automation.noAssessmentAutomations")}
           </h3>
           <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-6">
-            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Generate your first assessment automation using the "New Automation" button.'}
+            {searchQuery ? tr("automation.noResultsFor", { query: searchQuery }) : tr("automation.generateFirstAssessment")}
           </p>
           {searchQuery && (
             <button
               onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
               className="px-6 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all"
             >
-              Clear Search Filters
+              {tr("automation.clearSearchFilters")}
             </button>
           )}
         </div>
@@ -812,12 +817,12 @@ export default function AssessmentAutomationPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Rule Configuration</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Job & Assessment Topic</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Readiness</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Trigger/Schedule</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">Status</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em] text-right">Actions</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.ruleConfiguration")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.jobAssessmentTopic")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.readiness")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.triggerSchedule")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.status")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em] text-right">{tr("automation.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E8EAED]">
@@ -827,14 +832,14 @@ export default function AssessmentAutomationPage() {
                       <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-2">
                           <span className="px-2 py-0.5 bg-[#ECEBFB] text-[#5B53E0] rounded-[6px] text-[10px] font-bold uppercase tracking-wide">
-                            Round {a.stage_index}
+                            {tr("automation.round")} {a.stage_index}
                           </span>
                           {a.stage_name && (
                             <span className="text-[12px] font-semibold text-[#8A929E] tracking-tight">{a.stage_name}</span>
                           )}
                         </div>
                         <p className="text-sm font-semibold text-[#374151] line-clamp-1">
-                          <span className="text-[#8A929E] font-normal italic mr-1">If:</span>
+                          <span className="text-[#8A929E] font-normal italic mr-1">{tr("automation.ifLabel")}</span>
                           {a.criteria}
                         </p>
                       </div>
@@ -855,12 +860,12 @@ export default function AssessmentAutomationPage() {
                       {a.generated_questions && a.generated_questions.length > 0 ? (
                         <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#0E8A6E]">
                           <CheckCircle2 className="w-4 h-4 text-[#0E8A6E]" />
-                          <span>{a.generated_questions.length} Questions Ready</span>
+                          <span>{tr("automation.questionsReady", { count: a.generated_questions.length })}</span>
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#D97706]">
                           <AlertCircle className="w-4 h-4 text-[#D97706]" />
-                          <span>No questions yet</span>
+                          <span>{tr("automation.noQuestionsYet")}</span>
                         </div>
                       )}
                     </td>
@@ -869,14 +874,14 @@ export default function AssessmentAutomationPage() {
                         <div className="flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
                           {a.is_immediate ? <Zap className="w-3.5 h-3.5 text-[#D97706]" /> : <Clock className="w-3.5 h-3.5 text-[#8A929E]" />}
                           <span>
-                            {a.is_immediate 
-                              ? "Immediate" 
+                            {a.is_immediate
+                              ? tr("automation.immediate")
                               : new Date(a.send_at!.endsWith('Z') ? a.send_at! : a.send_at! + 'Z').toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                           </span>
                         </div>
                         {a.auto_move && (
                           <div className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wide">
-                            Auto-Move Active
+                            {tr("automation.autoMoveActive")}
                           </div>
                         )}
                       </div>
@@ -901,7 +906,7 @@ export default function AssessmentAutomationPage() {
                                 ? "bg-[#F4F5F7] text-[#8A929E] hover:bg-[#ECEBFB] hover:text-[#5B53E0]"
                                 : "bg-[#FEF3E2] text-[#D97706] hover:bg-[#D97706] hover:text-white"
                             }`}
-                            title={a.generated_questions ? "Regenerate AI Questions" : "Generate AI Questions"}
+                            title={a.generated_questions ? tr("automation.regenerateAiQuestions") : tr("automation.generateAiQuestions")}
                           >
                             {generatingId === a.id ? (
                               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -913,14 +918,14 @@ export default function AssessmentAutomationPage() {
                         <button
                           onClick={() => openEdit(a)}
                           className="w-8 h-8 flex items-center justify-center rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#1F2127] transition-all"
-                          title={a.generated_questions ? "View / edit questions & rule" : "Edit rule"}
+                          title={a.generated_questions ? tr("automation.viewEditQuestions") : tr("automation.editRule")}
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => { setAutomationToDelete(a); setIsDeleteModalOpen(true); }}
                           className="w-8 h-8 flex items-center justify-center rounded-[8px] hover:bg-rose-50 text-[#8A929E] hover:text-rose-600 transition-all"
-                          title="Delete Rule"
+                          title={tr("automation.deleteRule")}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -940,7 +945,7 @@ export default function AssessmentAutomationPage() {
           <div
             role="button"
             tabIndex={0}
-            aria-label="Close panel"
+            aria-label={tr("automation.closePanel")}
             className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm transition-opacity duration-300"
             onClick={closeModal}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { closeModal(); } }}
@@ -953,9 +958,9 @@ export default function AssessmentAutomationPage() {
                 </div>
                 <div>
                   <h2 className="text-[16px] font-bold text-[#15171C]">
-                    {editingId ? "Edit Automation" : "Create Automation"}
+                    {editingId ? tr("automation.editAutomation") : tr("automation.createAutomation")}
                   </h2>
-                  <p className="text-[12px] text-[#8A929E] font-medium">Configure AI Assessment</p>
+                  <p className="text-[12px] text-[#8A929E] font-medium">{tr("automation.configureAiAssessment")}</p>
                 </div>
               </div>
               <button 
@@ -971,13 +976,13 @@ export default function AssessmentAutomationPage() {
                 onClick={() => setActiveTab('config')} 
                 className={`px-5 py-3 text-[13px] font-semibold transition-all border-b-2 -mb-px ${activeTab === 'config' ? 'border-[#5B53E0] text-[#5B53E0]' : 'border-transparent text-[#8A929E] hover:text-[#4B5563]'}`}
               >
-                1. Configuration
+                {tr("automation.step1Config")}
               </button>
               <button 
                 onClick={() => setActiveTab('questions')} 
                 className={`px-5 py-3 text-[13px] font-semibold transition-all border-b-2 -mb-px ${activeTab === 'questions' ? 'border-[#5B53E0] text-[#5B53E0]' : 'border-transparent text-[#8A929E] hover:text-[#4B5563]'}`}
               >
-                2. Questions {form.generated_questions?.length ? `(${form.generated_questions.length})` : ''}
+                {tr("automation.step2Questions")} {form.generated_questions?.length ? `(${form.generated_questions.length})` : ''}
               </button>
             </div>
 
@@ -986,7 +991,7 @@ export default function AssessmentAutomationPage() {
                 <div className="p-6 space-y-5 max-w-xl mx-auto">
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="assessment-target-job" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">Target Job <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-target-job" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">{tr("automation.targetJob")} <span className="text-red-400">*</span></label>
                         <select
                           id="assessment-target-job"
                           value={form.job_requirement_id}
@@ -995,7 +1000,7 @@ export default function AssessmentAutomationPage() {
                           title={editingId ? "The job can't be changed after creation" : undefined}
                           className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all cursor-pointer disabled:bg-[#F4F5F7] disabled:cursor-not-allowed"
                         >
-                          <option value="">Select a job...</option>
+                          <option value="">{tr("automation.selectAJob")}</option>
                           {jobs.map((j) => (
                             <option key={j.id} value={j.id}>{j.title}</option>
                           ))}
@@ -1003,7 +1008,7 @@ export default function AssessmentAutomationPage() {
                       </div>
 
                       <div>
-                        <label htmlFor="assessment-hiring-round" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">Hiring Round <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-hiring-round" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">{tr("automation.hiringRound")} <span className="text-red-400">*</span></label>
                         {jobRounds.length > 0 ? (
                           <select
                             id="assessment-hiring-round"
@@ -1011,15 +1016,15 @@ export default function AssessmentAutomationPage() {
                             defaultValue={editingId ? `${form.stage_index}|${form.stage_name || ''}` : ""}
                             className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all cursor-pointer"
                           >
-                            <option value="">Pick a round...</option>
+                            <option value="">{tr("automation.pickARound")}</option>
                             {jobRounds.map((r, i) => (
-                              <option key={i} value={`${i + 1}|${r.name}`}>Round {i + 1} — {r.name}</option>
+                              <option key={i} value={`${i + 1}|${r.name}`}>{tr("automation.round")} {i + 1} — {r.name}</option>
                             ))}
                           </select>
                         ) : (
                           <div className="grid grid-cols-2 gap-3">
-                            <input id="assessment-hiring-round" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder="Index" className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all" />
-                            <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder="Name" className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all" />
+                            <input id="assessment-hiring-round" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder={tr("automation.indexPlaceholder")} className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all" />
+                            <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder={tr("automation.namePlaceholder")} className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all" />
                           </div>
                         )}
                       </div>
@@ -1027,7 +1032,7 @@ export default function AssessmentAutomationPage() {
 
                     <div className="bg-[#FEF3E2]/40 rounded-[12px] p-5 space-y-4 border border-[#FCE1BF] mb-4">
                       <div>
-                        <label htmlFor="assessment-template-select" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Use Assessment Template (Optional)</label>
+                        <label htmlFor="assessment-template-select" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.useAssessmentTemplate")}</label>
                         <select
                           id="assessment-template-select"
                           value={form.template_id || ""}
@@ -1056,19 +1061,19 @@ export default function AssessmentAutomationPage() {
                           }}
                           className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all cursor-pointer"
                         >
-                          <option value="">-- Custom Assessment Configuration --</option>
+                          <option value="">{tr("automation.customAssessmentConfig")}</option>
                           {assessmentTemplates.map(t => (
                               <option key={t.id} value={t.id}>{t.name} ({t.type} - {t.topic})</option>
                           ))}
                         </select>
-                        <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1 leading-relaxed">Selecting a template will auto-fill the assessment configuration and questions.</p>
+                        <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1 leading-relaxed">{tr("automation.templateAutoFill")}</p>
                       </div>
                     </div>
 
                     <div className="bg-[#FEF3E2]/20 rounded-[12px] p-5 space-y-4 border border-[#FCE1BF]/50">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="assessment-type" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Type <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-type" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.typeLabel")} <span className="text-red-400">*</span></label>
                           <select
                             id="assessment-type"
                             value={form.type}
@@ -1081,21 +1086,21 @@ export default function AssessmentAutomationPage() {
                           </select>
                         </div>
                         <div>
-                          <label htmlFor="assessment-topic" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Topic <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-topic" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.topicLabel")} <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-topic"
                             type="text"
                             value={form.topic}
                             onChange={(e) => setForm((f) => ({ ...f, topic: e.target.value }))}
                             className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all"
-                            placeholder="e.g. SQL, Python..."
+                            placeholder={tr("automation.topicPlaceholder")}
                           />
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="assessment-question-count" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Questions <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-question-count" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.questionsLabel")} <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-question-count"
                             type="number"
@@ -1107,7 +1112,7 @@ export default function AssessmentAutomationPage() {
                           />
                         </div>
                         <div>
-                          <label htmlFor="assessment-test-duration" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Time (min) <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-test-duration" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.timeMin")} <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-test-duration"
                             type="number"
@@ -1122,19 +1127,19 @@ export default function AssessmentAutomationPage() {
 
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="assessment-criteria" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">Trigger Criteria <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-criteria" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">{tr("automation.triggerCriteria")} <span className="text-red-400">*</span></label>
                         <textarea
                           id="assessment-criteria"
                           rows={2}
                           value={form.criteria} 
                           onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} 
                           className="w-full bg-white border border-[#E1E4E8] rounded-[12px] px-4 py-3 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all resize-none h-20" 
-                          placeholder="e.g. 'Match score > 80' or 'Background includes React'..." 
+                          placeholder={tr("automation.criteriaPlaceholderMatch")}
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="assessment-email-template" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">Email Template <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-email-template" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">{tr("automation.emailTemplate")} <span className="text-red-400">*</span></label>
                         <div className="relative">
                           <select
                             id="assessment-email-template"
@@ -1142,7 +1147,7 @@ export default function AssessmentAutomationPage() {
                             onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
                             className={`w-full bg-white border rounded-[12px] h-11 pl-4 pr-9 text-[13.5px] font-semibold text-[#374151] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all ${!form.email_template_id ? 'border-amber-300' : 'border-[#E1E4E8]'}`}
                           >
-                            <option value="">Select Email Template...</option>
+                            <option value="">{tr("automation.selectEmailTemplate")}</option>
                             {emailTemplates.map((t) => (
                               <option key={t.id} value={t.id}>{t.name}</option>
                             ))}
@@ -1159,7 +1164,7 @@ export default function AssessmentAutomationPage() {
                             <CheckCircle2 className={`w-4 h-4 ${form.is_enabled ? "text-[#5B53E0]" : "text-[#8A929E]"}`} />
                           </div>
                           <div>
-                            <p className="text-[11px] font-bold text-[#1F2127]">Active</p>
+                            <p className="text-[11px] font-bold text-[#1F2127]">{tr("automation.active")}</p>
                           </div>
                         </div>
                         <button
@@ -1176,7 +1181,7 @@ export default function AssessmentAutomationPage() {
                             <ChevronRight className={`w-4 h-4 ${form.auto_move ? "text-[#5B53E0]" : "text-[#8A929E]"}`} />
                           </div>
                           <div>
-                            <p className="text-[11px] font-bold text-[#1F2127]">Auto-Move</p>
+                            <p className="text-[11px] font-bold text-[#1F2127]">{tr("automation.autoMove")}</p>
                           </div>
                         </div>
                         <button
@@ -1192,7 +1197,7 @@ export default function AssessmentAutomationPage() {
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
                           <Clock className="text-[#8A929E] w-4 h-4" />
-                          <span className="text-[12px] font-bold text-[#374151]">Scheduling</span>
+                          <span className="text-[12px] font-bold text-[#374151]">{tr("automation.scheduling")}</span>
                         </div>
                         <div className="flex bg-[#F4F5F7] p-1 rounded-[10px]">
                           <button
@@ -1201,7 +1206,7 @@ export default function AssessmentAutomationPage() {
                               form.is_immediate ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#8A929E] hover:text-[#4B5563]"
                             }`}
                           >
-                            Immediate
+                            {tr("automation.immediate")}
                           </button>
                           <button
                             onClick={() => setForm(f => ({ ...f, is_immediate: false }))}
@@ -1209,14 +1214,14 @@ export default function AssessmentAutomationPage() {
                               !form.is_immediate ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#8A929E] hover:text-[#4B5563]"
                             }`}
                           >
-                            Scheduled
+                            {tr("automation.scheduled")}
                           </button>
                         </div>
                       </div>
 
                       {!form.is_immediate && (
                         <div className="bg-[#FEF3E2]/50 rounded-[12px] p-4 border border-[#FCE1BF] animate-in fade-in slide-in-from-top-2 duration-300">
-                          <label htmlFor="assessment-send-at" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">Send At (Date & Time)</label>
+                          <label htmlFor="assessment-send-at" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.sendAtDateTime")}</label>
                           <input
                             id="assessment-send-at"
                             type="datetime-local"
@@ -1225,7 +1230,7 @@ export default function AssessmentAutomationPage() {
                             className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] shadow-sm"
                           />
                           <p className="mt-2 text-[11.5px] text-[#D97706] font-medium leading-relaxed">
-                            The assessment invitation will be queued and sent at the specified time if the criteria are met.
+                            {tr("automation.sendAtHelp")}
                           </p>
                         </div>
                       )}
@@ -1235,10 +1240,13 @@ export default function AssessmentAutomationPage() {
                           <div className="mb-3 flex items-start gap-2 rounded-[10px] border border-[#FCE1BF] bg-[#FEF3E2]/60 px-3.5 py-2.5">
                             <AlertCircle className="w-4 h-4 text-[#D97706] mt-0.5 shrink-0" />
                             <p className="text-[11.5px] font-semibold text-[#92590C] leading-relaxed">
-                              Questions come from the &quot;{selectedTemplateName}&quot; template. Drafting with AI or adding a question will switch this automation to a custom set and unlink the template.
+                              {tr("automation.questionsFromTemplate", { name: selectedTemplateName })}
                             </p>
                           </div>
                         )}
+                        <div className="flex items-center justify-end mb-2">
+                          <GenLanguageSelect value={genLang} onChange={setGenLang} />
+                        </div>
                         <button
                           onClick={requestGeneratePreview}
                           disabled={saving || !form.job_requirement_id || !form.topic}
@@ -1249,9 +1257,9 @@ export default function AssessmentAutomationPage() {
                           ) : (
                             <Sparkles className="w-4 h-4" />
                           )}
-                          {form.generated_questions?.length ? "Regenerate Draft with AI" : "Draft Questions with AI"}
+                          {form.generated_questions?.length ? tr("automation.regenerateDraftAi") : tr("automation.draftQuestionsAi")}
                         </button>
-                        <p className="text-[11px] text-[#8A929E] mt-3 text-center font-semibold opacity-60">Step 1: Configure & Draft</p>
+                        <p className="text-[11px] text-[#8A929E] mt-3 text-center font-semibold opacity-60">{tr("automation.step1ConfigureDraft")}</p>
                       </div>
                     </div>
                 </div>
@@ -1259,15 +1267,15 @@ export default function AssessmentAutomationPage() {
                 <div className="p-6 space-y-6 max-w-3xl mx-auto">
                    <div className="flex items-center justify-between mb-2">
                        <div>
-                         <h3 className="text-[14px] font-bold text-[#15171C]">Assessment Preview</h3>
-                         <p className="text-[12px] text-[#8A929E] font-medium">Review and edit the AI-generated questions</p>
+                         <h3 className="text-[14px] font-bold text-[#15171C]">{tr("automation.assessmentPreview")}</h3>
+                         <p className="text-[12px] text-[#8A929E] font-medium">{tr("automation.reviewEditAiQuestions")}</p>
                        </div>
-                       <button 
+                       <button
                          onClick={handleAddQuestion}
                          className="flex items-center gap-2 h-9 px-3 bg-white border border-[#E1E4E8] rounded-[10px] text-[12px] font-semibold text-[#5B53E0] hover:bg-[#F4F5F7] hover:border-[#DAD7F6] transition-all shadow-sm"
                        >
                          <Plus className="w-4 h-4" />
-                         <span>Add Question</span>
+                         <span>{tr("automation.addQuestion")}</span>
                        </button>
                     </div>
 
@@ -1288,12 +1296,12 @@ export default function AssessmentAutomationPage() {
                                {q.type === 'APTITUDE' ? (
                                  <>
                                    <div>
-                                     <label htmlFor={`cfg-q-question-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Question Text (Aptitude)</label>
+                                     <label htmlFor={`cfg-q-question-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">{tr("automation.questionTextAptitude")}</label>
                                      <textarea
                                        id={`cfg-q-question-${q.id}`}
                                        value={q.question || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
-                                       placeholder="Type the question…"
+                                       placeholder={tr("automation.typeQuestion")}
                                        className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2.5 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-20 resize-none"
                                      />
                                    </div>
@@ -1307,7 +1315,7 @@ export default function AssessmentAutomationPage() {
                                              newOpts[oi] = e.target.value;
                                              handleUpdateQuestion(q.id, "options", newOpts);
                                            }}
-                                           placeholder={`Option ${oi + 1}`}
+                                           placeholder={tr("automation.optionN", { n: oi + 1 })}
                                            className={`w-full bg-[#F7F8FA] border-2 rounded-[10px] pl-12 pr-4 py-2.5 text-xs font-semibold transition-all placeholder:text-[#9AA3AF] placeholder:font-normal ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" : "border-transparent text-[#4B5563]"}`}
                                          />
                                          <button 
@@ -1323,33 +1331,33 @@ export default function AssessmentAutomationPage() {
                                ) : (
                                  <>
                                    <div>
-                                     <label htmlFor={`cfg-q-title-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Title</label>
+                                     <label htmlFor={`cfg-q-title-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">{tr("automation.problemTitle")}</label>
                                      <input
                                        id={`cfg-q-title-${q.id}`}
                                        type="text"
                                        value={q.title || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
-                                       placeholder="e.g. Two Sum"
+                                       placeholder={tr("automation.problemTitlePlaceholder")}
                                        className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all"
                                      />
                                    </div>
                                    <div>
-                                     <label htmlFor={`cfg-q-description-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Description</label>
+                                     <label htmlFor={`cfg-q-description-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">{tr("automation.problemDescription")}</label>
                                      <textarea
                                        id={`cfg-q-description-${q.id}`}
                                        value={q.description || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
-                                       placeholder="Describe the problem the candidate must solve…"
+                                       placeholder={tr("automation.describeProblem")}
                                        className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
                                      />
                                    </div>
                                    <div>
-                                     <label htmlFor={`cfg-q-statement-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">Problem Statement</label>
+                                     <label htmlFor={`cfg-q-statement-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">{tr("automation.problemStatement")}</label>
                                      <textarea
                                        id={`cfg-q-statement-${q.id}`}
                                        value={q.problem_statement || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
-                                       placeholder="// Constraints, examples, or starter code…"
+                                       placeholder={tr("automation.constraintsPlaceholder")}
                                        className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-xs font-mono text-[#374151] placeholder:text-[#9AA3AF] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
                                      />
                                    </div>
@@ -1364,9 +1372,9 @@ export default function AssessmentAutomationPage() {
                         <div className="w-16 h-16 rounded-[14px] bg-white border border-[#E8EAED] flex items-center justify-center mb-4 shadow-sm">
                           <EyeOff className="text-[#8A929E] w-6 h-6" />
                         </div>
-                        <h3 className="text-[14px] font-bold text-[#15171C]">No Preview Yet</h3>
+                        <h3 className="text-[14px] font-bold text-[#15171C]">{tr("automation.noPreviewYet")}</h3>
                         <p className="max-w-[240px] text-[12px] text-[#8A929E] font-medium leading-relaxed mt-1.5">
-                          Click &quot;Generate AI Questions&quot; in the configuration tab to see AI-generated questions here.
+                          {tr("automation.noPreviewHelp")}
                         </p>
                       </div>
                     )}
@@ -1376,11 +1384,11 @@ export default function AssessmentAutomationPage() {
 
             <div className="px-6 py-4 border-t border-[#E8EAED] bg-white shrink-0">
               <div className="flex items-center gap-3">
-                <button 
-                  onClick={closeModal} 
+                <button
+                  onClick={closeModal}
                   className="flex-1 h-11 bg-white border border-[#E1E4E8] rounded-[10px] text-[13.5px] font-semibold text-[#4B5563] hover:bg-[#F4F5F7] transition-all"
                 >
-                  Cancel
+                  {tr("common.cancel")}
                 </button>
                 {editingId ? (
                   <button
@@ -1393,13 +1401,13 @@ export default function AssessmentAutomationPage() {
                     ) : (
                       <Save className="w-4 h-4" />
                     )}
-                    <span>Save Changes</span>
+                    <span>{tr("automation.saveChanges")}</span>
                   </button>
                 ) : (
                   <button
                     onClick={handleFinalCreate}
                     disabled={saving || !form.generated_questions?.length}
-                    title={!form.generated_questions?.length ? "Draft questions with AI (or add one) first" : undefined}
+                    title={!form.generated_questions?.length ? tr("automation.draftQuestionsFirst") : undefined}
                     className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {saving ? (
@@ -1407,7 +1415,7 @@ export default function AssessmentAutomationPage() {
                     ) : (
                       <Zap className="w-4 h-4" />
                     )}
-                    <span>Confirm & Create</span>
+                    <span>{tr("automation.confirmCreate")}</span>
                   </button>
                 )}
               </div>
@@ -1423,10 +1431,10 @@ export default function AssessmentAutomationPage() {
           setAutomationToDelete(null);
         }}
         onConfirm={handleDelete}
-        title="Delete Assessment Automation?"
-        message={`Are you sure you want to delete this assessment automation for ${automationToDelete ? jobTitle(automationToDelete.job_requirement_id) : 'this job'}? This action is irreversible.`}
-        confirmLabel="Yes, Delete"
-        cancelLabel="No"
+        title={tr("automation.deleteAssessmentTitle")}
+        message={tr("automation.deleteAssessmentMsg", { job: automationToDelete ? jobTitle(automationToDelete.job_requirement_id) : tr("automation.thisJob") })}
+        confirmLabel={tr("automation.yesDelete")}
+        cancelLabel={tr("automation.no")}
         isDestructive={true}
       />
 
@@ -1434,10 +1442,10 @@ export default function AssessmentAutomationPage() {
         isOpen={isDetachConfirmOpen}
         onClose={() => setIsDetachConfirmOpen(false)}
         onConfirm={() => { setIsDetachConfirmOpen(false); handleGeneratePreview(); }}
-        title="Replace template questions?"
-        message={`This automation is using the "${selectedTemplateName}" template. Drafting with AI will replace its questions and switch the automation to a custom configuration (it will no longer be linked to the template). Continue?`}
-        confirmLabel="Replace & Use AI"
-        cancelLabel="Keep Template"
+        title={tr("automation.replaceTemplateTitle")}
+        message={tr("automation.replaceTemplateMsg", { name: selectedTemplateName })}
+        confirmLabel={tr("automation.replaceUseAi")}
+        cancelLabel={tr("automation.keepTemplate")}
         isDestructive={true}
       />
 
@@ -1445,14 +1453,14 @@ export default function AssessmentAutomationPage() {
         isOpen={!!regenerateTarget}
         onClose={() => setRegenerateTarget(null)}
         onConfirm={() => { const t = regenerateTarget; setRegenerateTarget(null); if (t) handleGenerateQuestions(t); }}
-        title={regenerateTarget?.generated_questions?.length ? "Regenerate AI questions?" : "Generate AI questions?"}
+        title={regenerateTarget?.generated_questions?.length ? tr("automation.regenerateAiTitle") : tr("automation.generateAiTitle")}
         message={
           regenerateTarget?.generated_questions?.length
-            ? `This will generate a fresh AI question set for "${regenerateTarget?.topic}" and replace the current ${regenerateTarget?.generated_questions?.length} question${regenerateTarget?.generated_questions?.length === 1 ? "" : "s"}${regenerateTarget?.template_id ? ", and unlink the attached template" : ""}. This cannot be undone.`
-            : `AI will draft questions for "${regenerateTarget?.topic}" based on this rule's type and topic. You can review and edit them afterwards.`
+            ? tr("automation.regenerateConfirmMsg", { topic: regenerateTarget?.topic ?? "", count: regenerateTarget?.generated_questions?.length ?? 0, templateNote: regenerateTarget?.template_id ? tr("automation.unlinkTemplateNote") : "" })
+            : tr("automation.generateConfirmMsg", { topic: regenerateTarget?.topic ?? "" })
         }
-        confirmLabel={regenerateTarget?.generated_questions?.length ? "Regenerate" : "Generate"}
-        cancelLabel="Cancel"
+        confirmLabel={regenerateTarget?.generated_questions?.length ? tr("automation.regenerate") : tr("automation.generate")}
+        cancelLabel={tr("common.cancel")}
         isDestructive={!!regenerateTarget?.generated_questions?.length}
       />
     </div>

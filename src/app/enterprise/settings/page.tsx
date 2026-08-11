@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHelp } from "@/components/ds";
@@ -30,6 +31,7 @@ interface CompanyProfile {
 
 export default function OrganizationProfilePage() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -99,13 +101,13 @@ export default function OrganizationProfilePage() {
                 const data = await res.json();
                 const fullUrl = data.url.startsWith("http") ? data.url : `${BACKEND_URL}${data.url}`;
                 setLogoUrl(fullUrl);
-                showToast("Logo updated successfully.");
+                showToast(tr("general.logoUpdated"));
             } else {
-                showToast("Upload failed.", "error");
+                showToast(tr("general.uploadFailed"), "error");
             }
         } catch (err) {
             console.error("Upload error:", err);
-            showToast("Connection error.", "error");
+            showToast(tr("general.connectionError"), "error");
         } finally {
             setIsUploading(false);
         }
@@ -133,14 +135,14 @@ export default function OrganizationProfilePage() {
             if (res.ok) {
                 const data = await res.json();
                 setProfile(data);
-                showToast(isUpdate ? "Profile successfully updated" : "Organization profile created");
+                showToast(isUpdate ? tr("general.profileUpdated") : tr("general.profileCreated"));
             } else {
                 const errData = await res.json().catch(() => ({}));
-                showToast(errData.detail || "Save failed.", "error");
+                showToast(errData.detail || tr("general.saveFailed"), "error");
             }
         } catch (e) {
             console.error("Error saving profile", e);
-            showToast("Server error.", "error");
+            showToast(tr("general.serverError"), "error");
         } finally {
             setIsSaving(false);
         }
@@ -170,7 +172,7 @@ export default function OrganizationProfilePage() {
                         <span className="absolute inset-0 rounded-full border-[3px] border-[#E8EAED]" />
                         <span className="absolute inset-0 rounded-full border-[3px] border-transparent border-t-[#5B53E0] animate-spin" />
                     </div>
-                    <p className="text-[12.5px] font-semibold text-[#8A929E]">Loading settings…</p>
+                    <p className="text-[12.5px] font-semibold text-[#8A929E]">{tr("general.loadingSettings")}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -208,13 +210,13 @@ export default function OrganizationProfilePage() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Organization Profile</h1>
-                        <PageHelp title="Settings">
-                            <p>Your organisation&apos;s profile and company-wide settings.</p>
-                            <p>Set up company details here. Manage who can access Croar in <strong>Team</strong> and <strong>Permissions</strong>.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("general.organizationProfile")}</h1>
+                        <PageHelp title={tr("common.settings")}>
+                            <p>{tr("general.helpSettings1")}</p>
+                            <p>{tr("general.helpSettings2a")} <strong>{tr("nav.team")}</strong> {tr("general.helpSettings2b")} <strong>{tr("general.permissions")}</strong>{tr("general.helpSettings2c")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your global brand presence</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("general.manageBrand")}</p>
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
@@ -229,7 +231,7 @@ export default function OrganizationProfilePage() {
                             ) : (
                                 <Save className="w-3.5 h-3.5" />
                             )}
-                            Update Profile
+                            {tr("general.updateProfile")}
                         </button>
                     )}
                     
@@ -265,7 +267,7 @@ export default function OrganizationProfilePage() {
                                 {canAccess("organization:update") && (
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
-                                        title={logoUrl ? "Replace logo" : "Upload logo"}
+                                        title={logoUrl ? tr("general.replaceLogo") : tr("general.uploadLogo")}
                                         className="absolute -bottom-1 -right-1 w-9 h-9 bg-[#15171C] text-white rounded-[8px] flex items-center justify-center shadow-lg hover:bg-[#5B53E0] transition-all scale-0 group-hover/logo:scale-100"
                                     >
                                         <Camera className="w-4 h-4" />
@@ -274,7 +276,7 @@ export default function OrganizationProfilePage() {
                                 {canAccess("organization:update") && logoUrl && (
                                     <button
                                         onClick={() => setLogoUrl("")}
-                                        title="Remove logo"
+                                        title={tr("general.removeLogo")}
                                         className="absolute -top-1 -right-1 w-8 h-8 bg-white border border-[#F7D7D7] text-[#C0383C] rounded-[8px] flex items-center justify-center shadow-lg hover:bg-[#EF4444] hover:text-white hover:border-[#EF4444] transition-all scale-0 group-hover/logo:scale-100"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
@@ -284,7 +286,7 @@ export default function OrganizationProfilePage() {
                                 {isUploading && (
                                     <div className="absolute inset-0 bg-white/85 backdrop-blur-sm rounded-[12px] flex flex-col items-center justify-center gap-1.5">
                                          <RefreshCcw className="w-5 h-5 text-[#5B53E0] animate-spin" />
-                                         <span className="text-[9.5px] font-bold text-[#8A929E]">Updating</span>
+                                         <span className="text-[9.5px] font-bold text-[#8A929E]">{tr("general.updating")}</span>
                                     </div>
                                 )}
                             </div>
@@ -292,12 +294,12 @@ export default function OrganizationProfilePage() {
                             {/* Name & Location */}
                             <div className="space-y-2">
                                 <div className="space-y-0.5">
-                                    <p className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider">{industry || "Brand Identity"}</p>
-                                    <h2 className="text-lg font-extrabold text-[#15171C] tracking-[-0.3px] leading-tight truncate">{name || "Your Company"}</h2>
+                                    <p className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider">{industry || tr("general.brandIdentity")}</p>
+                                    <h2 className="text-lg font-extrabold text-[#15171C] tracking-[-0.3px] leading-tight truncate">{name || tr("general.yourCompany")}</h2>
                                 </div>
                                 <div className="flex items-center justify-center gap-1.5 text-[#8A929E]">
                                     <MapPin className="w-3.5 h-3.5" />
-                                    <span className="text-[12.5px] font-semibold">{location || "Location not set"}</span>
+                                    <span className="text-[12.5px] font-semibold">{location || tr("general.locationNotSet")}</span>
                                 </div>
                             </div>
 
@@ -305,11 +307,11 @@ export default function OrganizationProfilePage() {
                             <div className="grid grid-cols-2 gap-2.5 pt-1">
                                 <div className="px-2.5 py-2 bg-[#F4F5F7]/50 rounded-[8px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
                                     <Shield className="w-3.5 h-3.5 text-[#15803D]" />
-                                    <span className="text-[9.5px] font-bold text-[#8A929E]">Verified</span>
+                                    <span className="text-[9.5px] font-bold text-[#8A929E]">{tr("general.verified")}</span>
                                 </div>
                                 <div className="px-2.5 py-2 bg-[#F4F5F7]/50 rounded-[8px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
                                     <Zap className="w-3.5 h-3.5 text-[#5B53E0]" />
-                                    <span className="text-[9.5px] font-bold text-[#8A929E]">Premium</span>
+                                    <span className="text-[9.5px] font-bold text-[#8A929E]">{tr("general.premium")}</span>
                                 </div>
                             </div>
                         </div>
@@ -319,13 +321,13 @@ export default function OrganizationProfilePage() {
                         {/* Health Status */}
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-[12px] font-bold text-[#15171C]">Health Status</h3>
+                                <h3 className="text-[12px] font-bold text-[#15171C]">{tr("general.healthStatus")}</h3>
                                 <Activity className="w-3.5 h-3.5 text-[#5B53E0]" />
                             </div>
                             <div className="space-y-3.5">
                                 {[
-                                    { label: "Candidate Portals", status: "Optimal" },
-                                    { label: "Brand Propagation", status: "Syncing" }
+                                    { label: tr("general.candidatePortals"), status: tr("general.optimal") },
+                                    { label: tr("general.brandPropagation"), status: tr("general.syncingStatus") }
                                 ].map((item, idx) => (
                                     <div key={idx} className="space-y-1.5">
                                         <div className="flex justify-between text-[11px] font-bold">
@@ -352,36 +354,36 @@ export default function OrganizationProfilePage() {
                         <section className="space-y-5">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-1 h-4 bg-[#5B53E0] rounded-full" />
-                                <h3 className="text-[15px] font-bold text-[#15171C]">Basic Information</h3>
+                                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("general.basicInformation")}</h3>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="company-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Company Name</label>
+                                    <label htmlFor="company-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.companyName")}</label>
                                     <input
                                         id="company-name"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
                                         readOnly={!canAccess("organization:update")}
                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                        placeholder="Enter your legal company name"
+                                        placeholder={tr("general.companyNamePlaceholder")}
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label htmlFor="company-industry" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Industry</label>
+                                    <label htmlFor="company-industry" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.industry")}</label>
                                     <input
                                         id="company-industry"
                                         value={industry}
                                         onChange={e => setIndustry(e.target.value)}
                                         readOnly={!canAccess("organization:update")}
                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                        placeholder="e.g. Technology, Healthcare"
+                                        placeholder={tr("general.industryPlaceholder")}
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-1.5">
-                                <label htmlFor="company-location" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Location / Headquarters</label>
+                                <label htmlFor="company-location" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.locationHq")}</label>
                                 <div className="relative">
                                     <input
                                         id="company-location"
@@ -389,7 +391,7 @@ export default function OrganizationProfilePage() {
                                         onChange={e => setLocation(e.target.value)}
                                         readOnly={!canAccess("organization:update")}
                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                        placeholder="e.g. London, United Kingdom"
+                                        placeholder={tr("general.locationHqPlaceholder")}
                                     />
                                     <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                                 </div>
@@ -402,12 +404,12 @@ export default function OrganizationProfilePage() {
                         <section className="space-y-5">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-1 h-4 bg-[#5B53E0] rounded-full" />
-                                <h3 className="text-[15px] font-bold text-[#15171C]">Brand Assets</h3>
+                                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("general.brandAssets")}</h3>
                             </div>
 
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="company-logo-url" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Logo URL</label>
+                                    <label htmlFor="company-logo-url" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.logoUrl")}</label>
                                     <div className="flex gap-3">
                                         <div className="relative flex-1">
                                             <input
@@ -425,7 +427,7 @@ export default function OrganizationProfilePage() {
                                                 className="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] bg-[#15171C] text-white text-[13px] font-semibold hover:bg-[#252830] transition-all whitespace-nowrap shadow-sm"
                                             >
                                                 <Upload className="w-3.5 h-3.5" />
-                                                Upload
+                                                {tr("general.upload")}
                                             </button>
                                         )}
                                     </div>
@@ -434,7 +436,7 @@ export default function OrganizationProfilePage() {
                                 <div className="p-4 bg-[#ECEBFB]/50 border border-[#DAD7F6] rounded-[10px] flex gap-3">
                                     <Shield className="w-4 h-4 text-[#5B53E0] shrink-0 mt-0.5" />
                                     <p className="text-[13px] text-[#5B53E0] leading-relaxed font-semibold">
-                                        Your logo will be used across all candidate-facing materials, including job boards, email templates, and career portals.
+                                        {tr("general.logoUsageNote")}
                                     </p>
                                 </div>
                             </div>

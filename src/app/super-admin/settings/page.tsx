@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -23,6 +24,7 @@ interface SystemSetting {
 
 export default function PlatformSettingsPage() {
     const { token } = useAuth();
+    const { t } = useI18n();
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState<string | null>(null);
     const [settings, setSettings] = useState<SystemSetting[]>([]);
@@ -69,12 +71,12 @@ export default function PlatformSettingsPage() {
             if (res.ok) {
                 const updated = await res.json();
                 setSettings(prev => prev.map(s => s.key === key ? updated : s));
-                showToast(`${key.replace(/_/g, ' ')} updated successfully.`);
+                showToast(t("superAdmin.settingUpdated", { name: key.replace(/_/g, ' ') }));
             } else {
-                showToast("Failed to update setting.", "error");
+                showToast(t("superAdmin.failedUpdateSetting"), "error");
             }
         } catch (err) {
-            showToast("Connection error.", "error");
+            showToast(t("superAdmin.connectionError"), "error");
         } finally {
             setIsSaving(null);
         }
@@ -111,12 +113,12 @@ export default function PlatformSettingsPage() {
             </AnimatePresence>
 
             <PageHeader
-                title="Platform Settings"
-                subtitle="Configure global application behavior"
-                help={<><p>Configure platform-wide settings and defaults.</p></>}
+                title={t("superAdmin.platformSettings")}
+                subtitle={t("superAdmin.platformSettingsSubtitle")}
+                help={<><p>{t("superAdmin.platformSettingsHelp")}</p></>}
                 actions={
                     <Button variant="secondary" icon="refresh" onClick={fetchSettings} disabled={isSaving !== null}>
-                        Refresh
+                        {t("superAdmin.refresh")}
                     </Button>
                 }
             />
@@ -159,9 +161,9 @@ export default function PlatformSettingsPage() {
                         </div>
 
                         <div className="mt-5 pt-4 border-t border-[#E8EAED] flex items-center justify-between">
-                            <span className="text-[12px] text-[#8A929E]">Global status</span>
+                            <span className="text-[12px] text-[#8A929E]">{t("superAdmin.globalStatus")}</span>
                             <Badge tone={setting.value_bool ? "success" : "danger"} dot>
-                                {setting.value_bool ? 'Active' : 'Disabled'}
+                                {setting.value_bool ? t("superAdmin.active") : t("superAdmin.disabled")}
                             </Badge>
                         </div>
                     </Card>
@@ -171,8 +173,8 @@ export default function PlatformSettingsPage() {
             {/* Security & Governance panel */}
             <Card>
                 <CardHeader
-                    title={<>Security &amp; Governance</>}
-                    subtitle="Core entry points for the Croar platform"
+                    title={<>{t("superAdmin.securityGovernance")}</>}
+                    subtitle={t("superAdmin.coreEntryPoints")}
                     action={
                         <span className={`inline-flex items-center h-7 px-3 rounded-[8px] bg-[#F1F2F5] text-[#4B5563] text-[12px] font-semibold ${jetbrainsMono.className}`}>
                             v1.0.4
@@ -184,7 +186,7 @@ export default function PlatformSettingsPage() {
                         <ShieldCheck className="w-6 h-6" />
                     </span>
                     <p className="text-[13.5px] text-[#374151] leading-relaxed max-w-2xl">
-                        These settings control the core entry points of the Croar platform. Changes are applied instantly across all regions. Ensure you have proper authorization before disabling critical services.
+                        {t("superAdmin.securityGovernanceDesc")}
                     </p>
                 </div>
             </Card>

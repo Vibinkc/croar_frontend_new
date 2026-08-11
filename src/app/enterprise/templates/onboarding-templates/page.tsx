@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { BACKEND_URL } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -51,6 +52,7 @@ export default function OnboardingTemplatesPage() {
     const [templates, setTemplates] = useState<OnboardingTemplate[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [templateToDelete, setTemplateToDelete] = useState<{ id: string; name: string } | null>(null);
     const [onboardingSearch, setOnboardingSearch] = useState("");
@@ -120,12 +122,12 @@ export default function OnboardingTemplatesPage() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Onboarding Templates</h1>
-                        <PageHelp title="Onboarding Templates">
-                            <p>Reusable onboarding checklists for new hires.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("templatesMgmt.onboardingTemplatesTitle")}</h1>
+                        <PageHelp title={tr("templatesMgmt.onboardingTemplatesTitle")}>
+                            <p>{tr("templatesMgmt.onboardingTemplatesHelp")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Design integration sequences and standard documents.</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("templatesMgmt.onboardingTemplatesSubtitle")}</p>
                 </div>
 
                 <div className="flex items-center gap-2.5">
@@ -135,7 +137,7 @@ export default function OnboardingTemplatesPage() {
                             className="h-8 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
                         >
                             <Plus className="w-3.5 h-3.5" />
-                            New Template
+                            {tr("templatesMgmt.newTemplate")}
                         </Link>
                     )}
                     <button 
@@ -150,10 +152,10 @@ export default function OnboardingTemplatesPage() {
             {/* Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
-                    { label: "Active Flows", value: templates.length, Icon: Layers, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-                    { label: "Total Sections", value: templates.reduce((acc, t) => acc + (t.form_config?.sections?.length || 0), 0), Icon: ClipboardList, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                    { label: "Form Fields", value: templates.reduce((acc, t) => acc + (t.form_config?.sections?.reduce((sAcc, s) => sAcc + (s.fields?.length || 0), 0) || 0), 0), Icon: Cpu, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-                    { label: "Avg Steps", value: templates.length ? Math.round(templates.reduce((acc, t) => acc + (t.form_config?.sections?.length || 0), 0) / templates.length) : 0, Icon: Layout, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: tr("templatesMgmt.activeFlows"), value: templates.length, Icon: Layers, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+                    { label: tr("templatesMgmt.totalSections"), value: templates.reduce((acc, t) => acc + (t.form_config?.sections?.length || 0), 0), Icon: ClipboardList, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: tr("templatesMgmt.formFields"), value: templates.reduce((acc, t) => acc + (t.form_config?.sections?.reduce((sAcc, s) => sAcc + (s.fields?.length || 0), 0) || 0), 0), Icon: Cpu, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: tr("templatesMgmt.avgSteps"), value: templates.length ? Math.round(templates.reduce((acc, t) => acc + (t.form_config?.sections?.length || 0), 0) / templates.length) : 0, Icon: Layout, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
                 ].map((s) => (
                     <div
                         key={s.label}
@@ -179,7 +181,7 @@ export default function OnboardingTemplatesPage() {
                     <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                     <input 
                         type="text"
-                        placeholder="Search onboarding templates by name..."
+                        placeholder={tr("templatesMgmt.searchOnboardingPlaceholder")}
                         className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                         value={onboardingSearch}
                         onChange={(e) => setOnboardingSearch(e.target.value)}
@@ -198,27 +200,27 @@ export default function OnboardingTemplatesPage() {
                     </div>
                     {templates.length === 0 ? (
                         <>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Yet</h3>
-                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Synthesize your first onboarding sequence to standardize the cultural handshake.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("templatesMgmt.noTemplatesYet")}</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">{tr("templatesMgmt.onboardingEmptyDesc")}</p>
                             {canAccess("onboarding:moderate") && (
                                 <Link
                                     href="/enterprise/templates/onboarding-templates/create"
                                     className="px-5 h-9 inline-flex items-center gap-1.5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
                                 >
                                     <Plus className="w-3.5 h-3.5" />
-                                    New Template
+                                    {tr("templatesMgmt.newTemplate")}
                                 </Link>
                             )}
                         </>
                     ) : (
                         <>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Results Found</h3>
-                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">No onboarding templates match your current search.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("templatesMgmt.noResultsFound")}</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">{tr("templatesMgmt.onboardingNoResultsDesc")}</p>
                             <button
                                 onClick={() => setOnboardingSearch("")}
                                 className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
                             >
-                                Reset Filters
+                                {tr("templatesMgmt.resetFilters")}
                             </button>
                         </>
                     )}
@@ -267,7 +269,7 @@ export default function OnboardingTemplatesPage() {
                                 <div className="space-y-1">
                                     <h3 className="text-[15px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{t.name}</h3>
                                     <p className="text-[12px] text-[#8A929E] font-medium leading-relaxed line-clamp-2 h-9">
-                                        {t.description || "Standard organizational integration workflow."}
+                                        {t.description || tr("templatesMgmt.onboardingDescFallback")}
                                     </p>
                                 </div>
                             </div>
@@ -276,7 +278,7 @@ export default function OnboardingTemplatesPage() {
                                 <div className="flex items-center gap-2 text-[#8A929E] text-[10px] font-semibold">
                                     <span className="flex items-center gap-1">
                                         <History className="w-3.5 h-3.5" />
-                                        {(t.form_config?.sections || []).length} Sections
+                                        {tr("templatesMgmt.sectionsCount", { count: (t.form_config?.sections || []).length })}
                                     </span>
                                 </div>
                                 <Link 
@@ -296,10 +298,10 @@ export default function OnboardingTemplatesPage() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Delete Template?"
-                message={`Are you sure you want to delete "${templateToDelete?.name}"? This will remove all associated onboarding logic.`}
-                confirmLabel="Delete Template"
-                cancelLabel="Cancel"
+                title={tr("templatesMgmt.deleteTemplateTitle")}
+                message={tr("templatesMgmt.deleteConfirmOnboarding", { name: templateToDelete?.name ?? "" })}
+                confirmLabel={tr("templatesMgmt.deleteTemplate")}
+                cancelLabel={tr("common.cancel")}
                 isDestructive={true}
             />
         </div>

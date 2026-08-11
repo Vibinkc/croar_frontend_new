@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHelp } from "@/components/ds";
@@ -44,6 +45,7 @@ interface GlobalStats {
 
 export default function CompaniesPage() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [companies, setCompanies] = useState<Company[]>([]);
     const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -153,12 +155,12 @@ export default function CompaniesPage() {
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-4xl font-black text-slate-900 tracking-tighter  leading-none">Companies</h1>
-                        <PageHelp title="Companies">
-                            <p>Manage your partner or client companies.</p>
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tighter  leading-none">{tr("general.companies")}</h1>
+                        <PageHelp title={tr("general.companiesHelpTitle")}>
+                            <p>{tr("general.managePartnerCompanies")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-sm text-slate-400 font-bold  mt-3">Manage companies and hiring partners</p>
+                    <p className="text-sm text-slate-400 font-bold  mt-3">{tr("general.manageCompanies")}</p>
                 </div>
                 {canAccess("platform:moderate") && (
                     <button
@@ -166,7 +168,7 @@ export default function CompaniesPage() {
                         className="self-start md:self-center px-8 py-4 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black   hover:bg-[#6D28D9] transition-all shadow-2xl shadow-indigo-200 flex items-center gap-3 group active:scale-95"
                     >
                         <span className="material-symbols-rounded text-xl group-hover:rotate-90 transition-transform">add</span>
-                        <span>{"Add Company"}</span>
+                        <span>{tr("general.addCompany")}</span>
                     </button>
                 )}
             </header>
@@ -174,9 +176,9 @@ export default function CompaniesPage() {
             {/* Overall Analytics Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { label: "Total Companies", value: globalStats?.total_companies ?? "--", icon: "corporate_fare", color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Active Jobs", value: globalStats?.total_jobs ?? "--", icon: "business_center", color: "text-emerald-600", bg: "bg-emerald-50" },
-                    { label: "Platform Status", value: globalStats ? "Online" : "--", icon: "rocket_launch", color: "text-amber-600", bg: "bg-amber-50" }
+                    { label: tr("general.totalCompanies"), value: globalStats?.total_companies ?? "--", icon: "corporate_fare", color: "text-indigo-600", bg: "bg-indigo-50" },
+                    { label: tr("general.activeJobs"), value: globalStats?.total_jobs ?? "--", icon: "business_center", color: "text-emerald-600", bg: "bg-emerald-50" },
+                    { label: tr("general.platformStatus"), value: globalStats ? tr("general.online") : "--", icon: "rocket_launch", color: "text-amber-600", bg: "bg-amber-50" }
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -222,17 +224,17 @@ export default function CompaniesPage() {
                                     <span className="material-symbols-rounded text-3xl">corporate_fare</span>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                    <span className="px-3.5 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black border border-emerald-100">Active</span>
+                                    <span className="px-3.5 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black border border-emerald-100">{tr("general.active")}</span>
                                 </div>
                             </div>
 
                             <h3 className="text-2xl font-black text-slate-900 tracking-tighter mb-1.5 group-hover:text-[#7C3AED] transition-colors">{company.name}</h3>
-                            <p className="text-[11px] text-slate-400 font-bold  tracking-[0.15em] mb-8">{company.industry || "Global Operations"}</p>
+                            <p className="text-[11px] text-slate-400 font-bold  tracking-[0.15em] mb-8">{company.industry || tr("general.globalOperations")}</p>
 
                             <div className="flex items-center gap-6 pt-8 border-t border-slate-50/80">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <span className="material-symbols-rounded text-lg">location_on</span>
-                                    <span className="text-[10px] font-black  ">{company.location || "Headquarters"}</span>
+                                    <span className="text-[10px] font-black  ">{company.location || tr("general.headquarters")}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <span className="material-symbols-rounded text-lg">calendar_today</span>
@@ -251,8 +253,8 @@ export default function CompaniesPage() {
                     {companies.length === 0 && (
                         <div className="col-span-full py-24 text-center bg-slate-50/50 rounded-2xl border-4 border-dashed border-slate-100">
                             <span className="material-symbols-rounded text-7xl text-slate-200 mb-6">explore</span>
-                            <h3 className="text-2xl font-black text-slate-400  tracking-tighter">No companies found</h3>
-                            <p className="text-slate-300 font-bold mt-2  text-xs ">Click &quot;Add Company&quot; to get started</p>
+                            <h3 className="text-2xl font-black text-slate-400  tracking-tighter">{tr("general.noCompaniesFound")}</h3>
+                            <p className="text-slate-300 font-bold mt-2  text-xs ">{tr("general.clickAddCompany")}</p>
                         </div>
                     )}
                 </div>
@@ -272,7 +274,7 @@ export default function CompaniesPage() {
                             <div className="flex items-center gap-4">
                                 <button onClick={() => setSelectedCompany(null)} className="flex items-center gap-2 text-[10px] font-black   text-[#7C3AED] hover:text-[#6D28D9] bg-indigo-50 px-4 py-2 rounded-xl transition-all">
                                     <span className="material-symbols-rounded text-sm">arrow_back</span>
-                                    <span>{"Back"}</span>
+                                    <span>{tr("common.back")}</span>
                                 </button>
                                 <span className="text-slate-200 font-black">/</span>
                                 <h2 className="text-sm font-black text-slate-900  tracking-tighter">{selectedCompany.name}</h2>
@@ -280,7 +282,7 @@ export default function CompaniesPage() {
                             <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-bold   border border-emerald-100">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <span>{"Live"}</span>
+                                    <span>{tr("general.live")}</span>
                                 </div>
                             </div>
                         </div>
@@ -291,21 +293,21 @@ export default function CompaniesPage() {
                                 <div className="lg:col-span-2">
                                     <div className="flex items-center gap-4 mb-4 text-[#7C3AED]">
                                         <span className="material-symbols-rounded">business</span>
-                                        <span className="text-[10px] font-black">Company Profile</span>
+                                        <span className="text-[10px] font-black">{tr("general.companyProfile")}</span>
                                     </div>
                                     <h2 className="text-7xl font-black text-slate-900 tracking-tighter  leading-[0.9] mb-8">{selectedCompany.name}</h2>
 
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
                                         <div>
-                                            <p className="text-[10px] font-black text-slate-400   mb-2">Industry</p>
-                                            <p className="font-bold text-slate-800  tracking-tight">{selectedCompany.industry || "Global Operations"}</p>
+                                            <p className="text-[10px] font-black text-slate-400   mb-2">{tr("general.industry")}</p>
+                                            <p className="font-bold text-slate-800  tracking-tight">{selectedCompany.industry || tr("general.globalOperations")}</p>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-black text-slate-400   mb-2">Location</p>
-                                            <p className="font-bold text-slate-800  tracking-tight">{selectedCompany.location || "Global HQ"}</p>
+                                            <p className="text-[10px] font-black text-slate-400   mb-2">{tr("general.location")}</p>
+                                            <p className="font-bold text-slate-800  tracking-tight">{selectedCompany.location || tr("general.globalHq")}</p>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-black text-slate-400   mb-2">Added On</p>
+                                            <p className="text-[10px] font-black text-slate-400   mb-2">{tr("general.addedOn")}</p>
                                             <p className="font-bold text-slate-800  tracking-tight">{new Date(selectedCompany.created_at).toLocaleDateString()}</p>
                                         </div>
                                     </div>
@@ -313,17 +315,17 @@ export default function CompaniesPage() {
 
                                 <div className="bg-slate-900 p-10 rounded-2xl text-white flex flex-col justify-between h-full shadow-2xl shadow-indigo-200">
                                     <div>
-                                        <h4 className="text-[10px] font-black text-slate-500   mb-6">Tags</h4>
+                                        <h4 className="text-[10px] font-black text-slate-500   mb-6">{tr("general.tags")}</h4>
                                         <div className="flex flex-wrap gap-2">
-                                            <span className="px-3 py-1 bg-white/10 rounded-xl text-xs font-bold  ">Enterprise</span>
-                                            <span className="px-3 py-1 bg-white/10 rounded-xl text-xs font-bold  ">Verified</span>
+                                            <span className="px-3 py-1 bg-white/10 rounded-xl text-xs font-bold  ">{tr("general.enterprise")}</span>
+                                            <span className="px-3 py-1 bg-white/10 rounded-xl text-xs font-bold  ">{tr("general.verified")}</span>
                                         </div>
                                     </div>
                                     <div className="mt-12">
-                                        <p className="text-[10px] font-black text-slate-500   mb-2">System Status</p>
+                                        <p className="text-[10px] font-black text-slate-500   mb-2">{tr("general.systemStatus")}</p>
                                         <div className="flex items-baseline gap-2">
-                                            <span className="text-4xl font-black text-white">ACTIVE</span>
-                                            <span className="text-emerald-400 font-bold  text-[10px] ">Healthy</span>
+                                            <span className="text-4xl font-black text-white">{tr("general.activeCaps")}</span>
+                                            <span className="text-emerald-400 font-bold  text-[10px] ">{tr("general.healthy")}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -338,10 +340,10 @@ export default function CompaniesPage() {
                                     {/* Stats Grid */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                         {[
-                                            { label: "Active Jobs", value: companyAnalytics.active_jobs, icon: "business_center", bg: "bg-indigo-50", text: "text-indigo-600" },
-                                            { label: "Active Pipeline", value: companyAnalytics.total_candidates, icon: "groups", bg: "bg-emerald-50", text: "text-emerald-600" },
-                                            { label: "Avg. Match", value: `${companyAnalytics.avg_match_score}%`, icon: "bolt", bg: "bg-amber-50", text: "text-amber-600" },
-                                            { label: "Efficiency", value: `${companyAnalytics.sourcing_efficiency}%`, icon: "verified", bg: "bg-rose-50", text: "text-rose-600" },
+                                            { label: tr("general.activeJobs"), value: companyAnalytics.active_jobs, icon: "business_center", bg: "bg-indigo-50", text: "text-indigo-600" },
+                                            { label: tr("general.activePipeline"), value: companyAnalytics.total_candidates, icon: "groups", bg: "bg-emerald-50", text: "text-emerald-600" },
+                                            { label: tr("general.avgMatch"), value: `${companyAnalytics.avg_match_score}%`, icon: "bolt", bg: "bg-amber-50", text: "text-amber-600" },
+                                            { label: tr("general.efficiency"), value: `${companyAnalytics.sourcing_efficiency}%`, icon: "verified", bg: "bg-rose-50", text: "text-rose-600" },
                                         ].map((s, idx) => (
                                             <div key={idx} className="bg-white border border-slate-100 p-8 rounded-xl flex flex-col gap-4">
                                                 <div className={`w-12 h-12 ${s.bg} ${s.text} rounded-xl flex items-center justify-center`}>
@@ -359,7 +361,7 @@ export default function CompaniesPage() {
                                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-16">
                                         <div className="lg:col-span-3 space-y-12">
                                             <div>
-                                                <h3 className="text-2xl font-black text-slate-900 tracking-tighter  mb-8 border-b border-slate-100 pb-4">Latest Opportunities</h3>
+                                                <h3 className="text-2xl font-black text-slate-900 tracking-tighter  mb-8 border-b border-slate-100 pb-4">{tr("general.latestOpportunities")}</h3>
                                                 <div className="space-y-4">
                                                     {(companyAnalytics.recent_jobs || []).map((job: Job) => (
                                                         <div key={job.id} className="group flex items-center justify-between p-6 bg-slate-50/50 hover:bg-indigo-50 rounded-xl border border-transparent hover:border-indigo-100 transition-all cursor-pointer">
@@ -369,14 +371,14 @@ export default function CompaniesPage() {
                                                                 </div>
                                                                 <div>
                                                                     <h4 className="font-bold text-slate-900 group-hover:text-indigo-900 transition-colors">{job.title}</h4>
-                                                                    <p className="text-[10px] font-black text-slate-400   mt-1">Posted on {new Date(job.created_at).toLocaleDateString()}</p>
+                                                                    <p className="text-[10px] font-black text-slate-400   mt-1">{tr("general.postedOn", { date: new Date(job.created_at).toLocaleDateString() })}</p>
                                                                 </div>
                                                             </div>
                                                             <span className="material-symbols-rounded text-slate-300 group-hover:text-indigo-400 transition-all group-hover:translate-x-1">arrow_forward_ios</span>
                                                         </div>
                                                     ))}
                                                     {(companyAnalytics.recent_jobs || []).length === 0 && (
-                                                        <div className="py-12 text-center text-slate-400 font-bold  text-[11px]  ">No active jobs found</div>
+                                                        <div className="py-12 text-center text-slate-400 font-bold  text-[11px]  ">{tr("general.noActiveJobs")}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -384,12 +386,12 @@ export default function CompaniesPage() {
 
                                         <div className="lg:col-span-2 space-y-12">
                                             <div>
-                                                <h3 className="text-2xl font-black text-slate-900 tracking-tighter  mb-8 border-b border-slate-100 pb-4">KPI Performance</h3>
+                                                <h3 className="text-2xl font-black text-slate-900 tracking-tighter  mb-8 border-b border-slate-100 pb-4">{tr("general.kpiPerformance")}</h3>
                                                 <div className="space-y-10">
                                                     {[
-                                                        { label: "Sourcing Speed", val: companyAnalytics.sourcing_efficiency, color: "bg-indigo-600" },
-                                                        { label: "Match Quality", val: companyAnalytics.avg_match_score, color: "bg-[#7C3AED]" },
-                                                        { label: "Data Integrity", val: 100, color: "bg-emerald-500" }
+                                                        { label: tr("general.sourcingSpeed"), val: companyAnalytics.sourcing_efficiency, color: "bg-indigo-600" },
+                                                        { label: tr("general.matchQuality"), val: companyAnalytics.avg_match_score, color: "bg-[#7C3AED]" },
+                                                        { label: tr("general.dataIntegrity"), val: 100, color: "bg-emerald-500" }
                                                     ].map((m, idx) => (
                                                         <div key={idx} className="space-y-4">
                                                             <div className="flex justify-between items-center text-[11px] font-black   text-slate-400">
@@ -410,10 +412,10 @@ export default function CompaniesPage() {
                                             </div>
 
                                             <div className="bg-[#7C3AED] p-10 rounded-2xl text-white">
-                                                <h4 className="text-3xl font-black mb-1">SYSTEM</h4>
-                                                <p className="text-[11px] font-black   opacity-80">Up to date</p>
+                                                <h4 className="text-3xl font-black mb-1">{tr("general.systemCaps")}</h4>
+                                                <p className="text-[11px] font-black   opacity-80">{tr("general.upToDate")}</p>
                                                 <div className="mt-8 pt-8 border-t border-white/20">
-                                                    <p className="text-xs font-medium leading-relaxed  opacity-90">&quot;All data and analytics are currently tracked in real-time.&quot;</p>
+                                                    <p className="text-xs font-medium leading-relaxed  opacity-90">{tr("general.realtimeNote")}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -441,41 +443,41 @@ export default function CompaniesPage() {
                             className="bg-white w-full max-w-xl rounded-2xl p-16 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] relative overflow-hidden"
                             onClick={e => e.stopPropagation()}
                         >
-                            <h2 className="text-4xl font-black text-slate-900 tracking-tighter mb-4  leading-none text-center">Add Company</h2>
-                            <p className="text-[10px] text-slate-400 font-bold mb-12 text-center">Add a new company or hiring partner to the platform</p>
+                            <h2 className="text-4xl font-black text-slate-900 tracking-tighter mb-4  leading-none text-center">{tr("general.addCompany")}</h2>
+                            <p className="text-[10px] text-slate-400 font-bold mb-12 text-center">{tr("general.addCompanySubtitle")}</p>
 
                             <form onSubmit={handleAddCompany} className="space-y-8">
                                 <div className="space-y-2">
-                                    <label htmlFor="company-name" className="text-[10px] font-black text-slate-500 px-2">Company Name</label>
+                                    <label htmlFor="company-name" className="text-[10px] font-black text-slate-500 px-2">{tr("general.companyName")}</label>
                                     <input
                                         id="company-name"
                                         type="text"
                                         required
                                         className="w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] focus:ring-8 focus:ring-[#7C3AED]/5 outline-none transition-all shadow-inner"
-                                        placeholder="e.g. Acme Global Innovations"
+                                        placeholder={tr("general.companyNameExample")}
                                         value={newCompany.name}
                                         onChange={e => setNewCompany({ ...newCompany, name: e.target.value })}
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label htmlFor="company-industry" className="text-[10px] font-black text-slate-500 px-2">Industry</label>
+                                        <label htmlFor="company-industry" className="text-[10px] font-black text-slate-500 px-2">{tr("general.industry")}</label>
                                         <input
                                             id="company-industry"
                                             type="text"
                                             className="w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] outline-none transition-all shadow-inner"
-                                            placeholder="Fintech"
+                                            placeholder={tr("general.industryExample")}
                                             value={newCompany.industry}
                                             onChange={e => setNewCompany({ ...newCompany, industry: e.target.value })}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="company-location" className="text-[10px] font-black text-slate-500 px-2">Location</label>
+                                        <label htmlFor="company-location" className="text-[10px] font-black text-slate-500 px-2">{tr("general.location")}</label>
                                         <input
                                             id="company-location"
                                             type="text"
                                             className="text-xs w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] outline-none transition-all shadow-inner"
-                                            placeholder="London, UK"
+                                            placeholder={tr("general.locationExample")}
                                             value={newCompany.location}
                                             onChange={e => setNewCompany({ ...newCompany, location: e.target.value })}
                                         />
@@ -483,7 +485,7 @@ export default function CompaniesPage() {
                                 </div>
 
                                 <button type="submit" className="w-full py-6 bg-slate-900 text-white rounded-xl text-[11px] font-black  tracking-[0.2em] hover:bg-black transition-all shadow-2xl shadow-indigo-100 mt-6 active:scale-95">
-                                    Add Company
+                                    {tr("general.addCompany")}
                                 </button>
                             </form>
                         </motion.div>

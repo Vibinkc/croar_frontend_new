@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -44,6 +45,7 @@ interface Employee {
 
 export default function ScenarioManagement() {
     const { token, canAccess, role } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [scenarios, setScenarios] = useState<Scenario[]>([]);
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -146,11 +148,11 @@ export default function ScenarioManagement() {
                     difficulty: data.difficulty
                 });
                 setAiPrompt("");
-                showToast("Scenario generated.");
+                showToast(tr("aiTraining.toastScenarioGenerated"));
             }
         } catch (error) {
             console.error("AI Generation Error:", error);
-            showToast("Generation failed.", "error");
+            showToast(tr("aiTraining.toastGenerationFailed"), "error");
         } finally {
             setIsAiGenerating(false);
         }
@@ -177,11 +179,11 @@ export default function ScenarioManagement() {
                 setIsCreating(false);
                 setEditingId(null);
                 fetchScenarios();
-                showToast(editingId ? "Scenario updated." : "Scenario saved.");
+                showToast(editingId ? tr("aiTraining.toastScenarioUpdated") : tr("aiTraining.toastScenarioSaved"));
             }
         } catch (error) {
             console.error(error);
-            showToast("Server sync error.", "error");
+            showToast(tr("aiTraining.toastServerSync"), "error");
         } finally {
             setSubmitting(false);
         }
@@ -195,7 +197,7 @@ export default function ScenarioManagement() {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
-                showToast("Scenario deleted.");
+                showToast(tr("aiTraining.toastScenarioDeleted"));
                 fetchScenarios();
             }
         } catch (error) {
@@ -224,11 +226,11 @@ export default function ScenarioManagement() {
             if (res.ok) {
                 setIsAssigningId(null);
                 setSelectedEmployees([]);
-                showToast("Assignment successful.");
+                showToast(tr("aiTraining.toastAssignSuccess"));
             }
         } catch (error) {
             console.error(error);
-            showToast("Assignment failed.", "error");
+            showToast(tr("aiTraining.toastAssignFailed"), "error");
         } finally {
             setAssigning(false);
         }
@@ -286,12 +288,12 @@ export default function ScenarioManagement() {
                     </div>
                     <div>
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-lg font-black text-slate-900 tracking-tight">Scenario Configuration</h1>
-                            <PageHelp title="Scenario Architect">
-                                <p>Create practice scenarios for the AI training lab.</p>
+                            <h1 className="text-lg font-black text-slate-900 tracking-tight">{tr("general.scenarioConfiguration")}</h1>
+                            <PageHelp title={tr("nav.scenarioArchitect")}>
+                                <p>{tr("aiTraining.scenarioArchitectHelp")}</p>
                             </PageHelp>
                         </div>
-                        <p className="text-slate-500 text-[10px] font-medium   ">Training Scenario Design</p>
+                        <p className="text-slate-500 text-[10px] font-medium   ">{tr("general.trainingScenarioDesign")}</p>
                     </div>
                 </div>
 
@@ -301,7 +303,7 @@ export default function ScenarioManagement() {
                         className="px-4 py-2 text-slate-500 hover:text-slate-900 transition-all font-black text-[9px]   flex items-center gap-2"
                     >
                         <BarChart3 className="w-4 h-4" />
-                        Intelligence
+                        {tr("aiTraining.intelligence")}
                     </button>
                     {(canAccess("scenarios:moderate") || role === "ADMIN") && (
                         <button 
@@ -318,7 +320,7 @@ export default function ScenarioManagement() {
                             className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
-                            {"New Scenario"}
+                            {tr("aiTraining.newScenario")}
                         </button>
                     )}
                     <button 
@@ -336,7 +338,7 @@ export default function ScenarioManagement() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search scenarios by title or category..."
+                        placeholder={tr("aiTraining.searchScenarios")}
                         className="w-full h-12 bg-white border border-slate-100 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
                     />
                 </div>
@@ -348,10 +350,10 @@ export default function ScenarioManagement() {
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="w-full bg-transparent border-none text-[11px] font-black text-slate-700 focus:outline-none focus:ring-0 cursor-pointer uppercase tracking-wider"
                     >
-                        <option value="all">All Difficulties</option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
+                        <option value="all">{tr("general.allDifficulties")}</option>
+                        <option value="Beginner">{tr("general.beginner")}</option>
+                        <option value="Intermediate">{tr("general.intermediate")}</option>
+                        <option value="Advanced">{tr("general.advanced")}</option>
                     </select>
                 </div>
             </div>
@@ -403,7 +405,7 @@ export default function ScenarioManagement() {
                                 </div>
                                 <h3 className="text-lg font-black text-slate-900 tracking-tight leading-tight line-clamp-1">{sc.title}</h3>
                                 <p className="text-[10px] font-medium text-slate-500 leading-relaxed tracking-tight line-clamp-2 h-10">
-                                    {sc.description || "Experimental training framework for advanced skill acquisition."}
+                                    {sc.description || tr("aiTraining.fallbackDescription")}
                                 </p>
                             </div>
                         </div>
@@ -415,7 +417,7 @@ export default function ScenarioManagement() {
                                     className="flex-1 h-11 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 group/btn"
                                 >
                                     <Play className="w-3.5 h-3.5" />
-                                    Assign Scenario
+                                    {tr("general.assignScenario")}
                                 </button>
                             </div>
                         )}
@@ -425,8 +427,8 @@ export default function ScenarioManagement() {
                         <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
                             <span className="material-symbols-rounded text-4xl text-slate-200">psychology</span>
                         </div>
-                        <h3 className="text-xl font-black text-slate-800 tracking-tight">No Scenarios Detected</h3>
-                        <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">Initialize a new simulation framework or use the AI Neural Assistant to generate one.</p>
+                        <h3 className="text-xl font-black text-slate-800 tracking-tight">{tr("general.noScenarios")}</h3>
+                        <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">{tr("aiTraining.emptyStateDesc")}</p>
                     </div>
                 )}
             </div>
@@ -445,8 +447,8 @@ export default function ScenarioManagement() {
                                         <DraftingCompass className="w-8 h-8 text-indigo-400" />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-black text-slate-800 tracking-tighter   leading-none">{editingId ? "Edit Scenario" : "New Scenario"}</h2>
-                                        <p className="text-[10px] font-black text-slate-300   mt-2">Scenario Design System</p>
+                                        <h2 className="text-2xl font-black text-slate-800 tracking-tighter   leading-none">{editingId ? tr("aiTraining.editScenario") : tr("aiTraining.newScenario")}</h2>
+                                        <p className="text-[10px] font-black text-slate-300   mt-2">{tr("general.scenarioDesignSystem")}</p>
                                     </div>
                                 </div>
                                 <button onClick={() => { setIsCreating(false); setEditingId(null); }} className="w-12 h-12 rounded-xl hover:bg-slate-50 flex items-center justify-center text-slate-400 transition-colors">
@@ -465,13 +467,13 @@ export default function ScenarioManagement() {
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
-                                                    <span className="text-[10px] font-black text-indigo-400  tracking-[0.3em]">AI Generation Interface</span>
+                                                    <span className="text-[10px] font-black text-indigo-400  tracking-[0.3em]">{tr("general.aiGenerationInterface")}</span>
                                                 </div>
                                             </div>
                                             <div className="flex gap-4">
                                                 <textarea 
                                                     className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-5 text-sm font-bold text-white outline-none focus:bg-white/10 focus:border-indigo-400/50 transition-all placeholder:text-white/20 min-h-[100px] shadow-inner"
-                                                    placeholder="CONCEPT: e.g. Negotiating a high-stakes supply line under crisis..."
+                                                    placeholder={tr("aiTraining.aiConceptPlaceholder")}
                                                     value={aiPrompt}
                                                     onChange={(e) => setAiPrompt(e.target.value)}
                                                 />
@@ -485,7 +487,7 @@ export default function ScenarioManagement() {
                                                     ) : (
                                                         <Zap className="w-6 h-6" />
                                                     )}
-                                                    {isAiGenerating ? "Generating" : "Generate"}
+                                                    {isAiGenerating ? tr("aiTraining.generating") : tr("aiTraining.generate")}
                                                 </button>
                                             </div>
                                         </div>
@@ -496,45 +498,45 @@ export default function ScenarioManagement() {
                                 <form id="architect-form" onSubmit={handleAction} className="space-y-10">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-3 group">
-                                            <label htmlFor="scenario-title" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Scenario Title</label>
+                                            <label htmlFor="scenario-title" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">{tr("general.scenarioTitle")}</label>
                                             <input
                                                 id="scenario-title"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
-                                                placeholder="e.g. Crisis Negotiation Alpha"
+                                                placeholder={tr("aiTraining.titlePlaceholder")}
                                                 value={form.title}
                                                 onChange={e => setForm({...form, title: e.target.value})}
                                                 required
                                             />
                                         </div>
                                         <div className="space-y-3 group">
-                                            <label htmlFor="scenario-difficulty" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Difficulty Level</label>
+                                            <label htmlFor="scenario-difficulty" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">{tr("general.difficultyLevel")}</label>
                                             <select
                                                 id="scenario-difficulty"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-[10px] font-black text-slate-800   outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
                                                 value={form.difficulty}
                                                 onChange={e => setForm({...form, difficulty: e.target.value})}
                                             >
-                                                <option value="Beginner">Level_01: Beginner</option>
-                                                <option value="Intermediate">Level_02: Intermediate</option>
-                                                <option value="Advanced">Level_03: Advanced</option>
+                                                <option value="Beginner">{tr("aiTraining.levelBeginner")}</option>
+                                                <option value="Intermediate">{tr("aiTraining.levelIntermediate")}</option>
+                                                <option value="Advanced">{tr("aiTraining.levelAdvanced")}</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label htmlFor="scenario-character-name" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Participant Role & Persona</label>
+                                        <label htmlFor="scenario-character-name" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">{tr("general.participantRolePersona")}</label>
                                         <div className="grid grid-cols-2 gap-4">
                                             <input
                                                 id="scenario-character-name"
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
-                                                placeholder="Name: Jordan X"
+                                                placeholder={tr("aiTraining.namePlaceholder")}
                                                 value={form.character_name}
                                                 onChange={e => setForm({...form, character_name: e.target.value})}
                                                 required
                                             />
                                             <input 
                                                 className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner"
-                                                placeholder="Role: Senior Operative"
+                                                placeholder={tr("aiTraining.rolePlaceholder")}
                                                 value={form.character_role}
                                                 onChange={e => setForm({...form, character_role: e.target.value})}
                                                 required
@@ -543,11 +545,11 @@ export default function ScenarioManagement() {
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label htmlFor="scenario-system-prompt" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">System Prompt Instructions</label>
+                                        <label htmlFor="scenario-system-prompt" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">{tr("general.systemPromptInstructions")}</label>
                                         <textarea
                                             id="scenario-system-prompt"
                                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-6 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-slate-900 transition-all min-h-[150px] shadow-inner leading-relaxed"
-                                            placeholder="Provide instructions for the AI character..."
+                                            placeholder={tr("aiTraining.systemPromptPlaceholder")}
                                             value={form.system_prompt}
                                             onChange={e => setForm({...form, system_prompt: e.target.value})}
                                             required
@@ -555,11 +557,11 @@ export default function ScenarioManagement() {
                                     </div>
 
                                     <div className="space-y-3 group">
-                                        <label htmlFor="scenario-initial-message" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">Initial Message</label>
+                                        <label htmlFor="scenario-initial-message" className="text-[10px] font-black text-slate-400  tracking-[0.2em] ml-2 group-focus-within:text-slate-900 transition-colors">{tr("general.initialMessage")}</label>
                                         <input
                                             id="scenario-initial-message"
                                             className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-black text-slate-800 outline-none focus:bg-white focus:border-slate-900 transition-all shadow-inner "
-                                            placeholder="'I don't think we have the capacity for this delay...'"
+                                            placeholder={tr("aiTraining.initialMessagePlaceholder")}
                                             value={form.initial_message}
                                             onChange={e => setForm({...form, initial_message: e.target.value})}
                                             required
@@ -571,7 +573,7 @@ export default function ScenarioManagement() {
                              {/* Drawer Footer */}
                              {(canAccess("scenarios:moderate") || role === "ADMIN") && (
                                 <div className="p-10 border-t border-slate-50 bg-slate-50/30 flex items-center justify-between gap-6 shrink-0">
-                                    <p className="text-[9px] font-black text-slate-300   leading-none max-w-[200px]">Save this scenario to make it available for training.</p>
+                                    <p className="text-[9px] font-black text-slate-300   leading-none max-w-[200px]">{tr("aiTraining.saveScenarioHint")}</p>
                                     <button 
                                         form="architect-form"
                                         type="submit"
@@ -579,7 +581,7 @@ export default function ScenarioManagement() {
                                         className="px-10 h-14 bg-[#7C3AED] text-white rounded-xl font-black text-[10px]  tracking-[0.3em] hover:bg-[#6D28D9] transition-all active:scale-95 shadow-2xl flex items-center gap-3"
                                     >
                                         {submitting && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
-                                        {submitting ? 'Saving' : editingId ? 'Update Scenario' : 'Save Scenario'}
+                                        {submitting ? tr("aiTraining.saving") : editingId ? tr("aiTraining.updateScenario") : tr("aiTraining.saveScenario")}
                                     </button>
                                 </div>
                             )}
@@ -593,10 +595,10 @@ export default function ScenarioManagement() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Delete Scenario?"
-                message="Are you sure you want to permanently delete this scenario? This action is irreversible."
-                confirmLabel="Yes, Delete"
-                cancelLabel="No"
+                title={tr("aiTraining.deleteScenarioTitle")}
+                message={tr("aiTraining.deleteScenarioMessage")}
+                confirmLabel={tr("aiTraining.yesDelete")}
+                cancelLabel={tr("aiTraining.no")}
                 isDestructive={true}
             />
 
@@ -608,8 +610,8 @@ export default function ScenarioManagement() {
                         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-2xl w-full max-w-2xl max-h-full overflow-hidden shadow-2xl flex flex-col border border-slate-100">
                              <div className="p-10 border-b border-slate-50 flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-black text-slate-900 tracking-tight   ">Assign Scenario</h2>
-                                    <p className="text-[10px] font-black text-indigo-500   mt-1">Select participants</p>
+                                    <h2 className="text-2xl font-black text-slate-900 tracking-tight   ">{tr("general.assignScenario")}</h2>
+                                    <p className="text-[10px] font-black text-indigo-500   mt-1">{tr("general.selectParticipants")}</p>
                                 </div>
                                 <X className="w-8 h-8 text-slate-300 cursor-pointer hover:text-rose-500 transition-colors" onClick={() => setIsAssigningId(null)} />
                              </div>
@@ -655,7 +657,7 @@ export default function ScenarioManagement() {
                                     className="w-full h-16 bg-[#7C3AED] text-white rounded-xl font-black text-[11px]  tracking-[0.3em] hover:bg-[#6D28D9] transition-all shadow-2xl disabled:opacity-30 active:scale-95 flex items-center justify-center gap-4"
                                 >
                                     {assigning && <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
-                                    {assigning ? 'Assigning' : 'Assign Scenario'}
+                                    {assigning ? tr("aiTraining.assigning") : tr("general.assignScenario")}
                                 </button>
                              </div>
                         </motion.div>

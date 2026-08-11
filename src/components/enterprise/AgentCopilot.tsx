@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { API_BASE_URL } from '@/lib/api-config';
+import { useI18n } from '@/context/I18nContext';
 
 interface Message {
     role: 'user' | 'agent';
@@ -16,11 +17,12 @@ const makeThreadId = () =>
         : `thread-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 const AgentCopilot = () => {
+    const { t: tr } = useI18n();
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [threadId] = useState(makeThreadId());
     const [messages, setMessages] = useState<Message[]>([
-        { role: 'agent', content: "Hi! I'm your AI HR Copilot. I can help you shortlist candidates, trigger assessments, or manage onboarding milestones autonomously." }
+        { role: 'agent', content: tr("forms2.copilotGreeting") }
     ]);
     const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -59,11 +61,11 @@ const AgentCopilot = () => {
             if (response.ok) {
                 setMessages(prev => [...prev, { role: 'agent', content: data.response }]);
             } else {
-                setMessages(prev => [...prev, { role: 'agent', content: `Neural Error: ${data.detail || 'Connection lost'}` }]);
+                setMessages(prev => [...prev, { role: 'agent', content: `${tr("forms2.neuralError")}: ${data.detail || tr("forms2.connectionLost")}` }]);
             }
         } catch (error) {
             console.error("Agent Error:", error);
-            setMessages(prev => [...prev, { role: 'agent', content: "I'm having trouble connecting to the Neural Hub. Is the backend running on port 8000?" }]);
+            setMessages(prev => [...prev, { role: 'agent', content: tr("forms2.connectionTrouble") }]);
         } finally {
             setIsLoading(false);
         }
@@ -75,7 +77,7 @@ const AgentCopilot = () => {
             <button 
                 onClick={() => setIsOpen(true)}
                 className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-full shadow-2xl flex items-center justify-center text-white z-[9999] hover:scale-110 transition-transform active:scale-95"
-                title="Open AI Copilot"
+                title={tr("forms2.openCopilot")}
             >
                 <span className="material-symbols-rounded text-3xl">psychology</span>
                 {isLoading && (
@@ -110,7 +112,7 @@ const AgentCopilot = () => {
                                     <h2 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2">
                                         <span className="material-symbols-rounded text-[#5B53E0] text-[22px]">smart_toy</span> Agent OS
                                     </h2>
-                                    <p className="text-[13px] text-[#8A929E] mt-0.5">Neural Copilot Active</p>
+                                    <p className="text-[13px] text-[#8A929E] mt-0.5">{tr("forms2.copilotActive")}</p>
                                 </div>
                                 <button 
                                     onClick={() => setIsOpen(false)} 
@@ -157,21 +159,21 @@ const AgentCopilot = () => {
                                 {/* Suggested Actions */}
                                 {!isLoading && messages.length < 3 && (
                                     <div className="space-y-3">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">Suggested for you</p>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">{tr("forms2.suggestedForYou")}</p>
                                         <div className="grid grid-cols-1 gap-2">
                                             <button 
                                                 onClick={() => handleSendMessage("Shortlist candidates for React Role")}
                                                 className="text-left p-3 rounded-xl border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 transition-all text-sm font-medium text-slate-700 flex items-center gap-3 group"
                                             >
                                                 <span className="material-symbols-rounded text-slate-400 group-hover:text-indigo-600 transition-colors">person_search</span>
-                                                <span>Shortlist candidates for React Role</span>
+                                                <span>{tr("forms2.shortlistReact")}</span>
                                             </button>
                                             <button 
                                                 onClick={() => handleSendMessage("Check onboarding status for new hires")}
                                                 className="text-left p-3 rounded-xl border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 transition-all text-sm font-medium text-slate-700 flex items-center gap-3 group"
                                             >
                                                 <span className="material-symbols-rounded text-slate-400 group-hover:text-indigo-600 transition-colors">fact_check</span>
-                                                <span>Check onboarding status</span>
+                                                <span>{tr("forms2.checkOnboarding")}</span>
                                             </button>
                                         </div>
                                     </div>
@@ -186,7 +188,7 @@ const AgentCopilot = () => {
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                                        placeholder="Command the agents..." 
+                                        placeholder={tr("forms2.commandAgents")}
                                         disabled={isLoading}
                                         className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-4 pr-14 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 outline-none transition-all disabled:opacity-50"
                                     />
@@ -198,7 +200,7 @@ const AgentCopilot = () => {
                                         <span className="material-symbols-rounded">send</span>
                                     </button>
                                 </div>
-                                <p className="mt-3 text-[10px] text-center text-slate-400 font-medium">Powered by Croar Agent Intelligence</p>
+                                <p className="mt-3 text-[10px] text-center text-slate-400 font-medium">{tr("forms2.poweredByCroar")}</p>
                             </div>
                         </motion.div>
                     </>

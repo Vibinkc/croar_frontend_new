@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import { format } from "date-fns";
 import {
@@ -52,6 +53,7 @@ interface ProjectTask {
 
 export default function GlobalTasksPage() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const [projects, setProjects] = useState<Project[]>([]);
     const [selectedProjectId, setSelectedProjectId] = useState<string>("all");
     const [tasks, setTasks] = useState<ProjectTask[]>([]);
@@ -154,13 +156,13 @@ export default function GlobalTasksPage() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Project Tasks</h1>
-                        <PageHelp title="Project Tasks">
-                            <p>Every task across your projects in one place.</p>
-                            <p>Filter by project or status. Tasks are created inside a project — use the project selector or open a project&apos;s board to add them.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("postOnboarding.projectTasks")}</h1>
+                        <PageHelp title={tr("postOnboarding.projectTasks")}>
+                            <p>{tr("postOnboarding.tasksHelp1")}</p>
+                            <p>{tr("postOnboarding.tasksHelp2")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage and track assignments across all projects</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("postOnboarding.tasksSubtitle")}</p>
                 </div>
 
                 <div className="relative shrink-0 sm:min-w-[220px]">
@@ -170,7 +172,7 @@ export default function GlobalTasksPage() {
                         value={selectedProjectId}
                         onChange={(e) => setSelectedProjectId(e.target.value)}
                     >
-                        <option value="all">All Projects (Grid)</option>
+                        <option value="all">{tr("postOnboarding.allProjectsGrid")}</option>
                         {projects.map(p => (
                             <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
@@ -182,28 +184,28 @@ export default function GlobalTasksPage() {
             {/* Stat cards */}
             <StatGrid>
                 <StatCard
-                    label="Total Tasks"
+                    label={tr("postOnboarding.totalTasks")}
                     value={tasks.length}
                     icon="task_alt"
                     gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
                     glow="rgba(91,83,224,0.28)"
                 />
                 <StatCard
-                    label="In Progress"
+                    label={tr("postOnboarding.inProgress")}
                     value={tasks.filter(t => t.status !== 'Done' && t.status !== 'Completed').length}
                     icon="sync"
                     gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
                     glow="rgba(53,89,199,0.25)"
                 />
                 <StatCard
-                    label="Completed"
+                    label={tr("postOnboarding.completed")}
                     value={tasks.filter(t => t.status === 'Done' || t.status === 'Completed').length}
                     icon="check_circle"
                     gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
                     glow="rgba(14,138,110,0.25)"
                 />
                 <StatCard
-                    label="Upcoming"
+                    label={tr("postOnboarding.upcoming")}
                     value={tasks.filter(t => t.due_date && new Date(t.due_date) > new Date()).length}
                     icon="event"
                     gradient="linear-gradient(135deg,#F6B65C,#D97706)"
@@ -230,8 +232,8 @@ export default function GlobalTasksPage() {
                                 <Network className="w-[18px] h-[18px]" />
                             </span>
                             <div>
-                                <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-none">{selectedProjectData.name} Board</h2>
-                                <p className="text-[12.5px] text-[#8A929E] mt-1">Interactive Kanban workspace</p>
+                                <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-none">{selectedProjectData.name} {tr("postOnboarding.boardSuffix")}</h2>
+                                <p className="text-[12.5px] text-[#8A929E] mt-1">{tr("postOnboarding.kanbanWorkspace")}</p>
                             </div>
                         </div>
                         <button
@@ -239,7 +241,7 @@ export default function GlobalTasksPage() {
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shrink-0"
                         >
                             <RefreshCcw className="w-3.5 h-3.5" />
-                            Sync Board
+                            {tr("postOnboarding.syncBoard")}
                         </button>
                     </div>
 
@@ -260,7 +262,7 @@ export default function GlobalTasksPage() {
                             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
                             <input
                                 type="text"
-                                placeholder="Search tasks, descriptions or project names…"
+                                placeholder={tr("postOnboarding.searchTasksPlaceholder")}
                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -274,10 +276,10 @@ export default function GlobalTasksPage() {
                                 onChange={(e) => setStatusFilter(e.target.value)}
                                 className={`${selectCls} w-full md:min-w-[170px]`}
                             >
-                                <option value="all">All Stages</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Doing">In Progress</option>
-                                <option value="Done">Completed</option>
+                                <option value="all">{tr("postOnboarding.allStages")}</option>
+                                <option value="Pending">{tr("postOnboarding.pending")}</option>
+                                <option value="Doing">{tr("postOnboarding.inProgress")}</option>
+                                <option value="Done">{tr("postOnboarding.completed")}</option>
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                         </div>
@@ -290,12 +292,12 @@ export default function GlobalTasksPage() {
                                 <table className="w-full border-collapse">
                                     <thead>
                                         <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
-                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Task Details</th>
-                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Project</th>
-                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Assignee</th>
-                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</th>
-                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Due Date</th>
-                                            <th className="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Actions</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.taskDetails")}</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.project")}</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.assignee")}</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.status")}</th>
+                                            <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.dueDate")}</th>
+                                            <th className="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.actions")}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[#F0F0F1]">
@@ -304,7 +306,7 @@ export default function GlobalTasksPage() {
                                                 <td className="px-6 py-4">
                                                     <div className="flex flex-col">
                                                         <span className="text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors">{task.title}</span>
-                                                        <span className="text-[12.5px] text-[#8A929E] line-clamp-1 mt-0.5">{task.description || "No description"}</span>
+                                                        <span className="text-[12.5px] text-[#8A929E] line-clamp-1 mt-0.5">{task.description || tr("postOnboarding.noDescription")}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -322,7 +324,7 @@ export default function GlobalTasksPage() {
                                                             <span className="text-[13px] font-medium text-[#374151] capitalize">{task.assignee.first_name} {task.assignee.last_name}</span>
                                                         </div>
                                                     ) : (
-                                                        <span className="text-[13px] text-[#9AA3AF]">Unassigned</span>
+                                                        <span className="text-[13px] text-[#9AA3AF]">{tr("postOnboarding.unassigned")}</span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -332,7 +334,7 @@ export default function GlobalTasksPage() {
                                                     <div className="flex items-center gap-1.5 text-[13px] text-[#374151]">
                                                         <Calendar className="w-4 h-4 text-[#9AA3AF]" />
                                                         <span className={jetbrainsMono.className}>
-                                                            {task.due_date ? format(new Date(task.due_date), "MMM d, yyyy") : "No date"}
+                                                            {task.due_date ? format(new Date(task.due_date), "MMM d, yyyy") : tr("postOnboarding.noDate")}
                                                         </span>
                                                     </div>
                                                 </td>
@@ -340,7 +342,7 @@ export default function GlobalTasksPage() {
                                                     <Link
                                                         href={`/enterprise/projects/${task.project_id}`}
                                                         className="w-9 h-9 rounded-[9px] text-[#9AA3AF] hover:text-[#5B53E0] hover:bg-[#ECEBFB] flex items-center justify-center transition-colors ml-auto"
-                                                        title="View Project Board"
+                                                        title={tr("postOnboarding.viewProjectBoard")}
                                                     >
                                                         <ExternalLink className="w-4 h-4" />
                                                     </Link>
@@ -354,11 +356,11 @@ export default function GlobalTasksPage() {
                             <EmptyState
                                 tone="brand"
                                 icon="checklist"
-                                title="No tasks yet"
-                                description="Tasks live inside projects. Open a project and add tasks to its board, then track them here across every project."
+                                title={tr("postOnboarding.noTasksYet")}
+                                description={tr("postOnboarding.noTasksYetDesc")}
                                 action={
                                     <Link href="/enterprise/projects">
-                                        <Button>Go to Projects</Button>
+                                        <Button>{tr("postOnboarding.goToProjects")}</Button>
                                     </Link>
                                 }
                             />
@@ -366,8 +368,8 @@ export default function GlobalTasksPage() {
                             <EmptyState
                                 tone="muted"
                                 icon="search_off"
-                                title="No tasks found"
-                                description="We couldn't find any tasks matching your criteria. Try adjusting your search or status filter."
+                                title={tr("postOnboarding.noTasksFound")}
+                                description={tr("postOnboarding.noTasksFoundDesc")}
                                 action={
                                     <Button
                                         variant="secondary"
@@ -376,7 +378,7 @@ export default function GlobalTasksPage() {
                                             setStatusFilter("all");
                                         }}
                                     >
-                                        Reset filters
+                                        {tr("postOnboarding.resetFilters")}
                                     </Button>
                                 }
                             />

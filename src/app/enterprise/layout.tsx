@@ -8,6 +8,59 @@ import Image from "next/image";
 import { Hanken_Grotesk } from "next/font/google";
 import CommandPalette from "@/components/enterprise/CommandPalette";
 import { GuideProvider, Tour, HelpButton, GuideBook } from "@/components/guide";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useI18n } from "@/context/I18nContext";
+
+// Maps known nav labels to i18n keys (Talent Search section is translated in this slice;
+// other labels fall back to their English text until they're migrated).
+const NAV_I18N: Record<string, string> = {
+    // Section titles
+    "Hiring Hub": "nav.hiringHub",
+    "Talent Search": "nav.talentSearch",
+    "Automation": "nav.automation",
+    "Post Onboarding": "nav.postOnboarding",
+    "Payroll": "nav.payroll",
+    "AI & Training": "nav.aiTraining",
+    "General": "nav.general",
+    // Items
+    "Dashboard": "nav.dashboard",
+    "Croar Pilot": "nav.croarPilot",
+    "Jobs": "nav.jobs",
+    "Pipeline": "nav.pipeline",
+    "Mail": "nav.mail",
+    "Job Portals": "nav.jobPortals",
+    "Onboarding Hub": "nav.onboardingHub",
+    "Projects": "nav.projects",
+    "Sequences": "nav.sequences",
+    "Integrations": "nav.integrations",
+    "Profile Sourcing": "nav.profileSourcing",
+    "Shortlisted Talent": "nav.shortlistedTalent",
+    "Candidates": "nav.candidates",
+    "Canvas": "nav.canvas",
+    "Assessment": "nav.assessment",
+    "Interview": "nav.interview",
+    "Onboarding": "nav.onboarding",
+    "Employees": "nav.employees",
+    "Tasks": "nav.tasks",
+    "Skill Assessments": "nav.skillAssessments",
+    "360 Assessments": "nav.assessments360",
+    "HR Surveys": "nav.hrSurveys",
+    "Payroll Dashboard": "nav.payrollDashboard",
+    "Salary Templates": "nav.salaryTemplates",
+    "Salary Structures": "nav.salaryStructures",
+    "Timesheets": "nav.timesheets",
+    "Leave": "nav.leave",
+    "Taxes & Forms": "nav.taxesForms",
+    "Payroll Reports": "nav.payrollReports",
+    "Payroll Activity": "nav.payrollActivity",
+    "Payroll Settings": "nav.payrollSettings",
+    "Scenario Architect": "nav.scenarioArchitect",
+    "Settings": "nav.settings",
+    "Team": "nav.team",
+    "Permissions": "nav.permissions",
+    "Partners": "nav.partners",
+    "Templates": "nav.templates",
+};
 
 const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
@@ -43,6 +96,9 @@ export default function EnterprisePortalLayout({
     children: React.ReactNode;
 }) {
     const { role, token, user, isLoading, logout, permissions, canAccess } = useAuth();
+    const { t } = useI18n();
+    // Translate a nav label when we have a mapping; otherwise show the original text.
+    const navLabel = (label: string) => (NAV_I18N[label] ? t(NAV_I18N[label]) : label);
     const router = useRouter();
     const pathname = usePathname();
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -152,7 +208,11 @@ export default function EnterprisePortalLayout({
             title: "Talent Search",
             icon: "person_search",
             items: [
-                { label: "Candidate Search", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
+                // Hidden for now — re-enable to bring the Candidate Bank back into the sidebar.
+                // { label: "Candidate Bank", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
+                { label: "Projects", icon: "folder_open", path: "/enterprise/sourcing/projects", permission: "candidates:read" },
+                { label: "Sequences", icon: "mail", path: "/enterprise/sourcing/sequences", permission: "candidates:read" },
+                { label: "Integrations", icon: "extension", path: "/enterprise/sourcing/connections", permission: "candidates:read" },
                 { label: "Profile Sourcing", icon: "travel_explore", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
                 { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
             ]
@@ -228,7 +288,7 @@ export default function EnterprisePortalLayout({
 
     // Flattened list for the ⌘K command palette.
     const commandItems = accessibleNavGroups.flatMap(g =>
-        g.items.map(i => ({ label: i.label, icon: i.icon, path: i.path, group: g.title }))
+        g.items.map(i => ({ label: navLabel(i.label), icon: i.icon, path: i.path, group: navLabel(g.title) }))
     );
 
     // True when the given path is the best (most specific) match for the current route.
@@ -247,7 +307,7 @@ export default function EnterprisePortalLayout({
             }
         }
 
-        // Exception: "Candidate Search" should NOT be active if we are on "Applicant Pipeline"
+        // Exception: "Candidate Bank" should NOT be active if we are on "Applicant Pipeline"
         if (path === "/enterprise/candidates" && pathname.startsWith("/enterprise/candidates/kanban")) {
             isActive = false;
         }
@@ -370,7 +430,7 @@ export default function EnterprisePortalLayout({
                                         >
                                             <span className="flex items-center gap-3">
                                                 <span className={`material-symbols-rounded text-[18px] ${hasActive ? 'text-[#8B7DFF]' : 'text-[#656D7A] group-hover/hdr:text-white transition-colors'}`}>{group.icon}</span>
-                                                <span className="whitespace-nowrap">{group.title}</span>
+                                                <span className="whitespace-nowrap">{navLabel(group.title)}</span>
                                             </span>
                                             <svg className={`w-3.5 h-3.5 ${hasActive ? 'text-[#8B7DFF]' : 'text-[#656D7A] group-hover/hdr:text-white'} transition-transform duration-200 ${open ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                                 <path d="m6 9 6 6 6-6"/>
@@ -408,7 +468,7 @@ export default function EnterprisePortalLayout({
                                                                     : "text-[#BAC1CC] hover:text-white hover:bg-white/[0.02] border border-transparent font-medium"
                                                             }`}
                                                         >
-                                                            <span>{item.label}</span>
+                                                            <span>{navLabel(item.label)}</span>
                                                             {item.label === "Croar Pilot" && (
                                                                 <span className="px-1.5 py-0.5 rounded-[6px] bg-[#14161F] border border-[#5B53E0]/20 text-[#8B7DFF] text-[9.5px] font-extrabold uppercase tracking-wider leading-none">
                                                                     AI
@@ -428,6 +488,11 @@ export default function EnterprisePortalLayout({
 
                 {/* Sidebar Footer User Info */}
                 <div className={`p-3 border-t border-[#1C1F26] shrink-0 ${isSidebarCollapsed ? 'px-1' : ''}`}>
+                    {!isSidebarCollapsed && (
+                        <div className="mb-3">
+                            <LanguageSwitcher variant="dark" />
+                        </div>
+                    )}
                     <div className={`flex items-center gap-2.5 mb-3 px-2 ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}>
                         <div className="w-8 h-8 rounded-[8px] bg-[#5B53E0] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_8px_rgba(91,83,224,0.3)]">
                             {user ? user.charAt(0).toUpperCase() : 'R'}
@@ -443,10 +508,10 @@ export default function EnterprisePortalLayout({
                     <button
                         onClick={logout}
                         className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#8A929E] hover:bg-white/[0.04] hover:text-rose-400 rounded-[10px] transition-colors duration-150 group cursor-pointer ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}
-                        title={isSidebarCollapsed ? 'Logout' : ''}
+                        title={isSidebarCollapsed ? t("general.logout") : ''}
                     >
                         <span className="material-symbols-rounded text-[18px] text-[#525969] group-hover:text-rose-400">logout</span>
-                        {!isSidebarCollapsed && <span className="text-[12.5px] font-medium">Logout</span>}
+                        {!isSidebarCollapsed && <span className="text-[12.5px] font-medium">{t("general.logout")}</span>}
                     </button>
                 </div>
             </aside>
@@ -467,6 +532,7 @@ export default function EnterprisePortalLayout({
                             <span className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">Croar</span>
                         </span>
                     </div>
+                    <LanguageSwitcher compact />
                 </header>
 
                 {/* Content */}

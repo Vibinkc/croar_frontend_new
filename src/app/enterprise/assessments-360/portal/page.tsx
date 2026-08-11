@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SimulationChat from "@/app/enterprise/components/SimulationChat";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { Button, Card, Input, Field, Badge, CroarLogo, jetbrainsMono } from "@/components/ds";
 
@@ -33,6 +34,7 @@ interface Employee {
 }
 
 export default function UnifiedEmployeePortal() {
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [step, setStep] = useState<'login' | 'list'>('login');
     const [loading, setLoading] = useState(false);
@@ -72,10 +74,10 @@ export default function UnifiedEmployeePortal() {
                 setSimulationAssignments(data.simulation_assignments || []);
                 setStep('list');
             } else {
-                setError(data.detail || "Invalid ID or Email. Please check and try again.");
+                setError(data.detail || tr("assess360.invalidCredentials"));
             }
         } catch (err) {
-            setError("Connection error. Please try again later.");
+            setError(tr("assess360.connectionError"));
         } finally {
             setLoading(false);
         }
@@ -131,28 +133,28 @@ export default function UnifiedEmployeePortal() {
                             <div className="flex justify-center mb-6">
                                 <CroarLogo />
                             </div>
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Employee Experience Hub</h1>
-                            <p className="text-[13.5px] text-[#8A929E] mt-1.5">Growth, Feedback &amp; Behavioral Training</p>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("assess360.employeeExperienceHub")}</h1>
+                            <p className="text-[13.5px] text-[#8A929E] mt-1.5">{tr("assess360.portalSubtitle")}</p>
                         </header>
 
                         <form onSubmit={handleLogin} className="space-y-5">
-                            <Field label="Employee UUID / ID" htmlFor="portal-employee-id" required>
+                            <Field label={tr("assess360.employeeIdLabel")} htmlFor="portal-employee-id" required>
                                 <Input
                                     id="portal-employee-id"
                                     icon="badge"
-                                    placeholder="Enter your unique ID..."
+                                    placeholder={tr("assess360.employeeIdPlaceholder")}
                                     value={credentials.employee_id}
                                     onChange={(e) => setCredentials({...credentials, employee_id: e.target.value})}
                                     required
                                 />
                             </Field>
 
-                            <Field label="Corporate Email" htmlFor="portal-corporate-email" required>
+                            <Field label={tr("assess360.corporateEmail")} htmlFor="portal-corporate-email" required>
                                 <Input
                                     id="portal-corporate-email"
                                     type="email"
                                     icon="mail"
-                                    placeholder="yourname@company.com"
+                                    placeholder={tr("assess360.emailPlaceholder")}
                                     value={credentials.email}
                                     onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                                     required
@@ -177,16 +179,16 @@ export default function UnifiedEmployeePortal() {
                                 {loading ? (
                                     <span className="flex items-center gap-2">
                                         <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                                        Logging in...
+                                        {tr("assess360.loggingIn")}
                                     </span>
                                 ) : (
-                                    "Enter Hub"
+                                    tr("assess360.enterHub")
                                 )}
                             </Button>
                         </form>
 
                         <footer className="mt-8 text-center text-[12px] text-[#8A929E]">
-                            Secure entry point for employee growth.
+                            {tr("assess360.secureEntry")}
                         </footer>
                     </Card>
                 ) : (
@@ -194,14 +196,14 @@ export default function UnifiedEmployeePortal() {
                         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-[#E8EAED]">
                             <div className="min-w-0">
                                 <h1 className="text-[22px] md:text-[26px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
-                                    Welcome back, {employee?.first_name}
+                                    {tr("auth.welcomeBack")}, {employee?.first_name}
                                 </h1>
                                 <div className="flex items-center gap-2 mt-2">
                                     <Badge tone="indigo" dot>
                                         <span className={`${jetbrainsMono.className} font-semibold`}>{totalTasks}</span>
-                                        &nbsp;active task{totalTasks === 1 ? '' : 's'}
+                                        &nbsp;{totalTasks === 1 ? tr("assess360.activeTaskOne") : tr("assess360.activeTaskMany")}
                                     </Badge>
-                                    <span className="text-[12.5px] text-[#8A929E]">in your pipeline</span>
+                                    <span className="text-[12.5px] text-[#8A929E]">{tr("assess360.inYourPipeline")}</span>
                                 </div>
                             </div>
                             <Button
@@ -210,7 +212,7 @@ export default function UnifiedEmployeePortal() {
                                 icon="logout"
                                 onClick={() => setStep('login')}
                             >
-                                Close Session
+                                {tr("assess360.closeSession")}
                             </Button>
                         </header>
 
@@ -219,8 +221,8 @@ export default function UnifiedEmployeePortal() {
                                 <div className="w-16 h-16 bg-[#E6F4EA] text-[#15803D] rounded-[14px] flex items-center justify-center mx-auto mb-5">
                                     <span className="material-symbols-rounded text-[34px]">task_alt</span>
                                 </div>
-                                <h3 className="text-[17px] font-bold text-[#15171C]">All caught up</h3>
-                                <p className="text-[13.5px] text-[#8A929E] mt-1">You have no active tasks currently.</p>
+                                <h3 className="text-[17px] font-bold text-[#15171C]">{tr("assess360.allCaughtUp")}</h3>
+                                <p className="text-[13.5px] text-[#8A929E] mt-1">{tr("assess360.noActiveTasks")}</p>
                             </Card>
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -228,7 +230,7 @@ export default function UnifiedEmployeePortal() {
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
                                         <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">group</span>
-                                        <h3 className="text-[13px] font-bold text-[#15171C]">360° Feedback</h3>
+                                        <h3 className="text-[13px] font-bold text-[#15171C]">{tr("assess360.feedback360")}</h3>
                                         <Badge tone="indigo" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{assessments.length}</span>
                                         </Badge>
@@ -241,7 +243,7 @@ export default function UnifiedEmployeePortal() {
                                                         {ass.ratee_name?.[0]}
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight truncate">Review {ass.ratee_name}</h4>
+                                                        <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight truncate">{tr("assess360.review")} {ass.ratee_name}</h4>
                                                         <p className="text-[12px] text-[#8A929E] mt-0.5 truncate">{ass.relation}</p>
                                                     </div>
                                                 </div>
@@ -250,7 +252,7 @@ export default function UnifiedEmployeePortal() {
                                                     size="sm"
                                                     onClick={() => router.push(`/enterprise/assessments-360/${ass.id}`)}
                                                     className="shrink-0 w-9 px-0"
-                                                    aria-label={`Review ${ass.ratee_name}`}
+                                                    aria-label={`${tr("assess360.review")} ${ass.ratee_name}`}
                                                 >
                                                     <span className="material-symbols-rounded text-[18px]">arrow_forward</span>
                                                 </Button>
@@ -258,7 +260,7 @@ export default function UnifiedEmployeePortal() {
                                         )) : (
                                             <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
                                                 <span className="material-symbols-rounded text-[26px] opacity-50">history_edu</span>
-                                                <p className="text-[12px] font-medium">No pending reviews</p>
+                                                <p className="text-[12px] font-medium">{tr("assess360.noPendingReviews")}</p>
                                             </div>
                                         )}
                                     </div>
@@ -268,7 +270,7 @@ export default function UnifiedEmployeePortal() {
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
                                         <span className="material-symbols-rounded text-[20px] text-[#0E8A6E]">analytics</span>
-                                        <h3 className="text-[13px] font-bold text-[#15171C]">Culture Surveys</h3>
+                                        <h3 className="text-[13px] font-bold text-[#15171C]">{tr("assess360.cultureSurveys")}</h3>
                                         <Badge tone="teal" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{surveys.length}</span>
                                         </Badge>
@@ -298,7 +300,7 @@ export default function UnifiedEmployeePortal() {
                                         )) : (
                                             <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
                                                 <span className="material-symbols-rounded text-[26px] opacity-50">poll</span>
-                                                <p className="text-[12px] font-medium">All pulse checks completed</p>
+                                                <p className="text-[12px] font-medium">{tr("assess360.allPulseCompleted")}</p>
                                             </div>
                                         )}
                                     </div>
@@ -308,7 +310,7 @@ export default function UnifiedEmployeePortal() {
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
                                         <span className="material-symbols-rounded text-[20px] text-[#D97706]">neurology</span>
-                                        <h3 className="text-[13px] font-bold text-[#15171C]">AI Practice Lab</h3>
+                                        <h3 className="text-[13px] font-bold text-[#15171C]">{tr("assess360.aiPracticeLab")}</h3>
                                         <Badge tone="warning" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{simulationAssignments.length}</span>
                                         </Badge>
@@ -320,7 +322,7 @@ export default function UnifiedEmployeePortal() {
                                                     <div className="w-11 h-11 bg-[#FEF3E2] text-[#D97706] rounded-[11px] flex items-center justify-center shrink-0">
                                                         <span className="material-symbols-rounded text-[20px]">psychology</span>
                                                     </div>
-                                                    <Badge tone="neutral">Practice</Badge>
+                                                    <Badge tone="neutral">{tr("assess360.practice")}</Badge>
                                                 </div>
                                                 <div>
                                                     <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight">{sim.title}</h4>
@@ -338,14 +340,14 @@ export default function UnifiedEmployeePortal() {
                                                         onClick={() => startSimulation(sim.scenario_id, sim.id)}
                                                         className="shrink-0"
                                                     >
-                                                        Start Practice
+                                                        {tr("assess360.startPractice")}
                                                     </Button>
                                                 </div>
                                             </Card>
                                         )) : (
                                             <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
                                                 <span className="material-symbols-rounded text-[26px] opacity-50">lock_open</span>
-                                                <p className="text-[12px] font-medium">No lab sessions assigned</p>
+                                                <p className="text-[12px] font-medium">{tr("assess360.noLabSessions")}</p>
                                             </div>
                                         )}
                                     </div>
@@ -358,7 +360,7 @@ export default function UnifiedEmployeePortal() {
 
             {/* Global Portal Footer */}
             <div className={`mt-10 text-[11px] font-medium text-[#8A929E] tracking-[0.2em] uppercase transition-opacity duration-700 ${step === 'login' ? 'opacity-0' : 'opacity-100'}`}>
-                Employee Portal
+                {tr("assess360.employeePortal")}
             </div>
         </div>
     );

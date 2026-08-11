@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import { authApi, type UserRole } from "@/utils/payroll/api";
 import type { AuthUser } from "@/utils/payroll/auth";
 import { Banner, Modal } from "@/components/payroll/ui";
@@ -23,6 +24,7 @@ const EMPTY = { email: "", full_name: "", password: "", role: "VIEWER" as UserRo
 
 export default function TeamPage() {
   const { user: me } = useAuth();
+  const { t: tr } = useI18n();
   const [users, setUsers] = useState<AuthUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,9 +85,9 @@ export default function TeamPage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 py-6 max-w-[1320px] mx-auto w-full animate-fade-in flex flex-col gap-6">
       <PageHeader
-        title="Team"
-        subtitle="Manage the users who can sign in to your organization."
-        help="Manage who can access and approve payroll."
+        title={tr("nav.team")}
+        subtitle={tr("payroll.teamSubtitle")}
+        help={tr("payroll.teamHelp")}
         actions={
           <button
             onClick={() => {
@@ -96,7 +98,7 @@ export default function TeamPage() {
             className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
           >
             <span className="material-symbols-rounded text-[20px]">person_add</span>{" "}
-            Add User
+            {tr("payroll.addUser")}
           </button>
         }
       />
@@ -104,16 +106,16 @@ export default function TeamPage() {
       {error && <Banner>{error}</Banner>}
 
       {loading ? (
-        <p className="p-8 text-center text-[var(--color-muted)]">Loading…</p>
+        <p className="p-8 text-center text-[var(--color-muted)]">{tr("common.loading")}</p>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[var(--color-border)] text-left text-xs uppercase tracking-wide text-[var(--color-muted)]">
-                <th className="px-5 py-3 font-semibold">User</th>
-                <th className="px-5 py-3 font-semibold">Email</th>
-                <th className="px-5 py-3 font-semibold">Role</th>
-                <th className="px-5 py-3 font-semibold">Status</th>
+                <th className="px-5 py-3 font-semibold">{tr("payroll.user")}</th>
+                <th className="px-5 py-3 font-semibold">{tr("payroll.email")}</th>
+                <th className="px-5 py-3 font-semibold">{tr("payroll.role")}</th>
+                <th className="px-5 py-3 font-semibold">{tr("payroll.status")}</th>
               </tr>
             </thead>
             <tbody>
@@ -127,7 +129,7 @@ export default function TeamPage() {
                       <span className="font-semibold">
                         {u.full_name || "—"}
                         {me?.id === u.id && (
-                          <span className="ml-2 text-xs font-normal text-[var(--color-dim)]">(you)</span>
+                          <span className="ml-2 text-xs font-normal text-[var(--color-dim)]">{tr("payroll.you")}</span>
                         )}
                       </span>
                     </div>
@@ -143,7 +145,7 @@ export default function TeamPage() {
                     </span>
                   </td>
                   <td className="px-5 py-3 text-[var(--color-muted)]">
-                    {u.is_active ? "Active" : "Inactive"}
+                    {u.is_active ? tr("payroll.active") : tr("payroll.inactive")}
                   </td>
                 </tr>
               ))}
@@ -153,11 +155,11 @@ export default function TeamPage() {
       )}
 
       {open && (
-        <Modal title="Add User" onClose={() => setOpen(false)}>
+        <Modal title={tr("payroll.addUser")} onClose={() => setOpen(false)}>
           <form onSubmit={create} className="flex flex-col gap-4">
             {formErr && <Banner>{formErr}</Banner>}
             <label className="flex flex-col gap-1.5">
-              <span className="lbl">Full Name</span>
+              <span className="lbl">{tr("payroll.fullName")}</span>
               <input
                 className="input"
                 required
@@ -166,7 +168,7 @@ export default function TeamPage() {
               />
             </label>
             <label className="flex flex-col gap-1.5">
-              <span className="lbl">Email</span>
+              <span className="lbl">{tr("payroll.email")}</span>
               <input
                 className="input"
                 type="email"
@@ -176,7 +178,7 @@ export default function TeamPage() {
               />
             </label>
             <label className="flex flex-col gap-1.5">
-              <span className="lbl">Temporary Password</span>
+              <span className="lbl">{tr("payroll.temporaryPassword")}</span>
               <input
                 className="input"
                 type="password"
@@ -186,11 +188,11 @@ export default function TeamPage() {
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
               <span className="text-xs text-[var(--color-dim)]">
-                At least 6 characters. Share it with the user to sign in.
+                {tr("payroll.passwordHint")}
               </span>
             </label>
             <label className="flex flex-col gap-1.5">
-              <span className="lbl">Role</span>
+              <span className="lbl">{tr("payroll.role")}</span>
               <select
                 className="input"
                 value={form.role}
@@ -198,7 +200,7 @@ export default function TeamPage() {
               >
                 {ROLES.map((r) => (
                   <option key={r.value} value={r.value}>
-                    {r.label} — {r.hint}
+                    {tr(`payroll.role_${r.value}`)} — {tr(`payroll.roleHint_${r.value}`)}
                   </option>
                 ))}
               </select>
@@ -206,14 +208,14 @@ export default function TeamPage() {
 
             <div className="flex gap-3">
               <button type="submit" disabled={saving} className="btn-primary">
-                {saving ? "Adding…" : "Add User"}
+                {saving ? tr("payroll.adding") : tr("payroll.addUser")}
               </button>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] py-2.5 text-sm font-semibold"
               >
-                Cancel
+                {tr("common.cancel")}
               </button>
             </div>
           </form>

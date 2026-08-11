@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -65,6 +66,7 @@ const MOCK_RESULTS: Result[] = [
 
 export default function ResultsDashboard() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [results, setResults] = useState<Result[]>([]);
     const [loading, setLoading] = useState(true);
@@ -137,17 +139,17 @@ export default function ResultsDashboard() {
                     <div>
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-3">
                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                            <span className="text-[8px] font-black  tracking-[0.1em] text-indigo-400">Performance Analytics</span>
+                            <span className="text-[8px] font-black  tracking-[0.1em] text-indigo-400">{tr("aiTraining.performanceAnalytics")}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <h1 className="text-3xl font-black tracking-tighter leading-none   flex items-center gap-4">
-                                Performance Results
+                                {tr("aiTraining.perfResults")}
                             </h1>
-                            <PageHelp title="Performance Results">
-                                <p>Review results and scores from AI practice sessions.</p>
+                            <PageHelp title={tr("aiTraining.perfResults")}>
+                                <p>{tr("aiTraining.perfResultsHelp")}</p>
                             </PageHelp>
                         </div>
-                        <p className="text-[10px] text-slate-400 font-bold  tracking-[0.3em] mt-3 opacity-60">Review training session outcomes and behavioral analytics</p>
+                        <p className="text-[10px] text-slate-400 font-bold  tracking-[0.3em] mt-3 opacity-60">{tr("aiTraining.reviewOutcomes")}</p>
                     </div>
                 </div>
 
@@ -162,7 +164,7 @@ export default function ResultsDashboard() {
                         ) : (
                             <Zap className="w-5 h-5 group-hover:animate-bounce" />
                         )}
-                        Seed Test Data
+                        {tr("aiTraining.seedTestData")}
                     </button>
                 </div>
 
@@ -177,12 +179,12 @@ export default function ResultsDashboard() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50 border-b border-slate-100">
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">Employee Name</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">Scenario</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">Archetype</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">Overall Score</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">Timestamp</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em] text-right">Actions</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">{tr("aiTraining.colEmployeeName")}</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">{tr("aiTraining.colScenario")}</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">{tr("aiTraining.colArchetype")}</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">{tr("aiTraining.colOverallScore")}</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em]">{tr("aiTraining.colTimestamp")}</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-400  tracking-[0.2em] text-right">{tr("aiTraining.colActions")}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -192,8 +194,8 @@ export default function ResultsDashboard() {
                                         <div className="flex flex-col items-center gap-6 opacity-30">
                                             <Atom className="w-20 h-20 text-slate-200 animate-spin-slow" />
                                             <div>
-                                                <h3 className="text-xl font-black text-slate-800  tracking-tighter ">No Results Found</h3>
-                                                <p className="text-xs text-slate-400 font-bold   mt-1">Complete a training scenario to generate results</p>
+                                                <h3 className="text-xl font-black text-slate-800  tracking-tighter ">{tr("aiTraining.noResults")}</h3>
+                                                <p className="text-xs text-slate-400 font-bold   mt-1">{tr("aiTraining.noResultsDesc")}</p>
                                             </div>
                                         </div>
                                     </td>
@@ -213,14 +215,14 @@ export default function ResultsDashboard() {
                                             </div>
                                             <div>
                                                 <span className="text-xs font-black text-slate-800  tracking-tight block">{res.employee_name}</span>
-                                                <span className="text-[8px] font-black text-slate-400  ">Employee</span>
+                                                <span className="text-[8px] font-black text-slate-400  ">{tr("aiTraining.employee")}</span>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-8 py-5">
                                         <div className="space-y-1">
                                             <span className="text-[11px] font-black text-slate-600 tracking-tight block   leading-none">{res.scenario_title}</span>
-                                            <span className="text-[7px] font-black text-indigo-400   leading-none">Training Module</span>
+                                            <span className="text-[7px] font-black text-indigo-400   leading-none">{tr("aiTraining.trainingModule")}</span>
                                         </div>
                                     </td>
                                     <td className="px-8 py-5">
@@ -250,7 +252,7 @@ export default function ResultsDashboard() {
                                         ) : (
                                             <span className="inline-flex items-center gap-2 text-[9px] font-black text-slate-300  ">
                                                 <TrendingUp className="w-3 h-3 animate-pulse" />
-                                                Processing Results...
+                                                {tr("aiTraining.processingResults")}
                                             </span>
                                         )}
                                     </td>
@@ -277,10 +279,10 @@ export default function ResultsDashboard() {
             {/* Tactical Footer Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                    { label: "Total Sessions", val: results.length, icon: BarChart3, color: "text-indigo-400" },
-                    { label: "Avg. Score", val: results.length ? (results.reduce((a,b)=>a+(b.overall_score||0),0)/results.length).toFixed(1) : "0.0", icon: TrendingUp, color: "text-emerald-400" },
-                    { label: "Top Archetype", val: "CONFLICT", icon: ShieldAlert, color: "text-amber-400" },
-                    { label: "Status", val: "OPTIMAL", icon: Zap, color: "text-indigo-400" }
+                    { label: tr("aiTraining.totalSessions"), val: results.length, icon: BarChart3, color: "text-indigo-400" },
+                    { label: tr("aiTraining.avgScore"), val: results.length ? (results.reduce((a,b)=>a+(b.overall_score||0),0)/results.length).toFixed(1) : "0.0", icon: TrendingUp, color: "text-emerald-400" },
+                    { label: tr("aiTraining.topArchetype"), val: "CONFLICT", icon: ShieldAlert, color: "text-amber-400" },
+                    { label: tr("aiTraining.status"), val: tr("aiTraining.optimal"), icon: Zap, color: "text-indigo-400" }
                 ].map((stat, i) => (
                     <div key={i} className="bg-white rounded-xl border border-slate-100 p-6 flex items-center justify-between shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all">
                         <div>

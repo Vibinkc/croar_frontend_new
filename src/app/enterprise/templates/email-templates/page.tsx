@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -41,6 +42,7 @@ interface Template {
 export default function EmailTemplatesPage() {
     const router = useRouter();
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -75,7 +77,7 @@ export default function EmailTemplatesPage() {
     }, [token]);
 
     const formatDate = (dateString?: string) => {
-        if (!dateString) return "Never";
+        if (!dateString) return tr("templatesMgmt.never");
         const date = new Date(dateString);
         return date.toLocaleString('en-US', {
             month: 'short',
@@ -129,9 +131,9 @@ export default function EmailTemplatesPage() {
     const isDirty = snapshotOf({ name, subject, body, category }) !== initialSnapshot;
 
     const validateTemplate = (): string | null => {
-        if (!name.trim()) return "Add a template name before saving.";
-        if (!subject.trim()) return "Add an email subject before saving.";
-        if (!body.trim()) return "Add the email body content before saving.";
+        if (!name.trim()) return tr("templatesMgmt.errNameRequired");
+        if (!subject.trim()) return tr("templatesMgmt.errSubjectRequired");
+        if (!body.trim()) return tr("templatesMgmt.errBodyRequired");
         return null;
     };
 
@@ -252,11 +254,11 @@ export default function EmailTemplatesPage() {
                 fetchTemplates();
                 setIsModalOpen(false);
             } else {
-                setSaveError("Could not save the template. Please try again.");
+                setSaveError(tr("templatesMgmt.errCouldNotSave"));
             }
         } catch (e) {
             console.error(e);
-            setSaveError("Something went wrong while saving. Please try again.");
+            setSaveError(tr("templatesMgmt.errSaveGeneric"));
         } finally {
             setIsSaving(false);
         }
@@ -293,20 +295,20 @@ export default function EmailTemplatesPage() {
                 <div className="flex items-center gap-2.5">
                     <button
                         onClick={() => router.push("/enterprise/templates")}
-                        title="Back to Template Hub"
-                        aria-label="Back to Template Hub"
+                        title={tr("templatesMgmt.backToTemplateHub")}
+                        aria-label={tr("templatesMgmt.backToTemplateHub")}
                         className="w-8 h-8 shrink-0 bg-white border border-[#E1E4E8] rounded-[10px] text-[#6B6F76] hover:text-[#374151] hover:bg-[#F4F5F7] transition-all flex items-center justify-center shadow-sm"
                     >
                         <ArrowLeft className="w-4 h-4" />
                     </button>
                     <div>
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Email Templates</h1>
-                            <PageHelp title="Email Templates">
-                                <p>Reusable email templates for candidate communication.</p>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("templatesMgmt.emailTemplatesTitle")}</h1>
+                            <PageHelp title={tr("templatesMgmt.emailTemplatesTitle")}>
+                                <p>{tr("templatesMgmt.emailTemplatesHelp")}</p>
                             </PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage and standardize organizational outreach communication.</p>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("templatesMgmt.emailTemplatesSubtitle")}</p>
                     </div>
                 </div>
 
@@ -317,7 +319,7 @@ export default function EmailTemplatesPage() {
                             className="h-8 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
                         >
                             <Plus className="w-3.5 h-3.5" />
-                            New Template
+                            {tr("templatesMgmt.newTemplate")}
                         </button>
                     )}
                     <button 
@@ -332,10 +334,10 @@ export default function EmailTemplatesPage() {
             {/* Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
-                    { label: "Total Templates", value: templates.length, Icon: Mail, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-                    { label: "Assessments", value: templates.filter(t => t.category === 'ASSESSMENT').length, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                    { label: "Interviews", value: templates.filter(t => t.category === 'INTERVIEW').length, Icon: FileText, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-                    { label: "Onboarding", value: templates.filter(t => t.category === 'ONBOARDING').length, Icon: Layout, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: tr("templatesMgmt.totalTemplates"), value: templates.length, Icon: Mail, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+                    { label: tr("templatesMgmt.assessments"), value: templates.filter(t => t.category === 'ASSESSMENT').length, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: tr("templatesMgmt.interviews"), value: templates.filter(t => t.category === 'INTERVIEW').length, Icon: FileText, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: tr("templatesMgmt.onboarding"), value: templates.filter(t => t.category === 'ONBOARDING').length, Icon: Layout, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
                 ].map((s) => (
                     <div
                         key={s.label}
@@ -361,7 +363,7 @@ export default function EmailTemplatesPage() {
                     <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                     <input 
                         type="text"
-                        placeholder="Search templates by name or subject..."
+                        placeholder={tr("templatesMgmt.searchEmailPlaceholder")}
                         className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                         value={templateSearch}
                         onChange={(e) => setTemplateSearch(e.target.value)}
@@ -374,11 +376,11 @@ export default function EmailTemplatesPage() {
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value)}
                     >
-                        <option value="ALL">All Categories</option>
-                        <option value="GENERAL">General</option>
-                        <option value="ASSESSMENT">Assessments</option>
-                        <option value="INTERVIEW">Interviews</option>
-                        <option value="ONBOARDING">Onboarding</option>
+                        <option value="ALL">{tr("templatesMgmt.allCategories")}</option>
+                        <option value="GENERAL">{tr("templatesMgmt.categoryGeneral")}</option>
+                        <option value="ASSESSMENT">{tr("templatesMgmt.assessments")}</option>
+                        <option value="INTERVIEW">{tr("templatesMgmt.interviews")}</option>
+                        <option value="ONBOARDING">{tr("templatesMgmt.onboarding")}</option>
                     </select>
                 </div>
             </div>
@@ -394,27 +396,27 @@ export default function EmailTemplatesPage() {
                     </div>
                     {templates.length === 0 ? (
                         <>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Yet</h3>
-                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first email template to standardize candidate communication.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("templatesMgmt.noTemplatesYet")}</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">{tr("templatesMgmt.emailEmptyDesc")}</p>
                             {canAccess("communications:moderate") && (
                                 <button
                                     onClick={() => handleOpenModal()}
                                     className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5"
                                 >
                                     <Plus className="w-3.5 h-3.5" />
-                                    New Template
+                                    {tr("templatesMgmt.newTemplate")}
                                 </button>
                             )}
                         </>
                     ) : (
                         <>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Results Found</h3>
-                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">No email templates match your current search or filter.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("templatesMgmt.noResultsFound")}</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">{tr("templatesMgmt.emailNoResultsDesc")}</p>
                             <button
                                 onClick={() => { setTemplateSearch(""); setCategoryFilter("ALL"); }}
                                 className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
                             >
-                                Reset Filters
+                                {tr("templatesMgmt.resetFilters")}
                             </button>
                         </>
                     )}
@@ -463,7 +465,7 @@ export default function EmailTemplatesPage() {
                                             template.category === 'ONBOARDING' ? 'bg-[#F5F3FF] text-[#8B5CF6] border-[#EBE7FF]/80' :
                                             'bg-slate-100 text-[#6B6F76] border-[#E8EAED]'
                                         }`}>
-                                            {template.category || 'General'}
+                                            {template.category || tr("templatesMgmt.categoryGeneral")}
                                         </span>
                                     </div>
                                     <h3 className="text-[15px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{template.name}</h3>
@@ -499,8 +501,8 @@ export default function EmailTemplatesPage() {
                                         <Layout className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-tight">{isAiMode ? "AI Generation" : (editingTemplate ? "Configure Template" : "New Template")}</h2>
-                                        <p className="text-[12px] text-[#8A929E] mt-0.5">Communication design and configuration</p>
+                                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-tight">{isAiMode ? tr("templatesMgmt.aiGeneration") : (editingTemplate ? tr("templatesMgmt.configureTemplate") : tr("templatesMgmt.newTemplate"))}</h2>
+                                        <p className="text-[12px] text-[#8A929E] mt-0.5">{tr("templatesMgmt.commDesignConfig")}</p>
                                     </div>
                                 </div>
                                 <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-[8px] bg-white border border-[#E1E4E8] text-[#6B6F76] hover:bg-[#F4F5F7] hover:text-[#374151] transition-all flex items-center justify-center shadow-sm">
@@ -516,15 +518,15 @@ export default function EmailTemplatesPage() {
                                         <div className="space-y-0.5">
                                             <div className="flex items-center gap-2">
                                                 <Sparkles className="w-4 h-4 text-[#5B53E0]" />
-                                                <span className="text-[13px] font-bold text-[#15171C]">Auto-generate with AI?</span>
+                                                <span className="text-[13px] font-bold text-[#15171C]">{tr("templatesMgmt.autoGenerateAI")}</span>
                                             </div>
-                                            <p className="text-[12px] text-[#6B6F76] font-medium leading-relaxed">Draft a professional template in seconds using smart generative templates.</p>
+                                            <p className="text-[12px] text-[#6B6F76] font-medium leading-relaxed">{tr("templatesMgmt.autoGenerateDesc")}</p>
                                         </div>
                                         <button
                                             onClick={() => setIsAiMode(true)}
                                             className="h-9 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[12px] font-bold transition-all active:scale-95 shadow-sm"
                                         >
-                                            Generate
+                                            {tr("templatesMgmt.generate")}
                                         </button>
                                     </div>
                                 )}
@@ -532,24 +534,24 @@ export default function EmailTemplatesPage() {
                                 {isAiMode ? (
                                     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
                                         <div className="space-y-1.5">
-                                            <label htmlFor="tpl-ai-purpose" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Template Purpose</label>
+                                            <label htmlFor="tpl-ai-purpose" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.templatePurpose")}</label>
                                             <textarea
                                                 id="tpl-ai-purpose"
                                                 value={aiPurpose}
                                                 onChange={e => setAiPurpose(e.target.value)}
                                                 className="w-full bg-white border border-[#E1E4E8] rounded-[10px] p-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none min-h-[120px] leading-relaxed"
-                                                placeholder="e.g. Reject candidate for backend role but offer future talent pool inclusion..."
+                                                placeholder={tr("templatesMgmt.purposePlaceholder")}
                                             />
                                         </div>
                                         <div className="grid grid-cols-2 gap-3 pt-2">
-                                            <button onClick={() => setIsAiMode(false)} className="h-10 rounded-[10px] border border-[#E1E4E8] text-[#8A929E] font-semibold text-[13px] hover:bg-[#F4F5F7] transition-all">Cancel</button>
+                                            <button onClick={() => setIsAiMode(false)} className="h-10 rounded-[10px] border border-[#E1E4E8] text-[#8A929E] font-semibold text-[13px] hover:bg-[#F4F5F7] transition-all">{tr("common.cancel")}</button>
                                             <button
                                                 onClick={requestAiGenerate}
                                                 disabled={isGenerating || !aiPurpose.trim()}
                                                 className="h-10 bg-[#5B53E0] text-white rounded-[10px] font-semibold text-[13px] hover:bg-[#4A43C9] transition-all active:scale-95 disabled:opacity-20 shadow-sm flex items-center justify-center gap-2"
                                             >
                                                 {isGenerating ? <RefreshCcw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-indigo-200" />}
-                                                Generate
+                                                {tr("templatesMgmt.generate")}
                                             </button>
                                         </div>
                                     </div>
@@ -557,21 +559,21 @@ export default function EmailTemplatesPage() {
                                     <form id="template-form" onSubmit={e => { e.preventDefault(); handleSave(); }} className="space-y-6">
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div className="space-y-1.5 group">
-                                                <label htmlFor="tpl-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Template Name</label>
+                                                <label htmlFor="tpl-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.templateName")}</label>
                                                 <input
                                                     id="tpl-name"
                                                     type="text"
                                                     value={name}
                                                     onChange={e => setName(e.target.value)}
                                                     className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                    placeholder="e.g. Assessment Invitation"
+                                                    placeholder={tr("templatesMgmt.nameEmailPlaceholder")}
                                                     required
                                                     readOnly={!canAccess("communications:moderate")}
                                                 />
                                             </div>
 
                                             <div className="space-y-1.5 group">
-                                                <label htmlFor="tpl-category" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Category</label>
+                                                <label htmlFor="tpl-category" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.category")}</label>
                                                 <select
                                                     id="tpl-category"
                                                     value={category}
@@ -579,23 +581,23 @@ export default function EmailTemplatesPage() {
                                                     className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all cursor-pointer"
                                                     disabled={!canAccess("communications:moderate")}
                                                 >
-                                                    <option value="GENERAL">General Communication</option>
-                                                    <option value="ASSESSMENT">Assessment Invitation</option>
-                                                    <option value="INTERVIEW">Interview Invitation</option>
-                                                    <option value="ONBOARDING">Onboarding Invitation</option>
+                                                    <option value="GENERAL">{tr("templatesMgmt.catGeneralComm")}</option>
+                                                    <option value="ASSESSMENT">{tr("templatesMgmt.catAssessmentInv")}</option>
+                                                    <option value="INTERVIEW">{tr("templatesMgmt.catInterviewInv")}</option>
+                                                    <option value="ONBOARDING">{tr("templatesMgmt.catOnboardingInv")}</option>
                                                 </select>
                                             </div>
                                         </div>
  
                                         <div className="space-y-1.5 group">
-                                            <label htmlFor="tpl-subject" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Email Subject</label>
+                                            <label htmlFor="tpl-subject" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.emailSubject")}</label>
                                             <input
                                                 id="tpl-subject"
                                                 type="text"
                                                 value={subject}
                                                 onChange={e => setSubject(e.target.value)}
                                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                placeholder="Subject line of the email"
+                                                placeholder={tr("templatesMgmt.subjectPlaceholder")}
                                                 required
                                                 readOnly={!canAccess("communications:moderate")}
                                             />
@@ -603,7 +605,7 @@ export default function EmailTemplatesPage() {
 
                                         <div className="space-y-1.5 group flex flex-col">
                                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-1 pb-1">
-                                                <label htmlFor="base-editor" className="text-[11.5px] font-bold text-[#8A929E]">Email Body Content</label>
+                                                <label htmlFor="base-editor" className="text-[11.5px] font-bold text-[#8A929E]">{tr("templatesMgmt.emailBodyContent")}</label>
                                                 <div className="relative shrink-0">
                                                     <select 
                                                         className="appearance-none bg-[#ECEBFB] border border-[#DAD7F6]/60 rounded-[8px] pl-3.5 pr-8 py-1.5 text-[11px] font-bold text-[#5B53E0] outline-none cursor-pointer hover:bg-white transition-all shadow-sm"
@@ -629,31 +631,31 @@ export default function EmailTemplatesPage() {
                                                             e.target.value = "";
                                                         }}
                                                     >
-                                                        <option value="">Insert variable…</option>
-                                                        <optgroup label="General">
-                                                            <option value="candidate_name">Candidate Name</option>
-                                                            <option value="job_title">Job Title</option>
-                                                            <option value="company_name">Company Name</option>
-                                                            <option value="recruiter_name">Recruiter Name</option>
+                                                        <option value="">{tr("templatesMgmt.insertVariable")}</option>
+                                                        <optgroup label={tr("templatesMgmt.categoryGeneral")}>
+                                                            <option value="candidate_name">{tr("templatesMgmt.varCandidateName")}</option>
+                                                            <option value="job_title">{tr("templatesMgmt.varJobTitle")}</option>
+                                                            <option value="company_name">{tr("templatesMgmt.varCompanyName")}</option>
+                                                            <option value="recruiter_name">{tr("templatesMgmt.varRecruiterName")}</option>
                                                         </optgroup>
                                                         {category === 'ASSESSMENT' && (
-                                                            <optgroup label="Assessment">
-                                                                <option value="assessment_link">Assessment Link</option>
-                                                                <option value="test_duration">Test Duration</option>
-                                                                <option value="test_topic">Test Topic</option>
+                                                            <optgroup label={tr("templatesMgmt.varGroupAssessment")}>
+                                                                <option value="assessment_link">{tr("templatesMgmt.varAssessmentLink")}</option>
+                                                                <option value="test_duration">{tr("templatesMgmt.varTestDuration")}</option>
+                                                                <option value="test_topic">{tr("templatesMgmt.varTestTopic")}</option>
                                                             </optgroup>
                                                         )}
                                                         {category === 'INTERVIEW' && (
-                                                            <optgroup label="Interview">
-                                                                <option value="interview_link">Interview Link</option>
-                                                                <option value="interview_time">Interview Time</option>
-                                                                <option value="interview_topic">Interview Topic</option>
+                                                            <optgroup label={tr("templatesMgmt.varGroupInterview")}>
+                                                                <option value="interview_link">{tr("templatesMgmt.varInterviewLink")}</option>
+                                                                <option value="interview_time">{tr("templatesMgmt.varInterviewTime")}</option>
+                                                                <option value="interview_topic">{tr("templatesMgmt.varInterviewTopic")}</option>
                                                             </optgroup>
                                                         )}
                                                         {category === 'ONBOARDING' && (
-                                                            <optgroup label="Onboarding">
-                                                                <option value="onboarding_link">Onboarding Link</option>
-                                                                <option value="onboarding_code">Onboarding Code</option>
+                                                            <optgroup label={tr("templatesMgmt.varGroupOnboarding")}>
+                                                                <option value="onboarding_link">{tr("templatesMgmt.varOnboardingLink")}</option>
+                                                                <option value="onboarding_code">{tr("templatesMgmt.varOnboardingCode")}</option>
                                                             </optgroup>
                                                         )}
                                                     </select>
@@ -665,12 +667,12 @@ export default function EmailTemplatesPage() {
                                                 value={body}
                                                 onChange={e => setBody(e.target.value)}
                                                 className="w-full bg-white border border-[#E1E4E8] rounded-[10px] p-4 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none min-h-[350px] leading-relaxed"
-                                                placeholder="Write your email content here. Use {{variable_name}} for dynamic data."
+                                                placeholder={tr("templatesMgmt.bodyPlaceholder")}
                                                 required
                                                 readOnly={!canAccess("communications:moderate")}
                                             />
                                             <p className="text-[11px] text-[#8A929E] leading-relaxed px-1 pt-0.5">
-                                                <span className="font-semibold text-[#6B6F76]">Tip:</span> not limited to the list above — type any custom variable directly using the <code className="px-1 py-0.5 rounded-[4px] bg-[#ECEBFB] text-[#5B53E0] font-semibold">{`{{your_variable}}`}</code> format and it will be filled in when the email is sent.
+                                                <span className="font-semibold text-[#6B6F76]">{tr("templatesMgmt.tipLabel")}</span> {tr("templatesMgmt.tipBodyBefore")} <code className="px-1 py-0.5 rounded-[4px] bg-[#ECEBFB] text-[#5B53E0] font-semibold">{`{{your_variable}}`}</code> {tr("templatesMgmt.tipBodyAfter")}
                                             </p>
                                         </div>
                                     </form>
@@ -687,16 +689,16 @@ export default function EmailTemplatesPage() {
                                         </div>
                                     )}
                                     <div className="p-8 flex items-center justify-between gap-6">
-                                        <p className="text-[11.5px] text-[#8A929E] leading-normal max-w-[280px]">This template will be available for all automated campaigns and manual outreach.</p>
+                                        <p className="text-[11.5px] text-[#8A929E] leading-normal max-w-[280px]">{tr("templatesMgmt.emailFooterNote")}</p>
                                         <button
                                             type="submit"
                                             form="template-form"
                                             disabled={isSaving || (!!editingTemplate && !isDirty)}
-                                            title={editingTemplate && !isDirty ? "No changes to save yet" : undefined}
+                                            title={editingTemplate && !isDirty ? tr("templatesMgmt.noChangesYet") : undefined}
                                             className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
                                         >
                                             {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                            {isSaving ? "Saving…" : editingTemplate ? "Update Template" : "Save Template"}
+                                            {isSaving ? tr("templatesMgmt.saving") : editingTemplate ? tr("templatesMgmt.updateTemplate") : tr("templatesMgmt.saveTemplate")}
                                         </button>
                                     </div>
                                 </div>
@@ -710,10 +712,10 @@ export default function EmailTemplatesPage() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Delete Template?"
-                message={`Are you sure you want to delete "${templateToDelete?.name}"? This action cannot be undone.`}
-                confirmLabel="Delete Template"
-                cancelLabel="Cancel"
+                title={tr("templatesMgmt.deleteTemplateTitle")}
+                message={tr("templatesMgmt.deleteConfirmEmail", { name: templateToDelete?.name ?? "" })}
+                confirmLabel={tr("templatesMgmt.deleteTemplate")}
+                cancelLabel={tr("common.cancel")}
                 isDestructive={true}
             />
 
@@ -721,10 +723,10 @@ export default function EmailTemplatesPage() {
                 isOpen={isOverwriteConfirmOpen}
                 onClose={() => setIsOverwriteConfirmOpen(false)}
                 onConfirm={() => { setIsOverwriteConfirmOpen(false); handleAiGenerate(); }}
-                title="Replace current content?"
-                message="Generating with AI will overwrite the current name, subject and body of this template. This cannot be undone."
-                confirmLabel="Replace & Generate"
-                cancelLabel="Keep Current"
+                title={tr("templatesMgmt.replaceContentTitle")}
+                message={tr("templatesMgmt.replaceContentMsg")}
+                confirmLabel={tr("templatesMgmt.replaceGenerate")}
+                cancelLabel={tr("templatesMgmt.keepCurrent")}
                 isDestructive={true}
             />
         </div>

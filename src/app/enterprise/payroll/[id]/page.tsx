@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import {
   payrollApi,
@@ -20,6 +21,7 @@ import { useDialog } from "@/components/payroll/DialogProvider";
 export default function CycleDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { can } = useAuth();
+  const { t: tr } = useI18n();
   const { confirm } = useDialog();
   const canEdit = can("payroll:configure");
   const [cycle, setCycle] = useState<PayrollCycle | null>(null);
@@ -78,7 +80,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
         note: adjForm.note || null,
       };
       if (adjForm.employee_id === ALL_EMPLOYEES) {
-        if (employees.length === 0) throw new Error("No employees to apply this adjustment to.");
+        if (employees.length === 0) throw new Error(tr("payroll.noEmployeesToApply"));
         // Fan out: one adjustment per employee (backend takes a single employee_id).
         await Promise.all(
           employees.map((emp) => payrollApi.addAdjustment(id, { ...base, employee_id: emp.id }))
@@ -99,7 +101,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
   async function removeAdjustment(a: Adjustment) {
     await act(
       () => payrollApi.deleteAdjustment(a.id),
-      `Remove "${a.label}" (${inr(a.amount)})?`
+      tr("payroll.removeAdjustmentConfirm", { label: a.label, amount: inr(a.amount) })
     );
   }
 
@@ -110,7 +112,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
 
   const name = (eid: string) => {
     const e = employees.find((x) => x.id === eid);
-    return e ? `${e.first_name} ${e.last_name}`.trim() : `Employee ${eid.slice(0, 8)}`;
+    return e ? `${e.first_name} ${e.last_name}`.trim() : tr("payroll.employeeShort", { id: eid.slice(0, 8) });
   };
 
   async function act(fn: () => Promise<unknown>, confirmMsg?: string) {
@@ -141,8 +143,8 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
     }
   }
 
-  if (loading) return <p className="p-12 text-center text-[var(--color-muted)]">Loading…</p>;
-  if (!cycle) return <p className="p-12 text-center text-[var(--color-muted)]">Cycle not found.</p>;
+  if (loading) return <p className="p-12 text-center text-[var(--color-muted)]">{tr("common.loading")}</p>;
+  if (!cycle) return <p className="p-12 text-center text-[var(--color-muted)]">{tr("payroll.cycleNotFound")}</p>;
 
   const t = cycle.totals ?? {};
 
@@ -150,12 +152,12 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
     <div className="px-4 sm:px-5 md:px-7 py-6 max-w-[1320px] mx-auto w-full animate-fade-in flex flex-col gap-6">
       <div>
         <Link href="/enterprise/payroll" className="mb-3 inline-flex items-center gap-1 text-sm text-[var(--color-primary)]">
-          <span className="material-symbols-rounded text-[18px]">arrow_back</span> Back to Payroll
+          <span className="material-symbols-rounded text-[18px]">arrow_back</span> {tr("payroll.backToPayroll")}
         </Link>
         <PageHeader
           title={cycle.name}
-          subtitle={`${cycle.period_start} → ${cycle.period_end} · Pay date ${cycle.pay_date}`}
-          help="Process this pay cycle: review each payslip, then approve and mark it paid."
+          subtitle={`${cycle.period_start} → ${cycle.period_end} · ${tr("payroll.payDate")} ${cycle.pay_date}`}
+          help={tr("payroll.cycleDetailHelp")}
           actions={<StatusBadge status={cycle.status} />}
         />
       </div>
@@ -166,10 +168,10 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
         <Banner tone="warn">
           <div className="mb-1 flex items-center justify-between">
             <strong>
-              {skipped.length} employee{skipped.length > 1 ? "s" : ""} skipped — no active salary structure
+              {tr("payroll.employeesSkipped", { count: skipped.length })}
             </strong>
             <button onClick={() => setSkipped([])} className="text-xs underline">
-              Dismiss
+              {tr("payroll.dismiss")}
             </button>
           </div>
           <ul className="list-disc pl-5">
@@ -177,7 +179,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
               <li key={s.employee_id}>
                 {name(s.employee_id)} —{" "}
                 <Link href="/enterprise/payroll/structures" className="underline">
-                  configure salary
+                  {tr("payroll.configureSalary")}
                 </Link>
               </li>
             ))}
@@ -190,62 +192,62 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
         <div className="flex flex-col gap-6">
           {cycle.status !== "DRAFT" && (
             <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6">
-              <h3 className="mb-4 border-b border-[var(--color-border)] pb-2 font-semibold">Cycle Totals</h3>
-              <Row label="Headcount" value={String(t.headcount ?? 0)} />
-              <Row label="Gross" value={inr(t.gross ?? 0)} />
-              <Row label="Deductions" value={`- ${inr(t.deductions ?? 0)}`} tone="text-[var(--color-danger)]" />
+              <h3 className="mb-4 border-b border-[var(--color-border)] pb-2 font-semibold">{tr("payroll.cycleTotals")}</h3>
+              <Row label={tr("payroll.headcount")} value={String(t.headcount ?? 0)} />
+              <Row label={tr("payroll.gross")} value={inr(t.gross ?? 0)} />
+              <Row label={tr("payroll.deductions")} value={`- ${inr(t.deductions ?? 0)}`} tone="text-[var(--color-danger)]" />
               <div className="mt-2 border-t border-dashed border-[var(--color-border)] pt-2">
-                <Row label="Net Payout" value={inr(t.net ?? 0)} big tone="text-[var(--color-accent)]" />
+                <Row label={tr("payroll.netPayout")} value={inr(t.net ?? 0)} big tone="text-[var(--color-accent)]" />
               </div>
             </div>
           )}
 
           <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6">
-            <h3 className="mb-4 border-b border-[var(--color-border)] pb-2 font-semibold">Lifecycle</h3>
+            <h3 className="mb-4 border-b border-[var(--color-border)] pb-2 font-semibold">{tr("payroll.lifecycle")}</h3>
             <div className="flex flex-col gap-3">
               {(cycle.status === "DRAFT" || cycle.status === "PROCESSING") && can("payroll:run") && (
                 <button onClick={run} disabled={busy} className="btn-primary">
-                  {busy ? "Processing…" : cycle.status === "DRAFT" ? "Run Payroll" : "Re-run (Recalculate)"}
+                  {busy ? tr("payroll.runProcessing") : cycle.status === "DRAFT" ? tr("payroll.runPayroll") : tr("payroll.rerunRecalculate")}
                 </button>
               )}
               {cycle.status === "PROCESSING" && can("payroll:approve") && (
                 <button
-                  onClick={() => act(() => payrollApi.approveCycle(id), "Approve this cycle? Payslips will be locked from re-run.")}
+                  onClick={() => act(() => payrollApi.approveCycle(id), tr("payroll.approveConfirm"))}
                   disabled={busy}
                   className="btn-accent"
                 >
-                  Approve Payroll
+                  {tr("payroll.approvePayroll")}
                 </button>
               )}
               {cycle.status === "APPROVED" && can("payroll:pay") && (
                 <button
-                  onClick={() => act(() => payrollApi.markPaidCycle(id), "Mark this cycle as PAID? This records disbursement.")}
+                  onClick={() => act(() => payrollApi.markPaidCycle(id), tr("payroll.markPaidConfirm"))}
                   disabled={busy}
                   className="btn-accent"
                 >
-                  Mark as Paid
+                  {tr("payroll.markAsPaid")}
                 </button>
               )}
               {cycle.status !== "PAID" && cycle.status !== "CANCELLED" && can("payroll:manage") && (
                 <button
-                  onClick={() => act(() => payrollApi.cancelCycle(id), "Cancel this cycle?")}
+                  onClick={() => act(() => payrollApi.cancelCycle(id), tr("payroll.cancelCycleConfirm"))}
                   disabled={busy}
                   className="rounded-lg border border-[var(--color-border)] py-2.5 text-sm font-semibold text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10"
                 >
-                  Cancel Cycle
+                  {tr("payroll.cancelCycle")}
                 </button>
               )}
               {cycle.status === "PAID" && (
                 <p className="text-center text-sm italic text-[var(--color-muted)]">
-                  Cycle disbursed. No further actions.
+                  {tr("payroll.cycleDisbursed")}
                 </p>
               )}
               {cycle.status === "CANCELLED" && (
-                <p className="text-center text-sm italic text-[var(--color-muted)]">This cycle was cancelled.</p>
+                <p className="text-center text-sm italic text-[var(--color-muted)]">{tr("payroll.cycleWasCancelled")}</p>
               )}
               {!can("payroll:run") && !can("payroll:approve") && !can("payroll:pay") && !can("payroll:manage") && (
                 <p className="text-center text-sm italic text-[var(--color-muted)]">
-                  You have read-only access.
+                  {tr("payroll.readOnlyAccess")}
                 </p>
               )}
             </div>
@@ -255,10 +257,10 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
         {/* Right column: payslips */}
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6 lg:col-span-2">
           <div className="mb-4 flex items-baseline justify-between">
-            <h3 className="font-semibold">Employee Payslips</h3>
+            <h3 className="font-semibold">{tr("payroll.employeePayslips")}</h3>
             {payslips.length > 0 && (
               <span className="text-xs text-[var(--color-muted)]">
-                {payslips.length} employee{payslips.length > 1 ? "s" : ""} calculated
+                {tr("payroll.employeesCalculated", { count: payslips.length })}
               </span>
             )}
           </div>
@@ -267,23 +269,23 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
               <span className="material-symbols-rounded mb-2 text-4xl text-[var(--color-dim)]">receipt_long</span>
               <p>
                 {cycle.status === "DRAFT"
-                  ? "Run payroll to generate payslips."
-                  : "This cycle was cancelled."}
+                  ? tr("payroll.runToGeneratePayslips")
+                  : tr("payroll.cycleWasCancelled")}
               </p>
             </div>
           ) : payslips.length === 0 ? (
-            <p className="py-8 text-center text-[var(--color-muted)]">No payslips in this cycle.</p>
+            <p className="py-8 text-center text-[var(--color-muted)]">{tr("payroll.noPayslipsInCycle")}</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="text-xs uppercase text-[var(--color-muted)]">
                   <tr className="border-b border-[var(--color-border)]">
-                    <th className="px-3 py-3">Employee</th>
-                    <th className="px-3 py-3">LOP / Paid</th>
-                    <th className="px-3 py-3 text-right">Gross</th>
-                    <th className="px-3 py-3 text-right">Deductions</th>
-                    <th className="px-3 py-3 text-right">Net</th>
-                    <th className="px-3 py-3 text-right">Slip</th>
+                    <th className="px-3 py-3">{tr("payroll.employee")}</th>
+                    <th className="px-3 py-3">{tr("payroll.lopPaid")}</th>
+                    <th className="px-3 py-3 text-right">{tr("payroll.gross")}</th>
+                    <th className="px-3 py-3 text-right">{tr("payroll.deductions")}</th>
+                    <th className="px-3 py-3 text-right">{tr("payroll.net")}</th>
+                    <th className="px-3 py-3 text-right">{tr("payroll.slip")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -302,14 +304,14 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                             href={`/enterprise/payroll/payslips/${p.id}`}
                             className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs hover:bg-[var(--color-hover)]"
                           >
-                            View
+                            {tr("payroll.view")}
                           </Link>
                         ) : (
                           <span
-                            title="Full payslip is released once the cycle is marked as paid"
+                            title={tr("payroll.payslipReleasedTitle")}
                             className="text-xs italic text-[var(--color-dim)]"
                           >
-                            Pending
+                            {tr("payroll.pending")}
                           </span>
                         )}
                       </td>
@@ -326,9 +328,9 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6">
           <div className="mb-4 flex items-center justify-between border-b border-[var(--color-border)] pb-2">
             <div>
-              <h3 className="font-semibold">Adjustments</h3>
+              <h3 className="font-semibold">{tr("payroll.adjustments")}</h3>
               <p className="text-xs text-[var(--color-muted)]">
-                One-time bonuses, arrears or deductions for this cycle. Re-run to apply.
+                {tr("payroll.adjustmentsDesc")}
               </p>
             </div>
             {canEdit && (
@@ -341,23 +343,23 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                 className="flex items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-3 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
               >
                 <span className="material-symbols-rounded text-[18px]">add</span>{" "}
-                Add Adjustment
+                {tr("payroll.addAdjustment")}
               </button>
             )}
           </div>
           {adjustments.length === 0 ? (
             <p className="py-6 text-center text-sm text-[var(--color-muted)]">
-              No adjustments. Pay comes only from each employee&apos;s salary structure.
+              {tr("payroll.noAdjustments")}
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="text-xs uppercase text-[var(--color-muted)]">
                   <tr className="border-b border-[var(--color-border)]">
-                    <th className="px-3 py-2">Employee</th>
-                    <th className="px-3 py-2">Type</th>
-                    <th className="px-3 py-2">Detail</th>
-                    <th className="px-3 py-2 text-right">Amount</th>
+                    <th className="px-3 py-2">{tr("payroll.employee")}</th>
+                    <th className="px-3 py-2">{tr("payroll.type")}</th>
+                    <th className="px-3 py-2">{tr("payroll.detail")}</th>
+                    <th className="px-3 py-2 text-right">{tr("payroll.amount")}</th>
                     {canEdit && <th className="px-3 py-2" />}
                   </tr>
                 </thead>
@@ -373,7 +375,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                               : "bg-[var(--color-danger)]/15 text-[var(--color-danger)]"
                           }`}
                         >
-                          {a.kind === "earning" ? "Earning" : "Deduction"}
+                          {a.kind === "earning" ? tr("payroll.earning") : tr("payroll.deduction")}
                         </span>
                       </td>
                       <td className="px-3 py-2">
@@ -394,7 +396,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                           <button
                             onClick={() => removeAdjustment(a)}
                             disabled={busy}
-                            title="Remove adjustment"
+                            title={tr("payroll.removeAdjustment")}
                             className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--color-dim)] hover:bg-[var(--color-danger)]/10 hover:text-[var(--color-danger)]"
                           >
                             <span className="material-symbols-rounded text-[18px]">delete</span>
@@ -411,21 +413,21 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
       )}
 
       {adjOpen && (
-        <Modal title="Add Adjustment" onClose={() => setAdjOpen(false)}>
+        <Modal title={tr("payroll.addAdjustment")} onClose={() => setAdjOpen(false)}>
           <form onSubmit={addAdjustment} className="flex flex-col gap-4">
             {adjErr && <Banner>{adjErr}</Banner>}
             <label className="flex flex-col gap-1.5">
-              <span className="lbl">Employee</span>
+              <span className="lbl">{tr("payroll.employee")}</span>
               <select
                 className="input"
                 required
                 value={adjForm.employee_id}
                 onChange={(e) => setAdjForm({ ...adjForm, employee_id: e.target.value })}
               >
-                <option value="">— Select —</option>
+                <option value="">{tr("payroll.select")}</option>
                 {employees.length > 0 && (
                   <option value={ALL_EMPLOYEES}>
-                    All employees ({employees.length})
+                    {tr("payroll.allEmployeesCount", { count: employees.length })}
                   </option>
                 )}
                 {employees.map((e) => (
@@ -437,18 +439,18 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
             </label>
             <div className="grid grid-cols-2 gap-4">
               <label className="flex flex-col gap-1.5">
-                <span className="lbl">Type</span>
+                <span className="lbl">{tr("payroll.type")}</span>
                 <select
                   className="input"
                   value={adjForm.kind}
                   onChange={(e) => setAdjForm({ ...adjForm, kind: e.target.value as AdjustmentKind })}
                 >
-                  <option value="earning">Earning (adds to pay)</option>
-                  <option value="deduction">Deduction (subtracts)</option>
+                  <option value="earning">{tr("payroll.earningAddsToPay")}</option>
+                  <option value="deduction">{tr("payroll.deductionSubtracts")}</option>
                 </select>
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="lbl">Amount</span>
+                <span className="lbl">{tr("payroll.amount")}</span>
                 <input
                   className="input"
                   type="number"
@@ -462,7 +464,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
             </div>
             <div className="grid grid-cols-2 gap-4">
               <label className="flex flex-col gap-1.5">
-                <span className="lbl">Code</span>
+                <span className="lbl">{tr("payroll.code")}</span>
                 <input
                   className="input uppercase"
                   maxLength={64}
@@ -473,19 +475,19 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="lbl">Label</span>
+                <span className="lbl">{tr("payroll.label")}</span>
                 <input
                   className="input"
                   maxLength={120}
                   required
-                  placeholder="Festival Bonus"
+                  placeholder={tr("payroll.festivalBonusExample")}
                   value={adjForm.label}
                   onChange={(e) => setAdjForm({ ...adjForm, label: e.target.value })}
                 />
               </label>
             </div>
             <label className="flex flex-col gap-1.5">
-              <span className="lbl">Note (optional)</span>
+              <span className="lbl">{tr("payroll.noteOptional")}</span>
               <input
                 className="input"
                 maxLength={500}
@@ -495,14 +497,14 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
             </label>
             <div className="flex gap-3">
               <button type="submit" disabled={adjSaving} className="btn-primary">
-                {adjSaving ? "Adding…" : "Add Adjustment"}
+                {adjSaving ? tr("payroll.adding") : tr("payroll.addAdjustment")}
               </button>
               <button
                 type="button"
                 onClick={() => setAdjOpen(false)}
                 className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] py-2.5 text-sm font-semibold"
               >
-                Cancel
+                {tr("common.cancel")}
               </button>
             </div>
           </form>

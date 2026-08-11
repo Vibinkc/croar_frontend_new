@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import {
   timesheetApi,
@@ -21,14 +22,17 @@ const EDITABLE_DAY = DAY_STATUS_OPTIONS.filter(
 );
 const NON_WORKING: DayStatus[] = ["HOLIDAY", "WEEKLY_OFF"];
 
-const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 export default function TimesheetDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { can } = useAuth();
+  const { t: tr } = useI18n();
   const { confirm } = useDialog();
   const canEdit = can("payroll:configure");
   const canApprove = can("payroll:approve");
+  const DOW_LABELS = [
+    tr("payroll.sun"), tr("payroll.mon"), tr("payroll.tue"), tr("payroll.wed"),
+    tr("payroll.thu"), tr("payroll.fri"), tr("payroll.sat"),
+  ];
 
   const [ts, setTs] = useState<TimesheetDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -107,25 +111,25 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
   const summary = useMemo(() => {
     if (!ts) return null;
     return [
-      { icon: "event_available", label: "Worked days", value: ts.worked_days },
-      { icon: "event_busy", label: "LOP days", value: ts.lop_days },
-      { icon: "hourglass_bottom", label: "Half days", value: ts.half_days },
-      ...(isHourly ? [{ icon: "schedule", label: "Total hours", value: ts.total_hours }] : []),
+      { icon: "event_available", label: tr("payroll.workedDays"), value: ts.worked_days },
+      { icon: "event_busy", label: tr("payroll.lopDays"), value: ts.lop_days },
+      { icon: "hourglass_bottom", label: tr("payroll.halfDays"), value: ts.half_days },
+      ...(isHourly ? [{ icon: "schedule", label: tr("payroll.totalHours"), value: ts.total_hours }] : []),
     ];
-  }, [ts, isHourly]);
+  }, [ts, isHourly, tr]);
 
-  if (loading) return <p className="text-sm text-[var(--color-muted)]">Loading…</p>;
+  if (loading) return <p className="text-sm text-[var(--color-muted)]">{tr("common.loading")}</p>;
   if (!ts)
     return (
       <div>
-        <Banner>{error || "Timesheet not found."}</Banner>
+        <Banner>{error || tr("payroll.timesheetNotFound")}</Banner>
       </div>
     );
 
   return (
     <div className="px-4 sm:px-5 md:px-7 py-6 mx-auto max-w-4xl w-full">
       <Link href="/enterprise/payroll/timesheets" className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]">
-        <span className="material-symbols-rounded text-[18px]">arrow_back</span> Timesheets
+        <span className="material-symbols-rounded text-[18px]">arrow_back</span> {tr("nav.timesheets")}
       </Link>
 
       <div className="mb-5">
@@ -136,14 +140,14 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
               {ts.period_start} → {ts.period_end} · {ts.mode}
               {(ts.submitted_by_name || ts.approved_by_name) && (
                 <span className="mt-1 block text-xs text-[var(--color-dim)]">
-                  {ts.submitted_by_name && <>Submitted by {ts.submitted_by_name}</>}
+                  {ts.submitted_by_name && <>{tr("payroll.submittedBy", { name: ts.submitted_by_name })}</>}
                   {ts.submitted_by_name && ts.approved_by_name && " · "}
-                  {ts.approved_by_name && <>Approved by {ts.approved_by_name}</>}
+                  {ts.approved_by_name && <>{tr("payroll.approvedBy", { name: ts.approved_by_name })}</>}
                 </span>
               )}
             </>
           }
-          help={<>Review and approve this timesheet&apos;s hours.</>}
+          help={<>{tr("payroll.timesheetDetailHelp")}</>}
           actions={<StatusBadge status={ts.status} />}
         />
       </div>
@@ -176,17 +180,17 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
             disabled={!dirty || busy}
             className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
           >
-            Save changes
+            {tr("payroll.saveChanges")}
           </button>
         )}
         {canEdit && editable && (
           <button
-            onClick={() => act(() => timesheetApi.submit(ts.id), dirty ? "You have unsaved changes — submit without saving them?" : undefined)}
+            onClick={() => act(() => timesheetApi.submit(ts.id), dirty ? tr("payroll.submitUnsavedConfirm") : undefined)}
             disabled={busy || dirty}
-            title={dirty ? "Save your changes first" : ""}
+            title={dirty ? tr("payroll.saveChangesFirst") : ""}
             className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-text)] disabled:opacity-50"
           >
-            Submit for approval
+            {tr("payroll.submitForApproval")}
           </button>
         )}
         {canApprove && ts.status === "SUBMITTED" && (
@@ -196,32 +200,39 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
               disabled={busy}
               className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
             >
-              Approve
+              {tr("payroll.approve")}
             </button>
             <button
               onClick={() => act(() => timesheetApi.reject(ts.id))}
               disabled={busy}
               className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] disabled:opacity-50"
             >
-              Reject
+              {tr("payroll.reject")}
             </button>
           </>
         )}
         {canApprove && ts.status === "APPROVED" && (
           <button
-            onClick={() => act(() => timesheetApi.reopen(ts.id), "Reopen this approved timesheet for editing?")}
+            onClick={() => act(() => timesheetApi.reopen(ts.id), tr("payroll.reopenConfirm"))}
             disabled={busy}
             className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] disabled:opacity-50"
           >
-            Reopen
+            {tr("payroll.reopen")}
           </button>
         )}
       </div>
 
       {!editable && (
         <p className="mb-3 text-sm text-[var(--color-dim)]">
-          This timesheet is {ts.status.toLowerCase()} and read-only.
-          {ts.status === "APPROVED" && " Reopen it to make changes."}
+          {tr("payroll.timesheetReadOnly", {
+            status:
+              ts.status === "APPROVED"
+                ? tr("payroll.approved")
+                : ts.status === "SUBMITTED"
+                  ? tr("payroll.submitted")
+                  : ts.status.toLowerCase(),
+          })}
+          {ts.status === "APPROVED" && tr("payroll.reopenToChange")}
         </p>
       )}
 
@@ -230,16 +241,16 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
         <table className="w-full text-sm">
           <thead className="border-b border-[var(--color-border)] bg-[var(--color-surface)] text-left text-xs uppercase tracking-wide text-[var(--color-muted)]">
             <tr>
-              <th className="px-4 py-3">Date</th>
-              <th className="px-4 py-3">Day</th>
-              <th className="px-4 py-3">{isHourly ? "Hours" : "Status"}</th>
+              <th className="px-4 py-3">{tr("payroll.date")}</th>
+              <th className="px-4 py-3">{tr("payroll.day")}</th>
+              <th className="px-4 py-3">{isHourly ? tr("payroll.hours") : tr("payroll.status")}</th>
             </tr>
           </thead>
           <tbody>
             {ts.entries.map((e) => {
               const status = dayStatusFor(e.entry_date, e.day_status);
               const nonWorking = NON_WORKING.includes(e.day_status);
-              const dow = DOW[new Date(e.entry_date + "T00:00:00").getDay()];
+              const dow = DOW_LABELS[new Date(e.entry_date + "T00:00:00").getDay()];
               return (
                 <tr key={e.id} className="border-b border-[var(--color-border)] last:border-0">
                   <td className="px-4 py-2.5 font-medium">{e.entry_date}</td>
@@ -262,7 +273,7 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
                       )
                     ) : nonWorking ? (
                       <span className="text-[var(--color-dim)]">
-                        {e.day_status === "WEEKLY_OFF" ? "Weekly Off" : "Holiday"}
+                        {e.day_status === "WEEKLY_OFF" ? tr("payroll.weeklyOff") : tr("payroll.holiday")}
                       </span>
                     ) : (
                       <select

@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
-import { 
-  Brain, 
+import { useI18n } from "@/context/I18nContext";
+import { GenLanguage, localeToLanguageName } from "@/i18n/config";
+import GenLanguageSelect from "@/components/ds/GenLanguageSelect";
+import {
+  Brain,
   Wand2, 
   Plus, 
   Trash2, 
@@ -52,6 +55,8 @@ export default function TemplateBuilder({
   backendUrl,
 }: TemplateBuilderProps) {
   const { canAccess } = useAuth();
+  const { t, locale } = useI18n();
+  const [genLang, setGenLang] = useState<GenLanguage>(localeToLanguageName(locale));
   const [title, setTitle] = useState(initialData?.title || "");
   const [topic, setTopic] = useState(initialData?.topic || "");
   const [duration, setDuration] = useState(initialData?.duration || 30);
@@ -73,7 +78,7 @@ export default function TemplateBuilder({
       const res = await fetch(
         `${backendUrl}/api/v1/enterprise/interview-templates/generate-questions?topic=${encodeURIComponent(
           topic
-        )}&duration=${duration}&difficulty=${difficulty}`,
+        )}&duration=${duration}&difficulty=${difficulty}&language=${encodeURIComponent(genLang)}`,
         {
           method: "POST",
           headers: authHeaders,
@@ -96,7 +101,7 @@ export default function TemplateBuilder({
     // Validate that all questions have non-empty text
     const hasEmptyQuestions = questions.some(q => !q.question || q.question.trim() === "");
     if (hasEmptyQuestions) {
-      alert("Please ensure all questions have content before saving.");
+      alert(t("automation.ensureQuestionsContent"));
       return;
     }
     setIsSaving(true);
@@ -177,15 +182,15 @@ export default function TemplateBuilder({
               <Brain className="w-5 h-5 text-[#5B53E0]" />
             </div>
             <div>
-              <h2 className="text-[16px] font-extrabold text-slate-800 leading-tight">AI Builder</h2>
-              <p className="text-[11.5px] font-bold text-[#8A929E] mt-0.5">Template Config</p>
+              <h2 className="text-[16px] font-extrabold text-slate-800 leading-tight">{t("automation.aiBuilder")}</h2>
+              <p className="text-[11.5px] font-bold text-[#8A929E] mt-0.5">{t("automation.templateConfig")}</p>
             </div>
           </div>
 
           <div className="space-y-5">
             <div>
               <label htmlFor="tb-template-title" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                Template Title
+                {t("automation.templateTitle")}
               </label>
               <input
                 id="tb-template-title"
@@ -193,14 +198,14 @@ export default function TemplateBuilder({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
-                placeholder="e.g. Senior Frontend Dev"
+                placeholder={t("automation.templateTitlePlaceholder")}
                 readOnly={!canAccess("interviews:moderate")}
               />
             </div>
 
             <div>
               <label htmlFor="tb-interview-topic" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                Interview Topic
+                {t("automation.interviewTopic")}
               </label>
               <input
                 id="tb-interview-topic"
@@ -208,7 +213,7 @@ export default function TemplateBuilder({
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
-                placeholder="e.g. React & TypeScript"
+                placeholder={t("automation.interviewTopicPlaceholder")}
                 readOnly={!canAccess("interviews:moderate")}
               />
             </div>
@@ -216,7 +221,7 @@ export default function TemplateBuilder({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label htmlFor="tb-duration" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                  Duration (m)
+                  {t("automation.durationM")}
                 </label>
                 <input
                   id="tb-duration"
@@ -231,7 +236,7 @@ export default function TemplateBuilder({
               </div>
               <div>
                 <label htmlFor="tb-difficulty" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                  Difficulty
+                  {t("automation.difficulty")}
                 </label>
                 <select
                   id="tb-difficulty"
@@ -240,18 +245,18 @@ export default function TemplateBuilder({
                   className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm cursor-pointer"
                   disabled={!canAccess("interviews:moderate")}
                 >
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                  <option value="Expert">Expert</option>
+                  <option value="Beginner">{t("automation.diffBeginner")}</option>
+                  <option value="Intermediate">{t("automation.diffIntermediate")}</option>
+                  <option value="Advanced">{t("automation.diffAdvanced")}</option>
+                  <option value="Expert">{t("automation.diffExpert")}</option>
                 </select>
               </div>
             </div>
 
             <div className="flex items-center justify-between p-4 bg-white border border-[#E1E4E8] rounded-[12px] shadow-sm">
               <div>
-                <p className="text-[13px] font-bold text-slate-700">Require Video</p>
-                <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Enforce camera</p>
+                <p className="text-[13px] font-bold text-slate-700">{t("automation.requireVideo")}</p>
+                <p className="text-[11px] text-slate-400 font-semibold mt-0.5">{t("automation.enforceCamera")}</p>
               </div>
               <button
                 type="button"
@@ -263,7 +268,10 @@ export default function TemplateBuilder({
               </button>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex items-center justify-end mb-2">
+              <GenLanguageSelect value={genLang} onChange={setGenLang} />
+            </div>
+            <div>
               <button
                 type="button"
                 onClick={handleGenerate}
@@ -275,7 +283,7 @@ export default function TemplateBuilder({
                 ) : (
                   <Wand2 className="w-4 h-4" />
                 )}
-                <span>Generate with AI</span>
+                <span>{t("automation.generateWithAI")}</span>
               </button>
             </div>
           </div>
@@ -286,7 +294,7 @@ export default function TemplateBuilder({
               onClick={onClose}
               className="w-full py-3 text-[#8A929E] hover:text-[#4B5563] font-bold text-[12px] transition-colors cursor-pointer"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         </div>
@@ -295,8 +303,8 @@ export default function TemplateBuilder({
         <div className="flex-1 flex flex-col bg-white overflow-hidden">
           <div className="px-8 py-5 border-b border-[#E1E4E8] flex items-center justify-between shrink-0">
             <div>
-              <h3 className="text-[15px] font-extrabold text-slate-800">Interview Questions</h3>
-              <p className="text-[12px] text-[#8A929E] font-semibold mt-0.5">Review and customize the generated questions</p>
+              <h3 className="text-[15px] font-extrabold text-slate-800">{t("automation.interviewQuestions")}</h3>
+              <p className="text-[12px] text-[#8A929E] font-semibold mt-0.5">{t("automation.reviewCustomizeQuestions")}</p>
             </div>
             {canAccess("interviews:moderate") && (
               <button
@@ -305,7 +313,7 @@ export default function TemplateBuilder({
                 className="flex items-center gap-2 h-9 px-3.5 bg-[#ECEBFB] text-[#5B53E0] hover:bg-[#5B53E0] hover:text-white rounded-[10px] text-[12px] font-bold transition-all border border-[#DAD7F6]/60 shadow-sm cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Question</span>
+                <span>{t("automation.addQuestion")}</span>
               </button>
             )}
           </div>
@@ -321,10 +329,10 @@ export default function TemplateBuilder({
                 </div>
                 <div className="flex items-center gap-2.5">
                   <span className="w-5 h-5 border-[2.5px] border-[#5B53E0]/25 border-t-[#5B53E0] rounded-full animate-spin" />
-                  <h4 className="text-[15px] font-extrabold text-[#15171C]">Generating interview questions…</h4>
+                  <h4 className="text-[15px] font-extrabold text-[#15171C]">{t("automation.generatingQuestions")}</h4>
                 </div>
                 <p className="text-[12.5px] text-[#8A929E] font-medium leading-relaxed">
-                  Our AI is drafting tailored questions{topic ? <> for &quot;<span className="font-bold text-[#5B53E0]">{topic}</span>&quot;</> : ""}. This usually takes a few seconds.
+                  {topic ? t("automation.aiDraftingForTopic", { topic }) : t("automation.aiDraftingGeneric")}
                 </p>
               </div>
             ) : questions.length === 0 ? (
@@ -333,9 +341,9 @@ export default function TemplateBuilder({
                   <MessageSquare className="w-7 h-7 text-[#8A929E]" />
                 </div>
                 <div>
-                  <h4 className="text-[14px] font-extrabold text-slate-500">No questions yet</h4>
+                  <h4 className="text-[14px] font-extrabold text-slate-500">{t("automation.noQuestionsYetShort")}</h4>
                   <p className="text-[12.5px] text-slate-400 font-medium leading-relaxed mt-1">
-                    Enter a topic on the left and click &quot;Generate with AI&quot; or add questions manually.
+                    {t("automation.enterTopicGenerate")}
                   </p>
                 </div>
               </div>
@@ -367,13 +375,13 @@ export default function TemplateBuilder({
                         onChange={(e) => updateQuestion(q.id, { question: e.target.value })}
                         rows={2}
                         className="w-full text-[13.5px] font-bold text-slate-800 placeholder-slate-300 border-none focus:ring-0 resize-none p-0 bg-transparent"
-                        placeholder="Type question here..."
+                        placeholder={t("automation.typeQuestionHere")}
                         readOnly={!canAccess("interviews:moderate")}
                       />
                       
                       <div className="flex flex-wrap items-center gap-4">
                          <div className="flex items-center gap-2">
-                           <span className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Type:</span>
+                           <span className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">{t("automation.typeColon")}</span>
                            <div className="relative">
                              <select
                                value={q.type}
@@ -389,7 +397,7 @@ export default function TemplateBuilder({
                            </div>
                          </div>
                          <div className="flex items-center gap-2">
-                           <span className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Difficulty:</span>
+                           <span className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">{t("automation.difficultyColon")}</span>
                            <div className="relative">
                              <select
                                value={q.difficulty}
@@ -397,10 +405,10 @@ export default function TemplateBuilder({
                                className="text-[11.5px] font-bold text-slate-600 bg-slate-50 border border-[#E1E4E8] rounded-[8px] pl-2.5 pr-7 py-1 outline-none appearance-none cursor-pointer"
                                disabled={!canAccess("interviews:moderate")}
                              >
-                               <option value="Beginner">Beginner</option>
-                               <option value="Intermediate">Intermediate</option>
-                               <option value="Advanced">Advanced</option>
-                               <option value="Expert">Expert</option>
+                               <option value="Beginner">{t("automation.diffBeginner")}</option>
+                               <option value="Intermediate">{t("automation.diffIntermediate")}</option>
+                               <option value="Advanced">{t("automation.diffAdvanced")}</option>
+                               <option value="Expert">{t("automation.diffExpert")}</option>
                              </select>
                              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
                            </div>
@@ -408,13 +416,13 @@ export default function TemplateBuilder({
                       </div>
 
                       <div className="space-y-2">
-                        <label htmlFor={`tb-eval-points-${q.id}`} className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider ml-1">Key Evaluation Points</label>
+                        <label htmlFor={`tb-eval-points-${q.id}`} className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider ml-1">{t("automation.keyEvaluationPoints")}</label>
                         <div className="flex flex-wrap gap-2">
                           {q.expected_answer_points.map((point, pIdx) => (
                             <div key={pIdx} className="flex items-center gap-2 px-3 py-1.5 bg-[#F7F8FA] rounded-[8px] border border-[#E1E4E8] group/point">
                               <input
                                 value={point}
-                                placeholder="New point"
+                                placeholder={t("automation.newPoint")}
                                 onChange={(e) => {
                                   const newPoints = [...q.expected_answer_points];
                                   newPoints[pIdx] = e.target.value;
@@ -446,7 +454,7 @@ export default function TemplateBuilder({
                               }}
                               className="px-3 py-1.5 border border-dashed border-[#E1E4E8] rounded-[8px] text-[11.5px] font-bold text-[#8A929E] hover:border-[#5B53E0] hover:text-[#5B53E0] transition-all cursor-pointer"
                             >
-                              + Add Point
+                              {t("automation.addPointPlus")}
                             </button>
                           )}
                         </div>
@@ -471,7 +479,7 @@ export default function TemplateBuilder({
                 ) : (
                   <Save className="w-4 h-4" />
                 )}
-                <span>{initialData ? "Update Template" : "Save Template"}</span>
+                <span>{initialData ? t("automation.updateTemplate") : t("automation.saveTemplate")}</span>
               </button>
             )}
           </div>

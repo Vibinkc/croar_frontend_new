@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import ProjectForm from "@/components/enterprise/ProjectForm";
 import Link from "next/link";
@@ -10,6 +11,7 @@ import Link from "next/link";
 export default function EditProjectPage() {
     const params = useParams();
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [project, setProject] = useState<any>(null);
@@ -53,14 +55,14 @@ export default function EditProjectPage() {
                 <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
                     <span className="material-symbols-rounded text-[#C7CCD4] text-[32px]">error</span>
                 </div>
-                <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C]">Project Not Found</h2>
-                <p className="text-[14px] text-[#8A929E] max-w-sm mt-2">The project you are looking for does not exist or has been deleted.</p>
+                <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C]">{tr("general.projectNotFound")}</h2>
+                <p className="text-[14px] text-[#8A929E] max-w-sm mt-2">{tr("general.projectNotFoundDesc")}</p>
                 <Link
                     href="/enterprise/projects"
                     className="mt-7 inline-flex items-center gap-2 h-[42px] px-5 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13.5px] font-semibold hover:bg-[#F4F5F7] transition-colors"
                 >
                     <span className="material-symbols-rounded text-[19px]">arrow_back</span>
-                    Back to Projects
+                    {tr("general.backToProjects")}
                 </Link>
             </div>
         );

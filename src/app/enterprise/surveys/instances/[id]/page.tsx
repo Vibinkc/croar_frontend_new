@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import {
     ArrowLeft,
@@ -46,6 +47,7 @@ interface Report {
 export default function SurveyReport({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [report, setReport] = useState<Report | null>(null);
     const [loading, setLoading] = useState(true);
@@ -107,8 +109,8 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                     <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
                         <AlertTriangle className="w-8 h-8 text-[#C7CCD4]" />
                     </div>
-                    <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Report data unavailable</h3>
-                    <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">This report could not be loaded, or you are not authorized to view it.</p>
+                    <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("surveysExt.reportUnavailable")}</h3>
+                    <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">{tr("surveysExt.reportUnavailableDesc")}</p>
                 </div>
             </Card>
         </div>
@@ -123,7 +125,7 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                 <div className="flex items-center gap-3 min-w-0">
                     <button
                         onClick={() => router.push('/enterprise/surveys')}
-                        aria-label="Back to surveys"
+                        aria-label={tr("surveysExt.backToSurveys")}
                         className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#8A929E] hover:text-[#5B53E0] hover:bg-[#F4F5F7] transition-colors flex items-center justify-center shrink-0"
                     >
                         <ArrowLeft className="w-[18px] h-[18px]" />
@@ -131,9 +133,9 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
                             <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">{report.instance_name}</h1>
-                            <PageHelp title="Campaign Results">This campaign&apos;s results — responses, completion and AI insights. Send reminders to anyone still pending.</PageHelp>
+                            <PageHelp title={tr("surveysExt.helpCampaignResults")}>{tr("surveysExt.helpCampaignResultsBody")}</PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Aggregated sentiment analysis &amp; participation data</p>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("surveysExt.aggregatedSubtitle")}</p>
                     </div>
                 </div>
                 {report.completed_invites < report.total_invites && (
@@ -141,12 +143,12 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                         <button
                             onClick={() => {
                                 apiClient.post(`/api/v1/enterprise/surveys/instances/${id}/notify`, {})
-                                    .then(() => alert("Reminders sent to all pending participants!"))
-                                    .catch(() => alert("Failed to send reminders."));
+                                    .then(() => alert(tr("surveysExt.remindersSent")))
+                                    .catch(() => alert(tr("surveysExt.remindersFailed")));
                             }}
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
                         >
-                            <Megaphone className="w-3.5 h-3.5 text-[#5B53E0]" /> Remind Pending
+                            <Megaphone className="w-3.5 h-3.5 text-[#5B53E0]" /> {tr("surveysExt.remindPending")}
                         </button>
                     </div>
                 )}
@@ -161,22 +163,22 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                 {!aiAnalysis && !analyzing ? (
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
                         <div className="space-y-3 text-center md:text-left">
-                            <h2 className="text-[22px] font-extrabold tracking-[-0.5px] leading-tight">Strategic AI Intelligence</h2>
-                            <p className="text-white/55 text-[14px] font-medium max-w-xl leading-relaxed">Let AI evaluate the organizational pulse, detect hidden risks, and suggest actionable strategic improvements based on this feedback.</p>
+                            <h2 className="text-[22px] font-extrabold tracking-[-0.5px] leading-tight">{tr("surveysExt.strategicAiIntelligence")}</h2>
+                            <p className="text-white/55 text-[14px] font-medium max-w-xl leading-relaxed">{tr("surveysExt.strategicAiDesc")}</p>
                         </div>
                         <button
                             onClick={generateAIInsights}
                             className="inline-flex items-center gap-2 h-[46px] px-5 rounded-[10px] bg-[#5B53E0] text-white text-[14px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.4)] transition-colors shrink-0"
                         >
-                            <BrainCircuit className="w-[18px] h-[18px]" /> Generate Insights
+                            <BrainCircuit className="w-[18px] h-[18px]" /> {tr("surveysExt.generateInsights")}
                         </button>
                     </div>
                 ) : analyzing ? (
                     <div className="flex flex-col items-center justify-center py-10 space-y-6 relative z-10">
                         <div className="w-14 h-14 border-4 border-[#5B53E0]/40 border-t-white rounded-full animate-spin" />
                         <div className="text-center space-y-1.5">
-                            <h3 className="text-[16px] font-extrabold tracking-[-0.3px]">Analyzing Pulse…</h3>
-                            <p className="text-white/45 text-[11px] font-semibold uppercase tracking-[0.04em]">Processing aggregated feedback</p>
+                            <h3 className="text-[16px] font-extrabold tracking-[-0.3px]">{tr("surveysExt.analyzingPulse")}</h3>
+                            <p className="text-white/45 text-[11px] font-semibold uppercase tracking-[0.04em]">{tr("surveysExt.processingFeedback")}</p>
                         </div>
                     </div>
                 ) : (
@@ -185,15 +187,15 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2.5 flex-wrap">
                                     <span className="inline-flex items-center gap-1.5 rounded-[20px] px-2.5 py-0.5 text-[12px] font-semibold bg-[#5B53E0] text-white">
-                                        <Sparkles className="w-3 h-3" /> Strategic Insight
+                                        <Sparkles className="w-3 h-3" /> {tr("surveysExt.strategicInsight")}
                                     </span>
-                                    <span className="text-white/45 text-[11px] font-semibold uppercase tracking-[0.04em]">Generated by Croar AI</span>
+                                    <span className="text-white/45 text-[11px] font-semibold uppercase tracking-[0.04em]">{tr("surveysExt.generatedByCroarAi")}</span>
                                 </div>
-                                <h2 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.7px] leading-tight">{report.instance_name} Summary</h2>
+                                <h2 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.7px] leading-tight">{report.instance_name} {tr("surveysExt.summarySuffix")}</h2>
                                 <p className="text-white/70 text-[14px] font-medium max-w-3xl leading-relaxed">&quot;{aiAnalysis?.summary}&quot;</p>
                             </div>
                             <div className="bg-white/[0.06] border border-white/10 p-6 rounded-[14px] text-center min-w-[200px] backdrop-blur-sm shrink-0">
-                                <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] mb-1">Health Score</p>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] mb-1">{tr("surveysExt.healthScore")}</p>
                                 <div className={`text-[48px] font-semibold tracking-[-1px] text-white leading-none ${jetbrainsMono.className}`}>{aiAnalysis?.performance_score}</div>
                                 <div className="w-full h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden">
                                     <div className="h-full bg-[#5B53E0] transition-all duration-1000" style={{ width: `${aiAnalysis?.performance_score}%` }} />
@@ -203,7 +205,7 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-4">
-                                <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] px-1">Cultural Strengths</h4>
+                                <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] px-1">{tr("surveysExt.culturalStrengths")}</h4>
                                 <ul className="space-y-2.5">
                                     {(aiAnalysis?.strengths ?? []).map((s: string, idx: number) => (
                                         <li key={idx} className="flex items-center gap-3 bg-white/[0.05] p-4 rounded-[12px] border border-white/[0.07]">
@@ -214,7 +216,7 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                                 </ul>
                             </div>
                             <div className="space-y-4">
-                                <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#FB7185] px-1">Detected Risks</h4>
+                                <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#FB7185] px-1">{tr("surveysExt.detectedRisks")}</h4>
                                 <ul className="space-y-2.5">
                                     {(aiAnalysis?.weaknesses ?? []).map((w: string, idx: number) => (
                                         <li key={idx} className="flex items-center gap-3 bg-white/[0.05] p-4 rounded-[12px] border border-white/[0.07]">
@@ -227,7 +229,7 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                         </div>
 
                         <div className="pt-8 border-t border-white/10 space-y-4">
-                            <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] px-1">AI Strategic Recommendations</h4>
+                            <h4 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8B7DFF] px-1">{tr("surveysExt.aiStrategicRecommendations")}</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {(aiAnalysis?.recommendations ?? []).map((r: string, idx: number) => (
                                     <div key={idx} className="bg-[#5B53E0]/10 border border-[#5B53E0]/25 p-5 rounded-[14px] flex gap-4 items-start">
@@ -245,11 +247,11 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
 
             {/* Participation metrics */}
             <StatGrid className="lg:grid-cols-3">
-                <StatCard label="Total Audience" value={report.total_invites} icon="groups" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label="Total Returns" value={report.completed_invites} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("surveysExt.totalAudience")} value={report.total_invites} icon="groups" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("surveysExt.totalReturns")} value={report.completed_invites} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
                 <Card padding="sm" className="flex flex-col justify-center">
                     <div className="flex justify-between items-end mb-2">
-                        <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Participation Rate</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("surveysExt.participationRate")}</span>
                         <span className={`text-[24px] font-semibold tracking-[-1px] text-[#5B53E0] leading-none ${jetbrainsMono.className}`}>{completionRate.toFixed(1)}%</span>
                     </div>
                     <div className="h-3 bg-[#F4F5F7] rounded-full overflow-hidden border border-[#E8EAED]">
@@ -260,7 +262,7 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
 
             {/* Detailed findings */}
             <div className="space-y-4">
-                <h2 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] px-1">Detailed Findings</h2>
+                <h2 className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] px-1">{tr("surveysExt.detailedFindings")}</h2>
                 <div className="grid grid-cols-1 gap-4">
                     {report.questions.map((q: QuestionData) => (
                         <Card key={q.question_id} padding="lg" interactive className="space-y-7">
@@ -275,8 +277,8 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center px-1">
                                     <div>
                                         <div className="flex justify-between items-end mb-4">
-                                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Score Distribution</span>
-                                            <span className={`text-[14px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>AVG. {q.average_score?.toFixed(1) || '0.0'}</span>
+                                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("surveysExt.scoreDistribution")}</span>
+                                            <span className={`text-[14px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{tr("surveysExt.avg")} {q.average_score?.toFixed(1) || '0.0'}</span>
                                         </div>
                                         <div className="space-y-3.5">
                                             {['5', '4', '3', '2', '1'].map(val => (
@@ -296,7 +298,7 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                                     <div className="flex items-center justify-center relative py-8">
                                         <div className="text-center space-y-2 relative z-10">
                                             <p className={`text-[64px] font-semibold text-[#15171C] tracking-[-2px] leading-none ${jetbrainsMono.className}`}>{q.average_score?.toFixed(1) || '0.0'}</p>
-                                            <Badge tone="neutral">Organizational Pulse</Badge>
+                                            <Badge tone="neutral">{tr("surveysExt.organizationalPulse")}</Badge>
                                         </div>
                                         <div className="absolute inset-0 flex items-center justify-center opacity-[0.04] select-none pointer-events-none">
                                             <TrendingUp className="w-[160px] h-[160px] text-[#5B53E0]" />
@@ -313,7 +315,7 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                                             <span>&quot;{resp}&quot;</span>
                                         </div>
                                     )) : (
-                                        <p className="text-[#8A929E] text-[13px] font-medium text-center py-8">No textual entries were submitted for this item</p>
+                                        <p className="text-[#8A929E] text-[13px] font-medium text-center py-8">{tr("surveysExt.noTextEntries")}</p>
                                     )}
                                 </div>
                             )}
@@ -324,7 +326,7 @@ export default function SurveyReport({ params }: { params: Promise<{ id: string 
                                         <div key={opt} className="space-y-1.5">
                                             <div className="flex justify-between text-[13px] font-semibold">
                                                 <span className="text-[#374151]">{opt}</span>
-                                                <span className={`text-[#5B53E0] ${jetbrainsMono.className}`}>{count} Choices</span>
+                                                <span className={`text-[#5B53E0] ${jetbrainsMono.className}`}>{count} {tr("surveysExt.choices")}</span>
                                             </div>
                                             <div className="h-2 bg-[#F4F5F7] rounded-full overflow-hidden">
                                                 <div

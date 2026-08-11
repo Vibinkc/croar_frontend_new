@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { format } from "date-fns";
+import { useI18n } from "@/context/I18nContext";
 
 interface TaskCardProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,6 +12,7 @@ interface TaskCardProps {
 }
 
 export default function TaskCard({ task, getStatusColor }: TaskCardProps) {
+    const { t: tr } = useI18n();
     return (
         <div className="group bg-white rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -23,7 +25,7 @@ export default function TaskCard({ task, getStatusColor }: TaskCardProps) {
                 <div className="space-y-1">
                     <div className="flex items-center justify-between mb-0.5">
                         <span className="text-[8px] font-black text-[#7C3AED]   bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 flex items-center gap-1">
-                            {task.project?.name || "Unlinked"}
+                            {task.project?.name || tr("sharedUi.unlinked")}
                         </span>
                         <span className={`px-2 py-0.5 rounded-md text-[8px] font-black   border ${getStatusColor(task.column)} shadow-sm`}>
                             {task.column}
@@ -33,7 +35,7 @@ export default function TaskCard({ task, getStatusColor }: TaskCardProps) {
                 </div>
 
                 <p className="text-slate-500 text-[10px] font-medium line-clamp-2  leading-relaxed opacity-70">
-                    {task.description || "No description provided."}
+                    {task.description || tr("sharedUi.noDescriptionProvided")}
                 </p>
 
                 <div className="pt-3 border-t border-slate-50 flex items-center justify-between mt-auto">
@@ -43,9 +45,9 @@ export default function TaskCard({ task, getStatusColor }: TaskCardProps) {
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[9px] font-black text-slate-700 leading-none">
-                                {task.assignee ? `${task.assignee.first_name} ${task.assignee.last_name}` : "Unassigned"}
+                                {task.assignee ? `${task.assignee.first_name} ${task.assignee.last_name}` : tr("sharedUi.unassigned")}
                             </span>
-                            <span className="text-[7px] font-black text-slate-400   mt-0.5">Assignee</span>
+                            <span className="text-[7px] font-black text-slate-400   mt-0.5">{tr("sharedUi.assignee")}</span>
                         </div>
                     </div>
 

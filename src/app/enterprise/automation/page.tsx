@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import ReactFlow, {
   Background,
@@ -53,6 +54,7 @@ interface Automation {
 
 export default function AutomationCanvasPage() {
   const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
   const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -152,7 +154,7 @@ export default function AutomationCanvasPage() {
           data: { 
             label: (
               <div className="flex flex-col items-center p-2">
-                <span className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider">Round {rIdx + 1}</span>
+                <span className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider">{tr("automation.round")} {rIdx + 1}</span>
                 <span className="font-bold text-[#15171C] text-[13.5px] mt-0.5">{round.name}</span>
               </div>
             ) 
@@ -215,32 +217,32 @@ export default function AutomationCanvasPage() {
                       </span>
                     </div>
                     {!auto.is_enabled && (
-                      <span className="text-[8px] font-bold text-[#8A929E] tracking-tight bg-white border border-[#E8EAED] px-1 rounded">Disabled</span>
+                      <span className="text-[8px] font-bold text-[#8A929E] tracking-tight bg-white border border-[#E8EAED] px-1 rounded">{tr("automation.disabled")}</span>
                     )}
                   </div>
                   
                   <div className="text-[13px] font-bold text-[#15171C] leading-tight mb-1 truncate w-full">
-                    {auto.criteria || "Any trigger"}
+                    {auto.criteria || tr("automation.anyTrigger")}
                   </div>
  
                   {auto.action_type === "assessment" && (
                     <div className="text-[10px] text-[#8A929E] font-semibold flex items-center gap-1">
                       <span className="material-symbols-rounded text-[10px]">topic</span>
-                      {auto.topic || "No topic"} ({auto.generated_questions?.length || 0} Qs)
+                      {auto.topic || tr("automation.noTopic")} {tr("automation.qsCount", { count: auto.generated_questions?.length || 0 })}
                     </div>
                   )}
  
                   {auto.action_type === "interview" && (
                      <div className="text-[10px] text-[#8A929E] font-semibold flex items-center gap-1">
                         <span className="material-symbols-rounded text-[10px]">event</span>
-                        {auto.interview_type} • {auto.time_slots?.length || 0} slots
+                        {auto.interview_type} • {tr("automation.slotsSuffix", { count: auto.time_slots?.length || 0 })}
                      </div>
                   )}
  
                   {auto.action_type === "mail" && auto.template_id && (
                     <div className="text-[10px] text-[#8A929E] font-semibold flex items-center gap-1">
                         <span className="material-symbols-rounded text-[10px]">description</span>
-                        {"Template Action"}
+                        {tr("automation.templateAction")}
                     </div>
                   )}
                 </div>
@@ -315,12 +317,12 @@ export default function AutomationCanvasPage() {
       <div className="sticky top-0 z-20 px-6 py-3 border-b border-[#E8EAED] flex-shrink-0 bg-[#F4F5F7]/95 backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-1.5">
-            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Automation Canvas</h1>
-            <PageHelp title="Automation Canvas">
-              <p>Build no-code recruiting workflows visually &mdash; add steps and connect them.</p>
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("automation.canvasTitle")}</h1>
+            <PageHelp title={tr("automation.canvasTitle")}>
+              <p>{tr("automation.canvasHelp")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Visualize and build your automated hiring pipelines</p>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.canvasSubtitle")}</p>
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -330,7 +332,7 @@ export default function AutomationCanvasPage() {
             className="flex items-center gap-2 h-9 px-4 rounded-[10px] border border-[#E8EAED] text-[#4B5563] hover:bg-[#F7F8FA] hover:text-[#15171C] transition-all font-semibold text-[13px] bg-white shadow-sm disabled:opacity-50 active:scale-95 shrink-0"
           >
             <span className={`material-symbols-rounded text-lg ${loading ? 'animate-spin' : ''}`}>refresh</span>
-            SYNC
+            {tr("automation.sync")}
           </button>
 
           <div className="flex items-center gap-2 relative">
@@ -340,7 +342,7 @@ export default function AutomationCanvasPage() {
               onChange={(e) => setSelectedJobId(e.target.value)}
               className="w-64 h-9 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-10 text-[13px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
             >
-              <option value="">Select a Job to view flow...</option>
+              <option value="">{tr("automation.selectJobFlow")}</option>
               {jobs.map((j) => (
                 <option key={j.id} value={j.id}>{j.title}</option>
               ))}
@@ -357,14 +359,14 @@ export default function AutomationCanvasPage() {
             <div className="w-16 h-16 rounded-[18px] bg-[#ECEBFB] flex items-center justify-center mb-4 border border-[#DAD7F6]">
               <span className="material-symbols-rounded text-[#5B53E0] text-3xl">account_tree</span>
             </div>
-            <p className="text-[#15171C] font-extrabold text-lg">No job selected</p>
-            <p className="text-[#8A929E] text-sm mt-1">Select a job from the dropdown to view its automation canvas.</p>
+            <p className="text-[#15171C] font-extrabold text-lg">{tr("automation.noJobSelected")}</p>
+            <p className="text-[#8A929E] text-sm mt-1">{tr("automation.selectJobToViewCanvas")}</p>
           </div>
         ) : loading ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
               <div className="w-8 h-8 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm font-semibold text-[#8A929E]">Loading pipelines...</p>
+              <p className="text-sm font-semibold text-[#8A929E]">{tr("automation.loadingPipelines")}</p>
             </div>
           </div>
         ) : nodes.length === 0 ? (
@@ -372,8 +374,8 @@ export default function AutomationCanvasPage() {
             <div className="w-16 h-16 rounded-[18px] bg-[#FEF3E2] flex items-center justify-center mb-4 border border-[#FCE1BF]">
               <span className="material-symbols-rounded text-[#D97706] text-3xl">info</span>
             </div>
-            <p className="text-[#15171C] font-extrabold text-lg">No hiring stages configured</p>
-            <p className="text-[#8A929E] text-sm mt-1">This job has no hiring rounds configured yet.</p>
+            <p className="text-[#15171C] font-extrabold text-lg">{tr("automation.noStages")}</p>
+            <p className="text-[#8A929E] text-sm mt-1">{tr("automation.noHiringRoundsYet")}</p>
           </div>
         ) : (
           <>
@@ -396,19 +398,19 @@ export default function AutomationCanvasPage() {
             {canAccess("automation:moderate") && (
               <div className="absolute top-6 right-6 z-10 flex flex-col items-end gap-2 pointer-events-none">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#8A929E] bg-white/90 border border-[#E8EAED] px-2.5 py-1 rounded-[6px] shadow-sm pointer-events-auto">
-                  Add Action
+                  {tr("automation.addAction")}
                 </span>
                 <div className="flex bg-white shadow-[0_12px_24px_rgba(21,23,28,0.08)] border border-[#E8EAED] rounded-[12px] p-1 gap-1 pointer-events-auto">
-                  <button onClick={() => openCreateModal("mail")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#ECEBFB] text-[#5B53E0] transition-colors" title="Add Mail Automation">
+                  <button onClick={() => openCreateModal("mail")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#ECEBFB] text-[#5B53E0] transition-colors" title={tr("automation.addMailAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">mark_email_unread</span>
                   </button>
-                  <button onClick={() => openCreateModal("assessment")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#FEF3E2] text-[#D97706] transition-colors" title="Add Assessment Automation">
+                  <button onClick={() => openCreateModal("assessment")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#FEF3E2] text-[#D97706] transition-colors" title={tr("automation.addAssessmentAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">psychology</span>
                   </button>
-                  <button onClick={() => openCreateModal("interview")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#E3F4EF] text-[#0E8A6E] transition-colors" title="Add Interview Automation">
+                  <button onClick={() => openCreateModal("interview")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#E3F4EF] text-[#0E8A6E] transition-colors" title={tr("automation.addInterviewAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">event_available</span>
                   </button>
-                  <button onClick={() => openCreateModal("onboarding")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#F5F3FF] text-[#8B5CF6] transition-colors" title="Add Onboarding Automation">
+                  <button onClick={() => openCreateModal("onboarding")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#F5F3FF] text-[#8B5CF6] transition-colors" title={tr("automation.addOnboardingAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">person_add</span>
                   </button>
                 </div>

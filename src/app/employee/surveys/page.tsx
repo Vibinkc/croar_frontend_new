@@ -6,9 +6,11 @@ import { useDialog } from "@/components/payroll/DialogProvider";
 import SelfServiceFiller from "@/components/employee/SelfServiceFiller";
 import { PageHeader, Card, CardHeader, Button, Badge, EmptyState } from "@/components/ds";
 import NotLinkedNotice, { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
+import { useI18n } from "@/context/I18nContext";
 
 export default function EmployeeSurveysPage() {
   const { alert } = useDialog();
+  const { t } = useI18n();
   const [rows, setRows] = useState<MySurveyInvite[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +55,7 @@ export default function EmployeeSurveysPage() {
     try {
       await meApi.submitSurvey(active.id, answers);
       setActive(null);
-      await alert({ title: "Thank you", message: "Your response has been recorded." });
+      await alert({ title: t("employee.thankYou"), message: t("employee.responseRecorded") });
       await load();
     } catch (e) {
       await alert({ message: (e as Error).message, tone: "danger" });
@@ -67,9 +69,9 @@ export default function EmployeeSurveysPage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Surveys"
-        subtitle="Pulse & engagement surveys addressed to you — responses are anonymous"
-        help={<p>These surveys help your organization understand engagement and culture. Responses are aggregated and anonymous.</p>}
+        title={t("employee.surveysTitle")}
+        subtitle={t("employee.surveysSubtitle")}
+        help={<p>{t("employee.surveysHelp")}</p>}
       />
 
       {error && (
@@ -79,12 +81,12 @@ export default function EmployeeSurveysPage() {
       )}
 
       <Card padding="none" className="overflow-hidden">
-        <CardHeader className="px-6 pt-6" title="Pending surveys" subtitle="Awaiting your response"
+        <CardHeader className="px-6 pt-6" title={t("employee.pendingSurveys")} subtitle={t("employee.pendingSurveysSubtitle")}
           action={<Badge tone="indigo">{rows.length}</Badge>} />
         {loading ? (
           <div className="px-6 pb-6 space-y-2.5">{[1, 2, 3].map((i) => <div key={i} className="h-16 rounded-[12px] bg-[#F4F5F7] animate-pulse" />)}</div>
         ) : rows.length === 0 ? (
-          <EmptyState tone="muted" icon="poll" title="No surveys right now" description="You have no pending surveys. New ones show up here when HR launches a campaign." />
+          <EmptyState tone="muted" icon="poll" title={t("employee.noSurveys")} description={t("employee.noSurveysDesc")} />
         ) : (
           <div className="divide-y divide-[#F0F0F1]">
             {rows.map((r) => (
@@ -98,7 +100,7 @@ export default function EmployeeSurveysPage() {
                     <p className="truncate text-[12px] text-[#8A929E]">{r.template_title}</p>
                   </div>
                 </div>
-                <Button size="sm" icon="edit_note" disabled={opening} onClick={() => open(r)}>Take Survey</Button>
+                <Button size="sm" icon="edit_note" disabled={opening} onClick={() => open(r)}>{t("employee.takeSurvey")}</Button>
               </div>
             ))}
           </div>

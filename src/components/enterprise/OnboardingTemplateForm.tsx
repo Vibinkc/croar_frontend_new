@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { BACKEND_URL } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { jetbrainsMono } from "@/components/ds";
@@ -36,6 +37,7 @@ interface OnboardingTemplateFormProps {
 export default function OnboardingTemplateForm({ template }: OnboardingTemplateFormProps) {
     const router = useRouter();
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
 
     // Form State
     const [name, setName] = useState("");
@@ -76,10 +78,10 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
     const isDirty = JSON.stringify({ name, description, sections }) !== initialSnapshot;
 
     const handleSave = async () => {
-        if (!name.trim()) { setSaveError("Add a template name before saving."); return; }
-        if (sections.length === 0) { setSaveError("Add at least one section before saving."); return; }
+        if (!name.trim()) { setSaveError(tr("forms.errAddTemplateName")); return; }
+        if (sections.length === 0) { setSaveError(tr("forms.errAddSection")); return; }
         const totalFields = sections.reduce((acc, s) => acc + s.fields.length, 0);
-        if (totalFields === 0) { setSaveError("Add at least one field to a section before saving."); return; }
+        if (totalFields === 0) { setSaveError(tr("forms.errAddField")); return; }
         setSaveError(null);
 
         const payload = {
@@ -108,11 +110,11 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                 router.push("/enterprise/templates/onboarding-templates");
             } else {
                 const err = await res.json();
-                setSaveError(err.detail || "Failed to save template. Please try again.");
+                setSaveError(err.detail || tr("forms.errFailedSaveTemplate"));
             }
         } catch (error) {
             console.error("Error saving template:", error);
-            setSaveError("Something went wrong while saving. Please try again.");
+            setSaveError(tr("forms.errSaveWentWrong"));
         } finally {
             setIsSaving(false);
         }
@@ -120,7 +122,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
 
     const addSection = () => {
         if (!newSectionTitle.trim()) {
-            alert("Please enter a section title first.");
+            alert(tr("forms.alertSectionTitleFirst"));
             return;
         }
         const newSec: Section = {
@@ -140,11 +142,11 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
 
     const addField = () => {
         if (!activeSectionId) {
-            alert("Please select or create a section first.");
+            alert(tr("forms.alertSelectSectionFirst"));
             return;
         }
         if (!newFieldLabel.trim()) {
-            alert("Field label is required.");
+            alert(tr("forms.alertFieldLabelRequired"));
             return;
         }
 
@@ -178,23 +180,23 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                     {/* Basic Info */}
                     <div className="bg-white border border-[#E8EAED] rounded-[14px] p-5 space-y-4 shadow-sm">
                         <div className="space-y-1.5">
-                            <label htmlFor="otf-template-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Template Name</label>
+                            <label htmlFor="otf-template-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("forms.templateName")}</label>
                             <input
                                 id="otf-template-name"
                                 type="text"
                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                placeholder="e.g. Executive Onboarding"
+                                placeholder={tr("forms.templateNamePlaceholder")}
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 readOnly={!canAccess("onboarding:moderate")}
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label htmlFor="otf-template-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Overall Description</label>
+                            <label htmlFor="otf-template-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("forms.overallDescription")}</label>
                             <textarea
                                 id="otf-template-description"
                                 className="w-full bg-white border border-[#E1E4E8] rounded-[10px] p-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none min-h-[100px] leading-relaxed"
-                                placeholder="Purpose of this flow..."
+                                placeholder={tr("forms.overallDescriptionPlaceholder")}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 readOnly={!canAccess("onboarding:moderate")}
@@ -204,7 +206,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
 
                     {/* Section Management */}
                     <div className="bg-white border border-[#E8EAED] rounded-[14px] p-5 space-y-4 shadow-sm">
-                        <label htmlFor="otf-new-section-title" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5 block">Define Sections</label>
+                        <label htmlFor="otf-new-section-title" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5 block">{tr("forms.defineSections")}</label>
                         <div className="space-y-2">
                             {sections.map((s, idx) => (
                                 <div
@@ -236,7 +238,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                     id="otf-new-section-title"
                                     type="text"
                                     className="flex-1 h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                    placeholder="New Section Title..."
+                                    placeholder={tr("forms.newSectionTitlePlaceholder")}
                                     value={newSectionTitle}
                                     onChange={(e) => setNewSectionTitle(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && addSection()}
@@ -266,10 +268,10 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                     <h4 className="text-[16px] font-extrabold text-[#15171C] tracking-tight">
                                         {sections.find(s => s.id === activeSectionId)?.title}
                                     </h4>
-                                    <p className="text-[12px] text-[#8A929E] mt-0.5">Configure fields for this section.</p>
+                                    <p className="text-[12px] text-[#8A929E] mt-0.5">{tr("forms.configureFields")}</p>
                                 </div>
                                 <span className="px-2.5 py-1 bg-[#ECEBFB] text-[#5B53E0] rounded-[6px] border border-[#DAD7F6]/60 text-[10px] font-bold">
-                                    {(sections.find(s => s.id === activeSectionId)?.fields || []).length} Fields
+                                    {(sections.find(s => s.id === activeSectionId)?.fields || []).length} {tr("forms.fieldsLabel")}
                                 </span>
                             </div>
 
@@ -284,7 +286,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             </div>
                                             <div>
                                                 <p className="text-[13.5px] font-bold text-[#15171C]">{field.label}</p>
-                                                <p className="text-[10px] text-[#8A929E] uppercase tracking-wider font-semibold">{field.type} • {field.required ? "Required" : "Optional"}</p>
+                                                <p className="text-[10px] text-[#8A929E] uppercase tracking-wider font-semibold">{field.type} • {field.required ? tr("forms.required") : tr("forms.optional")}</p>
                                             </div>
                                         </div>
                                         {canAccess("onboarding:moderate") && (
@@ -302,15 +304,15 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                             {/* Add New Field Box */}
                             {canAccess("onboarding:moderate") && (
                                 <div className="bg-[#F8F9FA] border border-[#E8EAED] rounded-[14px] p-5 space-y-5">
-                                    <h5 className="text-[12.5px] font-bold text-[#15171C]">Add New Field</h5>
+                                    <h5 className="text-[12.5px] font-bold text-[#15171C]">{tr("forms.addNewField")}</h5>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-1.5">
-                                            <label htmlFor="otf-new-field-label" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Field Label (Display)</label>
+                                            <label htmlFor="otf-new-field-label" className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("forms.fieldLabelDisplay")}</label>
                                             <input
                                                 id="otf-new-field-label"
                                                 type="text"
                                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                placeholder="e.g. Your Mobile Number"
+                                                placeholder={tr("forms.fieldLabelPlaceholder")}
                                                 value={newFieldLabel}
                                                 onChange={(e) => {
                                                     setNewFieldLabel(e.target.value);
@@ -321,7 +323,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label htmlFor="otf-new-field-type" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Field Type</label>
+                                            <label htmlFor="otf-new-field-type" className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("forms.fieldType")}</label>
                                             <select
                                                 id="otf-new-field-type"
                                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all cursor-pointer"
@@ -329,34 +331,34 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                 onChange={(e) => setNewFieldType(e.target.value as any)}
                                             >
-                                                <option value="text">Text Input</option>
-                                                <option value="email">Email Address</option>
-                                                <option value="phone">Phone Number</option>
-                                                <option value="number">Number</option>
-                                                <option value="date">Date Picker</option>
-                                                <option value="select">Dropdown (Select)</option>
-                                                <option value="file">File Upload</option>
+                                                <option value="text">{tr("forms.typeTextInput")}</option>
+                                                <option value="email">{tr("forms.typeEmailAddress")}</option>
+                                                <option value="phone">{tr("forms.phoneNumber")}</option>
+                                                <option value="number">{tr("forms.typeNumber")}</option>
+                                                <option value="date">{tr("forms.typeDatePicker")}</option>
+                                                <option value="select">{tr("forms.typeDropdown")}</option>
+                                                <option value="file">{tr("forms.typeFileUpload")}</option>
                                             </select>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label htmlFor="otf-new-field-name" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Unique Identifier</label>
+                                            <label htmlFor="otf-new-field-name" className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("forms.uniqueIdentifier")}</label>
                                             <input
                                                 id="otf-new-field-name"
                                                 type="text"
                                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                placeholder="e.g. mobile_number"
+                                                placeholder={tr("forms.uniqueIdentifierPlaceholder")}
                                                 value={newFieldName}
                                                 onChange={(e) => setNewFieldName(e.target.value)}
                                             />
                                         </div>
                                         {newFieldType === "select" && (
                                             <div className="space-y-1.5">
-                                                <label htmlFor="otf-new-field-options" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Options (Comma Separated)</label>
+                                                <label htmlFor="otf-new-field-options" className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("forms.optionsCommaSeparated")}</label>
                                                 <input
                                                     id="otf-new-field-options"
                                                     type="text"
                                                     className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                    placeholder="e.g. Option 1, Option 2, Option 3"
+                                                    placeholder={tr("forms.optionsPlaceholder")}
                                                     value={newFieldOptions}
                                                     onChange={(e) => setNewFieldOptions(e.target.value)}
                                                 />
@@ -371,7 +373,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                                 className={`flex items-center gap-2 cursor-pointer h-10 px-3.5 rounded-[10px] border transition-all ${newFieldRequired ? "bg-[#ECEBFB]/30 border-[#5B53E0] text-[#5B53E0]" : "bg-white border-[#E1E4E8] text-[#8A929E]"}`}
                                             >
                                                 <span className="material-icons-outlined text-[18px]">{newFieldRequired ? "check_box" : "check_box_outline_blank"}</span>
-                                                <span className="text-[11px] font-bold">Mark as Required</span>
+                                                <span className="text-[11px] font-bold">{tr("forms.markAsRequired")}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -379,7 +381,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                         onClick={addField}
                                         className="w-full h-10 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-sm transition-all flex items-center justify-center"
                                     >
-                                        Add Field to {sections.find(s => s.id === activeSectionId)?.title}
+                                        {tr("forms.addFieldTo")} {sections.find(s => s.id === activeSectionId)?.title}
                                     </button>
                                 </div>
                             )}
@@ -390,9 +392,9 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                 <span className="material-icons-outlined text-3xl animate-pulse">layers</span>
                             </div>
                             <div>
-                                <h4 className="text-[16px] font-bold text-[#15171C]">Select a Section</h4>
+                                <h4 className="text-[16px] font-bold text-[#15171C]">{tr("forms.selectASection")}</h4>
                                 <p className="text-[#8A929E] text-[12.5px] leading-relaxed max-w-[240px] mx-auto mt-1.5">
-                                    Add or select a section from the left column to start building your custom form.
+                                    {tr("forms.selectSectionHint")}
                                 </p>
                             </div>
                         </div>
@@ -412,17 +414,17 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                     onClick={() => router.push("/enterprise/templates/onboarding-templates")}
                     className="h-10 px-6 bg-white border border-[#E1E4E8] hover:bg-[#F4F5F7] text-[#374151] rounded-[10px] font-semibold text-[13px] shadow-sm transition-all"
                 >
-                    Cancel
+                    {tr("common.cancel")}
                 </button>
                 {canAccess("onboarding:moderate") && (
                     <button
                         onClick={handleSave}
                         disabled={isSaving || (!!template && !isDirty)}
-                        title={template && !isDirty ? "No changes to save yet" : undefined}
+                        title={template && !isDirty ? tr("forms.noChangesToSave") : undefined}
                         className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
                     >
                         {isSaving && <span className="material-icons-outlined text-[18px] animate-spin">progress_activity</span>}
-                        {isSaving ? (template ? "Updating…" : "Saving…") : (template ? "Update Template" : "Save Template")}
+                        {isSaving ? (template ? tr("forms.updating") : tr("forms.savingEllipsis")) : (template ? tr("forms.updateTemplate") : tr("forms.saveTemplate"))}
                     </button>
                 )}
             </div>

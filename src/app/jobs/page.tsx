@@ -19,6 +19,7 @@ import {
     DollarSign
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useI18n } from "@/context/I18nContext";
 
 interface PublicJob {
     id: string;
@@ -43,6 +44,7 @@ interface PublicJob {
 }
 
 function JobPortalContent() {
+    const { t: tr } = useI18n();
     const router = useRouter();
     const searchParams = useSearchParams();
     const companyId = searchParams.get("company_id");
@@ -112,17 +114,17 @@ function JobPortalContent() {
                             )}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-sm font-black text-slate-900 leading-tight">Career Portal</span>
-                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{companyInfo?.name || "Our Organization"}</span>
+                            <span className="text-sm font-black text-slate-900 leading-tight">{tr("candidate.careerPortal")}</span>
+                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{companyInfo?.name || tr("candidate.ourOrganization")}</span>
                         </div>
                     </div>
 
                     <div className="hidden md:flex items-center gap-8">
-                        <button type="button" className="text-sm font-bold text-slate-900 hover:text-indigo-600 transition-colors">Jobs</button>
-                        <button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">About</button>
-                        <button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Teams</button>
+                        <button type="button" className="text-sm font-bold text-slate-900 hover:text-indigo-600 transition-colors">{tr("candidate.jobs")}</button>
+                        <button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{tr("candidate.about")}</button>
+                        <button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{tr("candidate.teams")}</button>
                         <button className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-xs hover:bg-indigo-600 transition-all">
-                            Sign In
+                            {tr("candidate.signIn")}
                         </button>
                     </div>
                 </div>
@@ -140,13 +142,13 @@ function JobPortalContent() {
                         transition={{ duration: 0.6 }}
                     >
                         <span className="px-4 py-2 bg-indigo-50 text-indigo-600 text-[11px] font-black uppercase tracking-[0.2em] rounded-full mb-6 inline-block">
-                            Join Our Mission
+                            {tr("candidate.joinOurMission")}
                         </span>
                         <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight mb-8 leading-[1.05]">
-                            Shape the future with <span className="text-indigo-600">{companyInfo?.name || "Us"}</span>
+                            {tr("candidate.shapeTheFutureWith")} <span className="text-indigo-600">{companyInfo?.name || tr("candidate.us")}</span>
                         </h1>
                         <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto mb-12">
-                            We're looking for passionate individuals to join our team and build amazing things together. Browse our open positions below.
+                            {tr("candidate.heroDescription")}
                         </p>
                     </motion.div>
 
@@ -161,7 +163,7 @@ function JobPortalContent() {
                             <Search className="w-5 h-5 text-slate-400" />
                             <input
                                 type="text"
-                                placeholder="Search by job title or keyword..."
+                                placeholder={tr("candidate.searchPlaceholder")}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full py-4 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none"
@@ -175,14 +177,14 @@ function JobPortalContent() {
                                 onChange={(e) => setSelectedLocation(e.target.value)}
                                 className="w-full py-4 text-sm font-bold text-slate-900 bg-transparent outline-none appearance-none"
                             >
-                                <option value="ALL">Any Location</option>
+                                <option value="ALL">{tr("candidate.anyLocation")}</option>
                                 {locations.map(loc => (
                                     <option key={loc} value={loc}>{loc}</option>
                                 ))}
                             </select>
                         </div>
                         <button className="w-full md:w-auto bg-indigo-600 text-white px-10 py-4 rounded-[24px] font-black text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100">
-                            Find Jobs
+                            {tr("candidate.findJobs")}
                         </button>
                     </motion.div>
                 </div>
@@ -196,7 +198,7 @@ function JobPortalContent() {
                             onClick={() => setSelectedType("ALL")}
                             className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${selectedType === "ALL" ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100" : "bg-white text-slate-500 border border-slate-100 hover:border-indigo-100"}`}
                         >
-                            All Positions
+                            {tr("candidate.allPositions")}
                         </button>
                         {jobTypes.map(type => (
                             <button
@@ -210,7 +212,7 @@ function JobPortalContent() {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <span className="text-xs font-bold text-slate-400">{filteredJobs.length} Positions Available</span>
+                        <span className="text-xs font-bold text-slate-400">{tr("candidate.positionsAvailable", { count: filteredJobs.length })}</span>
                         <div className="flex items-center p-1 bg-white border border-slate-100 rounded-xl">
                             <button
                                 onClick={() => setViewMode("grid")}
@@ -242,8 +244,8 @@ function JobPortalContent() {
                         <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
                             <Search className="w-10 h-10 text-slate-200" />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900 mb-2">No matching jobs</h3>
-                        <p className="text-slate-500 font-medium max-w-sm mx-auto">Try adjusting your search or filters to find what you're looking for.</p>
+                        <h3 className="text-2xl font-black text-slate-900 mb-2">{tr("candidate.noMatchingJobs")}</h3>
+                        <p className="text-slate-500 font-medium max-w-sm mx-auto">{tr("candidate.noMatchingJobsDesc")}</p>
                     </div>
                 ) : (
                     <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-6"}>
@@ -266,8 +268,8 @@ function JobPortalContent() {
                                                 <Briefcase className="w-6 h-6 text-slate-400 group-hover:text-white transition-colors duration-500" />
                                             </div>
                                             <div className="flex flex-col items-end">
-                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{job.job_type || "Full Time"}</span>
-                                                <span className="text-[10px] font-bold text-emerald-500 mt-1">NEW</span>
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{job.job_type || tr("candidate.fullTime")}</span>
+                                                <span className="text-[10px] font-bold text-emerald-500 mt-1">{tr("candidate.new")}</span>
                                             </div>
                                         </div>
 
@@ -276,19 +278,19 @@ function JobPortalContent() {
                                         <div className="flex flex-wrap gap-4 text-slate-400 font-bold text-xs mb-8">
                                             <div className="flex items-center gap-2">
                                                 <MapPin className="w-4 h-4 text-slate-300" />
-                                                {job.location || "Remote"}
+                                                {job.location || tr("candidate.remote")}
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <Clock className="w-4 h-4 text-slate-300" />
-                                                {job.experience_min || 0}-{job.experience_max || 5} Yrs
+                                                {job.experience_min || 0}-{job.experience_max || 5} {tr("candidate.yrs")}
                                             </div>
                                         </div>
 
                                         <div className="flex items-center justify-between pt-6 border-t border-slate-50">
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] font-black text-slate-400 uppercase">Salary</span>
+                                                <span className="text-[10px] font-black text-slate-400 uppercase">{tr("candidate.salary")}</span>
                                                 <span className="text-sm font-black text-slate-900">
-                                                    {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : 'Competitive'}
+                                                    {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : tr("candidate.competitive")}
                                                 </span>
                                             </div>
                                             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
@@ -306,22 +308,22 @@ function JobPortalContent() {
                                             <div className="flex items-center gap-6 mt-2">
                                                 <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
                                                     <MapPin className="w-4 h-4 text-slate-300" />
-                                                    {job.location || "Remote"}
+                                                    {job.location || tr("candidate.remote")}
                                                 </div>
                                                 <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
                                                     <Building2 className="w-4 h-4 text-slate-300" />
-                                                    {job.job_type || "Full Time"}
+                                                    {job.job_type || tr("candidate.fullTime")}
                                                 </div>
                                                 <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
                                                     <DollarSign className="w-4 h-4 text-slate-300" />
-                                                    {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : 'Competitive'}
+                                                    {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : tr("candidate.competitive")}
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-4">
-                                            <span className="text-[10px] font-black text-slate-300 uppercase">Posted 2d ago</span>
+                                            <span className="text-[10px] font-black text-slate-300 uppercase">{tr("candidate.posted2dAgo")}</span>
                                             <button className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-xs group-hover:bg-indigo-600 transition-all">
-                                                Apply Now
+                                                {tr("candidate.applyNow")}
                                             </button>
                                         </div>
                                     </>
@@ -344,29 +346,29 @@ function JobPortalContent() {
                                 <span className="text-xl font-black text-slate-900 tracking-tight">{companyInfo?.name || "Croar"}</span>
                             </div>
                             <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                                Join the leading team in technology and innovation. We build solutions that matter.
+                                {tr("candidate.footerTagline")}
                             </p>
                         </div>
                         <div>
-                            <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">Teams</h4>
+                            <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">{tr("candidate.teams")}</h4>
                             <ul className="space-y-4">
-                                {['Engineering', 'Product', 'Design', 'Marketing'].map(t => (
+                                {[tr("candidate.engineering"), tr("candidate.product"), tr("candidate.design"), tr("candidate.marketing")].map(t => (
                                     <li key={t}><button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</button></li>
                                 ))}
                             </ul>
                         </div>
                         <div>
-                            <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">Company</h4>
+                            <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">{tr("candidate.company")}</h4>
                             <ul className="space-y-4">
-                                {['About Us', 'Culture', 'Benefits', 'FAQ'].map(t => (
+                                {[tr("candidate.aboutUs"), tr("candidate.culture"), tr("candidate.benefits"), tr("candidate.faq")].map(t => (
                                     <li key={t}><button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</button></li>
                                 ))}
                             </ul>
                         </div>
                         <div>
-                            <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">Resources</h4>
+                            <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6">{tr("candidate.resources")}</h4>
                             <ul className="space-y-4">
-                                {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'Contact'].map(t => (
+                                {[tr("candidate.privacyPolicy"), tr("candidate.termsOfService"), tr("candidate.cookiePolicy"), tr("candidate.contact")].map(t => (
                                     <li key={t}><button type="button" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">{t}</button></li>
                                 ))}
                             </ul>
@@ -374,7 +376,7 @@ function JobPortalContent() {
                     </div>
                     <div className="pt-8 border-t border-slate-50 flex flex-col md:flex-row items-center justify-between gap-6">
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                            © 2026 {companyInfo?.name || "Croar"}. All Rights Reserved.
+                            © 2026 {companyInfo?.name || "Croar"}. {tr("candidate.allRightsReserved")}
                         </p>
                         <div className="flex items-center gap-6">
                             <div className="flex items-center gap-2 text-xs font-black text-indigo-600">

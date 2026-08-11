@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import {
   payrollApi,
   estimateSalary,
@@ -92,6 +93,7 @@ const selectCls =
 
 export default function StructuresPage() {
   const { can } = useAuth();
+    const { t: tr } = useI18n();
   const { confirm, alert } = useDialog();
   const canEdit = can("payroll:configure");
   const [structures, setStructures] = useState<SalaryStructure[]>([]);
@@ -146,7 +148,7 @@ export default function StructuresPage() {
   const empOf = (eid: string) => employees.find((x) => x.id === eid);
   const empName = (eid: string) => {
     const e = empOf(eid);
-    return e ? `${e.first_name} ${e.last_name}`.trim() : `Employee ${eid.slice(0, 8)}`;
+    return e ? `${e.first_name} ${e.last_name}`.trim() : tr("payroll.employeeShort", { id: eid.slice(0, 8) });
   };
 
   // Instant local estimate (manual lines only) — shown immediately while the
@@ -273,7 +275,7 @@ export default function StructuresPage() {
     e.preventDefault();
     setFormErr(null);
     if (!employeeId) {
-      setFormErr("Select an employee.");
+      setFormErr(tr("payroll.selectAnEmployee"));
       return;
     }
     const body = {
@@ -310,9 +312,9 @@ export default function StructuresPage() {
 
   async function remove(id: string) {
     const ok = await confirm({
-      title: "Delete salary structure",
-      message: "Delete this salary structure? This cannot be undone.",
-      confirmLabel: "Delete",
+      title: tr("payroll.deleteStructureTitle"),
+      message: tr("payroll.deleteStructureConfirm"),
+      confirmLabel: tr("common.delete"),
       tone: "danger",
     });
     if (!ok) return;
@@ -345,13 +347,13 @@ export default function StructuresPage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Salary Structures"
-        subtitle="Define each employee's earnings, deductions & statutory setup."
-        help={<><p>Set each employee&apos;s salary breakdown.</p><p>Add a structure, apply a template and set the CTC; the live estimate shows take-home. Do this before running payroll.</p></>}
+        title={tr("payroll.salaryStructures")}
+        subtitle={tr("payroll.salaryStructuresSubtitle")}
+        help={<><p>{tr("payroll.structuresHelp1")}</p><p>{tr("payroll.structuresHelp2")}</p></>}
         actions={
           canEdit && (
             <Button size="sm" icon="add" onClick={openCreate}>
-              Add Structure
+              {tr("payroll.addStructure")}
             </Button>
           )
         }
@@ -363,28 +365,28 @@ export default function StructuresPage() {
       {!loading && structures.length > 0 && (
         <StatGrid>
           <StatCard
-            label="Structures"
+            label={tr("payroll.structuresLabel")}
             value={structures.length}
             icon="group"
             gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
             glow="rgba(91,83,224,0.25)"
           />
           <StatCard
-            label="EPF enabled"
+            label={tr("payroll.epfEnabled")}
             value={structures.filter((s) => s.pf_enabled).length}
             icon="savings"
             gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
             glow="rgba(14,138,110,0.25)"
           />
           <StatCard
-            label="ESI enabled"
+            label={tr("payroll.esiEnabled")}
             value={structures.filter((s) => s.esi_enabled).length}
             icon="health_and_safety"
             gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
             glow="rgba(53,89,199,0.25)"
           />
           <StatCard
-            label="TDS enabled"
+            label={tr("payroll.tdsEnabled")}
             value={structures.filter((s) => s.tds_enabled).length}
             icon="account_balance"
             gradient="linear-gradient(135deg,#FBBF24,#D97706)"
@@ -401,7 +403,7 @@ export default function StructuresPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by employee name or email…"
+            placeholder={tr("payroll.searchByEmployee")}
             className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
           />
         </div>
@@ -412,12 +414,12 @@ export default function StructuresPage() {
             onChange={(e) => setStatutoryFilter(e.target.value)}
             className={`${selectCls} w-full md:min-w-[170px]`}
           >
-            <option value="ALL">All structures</option>
-            <option value="EPF">EPF enabled</option>
-            <option value="ESI">ESI enabled</option>
-            <option value="PT">PT enabled</option>
-            <option value="TDS">TDS enabled</option>
-            <option value="NONE">No statutory</option>
+            <option value="ALL">{tr("payroll.allStructures")}</option>
+            <option value="EPF">{tr("payroll.epfEnabled")}</option>
+            <option value="ESI">{tr("payroll.esiEnabled")}</option>
+            <option value="PT">{tr("payroll.ptEnabled")}</option>
+            <option value="TDS">{tr("payroll.tdsEnabled")}</option>
+            <option value="NONE">{tr("payroll.noStatutory")}</option>
           </select>
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
         </div>
@@ -439,24 +441,24 @@ export default function StructuresPage() {
             {structures.length === 0 ? (
               <>
                 <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
-                  No salary structures yet
+                  {tr("payroll.noStructuresYet")}
                 </h3>
                 <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
-                  Create a structure to define an employee&apos;s earnings and statutory deductions.
+                  {tr("payroll.noStructuresYetDesc")}
                 </p>
                 {canEdit && (
                   <Button icon="add" onClick={openCreate}>
-                    Add your first structure
+                    {tr("payroll.addFirstStructure")}
                   </Button>
                 )}
               </>
             ) : (
               <>
                 <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
-                  No structures match your filters
+                  {tr("payroll.noStructuresMatch")}
                 </h3>
                 <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
-                  Try adjusting your search or statutory filter to find what you&apos;re looking for.
+                  {tr("payroll.noStructuresMatchDesc")}
                 </p>
                 <Button
                   onClick={() => {
@@ -464,7 +466,7 @@ export default function StructuresPage() {
                     setStatutoryFilter("ALL");
                   }}
                 >
-                  Clear all filters
+                  {tr("payroll.clearAllFilters")}
                 </Button>
               </>
             )}
@@ -475,12 +477,12 @@ export default function StructuresPage() {
             <div
               className={`hidden md:grid ${canEdit ? "grid-cols-[2.4fr_1.2fr_1.4fr_1fr_120px]" : "grid-cols-[2.4fr_1.2fr_1.4fr_1fr]"} gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]`}
             >
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">CTC (annual)</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Statutory</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Effective</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.ctcAnnual")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.statutory")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.effective")}</span>
               {canEdit && (
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
               )}
             </div>
 
@@ -528,7 +530,7 @@ export default function StructuresPage() {
                       {s.esi_enabled && <Badge tone="indigo">ESI</Badge>}
                       {s.pt_enabled && <Badge tone="indigo">PT</Badge>}
                       {s.tds_enabled && <Badge tone="indigo">TDS</Badge>}
-                      {!hasStatutory && <Badge tone="neutral">None</Badge>}
+                      {!hasStatutory && <Badge tone="neutral">{tr("payroll.none")}</Badge>}
                     </div>
 
                     {/* Effective (desktop) */}
@@ -545,19 +547,19 @@ export default function StructuresPage() {
                           {s.esi_enabled && <Badge tone="indigo">ESI</Badge>}
                           {s.pt_enabled && <Badge tone="indigo">PT</Badge>}
                           {s.tds_enabled && <Badge tone="indigo">TDS</Badge>}
-                          {!hasStatutory && <Badge tone="neutral">None</Badge>}
+                          {!hasStatutory && <Badge tone="neutral">{tr("payroll.none")}</Badge>}
                         </div>
                         <button
                           onClick={() => openEdit(s)}
                           className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
-                          title="Edit structure"
+                          title={tr("payroll.editStructure")}
                         >
                           <span className="material-symbols-rounded text-[18px]">edit</span>
                         </button>
                         <button
                           onClick={() => remove(s.id)}
                           className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
-                          title="Delete structure"
+                          title={tr("payroll.deleteStructure")}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -573,7 +575,7 @@ export default function StructuresPage() {
 
       {open && (
         <Modal
-          title={editingId ? "Edit Salary Structure" : "New Salary Structure"}
+          title={editingId ? tr("payroll.editSalaryStructure") : tr("payroll.newSalaryStructure")}
           onClose={() => setOpen(false)}
           width="max-w-[1600px]"
         >
@@ -584,13 +586,13 @@ export default function StructuresPage() {
               {/* Left column — the editable structure */}
               <div className="flex min-w-0 flex-col gap-5">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <Field label="Employee">
+                  <Field label={tr("payroll.employee")}>
                     <Select
                       value={employeeId}
                       disabled={!!editingId}
                       onChange={(e) => setEmployeeId(e.target.value)}
                     >
-                      {employees.length === 0 && <option value="">No employees — add one first</option>}
+                      {employees.length === 0 && <option value="">{tr("payroll.noEmployeesAddFirst")}</option>}
                       {employees.map((e) => (
                         <option key={e.id} value={e.id}>
                           {e.first_name} {e.last_name}
@@ -598,7 +600,7 @@ export default function StructuresPage() {
                       ))}
                     </Select>
                   </Field>
-                  <Field label="Annual CTC">
+                  <Field label={tr("payroll.annualCtc")}>
                     <Input
                       type="number"
                       className={jetbrainsMono.className}
@@ -607,23 +609,23 @@ export default function StructuresPage() {
                       required
                     />
                   </Field>
-                  <Field label="Currency">
+                  <Field label={tr("payroll.currency")}>
                     <Input value={currency} onChange={(e) => setCurrency(e.target.value)} />
                   </Field>
-                  <Field label="Pay Frequency">
+                  <Field label={tr("payroll.payFrequency")}>
                     <Select value={payFrequency} onChange={(e) => setPayFrequency(e.target.value as PayFrequency)}>
                       <option value="MONTHLY">MONTHLY</option>
                       <option value="WEEKLY">WEEKLY</option>
                       <option value="HOURLY">HOURLY</option>
                     </Select>
                   </Field>
-                  <Field label="Effective From">
+                  <Field label={tr("payroll.effectiveFrom")}>
                     <Input type="date" value={effectiveFrom} onChange={(e) => setEffectiveFrom(e.target.value)} required />
                   </Field>
                   {payFrequency === "HOURLY" && (
                     <Field
-                      label="Hourly Rate"
-                      hint="Gross = approved timesheet hours × rate. Earnings below are ignored for hourly staff."
+                      label={tr("payroll.hourlyRate")}
+                      hint={tr("payroll.hourlyRateHint")}
                     >
                       <Input
                         type="number"
@@ -632,28 +634,28 @@ export default function StructuresPage() {
                         className={jetbrainsMono.className}
                         value={hourlyRate}
                         onChange={(e) => setHourlyRate(e.target.value)}
-                        placeholder="e.g. 500"
+                        placeholder={tr("payroll.hourlyRateExample")}
                       />
                     </Field>
                   )}
                 </div>
 
                 <LineSection
-                  title="Earnings"
+                  title={tr("payroll.earnings")}
                   rows={earnings}
                   setRows={setEarnings}
                   refCodesFor={earningRefCodesFor}
                 />
                 <LineSection
-                  title="Deductions"
+                  title={tr("payroll.deductions")}
                   rows={deductions}
                   setRows={setDeductions}
                   refCodesFor={deductionRefCodesFor}
                   footer={
                     <Field
-                      label="Loss of Pay (LOP days)"
+                      label={tr("payroll.lossOfPay")}
                       className="border-t border-[#E8EAED] pt-3"
-                      hint="Unpaid days for this employee. Earnings are pro-rated over 30 days when payroll runs."
+                      hint={tr("payroll.lossOfPayHint")}
                     >
                       <Input
                         type="number"
@@ -671,57 +673,54 @@ export default function StructuresPage() {
                 <Card padding="sm" className="bg-[#FAFBFC]">
                   <div className="mb-3 flex items-center gap-2">
                     <ShieldCheck className="w-[18px] h-[18px] text-[#5B53E0]" />
-                    <span className="text-[14px] font-bold text-[#15171C]">Statutory Compliance</span>
-                    <span className="ml-auto text-[11.5px] text-[#8A929E]">auto-computed when on</span>
+                    <span className="text-[14px] font-bold text-[#15171C]">{tr("payroll.statutoryCompliance")}</span>
+                    <span className="ml-auto text-[11.5px] text-[#8A929E]">{tr("payroll.autoComputedWhenOn")}</span>
                   </div>
                   <div className="flex flex-col gap-2">
                     <ToggleRow
                       Icon={PiggyBank}
-                      title="Provident Fund (EPF)"
-                      desc="12% employee + employer contribution."
+                      title={tr("payroll.providentFund")}
+                      desc={tr("payroll.pfDescStructures")}
                       checked={pfEnabled}
                       onChange={setPfEnabled}
                     >
                       {pfEnabled && (
                         <label className="mt-2 flex items-center gap-2 text-[12px] text-[#8A929E]">
                           <input type="checkbox" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
-                          <span>Cap PF wage at the ₹15,000 statutory ceiling</span>
+                          <span>{tr("payroll.capPfWageStatutory")}</span>
                         </label>
                       )}
                     </ToggleRow>
                     <ToggleRow
                       Icon={HeartPulse}
-                      title="ESI"
-                      desc="0.75% employee + 3.25% employer (gross ≤ ₹21,000)."
+                      title={tr("payroll.esi")}
+                      desc={tr("payroll.esiDescStructures")}
                       checked={esiEnabled}
                       onChange={setEsiEnabled}
                     />
                     <ToggleRow
                       Icon={Wallet}
-                      title="Professional Tax"
-                      desc="Computed by the employee's state slab."
+                      title={tr("payroll.professionalTax")}
+                      desc={tr("payroll.ptDescStructures")}
                       checked={ptEnabled}
                       onChange={setPtEnabled}
                     />
                     <ToggleRow
                       Icon={Landmark}
-                      title="Income Tax (TDS)"
-                      desc="Estimated from the employee's IT declaration."
+                      title={tr("payroll.incomeTaxTds")}
+                      desc={tr("payroll.tdsDescStructures")}
                       checked={tdsEnabled}
                       onChange={setTdsEnabled}
                     >
                       {tdsEnabled && (
                         <p className="mt-2 text-[12px] text-[#8A929E]">
-                          Set the employee&apos;s regime &amp; declarations under Taxes &amp; Forms. TDS is an
-                          estimate, not filing-grade.
+                          {tr("payroll.tdsRegimeNote")}
                         </p>
                       )}
                     </ToggleRow>
                   </div>
                   <p className="mt-3 text-[12px] text-[#8A929E]">
-                    Statutory amounts are calculated automatically and shown as locked lines on the
-                    payslip — don&apos;t also add them as manual deduction lines above. The live
-                    estimate alongside already includes them.
+                    {tr("payroll.statutoryAmountsNote")}
                   </p>
                 </Card>
               </div>
@@ -732,22 +731,22 @@ export default function StructuresPage() {
                   <div className="flex items-center justify-between border-b border-[#E8EAED] px-4 py-2.5">
                     <span className="flex items-center gap-2 text-[13.5px] font-bold text-[#15171C]">
                       <Calculator className="w-[16px] h-[16px] text-[#5B53E0]" />
-                      Estimated Monthly Salary
-                      {previewing && <span className="text-[11.5px] font-normal text-[#8A929E]">updating…</span>}
+                      {tr("payroll.estimatedMonthlySalary")}
+                      {previewing && <span className="text-[11.5px] font-normal text-[#8A929E]">{tr("payroll.updating")}</span>}
                     </span>
                     <span className="text-[11.5px] text-[#8A929E]">
-                      {Number(lopDays) > 0 ? `after ${Number(lopDays)} LOP day(s) · 30-day basis` : "full month · no LOP"}
+                      {Number(lopDays) > 0 ? tr("payroll.afterLopDays", { count: Number(lopDays) }) : tr("payroll.fullMonthNoLop")}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-4 p-4">
-                    <Stat label="Gross" value={inr(gross, currency)} />
-                    <Stat label="Deductions" value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C0383C]" />
-                    <Stat label="Net Pay" value={inr(net, currency)} tone="text-[#0E8A6E]" big />
+                    <Stat label={tr("payroll.gross")} value={inr(gross, currency)} />
+                    <Stat label={tr("payroll.deductions")} value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C0383C]" />
+                    <Stat label={tr("payroll.netPay")} value={inr(net, currency)} tone="text-[#0E8A6E]" big />
                   </div>
                   {deductionLines.length > 0 && (
                     <div className="border-t border-[#E8EAED] px-4 py-3">
                       <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
-                        Deduction breakdown
+                        {tr("payroll.deductionBreakdown")}
                       </div>
                       <div className="flex flex-col gap-1">
                         {deductionLines.map((l) => (
@@ -763,8 +762,7 @@ export default function StructuresPage() {
                   )}
                   {!preview && !previewing && (
                     <p className="px-4 pb-3 text-[12px] text-[#8A929E]">
-                      Showing a local estimate (manual lines only) — statutory figures appear once
-                      the live preview loads.
+                      {tr("payroll.localEstimateNote")}
                     </p>
                   )}
                 </div>
@@ -773,10 +771,10 @@ export default function StructuresPage() {
 
             <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
               <Button type="button" variant="secondary" onClick={() => setOpen(false)} className="px-8">
-                Cancel
+                {tr("common.cancel")}
               </Button>
               <Button type="submit" disabled={saving} className="px-8">
-                {saving ? "Saving…" : editingId ? "Update Structure" : "Save Structure"}
+                {saving ? tr("payroll.saving") : editingId ? tr("payroll.updateStructure") : tr("payroll.saveStructure")}
               </Button>
             </div>
           </form>
@@ -872,6 +870,7 @@ function LineSection({
   refCodesFor: (rowIndex: number, rowCode: string) => string[];
   footer?: React.ReactNode;
 }) {
+  const { t: tr } = useI18n();
   const update = (i: number, patch: Partial<LineDraft>) =>
     setRows(rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   return (
@@ -883,22 +882,22 @@ function LineSection({
           onClick={() => setRows([...rows, emptyLine()])}
           className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#E1E4E8] bg-white px-2.5 py-1 text-[12px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors"
         >
-          <Plus className="w-3.5 h-3.5" /> Add line
+          <Plus className="w-3.5 h-3.5" /> {tr("payroll.addLine")}
         </button>
       </div>
       <div className="flex flex-col gap-2">
-        {rows.length === 0 && <p className="text-[12px] text-[#8A929E]">No lines.</p>}
+        {rows.length === 0 && <p className="text-[12px] text-[#8A929E]">{tr("payroll.noLines")}</p>}
         {rows.map((r, i) => (
           <div key={i} className="grid grid-cols-12 items-center gap-2">
             <Input
               className="col-span-2 h-10 text-[13px]"
-              placeholder="CODE"
+              placeholder={tr("payroll.codePlaceholder")}
               value={r.code}
               onChange={(e) => update(i, { code: e.target.value.toUpperCase() })}
             />
             <Input
               className="col-span-3 h-10 text-[13px]"
-              placeholder="Label"
+              placeholder={tr("payroll.label")}
               value={r.label}
               onChange={(e) => update(i, { label: e.target.value })}
             />
@@ -907,21 +906,21 @@ function LineSection({
               value={r.type}
               onChange={(e) => update(i, { type: e.target.value as LineDraft["type"] })}
             >
-              <option value="fixed">Fixed</option>
-              <option value="percent">Percent</option>
-              <option value="balance">Balance (CTC)</option>
+              <option value="fixed">{tr("payroll.lineFixed")}</option>
+              <option value="percent">{tr("payroll.linePercent")}</option>
+              <option value="balance">{tr("payroll.lineBalanceCtc")}</option>
             </Select>
             {r.type === "fixed" ? (
               <Input
                 className={`col-span-4 h-10 text-[13px] ${jetbrainsMono.className}`}
                 type="number"
-                placeholder="Amount"
+                placeholder={tr("payroll.amount")}
                 value={r.amount}
                 onChange={(e) => update(i, { amount: e.target.value })}
               />
             ) : r.type === "balance" ? (
               <span className="col-span-4 self-center text-[12px] text-[#8A929E]">
-                Absorbs the remaining CTC after the other earnings.
+                {tr("payroll.absorbsRemainingAfter")}
               </span>
             ) : (
               <>
@@ -937,11 +936,11 @@ function LineSection({
                   value={r.percent_of}
                   onChange={(e) => update(i, { percent_of: e.target.value })}
                 >
-                  <option value="">of gross</option>
-                  <option value="CTC">of CTC</option>
+                  <option value="">{tr("payroll.ofGross")}</option>
+                  <option value="CTC">{tr("payroll.ofCtc")}</option>
                   {refCodesFor(i, r.code).map((c) => (
                     <option key={c} value={c}>
-                      of {c}
+                      {tr("payroll.ofCode", { code: c })}
                     </option>
                   ))}
                 </Select>
@@ -951,7 +950,7 @@ function LineSection({
               type="button"
               onClick={() => setRows(rows.filter((_, idx) => idx !== i))}
               className="col-span-1 flex justify-center text-[#9AA3AF] hover:text-[#C0383C] transition-colors"
-              title="Remove line"
+              title={tr("payroll.removeLine")}
             >
               <Trash2 className="w-[18px] h-[18px]" />
             </button>

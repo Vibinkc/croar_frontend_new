@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import {
     ArrowLeft,
@@ -28,6 +29,7 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
     const { category: categorySlug } = use(params);
     const category = categorySlug.toUpperCase().replaceAll('-', '_');
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [questions, setQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
@@ -90,7 +92,7 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                     <button
                         onClick={() => router.push('/enterprise/assessments-360/questions')}
                         className="w-9 h-9 shrink-0 flex items-center justify-center rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] transition-colors shadow-sm"
-                        aria-label="Back to categories"
+                        aria-label={tr("assess360.backToCategories")}
                     >
                         <ArrowLeft className="w-4 h-4" />
                     </button>
@@ -99,15 +101,15 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                             <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight capitalize truncate">
                                 {categoryLabel.toLowerCase()}
                             </h1>
-                            <PageHelp title="Competency Questions">Add or edit the questions in this competency. They become available when building frameworks.</PageHelp>
+                            <PageHelp title={tr("assess360.competencyQuestions")}>{tr("assess360.competencyQuestionsHelp")}</PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Dedicated competency view &middot; manage evaluation questions</p>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.dedicatedCompetencyView")}</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
                     <Badge tone="neutral">
-                        <span className={jetbrainsMono.className}>{questions.length}</span> items
+                        <span className={jetbrainsMono.className}>{questions.length}</span> {tr("assess360.itemsSuffix")}
                     </Badge>
                 </div>
             </header>
@@ -121,39 +123,39 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                                 <Plus className="w-[18px] h-[18px]" />
                             </span>
                             <div>
-                                <h2 className="text-[15px] font-bold text-[#15171C]">Add Question</h2>
-                                <p className="text-[12.5px] text-[#8A929E] mt-0.5">Define a new competency metric</p>
+                                <h2 className="text-[15px] font-bold text-[#15171C]">{tr("assess360.addQuestion")}</h2>
+                                <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.defineMetric")}</p>
                             </div>
                         </div>
 
                         <form onSubmit={handleAdd} className="space-y-4">
-                            <Field label="Evaluation metric" htmlFor="category-eval-metric">
+                            <Field label={tr("assess360.evaluationMetric")} htmlFor="category-eval-metric">
                                 <Textarea
                                     id="category-eval-metric"
                                     className="min-h-[150px] leading-relaxed"
                                     value={newQuestion.text}
                                     onChange={(e) => setNewQuestion({ ...newQuestion, text: e.target.value })}
                                     required
-                                    placeholder={`e.g. How effectively does the person demonstrate ${category.toLowerCase().replaceAll('_', ' ')}...`}
+                                    placeholder={`${tr("assess360.evalMetricPlaceholderPre")} ${category.toLowerCase().replaceAll('_', ' ')}...`}
                                 />
                             </Field>
 
-                            <Field label="Metric type" htmlFor="category-metric-type">
+                            <Field label={tr("assess360.metricType")} htmlFor="category-metric-type">
                                 <div className="relative">
                                     <Select
                                         id="category-metric-type"
                                         value={newQuestion.type}
                                         onChange={(e) => setNewQuestion({ ...newQuestion, type: e.target.value })}
                                     >
-                                        <option value="RATING">Rating interface (1-5)</option>
-                                        <option value="TEXT">Exploratory text only</option>
+                                        <option value="RATING">{tr("assess360.ratingInterface")}</option>
+                                        <option value="TEXT">{tr("assess360.exploratoryText")}</option>
                                     </Select>
                                     <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[19px] pointer-events-none">expand_more</span>
                                 </div>
                             </Field>
 
                             <Button type="submit" icon="add" fullWidth>
-                                Add Question
+                                {tr("assess360.addQuestion")}
                             </Button>
                         </form>
                     </Card>
@@ -164,14 +166,14 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                     <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
                         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#E8EAED] bg-[#F7F8FA]">
                             <div className="min-w-0">
-                                <h2 className="text-[15px] font-bold text-[#15171C]">Competency inventory</h2>
-                                <p className="text-[12.5px] text-[#8A929E] mt-0.5 capitalize">Repository for {categoryLabel.toLowerCase()}</p>
+                                <h2 className="text-[15px] font-bold text-[#15171C]">{tr("assess360.competencyInventory")}</h2>
+                                <p className="text-[12.5px] text-[#8A929E] mt-0.5 capitalize">{tr("assess360.repositoryFor")} {categoryLabel.toLowerCase()}</p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
-                                <button className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-white border border-[#E1E4E8] text-[#9AA3AF] hover:text-[#5B53E0] hover:bg-[#F4F5F7] transition-colors" aria-label="Search">
+                                <button className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-white border border-[#E1E4E8] text-[#9AA3AF] hover:text-[#5B53E0] hover:bg-[#F4F5F7] transition-colors" aria-label={tr("common.search")}>
                                     <Search className="w-4 h-4" />
                                 </button>
-                                <button className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-white border border-[#E1E4E8] text-[#9AA3AF] hover:text-[#5B53E0] hover:bg-[#F4F5F7] transition-colors" aria-label="Filter">
+                                <button className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-white border border-[#E1E4E8] text-[#9AA3AF] hover:text-[#5B53E0] hover:bg-[#F4F5F7] transition-colors" aria-label={tr("assess360.filter")}>
                                     <Filter className="w-4 h-4" />
                                 </button>
                             </div>
@@ -188,16 +190,16 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                                 <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
                                     <FolderOpen className="w-8 h-8 text-[#C7CCD4]" />
                                 </div>
-                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No questions yet</h3>
-                                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">Add manual entries with the form, or use the AI Generator on the main questions page.</p>
+                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("assess360.noQuestionsYet")}</h3>
+                                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">{tr("assess360.noQuestionsHint")}</p>
                             </div>
                         ) : (
                             <>
                                 {/* Column header (desktop) */}
                                 <div className="hidden md:grid grid-cols-[2.6fr_0.9fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Question</span>
-                                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Metric</span>
-                                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("assess360.question")}</span>
+                                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("assess360.metric")}</span>
+                                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("assess360.actions")}</span>
                                 </div>
 
                                 <div className="divide-y divide-[#F0F0F1]">
@@ -227,10 +229,10 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
 
                                             {/* Actions */}
                                             <div className="flex items-center gap-1 justify-end">
-                                                <button className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors md:opacity-0 md:group-hover:opacity-100" title="Edit">
+                                                <button className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors md:opacity-0 md:group-hover:opacity-100" title={tr("common.edit")}>
                                                     <FileEdit className="w-4 h-4" />
                                                 </button>
-                                                <button className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors md:opacity-0 md:group-hover:opacity-100" title="Delete">
+                                                <button className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors md:opacity-0 md:group-hover:opacity-100" title={tr("common.delete")}>
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>

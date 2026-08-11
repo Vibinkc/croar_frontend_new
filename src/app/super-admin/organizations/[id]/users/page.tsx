@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/api";
 import { useRouter, useParams } from "next/navigation";
 import { PageHeader, Card, Field, Input, Select, Button, Badge, EmptyState, type BadgeProps } from "@/components/ds";
+import { useI18n } from "@/context/I18nContext";
 
 interface User {
     id: number;
@@ -21,6 +22,7 @@ export default function OrganizationUserManagement() {
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const { t } = useI18n();
 
     const [newUser, setNewUser] = useState({
         first_name: "",
@@ -58,7 +60,7 @@ export default function OrganizationUserManagement() {
                 setNewUser({ first_name: "", last_name: "", email: "", password: "", role: "MEMBER" });
             } else {
                 const err = await res.json().catch(() => ({}));
-                alert(err.detail || "Failed to create user");
+                alert(err.detail || t("superAdmin.failedCreateUser"));
             }
         } catch (e) {
             console.error(e);
@@ -66,7 +68,7 @@ export default function OrganizationUserManagement() {
     };
 
     const handleDelete = async (userId: number) => {
-        if (!confirm("Remove this user? Their access is revoked immediately.")) return;
+        if (!confirm(t("superAdmin.removeUserConfirm"))) return;
         try {
             const res = await apiClient.delete(`/api/v1/super-admin/tenants/${id}/users/${userId}`);
             if (res.ok) {
@@ -92,18 +94,18 @@ export default function OrganizationUserManagement() {
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             <PageHeader
-                title="Organization Users"
-                subtitle="Everyone with an account in this organization"
+                title={t("superAdmin.orgUsersTitle")}
+                subtitle={t("superAdmin.orgUsersSubtitle")}
                 onBack={() => router.push("/super-admin/organizations")}
                 help={
                     <>
-                        <p>The users within this organization.</p>
-                        <p>Search and manage their accounts.</p>
+                        <p>{t("superAdmin.orgUsersHelp1")}</p>
+                        <p>{t("superAdmin.orgUsersHelp2")}</p>
                     </>
                 }
                 actions={
                     <Button icon="person_add" onClick={() => setShowModal(true)}>
-                        Add User
+                        {t("superAdmin.addUser")}
                     </Button>
                 }
             />
@@ -111,7 +113,7 @@ export default function OrganizationUserManagement() {
             <Input
                 icon="search"
                 type="text"
-                placeholder="Search users by name or email…"
+                placeholder={t("superAdmin.searchUsersPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -128,11 +130,11 @@ export default function OrganizationUserManagement() {
                         <EmptyState
                             tone="brand"
                             icon="group"
-                            title="No users yet"
-                            description="Add the first user to this organization to give them access."
+                            title={t("superAdmin.noUsersYet")}
+                            description={t("superAdmin.addFirstUserDesc")}
                             action={
                                 <Button icon="person_add" onClick={() => setShowModal(true)}>
-                                    Add User
+                                    {t("superAdmin.addUser")}
                                 </Button>
                             }
                         />
@@ -140,11 +142,11 @@ export default function OrganizationUserManagement() {
                         <EmptyState
                             tone="muted"
                             icon="search_off"
-                            title="No users match your search"
-                            description="Try a different name or email."
+                            title={t("superAdmin.noUsersMatchSearch")}
+                            description={t("superAdmin.tryDiffNameEmail")}
                             action={
                                 <Button variant="secondary" onClick={() => setSearchQuery("")}>
-                                    Clear search
+                                    {t("superAdmin.clearSearch")}
                                 </Button>
                             }
                         />
@@ -152,10 +154,10 @@ export default function OrganizationUserManagement() {
                 ) : (
                     <>
                         <div className="hidden md:grid grid-cols-[2.4fr_2fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Name</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Email</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Role</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.name")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.email")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.role")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{t("superAdmin.actions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -191,7 +193,7 @@ export default function OrganizationUserManagement() {
                                         <button
                                             onClick={() => handleDelete(u.id)}
                                             className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
-                                            title="Remove user"
+                                            title={t("superAdmin.removeUser")}
                                         >
                                             <span className="material-icons-outlined text-[18px]">delete</span>
                                         </button>
@@ -211,7 +213,7 @@ export default function OrganizationUserManagement() {
                                 <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
                                     <span className="material-icons-outlined text-[18px]">person_add</span>
                                 </span>
-                                <h3 className="text-[15px] font-bold text-[#15171C]">Create User</h3>
+                                <h3 className="text-[15px] font-bold text-[#15171C]">{t("superAdmin.createUser")}</h3>
                             </div>
                             <button
                                 onClick={() => setShowModal(false)}
@@ -223,29 +225,29 @@ export default function OrganizationUserManagement() {
 
                         <form onSubmit={handleCreateUser} className="space-y-4">
                             <div className="grid grid-cols-2 gap-3">
-                                <Field label="First Name" htmlFor="user-first-name">
+                                <Field label={t("superAdmin.firstName")} htmlFor="user-first-name">
                                     <Input id="user-first-name" placeholder="John" value={newUser.first_name} onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })} required />
                                 </Field>
-                                <Field label="Last Name" htmlFor="user-last-name">
+                                <Field label={t("superAdmin.lastName")} htmlFor="user-last-name">
                                     <Input id="user-last-name" placeholder="Doe" value={newUser.last_name} onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })} required />
                                 </Field>
                             </div>
-                            <Field label="Email" htmlFor="user-email">
+                            <Field label={t("superAdmin.email")} htmlFor="user-email">
                                 <Input id="user-email" icon="mail" type="email" placeholder="john@example.com" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} required />
                             </Field>
-                            <Field label="Password" htmlFor="user-password">
+                            <Field label={t("superAdmin.password")} htmlFor="user-password">
                                 <Input id="user-password" icon="lock" type="password" placeholder="••••••••" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} required />
                             </Field>
-                            <Field label="Role" htmlFor="user-role">
+                            <Field label={t("superAdmin.role")} htmlFor="user-role">
                                 <Select id="user-role" value={newUser.role} onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}>
-                                    <option value="MEMBER">Member</option>
-                                    <option value="ADMIN">Admin</option>
-                                    <option value="MANAGER">Manager</option>
+                                    <option value="MEMBER">{t("superAdmin.roleMember")}</option>
+                                    <option value="ADMIN">{t("superAdmin.roleAdmin")}</option>
+                                    <option value="MANAGER">{t("superAdmin.roleManager")}</option>
                                 </Select>
                             </Field>
                             <div className="flex gap-3 pt-2">
-                                <Button type="button" variant="secondary" fullWidth onClick={() => setShowModal(false)}>Cancel</Button>
-                                <Button type="submit" fullWidth>Create</Button>
+                                <Button type="button" variant="secondary" fullWidth onClick={() => setShowModal(false)}>{t("superAdmin.cancel")}</Button>
+                                <Button type="submit" fullWidth>{t("superAdmin.create")}</Button>
                             </div>
                         </form>
                     </Card>

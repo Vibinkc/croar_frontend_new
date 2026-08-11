@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useI18n } from "@/context/I18nContext";
 
 interface Member {
     id: string;
@@ -28,6 +29,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, canModerate, canDelete, onDelete }: ProjectCardProps) {
+    const { t: tr } = useI18n();
     return (
         <motion.div
             layout
@@ -70,7 +72,7 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                 </div>
 
                 <p className="text-[10px] font-bold text-slate-500 leading-snug  tracking-tight line-clamp-2 h-8 opacity-70">
-                    {project.description || "Operational parameters not specified."}
+                    {project.description || tr("sharedUi.noParamsSpecified")}
                 </p>
 
                 <div className="flex items-center justify-between pt-3 border-t border-slate-50">
@@ -89,8 +91,8 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                         )}
                     </div>
                     <div className="text-right">
-                        <p className="text-[7px] font-black text-slate-300   leading-none mb-1">Ends</p>
-                        <p className="text-[9px] font-black text-slate-800 leading-none tabular-nums ">{project.end_date ? new Date(project.end_date).toLocaleDateString() : 'TBD'}</p>
+                        <p className="text-[7px] font-black text-slate-300   leading-none mb-1">{tr("sharedUi.ends")}</p>
+                        <p className="text-[9px] font-black text-slate-800 leading-none tabular-nums ">{project.end_date ? new Date(project.end_date).toLocaleDateString() : tr("sharedUi.tbd")}</p>
                     </div>
                 </div>
             </div>
@@ -98,7 +100,7 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
             <div className="px-4 py-2.5 bg-slate-50/50 flex items-center justify-between border-t border-slate-50">
                 <div className="flex items-center gap-1 opacity-40">
                     <span className="material-symbols-rounded text-xs">schedule</span>
-                    <span className="text-[8px] font-black   truncate">{project.start_date ? new Date(project.start_date).toLocaleDateString() : 'TBD'}</span>
+                    <span className="text-[8px] font-black   truncate">{project.start_date ? new Date(project.start_date).toLocaleDateString() : tr("sharedUi.tbd")}</span>
                 </div>
                 <span className="text-[9px] font-black text-[#7C3AED]   opacity-80 group-hover:opacity-100 group-hover:tracking-[0.2em] transition-all">Mission_Data</span>
             </div>

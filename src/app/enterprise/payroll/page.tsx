@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import {
   payrollApi,
@@ -37,6 +38,7 @@ const CYCLE_TONE: Record<string, "neutral" | "info" | "success" | "indigo" | "da
 
 export default function PayrollHome() {
   const { can } = useAuth();
+    const { t: tr } = useI18n();
   const { confirm, alert } = useDialog();
   const [cycles, setCycles] = useState<PayrollCycle[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -131,9 +133,9 @@ export default function PayrollHome() {
 
   async function remove(id: string) {
     const ok = await confirm({
-      title: "Delete draft cycle",
-      message: "Delete this draft cycle? This cannot be undone.",
-      confirmLabel: "Delete",
+      title: tr("payroll.deleteDraftCycleTitle"),
+      message: tr("payroll.deleteDraftCycleMsg"),
+      confirmLabel: tr("common.delete"),
       tone: "danger",
     });
     if (!ok) return;
@@ -151,16 +153,16 @@ export default function PayrollHome() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Payroll"
-        subtitle="Run monthly payroll cycles and review payslips."
+        title={tr("payroll.payrollTitle")}
+        subtitle={tr("payroll.payrollSubtitle")}
         help={<>
-          <p>Create and process pay cycles.</p>
-          <p>Start a <strong>New Cycle</strong> for a period, process it to generate payslips from each employee&apos;s salary structure, then mark it paid.</p>
+          <p>{tr("payroll.createProcess")}</p>
+          <p>{tr("payroll.startA")} <strong>{tr("payroll.newCycle")}</strong> {tr("payroll.startB")}</p>
         </>}
         actions={
           can("payroll:configure") && (
             <Button size="sm" icon="add" onClick={openModal}>
-              New Cycle
+              {tr("payroll.newCycle")}
             </Button>
           )
         }
@@ -171,14 +173,14 @@ export default function PayrollHome() {
       {/* Stat cards */}
       <StatGrid>
         <StatCard
-          label="Total Employees"
+          label={tr("payroll.statTotalEmployees")}
           value={loading ? "…" : employees.length}
           icon="group"
           gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
           glow="rgba(91,83,224,0.28)"
         />
         <StatCard
-          label="Salary Configured"
+          label={tr("payroll.statSalaryConfigured")}
           value={loading ? "…" : configuredIds.size}
           icon="task_alt"
           gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
@@ -186,7 +188,7 @@ export default function PayrollHome() {
         />
         <Link href="/enterprise/payroll/structures" className="block">
           <StatCard
-            label={missing > 0 ? "Missing Setup — configure" : "Missing Setup"}
+            label={missing > 0 ? tr("payroll.missingSetupConfigure") : tr("payroll.missingSetup")}
             value={loading ? "…" : missing}
             icon="warning"
             gradient="linear-gradient(135deg,#F6B65C,#D97706)"
@@ -194,7 +196,7 @@ export default function PayrollHome() {
           />
         </Link>
         <StatCard
-          label={current ? `Current Net (${current.name})` : "Current Net"}
+          label={current ? tr("payroll.currentNetNamed", { name: current.name }) : tr("payroll.currentNet")}
           value={loading ? "…" : inr(current?.totals?.net ?? 0)}
           icon="payments"
           gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
@@ -210,7 +212,7 @@ export default function PayrollHome() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search cycles by name or period…"
+            placeholder={tr("payroll.searchCyclesPlaceholder")}
             className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
           />
         </div>
@@ -223,12 +225,12 @@ export default function PayrollHome() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className={`${selectCls} w-full md:min-w-[170px]`}
             >
-              <option value="ALL">All statuses</option>
-              <option value="DRAFT">Draft</option>
-              <option value="PROCESSING">Processing</option>
-              <option value="APPROVED">Approved</option>
-              <option value="PAID">Paid</option>
-              <option value="CANCELLED">Cancelled</option>
+              <option value="ALL">{tr("payroll.allStatuses")}</option>
+              <option value="DRAFT">{tr("payroll.draft")}</option>
+              <option value="PROCESSING">{tr("payroll.processing")}</option>
+              <option value="APPROVED">{tr("payroll.approved")}</option>
+              <option value="PAID">{tr("payroll.paid")}</option>
+              <option value="CANCELLED">{tr("payroll.cancelled")}</option>
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
           </div>
@@ -250,18 +252,18 @@ export default function PayrollHome() {
             </div>
             {cycles.length === 0 ? (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No payroll cycles yet</h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Create your first cycle to start running monthly payroll.</p>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noCyclesYet")}</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.createFirstCycle")}</p>
                 {can("payroll:configure") && (
                   <Button icon="add" onClick={openModal}>
-                    New Cycle
+                    {tr("payroll.newCycle")}
                   </Button>
                 )}
               </>
             ) : (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No cycles match your filters</h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">Try adjusting your search or status filter.</p>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noCyclesMatch")}</h3>
+                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.tryAdjusting")}</p>
                 <Button
                   variant="secondary"
                   size="sm"
@@ -270,7 +272,7 @@ export default function PayrollHome() {
                     setStatusFilter("ALL");
                   }}
                 >
-                  Clear filters
+                  {tr("payroll.clearFilters")}
                 </Button>
               </>
             )}
@@ -279,12 +281,12 @@ export default function PayrollHome() {
           <>
             {/* Column header (desktop) */}
             <div className="hidden md:grid grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr_150px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Cycle</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Period</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Headcount</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Net Pay</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.cycle")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.period")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.status")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.headcount")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.netPay")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
             </div>
 
             <div className="divide-y divide-[#F0F0F1]">
@@ -343,14 +345,14 @@ export default function PayrollHome() {
                         onClick={() => remove(c.id)}
                         className="h-8 px-3 rounded-[9px] text-[12px] font-semibold text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
                       >
-                        Delete
+                        {tr("payroll.delete")}
                       </button>
                     )}
                     <Link
                       href={`/enterprise/payroll/${c.id}`}
                       className="inline-flex items-center h-8 px-3 rounded-[9px] bg-[#5B53E0] text-white text-[12px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
                     >
-                      Manage
+                      {tr("payroll.manage")}
                     </Link>
                   </div>
                 </div>
@@ -361,9 +363,9 @@ export default function PayrollHome() {
       </div>
 
       {showModal && (
-        <Modal title="Create Payroll Cycle" onClose={() => setShowModal(false)}>
+        <Modal title={tr("payroll.createCycleModalTitle")} onClose={() => setShowModal(false)}>
           <form onSubmit={createCycle} className="flex flex-col gap-4">
-            <Field label="Cycle Name">
+            <Field label={tr("payroll.fieldCycleName")}>
               <input
                 required
                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
@@ -372,7 +374,7 @@ export default function PayrollHome() {
               />
             </Field>
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Period Start">
+              <Field label={tr("payroll.fieldPeriodStart")}>
                 <input
                   required
                   type="date"
@@ -381,7 +383,7 @@ export default function PayrollHome() {
                   onChange={(e) => setForm({ ...form, period_start: e.target.value })}
                 />
               </Field>
-              <Field label="Period End">
+              <Field label={tr("payroll.fieldPeriodEnd")}>
                 <input
                   required
                   type="date"
@@ -391,7 +393,7 @@ export default function PayrollHome() {
                 />
               </Field>
             </div>
-            <Field label="Pay Date">
+            <Field label={tr("payroll.fieldPayDate")}>
               <input
                 required
                 type="date"
@@ -400,7 +402,7 @@ export default function PayrollHome() {
                 onChange={(e) => setForm({ ...form, pay_date: e.target.value })}
               />
             </Field>
-            <Field label="Notes (optional)">
+            <Field label={tr("payroll.fieldNotesOptional")}>
               <textarea
                 className="w-full min-h-20 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 py-2.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                 value={form.notes}
@@ -409,10 +411,10 @@ export default function PayrollHome() {
             </Field>
             <div className="mt-2 flex gap-3">
               <Button type="submit" disabled={saving} fullWidth>
-                {saving ? "Creating…" : "Create Cycle"}
+                {saving ? tr("payroll.creating") : tr("payroll.createCycle")}
               </Button>
               <Button type="button" variant="secondary" fullWidth onClick={() => setShowModal(false)}>
-                Cancel
+                {tr("payroll.cancel")}
               </Button>
             </div>
           </form>

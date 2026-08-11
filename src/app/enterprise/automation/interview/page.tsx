@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import { BACKEND_URL } from "@/utils/api";
@@ -138,6 +139,7 @@ const EMPTY_FORM: FormState = {
 
 export default function InterviewAutomationPage() {
   const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
 
   const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
@@ -175,7 +177,7 @@ export default function InterviewAutomationPage() {
       const obj = msg as { msg?: string; detail?: string };
       finalMsg = obj.msg || obj.detail || JSON.stringify(msg);
     } else {
-      finalMsg = String(msg || "An error occurred");
+      finalMsg = String(msg || tr("automation.errorOccurred"));
     }
     setToast({ msg: finalMsg, type });
     setTimeout(() => setToast(null), 5000);
@@ -214,10 +216,10 @@ export default function InterviewAutomationPage() {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
       } else {
-        showToast("Failed to load automations.", "error");
+        showToast(tr("automation.failedLoadAutomations"), "error");
       }
     } catch {
-      showToast("Failed to load automations.", "error");
+      showToast(tr("automation.failedLoadAutomations"), "error");
     } finally {
       setLoading(false);
     }
@@ -310,24 +312,24 @@ export default function InterviewAutomationPage() {
 
   const handleSave = async () => {
     if (!form.job_requirement_id || !form.criteria.trim()) {
-      showToast("Please fill in all required fields.", "error");
+      showToast(tr("automation.fillRequiredFields"), "error");
       return;
     }
     // Compare ISO date strings in LOCAL time. `new Date("YYYY-MM-DD")` parses as UTC midnight, which
     // in negative-offset zones is "yesterday" locally — so a valid "today" start date was wrongly
     // rejected. `toLocaleDateString("en-CA")` yields local YYYY-MM-DD; ISO strings compare chronologically.
     if (form.start_date && form.start_date < new Date().toLocaleDateString("en-CA")) {
-      showToast("Start date cannot be in the past.", "error");
+      showToast(tr("automation.startDatePast"), "error");
       return;
     }
     // AI interviews need a template (marked required, but was only enforced by the backend).
     // (GMEET interviewer email is intentionally optional — it falls back to the account email.)
     if (form.interview_type === "AI" && !form.interview_template_id) {
-      showToast("Select an interview template for the AI interview.", "error");
+      showToast(tr("automation.selectInterviewTemplate"), "error");
       return;
     }
     if (form.start_date && form.end_date && form.end_date < form.start_date) {
-      showToast("End date can't be before the start date.", "error");
+      showToast(tr("automation.endBeforeStart"), "error");
       return;
     }
     // Authoritative slot-limit gate: slots can drift over the limit (e.g. the daily
@@ -336,7 +338,7 @@ export default function InterviewAutomationPage() {
     const dailyLimit = Number(form.daily_limit);
     if (dailyLimit > 0 && form.time_slots.length > dailyLimit) {
       const over = form.time_slots.length - dailyLimit;
-      showToast(`You have ${form.time_slots.length} time slots but the daily limit is ${dailyLimit}. Remove ${over} slot${over === 1 ? "" : "s"} or raise the daily limit in the Config tab.`, "error");
+      showToast(tr("automation.timeSlotsExceed", { count: form.time_slots.length, limit: dailyLimit, over }), "error");
       setActiveTab("times");
       return;
     }
@@ -394,12 +396,12 @@ export default function InterviewAutomationPage() {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
-        showToast(editingId ? "Automation updated!" : "Automation created!");
+        showToast(editingId ? tr("automation.automationUpdated") : tr("automation.automationCreated"));
         closeModal();
         fetchAutomations(selectedJobId || undefined);
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast((err as { detail?: string })?.detail || "Failed to save automation.", "error");
+        showToast((err as { detail?: string })?.detail || tr("automation.failedSaveAutomation"), "error");
       }
     } finally {
       setSaving(false);
@@ -421,7 +423,7 @@ export default function InterviewAutomationPage() {
           prev.map((item) => (item.id === a.id ? { ...item, is_enabled: !a.is_enabled } : item))
         );
       } else {
-        showToast("Failed to update status.", "error");
+        showToast(tr("automation.failedUpdateStatus"), "error");
       }
     } finally {
       setTogglingId(null);
@@ -439,10 +441,10 @@ export default function InterviewAutomationPage() {
         headers: authHeaders,
       });
       if (res.ok) {
-        showToast("Automation deleted.");
+        showToast(tr("automation.automationDeleted"));
         setAutomations((prev) => prev.filter((a) => a.id !== automationToDelete.id));
       } else {
-        showToast("Failed to delete.", "error");
+        showToast(tr("automation.failedDelete"), "error");
       }
     } finally {
       setDeletingId(null);
@@ -478,7 +480,7 @@ export default function InterviewAutomationPage() {
     const endMins = eh * 60 + em;
     
     if (startMins >= endMins) {
-      showToast("End time must be after start time", "error");
+      showToast(tr("automation.endTimeAfterStart"), "error");
       return;
     }
     
@@ -526,12 +528,12 @@ export default function InterviewAutomationPage() {
       <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-1.5">
-            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Interview Automation</h1>
-            <PageHelp title="Interview Automation">
-              <p>Automate interview scheduling and reminders.</p>
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("automation.interviewTitle")}</h1>
+            <PageHelp title={tr("automation.interviewTitle")}>
+              <p>{tr("automation.interviewHelp")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Automatically schedule AI or human technical interviews based on your hiring criteria.</p>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.interviewSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
           {canAccess("interviews:moderate") && (
@@ -540,7 +542,7 @@ export default function InterviewAutomationPage() {
               className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" />
-              New Automation
+              {tr("automation.newAutomation")}
             </button>
           )}
         </div>
@@ -551,10 +553,10 @@ export default function InterviewAutomationPage() {
         {/* Stats Section */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {[
-            { label: "Total Rules", value: automations.length, Icon: Layers, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-            { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, Icon: Activity, grad: "linear-gradient(135deg,#00C49F,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-            { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, Icon: Sparkles, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" },
-            { label: "Configured Slots", value: automations.reduce((acc, a) => acc + (a.time_slots?.length || 0), 0), Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" }
+            { label: tr("automation.totalRules"), value: automations.length, Icon: Layers, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+            { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: Activity, grad: "linear-gradient(135deg,#00C49F,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+            { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: Sparkles, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" },
+            { label: tr("automation.configuredSlots"), value: automations.reduce((acc, a) => acc + (a.time_slots?.length || 0), 0), Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" }
           ].map((s, i) => (
             <motion.div
               key={s.label}
@@ -583,7 +585,7 @@ export default function InterviewAutomationPage() {
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input 
                 type="text"
-                placeholder="Search by rules, jobs, or interviewers..."
+                placeholder={tr("automation.searchRulesJobsInterviewers")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-10 pr-4 text-[13.5px] font-semibold text-slate-700 placeholder:text-slate-400 focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all outline-none shadow-sm"
@@ -596,7 +598,7 @@ export default function InterviewAutomationPage() {
                   onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
                   className="text-[11px] font-extrabold text-[#5B53E0] hover:underline px-2 tracking-wider cursor-pointer"
                 >
-                  RESET FILTERS
+                  {tr("automation.resetFilters")}
                 </button>
               )}
               <div className="relative w-full md:w-64">
@@ -606,7 +608,7 @@ export default function InterviewAutomationPage() {
                   onChange={(e) => setSelectedJobId(e.target.value)}
                   className="w-full h-11 border border-[#E1E4E8] rounded-[12px] pl-10 pr-10 text-[13px] font-semibold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] shadow-sm appearance-none cursor-pointer"
                 >
-                  <option value="">All Job Requirements</option>
+                  <option value="">{tr("automation.allJobRequirements")}</option>
                   {jobs.map((j) => (
                     <option key={j.id} value={j.id}>{j.title}</option>
                   ))}
@@ -627,16 +629,16 @@ export default function InterviewAutomationPage() {
           <div className="w-16 h-16 rounded-[12px] bg-[#E3F4EF] flex items-center justify-center mb-4 border border-[#BFF0E2]">
             <Calendar className="w-8 h-8 text-[#0E8A6E]" />
           </div>
-          <p className="text-slate-800 font-bold text-[16px]">{searchQuery ? 'No matching rules' : 'No automations yet'}</p>
+          <p className="text-slate-800 font-bold text-[16px]">{searchQuery ? tr("automation.noMatchingRules") : tr("automation.noAutomationsYet")}</p>
           <p className="text-slate-400 text-[13px] mt-1 max-w-sm font-medium">
-            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Create your first interview automation to auto-schedule interviews.'}
+            {searchQuery ? tr("automation.noResultsFor", { query: searchQuery }) : tr("automation.createFirstInterview")}
           </p>
           {!searchQuery && canAccess("interviews:moderate") && (
             <button
               onClick={openCreate}
               className="mt-5 px-5 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-bold shadow-[0_4px_12px_rgba(91,83,224,0.25)] transition-all active:scale-95 cursor-pointer"
             >
-              Create Automation
+              {tr("automation.createAutomation")}
             </button>
           )}
         </div>
@@ -646,11 +648,11 @@ export default function InterviewAutomationPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#F7F8FA] border-b border-[#E1E4E8]">
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Rule Configuration</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Target Job</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Schedule Logic</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Status</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] text-right">Actions</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.ruleConfiguration")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.targetJob")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.scheduleLogic")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.status")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] text-right">{tr("automation.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0F0F1]">
@@ -660,14 +662,14 @@ export default function InterviewAutomationPage() {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <span className="inline-flex items-center px-2 py-0.5 rounded-[6px] bg-[#E3F4EF] text-[#0E8A6E] text-[10px] font-bold border border-[#BFF0E2]/60 uppercase">
-                            Round {a.stage_index}
+                            {tr("automation.round")} {a.stage_index}
                           </span>
                           {a.stage_name && (
                             <span className="text-[12px] font-semibold text-[#8A929E]">{a.stage_name}</span>
                           )}
                         </div>
                         <p className="text-[13.5px] font-semibold text-[#374151] line-clamp-1">
-                          <span className="text-[#8A929E] font-medium italic mr-1">If:</span>
+                          <span className="text-[#8A929E] font-medium italic mr-1">{tr("automation.ifLabel")}</span>
                           {a.criteria}
                         </p>
                       </div>
@@ -687,7 +689,7 @@ export default function InterviewAutomationPage() {
                         {a.auto_move && (
                           <div className="flex items-center gap-1 text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider mt-1">
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold border border-[#DAD7F6]/60 uppercase tracking-wider">
-                              Auto-Move
+                              {tr("automation.autoMove")}
                             </span>
                           </div>
                         )}
@@ -760,9 +762,9 @@ export default function InterviewAutomationPage() {
                   </div>
                   <div>
                     <h2 className="text-[16px] font-extrabold text-[#15171C] leading-tight">
-                      {editingId ? "Edit Automation" : "New Automation"}
+                      {editingId ? tr("automation.editAutomation") : tr("automation.newAutomation")}
                     </h2>
-                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">Interview Configuration</p>
+                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">{tr("automation.interviewConfiguration")}</p>
                   </div>
                 </div>
                 <button 
@@ -781,7 +783,7 @@ export default function InterviewAutomationPage() {
                     activeTab === "config" ? "text-[#5B53E0]" : "text-slate-400 hover:text-slate-600"
                   }`}
                 >
-                  <span>Config</span>
+                  <span>{tr("automation.config")}</span>
                   {activeTab === "config" && (
                     <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#5B53E0]" />
                   )}
@@ -792,7 +794,7 @@ export default function InterviewAutomationPage() {
                     activeTab === "times" ? "text-[#5B53E0]" : "text-slate-400 hover:text-slate-600"
                   }`}
                 >
-                  <span>Time Slots</span>
+                  <span>{tr("automation.timeSlots")}</span>
                   {activeTab === "times" && (
                     <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#5B53E0]" />
                   )}
@@ -806,7 +808,7 @@ export default function InterviewAutomationPage() {
                     {/* Job */}
                     <div>
                       <label htmlFor="automation-job-requirement" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                        Job Requirement <span className="text-rose-500">*</span>
+                        {tr("automation.jobRequirement")} <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
                         <select
@@ -815,7 +817,7 @@ export default function InterviewAutomationPage() {
                           onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
                           className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                         >
-                          <option value="">Select job…</option>
+                          <option value="">{tr("automation.selectJob")}</option>
                           {jobs.map((j) => (
                             <option key={j.id} value={j.id}>{j.title}</option>
                           ))}
@@ -827,7 +829,7 @@ export default function InterviewAutomationPage() {
                     {/* Round */}
                     <div>
                       <label htmlFor="automation-hiring-round" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                        Hiring Round <span className="text-rose-500">*</span>
+                        {tr("automation.hiringRound")} <span className="text-rose-500">*</span>
                       </label>
                       {jobRounds.length > 0 ? (
                         <div className="relative">
@@ -837,10 +839,10 @@ export default function InterviewAutomationPage() {
                             value={form.stage_name ? `${form.stage_index}|${form.stage_name}` : ""}
                             className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                           >
-                            <option value="">Pick round…</option>
+                            <option value="">{tr("automation.pickRound")}</option>
                             {jobRounds.map((r, i) => (
                               <option key={i} value={`${i + 1}|${r.name}`}>
-                                Round {i + 1}: {r.name}
+                                {tr("automation.round")} {i + 1}: {r.name}
                               </option>
                             ))}
                           </select>
@@ -854,14 +856,14 @@ export default function InterviewAutomationPage() {
                             value={form.stage_index}
                             onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
                             className="col-span-2 border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
-                            placeholder="No."
+                            placeholder={tr("automation.noAbbrev")}
                           />
                           <input
                             type="text"
                             value={form.stage_name}
                             onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
                             className="col-span-3 border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
-                            placeholder="Label"
+                            placeholder={tr("automation.labelPlaceholder")}
                           />
                         </div>
                       )}
@@ -869,7 +871,7 @@ export default function InterviewAutomationPage() {
                         <div className="mt-2.5 flex items-center gap-2 px-3 py-2 bg-[#E3F4EF]/50 rounded-[8px] border border-[#BFF0E2]/60">
                           <Check className="w-3.5 h-3.5 text-[#0E8A6E]" />
                           <p className="text-[12px] text-[#0E8A6E] font-bold tracking-tight">
-                            Selected: Round {form.stage_index} — {form.stage_name}
+                            {tr("automation.selectedRound", { index: form.stage_index, name: form.stage_name })}
                           </p>
                         </div>
                       )}
@@ -878,7 +880,7 @@ export default function InterviewAutomationPage() {
                     {/* Criteria */}
                     <div>
                       <label htmlFor="automation-criteria" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                        Trigger Criteria <span className="text-rose-500">*</span>
+                        {tr("automation.triggerCriteria")} <span className="text-rose-500">*</span>
                       </label>
                       <textarea
                         id="automation-criteria"
@@ -886,10 +888,10 @@ export default function InterviewAutomationPage() {
                         value={form.criteria}
                         onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
                         className="w-full border border-[#E1E4E8] rounded-[12px] px-4 py-3 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all resize-none"
-                        placeholder="Describe the condition, e.g. 'AI score > 80' or 'Interview cleared'…"
+                        placeholder={tr("automation.criteriaPlaceholderCondition")}
                       />
                       <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
-                        Set conditions for when this interview should be scheduled.
+                        {tr("automation.setConditionsInterview")}
                       </p>
                     </div>
 
@@ -897,7 +899,7 @@ export default function InterviewAutomationPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="automation-start-date" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                          Start Date (Optional)
+                          {tr("automation.startDateOptional")}
                         </label>
                         <input
                           id="automation-start-date"
@@ -909,7 +911,7 @@ export default function InterviewAutomationPage() {
                       </div>
                       <div>
                         <label htmlFor="automation-end-date" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                          End Date (Optional)
+                          {tr("automation.endDateOptional")}
                         </label>
                         <input
                           id="automation-end-date"
@@ -925,7 +927,7 @@ export default function InterviewAutomationPage() {
                     <div className="grid grid-cols-3 gap-3">
                       <div>
                         <label htmlFor="automation-start-time" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                          Start Time <span className="text-rose-500">*</span>
+                          {tr("automation.startTime")} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           id="automation-start-time"
@@ -937,7 +939,7 @@ export default function InterviewAutomationPage() {
                       </div>
                       <div>
                         <label htmlFor="automation-end-time" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                          End Time <span className="text-rose-500">*</span>
+                          {tr("automation.endTime")} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           id="automation-end-time"
@@ -949,7 +951,7 @@ export default function InterviewAutomationPage() {
                       </div>
                       <div>
                         <label htmlFor="automation-duration" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                          Duration <span className="text-rose-500">*</span>
+                          {tr("automation.duration")} <span className="text-rose-500">*</span>
                         </label>
                         <div className="relative">
                           <select
@@ -971,7 +973,7 @@ export default function InterviewAutomationPage() {
 
                     <div>
                       <label htmlFor="automation-daily-limit" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                        Daily Limit (Max/Day) <span className="text-rose-500">*</span>
+                        {tr("automation.dailyLimit")} <span className="text-rose-500">*</span>
                       </label>
                       <input
                         id="automation-daily-limit"
@@ -986,12 +988,12 @@ export default function InterviewAutomationPage() {
                     {/* Email Template */}
                     <div>
                       <label htmlFor="automation-email-template" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                        Email Template (Optional)
+                        {tr("automation.emailTemplateOptional")}
                       </label>
                       {templates.length === 0 ? (
                         <div className="bg-[#F7F8FA] rounded-[12px] p-4 border border-dashed border-[#E1E4E8] text-center">
                           <p className="text-[12.5px] text-[#8A929E] font-medium">
-                            No templates found. <a href="/enterprise/templates/email-templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank">Create one</a> first.
+                            {tr("automation.noTemplatesFound")} <a href="/enterprise/templates/email-templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank">{tr("automation.createOne")}</a> {tr("automation.firstWord")}
                           </p>
                         </div>
                       ) : (
@@ -1002,7 +1004,7 @@ export default function InterviewAutomationPage() {
                             onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
                             className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                           >
-                            <option value="">No template (use default invite)</option>
+                            <option value="">{tr("automation.noTemplateDefault")}</option>
                             {templates.map((t) => (
                               <option key={t.id} value={t.id}>{t.name}</option>
                             ))}
@@ -1015,7 +1017,7 @@ export default function InterviewAutomationPage() {
                     {/* Interview Type Selection */}
                     <div>
                       <label className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-3 ml-1">
-                        Interview Type <span className="text-rose-500">*</span>
+                        {tr("automation.interviewType")} <span className="text-rose-500">*</span>
                       </label>
                       <div className="grid grid-cols-2 gap-3">
                         <button
@@ -1040,7 +1042,7 @@ export default function InterviewAutomationPage() {
                           }`}
                         >
                           <Brain className="w-5 h-5 shrink-0" />
-                          <span className="text-[12.5px] font-bold">AI Interview</span>
+                          <span className="text-[12.5px] font-bold">{tr("automation.aiInterview")}</span>
                         </button>
                       </div>
                     </div>
@@ -1050,7 +1052,7 @@ export default function InterviewAutomationPage() {
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label htmlFor="automation-ai-template" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider ml-1">
-                              AI Interview Template <span className="text-rose-500">*</span>
+                              {tr("automation.aiInterviewTemplate")} <span className="text-rose-500">*</span>
                             </label>
                             <button 
                               type="button"
@@ -1061,13 +1063,13 @@ export default function InterviewAutomationPage() {
                               className="text-[11px] font-bold text-[#5B53E0] hover:text-[#4A43C9] hover:underline flex items-center gap-1 cursor-pointer"
                             >
                               <PlusCircle className="w-3.5 h-3.5" />
-                              <span>Create New</span>
+                              <span>{tr("automation.createNew")}</span>
                             </button>
                           </div>
                           {interviewTemplates.length === 0 ? (
                             <div className="bg-[#F7F8FA] rounded-[12px] p-4 border border-dashed border-[#E1E4E8] text-center">
                               <p className="text-[12.5px] text-[#8A929E] font-medium">
-                                No AI templates found. 
+                                {tr("automation.noAiTemplates")}
                               </p>
                             </div>
                           ) : (
@@ -1078,7 +1080,7 @@ export default function InterviewAutomationPage() {
                                 onChange={(e) => setForm(f => ({ ...f, interview_template_id: e.target.value }))}
                                 className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                               >
-                                <option value="">Select template…</option>
+                                <option value="">{tr("automation.selectTemplate")}</option>
                                 {interviewTemplates.map((t) => (
                                   <option key={t.id} value={t.id}>{t.title}</option>
                                 ))}
@@ -1093,7 +1095,7 @@ export default function InterviewAutomationPage() {
                         {/* Interviewer Email */}
                         <div>
                           <label htmlFor="automation-interviewer-email" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                            Interviewer Email (Optional)
+                            {tr("automation.interviewerEmailOptional")}
                           </label>
                           <input
                             id="automation-interviewer-email"
@@ -1101,17 +1103,17 @@ export default function InterviewAutomationPage() {
                             value={form.interviewer_email}
                             onChange={(e) => setForm((f) => ({ ...f, interviewer_email: e.target.value }))}
                             className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
-                            placeholder="e.g. recruiter@company.com"
+                            placeholder={tr("automation.recruiterEmailPlaceholder")}
                           />
                           <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
-                            If blank, system sends to your account email.
+                            {tr("automation.ifBlankAccountEmail")}
                           </p>
                         </div>
 
                         {/* Google Meet Link */}
                         <div>
                           <label htmlFor="automation-google-meet-link" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                            Personal Google Meet Link (Real Room)
+                            {tr("automation.personalMeetLink")}
                           </label>
                           <input
                             id="automation-google-meet-link"
@@ -1122,7 +1124,7 @@ export default function InterviewAutomationPage() {
                             placeholder="e.g. https://meet.google.com/abc-defg-hij"
                           />
                           <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
-                            Paste your own real link here to skip automated generation.
+                            {tr("automation.pasteRealLink")}
                           </p>
                         </div>
                       </div>
@@ -1136,8 +1138,8 @@ export default function InterviewAutomationPage() {
                             <Check className="w-4 h-4 text-emerald-600" />
                           </div>
                           <div>
-                            <p className="text-[13.5px] font-bold text-[#15171C]">Enable Automation</p>
-                            <p className="text-[11.5px] text-[#8A929E] font-semibold">Turn rules on/off</p>
+                            <p className="text-[13.5px] font-bold text-[#15171C]">{tr("automation.enableAutomation")}</p>
+                            <p className="text-[11.5px] text-[#8A929E] font-semibold">{tr("automation.turnRulesOnOff")}</p>
                           </div>
                         </div>
                         <button
@@ -1155,8 +1157,8 @@ export default function InterviewAutomationPage() {
                             <Sparkles className="w-4 h-4 text-[#5B53E0]" />
                           </div>
                           <div>
-                            <p className="text-[13.5px] font-bold text-[#15171C]">Auto-Move</p>
-                            <p className="text-[11.5px] text-[#8A929E] font-semibold">Advance to next round</p>
+                            <p className="text-[13.5px] font-bold text-[#15171C]">{tr("automation.autoMove")}</p>
+                            <p className="text-[11.5px] text-[#8A929E] font-semibold">{tr("automation.advanceNextRound")}</p>
                           </div>
                         </div>
                         <button
@@ -1179,19 +1181,19 @@ export default function InterviewAutomationPage() {
                       return (
                     <div className="bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] p-4">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-[13.5px] font-bold text-[#15171C]">Pre-Generated Time Slots</p>
+                        <p className="text-[13.5px] font-bold text-[#15171C]">{tr("automation.preGeneratedSlots")}</p>
                         <span className={`text-[11px] font-bold px-2 py-0.5 rounded-[6px] border ${atLimit ? "bg-[#FEF3E2] text-[#D97706] border-[#FCE1BF]" : "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]/60"}`}>
-                          {form.time_slots.length} / {slotLimit} slots
+                          {tr("automation.slotsCount", { count: form.time_slots.length, limit: slotLimit })}
                         </span>
                       </div>
                       <p className="text-[12.5px] text-[#8A929E] font-semibold mb-4 leading-relaxed">
-                        Instead of automatic scheduling, explicitly define up to {form.daily_limit} times per day the scheduler should use. To add more, increase the daily limit in the Config tab.
+                        {tr("automation.defineSlotsHelp", { limit: form.daily_limit })}
                       </p>
                       {overLimit && (
                         <div className="mb-4 flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3">
                           <AlertCircle className="w-4 h-4 text-rose-500 mt-0.5 shrink-0" />
                           <p className="text-[12px] font-semibold text-rose-700 leading-relaxed">
-                            You have {form.time_slots.length} slots, which exceeds the daily limit of {slotLimit}. Remove {form.time_slots.length - slotLimit} or raise the limit in the Config tab before saving.
+                            {tr("automation.slotsOverLimit", { count: form.time_slots.length, limit: slotLimit, over: form.time_slots.length - slotLimit })}
                           </p>
                         </div>
                       )}
@@ -1202,24 +1204,24 @@ export default function InterviewAutomationPage() {
                           className="flex-1 flex justify-center items-center gap-2 h-11 bg-white border border-[#5B53E0] text-[#5B53E0] hover:bg-[#ECEBFB] rounded-[12px] text-[13px] font-bold transition-all cursor-pointer"
                         >
                           <Wand2 className="w-4 h-4" />
-                          <span>Auto-Generate ({form.daily_limit} slots)</span>
+                          <span>{tr("automation.autoGenerateSlots", { limit: form.daily_limit })}</span>
                         </button>
                         <button
                           type="button"
                           disabled={atLimit}
                           onClick={() => {
                             if (slotLimit <= 0) {
-                              showToast("Set a daily limit in the Config tab first, then add slots.", "error");
+                              showToast(tr("automation.setDailyLimitFirst"), "error");
                               return;
                             }
                             if (atLimit) {
-                              showToast(`You've reached the daily limit of ${slotLimit} slot${slotLimit === 1 ? "" : "s"}. Increase the daily limit in the Config tab to add more.`, "error");
+                              showToast(tr("automation.reachedDailyLimit", { limit: slotLimit }), "error");
                               return;
                             }
                             setForm(f => ({ ...f, time_slots: [...f.time_slots, "12:00"] }));
                           }}
                           className="w-11 h-11 flex border border-[#E1E4E8] hover:border-[#DAD7F6] items-center justify-center rounded-[12px] hover:bg-slate-50 text-slate-500 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-[#E1E4E8]"
-                          title={atLimit ? "Daily slot limit reached — raise it in the Config tab" : "Add slot manually"}
+                          title={atLimit ? tr("automation.slotLimitReachedTitle") : tr("automation.addSlotManually")}
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -1233,7 +1235,7 @@ export default function InterviewAutomationPage() {
                         {form.time_slots.map((ts, idx) => (
                           <div key={idx} className="flex items-center gap-2 relative">
                             <span className="absolute left-4 text-[10px] font-bold text-[#8A929E] tracking-wider uppercase leading-none pointer-events-none">
-                              Slot {idx + 1}
+                              {tr("automation.slotN", { n: idx + 1 })}
                             </span>
                             <div className="flex-1 flex items-center bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] px-2 focus-within:ring-2 focus-within:ring-[#5B53E0]/20 focus-within:border-[#5B53E0] transition-all">
                               <input
@@ -1247,7 +1249,7 @@ export default function InterviewAutomationPage() {
                                 className="w-full bg-transparent pl-14 pr-2 h-11 text-[13.5px] font-bold text-[#374151] focus:outline-none font-mono"
                               />
                               <span className="text-[11.5px] text-[#8A929E] font-bold px-3 border-l border-[#E1E4E8] flex items-center h-7 shrink-0">
-                                End: {(() => {
+                                {tr("automation.endPrefix")} {(() => {
                                    const [h, m] = ts.split(':').map(Number);
                                    if (Number.isNaN(h)) return "--:--";
                                    const total = h * 60 + m + (Number(form.duration) || 30);
@@ -1287,15 +1289,15 @@ export default function InterviewAutomationPage() {
                   ) : (
                     <>
                       <Check className="w-4 h-4" />
-                      <span>{editingId ? "SAVE CHANGES" : "CREATE AUTOMATION"}</span>
+                      <span>{editingId ? tr("automation.saveChangesCaps") : tr("automation.createAutomationCaps")}</span>
                     </>
                   )}
                 </button>
-                <button 
+                <button
                   onClick={closeModal}
                   className="w-full mt-3 h-10 text-[12.5px] font-semibold text-[#8A929E] hover:text-[#4B5563] transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {tr("common.cancel")}
                 </button>
               </div>
             </motion.div>
@@ -1319,7 +1321,7 @@ export default function InterviewAutomationPage() {
               setShowTemplateBuilder(false);
               setSelectedTemplateForEdit(null);
               setForm(f => ({ ...f, interview_template_id: newTemplate.id ?? null }));
-              showToast("Interview template saved!");
+              showToast(tr("automation.interviewTemplateSaved"));
             }}
           />
         )}
@@ -1332,10 +1334,10 @@ export default function InterviewAutomationPage() {
           setAutomationToDelete(null);
         }}
         onConfirm={handleDelete}
-        title="Delete Interview Automation?"
-        message={`Are you sure you want to delete this interview automation for ${automationToDelete ? jobTitle(automationToDelete.job_requirement_id) : 'this job'}? This action is irreversible.`}
-        confirmLabel="Yes, Delete"
-        cancelLabel="No"
+        title={tr("automation.deleteInterviewTitle")}
+        message={tr("automation.deleteInterviewMsg", { job: automationToDelete ? jobTitle(automationToDelete.job_requirement_id) : tr("automation.thisJob") })}
+        confirmLabel={tr("automation.yesDelete")}
+        cancelLabel={tr("automation.no")}
         isDestructive={true}
       />
     </div>

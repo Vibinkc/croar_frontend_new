@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import {
     FolderKanban,
@@ -34,6 +35,7 @@ interface Project {
 
 export default function ProjectsPage() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -99,13 +101,13 @@ export default function ProjectsPage() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Projects</h1>
-                        <PageHelp title="Projects">
-                            <p>Organise work into projects, each with its own team and kanban board.</p>
-                            <p><strong>New Project</strong> to create one; open a project to manage its board and members. Tasks live inside projects.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("postOnboarding.projectsTitle")}</h1>
+                        <PageHelp title={tr("postOnboarding.projectsTitle")}>
+                            <p>{tr("postOnboarding.projectsHelp1")}</p>
+                            <p><strong>{tr("postOnboarding.newProject")}</strong> {tr("postOnboarding.projectsHelp2")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Track milestones, resources &amp; deployment progress</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("postOnboarding.projectsSubtitle")}</p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
                     {canAccess("projects:create") && (
@@ -113,7 +115,7 @@ export default function ProjectsPage() {
                             href="/enterprise/projects/add"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
                         >
-                            <Plus className="w-3.5 h-3.5" /> New Project
+                            <Plus className="w-3.5 h-3.5" /> {tr("postOnboarding.newProject")}
                         </Link>
                     )}
                 </div>
@@ -121,10 +123,10 @@ export default function ProjectsPage() {
 
             {/* Stat cards */}
             <StatGrid>
-                <StatCard label="Total Projects" value={projects.length} icon="folder" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Active Missions" value={projects.filter(p => p.status === 'Active').length} icon="rocket_launch" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Completed" value={projects.filter(p => p.status === 'Completed').length} icon="task_alt" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-                <StatCard label="Resources" value={projects.reduce((acc, p) => acc + (p.members?.length || 0), 0)} icon="group" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("postOnboarding.totalProjects")} value={projects.length} icon="folder" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label={tr("postOnboarding.activeMissions")} value={projects.filter(p => p.status === 'Active').length} icon="rocket_launch" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("postOnboarding.completed")} value={projects.filter(p => p.status === 'Completed').length} icon="task_alt" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("postOnboarding.resources")} value={projects.reduce((acc, p) => acc + (p.members?.length || 0), 0)} icon="group" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
             </StatGrid>
 
             {/* Toolbar: search + filter */}
@@ -135,7 +137,7 @@ export default function ProjectsPage() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search projects by name or description…"
+                        placeholder={tr("postOnboarding.searchProjectsPlaceholder")}
                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
@@ -148,10 +150,10 @@ export default function ProjectsPage() {
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className={`${selectCls} w-full md:min-w-[160px]`}
                         >
-                            <option value="all">All Statuses</option>
-                            <option value="Active">Active Missions</option>
-                            <option value="Completed">Completed</option>
-                            <option value="On Hold">On Hold</option>
+                            <option value="all">{tr("postOnboarding.allStatuses")}</option>
+                            <option value="Active">{tr("postOnboarding.activeMissions")}</option>
+                            <option value="Completed">{tr("postOnboarding.completed")}</option>
+                            <option value="On Hold">{tr("postOnboarding.onHold")}</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
@@ -171,12 +173,12 @@ export default function ProjectsPage() {
                         <EmptyState
                             icon="lan"
                             tone="brand"
-                            title="Create your first project"
-                            description="Group work into projects with their own team and board, then add tasks."
+                            title={tr("postOnboarding.createFirstProject")}
+                            description={tr("postOnboarding.createFirstProjectDesc")}
                             action={
                                 canAccess("projects:create") ? (
                                     <Link href="/enterprise/projects/add">
-                                        <Button icon="add">New Project</Button>
+                                        <Button icon="add">{tr("postOnboarding.newProject")}</Button>
                                     </Link>
                                 ) : undefined
                             }
@@ -185,11 +187,11 @@ export default function ProjectsPage() {
                         <EmptyState
                             icon="search_off"
                             tone="muted"
-                            title="No projects match your filters"
-                            description="Try adjusting your filters or search terms to find what you're looking for."
+                            title={tr("postOnboarding.noProjectsMatch")}
+                            description={tr("postOnboarding.adjustFiltersDesc")}
                             action={
                                 <Button variant="secondary" onClick={() => { setSearchQuery(""); setStatusFilter("all"); }}>
-                                    Clear all filters
+                                    {tr("postOnboarding.clearAllFilters")}
                                 </Button>
                             }
                         />
@@ -198,11 +200,11 @@ export default function ProjectsPage() {
                     <>
                         {/* Column header (desktop) */}
                         <div className="hidden md:grid grid-cols-[2.4fr_1.4fr_0.9fr_1.2fr_110px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Project Details</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Timeline</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Team</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.projectDetails")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.timeline")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.status")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.team")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("postOnboarding.actions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -220,11 +222,11 @@ export default function ProjectsPage() {
                                             <Link href={`/enterprise/projects/${proj.id}`} className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">
                                                 {proj.name}
                                             </Link>
-                                            <span className="block text-[12px] text-[#8A929E] truncate mt-0.5">{proj.description || "No description provided"}</span>
+                                            <span className="block text-[12px] text-[#8A929E] truncate mt-0.5">{proj.description || tr("postOnboarding.noDescriptionProvided")}</span>
                                             {/* mobile-only meta */}
                                             <div className="flex items-center gap-2.5 mt-1 text-[12px] text-[#8A929E] md:hidden">
-                                                <span className="inline-flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {proj.start_date ? new Date(proj.start_date).toLocaleDateString() : "TBA"}</span>
-                                                <span className={jetbrainsMono.className}>{(proj.members || []).length} members</span>
+                                                <span className="inline-flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {proj.start_date ? new Date(proj.start_date).toLocaleDateString() : tr("postOnboarding.tba")}</span>
+                                                <span className={jetbrainsMono.className}>{(proj.members || []).length} {tr("postOnboarding.membersLabel")}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -233,7 +235,7 @@ export default function ProjectsPage() {
                                     <div className="hidden md:flex items-center gap-1.5 text-[13px] text-[#374151] min-w-0">
                                         <Calendar className="w-4 h-4 text-[#9AA3AF] shrink-0" />
                                         <span className="truncate">
-                                            {proj.start_date ? new Date(proj.start_date).toLocaleDateString() : "TBA"} – {proj.end_date ? new Date(proj.end_date).toLocaleDateString() : "TBA"}
+                                            {proj.start_date ? new Date(proj.start_date).toLocaleDateString() : tr("postOnboarding.tba")} – {proj.end_date ? new Date(proj.end_date).toLocaleDateString() : tr("postOnboarding.tba")}
                                         </span>
                                     </div>
 
@@ -265,7 +267,7 @@ export default function ProjectsPage() {
                                             <Link
                                                 href={`/enterprise/projects/${proj.id}/edit`}
                                                 className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
-                                                title="Edit Project"
+                                                title={tr("postOnboarding.editProject")}
                                             >
                                                 <FileEdit className="w-4 h-4" />
                                             </Link>
@@ -277,7 +279,7 @@ export default function ProjectsPage() {
                                                     setIsDeleteModalOpen(true);
                                                 }}
                                                 className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
-                                                title="Delete Project"
+                                                title={tr("postOnboarding.deleteProject")}
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
@@ -294,10 +296,10 @@ export default function ProjectsPage() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Terminate Mission Deployment?"
-                message={`Are you sure you want to delete "${projectToDelete?.name}"? All associated task nodes and timeline data will be permanently wiped.`}
-                confirmLabel="Yes, Terminate"
-                cancelLabel="No"
+                title={tr("postOnboarding.terminateMission")}
+                message={tr("postOnboarding.deleteProjectMessage", { name: projectToDelete?.name || "" })}
+                confirmLabel={tr("postOnboarding.yesTerminate")}
+                cancelLabel={tr("postOnboarding.no")}
                 isDestructive={true}
             />
         </div>

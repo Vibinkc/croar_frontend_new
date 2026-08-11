@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import { Badge, Card, StatGrid, StatCard, PageHelp, jetbrainsMono } from "@/components/ds";
 
@@ -22,6 +23,7 @@ interface RateeProgress {
 
 export default function X360CycleProgress() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const params = useParams();
     const cycleId = params.id as string;
@@ -70,26 +72,26 @@ export default function X360CycleProgress() {
                     <button
                         onClick={() => router.back()}
                         className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#8A929E] hover:text-[#5B53E0] hover:border-[#D4D7DC] transition-colors flex items-center justify-center shrink-0 shadow-sm"
-                        aria-label="Go back"
+                        aria-label={tr("assess360.goBack")}
                     >
                         <span className="material-symbols-rounded text-[19px]">arrow_back</span>
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Cycle Progress Tracker</h1>
-                            <PageHelp title="Cycle Progress Tracker">Track who has completed their feedback for this cycle. Open a person&apos;s report once they&apos;re done.</PageHelp>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("assess360.cycleProgressTracker")}</h1>
+                            <PageHelp title={tr("assess360.cycleProgressTracker")}>{tr("assess360.cycleProgressHelp")}</PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Detailed breakdown by employee</p>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.detailedBreakdown")}</p>
                     </div>
                 </div>
             </header>
 
             {/* Stat cards */}
             <StatGrid>
-                <StatCard label="Project Ratees" value={loading ? "—" : totalRatees} icon="groups" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Fully Reviewed" value={loading ? "—" : completedRatees} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Responses In" value={loading ? "—" : `${completedResponses}/${totalResponses}`} icon="fact_check" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label="Overall Progress" value={loading ? "—" : `${overallPct}%`} icon="monitoring" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("assess360.projectRatees")} value={loading ? "—" : totalRatees} icon="groups" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label={tr("assess360.fullyReviewed")} value={loading ? "—" : completedRatees} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("assess360.responsesIn")} value={loading ? "—" : `${completedResponses}/${totalResponses}`} icon="fact_check" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("assess360.overallProgress")} value={loading ? "—" : `${overallPct}%`} icon="monitoring" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
             </StatGrid>
 
             {/* Ratee progress list */}
@@ -97,10 +99,10 @@ export default function X360CycleProgress() {
                 <div className="flex items-center justify-between px-5 py-3.5 bg-[#F7F8FA] border-b border-[#E8EAED]">
                     <div className="flex items-center gap-2.5">
                         <span className="material-symbols-rounded text-[#5B53E0] text-[19px]">monitoring</span>
-                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">Progress by Employee</h2>
+                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("assess360.progressByEmployee")}</h2>
                     </div>
                     {!loading && (
-                        <span className={`text-[12px] text-[#8A929E] ${jetbrainsMono.className}`}>{totalRatees} {totalRatees === 1 ? "ratee" : "ratees"}</span>
+                        <span className={`text-[12px] text-[#8A929E] ${jetbrainsMono.className}`}>{totalRatees} {totalRatees === 1 ? tr("assess360.ratee") : tr("assess360.ratees")}</span>
                     )}
                 </div>
 
@@ -115,9 +117,9 @@ export default function X360CycleProgress() {
                         <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5 text-[#C7CCD4]">
                             <span className="material-symbols-rounded text-[32px]">group_off</span>
                         </div>
-                        <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No ratees in this cycle</h3>
+                        <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("assess360.noRatees")}</h3>
                         <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">
-                            Once participants are assigned, their review progress will appear here.
+                            {tr("assess360.noRateesHint")}
                         </p>
                     </div>
                 ) : (
@@ -139,7 +141,7 @@ export default function X360CycleProgress() {
                                             </span>
                                             <div className="min-w-0">
                                                 <p className="text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{ratee.ratee_name}</p>
-                                                <p className="text-[12px] text-[#8A929E] truncate">Project ratee</p>
+                                                <p className="text-[12px] text-[#8A929E] truncate">{tr("assess360.projectRatee")}</p>
                                             </div>
                                         </div>
 
@@ -172,8 +174,8 @@ export default function X360CycleProgress() {
                                                 <div className="flex items-center gap-2.5">
                                                     <span className={`text-[18px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-none ${jetbrainsMono.className}`}>{pct}%</span>
                                                     {isComplete
-                                                        ? <Badge tone="success" dot>Complete</Badge>
-                                                        : <Badge tone="warning" dot>In progress</Badge>}
+                                                        ? <Badge tone="success" dot>{tr("assess360.complete")}</Badge>
+                                                        : <Badge tone="warning" dot>{tr("assess360.inProgress")}</Badge>}
                                                     {hasScore && (
                                                         <Badge tone="indigo">
                                                             <span className="material-symbols-rounded text-[14px] leading-none">auto_awesome</span>
@@ -195,7 +197,7 @@ export default function X360CycleProgress() {
                                                     className="w-full inline-flex items-center justify-center gap-1.5 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#15171C] hover:text-white hover:border-[#15171C] transition-colors"
                                                 >
                                                     <span className="material-symbols-rounded text-[16px]">analytics</span>
-                                                    Full Insight Report
+                                                    {tr("assess360.fullInsightReport")}
                                                 </button>
                                             )}
                                         </div>

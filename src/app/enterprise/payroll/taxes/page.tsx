@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import {
   payrollApi,
   taxesApi,
@@ -79,6 +80,7 @@ const declaredTotal = (p: TaxProfile) =>
 
 export default function TaxesPage() {
   const { can } = useAuth();
+    const { t: tr } = useI18n();
   const { confirm } = useDialog();
   const canEdit = can("payroll:configure");
 
@@ -201,9 +203,9 @@ export default function TaxesPage() {
 
   async function removeChallan(ch: TdsChallan) {
     const ok = await confirm({
-      title: "Delete challan",
-      message: `Delete challan ${ch.challan_number} (${inr(ch.amount)})?`,
-      confirmLabel: "Delete",
+      title: tr("payroll.deleteChallanTitle"),
+      message: tr("payroll.deleteChallanMsg", { number: ch.challan_number, amount: inr(ch.amount) }),
+      confirmLabel: tr("common.delete"),
       tone: "danger",
     });
     if (!ok) return;
@@ -231,9 +233,9 @@ export default function TaxesPage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Taxes & Forms"
-        subtitle="Income-tax declarations and TDS challan records."
-        help={<><p>Manage tax profiles, TDS liability and statutory forms.</p><p>Record challans and download the forms you need to file.</p></>}
+        title={tr("nav.taxesForms")}
+        subtitle={tr("payroll.taxesSubtitle")}
+        help={<><p>{tr("payroll.taxesHelp1")}</p><p>{tr("payroll.taxesHelp2")}</p></>}
         actions={
           canEdit ? (
             <Button
@@ -244,15 +246,14 @@ export default function TaxesPage() {
                 setChallanOpen(true);
               }}
             >
-              Record Challan
+              {tr("payroll.recordChallan")}
             </Button>
           ) : undefined
         }
       />
 
       <Banner tone="warn">
-        TDS is computed automatically as an <strong>estimate</strong> (versioned, FY2025-26 basis) when
-        enabled on a salary structure — it&apos;s not filing-grade. Form 16 and Form 24Q are still to come.
+        {tr("payroll.tdsEstimatePre")}<strong>{tr("payroll.estimate")}</strong>{tr("payroll.tdsEstimatePost")}
       </Banner>
 
       {error && <Banner>{error}</Banner>}
@@ -260,28 +261,28 @@ export default function TaxesPage() {
       {/* --- Stats --- */}
       <StatGrid>
         <StatCard
-          label="Employees"
+          label={tr("payroll.employees")}
           value={employees.length}
           icon="group"
           gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
           glow="rgba(91,83,224,0.25)"
         />
         <StatCard
-          label="Declarations"
+          label={tr("payroll.declarations")}
           value={declaredCount}
           icon="description"
           gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
           glow="rgba(14,138,110,0.25)"
         />
         <StatCard
-          label="TDS Deposited"
+          label={tr("payroll.tdsDeposited")}
           value={inr(totalDeposited)}
           icon="account_balance"
           gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
           glow="rgba(53,89,199,0.25)"
         />
         <StatCard
-          label="TDS Due"
+          label={tr("payroll.tdsDue")}
           value={inr(totalDue)}
           icon="warning"
           gradient="linear-gradient(135deg,#F6B65C,#D97706)"
@@ -292,9 +293,9 @@ export default function TaxesPage() {
       {/* --- TDS Liabilities (deducted vs deposited) --- */}
       <Card padding="none">
         <div className="p-5 md:p-6 border-b border-[#E8EAED]">
-          <h2 className="text-[15px] font-bold text-[#15171C]">TDS Liabilities</h2>
+          <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.tdsLiabilities")}</h2>
           <p className="text-[12.5px] text-[#8A929E] mt-0.5">
-            TDS withheld on payslips vs. deposited via recorded challans, by month.
+            {tr("payroll.tdsLiabilitiesSub")}
           </p>
         </div>
         {loading ? (
@@ -309,17 +310,17 @@ export default function TaxesPage() {
               <span className="material-symbols-rounded text-[26px] text-[#C7CCD4]">receipt_long</span>
             </div>
             <p className="text-[13.5px] text-[#8A929E] max-w-sm">
-              No TDS withheld yet. Enable Income Tax (TDS) on a salary structure and run payroll.
+              {tr("payroll.noTdsWithheld")}
             </p>
           </div>
         ) : (
           <>
             {/* Column header (desktop) */}
             <div className="hidden md:grid grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Month</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Deducted</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Deposited</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Balance</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.month")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.deducted")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.deposited")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.balance")}</span>
             </div>
             <div className="divide-y divide-[#F0F0F1]">
               {liabilities.map((row) => {
@@ -331,20 +332,20 @@ export default function TaxesPage() {
                   >
                     <span className={`text-[13.5px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>{row.period_month}</span>
                     <span className={`text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
-                      <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#8A929E] mr-1.5 font-sans">Ded</span>
+                      <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#8A929E] mr-1.5 font-sans">{tr("payroll.dedShort")}</span>
                       {inr(row.tds_deducted)}
                     </span>
                     <span className={`text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
-                      <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#8A929E] mr-1.5 font-sans">Dep</span>
+                      <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#8A929E] mr-1.5 font-sans">{tr("payroll.depShort")}</span>
                       {inr(row.tds_deposited)}
                     </span>
                     <div className="col-span-2 md:col-span-1 flex md:justify-end">
                       {bal > 0 ? (
                         <Badge tone="danger">
-                          <span className={jetbrainsMono.className}>{inr(bal)}</span> due
+                          <span className={jetbrainsMono.className}>{inr(bal)}</span> {tr("payroll.dueSuffix")}
                         </Badge>
                       ) : (
-                        <Badge tone="success" dot>Settled</Badge>
+                        <Badge tone="success" dot>{tr("payroll.settled")}</Badge>
                       )}
                     </div>
                   </div>
@@ -359,9 +360,9 @@ export default function TaxesPage() {
       <Card padding="none">
         <div className="flex items-start justify-between gap-3 p-5 md:p-6 border-b border-[#E8EAED]">
           <div>
-            <h2 className="text-[15px] font-bold text-[#15171C]">TDS Challans</h2>
+            <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.tdsChallans")}</h2>
             <p className="text-[12.5px] text-[#8A929E] mt-0.5">
-              Record TDS payments made to the government.
+              {tr("payroll.tdsChallansSub")}
             </p>
           </div>
           {canEdit && (
@@ -374,7 +375,7 @@ export default function TaxesPage() {
                 setChallanOpen(true);
               }}
             >
-              Record Challan
+              {tr("payroll.recordChallan")}
             </Button>
           )}
         </div>
@@ -389,18 +390,18 @@ export default function TaxesPage() {
             <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center mb-4">
               <span className="material-symbols-rounded text-[26px] text-[#C7CCD4]">request_quote</span>
             </div>
-            <p className="text-[13.5px] text-[#8A929E]">No challans recorded yet.</p>
+            <p className="text-[13.5px] text-[#8A929E]">{tr("payroll.noChallans")}</p>
           </div>
         ) : (
           <>
             {/* Column header (desktop) */}
             <div className="hidden md:grid grid-cols-[1fr_1.2fr_1fr_1fr_1fr_60px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Period</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Challan No.</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">BSR Code</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Deposited</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Amount</span>
-              {canEdit && <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>}
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.period")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.challanNo")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.bsrCode")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.deposited")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.amount")}</span>
+              {canEdit && <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>}
             </div>
             <div className="divide-y divide-[#F0F0F1]">
               {challans.map((ch) => (
@@ -421,7 +422,7 @@ export default function TaxesPage() {
                     <div className="hidden md:flex justify-end">
                       <button
                         onClick={() => removeChallan(ch)}
-                        title="Delete challan"
+                        title={tr("payroll.deleteChallanTitle")}
                         className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
                       >
                         <span className="material-symbols-rounded text-[18px]">delete</span>
@@ -437,7 +438,7 @@ export default function TaxesPage() {
                     {canEdit && (
                       <button
                         onClick={() => removeChallan(ch)}
-                        title="Delete challan"
+                        title={tr("payroll.deleteChallanTitle")}
                         className="w-8 h-8 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
                       >
                         <span className="material-symbols-rounded text-[18px]">delete</span>
@@ -454,9 +455,9 @@ export default function TaxesPage() {
       {/* --- IT Declarations --- */}
       <Card padding="none">
         <div className="p-5 md:p-6 border-b border-[#E8EAED]">
-          <h2 className="text-[15px] font-bold text-[#15171C]">Income-Tax Declarations</h2>
+          <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.incomeTaxDeclarations")}</h2>
           <p className="text-[12.5px] text-[#8A929E] mt-0.5">
-            Each employee&apos;s tax regime and declared investments/exemptions for the year.
+            {tr("payroll.incomeTaxDeclarationsSub")}
           </p>
         </div>
         {loading ? (
@@ -470,17 +471,17 @@ export default function TaxesPage() {
             <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center mb-4">
               <span className="material-symbols-rounded text-[26px] text-[#C7CCD4]">group</span>
             </div>
-            <p className="text-[13.5px] text-[#8A929E]">No employees yet.</p>
+            <p className="text-[13.5px] text-[#8A929E]">{tr("payroll.noEmployeesYet")}</p>
           </div>
         ) : (
           <>
             {/* Column header (desktop) */}
             <div className="hidden md:grid grid-cols-[2fr_1fr_1.2fr_1fr_80px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Regime</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Total Declared</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-              {canEdit && <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>}
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.regime")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.totalDeclared")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.status")}</span>
+              {canEdit && <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>}
             </div>
             <div className="divide-y divide-[#F0F0F1]">
               {employees.map((emp) => {
@@ -515,9 +516,9 @@ export default function TaxesPage() {
                     {/* Status */}
                     <div className="hidden md:flex items-center">
                       {p ? (
-                        <Badge tone="success" dot>Declared</Badge>
+                        <Badge tone="success" dot>{tr("payroll.declared")}</Badge>
                       ) : (
-                        <Badge tone="neutral">Not declared</Badge>
+                        <Badge tone="neutral">{tr("payroll.notDeclared")}</Badge>
                       )}
                     </div>
 
@@ -525,7 +526,7 @@ export default function TaxesPage() {
                     {canEdit && (
                       <div className="hidden md:flex justify-end">
                         <Button variant="secondary" size="sm" onClick={() => openDeclaration(emp)}>
-                          {p ? "Edit" : "Add"}
+                          {p ? tr("payroll.edit") : tr("payroll.add")}
                         </Button>
                       </div>
                     )}
@@ -539,12 +540,12 @@ export default function TaxesPage() {
                       )}
                       {canEdit && (
                         <Button variant="secondary" size="sm" onClick={() => openDeclaration(emp)}>
-                          {p ? "Edit" : "Add"}
+                          {p ? tr("payroll.edit") : tr("payroll.add")}
                         </Button>
                       )}
                     </div>
                     <div className="col-span-2 md:hidden flex items-center justify-between text-[12px] text-[#8A929E]">
-                      <span>{p ? "Declared" : "Not declared"}</span>
+                      <span>{p ? tr("payroll.declared") : tr("payroll.notDeclared")}</span>
                       <span className={jetbrainsMono.className}>{p ? inr(declaredTotal(p)) : "—"}</span>
                     </div>
                   </div>
@@ -557,11 +558,11 @@ export default function TaxesPage() {
 
       {/* Challan modal */}
       {challanOpen && (
-        <Modal title="Record TDS Challan" onClose={() => setChallanOpen(false)}>
+        <Modal title={tr("payroll.recordTdsChallan")} onClose={() => setChallanOpen(false)}>
           <form onSubmit={saveChallan} className="flex flex-col gap-4">
             {challanErr && <Banner>{challanErr}</Banner>}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field label="Liability Month">
+              <Field label={tr("payroll.liabilityMonth")}>
                 <Input
                   type="month"
                   required
@@ -569,7 +570,7 @@ export default function TaxesPage() {
                   onChange={(e) => setChallanForm({ ...challanForm, period_month: e.target.value })}
                 />
               </Field>
-              <Field label="Amount">
+              <Field label={tr("payroll.amount")}>
                 <Input
                   type="number"
                   min="0.01"
@@ -579,20 +580,20 @@ export default function TaxesPage() {
                   onChange={(e) => setChallanForm({ ...challanForm, amount: e.target.value })}
                 />
               </Field>
-              <Field label="Challan Number">
+              <Field label={tr("payroll.challanNumber")}>
                 <Input
                   required
                   value={challanForm.challan_number}
                   onChange={(e) => setChallanForm({ ...challanForm, challan_number: e.target.value })}
                 />
               </Field>
-              <Field label="BSR Code">
+              <Field label={tr("payroll.bsrCode")}>
                 <Input
                   value={challanForm.bsr_code}
                   onChange={(e) => setChallanForm({ ...challanForm, bsr_code: e.target.value })}
                 />
               </Field>
-              <Field label="Deposit Date">
+              <Field label={tr("payroll.depositDate")}>
                 <Input
                   type="date"
                   required
@@ -600,7 +601,7 @@ export default function TaxesPage() {
                   onChange={(e) => setChallanForm({ ...challanForm, deposit_date: e.target.value })}
                 />
               </Field>
-              <Field label="Interest">
+              <Field label={tr("payroll.interest")}>
                 <Input
                   type="number"
                   min="0"
@@ -609,7 +610,7 @@ export default function TaxesPage() {
                   onChange={(e) => setChallanForm({ ...challanForm, interest: e.target.value })}
                 />
               </Field>
-              <Field label="Penalty">
+              <Field label={tr("payroll.penalty")}>
                 <Input
                   type="number"
                   min="0"
@@ -619,7 +620,7 @@ export default function TaxesPage() {
                 />
               </Field>
             </div>
-            <Field label="Notes (optional)">
+            <Field label={tr("payroll.notesOptional")}>
               <Input
                 value={challanForm.notes}
                 onChange={(e) => setChallanForm({ ...challanForm, notes: e.target.value })}
@@ -627,10 +628,10 @@ export default function TaxesPage() {
             </Field>
             <div className="flex gap-3 pt-1">
               <Button type="submit" disabled={challanSaving}>
-                {challanSaving ? "Saving…" : "Record Challan"}
+                {challanSaving ? tr("payroll.saving") : tr("payroll.recordChallan")}
               </Button>
               <Button type="button" variant="secondary" className="flex-1" onClick={() => setChallanOpen(false)}>
-                Cancel
+                {tr("common.cancel")}
               </Button>
             </div>
           </form>
@@ -639,21 +640,21 @@ export default function TaxesPage() {
 
       {/* Declaration modal */}
       {declEmp && (
-        <Modal title={`IT Declaration — ${empName(declEmp)}`} onClose={() => setDeclEmp(null)}>
+        <Modal title={tr("payroll.itDeclarationTitle", { name: empName(declEmp) })} onClose={() => setDeclEmp(null)}>
           <form onSubmit={saveDeclaration} className="flex flex-col gap-4">
             {declErr && <Banner>{declErr}</Banner>}
-            <Field label="Tax Regime">
+            <Field label={tr("payroll.taxRegime")}>
               <Select
                 value={declForm.tax_regime}
                 onChange={(e) => setDeclForm({ ...declForm, tax_regime: e.target.value as TaxRegime })}
               >
-                <option value="NEW">New Regime (default)</option>
-                <option value="OLD">Old Regime</option>
+                <option value="NEW">{tr("payroll.newRegime")}</option>
+                <option value="OLD">{tr("payroll.oldRegime")}</option>
               </Select>
             </Field>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {DECLARATION_FIELDS.map((f) => (
-                <Field key={f.key} label={f.label} hint={f.hint}>
+                <Field key={f.key} label={tr(`payroll.decl_${f.key}`)} hint={f.hint ? tr(`payroll.declHint_${f.key}`) : undefined}>
                   <Input
                     type="number"
                     min="0"
@@ -666,10 +667,10 @@ export default function TaxesPage() {
             </div>
             <div className="flex gap-3 pt-1">
               <Button type="submit" disabled={declSaving}>
-                {declSaving ? "Saving…" : "Save Declaration"}
+                {declSaving ? tr("payroll.saving") : tr("payroll.saveDeclaration")}
               </Button>
               <Button type="button" variant="secondary" className="flex-1" onClick={() => setDeclEmp(null)}>
-                Cancel
+                {tr("common.cancel")}
               </Button>
             </div>
           </form>

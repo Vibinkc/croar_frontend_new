@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import { Button, StatCard, StatGrid, Badge, Card, Input, Select, PageHelp, jetbrainsMono } from "@/components/ds";
 
@@ -17,6 +18,7 @@ interface Cycle {
 
 export default function X360CyclesList() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [cycles, setCycles] = useState<Cycle[]>([]);
     const [loading, setLoading] = useState(true);
@@ -68,16 +70,16 @@ export default function X360CyclesList() {
                     <button
                         onClick={() => router.back()}
                         className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#8A929E] hover:text-[#5B53E0] hover:border-[#D4D7DC] transition-colors flex items-center justify-center shrink-0 shadow-sm"
-                        aria-label="Go back"
+                        aria-label={tr("assess360.goBack")}
                     >
                         <span className="material-symbols-rounded text-[19px]">arrow_back</span>
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">Assessment Cycles</h1>
-                            <PageHelp title="Assessment Cycles">All your 360 review cycles. Start a New Cycle, then track each one&apos;s progress here.</PageHelp>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">{tr("postOnboarding.assessmentCycles")}</h1>
+                            <PageHelp title={tr("postOnboarding.assessmentCycles")}>{tr("assess360.cyclesHelp")}</PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage performance reviews &amp; comprehensive feedback</p>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.cyclesSubtitle")}</p>
                     </div>
                 </div>
                 {canAccess("assessments:moderate") && (
@@ -86,17 +88,17 @@ export default function X360CyclesList() {
                         className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors shrink-0"
                     >
                         <span className="material-symbols-rounded text-[17px]">add</span>
-                        New Cycle
+                        {tr("postOnboarding.newCycle")}
                     </Link>
                 )}
             </header>
 
             {/* Stat cards */}
             <StatGrid>
-                <StatCard label="Total Cycles" value={loading ? "—" : stats.total} icon="sync" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Active" value={loading ? "—" : stats.active} icon="play_circle" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Drafts" value={loading ? "—" : stats.drafts} icon="edit_note" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-                <StatCard label="Closed" value={loading ? "—" : stats.closed} icon="task_alt" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("assess360.totalCycles")} value={loading ? "—" : stats.total} icon="sync" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label={tr("general.active")} value={loading ? "—" : stats.active} icon="play_circle" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("postOnboarding.drafts")} value={loading ? "—" : stats.drafts} icon="edit_note" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("postOnboarding.closed")} value={loading ? "—" : stats.closed} icon="task_alt" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
             </StatGrid>
 
             {/* Toolbar: search + filter */}
@@ -104,7 +106,7 @@ export default function X360CyclesList() {
                 <Input
                     icon="search"
                     type="text"
-                    placeholder="Search cycles by name…"
+                    placeholder={tr("assess360.searchCycles")}
                     className="flex-1"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -116,10 +118,10 @@ export default function X360CyclesList() {
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                     >
-                        <option value="all">All Cycles</option>
-                        <option value="ACTIVE">Active Only</option>
-                        <option value="DRAFT">Drafts</option>
-                        <option value="CLOSED">Closed</option>
+                        <option value="all">{tr("postOnboarding.allCycles")}</option>
+                        <option value="ACTIVE">{tr("postOnboarding.activeOnly")}</option>
+                        <option value="DRAFT">{tr("postOnboarding.drafts")}</option>
+                        <option value="CLOSED">{tr("postOnboarding.closed")}</option>
                     </Select>
                 </div>
             </div>
@@ -138,21 +140,21 @@ export default function X360CyclesList() {
                             <span className="material-symbols-rounded text-[32px]">sync</span>
                         </div>
                         <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
-                            {searchQuery || statusFilter !== "all" ? "No cycles match your filters" : "No assessment cycles yet"}
+                            {searchQuery || statusFilter !== "all" ? tr("payroll.noCyclesMatch") : tr("assess360.noCyclesYet")}
                         </h3>
                         <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
                             {searchQuery || statusFilter !== "all"
-                                ? "Try adjusting your filters or search terms to find what you're looking for."
-                                : "Create your first 360 review cycle to start gathering feedback."}
+                                ? tr("assess360.tryAdjusting")
+                                : tr("assess360.createFirstCycle")}
                         </p>
                         {searchQuery || statusFilter !== "all" ? (
                             <Button size="sm" onClick={() => { setSearchQuery(""); setStatusFilter("all"); }}>
-                                Clear all filters
+                                {tr("assess360.clearAllFilters")}
                             </Button>
                         ) : (
                             canAccess("assessments:moderate") && (
                                 <Link href="/enterprise/assessments-360/new" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors">
-                                    <span className="material-symbols-rounded text-[19px]">add</span> New Cycle
+                                    <span className="material-symbols-rounded text-[19px]">add</span> {tr("postOnboarding.newCycle")}
                                 </Link>
                             )
                         )}
@@ -161,10 +163,10 @@ export default function X360CyclesList() {
                     <>
                         {/* Column header (desktop) */}
                         <div className="hidden md:grid grid-cols-[2.4fr_1.4fr_1fr_140px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Cycle Name</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Timeline</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("assess360.cycleName")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.timeline")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("postOnboarding.status")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("postOnboarding.actions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -181,7 +183,7 @@ export default function X360CyclesList() {
                                         </span>
                                         <div className="min-w-0">
                                             <p className="text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">{cycle.name}</p>
-                                            <p className="text-[12px] text-[#8A929E] truncate">360° Assessment</p>
+                                            <p className="text-[12px] text-[#8A929E] truncate">{tr("assess360.assessment360")}</p>
                                             {/* mobile-only meta */}
                                             <div className="flex items-center gap-2.5 mt-1 md:hidden">
                                                 {statusBadge(cycle.status)}
@@ -211,7 +213,7 @@ export default function X360CyclesList() {
                                             onClick={(e) => { e.stopPropagation(); router.push(`/enterprise/assessments-360/cycles/${cycle.id}`); }}
                                             className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12px] font-semibold hover:bg-[#15171C] hover:text-white hover:border-[#15171C] transition-colors"
                                         >
-                                            Track Progress
+                                            {tr("assess360.trackProgress")}
                                             <span className="material-symbols-rounded text-[15px]">trending_up</span>
                                         </button>
                                     </div>

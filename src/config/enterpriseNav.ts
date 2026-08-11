@@ -55,7 +55,7 @@ export const ENTERPRISE_MODULES: NavModule[] = [
             {
                 title: "Talent Search",
                 items: [
-                    { label: "Candidate Search", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
+                    { label: "Candidate Bank", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
                     { label: "Profile Sourcing", icon: "share_location", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
                     { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
                 ],

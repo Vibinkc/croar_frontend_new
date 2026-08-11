@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { Activity, Clock, ShieldAlert, History } from "lucide-react";
 import { Card, Badge, Button, EmptyState, PageHeader, jetbrainsMono } from "@/components/ds";
@@ -16,6 +17,7 @@ interface AuditLog {
 
 export default function AuditLogsPage() {
     const { token } = useAuth();
+    const { t } = useI18n();
     const [isLoading, setIsLoading] = useState(true);
     const [logs, setLogs] = useState<AuditLog[]>([]);
 
@@ -43,12 +45,12 @@ export default function AuditLogsPage() {
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             <PageHeader
-                title="Audit Logs"
-                subtitle="Real-time stream of all platform operations"
-                help={<><p>Every platform action, logged.</p><p>Search and review who did what, and when.</p></>}
+                title={t("superAdmin.auditLogs")}
+                subtitle={t("superAdmin.auditLogsSubtitle")}
+                help={<><p>{t("superAdmin.auditLogsHelp1")}</p><p>{t("superAdmin.auditLogsHelp2")}</p></>}
                 actions={
                     <Button variant="secondary" icon="refresh" onClick={fetchLogs} disabled={isLoading}>
-                        Refresh
+                        {t("superAdmin.refresh")}
                     </Button>
                 }
             />
@@ -66,8 +68,8 @@ export default function AuditLogsPage() {
                     <EmptyState
                         tone="muted"
                         icon="history"
-                        title="No activity logs recorded yet"
-                        description="Platform actions will appear here as they happen — who did what, and when."
+                        title={t("superAdmin.noActivityLogs")}
+                        description={t("superAdmin.noActivityLogsDesc")}
                     />
                 </Card>
             ) : (
@@ -89,7 +91,7 @@ export default function AuditLogsPage() {
                                         <span className="text-[14px] font-bold text-[#15171C] truncate">
                                             {log.action}
                                         </span>
-                                        <Badge tone="indigo">Action</Badge>
+                                        <Badge tone="indigo">{t("superAdmin.action")}</Badge>
                                     </div>
                                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
                                         <span className={`inline-flex items-center gap-1.5 text-[11.5px] text-[#8A929E] ${jetbrainsMono.className}`}>
@@ -98,7 +100,7 @@ export default function AuditLogsPage() {
                                         </span>
                                         <span className="inline-flex items-center gap-1.5 text-[12px] text-[#8A929E]">
                                             <ShieldAlert className="w-3.5 h-3.5" />
-                                            Admin: {log.admin_id?.split('-')[0] || "System"}
+                                            {t("superAdmin.admin")}: {log.admin_id?.split('-')[0] || t("superAdmin.system")}
                                         </span>
                                     </div>
                                 </div>

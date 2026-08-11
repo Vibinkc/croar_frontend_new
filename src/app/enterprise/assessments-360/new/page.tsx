@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import { Button, Card, CardHeader, Input, Field, Badge, PageHeader, jetbrainsMono } from "@/components/ds";
 
@@ -21,6 +22,7 @@ interface Employee {
 
 export default function X360NewCycle() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -51,8 +53,8 @@ export default function X360NewCycle() {
                 } else {
                     setTplError(
                         tplRes.status === 403
-                            ? "You don't have permission to view assessment templates."
-                            : "Couldn't load templates. Please try again."
+                            ? tr("assess360.noPermissionTemplates")
+                            : tr("assess360.loadFailedRetry")
                     );
                 }
                 if (empRes.ok) {
@@ -61,7 +63,7 @@ export default function X360NewCycle() {
                 }
             } catch (error) {
                 console.error(error);
-                setTplError("Couldn't load templates. Check your connection and try again.");
+                setTplError(tr("assess360.loadFailedConnection"));
             } finally {
                 setLoading(false);
             }
@@ -77,7 +79,7 @@ export default function X360NewCycle() {
             if (res.ok) {
                 router.push("/enterprise/assessments-360");
             } else {
-                alert("Failed to start cycle");
+                alert(tr("assess360.failedStartCycle"));
             }
         } catch (error) {
             console.error(error);
@@ -96,37 +98,37 @@ export default function X360NewCycle() {
     };
 
     if (loading) return (
-        <div className="flex items-center justify-center py-24 text-[13px] text-[#8A929E] font-medium">Loading...</div>
+        <div className="flex items-center justify-center py-24 text-[13px] text-[#8A929E] font-medium">{tr("assess360.loadingDots")}</div>
     );
 
     return (
         <div className="max-w-6xl mx-auto px-4 sm:px-5 md:px-7 py-6 space-y-6 animate-in fade-in duration-500">
             <PageHeader
-                title="Start New 360 Cycle"
-                subtitle="Configure and launch a new feedback round"
+                title={tr("assess360.startNewCycle")}
+                subtitle={tr("assess360.newCycleSubtitle")}
                 onBack={() => router.push('/enterprise/assessments-360')}
-                help="Configure the cycle: name it, pick the people being reviewed and their raters, then launch."
+                help={tr("assess360.newCycleHelp")}
             />
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 {/* Cycle Configuration */}
                 <div className="lg:col-span-5 space-y-6">
                     <Card>
-                        <CardHeader title="Cycle Configuration" subtitle="Name and schedule for this round" />
+                        <CardHeader title={tr("assess360.cycleConfiguration")} subtitle={tr("assess360.cycleConfigSubtitle")} />
 
                         <div className="space-y-4">
-                            <Field label="Cycle Name" htmlFor="x360-cycle-name" required>
+                            <Field label={tr("assess360.cycleName")} htmlFor="x360-cycle-name" required>
                                 <Input
                                     id="x360-cycle-name"
                                     value={formData.name}
                                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                    placeholder="e.g. Q1 Leadership Review"
+                                    placeholder={tr("assess360.cycleNamePlaceholder")}
                                     required
                                 />
                             </Field>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <Field label="Start Date" htmlFor="x360-start-date" required>
+                                <Field label={tr("assess360.startDate")} htmlFor="x360-start-date" required>
                                     <Input
                                         id="x360-start-date"
                                         type="date"
@@ -135,7 +137,7 @@ export default function X360NewCycle() {
                                         required
                                     />
                                 </Field>
-                                <Field label="End Date" htmlFor="x360-end-date" required>
+                                <Field label={tr("assess360.endDate")} htmlFor="x360-end-date" required>
                                     <Input
                                         id="x360-end-date"
                                         type="date"
@@ -148,7 +150,7 @@ export default function X360NewCycle() {
                         </div>
 
                         <div className="pt-5 mt-5 border-t border-[#E8EAED]">
-                            <label htmlFor="x360-template-list" className="block text-[12.5px] font-semibold text-[#374151] mb-3">Select Template</label>
+                            <label htmlFor="x360-template-list" className="block text-[12.5px] font-semibold text-[#374151] mb-3">{tr("assess360.selectTemplate")}</label>
 
                             {/* Empty / error state — templates are scoped to the current organization,
                                 so a workspace with none (or a failed load) would otherwise show a blank area. */}
@@ -156,12 +158,12 @@ export default function X360NewCycle() {
                                 <div className="rounded-[12px] border border-dashed border-[#D9DCE1] bg-[#F9FAFB] px-4 py-8 text-center">
                                     <span className="material-symbols-rounded text-[26px] text-[#9AA3AF]">description</span>
                                     <p className="mt-2 text-[13px] font-bold text-[#15171C]">
-                                        {tplError ? "Couldn't load templates" : "No templates in this workspace yet"}
+                                        {tplError ? tr("assess360.loadFailed") : tr("assess360.noTemplatesWorkspace")}
                                     </p>
                                     <p className="mt-0.5 text-[12px] text-[#8A929E] max-w-xs mx-auto">
                                         {tplError
                                             ? tplError
-                                            : "Templates are specific to your organization. Create one (with its questions) before starting a cycle."}
+                                            : tr("assess360.templatesOrgHint")}
                                     </p>
                                     {!tplError && (
                                         <Button
@@ -172,7 +174,7 @@ export default function X360NewCycle() {
                                             className="mt-3.5"
                                             onClick={() => router.push("/enterprise/assessments-360/templates/new")}
                                         >
-                                            Create Template
+                                            {tr("assess360.createTemplate")}
                                         </Button>
                                     )}
                                 </div>
@@ -195,7 +197,7 @@ export default function X360NewCycle() {
                                     >
                                         <div className="min-w-0">
                                             <h4 className="font-bold text-[#15171C] text-[13px] truncate leading-tight mb-0.5">{tpl.name}</h4>
-                                            <p className="text-[12px] text-[#8A929E] line-clamp-1">{tpl.description || "Active Framework"}</p>
+                                            <p className="text-[12px] text-[#8A929E] line-clamp-1">{tpl.description || tr("assess360.activeFramework")}</p>
                                         </div>
                                         {selected && (
                                             <span className="w-5 h-5 rounded-full bg-[#5B53E0] text-white flex items-center justify-center shrink-0">
@@ -216,7 +218,7 @@ export default function X360NewCycle() {
                             disabled={submitting || !formData.template_id || formData.ratee_ids.length === 0}
                             className="mt-6"
                         >
-                            {submitting ? 'Transmitting...' : 'Launch Cycle'}
+                            {submitting ? tr("assess360.transmitting") : tr("assess360.launchCycle")}
                         </Button>
                     </Card>
                 </div>
@@ -225,9 +227,9 @@ export default function X360NewCycle() {
                 <div className="lg:col-span-7">
                     <Card>
                         <CardHeader
-                            title="Select Target Employees"
-                            subtitle="Choose who will be reviewed in this cycle"
-                            action={<Badge tone="indigo" className={jetbrainsMono.className}>{formData.ratee_ids.length} selected</Badge>}
+                            title={tr("assess360.selectTargetEmployees")}
+                            subtitle={tr("assess360.selectTargetSubtitle")}
+                            action={<Badge tone="indigo" className={jetbrainsMono.className}>{formData.ratee_ids.length} {tr("assess360.selected")}</Badge>}
                         />
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 max-h-[560px] overflow-y-auto pr-1 custom-scrollbar">
@@ -251,7 +253,7 @@ export default function X360NewCycle() {
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-[13px] font-bold text-[#15171C] truncate leading-tight mb-0.5">{emp.first_name} {emp.last_name}</p>
-                                        <p className="text-[12px] text-[#8A929E] truncate">{emp.designation || 'Specialist'}</p>
+                                        <p className="text-[12px] text-[#8A929E] truncate">{emp.designation || tr("assess360.specialist")}</p>
                                     </div>
                                 </div>
                                 );

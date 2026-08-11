@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useCallback, Suspense } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-    Trash2, 
+import {
+    Trash2,
     Settings2, 
     Mic2, 
     Video, 
@@ -35,6 +36,7 @@ interface InterviewTemplate {
 
 function InterviewTemplatesContent() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [templates, setTemplates] = useState<InterviewTemplate[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showBuilder, setShowBuilder] = useState(false);
@@ -120,12 +122,12 @@ function InterviewTemplatesContent() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Interview Templates</h1>
-                        <PageHelp title="Interview Templates">
-                            <p>Reusable interview templates and scorecards.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("templatesMgmt.interviewTemplatesTitle")}</h1>
+                        <PageHelp title={tr("templatesMgmt.interviewTemplatesTitle")}>
+                            <p>{tr("templatesMgmt.interviewTemplatesHelp")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Design AI behavioral screening and custom interviews.</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("templatesMgmt.interviewTemplatesSubtitle")}</p>
                 </div>
 
                 <div className="flex items-center gap-2.5">
@@ -138,7 +140,7 @@ function InterviewTemplatesContent() {
                             className="h-8 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
                         >
                             <Plus className="w-3.5 h-3.5" />
-                            New Template
+                            {tr("templatesMgmt.newTemplate")}
                         </button>
                     )}
                     <button 
@@ -153,10 +155,10 @@ function InterviewTemplatesContent() {
             {/* Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
-                    { label: "Total Templates", value: templates.length, Icon: MessagesSquare, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-                    { label: "Video Calls", value: templates.filter(t => t.require_video).length, Icon: Video, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                    { label: "Audio Only", value: templates.filter(t => !t.require_video).length, Icon: Mic2, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-                    { label: "Avg Duration", value: templates.length ? Math.round(templates.reduce((acc, t) => acc + t.duration, 0) / templates.length) + "m" : "0m", Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: tr("templatesMgmt.totalTemplates"), value: templates.length, Icon: MessagesSquare, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+                    { label: tr("templatesMgmt.videoCalls"), value: templates.filter(t => t.require_video).length, Icon: Video, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: tr("templatesMgmt.audioOnly"), value: templates.filter(t => !t.require_video).length, Icon: Mic2, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: tr("templatesMgmt.avgDuration"), value: templates.length ? Math.round(templates.reduce((acc, t) => acc + t.duration, 0) / templates.length) + "m" : "0m", Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
                 ].map((s) => (
                     <div
                         key={s.label}
@@ -182,7 +184,7 @@ function InterviewTemplatesContent() {
                     <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                     <input 
                         type="text"
-                        placeholder="Search interview templates by title or topic..."
+                        placeholder={tr("templatesMgmt.searchInterviewPlaceholder")}
                         className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                         value={interviewSearch}
                         onChange={(e) => setInterviewSearch(e.target.value)}
@@ -195,11 +197,11 @@ function InterviewTemplatesContent() {
                         value={difficultyFilter}
                         onChange={(e) => setDifficultyFilter(e.target.value)}
                     >
-                        <option value="ALL">All Difficulties</option>
-                        <option value="Entry">Entry</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                        <option value="Expert">Expert</option>
+                        <option value="ALL">{tr("templatesMgmt.allDifficulties")}</option>
+                        <option value="Entry">{tr("templatesMgmt.diffEntry")}</option>
+                        <option value="Intermediate">{tr("templatesMgmt.diffIntermediate")}</option>
+                        <option value="Advanced">{tr("templatesMgmt.diffAdvanced")}</option>
+                        <option value="Expert">{tr("templatesMgmt.diffExpert")}</option>
                     </select>
                 </div>
             </div>
@@ -214,27 +216,27 @@ function InterviewTemplatesContent() {
                     </div>
                     {templates.length === 0 ? (
                         <>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Yet</h3>
-                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first interview template to automate candidate screening.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("templatesMgmt.noTemplatesYet")}</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">{tr("templatesMgmt.interviewEmptyDesc")}</p>
                             {canAccess("interviews:moderate") && (
                                 <button
                                     onClick={() => { setEditingTemplate(null); setShowBuilder(true); }}
                                     className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5"
                                 >
                                     <Plus className="w-3.5 h-3.5" />
-                                    New Template
+                                    {tr("templatesMgmt.newTemplate")}
                                 </button>
                             )}
                         </>
                     ) : (
                         <>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Results Found</h3>
-                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">No interview templates match your current search or filter.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("templatesMgmt.noResultsFound")}</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">{tr("templatesMgmt.interviewNoResultsDesc")}</p>
                             <button
                                 onClick={() => { setInterviewSearch(""); setDifficultyFilter("ALL"); }}
                                 className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
                             >
-                                Reset Filters
+                                {tr("templatesMgmt.resetFilters")}
                             </button>
                         </>
                     )}
@@ -307,7 +309,7 @@ function InterviewTemplatesContent() {
                                     </span>
                                     <span className="flex items-center gap-1">
                                         {template.require_video ? <Video className="w-3.5 h-3.5" /> : <Mic2 className="w-3.5 h-3.5" />}
-                                        {template.require_video ? "Video" : "Audio"}
+                                        {template.require_video ? tr("templatesMgmt.video") : tr("templatesMgmt.audio")}
                                     </span>
                                 </div>
                                 <div className="text-[#8A929E] group-hover:text-[#5B53E0] transition-colors">
@@ -345,26 +347,31 @@ function InterviewTemplatesContent() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Delete Template?"
-                message={`Are you sure you want to delete "${templateToDelete?.name}"? This will remove all associated interview logic.`}
-                confirmLabel="Delete Template"
-                cancelLabel="Cancel"
+                title={tr("templatesMgmt.deleteTemplateTitle")}
+                message={tr("templatesMgmt.deleteConfirmInterview", { name: templateToDelete?.name ?? "" })}
+                confirmLabel={tr("templatesMgmt.deleteTemplate")}
+                cancelLabel={tr("common.cancel")}
                 isDestructive={true}
             />
         </div>
     );
 }
 
+function InterviewTemplatesFallback() {
+    const { t: tr } = useI18n();
+    return (
+        <div className="flex items-center justify-center h-screen bg-[#F4F5F7]">
+            <div className="flex flex-col items-center gap-4">
+                <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-[#8A929E] text-sm font-medium">{tr("templatesMgmt.loadingInterview")}</p>
+            </div>
+        </div>
+    );
+}
+
 export default function InterviewTemplatesPage() {
     return (
-        <Suspense fallback={
-            <div className="flex items-center justify-center h-screen bg-[#F4F5F7]">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-[#8A929E] text-sm font-medium">Loading Interview Templates…</p>
-                </div>
-            </div>
-        }>
+        <Suspense fallback={<InterviewTemplatesFallback />}>
             <InterviewTemplatesContent />
         </Suspense>
     );

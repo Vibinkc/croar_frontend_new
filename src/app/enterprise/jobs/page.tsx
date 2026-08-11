@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import {
     Briefcase,
@@ -56,6 +57,7 @@ type TabStatus = "ALL" | "ACTIVE" | "DRAFTS" | "CLOSED";
 
 export default function EnterpriseJobsPage() {
     const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [jobs, setJobs] = useState<Job[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -99,7 +101,7 @@ export default function EnterpriseJobsPage() {
     };
 
     const handleDeleteJob = async (jobId: string) => {
-        if (!confirm("Are you sure you want to delete this job and all associated automations? This action cannot be undone.")) return;
+        if (!confirm(tr("jobs.confirmDeleteJob"))) return;
 
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}`, {
@@ -112,11 +114,11 @@ export default function EnterpriseJobsPage() {
                 setJobs(prev => prev.filter(j => j.id !== jobId));
             } else {
                 const error = await res.json();
-                alert(`Error deleting job: ${error.detail || "Unknown error"}`);
+                alert(tr("jobs.errorDeletingJob", { error: error.detail || tr("jobs.unknownError") }));
             }
         } catch (error) {
             console.error("Error deleting job:", error);
-            alert("Failed to delete job. Please try again.");
+            alert(tr("jobs.failedDeleteJob"));
         }
     };
 
@@ -178,10 +180,10 @@ export default function EnterpriseJobsPage() {
     const jobTypes = Array.from(new Set(jobs.map(j => j.job_type).filter((t): t is string => Boolean(t))));
 
     const statCards = [
-        { tab: "ALL" as TabStatus, label: "Total Positions", value: stats.total, Icon: Briefcase, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
-        { tab: "ACTIVE" as TabStatus, label: "Active Jobs", value: stats.active, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-        { tab: "DRAFTS" as TabStatus, label: "Drafts", value: stats.drafts, Icon: Clock, grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-        { tab: "CLOSED" as TabStatus, label: "Closed / On hold", value: stats.closed, Icon: CheckCircle2, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+        { tab: "ALL" as TabStatus, label: tr("jobs.totalPositions"), value: stats.total, Icon: Briefcase, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
+        { tab: "ACTIVE" as TabStatus, label: tr("jobs.activeJobs"), value: stats.active, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+        { tab: "DRAFTS" as TabStatus, label: tr("jobs.drafts"), value: stats.drafts, Icon: Clock, grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+        { tab: "CLOSED" as TabStatus, label: tr("jobs.closedOnHold"), value: stats.closed, Icon: CheckCircle2, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
     ];
 
     const selectCls =
@@ -212,13 +214,13 @@ export default function EnterpriseJobsPage() {
     // job_statuses: 1 Draft · 2 Active · 3 On Hold · 4 Closed.
     const statusBadge = (statusId: number) =>
         statusId === 2 ? (
-            <Badge tone="success" dot>Active</Badge>
+            <Badge tone="success" dot>{tr("jobs.active")}</Badge>
         ) : statusId === 1 ? (
-            <Badge tone="neutral" dot>Draft</Badge>
+            <Badge tone="neutral" dot>{tr("jobs.draft")}</Badge>
         ) : statusId === 3 ? (
-            <Badge tone="warning" dot>On Hold</Badge>
+            <Badge tone="warning" dot>{tr("jobs.onHold")}</Badge>
         ) : (
-            <Badge tone="danger" dot>Closed</Badge>
+            <Badge tone="danger" dot>{tr("jobs.closed")}</Badge>
         );
 
     return (
@@ -227,14 +229,14 @@ export default function EnterpriseJobsPage() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Jobs</h1>
-                        <PageHelp title="Jobs">
-                            <p>Every open position lives here. Each job has its own candidate pipeline.</p>
-                            <p><strong>New Position</strong> posts a job manually; <strong>Hire with AI</strong> lets Croar set up the whole pipeline for you.</p>
-                            <p>Open a job to track applicants, or use the row actions to share, edit or publish it.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("jobs.title")}</h1>
+                        <PageHelp title={tr("jobs.title")}>
+                            <p>{tr("jobs.help1")}</p>
+                            <p><strong>{tr("jobs.newPosition")}</strong> {tr("jobs.help2a")} <strong>{tr("jobs.hireWithAI")}</strong> {tr("jobs.help2b")}</p>
+                            <p>{tr("jobs.help3")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage your pipeline &amp; open positions</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("jobs.subtitle")}</p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
                     {canAccess("jobs:create") && (
@@ -243,13 +245,13 @@ export default function EnterpriseJobsPage() {
                                 href="/enterprise/croar-pilot"
                                 className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
                             >
-                                <Sparkles className="w-3.5 h-3.5 text-[#5B53E0]" /> Hire with AI
+                                <Sparkles className="w-3.5 h-3.5 text-[#5B53E0]" /> {tr("jobs.hireWithAI")}
                             </Link>
                             <Link
                                 href="/enterprise/jobs/create"
                                 className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
                             >
-                                <Plus className="w-3.5 h-3.5" /> New Position
+                                <Plus className="w-3.5 h-3.5" /> {tr("jobs.newPosition")}
                             </Link>
                         </>
                     )}
@@ -285,7 +287,7 @@ export default function EnterpriseJobsPage() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by title, location or keywords…"
+                        placeholder={tr("jobs.searchPlaceholder")}
                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
@@ -298,7 +300,7 @@ export default function EnterpriseJobsPage() {
                             onChange={(e) => setSelectedCompanyId(e.target.value)}
                             className={`${selectCls} w-full md:min-w-[150px]`}
                         >
-                            <option value="ALL">All clients</option>
+                            <option value="ALL">{tr("jobs.allClients")}</option>
                             {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
@@ -311,10 +313,10 @@ export default function EnterpriseJobsPage() {
                             onChange={(e) => setActiveTab(e.target.value as TabStatus)}
                             className={`${selectCls} w-full md:min-w-[150px]`}
                         >
-                            <option value="ALL">Any status</option>
-                            <option value="ACTIVE">Active</option>
-                            <option value="DRAFTS">Draft</option>
-                            <option value="CLOSED">Closed / On hold</option>
+                            <option value="ALL">{tr("jobs.anyStatus")}</option>
+                            <option value="ACTIVE">{tr("jobs.active")}</option>
+                            <option value="DRAFTS">{tr("jobs.draft")}</option>
+                            <option value="CLOSED">{tr("jobs.closedOnHold")}</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     </div>
@@ -327,7 +329,7 @@ export default function EnterpriseJobsPage() {
                                 onChange={(e) => setSelectedLocation(e.target.value)}
                                 className={`${selectCls} w-full md:min-w-[150px]`}
                             >
-                                <option value="ALL">All locations</option>
+                                <option value="ALL">{tr("jobs.allLocations")}</option>
                                 {locations.map((loc) => <option key={loc} value={loc}>{loc}</option>)}
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
@@ -342,7 +344,7 @@ export default function EnterpriseJobsPage() {
                                 onChange={(e) => setSelectedType(e.target.value)}
                                 className={`${selectCls} w-full md:min-w-[140px]`}
                             >
-                                <option value="ALL">All types</option>
+                                <option value="ALL">{tr("jobs.allTypes")}</option>
                                 {jobTypes.map((t) => <option key={t} value={t}>{t}</option>)}
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
@@ -364,19 +366,19 @@ export default function EnterpriseJobsPage() {
                         <EmptyState
                             tone="brand"
                             icon="work"
-                            title="Post your first job"
-                            description="Create a role and Croar sets up its candidate pipeline. Post it manually, or let AI build the whole pipeline."
+                            title={tr("jobs.postFirstJob")}
+                            description={tr("jobs.postFirstJobDesc")}
                             action={
                                 canAccess("jobs:create") ? (
                                     <Link href="/enterprise/croar-pilot">
-                                        <Button icon="auto_awesome">Hire with AI</Button>
+                                        <Button icon="auto_awesome">{tr("jobs.hireWithAI")}</Button>
                                     </Link>
                                 ) : undefined
                             }
                             secondary={
                                 canAccess("jobs:create") ? (
                                     <Link href="/enterprise/jobs/create">
-                                        <Button variant="secondary" icon="add">Post a job</Button>
+                                        <Button variant="secondary" icon="add">{tr("jobs.postAJob")}</Button>
                                     </Link>
                                 ) : undefined
                             }
@@ -385,14 +387,14 @@ export default function EnterpriseJobsPage() {
                         <EmptyState
                             tone="muted"
                             icon="search_off"
-                            title="No jobs match your filters"
-                            description="Try adjusting your filters or search terms to find what you're looking for."
+                            title={tr("jobs.noJobsMatch")}
+                            description={tr("jobs.noJobsMatchDesc")}
                             action={
                                 <Button
                                     variant="secondary"
                                     onClick={() => { setSearchQuery(""); setActiveTab("ALL"); setSelectedCompanyId("ALL"); setSelectedLocation("ALL"); setSelectedType("ALL"); }}
                                 >
-                                    Clear all filters
+                                    {tr("jobs.clearAllFilters")}
                                 </Button>
                             }
                         />
@@ -401,11 +403,11 @@ export default function EnterpriseJobsPage() {
                     <>
                         {/* Column header (desktop) */}
                         <div className="hidden md:grid grid-cols-[2.4fr_1.2fr_0.9fr_1fr_120px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Position</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Location</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Experience</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobs.colPosition")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobs.colLocation")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobs.colExperience")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobs.colStatus")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("jobs.colActions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -425,7 +427,7 @@ export default function EnterpriseJobsPage() {
                                             </Link>
                                             {/* mobile-only meta */}
                                             <div className="flex items-center gap-2.5 mt-0.5 text-[12px] text-[#8A929E] md:hidden">
-                                                <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {job.location || "Remote"}</span>
+                                                <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {job.location || tr("jobs.remote")}</span>
                                                 <span className={jetbrainsMono.className}>{job.experience_min || 0}–{job.experience_max || 5}y</span>
                                             </div>
                                             <span className="hidden md:block text-[11px] text-[#C7CCD4] mt-0.5">#{job.id.substring(0, 8)}</span>
@@ -435,12 +437,12 @@ export default function EnterpriseJobsPage() {
                                     {/* Location (desktop) */}
                                     <div className="hidden md:flex items-center gap-1.5 text-[13px] text-[#374151] min-w-0">
                                         <MapPin className="w-4 h-4 text-[#9AA3AF] shrink-0" />
-                                        <span className="truncate">{job.location || "Remote"}</span>
+                                        <span className="truncate">{job.location || tr("jobs.remote")}</span>
                                     </div>
 
                                     {/* Experience (desktop) */}
                                     <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
-                                        {job.experience_min || 0}–{job.experience_max || 5} yrs
+                                        {job.experience_min || 0}–{job.experience_max || 5} {tr("jobs.yrs")}
                                     </div>
 
                                     {/* Status */}
@@ -453,13 +455,13 @@ export default function EnterpriseJobsPage() {
                                         <button
                                             onClick={() => copyLink(job.id)}
                                             className={`w-9 h-9 flex items-center justify-center rounded-[9px] transition-colors border border-transparent ${copiedJobId === job.id ? "bg-[#E6F4EA] text-[#15803D]" : "text-[#9AA3AF] hover:bg-[#F1F2F5] hover:text-[#374151]"}`}
-                                            title="Copy JD link"
+                                            title={tr("jobs.copyJdLink")}
                                         >
                                             {copiedJobId === job.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                                         </button>
 
                                         {canAccess("jobs:update") && (
-                                            <Link href={`/enterprise/jobs/${job.id}/edit`} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title="Edit job">
+                                            <Link href={`/enterprise/jobs/${job.id}/edit`} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title={tr("jobs.editJob")}>
                                                 <FileEdit className="w-4 h-4" />
                                             </Link>
                                         )}
@@ -468,7 +470,7 @@ export default function EnterpriseJobsPage() {
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === job.id ? null : job.id); }}
                                                 className={`w-9 h-9 flex items-center justify-center rounded-[9px] transition-colors ${openMenuId === job.id ? "bg-[#F1F2F5] text-[#374151]" : "text-[#9AA3AF] hover:bg-[#F1F2F5] hover:text-[#374151]"}`}
-                                                title="More"
+                                                title={tr("jobs.more")}
                                                 aria-haspopup="menu"
                                                 aria-expanded={openMenuId === job.id}
                                             >
@@ -481,7 +483,7 @@ export default function EnterpriseJobsPage() {
                                                             onClick={() => { setPublishModal({ isOpen: true, jobId: job.id, jobTitle: job.title }); setOpenMenuId(null); }}
                                                             className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#5B53E0] hover:bg-[#ECEBFB] transition-colors"
                                                         >
-                                                            <GlobeIcon className="w-4 h-4" /> Publish job
+                                                            <GlobeIcon className="w-4 h-4" /> {tr("jobs.publishJob")}
                                                         </button>
                                                     )}
                                                     {canAccess("jobs:delete") && (
@@ -489,7 +491,7 @@ export default function EnterpriseJobsPage() {
                                                             onClick={() => { setOpenMenuId(null); handleDeleteJob(job.id); }}
                                                             className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
                                                         >
-                                                            <Archive className="w-4 h-4" /> Delete job
+                                                            <Archive className="w-4 h-4" /> {tr("jobs.deleteJob")}
                                                         </button>
                                                     )}
                                                 </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import { Button, Card, Badge, Field, Textarea, CroarLogo, CroarMark, jetbrainsMono } from "@/components/ds";
 
@@ -44,6 +45,7 @@ const safeOptions = (v: string | undefined | null): string[] => {
 
 export default function FillSurvey({ params }: { params: Promise<{ token: string }> }) {
     const { token } = use(params);
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [invite, setInvite] = useState<Invite | null>(null);
     const [loading, setLoading] = useState(true);
@@ -103,7 +105,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
         <div className="min-h-screen flex items-center justify-center p-8 bg-[#F4F5F7]">
             <div className="flex flex-col items-center gap-5">
                 <div className="w-12 h-12 border-[3px] border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
-                <p className="text-[12px] font-semibold text-[#8A929E]">Loading survey…</p>
+                <p className="text-[12px] font-semibold text-[#8A929E]">{tr("surveysExt.loadingSurvey")}</p>
             </div>
         </div>
     );
@@ -115,9 +117,9 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                     <div className="w-16 h-16 rounded-[14px] bg-[#E6F4EA] text-[#15803D] flex items-center justify-center mx-auto mb-6">
                         <span className="material-symbols-rounded text-[34px]">verified</span>
                     </div>
-                    <h1 className="text-[24px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">Thank you</h1>
+                    <h1 className="text-[24px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">{tr("surveysExt.thankYou")}</h1>
                     <p className="text-[14px] text-[#374151] leading-relaxed">
-                        Your feedback has been securely recorded. Thank you for helping us shape a better workplace culture.
+                        {tr("surveysExt.feedbackRecorded")}
                     </p>
                 </Card>
 
@@ -125,12 +127,12 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                     <div className="flex items-center gap-3">
                         <CroarMark size={40} />
                         <div>
-                            <h3 className="text-[14px] font-bold text-[#15171C]">Neural Coaching Lab</h3>
-                            <p className="text-[12px] text-[#8A929E]">Behavioral intelligence, automated.</p>
+                            <h3 className="text-[14px] font-bold text-[#15171C]">{tr("surveysExt.neuralCoachingLab")}</h3>
+                            <p className="text-[12px] text-[#8A929E]">{tr("surveysExt.behavioralIntelligence")}</p>
                         </div>
                     </div>
                     <p className="text-[13px] text-[#374151] leading-relaxed">
-                        Enhance your behavioral intelligence through interactive AI role-play simulations. Practice real-world scenarios in a safe, automated lab.
+                        {tr("surveysExt.neuralCoachingDesc")}
                     </p>
                     <Button
                         type="button"
@@ -138,13 +140,13 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                         icon="play_circle"
                         onClick={() => router.push('/enterprise/ai-training/portal')}
                     >
-                        Engage Simulation
+                        {tr("surveysExt.engageSimulation")}
                     </Button>
                 </Card>
 
                 <div className="text-center">
                     <Button type="button" variant="ghost" size="sm" icon="close" onClick={() => window.close()}>
-                        Close Portal
+                        {tr("surveysExt.closePortal")}
                     </Button>
                 </div>
             </div>
@@ -167,18 +169,18 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                         <Badge tone="indigo">{invite?.instance.template.survey_type.name}</Badge>
                         <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A929E]">
                             <span className="material-symbols-rounded text-[15px]">lock</span>
-                            Confidential
+                            {tr("surveysExt.confidential")}
                         </span>
                     </div>
                     <h1 className="text-[26px] leading-tight font-extrabold text-[#15171C] tracking-[-0.4px]">
                         {invite?.instance.name}
                     </h1>
                     <p className="text-[14px] text-[#374151] leading-relaxed">
-                        {invite?.instance.template.description || "Every voice matters. Please provide your honest feedback across the following points."}
+                        {invite?.instance.template.description || tr("surveysExt.everyVoiceMatters")}
                     </p>
                     <p className="inline-flex items-center gap-1.5 text-[12.5px] text-[#8A929E] leading-relaxed">
                         <span className="material-symbols-rounded text-[16px]">info</span>
-                        Please answer all questions below. Your responses are confidential.
+                        {tr("surveysExt.answerAllConfidential")}
                     </p>
                 </Card>
 
@@ -193,12 +195,12 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                                     <h2 className="text-[16px] font-bold text-[#15171C] leading-snug">{q.text}</h2>
                                     <p className="text-[12px] text-[#8A929E]">
                                         {q.type === 'MCQ'
-                                            ? 'Select one option'
+                                            ? tr("surveysExt.selectOneOption")
                                             : q.type === 'RATING'
                                                 ? (q.scale_min != null && q.scale_max != null
-                                                    ? `Rate from ${q.scale_min} to ${q.scale_max}`
-                                                    : 'Rate on the scale below')
-                                                : 'Type your response'}
+                                                    ? tr("surveysExt.rateFromTo", { min: q.scale_min, max: q.scale_max })
+                                                    : tr("surveysExt.rateOnScale"))
+                                                : tr("surveysExt.typeYourResponse")}
                                     </p>
                                 </div>
                             </div>
@@ -206,11 +208,11 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                             {q.type === 'RATING' && (
                                 <div className="space-y-5">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-[11px] font-semibold text-[#8A929E]">Least Agree</span>
+                                        <span className="text-[11px] font-semibold text-[#8A929E]">{tr("surveysExt.leastAgree")}</span>
                                         <div className={`${jetbrainsMono.className} text-[32px] font-bold text-[#5B53E0] leading-none`}>
                                             {responses[i]?.answer_value}
                                         </div>
-                                        <span className="text-[11px] font-semibold text-[#8A929E]">Fully Agree</span>
+                                        <span className="text-[11px] font-semibold text-[#8A929E]">{tr("surveysExt.fullyAgree")}</span>
                                     </div>
                                     <div className="relative">
                                         <input
@@ -255,7 +257,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                                         className="min-h-[120px]"
                                         value={responses[i]?.answer_text || ""}
                                         onChange={(e) => updateResponse(i, "answer_text", e.target.value)}
-                                        placeholder="Share your thoughts in detail…"
+                                        placeholder={tr("surveysExt.shareThoughts")}
                                     />
                                 </Field>
                             )}
@@ -270,11 +272,11 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                             disabled={submitting}
                             icon={submitting ? undefined : "send"}
                         >
-                            {submitting ? 'Submitting…' : 'Complete Entry'}
+                            {submitting ? tr("surveysExt.submitting") : tr("surveysExt.completeEntry")}
                         </Button>
                         <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#8A929E]">
                             <span className="material-symbols-rounded text-[15px]">lock</span>
-                            End-to-end encrypted secure submission
+                            {tr("surveysExt.encryptedSubmission")}
                         </p>
                     </div>
                 </form>

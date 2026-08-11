@@ -19,9 +19,11 @@ import {
   Monitor
 } from "lucide-react";
 import { BACKEND_URL } from "@/utils/api";
+import { useI18n } from "@/context/I18nContext";
 
 export default function AIInterviewPage() {
   const { id: applicationId } = useParams();
+  const { t } = useI18n();
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [status, setStatus] = useState<"LOADING" | "READY" | "INTERVIEWING" | "SUBMITTING" | "FINISHED">("LOADING");
@@ -75,10 +77,10 @@ export default function AIInterviewPage() {
             if (!res.ok) {
           const errorData = await res.json();
           if (email) {
-            setEmailError(errorData.detail || "Verification failed");
+            setEmailError(errorData.detail || t("candidate.verificationFailed"));
           } else {
             console.error("Initial check failed:", errorData.detail);
-            setEmailError(errorData.detail || "Connection established, but verification failed.");
+            setEmailError(errorData.detail || t("candidate.connectionVerificationFailed"));
           }
           setIsVerifying(false);
           return;
@@ -194,7 +196,7 @@ export default function AIInterviewPage() {
 
   const handleStart = () => {
     if (!enteredEmail) {
-      setEmailError("Please enter your registered email");
+      setEmailError(t("candidate.enterRegisteredEmailError"));
       return;
     }
     initInterview(enteredEmail);
@@ -263,14 +265,14 @@ export default function AIInterviewPage() {
             </div>
             
             <div className="space-y-3">
-              <h1 className="text-4xl font-black text-white tracking-tight">Interview Completed</h1>
+              <h1 className="text-4xl font-black text-white tracking-tight">{t("candidate.interviewCompleted")}</h1>
               <p className="text-slate-500 font-medium leading-relaxed">
-                Thank you, <span className="text-white">{candidateName}</span>. Your technical screening for the <span className="text-indigo-400">{jobTitle}</span> position has been successfully recorded.
+                {t("candidate.thankYouName")}<span className="text-white">{candidateName}</span>{t("candidate.screeningForThe")}<span className="text-indigo-400">{jobTitle}</span>{t("candidate.positionRecorded")}
               </p>
             </div>
 
             <div className="p-6 bg-slate-950/50 rounded-3xl border border-slate-800/50 text-sm text-slate-400 leading-relaxed font-medium ">
-              &quot;Your responses have been securely stored. Our hiring team will review the session and get back to you with the next steps soon.&quot;
+              &quot;{t("candidate.responsesStored")}&quot;
             </div>
           </motion.div>
         </div>
@@ -298,12 +300,12 @@ export default function AIInterviewPage() {
                     )}
                   </div>
                   <span className="text-xs font-black text-indigo-500  tracking-[0.3em] truncate max-w-[200px]">
-                    {organization?.name || "AI-Powered Screening"}
+                    {organization?.name || t("candidate.aiPoweredScreening")}
                   </span>
                 </div>
-                <h1 className="text-5xl font-black text-white leading-none tracking-tight">Ready for your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">AI Interview</span>?</h1>
+                <h1 className="text-5xl font-black text-white leading-none tracking-tight">{t("candidate.readyForYour")}<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">{t("candidate.aiInterview")}</span>?</h1>
                 <p className="text-slate-500 text-lg font-medium leading-relaxed max-w-md">
-                  Experience a state-of-the-art interactive technical round at {organization?.name || "our company"} powered by advanced AI and real-time video feedback.
+                  {t("candidate.readyDesc", { company: organization?.name || t("candidate.ourCompany") })}
                 </p>
               </div>
 
@@ -311,16 +313,16 @@ export default function AIInterviewPage() {
                 <div className="bg-slate-900/40 border border-slate-800/50 p-5 rounded-3xl backdrop-blur-sm">
                    <div className="flex items-center gap-3 mb-3">
                      <Shield className="w-4 h-4 text-emerald-500" />
-                     <span className="text-[10px] font-black text-slate-400  ">Security</span>
+                     <span className="text-[10px] font-black text-slate-400  ">{t("candidate.security")}</span>
                    </div>
-                   <p className="text-sm font-bold text-white">Identity Verified</p>
+                   <p className="text-sm font-bold text-white">{t("candidate.identityVerified")}</p>
                 </div>
                 <div className="bg-slate-900/40 border border-slate-800/50 p-5 rounded-3xl backdrop-blur-sm">
                    <div className="flex items-center gap-3 mb-3">
                      <Monitor className="w-4 h-4 text-indigo-500" />
-                     <span className="text-[10px] font-black text-slate-400  ">Environment</span>
+                     <span className="text-[10px] font-black text-slate-400  ">{t("candidate.environment")}</span>
                    </div>
-                   <p className="text-sm font-bold text-white">Video Required</p>
+                   <p className="text-sm font-bold text-white">{t("candidate.videoRequired")}</p>
                 </div>
               </div>
 
@@ -336,7 +338,7 @@ export default function AIInterviewPage() {
                       setEnteredEmail(e.target.value);
                       setEmailError("");
                     }}
-                    placeholder="Enter Registered Email"
+                    placeholder={t("candidate.enterRegisteredEmail")}
                     className="w-full h-16 bg-slate-900/50 border border-slate-800 rounded-2xl pl-14 pr-6 text-white font-bold placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all"
                   />
                 </div>
@@ -351,7 +353,7 @@ export default function AIInterviewPage() {
                   disabled={isVerifying}
                   className="w-full h-16 bg-white text-slate-950 rounded-2xl font-black text-sm  tracking-[0.2em] hover:bg-slate-200 transition-all shadow-2xl shadow-white/5 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
                 >
-                  {isVerifying ? "Verifying..." : "Verify & Enter Interview Room"}
+                  {isVerifying ? t("candidate.verifying") : t("candidate.verifyEnterRoom")}
                   <Zap className="w-4 h-4" />
                 </button>
               </div>
@@ -363,7 +365,7 @@ export default function AIInterviewPage() {
                  <div className="w-24 h-24 rounded-full bg-slate-900 border-2 border-slate-800 flex items-center justify-center animate-pulse">
                    <Video className="w-10 h-10 text-slate-700" />
                  </div>
-                 <p className="text-slate-500 text-xs font-bold  ">Camera Preview</p>
+                 <p className="text-slate-500 text-xs font-bold  ">{t("candidate.cameraPreview")}</p>
               </div>
             </div>
           </motion.div>
@@ -392,22 +394,22 @@ export default function AIInterviewPage() {
              </div>
              <div>
                 <h2 className="text-sm font-black text-white  leading-none">
-                  {organization?.name ? organization.name.toUpperCase() : "CROAR AI"} - {jobTitle || "Interview"}
+                  {organization?.name ? organization.name.toUpperCase() : "CROAR AI"} - {jobTitle || t("candidate.interview")}
                 </h2>
-                <span className="text-[10px] font-bold text-indigo-500   mt-1 inline-block">Session for {candidateName || "Candidate"}</span>
+                <span className="text-[10px] font-bold text-indigo-500   mt-1 inline-block">{t("candidate.sessionFor", { name: candidateName || t("candidate.candidate") })}</span>
              </div>
            </div>
            <div className="h-4 w-px bg-slate-800" />
            <div className="flex items-center gap-2">
              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-             <span className="text-[10px] font-black text-slate-400  ">Recording Live</span>
+             <span className="text-[10px] font-black text-slate-400  ">{t("candidate.recordingLive")}</span>
            </div>
         </div>
 
         <div className="flex items-center gap-4">
            <div className="flex items-center gap-3 bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-2">
              <Activity className="w-4 h-4 text-emerald-500" />
-             <span className="text-[10px] font-bold text-slate-300  ">Network Stable</span>
+             <span className="text-[10px] font-bold text-slate-300  ">{t("candidate.networkStable")}</span>
            </div>
            <button className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
              <Settings className="w-5 h-5" />
@@ -452,8 +454,8 @@ export default function AIInterviewPage() {
              
              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4">
                <div className="px-6 py-3 bg-slate-950/80 backdrop-blur-xl border border-slate-800/50 rounded-2xl">
-                  <p className="text-[10px] font-black text-indigo-500  tracking-[0.2em] mb-1">Current Question</p>
-                  <p className="text-sm font-bold text-white tracking-wide">{messages.length > 0 ? messages[messages.length - 1].text : "Preparing..."}</p>
+                  <p className="text-[10px] font-black text-indigo-500  tracking-[0.2em] mb-1">{t("candidate.currentQuestion")}</p>
+                  <p className="text-sm font-bold text-white tracking-wide">{messages.length > 0 ? messages[messages.length - 1].text : t("candidate.preparing")}</p>
                </div>
              </div>
           </div>
@@ -500,7 +502,7 @@ export default function AIInterviewPage() {
               {!isVideoOn && (
                 <div className="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center gap-3">
                   <VideoOff className="w-12 h-12 text-slate-800" />
-                  <p className="text-[10px] font-black text-slate-600  ">Camera Disabled</p>
+                  <p className="text-[10px] font-black text-slate-600  ">{t("candidate.cameraDisabled")}</p>
                 </div>
               )}
               
@@ -508,7 +510,7 @@ export default function AIInterviewPage() {
               
               <div className="absolute bottom-6 inset-x-6 flex items-center justify-between">
                  <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-950/80 backdrop-blur-md rounded-lg border border-white/5">
-                    <span className="text-[9px] font-black text-white  ">Candidate Feed</span>
+                    <span className="text-[9px] font-black text-white  ">{t("candidate.candidateFeed")}</span>
                  </div>
                  <div className="flex gap-2">
                     <button 
@@ -531,12 +533,12 @@ export default function AIInterviewPage() {
               <div className="flex items-center gap-2 mb-2 justify-between">
                 <div className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-slate-500" />
-                  <span className="text-[10px] font-black text-slate-500  ">Response Input</span>
+                  <span className="text-[10px] font-black text-slate-500  ">{t("candidate.responseInput")}</span>
                 </div>
                 {isListening && (
                   <div className="flex items-center gap-1.5 px-2 py-1 bg-red-500/10 rounded-md border border-red-500/20">
                     <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-[9px] font-black text-red-500  ">Listening</span>
+                    <span className="text-[9px] font-black text-red-500  ">{t("candidate.listening")}</span>
                   </div>
                 )}
               </div>
@@ -544,7 +546,7 @@ export default function AIInterviewPage() {
                 <textarea 
                   value={currentInput}
                   onChange={(e) => setCurrentInput(e.target.value)}
-                  placeholder={isListening ? "Listening to your voice..." : "Speak or type your response..."}
+                  placeholder={isListening ? t("candidate.listeningVoice") : t("candidate.speakOrType")}
                   className="flex-1 bg-slate-950 border border-slate-800 rounded-2xl p-5 text-sm text-white placeholder-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50 transition-all resize-none font-medium custom-scrollbar"
                 />
                 <div className="absolute right-4 bottom-4 flex gap-2">
@@ -569,7 +571,7 @@ export default function AIInterviewPage() {
              className="h-16 border border-red-500/20 hover:bg-red-500/5 text-red-500 rounded-[2rem] flex items-center justify-center gap-3 font-black text-xs  tracking-[0.2em] transition-all"
            >
              <XCircle className="w-4 h-4" />
-             End Interview Session
+             {t("candidate.endInterview")}
            </button>
         </div>
       </main>

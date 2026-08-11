@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { apiClient } from "@/utils/api";
 import { useDivision } from "@/context/DivisionContext";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 
 interface Department {
     id: number;
@@ -12,6 +13,7 @@ interface Department {
 
 export default function DepartmentSelector() {
     const { role, departmentId, divisionId } = useAuth();
+    const { t: tr } = useI18n();
     const { selectedDivisionId, setSelectedDivisionId, selectedDepartmentId, setSelectedDepartmentId } = useDivision();
     const [departments, setDepartments] = useState<Department[]>([]);
     const [loading, setLoading] = useState(false);
@@ -90,7 +92,7 @@ export default function DepartmentSelector() {
                 >
                     <span className="material-icons-outlined text-sm text-slate-400">domain</span>
                     <span className="flex-1 text-left truncate">
-                        {selectedDept ? selectedDept.name : "All Departments"}
+                        {selectedDept ? selectedDept.name : tr("general.allDepartments")}
                     </span>
                     <span className="material-icons-outlined text-sm text-slate-400">
                         {isOpen ? "expand_less" : "expand_more"}
@@ -107,7 +109,7 @@ export default function DepartmentSelector() {
                                     }`}
                             >
                                 <span className="material-icons-outlined text-sm">apps</span>{" "}
-                                All Departments
+                                {tr("general.allDepartments")}
                             </button>
 
                             {/* Department List */}
@@ -130,7 +132,7 @@ export default function DepartmentSelector() {
                                     className="w-full text-left px-4 py-2.5 text-xs font-black   text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
                                 >
                                     <span className="material-icons-outlined text-sm">expand_more</span>{" "}
-                                    More ({departments.length - INITIAL_DISPLAY_COUNT} more)
+                                    {tr("general.moreCount", { count: departments.length - INITIAL_DISPLAY_COUNT })}
                                 </button>
                             )}
 
@@ -141,7 +143,7 @@ export default function DepartmentSelector() {
                                     className="w-full text-left px-4 py-2.5 text-xs font-black   text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
                                 >
                                     <span className="material-icons-outlined text-sm">expand_less</span>{" "}
-                                    Show Less
+                                    {tr("general.showLess")}
                                 </button>
                             )}
                         </div>

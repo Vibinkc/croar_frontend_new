@@ -1,5 +1,7 @@
 "use client";
 
+import { useI18n } from "@/context/I18nContext";
+
 /**
  * Shown on employee self-service pages when the signed-in user has no linked
  * Employee record. Every `/api/v1/me` endpoint 404s with "No employee record is
@@ -15,18 +17,17 @@ export function isNoEmployeeLink(message: string | null | undefined): boolean {
 }
 
 export default function NotLinkedNotice() {
+  const { t } = useI18n();
   return (
     <div className="mx-auto flex max-w-lg flex-col items-center justify-center rounded-2xl border border-[#E8EAED] bg-white px-6 py-16 text-center">
       <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-[18px] bg-[#ECEBFB] text-[#5B53E0]">
         <span className="material-symbols-rounded text-[32px]">badge</span>
       </span>
       <h2 className="text-[18px] font-bold tracking-tight text-[#15171C]">
-        No employee profile linked
+        {t("employee.notLinkedTitle")}
       </h2>
       <p className="mt-2 max-w-sm text-[13.5px] leading-relaxed text-[#8A929E]">
-        Your account isn&apos;t connected to an employee record yet, so there&apos;s nothing to show
-        here. Ask your HR team to add you as an employee using this same email address — then your
-        leave, payslips, timesheets and reviews will appear automatically.
+        {t("employee.notLinkedBody")}
       </p>
     </div>
   );

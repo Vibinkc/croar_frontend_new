@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import { Card, Badge, Button, PageHelp, jetbrainsMono } from "@/components/ds";
 
@@ -23,6 +24,7 @@ interface Assignment {
 
 export default function X360MyAssessments() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -55,18 +57,18 @@ export default function X360MyAssessments() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">My Assessments</h1>
-                        <PageHelp title="My Assessments">Assessments assigned to you. Open one to complete your feedback.</PageHelp>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("assess360.myAssessments")}</h1>
+                        <PageHelp title={tr("assess360.myAssessments")}>{tr("assess360.myHelp")}</PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Provide feedback for yourself and your colleagues</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.mySubtitle")}</p>
                 </div>
                 {!loading && (
                     <div className="flex items-center gap-2.5 shrink-0">
                         <Badge tone="warning" dot>
-                            <span className={jetbrainsMono.className}>{pending.length}</span> pending
+                            <span className={jetbrainsMono.className}>{pending.length}</span> {tr("assess360.pending")}
                         </Badge>
                         <Badge tone="teal" dot>
-                            <span className={jetbrainsMono.className}>{completed.length}</span> done
+                            <span className={jetbrainsMono.className}>{completed.length}</span> {tr("assess360.done")}
                         </Badge>
                     </div>
                 )}
@@ -76,7 +78,7 @@ export default function X360MyAssessments() {
             <section className="space-y-3.5">
                 <div className="flex items-center gap-2.5">
                     <span className="material-symbols-rounded text-[#D97706] text-[19px]">pending_actions</span>
-                    <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">Action Required</h2>
+                    <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("assess360.actionRequired")}</h2>
                 </div>
 
                 {loading ? (
@@ -91,8 +93,8 @@ export default function X360MyAssessments() {
                             <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5 text-[#C7CCD4]">
                                 <span className="material-symbols-rounded text-[32px]">done_all</span>
                             </div>
-                            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">You&apos;re all caught up!</h3>
-                            <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">Nothing is assigned to you right now. New feedback requests will appear here.</p>
+                            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("assess360.allCaughtUp")}</h3>
+                            <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">{tr("assess360.nothingAssigned")}</p>
                         </div>
                     </Card>
                 ) : (
@@ -113,7 +115,7 @@ export default function X360MyAssessments() {
                                         </div>
                                     </div>
                                     <Link href={`/enterprise/assessments-360/${ass.id}`} className="shrink-0">
-                                        <Button size="sm" trailingIcon="arrow_forward">Start</Button>
+                                        <Button size="sm" trailingIcon="arrow_forward">{tr("assess360.start")}</Button>
                                     </Link>
                                 </div>
                             </Card>
@@ -127,7 +129,7 @@ export default function X360MyAssessments() {
                 <section className="space-y-3.5">
                     <div className="flex items-center gap-2.5">
                         <span className="material-symbols-rounded text-[#0E8A6E] text-[19px]">task_alt</span>
-                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">Completed</h2>
+                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("assess360.completed")}</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                         {completed.map((ass) => (

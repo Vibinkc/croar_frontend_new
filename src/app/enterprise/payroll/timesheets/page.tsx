@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import { Filter, ChevronDown } from "lucide-react";
 import {
@@ -39,6 +40,7 @@ const selectCls =
 
 export default function TimesheetsPage() {
   const { can } = useAuth();
+    const { t: tr } = useI18n();
   const { confirm } = useDialog();
   const canEdit = can("payroll:configure");
   const canApprove = can("payroll:approve");
@@ -114,8 +116,8 @@ export default function TimesheetsPage() {
     setNotice(null);
     try {
       const res = await timesheetApi.generate(cycleId);
-      const parts = [`${res.created} created`, `${res.existing} already existed`];
-      if (res.skipped.length) parts.push(`${res.skipped.length} skipped (no salary structure)`);
+      const parts = [tr("payroll.tsCreated", { n: res.created }), tr("payroll.tsExisting", { n: res.existing })];
+      if (res.skipped.length) parts.push(tr("payroll.tsSkipped", { n: res.skipped.length }));
       setNotice(parts.join(" · "));
       await loadRows(cycleId);
     } catch (err) {
@@ -183,7 +185,7 @@ export default function TimesheetsPage() {
   }
 
   async function removeHoliday(h: Holiday) {
-    if (!(await confirm({ title: "Remove holiday", message: `Delete "${h.name}"?` }))) return;
+    if (!(await confirm({ title: tr("payroll.removeHolidayTitle"), message: tr("payroll.deleteHolidayMsg", { name: h.name }) }))) return;
     try {
       await calendarApi.deleteHoliday(h.id);
       setHolidays(await calendarApi.listHolidays());
@@ -205,9 +207,9 @@ export default function TimesheetsPage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Timesheets"
-        subtitle="Capture attendance per cycle. Approved timesheets drive loss-of-pay (and hours for hourly staff) on the next payroll run."
-        help={<><p>Track and approve worked hours for a period.</p><p>Approve them before running payroll so pay is calculated correctly.</p></>}
+        title={tr("nav.timesheets")}
+        subtitle={tr("payroll.timesheetsSubtitle")}
+        help={<><p>{tr("payroll.timesheetsHelp1")}</p><p>{tr("payroll.timesheetsHelp2")}</p></>}
       />
 
       {error && (
@@ -223,10 +225,10 @@ export default function TimesheetsPage() {
 
       {/* Metrics */}
       <StatGrid>
-        <StatCard label="Total Timesheets" value={stats.total} icon="schedule" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-        <StatCard label="Approved" value={stats.approved} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-        <StatCard label="Pending Approval" value={stats.pending} icon="hourglass_top" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-        <StatCard label="Rejected" value={stats.rejected} icon="cancel" gradient="linear-gradient(135deg,#F87171,#DC2626)" glow="rgba(220,38,38,0.25)" />
+        <StatCard label={tr("payroll.totalTimesheets")} value={stats.total} icon="schedule" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+        <StatCard label={tr("payroll.approved")} value={stats.approved} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+        <StatCard label={tr("payroll.pendingApproval")} value={stats.pending} icon="hourglass_top" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+        <StatCard label={tr("payroll.rejected")} value={stats.rejected} icon="cancel" gradient="linear-gradient(135deg,#F87171,#DC2626)" glow="rgba(220,38,38,0.25)" />
       </StatGrid>
 
       {/* Toolbar: cycle selector + generate */}
@@ -238,7 +240,7 @@ export default function TimesheetsPage() {
             onChange={(e) => setCycleId(e.target.value)}
             className={`${selectCls} w-full pr-9`}
           >
-            {cycles.length === 0 && <option value="">No cycles yet</option>}
+            {cycles.length === 0 && <option value="">{tr("payroll.noCyclesOption")}</option>}
             {cycles.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name} ({c.status})
@@ -251,10 +253,10 @@ export default function TimesheetsPage() {
           <button
             onClick={generate}
             disabled={!cycleId || busy || !cycleEditable}
-            title={!cycleEditable ? "Cycle must be DRAFT or PROCESSING" : ""}
+            title={!cycleEditable ? tr("payroll.cycleMustBeDraft") : ""}
             className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors disabled:opacity-50 disabled:pointer-events-none shrink-0"
           >
-            Generate timesheets
+            {tr("payroll.generateTimesheets")}
           </button>
         )}
       </div>
@@ -272,17 +274,17 @@ export default function TimesheetsPage() {
             <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
               <span className="material-symbols-rounded text-[32px] text-[#C7CCD4]">schedule</span>
             </div>
-            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No payroll cycle</h3>
-            <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">Create a payroll cycle first to capture timesheets.</p>
+            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noPayrollCycle")}</h3>
+            <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">{tr("payroll.noCycleTimesheetsHint")}</p>
           </div>
         ) : rows.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
             <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
               <span className="material-symbols-rounded text-[32px] text-[#C7CCD4]">schedule</span>
             </div>
-            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">No timesheets yet</h3>
+            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noTimesheetsYet")}</h3>
             <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">
-              No timesheets for this cycle yet. {canEdit && "Use “Generate timesheets” above."}
+              {tr("payroll.noTimesheetsCycleHint")} {canEdit && tr("payroll.useGenerateHint")}
             </p>
           </div>
         ) : (
@@ -290,13 +292,13 @@ export default function TimesheetsPage() {
             <div className="min-w-[760px] md:min-w-0">
               {/* Column header (desktop) */}
               <div className="hidden md:grid grid-cols-[2.4fr_1fr_0.8fr_0.8fr_0.8fr_1fr_1.6fr] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Employee</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Mode</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Worked</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">LOP</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Hours</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.mode")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.worked")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.lop")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.hours")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.status")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
               </div>
 
               <div className="divide-y divide-[#F0F0F1]">
@@ -319,9 +321,9 @@ export default function TimesheetsPage() {
                       {/* mobile-only meta */}
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-[12px] text-[#374151] md:hidden">
                         <span className="text-[#8A929E]">{t.mode}</span>
-                        <span className={jetbrainsMono.className}>Worked {num(t.worked_days)}</span>
-                        <span className={jetbrainsMono.className}>LOP {num(t.lop_days)}</span>
-                        {t.mode === "HOURLY" && <span className={jetbrainsMono.className}>{num(t.total_hours)} hrs</span>}
+                        <span className={jetbrainsMono.className}>{tr("payroll.worked")} {num(t.worked_days)}</span>
+                        <span className={jetbrainsMono.className}>{tr("payroll.lop")} {num(t.lop_days)}</span>
+                        {t.mode === "HOURLY" && <span className={jetbrainsMono.className}>{num(t.total_hours)} {tr("payroll.hrs")}</span>}
                       </div>
                     </div>
 
@@ -353,14 +355,14 @@ export default function TimesheetsPage() {
                             disabled={busy}
                             className="inline-flex items-center h-8 px-3 rounded-[9px] bg-[#0E8A6E] text-white text-[12px] font-semibold hover:bg-[#0c7a61] transition-colors disabled:opacity-50"
                           >
-                            Approve
+                            {tr("payroll.approve")}
                           </button>
                           <button
                             onClick={() => act(t.id, () => timesheetApi.reject(t.id))}
                             disabled={busy}
                             className="inline-flex items-center h-8 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[12px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors disabled:opacity-50"
                           >
-                            Reject
+                            {tr("payroll.reject")}
                           </button>
                         </>
                       )}
@@ -370,14 +372,14 @@ export default function TimesheetsPage() {
                           disabled={busy}
                           className="inline-flex items-center h-8 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[12px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors disabled:opacity-50"
                         >
-                          Reopen
+                          {tr("payroll.reopen")}
                         </button>
                       )}
                       <Link
                         href={`/enterprise/payroll/timesheets/${t.id}`}
                         className="inline-flex items-center h-8 px-3 rounded-[9px] bg-white border border-[#E1E4E8] text-[12px] font-semibold text-[#374151] hover:bg-[#ECEBFB] hover:text-[#5B53E0] hover:border-[#D4D7DC] transition-colors"
                       >
-                        Open
+                        {tr("payroll.open")}
                       </Link>
                     </div>
                   </div>
@@ -390,10 +392,9 @@ export default function TimesheetsPage() {
 
       {/* Work calendar config */}
       <div className="rounded-[14px] border border-[#E8EAED] bg-white p-5 md:p-6">
-        <h2 className="text-[17px] font-bold tracking-[-0.3px] text-[#15171C] mb-1">Work calendar</h2>
+        <h2 className="text-[17px] font-bold tracking-[-0.3px] text-[#15171C] mb-1">{tr("payroll.workCalendar")}</h2>
         <p className="mb-5 text-[13px] text-[#8A929E] leading-relaxed">
-          Weekly-offs and holidays are excluded when deriving the working days a payroll run
-          pro-rates against.
+          {tr("payroll.workCalendarDesc")}
         </p>
 
         {config && (
@@ -407,9 +408,9 @@ export default function TimesheetsPage() {
                 className="h-4 w-4 accent-[#5B53E0]"
               />
               <span>
-                Derive working days from the calendar{" "}
+                {tr("payroll.deriveWorkingDays")}{" "}
                 <span className="ml-1 text-[12px] text-[#8A929E]">
-                  (off = fixed 30-day basis)
+                  {tr("payroll.deriveWorkingDaysHint")}
                 </span>
               </span>
             </label>
@@ -423,16 +424,16 @@ export default function TimesheetsPage() {
                 className="h-4 w-4 accent-[#5B53E0]"
               />
               <span>
-                Enforce segregation of duties{" "}
+                {tr("payroll.enforceSod")}{" "}
                 <span className="ml-1 text-[12px] text-[#8A929E]">
-                  (the user who submits a timesheet/leave can’t approve it)
+                  {tr("payroll.enforceSodHint")}
                 </span>
               </span>
             </label>
 
             <div>
               <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
-                Weekly offs
+                {tr("payroll.weeklyOffs")}
               </div>
               <div className="flex flex-wrap gap-2">
                 {WEEKDAYS.map((d) => {
@@ -457,10 +458,10 @@ export default function TimesheetsPage() {
 
             <div>
               <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
-                Holidays
+                {tr("payroll.holidays")}
               </div>
               {holidays.length === 0 ? (
-                <p className="text-[13px] text-[#8A929E]">No holidays configured.</p>
+                <p className="text-[13px] text-[#8A929E]">{tr("payroll.noHolidays")}</p>
               ) : (
                 <ul className="mb-3 flex flex-col gap-1.5">
                   {holidays.map((h) => (
@@ -477,7 +478,7 @@ export default function TimesheetsPage() {
                           onClick={() => removeHoliday(h)}
                           className="text-[12px] font-semibold text-[#C0383C] hover:underline shrink-0 ml-3"
                         >
-                          Remove
+                          {tr("payroll.remove")}
                         </button>
                       )}
                     </li>
@@ -494,7 +495,7 @@ export default function TimesheetsPage() {
                   />
                   <input
                     type="text"
-                    placeholder="Holiday name"
+                    placeholder={tr("payroll.holidayNamePlaceholder")}
                     value={holForm.name}
                     onChange={(e) => setHolForm({ ...holForm, name: e.target.value })}
                     className="h-10 flex-1 min-w-[160px] rounded-[10px] border border-[#E1E4E8] bg-white px-3 text-[13px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
@@ -503,7 +504,7 @@ export default function TimesheetsPage() {
                     onClick={addHoliday}
                     className="inline-flex items-center justify-center h-10 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
                   >
-                    Add holiday
+                    {tr("payroll.addHoliday")}
                   </button>
                 </div>
               )}

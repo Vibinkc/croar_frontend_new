@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 
 interface Message {
@@ -40,6 +41,7 @@ interface SimulationChatProps {
 
 export default function SimulationChat({ sessionId, onComplete, onClose }: SimulationChatProps) {
     const { token } = useAuth();
+    const { t } = useI18n();
     const [session, setSession] = useState<Session | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
@@ -127,7 +129,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
     if (loading) return (
         <div className="h-screen w-screen bg-[#202123] flex flex-col items-center justify-center text-white/50">
             <div className="w-12 h-12 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin mb-6"></div>
-            <p className="text-[10px] font-black  tracking-[0.5em] animate-pulse">Initializing Behavioral Neural Link</p>
+            <p className="text-[10px] font-black  tracking-[0.5em] animate-pulse">{t("automation.initializingNeuralLink")}</p>
         </div>
     );
 
@@ -140,16 +142,16 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                             <span className="text-6xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent  tracking-tighter">CROAR.AI</span>
                         </div>
                         <div>
-                            <h2 className="text-4xl font-black text-slate-900 tracking-tighter mb-2 ">Neural Audit Complete</h2>
-                            <p className="text-slate-400 font-bold  tracking-[0.3em] text-[10px]">Strategic behavioral performance calibrated</p>
+                            <h2 className="text-4xl font-black text-slate-900 tracking-tighter mb-2 ">{t("automation.neuralAuditComplete")}</h2>
+                            <p className="text-slate-400 font-bold  tracking-[0.3em] text-[10px]">{t("automation.performanceCalibrated")}</p>
                         </div>
                     </header>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[
-                            { label: 'Communication', score: session.report?.communication_score, icon: 'record_voice_over', color: 'indigo' },
-                            { label: 'Empathy', score: session.report?.empathy_score, icon: 'favorite', color: 'rose' },
-                            { label: 'Problem Solving', score: session.report?.problem_solving_score, icon: 'psychology', color: 'emerald' }
+                            { label: t("automation.communication"), score: session.report?.communication_score, icon: 'record_voice_over', color: 'indigo' },
+                            { label: t("automation.empathy"), score: session.report?.empathy_score, icon: 'favorite', color: 'rose' },
+                            { label: t("automation.problemSolving"), score: session.report?.problem_solving_score, icon: 'psychology', color: 'emerald' }
                         ].map((m, i) => (
                             <div key={i} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col items-center gap-4 group hover:border-indigo-200 transition-all">
                                 <span className={`material-symbols-rounded text-${m.color}-500 text-3xl group-hover:scale-125 transition-transform`}>{m.icon}</span>
@@ -163,7 +165,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none"></div>
                         <h3 className="text-xs font-black  tracking-[0.4em] flex items-center gap-3 opacity-70">
                             <span className="material-symbols-rounded">neurology</span>
-                            {"Executive Feedback"}
+                            {t("automation.executiveFeedback")}
                         </h3>
                         <p className="text-2xl font-bold leading-tight ">&quot;{session.feedback}&quot;</p>
                     </div>
@@ -171,7 +173,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <section className="space-y-6">
                             <h4 className="text-[10px] font-black text-emerald-600  tracking-[0.5em] px-2 flex items-center gap-2">
-                                <span className="material-symbols-rounded text-sm">stars</span> Behavioral Strengths
+                                <span className="material-symbols-rounded text-sm">stars</span> {t("automation.behavioralStrengths")}
                             </h4>
                             <div className="space-y-3">
                                 {session.report?.strengths?.map((s: string, i: number) => (
@@ -186,7 +188,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         </section>
                         <section className="space-y-6">
                             <h4 className="text-[10px] font-black text-rose-600  tracking-[0.5em] px-2 flex items-center gap-2">
-                                <span className="material-symbols-rounded text-sm">trending_up</span> Growth Vector
+                                <span className="material-symbols-rounded text-sm">trending_up</span> {t("automation.growthVector")}
                             </h4>
                             <div className="space-y-3">
                                 {session.report?.areas_for_improvement?.map((s: string, i: number) => (
@@ -207,7 +209,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                             className="px-16 py-6 bg-slate-900 text-white rounded-2xl font-black text-xs  tracking-[0.4em] hover:bg-indigo-600 transition-all shadow-2xl active:scale-95 group"
                         >
                             <span className="flex items-center gap-3">
-                                {"Return to Hub"}
+                                {t("automation.returnToHub")}
                                 <span className="material-symbols-rounded group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </span>
                         </button>
@@ -230,20 +232,20 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                     className="flex items-center gap-3 w-full p-4 mb-8 border border-white/20 rounded-xl hover:bg-white/5 transition-colors text-sm font-bold text-white/50"
                 >
                     <span className="material-symbols-rounded">arrow_back</span>
-                    {"Exit Simulation"}
+                    {t("automation.exitSimulation")}
                 </button>
 
                 <div className="flex-1 space-y-8 px-2">
                     <div>
-                        <h3 className="text-[10px] font-black text-white/30  tracking-[0.3em] mb-4">Current Lab</h3>
+                        <h3 className="text-[10px] font-black text-white/30  tracking-[0.3em] mb-4">{t("automation.currentLab")}</h3>
                         <div className="p-4 bg-indigo-600/20 border border-indigo-500/30 rounded-xl">
                             <h4 className="text-sm font-black text-indigo-400 mb-1 leading-tight">{session?.scenario.title}</h4>
-                            <p className="text-[9px] font-bold text-white/40  ">{session?.scenario.difficulty} LEVEL</p>
+                            <p className="text-[9px] font-bold text-white/40  ">{t("automation.levelSuffix", { level: session?.scenario.difficulty ?? "" })}</p>
                         </div>
                     </div>
 
                     <div>
-                        <h3 className="text-[10px] font-black text-white/30  tracking-[0.3em] mb-4">Neural Persona</h3>
+                        <h3 className="text-[10px] font-black text-white/30  tracking-[0.3em] mb-4">{t("automation.neuralPersona")}</h3>
                         <div className="flex flex-col gap-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -259,7 +261,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
 
                     <div className="pt-8">
                         <div className="p-6 border border-white/10 rounded-xl bg-white/5 text-[10px] font-bold text-white/60 leading-relaxed ">
-                            &quot;A behavioral mirror designed for high-fidelity interactive role-play.&quot;
+                            &quot;{t("automation.behavioralMirror")}&quot;
                         </div>
                     </div>
                 </div>
@@ -270,9 +272,9 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         disabled={completing || messages.length < 2}
                         className="w-full py-5 bg-white text-slate-900 rounded-xl font-black text-[10px]  tracking-[0.2em] hover:bg-rose-500 hover:text-white transition-all disabled:opacity-20 flex items-center justify-center gap-2 group shadow-xl"
                     >
-                        {completing ? 'Analyzing...' : (
+                        {completing ? t("automation.analyzing") : (
                             <>
-                                <span>Finalize Evaluation</span>
+                                <span>{t("automation.finalizeEvaluation")}</span>
                                 <span className="material-symbols-rounded text-sm group-hover:rotate-12 transition-transform">analytics</span>
                             </>
                         )}
@@ -297,8 +299,8 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                                 </div>
                                 <div className="flex-1 pt-1">
                                     <div className="text-xs font-black text-slate-400   mb-3 flex items-center gap-3">
-                                        {m.role === 'assistant' ? session?.scenario.character_name : 'You / Employee'}
-                                        {m.role === 'assistant' && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-500 text-[8px] rounded  font-black">AI Persona</span>}
+                                        {m.role === 'assistant' ? session?.scenario.character_name : t("automation.youEmployee")}
+                                        {m.role === 'assistant' && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-500 text-[8px] rounded  font-black">{t("automation.aiPersona")}</span>}
                                     </div>
                                     <div className="text-base font-bold text-slate-700 leading-relaxed whitespace-pre-wrap selection:bg-indigo-100 ">
                                         {m.content}
@@ -332,7 +334,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         <textarea 
                             rows={1}
                             className="flex-1 py-4 bg-transparent outline-none text-sm font-bold text-slate-700 resize-none max-h-40 placeholder:text-slate-300"
-                            placeholder="Shift-click or Type your strategic response..."
+                            placeholder={t("automation.strategicResponsePlaceholder")}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => {

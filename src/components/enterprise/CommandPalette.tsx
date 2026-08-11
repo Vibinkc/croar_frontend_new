@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/context/I18nContext";
 
 export interface CommandItem {
     label: string;
@@ -22,6 +23,7 @@ export default function CommandPalette({
     items: CommandItem[];
 }) {
     const router = useRouter();
+    const { t: tr } = useI18n();
     const [query, setQuery] = useState("");
     const [active, setActive] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -127,7 +129,7 @@ export default function CommandPalette({
                             setActive(0);
                         }}
                         onKeyDown={onKeyNav}
-                        placeholder="Jump to… (type a page name)"
+                        placeholder={tr("forms2.jumpToPlaceholder")}
                         className="flex-1 py-4 text-[13.5px] font-medium text-[#15171C] placeholder-[#C0C5CE] outline-none bg-transparent"
                     />
                     <kbd className="text-[10px] font-bold text-[#9CA3AF] bg-[#F4F5F7] border border-[#E8EAED] px-2 py-1 rounded-[6px] shrink-0">esc</kbd>
@@ -138,7 +140,7 @@ export default function CommandPalette({
                     {filtered.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 gap-3">
                             <span className="material-symbols-rounded text-[32px] text-[#D1D5DB]">search_off</span>
-                            <p className="text-[13px] text-[#9CA3AF] font-medium">No matches found.</p>
+                            <p className="text-[13px] text-[#9CA3AF] font-medium">{tr("forms2.noMatches")}</p>
                         </div>
                     ) : (
                         grouped.map(({ group, items: gItems }) => (
@@ -192,15 +194,15 @@ export default function CommandPalette({
                     <span className="flex items-center gap-1.5 text-[10.5px] text-[#9CA3AF] font-medium">
                         <kbd className="bg-white border border-[#E8EAED] rounded-[4px] px-1.5 py-0.5 font-bold text-[9px] text-[#6B7280] shadow-sm">↑</kbd>
                         <kbd className="bg-white border border-[#E8EAED] rounded-[4px] px-1.5 py-0.5 font-bold text-[9px] text-[#6B7280] shadow-sm">↓</kbd>
-                        Navigate
+                        {tr("forms2.navigate")}
                     </span>
                     <span className="flex items-center gap-1.5 text-[10.5px] text-[#9CA3AF] font-medium">
                         <kbd className="bg-white border border-[#E8EAED] rounded-[4px] px-1.5 py-0.5 font-bold text-[9px] text-[#6B7280] shadow-sm">↵</kbd>
-                        Open
+                        {tr("forms2.open")}
                     </span>
                     <span className="flex items-center gap-1.5 text-[10.5px] text-[#9CA3AF] font-medium">
                         <kbd className="bg-white border border-[#E8EAED] rounded-[4px] px-1.5 py-0.5 font-bold text-[9px] text-[#6B7280] shadow-sm">esc</kbd>
-                        Close
+                        {tr("common.close")}
                     </span>
                 </div>
             </div>

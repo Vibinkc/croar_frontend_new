@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import { auditApi, type AuditEntry } from "@/utils/payroll/api";
 import { Banner } from "@/components/payroll/ui";
 import { Badge, Card, PageHeader, jetbrainsMono } from "@/components/ds";
@@ -39,6 +40,7 @@ function when(iso: string): string {
 }
 
 export default function ActivityPage() {
+  const { t: tr } = useI18n();
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,9 +67,9 @@ export default function ActivityPage() {
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Activity"
-        subtitle="Who did what, and when. The most recent actions across your organization."
-        help={<><p>An audit log of every payroll action — who did what, and when.</p></>}
+        title={tr("payroll.activityTitle")}
+        subtitle={tr("payroll.activitySubtitle")}
+        help={<><p>{tr("payroll.activityHelp")}</p></>}
       />
 
       {error && <Banner>{error}</Banner>}
@@ -87,10 +89,10 @@ export default function ActivityPage() {
               <History className="w-8 h-8 text-[#C7CCD4]" />
             </div>
             <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
-              No activity yet
+              {tr("payroll.noActivity")}
             </h3>
             <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">
-              Actions taken across your organization will show up here as they happen.
+              {tr("payroll.noActivityDesc")}
             </p>
           </div>
         </Card>
@@ -114,7 +116,7 @@ export default function ActivityPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <span className="text-[14px] font-bold text-[#15171C] truncate">
-                          {e.actor_email ?? "Unknown"}
+                          {e.actor_email ?? tr("payroll.unknown")}
                         </span>
                         <Badge tone={tone}>{e.status_code}</Badge>
                       </div>
@@ -134,7 +136,7 @@ export default function ActivityPage() {
           {/* Pagination */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <span className="text-[13px] text-[#8A929E]">
-              Showing {rangeStart}–{rangeEnd} of {entries.length}
+              {tr("payroll.showingRange", { start: rangeStart, end: rangeEnd, total: entries.length })}
             </span>
             <div className="flex items-center gap-2.5">
               <button
@@ -143,7 +145,7 @@ export default function ActivityPage() {
                 disabled={currentPage <= 1}
                 className="inline-flex items-center gap-1 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <ChevronLeft className="w-4 h-4" /> Prev
+                <ChevronLeft className="w-4 h-4" /> {tr("payroll.prev")}
               </button>
               <span className={`text-[12.5px] text-[#8A929E] ${jetbrainsMono.className}`}>
                 {currentPage} / {totalPages}
@@ -154,7 +156,7 @@ export default function ActivityPage() {
                 disabled={currentPage >= totalPages}
                 className="inline-flex items-center gap-1 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Next <ChevronRight className="w-4 h-4" />
+                {tr("payroll.next")} <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>

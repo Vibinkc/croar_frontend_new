@@ -19,6 +19,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { PageHelp } from "@/components/ds";
@@ -85,6 +86,7 @@ const EMPTY_FORM: FormState = {
 
 export default function MailAutomationPage() {
   const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
 
   const authHeaders = {
     "Content-Type": "application/json",
@@ -118,7 +120,7 @@ export default function MailAutomationPage() {
       const obj = msg as { msg?: string; detail?: string };
       finalMsg = obj.msg || obj.detail || JSON.stringify(msg);
     } else {
-      finalMsg = String(msg || "An error occurred");
+      finalMsg = String(msg || tr("automation.errorOccurred"));
     }
     setToast({ msg: finalMsg, type });
     setTimeout(() => setToast(null), 5000);
@@ -158,10 +160,10 @@ export default function MailAutomationPage() {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
       } else {
-        showToast("Failed to load automations.", "error");
+        showToast(tr("automation.failedLoadAutomations"), "error");
       }
     } catch {
-      showToast("Failed to load automations.", "error");
+      showToast(tr("automation.failedLoadAutomations"), "error");
     } finally {
       setLoading(false);
     }
@@ -241,24 +243,24 @@ export default function MailAutomationPage() {
   const handleSave = async () => {
     // No templates exist at all — they can't pick one, so guide them there.
     if (templates.length === 0) {
-      fail("Create an email template first — there are no templates to attach to this automation.");
+      fail(tr("automation.createEmailTemplateFirst"));
       return;
     }
 
     // Collect every missing required field so the message names exactly what's wrong.
     const missing: string[] = [];
-    if (!form.job_requirement_id) missing.push("Job Requirement");
+    if (!form.job_requirement_id) missing.push(tr("automation.jobRequirement"));
     const roundMissing = jobRounds.length > 0 ? !form.stage_name : !String(form.stage_index).trim();
-    if (roundMissing) missing.push("Hiring Round");
-    if (!form.criteria.trim()) missing.push("Trigger Criteria");
-    if (!form.template_id) missing.push("Email Template");
-    if (!form.is_immediate && !form.send_at) missing.push("Scheduled Date & Time");
+    if (roundMissing) missing.push(tr("automation.hiringRound"));
+    if (!form.criteria.trim()) missing.push(tr("automation.triggerCriteria"));
+    if (!form.template_id) missing.push(tr("automation.emailTemplate"));
+    if (!form.is_immediate && !form.send_at) missing.push(tr("automation.scheduledDateTime"));
 
     if (missing.length > 0) {
       fail(
         missing.length === 1
-          ? `Please fill in the required field: ${missing[0]}.`
-          : `Please fill in the required fields: ${missing.join(", ")}.`
+          ? tr("automation.fillRequiredField", { field: missing[0] })
+          : tr("automation.fillRequiredFieldsList", { fields: missing.join(", ") })
       );
       return;
     }
@@ -266,7 +268,7 @@ export default function MailAutomationPage() {
     if (!form.is_immediate && form.send_at) {
       const scheduledDate = new Date(form.send_at);
       if (scheduledDate < new Date()) {
-        fail("The scheduled date & time is in the past. Pick a future time.");
+        fail(tr("automation.scheduledPastFuture"));
         return;
       }
     }
@@ -290,7 +292,7 @@ export default function MailAutomationPage() {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
-        showToast(editingId ? "Automation updated!" : "Automation created!");
+        showToast(editingId ? tr("automation.automationUpdated") : tr("automation.automationCreated"));
         closeModal();
         fetchAutomations(selectedJobId || undefined);
       } else {
@@ -301,7 +303,7 @@ export default function MailAutomationPage() {
           : Array.isArray(detail)
             ? detail.map((e: string | { msg?: string }) => (typeof e === "string" ? e : (e.msg || ""))).filter(Boolean).join(", ")
             : "";
-        setFormError(detailMsg || `Could not ${editingId ? "update" : "create"} the automation. Please try again.`);
+        setFormError(detailMsg || (editingId ? tr("automation.couldNotUpdateAutomation") : tr("automation.couldNotCreateAutomation")));
         showToast(err, "error");
       }
     } finally {
@@ -324,7 +326,7 @@ export default function MailAutomationPage() {
           prev.map((item) => (item.id === a.id ? { ...item, is_enabled: !a.is_enabled } : item))
         );
       } else {
-        showToast("Failed to update status.", "error");
+        showToast(tr("automation.failedUpdateStatus"), "error");
       }
     } finally {
       setTogglingId(null);
@@ -342,10 +344,10 @@ export default function MailAutomationPage() {
         headers: authHeaders,
       });
       if (res.ok) {
-        showToast("Automation deleted.");
+        showToast(tr("automation.automationDeleted"));
         setAutomations((prev) => prev.filter((a) => a.id !== automationToDelete.id));
       } else {
-        showToast("Failed to delete.", "error");
+        showToast(tr("automation.failedDelete"), "error");
       }
     } finally {
       setDeletingId(null);
@@ -404,13 +406,13 @@ export default function MailAutomationPage() {
         <div>
           <div className="flex items-center gap-1.5">
             <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
-              Mail Automation
+              {tr("automation.mailTitle")}
             </h1>
-            <PageHelp title="Mail Automation">
-              <p>Auto-send templated emails at the right pipeline stage.</p>
+            <PageHelp title={tr("automation.mailTitle")}>
+              <p>{tr("automation.mailHelp")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Configure automated emails for specific jobs and hiring rounds.</p>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.mailSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
           {canAccess("communications:moderate") && (
@@ -419,7 +421,7 @@ export default function MailAutomationPage() {
               className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" />
-              New Automation
+              {tr("automation.newAutomation")}
             </button>
           )}
         </div>
@@ -428,10 +430,10 @@ export default function MailAutomationPage() {
       {/* Stats Section */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {[
-          { label: "Total Rules", value: automations.length, Icon: Zap, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.3)" },
-          { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#60A5FA,#3559C7)", glow: "rgba(53,89,199,0.3)" },
-          { label: "Immediate Trigger", value: automations.filter(a => a.is_immediate).length, Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.3)" },
-          { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, Icon: ChevronRight, grad: "linear-gradient(135deg,#8B5CF6,#7C3AED)", glow: "rgba(124,58,237,0.3)" }
+          { label: tr("automation.totalRules"), value: automations.length, Icon: Zap, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.3)" },
+          { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#60A5FA,#3559C7)", glow: "rgba(53,89,199,0.3)" },
+          { label: tr("automation.immediateTrigger"), value: automations.filter(a => a.is_immediate).length, Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.3)" },
+          { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: ChevronRight, grad: "linear-gradient(135deg,#8B5CF6,#7C3AED)", glow: "rgba(124,58,237,0.3)" }
         ].map((stat, i) => (
           <div
             key={i}
@@ -457,7 +459,7 @@ export default function MailAutomationPage() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
           <input
             type="text"
-            placeholder="Search by rules, jobs, or templates..."
+            placeholder={tr("automation.searchRulesJobsTemplates")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full h-11 bg-white border rounded-[12px] pl-11 pr-4 text-sm font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm border-[#E1E4E8]"
@@ -473,7 +475,7 @@ export default function MailAutomationPage() {
             onChange={(e) => setSelectedJobId(e.target.value)}
             className="bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-9 pr-9 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm min-w-[220px]"
           >
-            <option value="">All Job Requirements</option>
+            <option value="">{tr("automation.allJobRequirements")}</option>
             {jobs.map((j) => (
               <option key={j.id} value={j.id}>{j.title}</option>
             ))}
@@ -497,16 +499,16 @@ export default function MailAutomationPage() {
               <Mail className="w-7 h-7" />
             </div>
           </div>
-          <h3 className="text-[18px] font-bold text-[#15171C] mb-1.5">{searchQuery ? 'No matching rules' : 'No automations yet'}</h3>
+          <h3 className="text-[18px] font-bold text-[#15171C] mb-1.5">{searchQuery ? tr("automation.noMatchingRules") : tr("automation.noAutomationsYet")}</h3>
           <p className="text-[#8A929E] text-[14px] max-w-sm mx-auto mb-6">
-            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Create your first mail automation to automatically trigger emails when your criteria are met.'}
+            {searchQuery ? tr("automation.noResultsFor", { query: searchQuery }) : tr("automation.createFirstMail")}
           </p>
           {!searchQuery && canAccess("communications:moderate") && (
             <button
               onClick={openCreate}
               className="px-6 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all active:scale-95"
             >
-              Create Automation
+              {tr("automation.createAutomation")}
             </button>
           )}
         </div>
@@ -516,16 +518,16 @@ export default function MailAutomationPage() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
-                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Rule Configuration</th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Target Job &amp; Template</th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Trigger/Schedule</th>
+                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.ruleConfiguration")}</th>
+                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.targetJobTemplate")}</th>
+                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.triggerSchedule")}</th>
                   <th
                     className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] cursor-help"
-                    title="Turn this automation rule on or off. When off, the rule won't send any emails even if its trigger conditions are met."
+                    title={tr("automation.activeTooltip")}
                   >
-                    Active
+                    {tr("automation.active")}
                   </th>
-                  <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Actions</th>
+                  <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0F0F1]">
@@ -535,14 +537,14 @@ export default function MailAutomationPage() {
                       <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-2">
                           <span className="inline-flex items-center px-2 py-0.5 rounded-[6px] bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold border border-[#DAD7F6]/60 uppercase">
-                            Round {a.stage_index}
+                            {tr("automation.round")} {a.stage_index}
                           </span>
                           {a.stage_name && (
                             <span className="text-[12px] font-semibold text-[#8A929E]">{a.stage_name}</span>
                           )}
                         </div>
                         <p className="text-[13.5px] font-semibold text-[#374151]">
-                          <span className="text-[#8A929E] font-medium italic mr-1">If:</span>
+                          <span className="text-[#8A929E] font-medium italic mr-1">{tr("automation.ifLabel")}</span>
                           {a.criteria}
                         </p>
                       </div>
@@ -563,12 +565,12 @@ export default function MailAutomationPage() {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#374151]">
                           <Clock className="w-4 h-4 text-[#8A929E]" />
-                          {a.is_immediate ? "Immediate" : new Date(/[zZ]|[+-]\d\d:?\d\d$/.test(a.send_at!) ? a.send_at! : `${a.send_at!.replace(" ", "T")}Z`).toLocaleString()}
+                          {a.is_immediate ? tr("automation.immediate") : new Date(/[zZ]|[+-]\d\d:?\d\d$/.test(a.send_at!) ? a.send_at! : `${a.send_at!.replace(" ", "T")}Z`).toLocaleString()}
                         </div>
                         {a.auto_move && (
                           <div className="flex items-center gap-1 mt-1 text-[10px] font-bold text-[#0E8A6E] uppercase tracking-wider">
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#E3F4EF]/80 text-[#0E8A6E] border border-[#BFF0E2]/60 uppercase tracking-wider shadow-sm">
-                              Auto-Move
+                              {tr("automation.autoMove")}
                             </span>
                           </div>
                         )}
@@ -640,9 +642,9 @@ export default function MailAutomationPage() {
                   </div>
                   <div>
                     <h2 className="text-[16px] font-extrabold text-[#15171C] leading-tight">
-                      {editingId ? "Edit Automation" : "New Automation"}
+                      {editingId ? tr("automation.editAutomation") : tr("automation.newAutomation")}
                     </h2>
-                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">Mail Configuration</p>
+                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">{tr("automation.mailConfiguration")}</p>
                   </div>
                 </div>
                 <button
@@ -658,7 +660,7 @@ export default function MailAutomationPage() {
                 {/* Job */}
                 <div>
                   <label htmlFor="mail-job-requirement" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                    Job Requirement <span className="text-rose-500">*</span>
+                    {tr("automation.jobRequirement")} <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
                     <select
@@ -667,7 +669,7 @@ export default function MailAutomationPage() {
                       onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
                       className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                     >
-                      <option value="">Select job…</option>
+                      <option value="">{tr("automation.selectJob")}</option>
                       {jobs.map((j) => (
                         <option key={j.id} value={j.id}>{j.title}</option>
                       ))}
@@ -679,7 +681,7 @@ export default function MailAutomationPage() {
                 {/* Round */}
                 <div>
                   <label htmlFor="mail-hiring-round" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                    Hiring Round <span className="text-rose-500">*</span>
+                    {tr("automation.hiringRound")} <span className="text-rose-500">*</span>
                   </label>
                   {jobRounds.length > 0 ? (
                     <div className="relative">
@@ -689,10 +691,10 @@ export default function MailAutomationPage() {
                         value={form.stage_name ? `${form.stage_index}|${form.stage_name}` : ""}
                         className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                       >
-                        <option value="">Pick round…</option>
+                        <option value="">{tr("automation.pickRound")}</option>
                         {jobRounds.map((r, i) => (
                           <option key={i} value={`${i + 1}|${r.name}`}>
-                            Round {i + 1}: {r.name}
+                            {tr("automation.round")} {i + 1}: {r.name}
                           </option>
                         ))}
                       </select>
@@ -706,14 +708,14 @@ export default function MailAutomationPage() {
                         value={form.stage_index}
                         onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
                         className="col-span-2 bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
-                        placeholder="No."
+                        placeholder={tr("automation.noAbbrev")}
                       />
                       <input
                         type="text"
                         value={form.stage_name}
                         onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
                         className="col-span-3 bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
-                        placeholder="Label"
+                        placeholder={tr("automation.labelPlaceholder")}
                       />
                     </div>
                   )}
@@ -721,7 +723,7 @@ export default function MailAutomationPage() {
                     <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#ECEBFB] rounded-lg border border-[#DAD7F6]/60">
                       <CheckCircle2 className="w-4 h-4 text-[#5B53E0]" />
                       <p className="text-[11.5px] text-[#5B53E0] font-semibold tracking-tight">
-                        Selected: Round {form.stage_index} — {form.stage_name}
+                        {tr("automation.selectedRound", { index: form.stage_index, name: form.stage_name })}
                       </p>
                     </div>
                   )}
@@ -730,7 +732,7 @@ export default function MailAutomationPage() {
                 {/* Criteria */}
                 <div>
                   <label htmlFor="mail-trigger-criteria" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                    Trigger Criteria <span className="text-rose-500">*</span>
+                    {tr("automation.triggerCriteria")} <span className="text-rose-500">*</span>
                   </label>
                   <textarea
                     id="mail-trigger-criteria"
@@ -738,22 +740,22 @@ export default function MailAutomationPage() {
                     value={form.criteria}
                     onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
                     className="w-full bg-white border border-[#E1E4E8] rounded-[12px] p-4 text-[13.5px] font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm resize-none"
-                    placeholder="Describe the condition, e.g. 'AI score > 80' or 'Interview cleared'…"
+                    placeholder={tr("automation.criteriaPlaceholderCondition")}
                   />
                   <p className="text-[11px] text-[#9AA3AF] mt-2 px-1">
-                    Clear plain-language conditions help your team know when to send.
+                    {tr("automation.clearConditionsHelp")}
                   </p>
                 </div>
 
                 {/* Template */}
                 <div>
                   <label htmlFor="mail-email-template" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                    Email Template <span className="text-rose-500">*</span>
+                    {tr("automation.emailTemplate")} <span className="text-rose-500">*</span>
                   </label>
                   {templates.length === 0 ? (
                     <div className="bg-[#F7F8FA] rounded-lg p-4 border border-dashed border-[#E8EAED]">
                       <p className="text-xs text-[#8A929E] text-center">
-                        No templates found. <a href="/enterprise/templates/email-templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank" rel="noreferrer">Create one</a> first.
+                        {tr("automation.noTemplatesFound")} <a href="/enterprise/templates/email-templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank" rel="noreferrer">{tr("automation.createOne")}</a> {tr("automation.firstWord")}
                       </p>
                     </div>
                   ) : (
@@ -764,7 +766,7 @@ export default function MailAutomationPage() {
                         onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}
                         className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                       >
-                        <option value="">Select template…</option>
+                        <option value="">{tr("automation.selectTemplate")}</option>
                         {templates.map((t) => (
                           <option key={t.id} value={t.id}>{t.name}</option>
                         ))}
@@ -782,8 +784,8 @@ export default function MailAutomationPage() {
                         <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                       </div>
                       <div>
-                        <p className="text-[13px] font-bold text-[#15171C]">Enable Automation</p>
-                        <p className="text-[11px] text-[#9AA3AF] font-medium">Turn rules on/off</p>
+                        <p className="text-[13px] font-bold text-[#15171C]">{tr("automation.enableAutomation")}</p>
+                        <p className="text-[11px] text-[#9AA3AF] font-medium">{tr("automation.turnRulesOnOff")}</p>
                       </div>
                     </div>
                     <button
@@ -800,8 +802,8 @@ export default function MailAutomationPage() {
                         <Zap className="w-4 h-4 text-amber-500" />
                       </div>
                       <div>
-                        <p className="text-[13px] font-bold text-[#15171C]">Send Immediately</p>
-                        <p className="text-[11px] text-[#9AA3AF] font-medium">Auto-send on round change</p>
+                        <p className="text-[13px] font-bold text-[#15171C]">{tr("automation.sendImmediately")}</p>
+                        <p className="text-[11px] text-[#9AA3AF] font-medium">{tr("automation.autoSendRoundChange")}</p>
                       </div>
                     </div>
                     <button
@@ -815,7 +817,7 @@ export default function MailAutomationPage() {
                   {!form.is_immediate && (
                     <div className="animate-in slide-in-from-top-2 duration-200 px-1">
                       <label htmlFor="mail-scheduled-datetime" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                        Scheduled Date &amp; Time <span className="text-rose-500">*</span>
+                        {tr("automation.scheduledDateTime")} <span className="text-rose-500">*</span>
                       </label>
                       <input
                         id="mail-scheduled-datetime"
@@ -833,8 +835,8 @@ export default function MailAutomationPage() {
                         <ChevronRight className="w-4 h-4 text-indigo-500" />
                       </div>
                       <div>
-                        <p className="text-[13px] font-bold text-[#15171C]">Auto-Move</p>
-                        <p className="text-[11px] text-[#9AA3AF] font-medium">Advance to next round</p>
+                        <p className="text-[13px] font-bold text-[#15171C]">{tr("automation.autoMove")}</p>
+                        <p className="text-[11px] text-[#9AA3AF] font-medium">{tr("automation.advanceNextRound")}</p>
                       </div>
                     </div>
                     <button
@@ -865,7 +867,7 @@ export default function MailAutomationPage() {
                   ) : (
                     <>
                       <Save className="w-4.5 h-4.5" />
-                      {editingId ? "SAVE CHANGES" : "CREATE AUTOMATION"}
+                      {editingId ? tr("automation.saveChangesCaps") : tr("automation.createAutomationCaps")}
                     </>
                   )}
                 </button>
@@ -882,10 +884,10 @@ export default function MailAutomationPage() {
           setAutomationToDelete(null);
         }}
         onConfirm={handleDelete}
-        title="Delete Mail Automation?"
-        message={`Are you sure you want to delete this mail automation for ${automationToDelete ? jobTitle(automationToDelete.job_requirement_id) : 'this job'}? This action is irreversible.`}
-        confirmLabel="Yes, Delete"
-        cancelLabel="No"
+        title={tr("automation.deleteMailTitle")}
+        message={tr("automation.deleteMailMsg", { job: automationToDelete ? jobTitle(automationToDelete.job_requirement_id) : tr("automation.thisJob") })}
+        confirmLabel={tr("automation.yesDelete")}
+        cancelLabel={tr("automation.no")}
         isDestructive={true}
       />
     </div>

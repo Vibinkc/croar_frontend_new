@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/api";
 import { useDivision } from "@/context/DivisionContext";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 
 interface Division {
     id: number;
@@ -14,6 +15,7 @@ interface Division {
 export default function DivisionSelector() {
     const { role, divisionId } = useAuth();
     const { selectedDivisionId, setSelectedDivisionId } = useDivision();
+    const { t } = useI18n();
     const [divisions, setDivisions] = useState<Division[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -68,7 +70,7 @@ export default function DivisionSelector() {
                     }}
                     className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl pl-9 pr-8 py-2.5 outline-none hover:border-slate-300 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-all cursor-pointer min-w-[200px]"
                 >
-                    <option value="" className="text-slate-500 font-bold">All Divisions</option>
+                    <option value="" className="text-slate-500 font-bold">{t("superAdmin.allDivisions")}</option>
                     {divisions.map((div) => (
                         <option key={div.id} value={div.id}>
                             {div.name}

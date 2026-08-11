@@ -3,32 +3,34 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { CroarMark } from "@/components/ds";
 
 export default function SuperAdminSidebar() {
     const pathname = usePathname();
     const { logout, user, role } = useAuth();
+    const { t } = useI18n();
 
     const navGroups = [
         {
-            title: "Platform Mgmt",
+            title: t("superAdmin.platformMgmt"),
             items: [
-                { label: "Overview", icon: "grid_view", path: "/super-admin" },
-                { label: "Organizations", icon: "corporate_fare", path: "/super-admin/organizations" },
+                { label: t("superAdmin.overview"), icon: "grid_view", path: "/super-admin" },
+                { label: t("superAdmin.organizations"), icon: "corporate_fare", path: "/super-admin/organizations" },
             ],
         },
         {
-            title: "User Intelligence",
+            title: t("superAdmin.userIntelligence"),
             items: [
-                { label: "Global Users", icon: "groups", path: "/super-admin/users" },
-                { label: "Audit Logs", icon: "receipt_long", path: "/super-admin/logs" },
+                { label: t("superAdmin.globalUsers"), icon: "groups", path: "/super-admin/users" },
+                { label: t("superAdmin.auditLogs"), icon: "receipt_long", path: "/super-admin/logs" },
             ],
         },
         {
-            title: "System Config",
+            title: t("superAdmin.systemConfig"),
             items: [
-                { label: "Global Roles", icon: "security", path: "/super-admin/roles" },
-                { label: "Platform Settings", icon: "settings_suggest", path: "/super-admin/settings" },
+                { label: t("superAdmin.globalRoles"), icon: "security", path: "/super-admin/roles" },
+                { label: t("superAdmin.platformSettings"), icon: "settings_suggest", path: "/super-admin/settings" },
             ],
         },
     ];
@@ -48,7 +50,7 @@ export default function SuperAdminSidebar() {
                         <CroarMark size={32} />
                         <span className="flex flex-col leading-none">
                             <span className="text-[17px] font-extrabold tracking-[-0.3px] text-white">Croar</span>
-                            <span className="text-[9.5px] text-[#4F5564] font-semibold uppercase mt-0.5 tracking-wider">Platform</span>
+                            <span className="text-[9.5px] text-[#4F5564] font-semibold uppercase mt-0.5 tracking-wider">{t("superAdmin.platform")}</span>
                         </span>
                     </Link>
                 </div>
@@ -91,7 +93,7 @@ export default function SuperAdminSidebar() {
                     <div className="flex-1 min-w-0">
                         <p className="text-[12px] font-semibold text-[#C7CCD4] truncate">{user || "root@croar.ai"}</p>
                         <p className="text-[10px] font-medium text-[#525969]">
-                            {role ? role.replace("_", " ").toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase()) : "Super Admin"}
+                            {role ? role.replace("_", " ").toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase()) : t("superAdmin.superAdmin")}
                         </p>
                     </div>
                 </div>
@@ -101,7 +103,7 @@ export default function SuperAdminSidebar() {
                     className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#8A929E] hover:bg-white/[0.04] hover:text-rose-400 rounded-[10px] transition-colors duration-150 group"
                 >
                     <span className="material-symbols-rounded text-[18px] text-[#525969] group-hover:text-rose-400">logout</span>
-                    <span className="text-[12.5px] font-medium">Logout</span>
+                    <span className="text-[12.5px] font-medium">{t("superAdmin.logout")}</span>
                 </button>
             </div>
         </aside>

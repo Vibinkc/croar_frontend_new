@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import {
   payrollApi,
@@ -18,6 +19,7 @@ import { useAuth } from "@/components/payroll/AuthProvider";
 export default function PayslipDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { can } = useAuth();
+  const { t: tr } = useI18n();
   const [slip, setSlip] = useState<Payslip | null>(null);
   const [cycle, setCycle] = useState<PayrollCycle | null>(null);
   const [employee, setEmployee] = useState<Employee | null>(null);
@@ -60,7 +62,7 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
     setNotice(null);
     try {
       const res = await payrollApi.emailPayslip(id);
-      setNotice({ tone: "ok", msg: `Payslip emailed to ${res.to}.` });
+      setNotice({ tone: "ok", msg: tr("payroll.payslipEmailed", { to: res.to }) });
     } catch (err) {
       setNotice({ tone: "err", msg: (err as Error).message });
     } finally {
@@ -96,22 +98,22 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
     })();
   }, [id]);
 
-  if (loading) return <p className="p-12 text-center text-[var(--color-muted)]">Loading…</p>;
+  if (loading) return <p className="p-12 text-center text-[var(--color-muted)]">{tr("common.loading")}</p>;
   if (error) return <div className="p-6"><Banner>{error}</Banner></div>;
-  if (!slip || !cycle) return <p className="p-12 text-center text-[var(--color-muted)]">Payslip not found.</p>;
+  if (!slip || !cycle) return <p className="p-12 text-center text-[var(--color-muted)]">{tr("payroll.payslipNotFound")}</p>;
 
-  const companyName = tpl?.display_name || tpl?.company_name || "Company";
+  const companyName = tpl?.display_name || tpl?.company_name || tr("payroll.company");
   const accent = tpl?.accent_color || undefined;
 
   return (
     <div className="px-4 sm:px-5 md:px-7 py-6 max-w-[1320px] mx-auto w-full animate-fade-in flex flex-col gap-6">
       <div className="no-print">
         <Link href={`/enterprise/payroll/${slip.cycle_id}`} className="mb-3 inline-flex items-center gap-1 text-sm text-[var(--color-primary)]">
-          <span className="material-symbols-rounded text-[18px]">arrow_back</span> Back to Cycle
+          <span className="material-symbols-rounded text-[18px]">arrow_back</span> {tr("payroll.backToCycle")}
         </Link>
         <PageHeader
-          title={employee ? `${employee.first_name} ${employee.last_name}` : "Payslip"}
-          help={<>View this payslip&apos;s full breakdown. Print or download it.</>}
+          title={employee ? `${employee.first_name} ${employee.last_name}` : tr("payroll.payslip")}
+          help={<>{tr("payroll.payslipHelp")}</>}
           actions={
             <>
               <button
@@ -120,7 +122,7 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
                 className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
               >
                 <span className="material-symbols-rounded text-[18px]">download</span>
-                {downloading ? "Preparing…" : "Download PDF"}
+                {downloading ? tr("payroll.preparing") : tr("payroll.downloadPdf")}
               </button>
               {tpl?.has_doc_template && (
                 <button
@@ -129,7 +131,7 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
                   className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
                 >
                   <span className="material-symbols-rounded text-[18px]">description</span>
-                  {downloadingDoc ? "Preparing…" : "Download as Word"}
+                  {downloadingDoc ? tr("payroll.preparing") : tr("payroll.downloadWord")}
                 </button>
               )}
               {can("payroll:pay") && (
@@ -139,14 +141,14 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
                   className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
                 >
                   <span className="material-symbols-rounded text-[18px]">mail</span>
-                  {emailing ? "Sending…" : "Email to Employee"}
+                  {emailing ? tr("payroll.sending") : tr("payroll.emailToEmployee")}
                 </button>
               )}
               <button
                 onClick={() => window.print()}
                 className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
               >
-                <span className="material-symbols-rounded text-[18px]">print</span> Print
+                <span className="material-symbols-rounded text-[18px]">print</span> {tr("payroll.print")}
               </button>
             </>
           }
@@ -190,42 +192,43 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
           </div>
           <div className="text-right">
             <div className="text-lg font-bold" style={accent ? { color: accent } : undefined}>
-              PAYSLIP
+              {tr("payroll.payslipUpper")}
             </div>
-            <div className="text-xs text-[var(--color-muted)]">Ref #{slip.id.slice(0, 8)}</div>
+            <div className="text-xs text-[var(--color-muted)]">{tr("payroll.refNo", { id: slip.id.slice(0, 8) })}</div>
             <div className="mt-1"><PayslipBadge status={slip.status} /></div>
           </div>
         </div>
 
         <div className="mb-6 grid grid-cols-2 gap-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 sm:grid-cols-4">
-          <Info label="Employee" value={employee ? `${employee.first_name} ${employee.last_name}` : slip.employee_id.slice(0, 8)} />
-          <Info label="Email" value={employee?.email ?? "—"} />
-          <Info label="Period" value={`${cycle.period_start} → ${cycle.period_end}`} />
-          <Info label="Pay Date" value={cycle.pay_date} />
+          <Info label={tr("payroll.employee")} value={employee ? `${employee.first_name} ${employee.last_name}` : slip.employee_id.slice(0, 8)} />
+          <Info label={tr("payroll.email")} value={employee?.email ?? "—"} />
+          <Info label={tr("payroll.period")} value={`${cycle.period_start} → ${cycle.period_end}`} />
+          <Info label={tr("payroll.payDate")} value={cycle.pay_date} />
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <Breakdown title="Earnings" lines={slip.earnings ?? []} currency={slip.currency} total={Number(slip.gross_earnings)} totalLabel="Gross Earnings" />
-          <Breakdown title="Deductions" lines={slip.deductions ?? []} currency={slip.currency} total={Number(slip.total_deductions)} totalLabel="Total Deductions" negative />
+          <Breakdown title={tr("payroll.earnings")} lines={slip.earnings ?? []} currency={slip.currency} total={Number(slip.gross_earnings)} totalLabel={tr("payroll.grossEarnings")} emptyLabel={tr("payroll.none")} />
+          <Breakdown title={tr("payroll.deductions")} lines={slip.deductions ?? []} currency={slip.currency} total={Number(slip.total_deductions)} totalLabel={tr("payroll.totalDeductions")} emptyLabel={tr("payroll.none")} negative />
         </div>
 
         {tpl?.show_employer_contributions !== false && slip.employer_contributions && slip.employer_contributions.length > 0 && (
           <div className="mt-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
             <Breakdown
-              title="Employer Contributions (not deducted)"
+              title={tr("payroll.employerContributions")}
               lines={slip.employer_contributions}
               currency={slip.currency}
               total={slip.employer_contributions.reduce((sum, l) => sum + Number(l.amount), 0)}
-              totalLabel="Total Employer Cost"
+              totalLabel={tr("payroll.totalEmployerCost")}
+              emptyLabel={tr("payroll.none")}
             />
           </div>
         )}
 
         {tpl?.show_attendance !== false && (
           <div className="mt-6 grid grid-cols-3 gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 text-center text-sm">
-            <Info label="Working Days" value={String(DEFAULT_WD)} center />
-            <Info label="LOP Days" value={String(Number(slip.lop_days))} center />
-            <Info label="Paid Days" value={String(Number(slip.paid_days ?? 0))} center />
+            <Info label={tr("payroll.workingDays")} value={String(DEFAULT_WD)} center />
+            <Info label={tr("payroll.lopDays")} value={String(Number(slip.lop_days))} center />
+            <Info label={tr("payroll.paidDays")} value={String(Number(slip.paid_days ?? 0))} center />
           </div>
         )}
 
@@ -237,26 +240,26 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
           return (
             <div className="mt-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
               <div className="mb-2 flex items-center justify-between">
-                <h4 className="font-bold">Income Tax (TDS) — estimate</h4>
+                <h4 className="font-bold">{tr("payroll.incomeTaxTds")}</h4>
                 <span className="text-xs text-[var(--color-muted)]">
-                  {tds.regime} regime · {String(tds.version)}
+                  {tds.regime} {tr("payroll.regimeLower")} · {String(tds.version)}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-3">
-                <TaxRow label="Projected annual income" value={inr(tds.total_income, slip.currency)} />
-                <TaxRow label="Taxable income" value={inr(tds.taxable_income, slip.currency)} />
-                <TaxRow label="Estimated annual tax" value={inr(tds.annual_tax, slip.currency)} />
-                <TaxRow label="Monthly TDS" value={inr(tds.monthly_tds, slip.currency)} />
+                <TaxRow label={tr("payroll.projectedAnnualIncome")} value={inr(tds.total_income, slip.currency)} />
+                <TaxRow label={tr("payroll.taxableIncome")} value={inr(tds.taxable_income, slip.currency)} />
+                <TaxRow label={tr("payroll.estimatedAnnualTax")} value={inr(tds.annual_tax, slip.currency)} />
+                <TaxRow label={tr("payroll.monthlyTds")} value={inr(tds.monthly_tds, slip.currency)} />
               </div>
               <p className="mt-2 text-xs text-[var(--color-muted)]">
-                Estimate only — not a tax certificate. HRA exemption and surcharge are not modelled.
+                {tr("payroll.tdsEstimateNote")}
               </p>
             </div>
           );
         })()}
 
         <div className="mt-6 flex items-center justify-between border-t border-[var(--color-border)] pt-5">
-          <span className="text-sm text-[var(--color-muted)]">Net Payable</span>
+          <span className="text-sm text-[var(--color-muted)]">{tr("payroll.netPayable")}</span>
           <span
             className="text-3xl font-extrabold text-[var(--color-accent)]"
             style={accent ? { color: accent } : undefined}
@@ -302,6 +305,7 @@ function Breakdown({
   currency,
   total,
   totalLabel,
+  emptyLabel,
   negative = false,
 }: {
   title: string;
@@ -309,6 +313,7 @@ function Breakdown({
   currency: string;
   total: number;
   totalLabel: string;
+  emptyLabel: string;
   negative?: boolean;
 }) {
   return (
@@ -316,7 +321,7 @@ function Breakdown({
       <h4 className="mb-2 border-b border-[var(--color-border)] pb-2 font-bold">{title}</h4>
       <div className="min-h-24">
         {lines.length === 0 ? (
-          <p className="py-2 text-sm text-[var(--color-muted)]">None</p>
+          <p className="py-2 text-sm text-[var(--color-muted)]">{emptyLabel}</p>
         ) : (
           lines.map((l) => (
             <div key={l.code} className="flex justify-between py-1.5 text-sm">

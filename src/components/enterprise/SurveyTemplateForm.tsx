@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/utils/api";
+import { useI18n } from "@/context/I18nContext";
 import {
     PageHeader,
     Card,
@@ -70,6 +71,7 @@ interface SurveyTemplateFormProps {
  */
 export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateFormProps) {
     const router = useRouter();
+    const { t: tr } = useI18n();
     const isEdit = mode === "edit" && !!templateId;
     const [types, setTypes] = useState<SurveyType[]>([]);
     const [loading, setLoading] = useState(true);
@@ -207,22 +209,22 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                 ? await apiClient.put(`/api/v1/enterprise/surveys/templates/${templateId}`, formData)
                 : await apiClient.post('/api/v1/enterprise/surveys/templates', formData);
             if (res.ok) {
-                if (isEdit) alert("Framework updated successfully!");
+                if (isEdit) alert(tr("forms2.frameworkUpdated"));
                 router.push('/enterprise/surveys/templates');
             } else if (isEdit) {
-                alert("Failed to update framework.");
+                alert(tr("forms2.frameworkUpdateFailed"));
             }
         } catch (error) {
             console.error(error);
-            if (isEdit) alert("An error occurred while saving.");
+            if (isEdit) alert(tr("forms2.saveError"));
         } finally {
             setSubmitting(false);
         }
     };
 
-    const headerTitle = isEdit ? "Edit Framework" : "Create Framework";
-    const headerSubtitle = isEdit ? "Refine your systematic question stacks" : "Design systematic question stacks for feedback cycles";
-    const submitLabel = isEdit ? (submitting ? 'Saving Changes...' : 'Save Framework') : (submitting ? 'Deploying...' : 'Deploy Framework');
+    const headerTitle = isEdit ? tr("forms2.editFramework") : tr("forms2.createFramework");
+    const headerSubtitle = isEdit ? tr("forms2.refineSubtitle") : tr("forms2.designSubtitle");
+    const submitLabel = isEdit ? (submitting ? tr("forms2.savingChanges") : tr("forms2.saveFramework")) : (submitting ? tr("forms2.deploying") : tr("forms2.deployFramework"));
 
     if (loading) return (
         <div className="min-h-[60vh] flex items-center justify-center p-8">
@@ -235,7 +237,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
     return (
         <div className="max-w-[920px] mx-auto px-4 sm:px-5 md:px-7 pb-20 space-y-6 animate-in fade-in duration-500">
             <PageHeader
-                help={<><p>Add your survey questions and their types.</p><p>Save the template, then launch a campaign to your team from HR Surveys.</p></>}
+                help={<><p>{tr("forms2.surveyHelpP1")}</p><p>{tr("forms2.surveyHelpP2")}</p></>}
                 title={headerTitle}
                 subtitle={headerSubtitle}
                 onBack={() => router.push('/enterprise/surveys/templates')}
@@ -253,10 +255,10 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
             <form id="template-form" onSubmit={handleSave} className="space-y-6">
                 {/* Framework configuration */}
                 <Card>
-                    <CardHeader title="Framework Configuration" subtitle="Set the category and headline details for this framework" />
+                    <CardHeader title={tr("forms2.frameworkConfiguration")} subtitle={tr("forms2.frameworkConfigSubtitle")} />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-                        <Field label="Survey Category" htmlFor="survey-category" required>
+                        <Field label={tr("forms2.surveyCategory")} htmlFor="survey-category" required>
                             <div className="relative">
                                 <Select
                                     id="survey-category"
@@ -265,30 +267,30 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     onChange={(e) => setFormData({...formData, survey_type_id: e.target.value})}
                                     required
                                 >
-                                    <option value="">Select Target Type</option>
+                                    <option value="">{tr("forms2.selectTargetType")}</option>
                                     {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                                 </Select>
                                 <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">expand_more</span>
                             </div>
                         </Field>
 
-                        <Field label="Framework Title" htmlFor="framework-title" required>
+                        <Field label={tr("forms2.frameworkTitle")} htmlFor="framework-title" required>
                             <Input
                                 id="framework-title"
                                 value={formData.title}
                                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                placeholder="e.g. Employee Engagement Q4"
+                                placeholder={tr("forms2.frameworkTitlePlaceholder")}
                                 required
                             />
                         </Field>
 
-                        <Field label="Executive Instructions" htmlFor="executive-instructions" className="md:col-span-2">
+                        <Field label={tr("forms2.executiveInstructions")} htmlFor="executive-instructions" className="md:col-span-2">
                             <Textarea
                                 id="executive-instructions"
                                 className="min-h-[100px] leading-relaxed"
                                 value={formData.description}
                                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                placeholder="Summary or instructions for employees..."
+                                placeholder={tr("forms2.executiveInstructionsPlaceholder")}
                             />
                         </Field>
                     </div>
@@ -299,13 +301,13 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                     <CardHeader
                         title={
                             <span className="inline-flex items-center gap-2.5">
-                                Question Stack
+                                {tr("forms2.questionStack")}
                                 <Badge tone="indigo">
-                                    <span className={jetbrainsMono.className}>{formData.questions.length}</span> Items
+                                    <span className={jetbrainsMono.className}>{formData.questions.length}</span> {tr("forms2.items")}
                                 </Badge>
                             </span>
                         }
-                        subtitle="Build your systematic question stack"
+                        subtitle={tr("forms2.questionStackSubtitle")}
                         action={
                             <div className="flex flex-wrap gap-2.5">
                                 <Button
@@ -317,7 +319,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     disabled={!formData.survey_type_id}
                                     className="bg-[#15171C] text-white border-transparent hover:bg-[#4A43C9]"
                                 >
-                                    AI Wizard
+                                    {tr("forms2.aiWizard")}
                                 </Button>
                                 <Button
                                     variant="secondary"
@@ -326,7 +328,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     icon="add"
                                     onClick={addQuestion}
                                 >
-                                    Add Question
+                                    {tr("forms2.addQuestion")}
                                 </Button>
                             </div>
                         }
@@ -337,8 +339,8 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                             <div className="w-14 h-14 rounded-[16px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center mb-4">
                                 <span className="material-symbols-rounded text-[28px]">help_center</span>
                             </div>
-                            <h3 className="text-[15px] font-bold text-[#15171C] mb-1">No questions yet</h3>
-                            <p className="text-[13px] text-[#8A929E] max-w-xs mx-auto">Add a question manually, or use the AI Wizard to generate a stack.</p>
+                            <h3 className="text-[15px] font-bold text-[#15171C] mb-1">{tr("forms2.noQuestionsYet")}</h3>
+                            <p className="text-[13px] text-[#8A929E] max-w-xs mx-auto">{tr("forms2.noQuestionsHint")}</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
@@ -349,7 +351,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                             type="button"
                                             onClick={() => removeQuestion(i)}
                                             className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
-                                            aria-label="Remove question"
+                                            aria-label={tr("forms2.removeQuestion")}
                                         >
                                             <span className="material-symbols-rounded text-[20px]">delete</span>
                                         </button>
@@ -362,7 +364,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                 className="w-full bg-transparent border-none focus:ring-0 text-[#15171C] font-bold text-[17px] placeholder:text-[#C7CCD4] p-0 outline-none"
                                                 value={q.text}
                                                 onChange={(e) => updateQuestion(i, "text", e.target.value)}
-                                                placeholder="Enter question text..."
+                                                placeholder={tr("forms2.questionTextPlaceholder")}
                                                 required
                                             />
                                             <div className="flex flex-wrap gap-2">
@@ -373,7 +375,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                         onClick={() => updateQuestion(i, "type", type)}
                                                         className={`px-4 py-1.5 rounded-[8px] text-[12px] font-semibold transition-all border ${q.type === type ? 'bg-[#5B53E0] border-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.24)]' : 'bg-white border-[#E1E4E8] text-[#8A929E] hover:text-[#374151] hover:border-[#9AA3AF]'}`}
                                                     >
-                                                        {type === 'RATING' ? 'Rating' : type === 'TEXT' ? 'Descriptive' : 'Multi-Choice'}
+                                                        {type === 'RATING' ? tr("forms2.typeRating") : type === 'TEXT' ? tr("forms2.typeDescriptive") : tr("forms2.typeMultiChoice")}
                                                     </button>
                                                 ))}
                                             </div>
@@ -396,7 +398,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                             type="button"
                                                             onClick={() => removeOption(i, optIdx)}
                                                             className="w-8 h-8 flex items-center justify-center rounded-[8px] text-[#C7CCD4] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors shrink-0"
-                                                            aria-label="Remove option"
+                                                            aria-label={tr("forms2.removeOption")}
                                                         >
                                                             <span className="material-symbols-rounded text-[18px]">close</span>
                                                         </button>
@@ -408,7 +410,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                     className="h-10 px-4 border border-dashed border-[#E1E4E8] rounded-[10px] text-[12px] font-semibold text-[#8A929E] hover:border-[#5B53E0] hover:text-[#5B53E0] transition-all flex items-center justify-center gap-1.5"
                                                 >
                                                     <span className="material-symbols-rounded text-[18px]">add_circle</span>
-                                                    <span>Add Choice</span>
+                                                    <span>{tr("forms2.addChoice")}</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -440,27 +442,27 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                 <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
                                     <span className="material-symbols-rounded text-[20px]">psychology</span>
                                 </span>
-                                <h2 className="text-[16px] font-bold text-[#15171C]">AI Strategy Wizard</h2>
+                                <h2 className="text-[16px] font-bold text-[#15171C]">{tr("forms2.aiStrategyWizard")}</h2>
                             </div>
                             <button
                                 onClick={() => setIsAiModalOpen(false)}
                                 className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#8A929E] hover:text-[#374151] hover:bg-[#F1F2F5] transition-colors"
-                                aria-label="Close"
+                                aria-label={tr("common.close")}
                             >
                                 <span className="material-symbols-rounded text-[20px]">close</span>
                             </button>
                         </div>
                         <div className="p-6 space-y-5">
                             <Field
-                                label="Describe Your Industry"
+                                label={tr("forms2.describeIndustry")}
                                 htmlFor="industry-nature"
-                                hint="Generated questions will reflect industry nuances."
+                                hint={tr("forms2.industryHint")}
                             >
                                 <Input
                                     id="industry-nature"
                                     value={industryNature}
                                     onChange={(e) => setIndustryNature(e.target.value)}
-                                    placeholder="e.g. Fintech, Healthcare..."
+                                    placeholder={tr("forms2.industryPlaceholder")}
                                     autoFocus
                                 />
                             </Field>
@@ -474,12 +476,12 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                 {generatingAi ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        Generating...
+                                        {tr("forms2.generating")}
                                     </>
                                 ) : (
                                     <>
                                         <span className="material-symbols-rounded text-[19px]">magic_button</span>
-                                        <span>Generate Strategy</span>
+                                        <span>{tr("forms2.generateStrategy")}</span>
                                     </>
                                 )}
                             </Button>

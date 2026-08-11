@@ -16,6 +16,7 @@ import {
 import { createPortal } from "react-dom";
 
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/I18nContext";
 
 type Tone = "default" | "danger";
 
@@ -51,6 +52,7 @@ interface DialogState {
 }
 
 export function DialogProvider({ children }: { children: React.ReactNode }) {
+  const { t: tr } = useI18n();
   const [dialog, setDialog] = useState<DialogState | null>(null);
   const [mounted, setMounted] = useState(false);
   const confirmBtnRef = useRef<HTMLButtonElement>(null);
@@ -89,15 +91,15 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
         const o = typeof opts === "string" ? { message: opts } : opts;
         setDialog({
           kind: "confirm",
-          title: o.title ?? "Please confirm",
+          title: o.title ?? tr("sharedUi.pleaseConfirm"),
           message: o.message,
-          confirmLabel: o.confirmLabel ?? "Confirm",
-          cancelLabel: o.cancelLabel ?? "Cancel",
+          confirmLabel: o.confirmLabel ?? tr("sharedUi.confirm"),
+          cancelLabel: o.cancelLabel ?? tr("sharedUi.cancel"),
           tone: o.tone ?? "default",
           resolve,
         });
       }),
-    []
+    [tr]
   );
 
   const alert = useCallback(
@@ -106,15 +108,15 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
         const o = typeof opts === "string" ? { message: opts } : opts;
         setDialog({
           kind: "alert",
-          title: o.title ?? "Notice",
+          title: o.title ?? tr("sharedUi.notice"),
           message: o.message,
-          confirmLabel: "OK",
+          confirmLabel: tr("sharedUi.ok"),
           cancelLabel: "",
           tone: o.tone ?? "default",
           resolve: () => resolve(),
         });
       }),
-    []
+    [tr]
   );
 
   const isDanger = dialog?.tone === "danger";

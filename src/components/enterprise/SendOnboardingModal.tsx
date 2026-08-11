@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { BACKEND_URL } from "@/utils/api";
 import SendTemplateModal from "./SendTemplateModal";
+import { useI18n } from "@/context/I18nContext";
 
 interface OnboardingTemplate {
     id: string;
@@ -18,6 +19,7 @@ interface SendOnboardingModalProps {
 }
 
 export default function SendOnboardingModal({ isOpen, onClose, applicationIds, token }: SendOnboardingModalProps) {
+    const { t: tr } = useI18n();
     const [templates, setTemplates] = useState<OnboardingTemplate[]>([]);
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
@@ -69,13 +71,13 @@ export default function SendOnboardingModal({ isOpen, onClose, applicationIds, t
                 });
                 if (res.ok) successCount++;
             }
-            alert(`Onboarding initiated successfully for ${successCount} candidates!`);
+            alert(tr("sharedUi.onboardingInitiatedSuccess", { count: successCount }));
             onClose();
             // Refresh parent state if needed (user might need to refresh manually or we can trigger a refresh)
             window.location.reload();
         } catch (e) {
             console.error(e);
-            alert("Error initiating onboarding.");
+            alert(tr("sharedUi.errorInitiatingOnboarding"));
         } finally {
             setIsSending(false);
         }
@@ -87,14 +89,14 @@ export default function SendOnboardingModal({ isOpen, onClose, applicationIds, t
         <SendTemplateModal<OnboardingTemplate>
             onClose={onClose}
             headerIcon="person_add"
-            headerLabel={"INITIATE ONBOARDING"}
+            headerLabel={tr("sharedUi.initiateOnboarding")}
             infoText={
                 <>
-                    Initiating onboarding for <span className="text-indigo-600">{applicationIds.length} candidate(s)</span>.
-                    Please select a template to use.
+                    {tr("sharedUi.initiatingOnboardingFor")} <span className="text-indigo-600">{tr("sharedUi.nCandidates", { count: applicationIds.length })}</span>.
+                    {" "}{tr("sharedUi.selectTemplateToUse")}
                 </>
             }
-            selectLabel="Select Onboarding Template"
+            selectLabel={tr("sharedUi.selectOnboardingTemplate")}
             listId="onboarding-template-list"
             isLoading={isLoading}
             templates={templates}
@@ -117,9 +119,9 @@ export default function SendOnboardingModal({ isOpen, onClose, applicationIds, t
             )}
             isSending={isSending}
             onSend={handleSend}
-            sendingLabel={"INITIATING..."}
+            sendingLabel={tr("sharedUi.initiating")}
             sendIcon="bolt"
-            sendLabel={"INITIATE NOW"}
+            sendLabel={tr("sharedUi.initiateNow")}
         />
     );
 }

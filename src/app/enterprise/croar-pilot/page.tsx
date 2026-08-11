@@ -5,6 +5,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
 import { PageHelp } from "@/components/ds";
 
@@ -27,6 +28,7 @@ interface PilotPrefill {
     location?: string;
     openings?: string | number;
     skills?: string;
+    employmentType?: string;
     interviewMode?: "AI" | "Human";
     interviewerEmail?: string;
     assessment?: string;
@@ -90,6 +92,7 @@ function PilotSetupForm({
     onClose?: () => void;
     initial?: PilotPrefill;
 }) {
+    const { t } = useI18n();
     // Pre-fill from what the user already typed (extracted by the agent). Enum-valued
     // fields are validated against the allowed options, otherwise fall back to the default.
     const initSeniority = SENIORITY.some((s) => s.label === initial?.seniority) ? (initial!.seniority as string) : "Mid";
@@ -97,11 +100,13 @@ function PilotSetupForm({
         ? (initial!.assessment as string)
         : "Both";
     const initMode: "AI" | "Human" = initial?.interviewMode === "Human" ? "Human" : "AI";
+    const initEmployment = initial?.employmentType?.trim() || "Full Time";
 
     const [role, setRole] = useState(initial?.role?.trim() ?? "");
     const [seniority, setSeniority] = useState(initSeniority);
     const [location, setLocation] = useState(initial?.location?.trim() || "Remote");
     const [openings, setOpenings] = useState(initial?.openings ? String(initial.openings) : "1");
+    const [employmentType, setEmploymentType] = useState(initEmployment);
     const [skills, setSkills] = useState(initial?.skills?.trim() ?? "");
     const [interviewMode, setInterviewMode] = useState<"AI" | "Human">(initMode);
     const [interviewerEmail, setInterviewerEmail] = useState(initial?.interviewerEmail ?? "");
@@ -117,9 +122,12 @@ function PilotSetupForm({
     const [step, setStep] = useState(0);
     const STEPS = ["Role", "Interview", "Assessment"];
 
+    const today = toISO(new Date());
     // Domain labels exclude '.', so the parts can't overlap -> linear matching (no backtracking).
     const emailValid = /^[^\s@]+@[^\s.@]+(?:\.[^\s.@]+)+$/.test(interviewerEmail);
-    const datesValid = !!startDate && !!endDate && endDate >= startDate;
+    // Interview dates can't be in the past — you can't schedule interviews on a day that's gone.
+    const startInPast = !!startDate && startDate < today;
+    const datesValid = !!startDate && !!endDate && !startInPast && endDate >= startDate;
     const step0Valid = role.trim().length > 1;
     const step1Valid = (interviewMode === "AI" || emailValid) && datesValid;
     const stepValid = [step0Valid, step1Valid, true][step];
@@ -139,6 +147,7 @@ function PilotSetupForm({
                 : `a human interview (interviewer email: ${interviewerEmail.trim()})`;
         const msg =
             `Hire a ${role.trim()}. Seniority: ${seniority} (${exp}). ` +
+            `Employment type: ${employmentType}. ` +
             `Location/mode: ${location.trim() || "Remote"}. Openings: ${num(openings, 1, 1, 999)}. ` +
             (skills.trim() ? `Key skills: ${skills.trim()}. ` : "") +
             `Interview: ${interview}, ${num(slots, 5, 1, 50)} slots/day, window ${startTime}-${endTime}, ` +
@@ -152,9 +161,9 @@ function PilotSetupForm({
     return (
         <div className="mb-3 rounded-[14px] border border-[#E8EAED] bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between mb-4">
-                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#5B53E0]">Quick setup</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#5B53E0]">{t("croarPilot.quickSetup")}</p>
                 {onClose && (
-                    <button onClick={onClose} className="text-[#9AA3AF] hover:text-[#374151] transition-colors" title="Close">
+                    <button onClick={onClose} className="text-[#9AA3AF] hover:text-[#374151] transition-colors" title={t("croarPilot.close")}>
                         <span className="material-symbols-rounded text-lg">close</span>
                     </button>
                 )}
@@ -180,7 +189,7 @@ function PilotSetupForm({
                             >
                                 {i < step ? "✓" : i + 1}
                             </span>
-                            {label}
+                            {t("croarPilot.step" + label)}
                         </div>
                         {i < STEPS.length - 1 && <div className="flex-1 h-px bg-[#E8EAED]" />}
                     </div>
@@ -191,28 +200,36 @@ function PilotSetupForm({
             {step === 0 && (
                 <div className="space-y-3.5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <Field label="Role title">
-                            <input value={role} onChange={(e) => setRole(e.target.value)} placeholder="e.g. Java Developer" className={inputCls} />
+                        <Field label={t("croarPilot.roleTitle")}>
+                            <input value={role} onChange={(e) => setRole(e.target.value)} placeholder={t("croarPilot.rolePlaceholder")} className={inputCls} />
                         </Field>
-                        <Field label="Location / mode">
+                        <Field label={t("croarPilot.locationMode")}>
                             <input value={location} onChange={(e) => setLocation(e.target.value)} className={inputCls} />
                         </Field>
                     </div>
-                    <Field label="Seniority">
+                    <Field label={t("croarPilot.seniorityLabel")}>
                         <div className="flex flex-wrap gap-2">
                             {SENIORITY.map((s) => (
                                 <Chip key={s.label} active={seniority === s.label} onClick={() => setSeniority(s.label)}>
-                                    {s.label}
+                                    {t("croarPilot.sen" + s.label)}
                                 </Chip>
                             ))}
                         </div>
                     </Field>
+                    <Field label={t("croarPilot.employmentType")}>
+                        <input
+                            value={employmentType}
+                            onChange={(e) => setEmploymentType(e.target.value)}
+                            placeholder={t("croarPilot.jobTypePlaceholder")}
+                            className={inputCls}
+                        />
+                    </Field>
                     <div className="grid grid-cols-2 gap-3">
-                        <Field label="Openings">
+                        <Field label={t("croarPilot.openings")}>
                             <input type="number" min="1" value={openings} onChange={(e) => setOpenings(e.target.value)} className={inputCls} />
                         </Field>
-                        <Field label="Key skills (comma-sep)">
-                            <input value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="Java, Spring, SQL" className={inputCls} />
+                        <Field label={t("croarPilot.keySkills")}>
+                            <input value={skills} onChange={(e) => setSkills(e.target.value)} placeholder={t("croarPilot.skillsPlaceholder")} className={inputCls} />
                         </Field>
                     </div>
                 </div>
@@ -221,38 +238,44 @@ function PilotSetupForm({
             {/* Step 2 — Interview */}
             {step === 1 && (
                 <div className="space-y-3.5">
-                    <Field label="Interview mode">
+                    <Field label={t("croarPilot.interviewModeLabel")}>
                         <div className="flex gap-2">
-                            <Chip active={interviewMode === "AI"} onClick={() => setInterviewMode("AI")}>AI-conducted</Chip>
-                            <Chip active={interviewMode === "Human"} onClick={() => setInterviewMode("Human")}>Human interviewer</Chip>
+                            <Chip active={interviewMode === "AI"} onClick={() => setInterviewMode("AI")}>{t("croarPilot.aiConducted")}</Chip>
+                            <Chip active={interviewMode === "Human"} onClick={() => setInterviewMode("Human")}>{t("croarPilot.humanInterviewer")}</Chip>
                         </div>
                     </Field>
                     {interviewMode === "Human" && (
-                        <Field label="Interviewer email">
+                        <Field label={t("croarPilot.interviewerEmailLabel")}>
                             <input
                                 value={interviewerEmail}
                                 onChange={(e) => setInterviewerEmail(e.target.value)}
-                                placeholder="interviewer@company.com"
+                                placeholder={t("croarPilot.interviewerPlaceholder")}
                                 className={`${inputCls} ${interviewerEmail && !emailValid ? "!border-[#EF4444]" : ""}`}
                             />
                         </Field>
                     )}
                     <div className="grid grid-cols-3 gap-3">
-                        <Field label="Slots / day">
+                        <Field label={t("croarPilot.slotsPerDay")}>
                             <input type="number" min="1" value={slots} onChange={(e) => setSlots(e.target.value)} className={inputCls} />
                         </Field>
-                        <Field label="From">
+                        <Field label={t("croarPilot.fromLabel")}>
                             <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className={inputCls} />
                         </Field>
-                        <Field label="To">
+                        <Field label={t("croarPilot.toLabel")}>
                             <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className={inputCls} />
                         </Field>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                        <Field label="Interview dates — start">
-                            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className={inputCls} />
+                        <Field label={t("croarPilot.interviewDatesStart")}>
+                            <input
+                                type="date"
+                                value={startDate}
+                                min={today}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className={`${inputCls} ${startInPast ? "!border-[#EF4444]" : ""}`}
+                            />
                         </Field>
-                        <Field label="End">
+                        <Field label={t("croarPilot.endLabel")}>
                             <input
                                 type="date"
                                 value={endDate}
@@ -268,20 +291,25 @@ function PilotSetupForm({
             {/* Step 3 — Assessment */}
             {step === 2 && (
                 <div className="space-y-3.5">
-                    <Field label="Assessment type">
+                    <Field label={t("croarPilot.assessmentType")}>
                         <div className="flex gap-2">
                             {["Coding", "Aptitude", "Both"].map((a) => (
                                 <Chip key={a} active={assessment === a} onClick={() => setAssessment(a)}>
-                                    {a}
+                                    {t(a === "Aptitude" ? "croarPilot.aptitudeSkills" : "croarPilot.assess" + a)}
                                 </Chip>
                             ))}
                         </div>
+                        <p className="mt-1.5 text-[11px] text-[#8A929E]">
+                            {t("croarPilot.codingForProgramming")} <span className="font-semibold">{t("croarPilot.aptitudeSkills")}</span> for
+                            design, marketing, sales & other non-technical roles — the questions are generated specifically
+                            for that role.
+                        </p>
                     </Field>
                     <div className="grid grid-cols-2 gap-3">
                         <Field label="# Questions">
                             <input type="number" min="1" value={questions} onChange={(e) => setQuestions(e.target.value)} className={inputCls} />
                         </Field>
-                        <Field label="Duration (min)">
+                        <Field label={t("croarPilot.durationMinLabel")}>
                             <input type="number" min="5" value={duration} onChange={(e) => setDuration(e.target.value)} className={inputCls} />
                         </Field>
                     </div>
@@ -337,10 +365,14 @@ interface PilotAction {
     role?: string;
     armed?: string[];
     profiles?: SourcedCandidate[];
+    // Set once invites are sent from a candidate picker, so the "invites sent" confirmation +
+    // next-step guidance survives a reload / navigating away and back (it's not local-only state).
+    invitedResult?: string;
 }
 
 // Actionable result card shown after the agent builds a pipeline.
 function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource: () => void }) {
+    const { t } = useI18n();
     return (
         <div className="rounded-[14px] border border-[#CDEAD7] bg-[#E6F4EA]/40 p-5">
             <div className="flex items-center gap-3 mb-3">
@@ -351,7 +383,7 @@ function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource
                     <p className="text-[14px] font-bold text-[#15171C] truncate">
                         Pipeline ready{action.role ? ` · ${action.role}` : ""}
                     </p>
-                    <p className="text-[12px] text-[#8A929E]">Live job created and the full pipeline armed.</p>
+                    <p className="text-[12px] text-[#8A929E]">{t("croarPilot.liveJobCreated")}</p>
                 </div>
             </div>
 
@@ -372,20 +404,20 @@ function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource
                         href={`/enterprise/jobs/${action.job_id}`}
                         className="px-3.5 h-9 rounded-[9px] bg-[#5B53E0] text-white text-[12.5px] font-semibold hover:bg-[#4A43C9] transition-colors flex items-center gap-1.5"
                     >
-                        <span className="material-symbols-rounded text-base">work</span> View job
+                        <span className="material-symbols-rounded text-base">work</span> {t("croarPilot.viewJob")}
                     </Link>
                 )}
                 <button
                     onClick={onSource}
                     className="px-3.5 h-9 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5"
                 >
-                    <span className="material-symbols-rounded text-base">person_search</span> Source candidates
+                    <span className="material-symbols-rounded text-base">person_search</span> {t("croarPilot.sourceCandidates")}
                 </button>
                 <Link
                     href="/enterprise/candidates/kanban"
                     className="px-3.5 h-9 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5"
                 >
-                    <span className="material-symbols-rounded text-base">view_kanban</span> View pipeline
+                    <span className="material-symbols-rounded text-base">view_kanban</span> {t("croarPilot.viewPipeline")}
                 </Link>
             </div>
         </div>
@@ -398,16 +430,22 @@ function CandidatePicker({
     jobId,
     candidates,
     token,
+    initialResult,
+    onInvited,
 }: {
     jobId?: string;
     candidates: SourcedCandidate[];
     token: string | null;
+    initialResult?: string;
+    onInvited?: (result: string) => void;
 }) {
+    const { t } = useI18n();
     const [selected, setSelected] = useState<Set<number>>(
         () => new Set(candidates.map((c, i) => (c.email ? i : -1)).filter((i) => i >= 0)),
     );
     const [sending, setSending] = useState(false);
-    const [result, setResult] = useState<string | null>(null);
+    // Seed from a previously-persisted result so the "invites sent" confirmation reappears on reload.
+    const [result, setResult] = useState<string | null>(initialResult ?? null);
     const [error, setError] = useState<string | null>(null);
 
     const toggle = (i: number) =>
@@ -428,6 +466,10 @@ function CandidatePicker({
             const chosen = [...selected].map((i) => ({
                 name: candidates[i].full_name,
                 email: candidates[i].email,
+                platform: candidates[i].platform,
+                profile_url: candidates[i].profile_url,
+                headline: candidates[i].headline,
+                location: candidates[i].location,
             }));
             const res = await fetch(`${API_BASE_URL}/api/v1/agents/pilot/invite`, {
                 method: "POST",
@@ -436,16 +478,16 @@ function CandidatePicker({
             });
             const d = await res.json().catch(() => ({}));
             if (res.ok && d.status === "success") {
-                setResult(
-                    d.test_mode
-                        ? `✓ Sent ${d.sent} test invite${d.sent === 1 ? "" : "s"} to ${d.test_email} (testing — real candidates were not emailed).`
-                        : `✓ Sent ${d.sent} invite${d.sent === 1 ? "" : "s"}.${d.failed ? ` ${d.failed} failed.` : ""}`,
-                );
+                const msg = d.test_mode
+                    ? `✓ Sent ${d.sent} test invite${d.sent === 1 ? "" : "s"} to ${d.test_email} (testing — real candidates were not emailed).`
+                    : `✓ Sent ${d.sent} invite${d.sent === 1 ? "" : "s"}.${d.failed ? ` ${d.failed} failed.` : ""}`;
+                setResult(msg);
+                onInvited?.(msg); // persist into the chat so it survives navigation / reload
             } else {
-                setError(d.detail || "Failed to send invites.");
+                setError(d.detail || t("croarPilot.failedSendInvites"));
             }
         } catch {
-            setError("Failed to send invites.");
+            setError(t("croarPilot.failedSendInvites"));
         } finally {
             setSending(false);
         }
@@ -453,8 +495,29 @@ function CandidatePicker({
 
     if (result) {
         return (
-            <div className="rounded-[14px] border border-[#CDEAD7] bg-[#E6F4EA]/50 p-4 text-[13px] font-semibold text-[#15803D]">
-                {result}
+            <div className="rounded-[14px] border border-[#CDEAD7] bg-[#E6F4EA]/50 p-4">
+                <p className="text-[13px] font-semibold text-[#15803D]">{result}</p>
+                {/* Guide a first-time user on the next step so they're not left wondering "now what?". */}
+                <p className="mt-2 text-[12px] leading-relaxed text-[#3F6B4F]">
+                    {t("croarPilot.sourcedCandidatesLive")} <strong>{t("croarPilot.jobPageWord")}</strong>. {t("croarPilot.eachInvitedCandidate")}{" "}
+                    <strong>{t("croarPilot.pipeline")}</strong> {t("croarPilot.screeningFlow")}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                    {jobId && (
+                        <Link
+                            href={`/enterprise/jobs/${jobId}?tab=sourcing`}
+                            className="px-3.5 h-9 rounded-[9px] bg-[#5B53E0] text-white text-[12.5px] font-semibold hover:bg-[#4A43C9] transition-colors flex items-center gap-1.5"
+                        >
+                            <span className="material-symbols-rounded text-base">person_search</span> {t("croarPilot.viewSourcedCandidates")}
+                        </Link>
+                    )}
+                    <Link
+                        href="/enterprise/candidates/kanban"
+                        className="px-3.5 h-9 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5"
+                    >
+                        <span className="material-symbols-rounded text-base">view_kanban</span> {t("croarPilot.viewPipeline")}
+                    </Link>
+                </div>
             </div>
         );
     }
@@ -462,7 +525,7 @@ function CandidatePicker({
     return (
         <div className="rounded-[14px] border border-[#E8EAED] bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between mb-3">
-                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#5B53E0]">Candidates</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#5B53E0]">{t("croarPilot.candidates")}</p>
                 {candidates.length > 0 && (
                     <button onClick={toggleAll} className="text-[11px] font-semibold text-[#5B53E0] hover:underline">
                         {allSelected ? "Clear all" : "Select all"}
@@ -471,7 +534,7 @@ function CandidatePicker({
             </div>
 
             {candidates.length === 0 ? (
-                <p className="text-[13px] text-[#8A929E] py-4 text-center">No candidates found for this role.</p>
+                <p className="text-[13px] text-[#8A929E] py-4 text-center">{t("croarPilot.noCandidatesRole")}</p>
             ) : (
                 <>
                     <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
@@ -540,8 +603,70 @@ function CandidatePicker({
     );
 }
 
+// localStorage key for the in-progress Pilot chat (so it survives navigating away and back).
+const PILOT_CHAT_KEY = "croar.pilot.currentChat";
+
+// While the Pilot works, poll the backend for the REAL step it's on right now (e.g. "Generating the
+// questions…") and show exactly that — no guessing. Falls back to a single "Working on it…" line
+// during the brief window before the first step is reported (or for plain chat with no tool step).
+function PilotThinking({ threadId, token }: { threadId: string; token: string | null }) {
+    const [step, setStep] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!token) return;
+        let alive = true;
+        const poll = async () => {
+            try {
+                const res = await fetch(
+                    `${API_BASE_URL}/api/v1/agents/pilot/progress?thread_id=${encodeURIComponent(threadId)}`,
+                    { headers: { Authorization: `Bearer ${token}` } },
+                );
+                if (res.ok) {
+                    const d = await res.json();
+                    if (alive) setStep(d.step || null);
+                }
+            } catch {
+                /* ignore */
+            }
+        };
+        poll();
+        const id = setInterval(poll, 1200);
+        return () => {
+            alive = false;
+            clearInterval(id);
+        };
+    }, [threadId, token]);
+
+    const label = step || "Working on it…";
+    return (
+        <div className="flex gap-3">
+            <div
+                className="w-8 h-8 rounded-[9px] flex items-center justify-center text-white shrink-0 animate-pulse"
+                style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
+            >
+                <span className="material-symbols-rounded text-[19px]">bolt</span>
+            </div>
+            <div className="bg-white border border-[#E8EAED] px-4 py-3 rounded-[14px] rounded-tl-[4px] flex items-center gap-3 min-w-[250px]">
+                {/* key={label} re-triggers the fade each time the real step changes */}
+                <span
+                    key={label}
+                    className="text-[12.5px] font-semibold text-[#5B53E0] animate-in fade-in slide-in-from-bottom-1 duration-300"
+                >
+                    {label}
+                </span>
+                <span className="flex gap-1 ml-auto shrink-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8B7DFF] animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8B7DFF] animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8B7DFF] animate-bounce" />
+                </span>
+            </div>
+        </div>
+    );
+}
+
 export default function CroarPilotPage() {
     const { token } = useAuth();
+    const { t } = useI18n();
     const [threadId, setThreadId] = useState(makeThreadId());
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
@@ -552,6 +677,10 @@ export default function CroarPilotPage() {
     const [setupDone, setSetupDone] = useState<Set<number>>(new Set());
     const titleRef = useRef<string>("");
     const scrollRef = useRef<HTMLDivElement>(null);
+    const persistReady = useRef(false); // guards the persist effect until after initial hydration
+    // Job handed off from "Source with Croar Pilot": carried as request metadata on every turn of
+    // this sourcing conversation so the agent sources for THIS exact job (no re-asking which one).
+    const sourceJobRef = useRef<{ id?: string; title?: string } | null>(null);
 
     const fetchSessions = useCallback(async () => {
         if (!token) return;
@@ -575,6 +704,51 @@ export default function CroarPilotPage() {
     useEffect(() => {
         if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }, [messages, isLoading]);
+
+    // Restore the in-progress chat when returning to the page, so the conversation (pipeline card,
+    // sourced candidates, "invites sent" guidance) doesn't vanish on navigation. Client-only.
+    useEffect(() => {
+        try {
+            // If we arrived from a job hand-off ("Source with Croar Pilot"), that starts a FRESH
+            // sourcing conversation on the current thread — do NOT restore an old chat, or its saved
+            // threadId would clobber this thread and the follow-up ("5") would land on a thread with
+            // no memory of the question.
+            if (sessionStorage.getItem("croar_source_job")) return;
+            const raw = localStorage.getItem(PILOT_CHAT_KEY);
+            if (raw) {
+                const saved = JSON.parse(raw);
+                if (Array.isArray(saved?.messages) && saved.messages.length) {
+                    setMessages(saved.messages);
+                    if (saved.threadId) setThreadId(saved.threadId);
+                    if (saved.currentSessionId) setCurrentSessionId(saved.currentSessionId);
+                    titleRef.current = saved.title || "";
+                }
+            }
+        } catch {
+            /* ignore */
+        }
+    }, []);
+
+    // Persist the chat on every change (skip the first run so we don't clobber storage before the
+    // hydration above has committed its restored messages).
+    useEffect(() => {
+        if (!persistReady.current) {
+            persistReady.current = true;
+            return;
+        }
+        try {
+            if (messages.length) {
+                localStorage.setItem(
+                    PILOT_CHAT_KEY,
+                    JSON.stringify({ messages, threadId, currentSessionId, title: titleRef.current }),
+                );
+            } else {
+                localStorage.removeItem(PILOT_CHAT_KEY);
+            }
+        } catch {
+            /* ignore */
+        }
+    }, [messages, threadId, currentSessionId]);
 
     const saveSession = async (msgs: Message[], title: string) => {
         if (!token) return;
@@ -621,7 +795,14 @@ export default function CroarPilotPage() {
             const res = await fetch(`${API_BASE_URL}/api/v1/agents/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ message: text, thread_id: threadId, context: "pilot" }),
+                body: JSON.stringify({
+                    message: text,
+                    thread_id: threadId,
+                    context: "pilot",
+                    metadata: sourceJobRef.current?.id
+                        ? { source_job_id: sourceJobRef.current.id, source_job_title: sourceJobRef.current.title || "" }
+                        : {},
+                }),
                 signal: controller.signal,
             });
             const d = await res.json().catch(() => ({}));
@@ -658,10 +839,17 @@ export default function CroarPilotPage() {
         try {
             const ctx = JSON.parse(raw);
             if (!ctx?.autostart) return;
-            const title = (ctx?.title || "").trim();
-            const jd = (ctx?.description || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-            if (!title && !jd) return;
-            const prompt = `Source candidates for the role "${title || "this position"}".${jd ? ` Job description: ${jd}` : ""}`;
+            const clean = (s: string) => (s || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&amp;|&lt;|&gt;/g, " ").replace(/\s+/g, " ").trim();
+            const title = clean(ctx?.title || "");
+            const skills = clean(ctx?.skills || "");
+            if (!title && !skills) return;
+            // Remember the exact job so every turn carries its id as metadata (server injects it as
+            // context) — the agent then sources for THIS job without re-asking which one.
+            if (ctx?.id || title) sourceJobRef.current = { id: ctx?.id, title };
+            // The job ALREADY exists (just created via the job form) — tell the Pilot so it sources
+            // for the existing job instead of building a new pipeline. No count is given, so it will
+            // ask "How many candidates should I source?" before it starts sourcing.
+            const prompt = `I've already created the "${title || "this"}" job in Croar${skills ? ` (key skills: ${skills})` : ""}. Please source candidates for this existing job — you don't need to create a new pipeline.`;
             send(prompt);
         } catch (e) {
             console.error("Pilot hand-off failed:", e);
@@ -692,7 +880,13 @@ export default function CroarPilotPage() {
         setMessages([]);
         setCurrentSessionId(null);
         titleRef.current = "";
+        sourceJobRef.current = null; // drop any handed-off job so it doesn't leak into a new chat
         setThreadId(makeThreadId());
+        try {
+            localStorage.removeItem(PILOT_CHAT_KEY);
+        } catch {
+            /* ignore */
+        }
     };
 
     const deleteSession = async (e: React.MouseEvent | React.KeyboardEvent, id: string) => {
@@ -723,7 +917,7 @@ export default function CroarPilotPage() {
                 <div
                     role="button"
                     tabIndex={0}
-                    aria-label="Close history"
+                    aria-label={t("croarPilot.closeHistory")}
                     onClick={() => setShowHistory(false)}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setShowHistory(false); }}
                     className="fixed inset-0 z-40 bg-[#0E1014]/40 backdrop-blur-sm"
@@ -737,7 +931,7 @@ export default function CroarPilotPage() {
                 }`}
             >
                 <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                    <span className="text-[13px] font-bold text-[#15171C]">Conversations</span>
+                    <span className="text-[13px] font-bold text-[#15171C]">{t("croarPilot.conversations")}</span>
                     <button onClick={() => setShowHistory(false)} className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#9AA3AF] hover:bg-[#F4F5F7] transition-colors">
                         <span className="material-symbols-rounded text-[20px]">close</span>
                     </button>
@@ -751,10 +945,10 @@ export default function CroarPilotPage() {
                         {"New chat"}
                     </button>
                 </div>
-                <p className="px-5 pt-1 text-[10px] font-bold text-[#8A929E] uppercase tracking-[0.1em]">History</p>
+                <p className="px-5 pt-1 text-[10px] font-bold text-[#8A929E] uppercase tracking-[0.1em]">{t("croarPilot.history")}</p>
                 <div className="flex-1 overflow-y-auto p-2.5 space-y-1 custom-scrollbar">
                     {sessions.length === 0 && (
-                        <p className="text-[12px] text-[#9AA3AF] px-2 py-3">No conversations yet.</p>
+                        <p className="text-[12px] text-[#9AA3AF] px-2 py-3">{t("croarPilot.noConversations")}</p>
                     )}
                     {sessions.map((s) => (
                         <button
@@ -778,7 +972,7 @@ export default function CroarPilotPage() {
                                     }
                                 }}
                                 className="material-symbols-rounded text-base text-[#C7CCD4] hover:text-[#EF4444] opacity-0 group-hover:opacity-100 transition-all"
-                                title="Delete"
+                                title={t("croarPilot.deleteLabel")}
                             >
                                 delete
                             </span>
@@ -806,14 +1000,14 @@ export default function CroarPilotPage() {
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
                     >
                         <span className="material-symbols-rounded text-[18px] text-[#6B6F76]">history</span>
-                        History
+                        {t("croarPilot.history")}
                     </button>
                     <button
                         onClick={newChat}
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
                     >
                         <span className="material-symbols-rounded text-[18px]">edit_square</span>
-                        New Chat
+                        {t("croarPilot.newChat")}
                     </button>
                 </div>
             </header>
@@ -832,22 +1026,22 @@ export default function CroarPilotPage() {
                                     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12l1-9z" /></svg>
                                 </div>
                             </div>
-                            <h2 className="text-[28px] md:text-[34px] font-extrabold tracking-[-0.9px] text-[#15171C] leading-[1.1] mb-3">How can I help you hire?</h2>
+                            <h2 className="text-[28px] md:text-[34px] font-extrabold tracking-[-0.9px] text-[#15171C] leading-[1.1] mb-3">{t("croarPilot.howCanIHelp")}</h2>
                             <p className="text-[#6B6F76] text-[15px] leading-relaxed max-w-md mx-auto mb-7">
                                 Describe the role — seniority, key skills, openings and location — and I&apos;ll create the live job and arm the full pipeline: assessment, interview and onboarding.
                             </p>
 
                             <div className="grid gap-2.5 max-w-xl mx-auto">
-                                {EXAMPLES.map((ex) => (
+                                {EXAMPLES.map((_ex, exi) => (
                                     <button
-                                        key={ex}
-                                        onClick={() => send(ex)}
+                                        key={exi}
+                                        onClick={() => send(t("croarPilot.example" + (exi + 1)))}
                                         className="text-left p-4 rounded-[14px] bg-white border border-[#E8EAED] hover:border-[#5B53E0]/50 hover:shadow-[0_6px_18px_rgba(15,23,42,0.06)] transition-all text-[14px] font-medium text-[#374151] flex items-center gap-3 group"
                                     >
                                         <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
                                             <span className="material-symbols-rounded text-[19px]">bolt</span>
                                         </span>
-                                        <span className="flex-1">{ex}</span>
+                                        <span className="flex-1">{t("croarPilot.example" + (exi + 1))}</span>
                                         <span className="material-symbols-rounded text-[#C7CCD4] group-hover:text-[#5B53E0] group-hover:translate-x-0.5 transition-all">arrow_forward</span>
                                     </button>
                                 ))}
@@ -945,6 +1139,16 @@ export default function CroarPilotPage() {
                                             jobId={sourceAction.job_id}
                                             candidates={sourceAction.profiles || []}
                                             token={token}
+                                            initialResult={sourceAction.invitedResult}
+                                            onInvited={(r) => {
+                                                // Store the "invites sent" result on this message and re-save the
+                                                // session so it persists across navigation / reload.
+                                                const next = messages.map((m, i) =>
+                                                    i === idx ? { ...m, action: { ...(m.action || {}), invitedResult: r } } : m,
+                                                );
+                                                setMessages(next);
+                                                saveSession(next, titleRef.current || "Sourcing candidates");
+                                            }}
                                         />
                                     </div>
                                 )}
@@ -954,9 +1158,14 @@ export default function CroarPilotPage() {
                                         <PipelineBuiltCard
                                             action={builtAction}
                                             onSource={() =>
-                                                // No count here — let the Pilot ask "how many?" (source_candidates
-                                                // has no default), consistent with the sourcing flow.
-                                                send(`Source candidates for this role (job ${builtAction.job_id}).`)
+                                                // Show the job TITLE, not the raw id. The Pilot still knows the
+                                                // job_id from the pipeline it just built in this thread, so sourcing
+                                                // targets the right job. No count here — let it ask "how many?".
+                                                send(
+                                                    builtAction.role
+                                                        ? `Source candidates for the ${builtAction.role} role.`
+                                                        : "Source candidates for this role.",
+                                                )
                                             }
                                         />
                                     </div>
@@ -965,19 +1174,7 @@ export default function CroarPilotPage() {
                         );
                     })}
 
-                    {isLoading && (
-                        <div className="flex gap-3">
-                            <div
-                                className="w-8 h-8 rounded-[9px] flex items-center justify-center text-white animate-pulse"
-                                style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
-                            >
-                                <span className="material-symbols-rounded text-[19px]">bolt</span>
-                            </div>
-                            <div className="bg-white border border-[#E8EAED] p-4 rounded-[14px] rounded-tl-[4px]">
-                                <p className="text-[12px] font-semibold text-[#8A929E]">Building your pipeline&hellip;</p>
-                            </div>
-                        </div>
-                    )}
+                    {isLoading && <PilotThinking threadId={threadId} token={token} />}
                     </div>
                 </div>
 
@@ -990,7 +1187,7 @@ export default function CroarPilotPage() {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && send()}
-                                placeholder="Describe the role you want to hire…"
+                                placeholder={t("croarPilot.describePlaceholder")}
                                 disabled={isLoading}
                                 className="flex-1 bg-transparent px-2 h-9 text-[14.5px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none disabled:opacity-50"
                             />
@@ -1004,7 +1201,7 @@ export default function CroarPilotPage() {
                             </button>
                         </div>
                         <p className="mt-2 text-[10px] text-center text-[#9AA3AF] font-medium">
-                            Croar Pilot creates a live job and arms the full hiring pipeline.
+                            {t("croarPilot.createsLiveJob")}
                         </p>
                     </div>
                 </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import { Card, Badge, StatCard, StatGrid, PageHelp, jetbrainsMono } from "@/components/ds";
 import {
@@ -44,6 +45,7 @@ interface ChartDataItem {
 
 export default function X360ReportPage() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const params = useParams();
     const employeeId = params.employeeId as string;
@@ -92,15 +94,15 @@ export default function X360ReportPage() {
                     <div className="w-16 h-16 bg-[#FDECEC] rounded-[16px] flex items-center justify-center mb-5 text-[#C0383C]">
                         <span className="material-symbols-rounded text-[32px]">error_outline</span>
                     </div>
-                    <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Report not found</h3>
+                    <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("assess360.reportNotFound")}</h3>
                     <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
-                        We couldn&apos;t generate this 360 report. The cycle may not have any submitted feedback yet.
+                        {tr("assess360.reportNotFoundHint")}
                     </p>
                     <button
                         onClick={() => router.back()}
                         className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[19px]">arrow_back</span> Go back
+                        <span className="material-symbols-rounded text-[19px]">arrow_back</span> {tr("assess360.goBack")}
                     </button>
                 </Card>
             </div>
@@ -128,14 +130,14 @@ export default function X360ReportPage() {
                         className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[#8A929E] hover:text-[#374151] transition-colors mb-1.5"
                     >
                         <span className="material-symbols-rounded text-[18px]">arrow_back</span>
-                        Back
+                        {tr("common.back")}
                     </button>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">360 Feedback Report</h1>
-                        <PageHelp title="360 Feedback Report">An employee&apos;s 360 results — scores by competency and written feedback. Review or print here.</PageHelp>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight truncate">{tr("assess360.feedbackReport")}</h1>
+                        <PageHelp title={tr("assess360.feedbackReport")}>{tr("assess360.feedbackReportHelp")}</PageHelp>
                     </div>
                     <p className="text-[12.5px] text-[#8A929E] mt-0.5">
-                        Cycle: <span className="text-[#374151] font-semibold">{report.template_name}</span>
+                        {tr("assess360.cycleLabel")} <span className="text-[#374151] font-semibold">{report.template_name}</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap sm:shrink-0">
@@ -144,21 +146,21 @@ export default function X360ReportPage() {
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] transition-colors shadow-sm"
                     >
                         <span className="material-symbols-rounded text-[17px]">print</span>
-                        Print
+                        {tr("assess360.print")}
                     </button>
                 </div>
             </header>
 
             {/* Score summary */}
             <StatGrid>
-                <StatCard label="Overall Avg" value={
+                <StatCard label={tr("assess360.overallAvg")} value={
                     report.category_scores.length
                         ? (report.category_scores.reduce((a, c) => a + (c.overall_average || 0), 0) / report.category_scores.length).toFixed(1)
                         : "—"
                 } icon="insights" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Completion" value={`${completionPct}%`} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Responses" value={`${report.completed_assignments}/${report.total_assignments}`} icon="groups" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label="Competencies" value={report.category_scores.length} icon="category" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("assess360.completion")} value={`${completionPct}%`} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("assess360.responses")} value={`${report.completed_assignments}/${report.total_assignments}`} icon="groups" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("assess360.competencies")} value={report.category_scores.length} icon="category" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
             </StatGrid>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -166,7 +168,7 @@ export default function X360ReportPage() {
                 <Card padding="none" className="overflow-hidden h-[500px] flex flex-col">
                     <div className="flex items-center gap-2.5 px-5 py-3.5 bg-[#F7F8FA] border-b border-[#E8EAED]">
                         <span className="material-symbols-rounded text-[#5B53E0] text-[19px]">radar</span>
-                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">Competency Overview</h2>
+                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("assess360.competencyOverview")}</h2>
                     </div>
                     <div className="flex-1 w-full p-5">
                         <ResponsiveContainer width="100%" height="100%">
@@ -174,9 +176,9 @@ export default function X360ReportPage() {
                                 <PolarGrid stroke="#e2e8f0" />
                                 <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fontWeight: 'bold' }} stroke="#64748b" />
                                 <PolarRadiusAxis angle={30} domain={[0, 5]} stroke="#94a3b8" />
-                                <Radar name="Self" dataKey="Self" stroke="#7C3AED" fill="#7C3AED" fillOpacity={0.4} />
-                                <Radar name="Manager" dataKey="Manager" stroke="#F59E0B" fill="#F59E0B" fillOpacity={0.3} />
-                                <Radar name="Average" dataKey="Average" stroke="#10B981" fill="#10B981" fillOpacity={0.3} />
+                                <Radar name={tr("assess360.self")} dataKey="Self" stroke="#7C3AED" fill="#7C3AED" fillOpacity={0.4} />
+                                <Radar name={tr("assess360.manager")} dataKey="Manager" stroke="#F59E0B" fill="#F59E0B" fillOpacity={0.3} />
+                                <Radar name={tr("assess360.average")} dataKey="Average" stroke="#10B981" fill="#10B981" fillOpacity={0.3} />
                                 <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '10px', fontWeight: 'bold' }} />
                                 <Tooltip />
                             </RadarChart>
@@ -188,17 +190,17 @@ export default function X360ReportPage() {
                 <Card padding="none" className="overflow-hidden flex flex-col">
                     <div className="flex items-center gap-2.5 px-5 py-3.5 bg-[#F7F8FA] border-b border-[#E8EAED]">
                         <span className="material-symbols-rounded text-[#5B53E0] text-[19px]">table_chart</span>
-                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">Aggregate Scores</h2>
+                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("assess360.aggregateScores")}</h2>
                     </div>
                     <div className="flex-1 overflow-x-auto">
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] border-b border-[#E8EAED] bg-[#F7F8FA]">
-                                    <th className="py-3 px-4">Category</th>
-                                    <th className="py-3 px-2 text-center">Self</th>
-                                    <th className="py-3 px-2 text-center">Manager</th>
-                                    <th className="py-3 px-2 text-center">Peers</th>
-                                    <th className="py-3 px-4 text-center">Avg</th>
+                                    <th className="py-3 px-4">{tr("assess360.category")}</th>
+                                    <th className="py-3 px-2 text-center">{tr("assess360.self")}</th>
+                                    <th className="py-3 px-2 text-center">{tr("assess360.manager")}</th>
+                                    <th className="py-3 px-2 text-center">{tr("assess360.peers")}</th>
+                                    <th className="py-3 px-4 text-center">{tr("assess360.avg")}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#F0F0F1]">
@@ -221,7 +223,7 @@ export default function X360ReportPage() {
             <Card padding="none" className="overflow-hidden">
                 <div className="flex items-center gap-2.5 px-5 py-3.5 bg-[#F7F8FA] border-b border-[#E8EAED]">
                     <span className="material-symbols-rounded text-[#5B53E0] text-[19px]">bar_chart</span>
-                    <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">Competency Breakdown</h2>
+                    <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("assess360.competencyBreakdown")}</h2>
                 </div>
                 <div className="p-5 space-y-4">
                     {report.category_scores.map((cs) => (
@@ -244,7 +246,7 @@ export default function X360ReportPage() {
             {/* Qualitative Feedback */}
             <section className="space-y-4">
                 <div className="flex items-center gap-2">
-                    <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">Qualitative Insights</h2>
+                    <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">{tr("assess360.qualitativeInsights")}</h2>
                     <Badge tone="neutral">{report.text_responses.length}</Badge>
                 </div>
                 {report.text_responses.length === 0 ? (
@@ -252,7 +254,7 @@ export default function X360ReportPage() {
                         <div className="w-14 h-14 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-4 text-[#C7CCD4]">
                             <span className="material-symbols-rounded text-[28px]">chat_bubble_outline</span>
                         </div>
-                        <p className="text-[#8A929E] text-[14px] font-medium">No qualitative responses yet.</p>
+                        <p className="text-[#8A929E] text-[14px] font-medium">{tr("assess360.noQualitative")}</p>
                     </Card>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -262,7 +264,7 @@ export default function X360ReportPage() {
                                     <Badge tone="indigo">{resp.category}</Badge>
                                     <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{resp.relation}</span>
                                 </div>
-                                <p className="text-[12px] font-semibold text-[#8A929E]">Q: {resp.question}</p>
+                                <p className="text-[12px] font-semibold text-[#8A929E]">{tr("assess360.qPrefix")} {resp.question}</p>
                                 <p className="text-[13.5px] text-[#374151] leading-relaxed">&quot;{resp.answer}&quot;</p>
                             </Card>
                         ))}

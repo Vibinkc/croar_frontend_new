@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { BACKEND_URL } from "@/utils/api";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
@@ -87,6 +88,7 @@ const EMPTY_FORM: FormState = {
 
 export default function OnboardingAutomationPage() {
   const { token, canAccess } = useAuth();
+    const { t: tr } = useI18n();
 
   const authHeaders = useMemo(() => ({
     "Content-Type": "application/json",
@@ -121,7 +123,7 @@ export default function OnboardingAutomationPage() {
       const obj = msg as { msg?: string; detail?: string };
       finalMsg = obj.msg || obj.detail || JSON.stringify(msg);
     } else {
-      finalMsg = String(msg || "An error occurred");
+      finalMsg = String(msg || tr("automation.errorOccurred"));
     }
     setToast({ msg: finalMsg, type });
     setTimeout(() => setToast(null), 5000);
@@ -163,10 +165,10 @@ export default function OnboardingAutomationPage() {
         const data = await res.json();
         setAutomations(Array.isArray(data) ? data : []);
       } else {
-        showToast("Failed to load automations.", "error");
+        showToast(tr("automation.failedLoadAutomations"), "error");
       }
     } catch {
-      showToast("Failed to load automations.", "error");
+      showToast(tr("automation.failedLoadAutomations"), "error");
     } finally {
       setLoading(false);
     }
@@ -214,17 +216,17 @@ export default function OnboardingAutomationPage() {
     // Collect every missing required field — Trigger Stage was previously not
     // validated, so rules could be saved without picking a stage.
     const missing: string[] = [];
-    if (!form.job_requirement_id) missing.push("Job Requirement");
+    if (!form.job_requirement_id) missing.push(tr("automation.jobRequirement"));
     // When the job has rounds, require an actual round pick (sets stage_name). Checking only
     // stage_index > 0 let the preselected default (1) pass with an empty stage_name.
     const stageMissing = jobRounds.length > 0 ? !form.stage_name : !String(form.stage_index).trim();
-    if (stageMissing) missing.push("Trigger Stage");
-    if (!form.template_id) missing.push("Onboarding Template");
+    if (stageMissing) missing.push(tr("automation.triggerStage"));
+    if (!form.template_id) missing.push(tr("automation.onboardingTemplate"));
 
     if (missing.length > 0) {
       const msg = missing.length === 1
-        ? `Please fill in the required field: ${missing[0]}.`
-        : `Please fill in the required fields: ${missing.join(", ")}.`;
+        ? tr("automation.fillRequiredField", { field: missing[0] })
+        : tr("automation.fillRequiredFieldsList", { fields: missing.join(", ") });
       setFormError(msg);
       showToast(msg, "error");
       return;
@@ -255,12 +257,12 @@ export default function OnboardingAutomationPage() {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
-        showToast(editingId ? "Automation updated!" : "Automation created!");
+        showToast(editingId ? tr("automation.automationUpdated") : tr("automation.automationCreated"));
         closeModal();
         fetchAutomations(selectedJobId || undefined);
       } else {
         const err = await res.json().catch(() => ({}));
-        const msg = (typeof err?.detail === "string" && err.detail) || "Failed to save onboarding automation. Please try again.";
+        const msg = (typeof err?.detail === "string" && err.detail) || tr("automation.failedSaveOnboarding");
         setFormError(msg);
         showToast(msg, "error");
       }
@@ -282,7 +284,7 @@ export default function OnboardingAutomationPage() {
           prev.map((item) => (item.id === a.id ? { ...item, is_enabled: !a.is_enabled } : item))
         );
       } else {
-        showToast("Failed to update status.", "error");
+        showToast(tr("automation.failedUpdateStatus"), "error");
       }
     } finally {
       setTogglingId(null);
@@ -298,10 +300,10 @@ export default function OnboardingAutomationPage() {
         headers: authHeaders,
       });
       if (res.ok) {
-        showToast("Automation deleted.");
+        showToast(tr("automation.automationDeleted"));
         setAutomations((prev) => prev.filter((a) => a.id !== automationToDelete.id));
       } else {
-        showToast("Failed to delete.", "error");
+        showToast(tr("automation.failedDelete"), "error");
       }
     } finally {
       setDeletingId(null);
@@ -353,12 +355,12 @@ export default function OnboardingAutomationPage() {
       <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-1.5">
-            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Onboarding Automation</h1>
-            <PageHelp title="Onboarding Automation">
-              <p>Automate onboarding steps for new hires.</p>
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("automation.onboardingTitle")}</h1>
+            <PageHelp title={tr("automation.onboardingTitle")}>
+              <p>{tr("automation.onboardingSubtitle")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">Automatically trigger onboarding processes when candidates reach specific hiring stages.</p>
+          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.onboardingPageSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
           {canAccess("onboarding:moderate") && (
@@ -367,7 +369,7 @@ export default function OnboardingAutomationPage() {
               className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" />
-              New Automation
+              {tr("automation.newAutomation")}
             </button>
           )}
         </div>
@@ -378,10 +380,10 @@ export default function OnboardingAutomationPage() {
         {/* Stats Section */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {[
-            { label: "Total Rules", value: automations.length, Icon: Layers, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-            { label: "Active Rules", value: automations.filter(a => a.is_enabled).length, Icon: Activity, grad: "linear-gradient(135deg,#00C49F,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-            { label: "Auto-Move Rules", value: automations.filter(a => a.auto_move).length, Icon: Sparkles, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" },
-            { label: "Templates Used", value: new Set(automations.map(a => a.template_id)).size, Icon: FileText, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" }
+            { label: tr("automation.totalRules"), value: automations.length, Icon: Layers, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+            { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: Activity, grad: "linear-gradient(135deg,#00C49F,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+            { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: Sparkles, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" },
+            { label: tr("automation.templatesUsed"), value: new Set(automations.map(a => a.template_id)).size, Icon: FileText, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" }
           ].map((s, i) => (
             <motion.div
               key={s.label}
@@ -410,7 +412,7 @@ export default function OnboardingAutomationPage() {
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input 
                 type="text"
-                placeholder="Search by rules, jobs, or templates..."
+                placeholder={tr("automation.searchRulesJobsTemplates")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-10 pr-4 text-[13.5px] font-semibold text-slate-700 placeholder:text-slate-400 focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all outline-none shadow-sm"
@@ -423,7 +425,7 @@ export default function OnboardingAutomationPage() {
                   onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
                   className="text-[11px] font-extrabold text-[#5B53E0] hover:underline px-2 tracking-wider cursor-pointer"
                 >
-                  RESET FILTERS
+                  {tr("automation.resetFilters")}
                 </button>
               )}
               <div className="relative w-full md:w-64">
@@ -433,7 +435,7 @@ export default function OnboardingAutomationPage() {
                   onChange={(e) => setSelectedJobId(e.target.value)}
                   className="w-full h-11 border border-[#E1E4E8] rounded-[12px] pl-10 pr-10 text-[13px] font-semibold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] shadow-sm appearance-none cursor-pointer"
                 >
-                  <option value="">All Job Requirements</option>
+                  <option value="">{tr("automation.allJobRequirements")}</option>
                   {jobs.map((j) => (
                     <option key={j.id} value={j.id}>{j.title}</option>
                   ))}
@@ -454,16 +456,16 @@ export default function OnboardingAutomationPage() {
           <div className="w-16 h-16 rounded-[12px] bg-[#F5F3FF] border border-[#EBE7FF] flex items-center justify-center mb-4">
             <UserPlus className="w-8 h-8 text-[#8B5CF6]" />
           </div>
-          <p className="text-slate-800 font-bold text-[16px]">{searchQuery ? 'No matching rules' : 'No onboarding automations'}</p>
+          <p className="text-slate-800 font-bold text-[16px]">{searchQuery ? tr("automation.noMatchingRules") : tr("automation.noOnboardingAutomations")}</p>
           <p className="text-slate-400 text-[13px] mt-1 max-w-sm font-medium">
-            {searchQuery ? `We couldn't find any results for "${searchQuery}"` : 'Set up an automation to auto-start onboarding when a candidate reaches a certain stage.'}
+            {searchQuery ? tr("automation.noResultsFor", { query: searchQuery }) : tr("automation.createFirstOnboarding")}
           </p>
           {!searchQuery && canAccess("onboarding:moderate") && (
             <button
               onClick={openCreate}
               className="mt-5 px-5 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-bold shadow-[0_4px_12px_rgba(91,83,224,0.25)] transition-all active:scale-95 cursor-pointer"
             >
-              Create Automation
+              {tr("automation.createAutomation")}
             </button>
           )}
         </div>
@@ -473,11 +475,11 @@ export default function OnboardingAutomationPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#F7F8FA] border-b border-[#E1E4E8]">
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Automation Details</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Target Job</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Onboarding Template</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">Status</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] text-right">Actions</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.automationDetails")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.targetJob")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.onboardingTemplate")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.status")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] text-right">{tr("automation.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0F0F1]">
@@ -487,15 +489,15 @@ export default function OnboardingAutomationPage() {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <span className="inline-flex items-center px-2 py-0.5 rounded-[6px] bg-[#F5F3FF] text-[#8B5CF6] text-[10px] font-bold border border-[#EBE7FF]/60 uppercase">
-                            Stage {a.stage_index}
+                            {tr("automation.stage")} {a.stage_index}
                           </span>
                           {a.stage_name && (
                             <span className="text-[12px] font-semibold text-[#8A929E]">{a.stage_name}</span>
                           )}
                         </div>
                         <p className="text-[13.5px] font-semibold text-[#374151] line-clamp-1">
-                          <span className="text-[#8A929E] font-medium italic mr-1">Trigger:</span>
-                          <span>Move to stage</span>
+                          <span className="text-[#8A929E] font-medium italic mr-1">{tr("automation.triggerLabel")}</span>
+                          <span>{tr("automation.moveToStage")}</span>
                         </p>
                       </div>
                     </td>
@@ -515,7 +517,7 @@ export default function OnboardingAutomationPage() {
                           <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider mt-1">
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold border border-[#DAD7F6]/60 uppercase tracking-wider">
                               <Mail className="w-3 h-3 shrink-0 mr-0.5" />
-                              Welcome Email
+                              {tr("automation.welcomeEmail")}
                             </span>
                           </div>
                         )}
@@ -588,9 +590,9 @@ export default function OnboardingAutomationPage() {
                   </div>
                   <div>
                     <h2 className="text-[16px] font-extrabold text-[#15171C] leading-tight">
-                      {editingId ? "Edit Automation" : "New Automation"}
+                      {editingId ? tr("automation.editAutomation") : tr("automation.newAutomation")}
                     </h2>
-                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">Onboarding Config</p>
+                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">{tr("automation.onboardingConfig")}</p>
                   </div>
                 </div>
                 <button 
@@ -605,7 +607,7 @@ export default function OnboardingAutomationPage() {
                 {/* Job */}
                 <div>
                   <label htmlFor="onboarding-job-requirement" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                    Job Requirement <span className="text-rose-500">*</span>
+                    {tr("automation.jobRequirement")} <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
                     <select
@@ -615,7 +617,7 @@ export default function OnboardingAutomationPage() {
                       disabled={!!editingId}
                       className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] disabled:bg-slate-50 disabled:text-slate-400 transition-all shadow-sm"
                     >
-                      <option value="">Select job…</option>
+                      <option value="">{tr("automation.selectJob")}</option>
                       {jobs.map((j) => (
                         <option key={j.id} value={j.id}>{j.title}</option>
                       ))}
@@ -627,7 +629,7 @@ export default function OnboardingAutomationPage() {
                 {/* Round */}
                 <div>
                   <label htmlFor="onboarding-trigger-stage" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                    Trigger Stage <span className="text-rose-500">*</span>
+                    {tr("automation.triggerStage")} <span className="text-rose-500">*</span>
                   </label>
                   {jobRounds.length > 0 ? (
                     <div className="relative">
@@ -645,10 +647,10 @@ export default function OnboardingAutomationPage() {
                         value={form.stage_index}
                         className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                       >
-                        <option value={0}>Pick stage…</option>
+                        <option value={0}>{tr("automation.pickStage")}</option>
                         {jobRounds.map((r, i) => (
                           <option key={i} value={i + 1}>
-                            Stage {i + 1}: {r.name}
+                            {tr("automation.stage")} {i + 1}: {r.name}
                           </option>
                         ))}
                       </select>
@@ -662,14 +664,14 @@ export default function OnboardingAutomationPage() {
                         value={form.stage_index}
                         onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
                         className="col-span-2 border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
-                        placeholder="Idx"
+                        placeholder={tr("automation.idxPlaceholder")}
                       />
                       <input
                         type="text"
                         value={form.stage_name}
                         onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
                         className="col-span-3 border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
-                        placeholder="Stage Name"
+                        placeholder={tr("automation.stageNamePlaceholder")}
                       />
                     </div>
                   )}
@@ -678,7 +680,7 @@ export default function OnboardingAutomationPage() {
                 {/* Onboarding Template */}
                 <div>
                   <label htmlFor="onboarding-template" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                    Onboarding Template <span className="text-rose-500">*</span>
+                    {tr("automation.onboardingTemplate")} <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
                     <select
@@ -687,7 +689,7 @@ export default function OnboardingAutomationPage() {
                       onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}
                       className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                     >
-                      <option value="">Select template…</option>
+                      <option value="">{tr("automation.selectTemplate")}</option>
                       {onboardingTemplates.map((t) => (
                         <option key={t.id} value={t.id}>{t.name}</option>
                       ))}
@@ -699,7 +701,7 @@ export default function OnboardingAutomationPage() {
                 {/* Email Template */}
                 <div>
                   <label htmlFor="onboarding-email-template" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
-                    Introduction Email Template
+                    {tr("automation.introEmailTemplate")}
                   </label>
                   <div className="relative">
                     <select
@@ -708,7 +710,7 @@ export default function OnboardingAutomationPage() {
                       onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
                       className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
                     >
-                      <option value="">No email (Manual send)</option>
+                      <option value="">{tr("automation.noEmailManual")}</option>
                       {emailTemplates.map((t) => (
                         <option key={t.id} value={t.id}>{t.name}</option>
                       ))}
@@ -720,8 +722,8 @@ export default function OnboardingAutomationPage() {
                 {/* Status Switch */}
                 <div className="flex items-center justify-between p-4 bg-[#F7F8FA] rounded-[12px] border border-[#E1E4E8] transition-all hover:border-[#DAD7F6]">
                   <div>
-                    <p className="text-[13.5px] font-bold text-[#15171C]">Enable Automation</p>
-                    <p className="text-[11.5px] text-[#8A929E] font-semibold mt-0.5">Trigger onboarding when criteria is met</p>
+                    <p className="text-[13.5px] font-bold text-[#15171C]">{tr("automation.enableAutomation")}</p>
+                    <p className="text-[11.5px] text-[#8A929E] font-semibold mt-0.5">{tr("automation.triggerOnboardingWhenMet")}</p>
                   </div>
                   <button
                     type="button"
@@ -735,8 +737,8 @@ export default function OnboardingAutomationPage() {
                 {/* Auto-Move Toggle */}
                 <div className="flex items-center justify-between p-4 bg-[#F7F8FA] rounded-[12px] border border-[#E1E4E8] transition-all hover:border-[#DAD7F6]">
                   <div>
-                    <p className="text-[13.5px] font-bold text-[#15171C]">Auto-Move Candidate</p>
-                    <p className="text-[11.5px] text-[#8A929E] font-semibold mt-0.5">Automatically advance candidate after trigger</p>
+                    <p className="text-[13.5px] font-bold text-[#15171C]">{tr("automation.autoMoveCandidate")}</p>
+                    <p className="text-[11.5px] text-[#8A929E] font-semibold mt-0.5">{tr("automation.advanceCandidateAfter")}</p>
                   </div>
                   <button
                     type="button"
@@ -767,15 +769,15 @@ export default function OnboardingAutomationPage() {
                   ) : (
                     <>
                       <Check className="w-4 h-4" />
-                      <span>{editingId ? "SAVE CHANGES" : "CREATE AUTOMATION"}</span>
+                      <span>{editingId ? tr("automation.saveChangesCaps") : tr("automation.createAutomationCaps")}</span>
                     </>
                   )}
                 </button>
-                <button 
+                <button
                   onClick={closeModal}
                   className="w-full mt-3 h-10 text-[12.5px] font-semibold text-[#8A929E] hover:text-[#4B5563] transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {tr("common.cancel")}
                 </button>
               </div>
             </motion.div>
@@ -790,10 +792,10 @@ export default function OnboardingAutomationPage() {
           setAutomationToDelete(null);
         }}
         onConfirm={handleDelete}
-        title="Delete Onboarding Automation?"
-        message={`Are you sure you want to delete this onboarding automation for ${automationToDelete ? getJobTitle(automationToDelete.job_requirement_id) : 'this job'}? This action is irreversible.`}
-        confirmLabel="Yes, Delete"
-        cancelLabel="No"
+        title={tr("automation.deleteOnboardingTitle")}
+        message={tr("automation.deleteOnboardingMsg", { job: automationToDelete ? getJobTitle(automationToDelete.job_requirement_id) : tr("automation.thisJob") })}
+        confirmLabel={tr("automation.yesDelete")}
+        cancelLabel={tr("automation.no")}
         isDestructive={true}
       />
     </div>

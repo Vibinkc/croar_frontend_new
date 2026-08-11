@@ -3,14 +3,17 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import AILoadingText from "./AILoadingText";
+import { useI18n } from "@/context/I18nContext";
 
 interface AIGenerationOverlayProps {
     isOpen: boolean;
     title?: string;
 }
 
-export default function AIGenerationOverlay({ isOpen, title = "Generating Content" }: AIGenerationOverlayProps) {
+export default function AIGenerationOverlay({ isOpen, title }: AIGenerationOverlayProps) {
+    const { t: tr } = useI18n();
     const [mounted, setMounted] = useState(false);
+    const heading = title ?? tr("sharedUi.generatingContent");
 
     useEffect(() => {
         setTimeout(() => setMounted(true), 0);
@@ -38,7 +41,7 @@ export default function AIGenerationOverlay({ isOpen, title = "Generating Conten
                 </div>
 
                 <div className="space-y-2">
-                    <h3 className="text-2xl font-black text-slate-900  tracking-tight">{title}</h3>
+                    <h3 className="text-2xl font-black text-slate-900  tracking-tight">{heading}</h3>
                     <div className="h-8"> {/* Fixed height to prevent layout shift */}
                         <AILoadingText className="text-slate-500 font-medium text-lg " />
                     </div>
@@ -46,7 +49,7 @@ export default function AIGenerationOverlay({ isOpen, title = "Generating Conten
 
                 <div className="pt-4">
                     <p className="text-xs font-bold text-slate-400  ">
-                        This might take a few seconds
+                        {tr("sharedUi.mightTakeFewSeconds")}
                     </p>
                 </div>
             </div>

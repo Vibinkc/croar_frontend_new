@@ -5,6 +5,7 @@ import Link from "next/link";
 import { apiClient } from "@/utils/api";
 import { Search, Building2, Users, Trash2, Filter, ChevronDown, X, FileEdit, Network } from "lucide-react";
 import { PageHeader, StatGrid, StatCard, Card, Field, Input, Select, Button, Badge, EmptyState, jetbrainsMono } from "@/components/ds";
+import { useI18n } from "@/context/I18nContext";
 
 const FRONTEND_DOMAIN = process.env.NEXT_PUBLIC_FRONTEND_DOMAIN || "app.croar.in";
 
@@ -24,6 +25,7 @@ function OrganizationsContent() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "SUSPENDED">("ALL");
+    const { t } = useI18n();
 
     // Create form
     const [name, setName] = useState("");
@@ -93,11 +95,11 @@ function OrganizationsContent() {
                 fetchOrganizations();
             } else {
                 const err = await res.json().catch(() => ({}));
-                alert(`Error: ${err.detail || "Failed to create organization"}`);
+                alert(`Error: ${err.detail || t("superAdmin.failedCreateOrg")}`);
             }
         } catch (e) {
             console.error(e);
-            alert("An unexpected error occurred.");
+            alert(t("superAdmin.unexpectedError"));
         } finally {
             setSaving(false);
         }
@@ -129,11 +131,11 @@ function OrganizationsContent() {
                 fetchOrganizations();
             } else {
                 const err = await res.json().catch(() => ({}));
-                alert(`Error: ${err.detail || "Failed to update organization"}`);
+                alert(`Error: ${err.detail || t("superAdmin.failedUpdateOrg")}`);
             }
         } catch (e) {
             console.error(e);
-            alert("An unexpected error occurred.");
+            alert(t("superAdmin.unexpectedError"));
         } finally {
             setSavingEdit(false);
         }
@@ -153,7 +155,7 @@ function OrganizationsContent() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Decommission this organization? It will be removed from the platform inventory.")) return;
+        if (!confirm(t("superAdmin.decommissionConfirm"))) return;
         try {
             const res = await apiClient.delete(`/api/v1/super-admin/tenants/${id}`);
             if (res.ok || res.status === 204) fetchOrganizations();
@@ -193,19 +195,19 @@ function OrganizationsContent() {
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             <PageHeader
-                title="Organizations"
-                subtitle="Every organization provisioned on the platform"
+                title={t("superAdmin.organizations")}
+                subtitle={t("superAdmin.orgsSubtitle")}
                 icon="apartment"
-                help={<><p>Every organization on the platform.</p><p>Provision a new one, or open one to manage its admins and users.</p></>}
-                actions={<Button icon="add" onClick={() => setIsCreating(true)}>New Organization</Button>}
+                help={<><p>{t("superAdmin.orgsHelp1")}</p><p>{t("superAdmin.orgsHelp2")}</p></>}
+                actions={<Button icon="add" onClick={() => setIsCreating(true)}>{t("superAdmin.newOrg")}</Button>}
             />
 
             {/* Metrics */}
             <StatGrid>
-                <StatCard label="Total Organizations" value={stats.total} icon="apartment" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label="Consultancies" value={stats.consultancies} icon="hub" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label="Active" value={stats.active} icon="check_circle" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Deactivated" value={stats.suspended} icon="block" gradient="linear-gradient(135deg,#F6736B,#D03A3A)" glow="rgba(208,58,58,0.25)" />
+                <StatCard label={t("superAdmin.statTotalOrgs")} value={stats.total} icon="apartment" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+                <StatCard label={t("superAdmin.statConsultancies")} value={stats.consultancies} icon="hub" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={t("superAdmin.active")} value={stats.active} icon="check_circle" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={t("superAdmin.deactivated")} value={stats.suspended} icon="block" gradient="linear-gradient(135deg,#F6736B,#D03A3A)" glow="rgba(208,58,58,0.25)" />
             </StatGrid>
 
             {/* Toolbar */}
@@ -216,16 +218,16 @@ function OrganizationsContent() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by name, slug, industry or location…"
+                        placeholder={t("superAdmin.searchOrgsPlaceholder")}
                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
                 <div className="relative flex-1 md:flex-none">
                     <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                     <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as "ALL" | "ACTIVE" | "SUSPENDED")} className={`${selectCls} w-full md:min-w-[170px]`}>
-                        <option value="ALL">Any status</option>
-                        <option value="ACTIVE">Active</option>
-                        <option value="SUSPENDED">Deactivated</option>
+                        <option value="ALL">{t("superAdmin.anyStatus")}</option>
+                        <option value="ACTIVE">{t("superAdmin.active")}</option>
+                        <option value="SUSPENDED">{t("superAdmin.deactivated")}</option>
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                 </div>
@@ -244,27 +246,27 @@ function OrganizationsContent() {
                         <EmptyState
                             tone="brand"
                             icon="apartment"
-                            title="Provision your first organization"
-                            description="Spin up a new organization and admin account to onboard a company onto the platform."
-                            action={<Button icon="add" onClick={() => setIsCreating(true)}>New Organization</Button>}
+                            title={t("superAdmin.provisionFirstTitle")}
+                            description={t("superAdmin.provisionFirstDesc")}
+                            action={<Button icon="add" onClick={() => setIsCreating(true)}>{t("superAdmin.newOrg")}</Button>}
                         />
                     ) : (
                         <EmptyState
                             tone="muted"
                             icon="search_off"
-                            title="No organizations match your filters"
-                            description="Try a different search or status."
-                            action={<Button variant="secondary" onClick={() => { setSearchQuery(""); setStatusFilter("ALL"); }}>Clear filters</Button>}
+                            title={t("superAdmin.noOrgsMatchTitle")}
+                            description={t("superAdmin.noOrgsMatchDesc")}
+                            action={<Button variant="secondary" onClick={() => { setSearchQuery(""); setStatusFilter("ALL"); }}>{t("superAdmin.clearFilters")}</Button>}
                         />
                     )
                 ) : (
                     <>
                         <div className="hidden md:grid grid-cols-[2.2fr_1.6fr_1.2fr_0.9fr_140px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Organization</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Slug / URL</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Industry</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">Status</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">Actions</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.colOrganization")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.colSlugUrl")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.industry")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.status")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{t("superAdmin.actions")}</span>
                         </div>
 
                         <div className="divide-y divide-[#F0F0F1]">
@@ -283,7 +285,7 @@ function OrganizationsContent() {
                                                 <span className="text-[14px] font-bold text-[#15171C] truncate">{o.name}</span>
                                                 {o.is_consultancy && (
                                                     <span className="shrink-0 inline-flex items-center gap-1 rounded-[6px] bg-[#ECEBFB] text-[#5B53E0] px-1.5 py-0.5 text-[10px] font-bold">
-                                                        <Network className="w-3 h-3" /> Consultancy
+                                                        <Network className="w-3 h-3" /> {t("superAdmin.consultancyBadge")}
                                                     </span>
                                                 )}
                                             </span>
@@ -292,9 +294,9 @@ function OrganizationsContent() {
                                                 if (o.location) bits.push(o.location);
                                                 if (o.is_consultancy) {
                                                     const n = clientCount(o.id);
-                                                    bits.push(`${n} client${n === 1 ? "" : "s"}`);
+                                                    bits.push(`${n} ${n === 1 ? t("superAdmin.client") : t("superAdmin.clients")}`);
                                                 } else if (o.parent_id) {
-                                                    bits.push(`Client of ${parentName(o) || "—"}`);
+                                                    bits.push(t("superAdmin.clientOf", { name: parentName(o) || "—" }));
                                                 }
                                                 return bits.length ? (
                                                     <span className="hidden md:block text-[11px] text-[#C7CCD4] mt-0.5 truncate">{bits.join(" · ")}</span>
@@ -318,23 +320,23 @@ function OrganizationsContent() {
 
                                     {/* Status */}
                                     <div className="hidden md:flex items-center">
-                                        <button onClick={() => toggleStatus(o)} title="Activate / deactivate organization" className="cursor-pointer">
-                                            {(o.is_active ?? true) ? <Badge tone="success" dot>Active</Badge> : <Badge tone="neutral" dot>Disabled</Badge>}
+                                        <button onClick={() => toggleStatus(o)} title={t("superAdmin.activateDeactivateOrg")} className="cursor-pointer">
+                                            {(o.is_active ?? true) ? <Badge tone="success" dot>{t("superAdmin.active")}</Badge> : <Badge tone="neutral" dot>{t("superAdmin.disabled")}</Badge>}
                                         </button>
                                     </div>
 
                                     {/* Actions */}
                                     <div className="flex items-center gap-1 justify-end">
-                                        <button onClick={() => toggleStatus(o)} className="md:hidden mr-1 cursor-pointer" title="Activate / deactivate organization">
-                                            {(o.is_active ?? true) ? <Badge tone="success" dot>Active</Badge> : <Badge tone="neutral" dot>Disabled</Badge>}
+                                        <button onClick={() => toggleStatus(o)} className="md:hidden mr-1 cursor-pointer" title={t("superAdmin.activateDeactivateOrg")}>
+                                            {(o.is_active ?? true) ? <Badge tone="success" dot>{t("superAdmin.active")}</Badge> : <Badge tone="neutral" dot>{t("superAdmin.disabled")}</Badge>}
                                         </button>
-                                        <button onClick={() => openEdit(o)} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title="Edit organization">
+                                        <button onClick={() => openEdit(o)} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title={t("superAdmin.editOrgTitle")}>
                                             <FileEdit className="w-4 h-4" />
                                         </button>
-                                        <Link href={`/super-admin/organizations/${o.id}/admins`} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title="Manage Admins">
+                                        <Link href={`/super-admin/organizations/${o.id}/admins`} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title={t("superAdmin.manageAdmins")}>
                                             <Users className="w-4 h-4" />
                                         </Link>
-                                        <button onClick={() => handleDelete(o.id)} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors" title="Delete">
+                                        <button onClick={() => handleDelete(o.id)} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors" title={t("superAdmin.delete")}>
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -355,31 +357,31 @@ function OrganizationsContent() {
                                     <Building2 className="w-5 h-5" />
                                 </span>
                                 <div className="min-w-0">
-                                    <h2 className="text-[18px] font-extrabold tracking-[-0.4px] text-[#15171C]">New Organization</h2>
-                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Spin up a new organization and admin account.</p>
+                                    <h2 className="text-[18px] font-extrabold tracking-[-0.4px] text-[#15171C]">{t("superAdmin.newOrg")}</h2>
+                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{t("superAdmin.createOrgModalDesc")}</p>
                                 </div>
                             </div>
-                            <button type="button" onClick={() => setIsCreating(false)} aria-label="Close" className="w-9 h-9 rounded-[10px] text-[#8A929E] hover:bg-[#F1F2F5] hover:text-[#374151] transition-colors flex items-center justify-center shrink-0">
+                            <button type="button" onClick={() => setIsCreating(false)} aria-label={t("superAdmin.close")} className="w-9 h-9 rounded-[10px] text-[#8A929E] hover:bg-[#F1F2F5] hover:text-[#374151] transition-colors flex items-center justify-center shrink-0">
                                 <X className="w-[18px] h-[18px]" />
                             </button>
                         </div>
 
                         <form onSubmit={handleCreateOrganization} className="px-6 py-6 space-y-5">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <Field label="Company Name" htmlFor="org-company-name" required>
+                                <Field label={t("superAdmin.companyName")} htmlFor="org-company-name" required>
                                     <Input id="org-company-name" placeholder="Acme Corp" value={name} onChange={(e) => setName(e.target.value)} required />
                                 </Field>
-                                <Field label="Contact Email" htmlFor="org-contact-email" required>
+                                <Field label={t("superAdmin.contactEmail")} htmlFor="org-contact-email" required>
                                     <Input id="org-contact-email" placeholder="contact@acme.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                                 </Field>
                             </div>
-                            <Field label="Website" htmlFor="org-website">
+                            <Field label={t("superAdmin.website")} htmlFor="org-website">
                                 <Input id="org-website" placeholder="https://acme.corp" type="url" value={website} onChange={(e) => setWebsite(e.target.value)} />
                             </Field>
 
                             {/* Account type */}
                             <div className="pt-5 border-t border-[#F0F0F1] space-y-4">
-                                <h3 className="text-[13px] font-bold text-[#15171C]">Account Type</h3>
+                                <h3 className="text-[13px] font-bold text-[#15171C]">{t("superAdmin.accountType")}</h3>
                                 <label className="flex items-start gap-3 cursor-pointer">
                                     <input
                                         type="checkbox"
@@ -388,14 +390,14 @@ function OrganizationsContent() {
                                         className="mt-0.5 h-4 w-4 accent-[#5B53E0]"
                                     />
                                     <span>
-                                        <span className="block text-[13.5px] font-bold text-[#15171C]">This is a consultancy</span>
-                                        <span className="block text-[12px] text-[#8A929E] mt-0.5">A consultancy manages hiring for multiple client organizations from a single dashboard.</span>
+                                        <span className="block text-[13.5px] font-bold text-[#15171C]">{t("superAdmin.thisIsConsultancy")}</span>
+                                        <span className="block text-[12px] text-[#8A929E] mt-0.5">{t("superAdmin.consultancyDescCreate")}</span>
                                     </span>
                                 </label>
                                 {!newIsConsultancy && consultancies.length > 0 && (
-                                    <Field label="Belongs to consultancy (optional)" htmlFor="org-parent" hint="Link this org to a consultancy so they can manage its hiring.">
+                                    <Field label={t("superAdmin.belongsToConsultancy")} htmlFor="org-parent" hint={t("superAdmin.belongsToConsultancyHint")}>
                                         <Select id="org-parent" value={newParentId} onChange={(e) => setNewParentId(e.target.value)}>
-                                            <option value="">— Independent organization —</option>
+                                            <option value="">{t("superAdmin.independentOrg")}</option>
                                             {consultancies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                                         </Select>
                                     </Field>
@@ -403,19 +405,19 @@ function OrganizationsContent() {
                             </div>
 
                             <div className="pt-5 border-t border-[#F0F0F1]">
-                                <h3 className="text-[13px] font-bold text-[#15171C] mb-4">Organization Admin Account</h3>
+                                <h3 className="text-[13px] font-bold text-[#15171C] mb-4">{t("superAdmin.orgAdminAccount")}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    <Field label="Admin Email" htmlFor="org-admin-email" required>
+                                    <Field label={t("superAdmin.adminEmail")} htmlFor="org-admin-email" required>
                                         <Input id="org-admin-email" placeholder="admin@acme.com" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
                                     </Field>
-                                    <Field label="Temp Password" htmlFor="org-admin-password" required>
+                                    <Field label={t("superAdmin.tempPassword")} htmlFor="org-admin-password" required>
                                         <Input id="org-admin-password" placeholder="••••••••" type="password" value={adminPassword} onChange={(e) => setAdminPassword(e.target.value)} required />
                                     </Field>
                                 </div>
                             </div>
                             <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5 pt-2">
-                                <Button type="button" variant="secondary" onClick={() => setIsCreating(false)}>Cancel</Button>
-                                <Button type="submit" icon="add" disabled={saving}>{saving ? "Creating…" : "Create Organization"}</Button>
+                                <Button type="button" variant="secondary" onClick={() => setIsCreating(false)}>{t("superAdmin.cancel")}</Button>
+                                <Button type="submit" icon="add" disabled={saving}>{saving ? t("superAdmin.creating") : t("superAdmin.createOrg")}</Button>
                             </div>
                         </form>
                     </Card>
@@ -432,30 +434,30 @@ function OrganizationsContent() {
                                     <FileEdit className="w-5 h-5" />
                                 </span>
                                 <div className="min-w-0">
-                                    <h2 className="text-[18px] font-extrabold tracking-[-0.4px] text-[#15171C] truncate">Edit {editing.name}</h2>
-                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Update profile and consultancy relationship.</p>
+                                    <h2 className="text-[18px] font-extrabold tracking-[-0.4px] text-[#15171C] truncate">{t("superAdmin.editOrgName", { name: editing.name })}</h2>
+                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{t("superAdmin.editOrgModalDesc")}</p>
                                 </div>
                             </div>
-                            <button type="button" onClick={() => setEditing(null)} aria-label="Close" className="w-9 h-9 rounded-[10px] text-[#8A929E] hover:bg-[#F1F2F5] hover:text-[#374151] transition-colors flex items-center justify-center shrink-0">
+                            <button type="button" onClick={() => setEditing(null)} aria-label={t("superAdmin.close")} className="w-9 h-9 rounded-[10px] text-[#8A929E] hover:bg-[#F1F2F5] hover:text-[#374151] transition-colors flex items-center justify-center shrink-0">
                                 <X className="w-[18px] h-[18px]" />
                             </button>
                         </div>
 
                         <form onSubmit={handleUpdate} className="px-6 py-6 space-y-5">
-                            <Field label="Organization Name" htmlFor="edit-name" required>
+                            <Field label={t("superAdmin.orgName")} htmlFor="edit-name" required>
                                 <Input id="edit-name" value={editName} onChange={(e) => setEditName(e.target.value)} required />
                             </Field>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <Field label="Industry" htmlFor="edit-industry">
-                                    <Input id="edit-industry" placeholder="e.g. Technology" value={editIndustry} onChange={(e) => setEditIndustry(e.target.value)} />
+                                <Field label={t("superAdmin.industry")} htmlFor="edit-industry">
+                                    <Input id="edit-industry" placeholder={t("superAdmin.egTechnology")} value={editIndustry} onChange={(e) => setEditIndustry(e.target.value)} />
                                 </Field>
-                                <Field label="Location" htmlFor="edit-location">
-                                    <Input id="edit-location" placeholder="e.g. London" value={editLocation} onChange={(e) => setEditLocation(e.target.value)} />
+                                <Field label={t("superAdmin.location")} htmlFor="edit-location">
+                                    <Input id="edit-location" placeholder={t("superAdmin.egLondon")} value={editLocation} onChange={(e) => setEditLocation(e.target.value)} />
                                 </Field>
                             </div>
 
                             <div className="pt-5 border-t border-[#F0F0F1] space-y-4">
-                                <h3 className="text-[13px] font-bold text-[#15171C]">Account Type</h3>
+                                <h3 className="text-[13px] font-bold text-[#15171C]">{t("superAdmin.accountType")}</h3>
                                 <label className="flex items-start gap-3 cursor-pointer">
                                     <input
                                         type="checkbox"
@@ -464,14 +466,14 @@ function OrganizationsContent() {
                                         className="mt-0.5 h-4 w-4 accent-[#5B53E0]"
                                     />
                                     <span>
-                                        <span className="block text-[13.5px] font-bold text-[#15171C]">This is a consultancy</span>
-                                        <span className="block text-[12px] text-[#8A929E] mt-0.5">Manages hiring for its client organizations from one dashboard.</span>
+                                        <span className="block text-[13.5px] font-bold text-[#15171C]">{t("superAdmin.thisIsConsultancy")}</span>
+                                        <span className="block text-[12px] text-[#8A929E] mt-0.5">{t("superAdmin.consultancyDescEdit")}</span>
                                     </span>
                                 </label>
                                 {!editIsConsultancy && (
-                                    <Field label="Belongs to consultancy (optional)" htmlFor="edit-parent">
+                                    <Field label={t("superAdmin.belongsToConsultancy")} htmlFor="edit-parent">
                                         <Select id="edit-parent" value={editParentId} onChange={(e) => setEditParentId(e.target.value)}>
-                                            <option value="">— Independent organization —</option>
+                                            <option value="">{t("superAdmin.independentOrg")}</option>
                                             {consultancies.filter((c) => c.id !== editing.id).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                                         </Select>
                                     </Field>
@@ -479,8 +481,8 @@ function OrganizationsContent() {
                             </div>
 
                             <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5 pt-2">
-                                <Button type="button" variant="secondary" onClick={() => setEditing(null)}>Cancel</Button>
-                                <Button type="submit" icon="save" disabled={savingEdit}>{savingEdit ? "Saving…" : "Save Changes"}</Button>
+                                <Button type="button" variant="secondary" onClick={() => setEditing(null)}>{t("superAdmin.cancel")}</Button>
+                                <Button type="submit" icon="save" disabled={savingEdit}>{savingEdit ? t("superAdmin.saving") : t("superAdmin.saveChanges")}</Button>
                             </div>
                         </form>
                     </Card>
@@ -491,8 +493,9 @@ function OrganizationsContent() {
 }
 
 export default function OrganizationsPage() {
+    const { t } = useI18n();
     return (
-        <Suspense fallback={<div className="p-8 text-[13px] text-[#8A929E]">Loading organizations…</div>}>
+        <Suspense fallback={<div className="p-8 text-[13px] text-[#8A929E]">{t("superAdmin.loadingOrgs")}</div>}>
             <OrganizationsContent />
         </Suspense>
     );

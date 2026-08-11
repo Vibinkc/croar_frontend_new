@@ -1,4 +1,5 @@
 import React from "react";
+import { useI18n } from "@/context/I18nContext";
 import { cn } from "./cn";
 import { PageHelp } from "./PageHelp";
 
@@ -22,6 +23,7 @@ export interface PageHeaderProps {
  * right. Responsive: stacks on mobile, row from `sm` up.
  */
 export function PageHeader({ title, subtitle, icon, onBack, help, actions, className }: PageHeaderProps) {
+    const { t } = useI18n();
     return (
         <header className={cn("sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", className)}>
             <div className="flex items-center gap-3 min-w-0">
@@ -29,7 +31,7 @@ export function PageHeader({ title, subtitle, icon, onBack, help, actions, class
                     <button
                         type="button"
                         onClick={onBack}
-                        aria-label="Back"
+                        aria-label={t("common.back")}
                         className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#8A929E] hover:text-[#5B53E0] hover:border-[#D4D7DC] transition-all flex items-center justify-center shrink-0 shadow-sm"
                     >
                         <span className="material-symbols-rounded text-[20px]">arrow_back</span>

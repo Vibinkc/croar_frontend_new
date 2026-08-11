@@ -5,7 +5,9 @@ import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
+import Highlight from '@tiptap/extension-highlight';
 import { useEffect } from 'react';
+import { useI18n } from "@/context/I18nContext";
 
 interface JobEditorProps {
     content: string;
@@ -14,6 +16,7 @@ interface JobEditorProps {
 }
 
 const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
+    const { t } = useI18n();
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -25,7 +28,13 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                 },
             }),
             Placeholder.configure({
-                placeholder: placeholder || 'Start typing your job description...',
+                placeholder: placeholder || t("jobForm.editorStartTyping"),
+            }),
+            // Renders <mark> so AI-added JD text can be shown highlighted (green = newly added).
+            Highlight.configure({
+                HTMLAttributes: {
+                    class: 'bg-[#D8F5E3] text-[#0B6B56] rounded-[3px] px-0.5 box-decoration-clone',
+                },
             }),
         ],
         immediatelyRender: false,
@@ -61,14 +70,14 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                     <button
                         onClick={() => editor.chain().focus().undo().run()}
                         className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9AA3AF] hover:bg-white hover:text-[#5B53E0] transition-all shadow-sm"
-                        title="Undo"
+                        title={t("common.undo")}
                     >
                         <span className="material-symbols-rounded text-xl">undo</span>
                     </button>
                     <button
                         onClick={() => editor.chain().focus().redo().run()}
                         className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9AA3AF] hover:bg-white hover:text-[#5B53E0] transition-all shadow-sm"
-                        title="Redo"
+                        title={t("common.redo")}
                     >
                         <span className="material-symbols-rounded text-xl">redo</span>
                     </button>
@@ -119,7 +128,7 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
 
                 <button
                     onClick={() => {
-                        const url = window.prompt('Enter URL');
+                        const url = window.prompt(t("jobForm.enterUrl"));
                         if (url) {
                             editor.chain().focus().setLink({ href: url }).run();
                         } else if (url === '') {

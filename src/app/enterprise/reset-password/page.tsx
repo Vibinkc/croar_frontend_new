@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
+import { useI18n } from "@/context/I18nContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hanken_Grotesk } from "next/font/google";
@@ -9,14 +10,16 @@ import { BACKEND_URL } from "@/utils/api";
 const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export default function ResetPasswordPage() {
+    const { t: tr } = useI18n();
     return (
-        <Suspense fallback={<div className="min-h-screen bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] font-semibold">Loading…</div>}>
+        <Suspense fallback={<div className="min-h-screen bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] font-semibold">{tr("auth.loading")}</div>}>
             <ResetPasswordContent />
         </Suspense>
     );
 }
 
 function ResetPasswordContent() {
+    const { t: tr } = useI18n();
     const router = useRouter();
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
@@ -29,14 +32,14 @@ function ResetPasswordContent() {
 
     useEffect(() => {
         if (!token) {
-            setStatus({ type: "error", text: "Invalid or missing reset token. Please request a new one." });
+            setStatus({ type: "error", text: tr("auth.invalidResetToken") });
         }
     }, [token]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            setStatus({ type: "error", text: "Passwords do not match." });
+            setStatus({ type: "error", text: tr("auth.passwordsDoNotMatch") });
             return;
         }
 
@@ -51,11 +54,11 @@ function ResetPasswordContent() {
             });
 
             if (res.ok) {
-                setStatus({ type: "success", text: "Password reset successful! Redirecting to login..." });
+                setStatus({ type: "success", text: tr("auth.resetSuccessful") });
                 setTimeout(() => router.push("/enterprise/login"), 2500);
             } else {
                 const data = await res.json();
-                throw new Error(data.detail || "Failed to reset password.");
+                throw new Error(data.detail || tr("auth.failedResetPassword"));
             }
         } catch (err: any) {
             setStatus({ type: "error", text: err.message });
@@ -85,12 +88,12 @@ function ResetPasswordContent() {
                         </div>
                         <div className="flex flex-col leading-none">
                             <span className="text-[20px] font-extrabold tracking-[-0.3px] text-white">Croar</span>
-                            <span className="text-[11px] text-[#8A929E] mt-0.5">HR Cloud</span>
+                            <span className="text-[11px] text-[#8A929E] mt-0.5">{tr("auth.hrCloud")}</span>
                         </div>
                     </div>
-                    <h1 className="text-[40px] font-extrabold tracking-[-1.2px] leading-[1.05] text-white mb-5">Secure reset.</h1>
+                    <h1 className="text-[40px] font-extrabold tracking-[-1.2px] leading-[1.05] text-white mb-5">{tr("auth.secureReset")}</h1>
                     <p className="text-[15px] leading-[1.6] text-[#A8AEB8] max-w-[460px]">
-                        Setting a strong password is the first step in keeping your enterprise data secure. Use a mix of letters, numbers, and symbols.
+                        {tr("auth.strongPasswordFirstStep")}
                     </p>
                 </div>
             </div>
@@ -107,8 +110,8 @@ function ResetPasswordContent() {
                     </div>
 
                     <div className="mb-8">
-                        <h2 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-1.5">Set new password</h2>
-                        <p className="text-[#8A929E] text-sm">Please choose a strong password for your account</p>
+                        <h2 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-1.5">{tr("auth.setNewPassword")}</h2>
+                        <p className="text-[#8A929E] text-sm">{tr("auth.chooseStrongPassword")}</p>
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -129,7 +132,7 @@ function ResetPasswordContent() {
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label htmlFor="new-password" className="block text-[12.5px] font-semibold text-[#374151] mb-1.5">New password</label>
+                            <label htmlFor="new-password" className="block text-[12.5px] font-semibold text-[#374151] mb-1.5">{tr("auth.newPassword")}</label>
                             <div className="relative">
                                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] material-icons-outlined text-[19px]">lock</span>
                                 <input
@@ -154,7 +157,7 @@ function ResetPasswordContent() {
                         </div>
 
                         <div>
-                            <label htmlFor="confirm-password" className="block text-[12.5px] font-semibold text-[#374151] mb-1.5">Confirm password</label>
+                            <label htmlFor="confirm-password" className="block text-[12.5px] font-semibold text-[#374151] mb-1.5">{tr("auth.confirmPassword")}</label>
                             <div className="relative">
                                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] material-icons-outlined text-[19px]">lock</span>
                                 <input
@@ -178,7 +181,7 @@ function ResetPasswordContent() {
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             ) : (
                                 <>
-                                    <span>Update password</span>
+                                    <span>{tr("auth.updatePassword")}</span>
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                                 </>
                             )}

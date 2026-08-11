@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { useRouter } from "next/navigation";
 import { Hanken_Grotesk } from "next/font/google";
 import { BACKEND_URL, FRONTEND_DOMAIN } from "@/utils/api";
@@ -14,6 +15,7 @@ export default function SuperAdminLoginPage() {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const { login } = useAuth();
+    const { t } = useI18n();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -36,20 +38,20 @@ export default function SuperAdminLoginPage() {
 
             if (!res.ok) {
                 const errData = await res.json();
-                throw new Error(errData.detail || "Invalid credentials");
+                throw new Error(errData.detail || t("superAdmin.invalidCredentials"));
             }
 
             const data = await res.json();
 
             if (data.role !== "SUPER_ADMIN") {
-                throw new Error("Access Denied: Super Admin role required");
+                throw new Error(t("superAdmin.accessDeniedSuperAdmin"));
             }
 
             login(data.access_token, data.role);
             router.push("/super-admin");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            setError(err.message || "Invalid email or password");
+            setError(err.message || t("superAdmin.invalidEmailOrPassword"));
         } finally {
             setIsLoading(false);
         }
@@ -77,7 +79,7 @@ export default function SuperAdminLoginPage() {
                         <h1 className="text-[28px] font-extrabold tracking-[-0.6px] text-white mb-2">
                             {FRONTEND_DOMAIN.split('.').slice(0, 2).join('.')}.<span className="text-[#8B7DFF]">{FRONTEND_DOMAIN.split('.').slice(2).join('.')}</span>
                         </h1>
-                        <p className="text-[#565E6B] text-[10px] font-bold uppercase tracking-[0.2em]">Institutional Platform Architecture</p>
+                        <p className="text-[#565E6B] text-[10px] font-bold uppercase tracking-[0.2em]">{t("superAdmin.institutionalPlatformArchitecture")}</p>
                     </div>
 
                     {/* Login Card */}
@@ -85,7 +87,7 @@ export default function SuperAdminLoginPage() {
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="super-admin-login-email" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#565E6B] ml-0.5">Universal Identity</label>
+                                    <label htmlFor="super-admin-login-email" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#565E6B] ml-0.5">{t("superAdmin.universalIdentity")}</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                             <span className="material-icons-outlined text-[18px] text-[#565E6B] group-focus-within:text-[#8B7DFF] transition-colors">alternate_email</span>
@@ -103,7 +105,7 @@ export default function SuperAdminLoginPage() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="super-admin-login-password" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#565E6B] ml-0.5">Access Protocol</label>
+                                    <label htmlFor="super-admin-login-password" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#565E6B] ml-0.5">{t("superAdmin.accessProtocol")}</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                             <span className="material-icons-outlined text-[18px] text-[#565E6B] group-focus-within:text-[#8B7DFF] transition-colors">lock</span>
@@ -136,11 +138,11 @@ export default function SuperAdminLoginPage() {
                                 {isLoading ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        {"Authenticating…"}
+                                        {t("superAdmin.authenticating")}
                                     </>
                                 ) : (
                                     <>
-                                        {"Establish Connection"}
+                                        {t("superAdmin.establishConnection")}
                                         <span className="material-icons-outlined text-[18px]">vpn_key</span>
                                     </>
                                 )}
@@ -151,7 +153,7 @@ export default function SuperAdminLoginPage() {
                     {/* Footer */}
                     <div className="mt-10 text-center">
                         <p className="text-[#565E6B] text-[10px] font-semibold uppercase tracking-[0.1em]">
-                            Authorized Access Only. All operations are logged.
+                            {t("superAdmin.authorizedAccessOnly")}
                         </p>
                     </div>
                 </div>

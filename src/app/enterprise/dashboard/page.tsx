@@ -5,6 +5,7 @@ import Link from "next/link";
 import { JetBrains_Mono } from "next/font/google";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { useCachedFetch } from "@/hooks/useCachedFetch";
 import { PageHelp } from "@/components/ds";
@@ -33,6 +34,7 @@ interface Stats {
 
 export default function EnterpriseDashboard() {
     const { user, token, role, canAccess, isLoading: isAuthLoading } = useAuth();
+    const { t } = useI18n();
     const [greeting, setGreeting] = useState("");
 
     // Cached: revisiting the dashboard shows the last stats INSTANTLY, then refreshes
@@ -48,48 +50,48 @@ export default function EnterpriseDashboard() {
 
     useEffect(() => {
         const hour = new Date().getHours();
-        const g = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+        const g = hour < 12 ? "dashboard.greetingMorning" : hour < 18 ? "dashboard.greetingAfternoon" : "dashboard.greetingEvening";
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setGreeting(g);
     }, []);
 
     const modules = [
         {
-            title: "Manage Jobs",
-            description: "Create and track all job openings for your team.",
+            title: t("dashboard.modManageJobs"),
+            description: t("dashboard.modManageJobsDesc"),
             icon: "business_center",
             path: "/enterprise/jobs",
-            badge: "Active",
+            badge: t("dashboard.badgeActive"),
             color: "purple",
             features: ["AI Job Description", "Job Boards", "Hiring Budget"],
             permission: "jobs:read"
         },
         {
-            title: "Candidates",
-            description: "View and manage all candidates in your hiring process.",
+            title: t("dashboard.candidates"),
+            description: t("dashboard.modCandidatesDesc"),
             icon: "psychology",
             path: "/enterprise/candidates/kanban",
-            badge: "AI Screening",
+            badge: t("dashboard.badgeAiScreening"),
             color: "indigo",
             features: ["Auto-Sync", "Background Check", "Group Actions"],
             permission: "candidates:read"
         },
         {
-            title: "360 Feedback",
-            description: "Manage performance reviews and multi-rater feedback.",
+            title: t("dashboard.mod360"),
+            description: t("dashboard.mod360Desc"),
             icon: "360",
             path: "/enterprise/assessments-360",
-            badge: "Performance",
+            badge: t("dashboard.badgePerformance"),
             color: "emerald",
             features: ["Reports", "Reviews", "Comparisons"],
             permission: "assessments:read"
         },
         {
-            title: "Surveys",
-            description: "Send engagement surveys and culture pulse checks.",
+            title: t("dashboard.modSurveys"),
+            description: t("dashboard.modSurveysDesc"),
             icon: "poll",
             path: "/enterprise/surveys",
-            badge: "Insights",
+            badge: t("dashboard.badgeInsights"),
             color: "rose",
             features: ["Engagement", "Culture", "Analytics"],
             permission: "surveys:read"
@@ -115,18 +117,18 @@ export default function EnterpriseDashboard() {
 
     // Pipeline composition for the donut chart (real, live values).
     const pipeline = [
-        { name: "Candidates", value: stats.total_candidates, color: "#5B53E0" },
-        { name: "Applications", value: stats.total_applications, color: "#8B7DFF" },
-        { name: "Interviews", value: stats.interviews_scheduled, color: "#A7A0EE" },
-        { name: "Recommended", value: stats.high_value_matches, color: "#15803D" },
+        { name: t("dashboard.pipeCandidates"), value: stats.total_candidates, color: "#5B53E0" },
+        { name: t("dashboard.pipeApplications"), value: stats.total_applications, color: "#8B7DFF" },
+        { name: t("dashboard.pipeInterviews"), value: stats.interviews_scheduled, color: "#A7A0EE" },
+        { name: t("dashboard.pipeRecommended"), value: stats.high_value_matches, color: "#15803D" },
     ];
     const pipelineTotal = pipeline.reduce((sum, p) => sum + p.value, 0);
 
     const statCards = [
-        { label: "Active Jobs", value: stats.active_jobs, icon: "work", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)", perm: "jobs:read" },
-        { label: "Total Candidates", value: stats.total_candidates, icon: "groups", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)", perm: "candidates:read" },
-        { label: "Applications", value: stats.total_applications, icon: "conversion_path", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)", perm: "candidates:read" },
-        { label: "Interviews", value: stats.interviews_scheduled, icon: "videocam", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)", perm: "candidates:read" },
+        { label: t("dashboard.activeJobs"), value: stats.active_jobs, icon: "work", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)", perm: "jobs:read" },
+        { label: t("dashboard.totalCandidates"), value: stats.total_candidates, icon: "groups", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)", perm: "candidates:read" },
+        { label: t("dashboard.applications"), value: stats.total_applications, icon: "conversion_path", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)", perm: "candidates:read" },
+        { label: t("dashboard.interviews"), value: stats.interviews_scheduled, icon: "videocam", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)", perm: "candidates:read" },
     ].filter((s) => canAccess(s.perm));
 
     return (
@@ -136,13 +138,13 @@ export default function EnterpriseDashboard() {
                 {/* Left: title + live status */}
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Dashboard</h1>
-                        <PageHelp title="Dashboard">
-                            <p>Your hiring command centre — pipeline metrics at a glance.</p>
-                            <p>If your org is new, the <strong>Getting started</strong> checklist here walks you through your first steps. Jump into a module from the cards, and anything needing attention surfaces on the right.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{t("dashboard.title")}</h1>
+                        <PageHelp title={t("dashboard.title")}>
+                            <p>{t("dashboard.helpP1")}</p>
+                            <p>{t("dashboard.helpP2")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Hiring command centre — overview at a glance</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{t("dashboard.subtitle")}</p>
                 </div>
 
                 {/* Right: search + theme toggle */}
@@ -154,7 +156,7 @@ export default function EnterpriseDashboard() {
                         <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
                         </svg>
-                        <span className="flex-1 text-left">Search…</span>
+                        <span className="flex-1 text-left">{t("dashboard.searchPlaceholder")}</span>
                         <kbd className="inline-flex items-center text-[9.5px] font-bold bg-[#F4F5F7] border border-[#E1E4E8] rounded-[4px] px-1.5 h-5 text-[#9CA3AF]">⌘K</kbd>
                     </button>
                     <ThemeToggle />
@@ -176,7 +178,7 @@ export default function EnterpriseDashboard() {
                         onClick={() => { void mutate(); }}
                         className="shrink-0 px-3 py-1.5 rounded-[9px] bg-[#EF4444] text-white text-[12px] font-semibold hover:bg-[#DC2626] transition-colors"
                     >
-                        Retry
+                        {t("common.retry")}
                     </button>
                 </div>
             )}
@@ -198,29 +200,33 @@ export default function EnterpriseDashboard() {
                     <div className="max-w-xl">
                         <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[20px] bg-white/[0.08] border border-white/10 text-[10px] font-semibold text-[#C7CCD4] mb-4">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
-                            Live overview
+                            {t("dashboard.liveOverview")}
                         </div>
                         <h1 className="text-[30px] md:text-[38px] font-extrabold tracking-[-1px] leading-[1.05]">
-                            {greeting}, <span className="text-[#8B7DFF]">{isLoading ? 'there' : stats.agent_name}</span>
+                            {greeting ? t(greeting) : ""}, <span className="text-[#8B7DFF]">{isLoading ? 'there' : stats.agent_name}</span>
                         </h1>
                         <p className="text-[#A8AEB8] text-[14.5px] leading-relaxed mt-3 max-w-md">
                             {isLoading ? (
-                                "Loading your hiring snapshot…"
+                                t("dashboard.loadingSnapshot")
                             ) : (
-                                <>You have <span className={`text-white font-semibold ${jetbrainsMono.className}`}>{stats.high_value_matches}</span> AI-recommended candidates ready to review.</>
+                                (() => {
+                                    const n = stats.high_value_matches;
+                                    const parts = t("dashboard.aiRecommended", { count: n }).split(String(n));
+                                    return <>{parts[0]}<span className={`text-white font-semibold ${jetbrainsMono.className}`}>{n}</span>{parts.slice(1).join(String(n))}</>;
+                                })()
                             )}
                         </p>
                         <div className="flex flex-wrap gap-2.5 mt-6">
                             {canAccess("jobs:read") && (
                                 <Link href="/enterprise/croar-pilot" className="h-[44px] px-5 bg-[#5B53E0] text-white rounded-[10px] text-[14px] font-semibold hover:bg-[#4A43C9] transition-colors shadow-[0_8px_20px_rgba(91,83,224,0.4)] flex items-center gap-2">
                                     <span className="material-symbols-rounded text-[19px]">smart_toy</span>
-                                    {"Hire with AI"}
+                                    {t("dashboard.hireWithAI")}
                                 </Link>
                             )}
                             {canAccess("jobs:create") && (
                                 <Link href="/enterprise/jobs/create" className="h-[44px] px-5 bg-white/[0.08] border border-white/15 text-white rounded-[10px] text-[14px] font-semibold hover:bg-white/[0.14] transition-colors flex items-center gap-2">
                                     <span className="material-symbols-rounded text-[19px]">add_box</span>
-                                    {"Post New Job"}
+                                    {t("dashboard.postNewJob")}
                                 </Link>
                             )}
                         </div>
@@ -253,35 +259,35 @@ export default function EnterpriseDashboard() {
                 <section className="bg-white border border-[#E8EAED] rounded-[14px] p-6">
                     <div className="flex items-center gap-2 mb-1">
                         <span className="material-symbols-rounded text-[#5B53E0]">rocket_launch</span>
-                        <h3 className="text-[15px] font-bold text-[#15171C]">Getting started</h3>
+                        <h3 className="text-[15px] font-bold text-[#15171C]">{t("dashboard.gettingStarted")}</h3>
                     </div>
-                    <p className="text-[13px] text-[#8A929E] mb-5">A few steps to get your first hire moving.</p>
+                    <p className="text-[13px] text-[#8A929E] mb-5">{t("dashboard.gettingStartedDesc")}</p>
                     <div className="grid gap-3 md:grid-cols-3">
                         {[
                             {
                                 done: stats.active_jobs > 0,
-                                title: "Create your first job",
-                                desc: "Describe the role and we'll set it up.",
+                                title: t("dashboard.step1Title"),
+                                desc: t("dashboard.step1Desc"),
                                 actions: [
-                                    { label: "Hire with AI", href: "/enterprise/croar-pilot", primary: true, perm: "jobs:read" },
-                                    { label: "Post manually", href: "/enterprise/jobs/create", primary: false, perm: "jobs:create" },
+                                    { label: t("dashboard.hireWithAI"), href: "/enterprise/croar-pilot", primary: true, perm: "jobs:read" },
+                                    { label: t("dashboard.postManually"), href: "/enterprise/jobs/create", primary: false, perm: "jobs:create" },
                                 ],
                             },
                             {
                                 done: stats.total_candidates > 0,
-                                title: "Get candidates",
-                                desc: "Source talent or share your apply link.",
+                                title: t("dashboard.step2Title"),
+                                desc: t("dashboard.step2Desc"),
                                 actions: [
-                                    { label: "Source candidates", href: "/enterprise/sourcing/chat", primary: true, perm: "candidates:read" },
-                                    { label: "View jobs", href: "/enterprise/jobs", primary: false, perm: "jobs:read" },
+                                    { label: t("dashboard.sourceCandidates"), href: "/enterprise/sourcing/chat", primary: true, perm: "candidates:read" },
+                                    { label: t("dashboard.viewJobs"), href: "/enterprise/jobs", primary: false, perm: "jobs:read" },
                                 ],
                             },
                             {
                                 done: stats.total_applications > 0,
-                                title: "Review your pipeline",
-                                desc: "Screen, assess and interview applicants.",
+                                title: t("dashboard.step3Title"),
+                                desc: t("dashboard.step3Desc"),
                                 actions: [
-                                    { label: "Open pipeline", href: "/enterprise/candidates/kanban", primary: true, perm: "candidates:read" },
+                                    { label: t("dashboard.openPipeline"), href: "/enterprise/candidates/kanban", primary: true, perm: "candidates:read" },
                                 ],
                             },
                         ].map((step, i) => (
@@ -314,20 +320,20 @@ export default function EnterpriseDashboard() {
                     {/* Hiring funnel — built from live stats */}
                     {(() => {
                         const rows = [
-                            { label: "Candidates", value: stats.total_candidates, color: "#5B53E0", light: "#8B7DFF" },
-                            { label: "Applications", value: stats.total_applications, color: "#6E63E6", light: "#A7A0EE" },
-                            { label: "Interviews", value: stats.interviews_scheduled, color: "#8B7DFF", light: "#C4BFF2" },
-                            { label: "Recommended", value: stats.high_value_matches, color: "#15803D", light: "#34D399" },
+                            { label: t("dashboard.candidates"), value: stats.total_candidates, color: "#5B53E0", light: "#8B7DFF" },
+                            { label: t("dashboard.applications"), value: stats.total_applications, color: "#6E63E6", light: "#A7A0EE" },
+                            { label: t("dashboard.interviews"), value: stats.interviews_scheduled, color: "#8B7DFF", light: "#C4BFF2" },
+                            { label: t("dashboard.recommended"), value: stats.high_value_matches, color: "#15803D", light: "#34D399" },
                         ];
                         const max = Math.max(...rows.map((r) => r.value), 1);
                         return (
                             <div className="lg:col-span-8 bg-white border border-[#E8EAED] rounded-[14px] p-6">
                                 <div className="flex items-center justify-between mb-6">
                                     <div>
-                                        <h3 className="text-[15px] font-bold text-[#15171C]">Pipeline overview</h3>
-                                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">Live counts across stages</p>
+                                        <h3 className="text-[15px] font-bold text-[#15171C]">{t("dashboard.pipelineOverview")}</h3>
+                                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{t("dashboard.liveCounts")}</p>
                                     </div>
-                                    <Link href="/enterprise/candidates/kanban" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">View pipeline</Link>
+                                    <Link href="/enterprise/candidates/kanban" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">{t("dashboard.viewPipeline")}</Link>
                                 </div>
                                 <div className="flex flex-col gap-4">
                                     {rows.map((r, idx) => {
@@ -364,15 +370,15 @@ export default function EnterpriseDashboard() {
 
                                 <div className="mt-5 pt-4 border-t border-[#E8EAED] grid grid-cols-3 gap-3">
                                     <div className="bg-[#F8FAFC] border border-[#E8EAED]/60 rounded-[10px] p-2.5 text-center">
-                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">Active Jobs</p>
+                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">{t("dashboard.activeJobs")}</p>
                                         <p className={`text-[17px] font-extrabold text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>{isLoading ? '—' : stats.active_jobs}</p>
                                     </div>
                                     <div className="bg-[#F8FAFC] border border-[#E8EAED]/60 rounded-[10px] p-2.5 text-center">
-                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">AI Matches</p>
+                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">{t("dashboard.aiMatches")}</p>
                                         <p className={`text-[17px] font-extrabold text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>{isLoading ? '—' : stats.high_value_matches}</p>
                                     </div>
                                     <div className="bg-[#F8FAFC] border border-[#E8EAED]/60 rounded-[10px] p-2.5 text-center">
-                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">Recommended rate</p>
+                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#8A929E]">{t("dashboard.recommendedRate")}</p>
                                         <p className={`text-[17px] font-extrabold text-[#15171C] mt-1.5 ${jetbrainsMono.className}`}>
                                             {/* Both scoped to applications (high_value_matches counts applications with
                                                 ai_match_score >= 80), so this is a true rate and can't exceed 100%. */}
@@ -386,14 +392,14 @@ export default function EnterpriseDashboard() {
 
                     {/* Pipeline composition donut */}
                     <div className="lg:col-span-4 bg-white border border-[#E8EAED] p-6 rounded-[14px]">
-                            <h3 className="text-[15px] font-bold text-[#15171C]">Pipeline composition</h3>
-                            <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-3">Distribution across stages</p>
+                            <h3 className="text-[15px] font-bold text-[#15171C]">{t("dashboard.pipelineComposition")}</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-3">{t("dashboard.distStages")}</p>
                             {pipelineTotal === 0 ? (
                                 <div className="flex flex-col items-center justify-center text-center py-10">
                                     <div className="w-12 h-12 rounded-[12px] bg-[#F4F5F7] text-[#8A929E] flex items-center justify-center mb-3">
                                         <span className="material-symbols-rounded text-2xl">donut_large</span>
                                     </div>
-                                    <p className="text-[13px] text-[#8A929E]">No pipeline data yet</p>
+                                    <p className="text-[13px] text-[#8A929E]">{t("dashboard.noPipelineData")}</p>
                                 </div>
                             ) : (
                                 <>
@@ -407,7 +413,7 @@ export default function EnterpriseDashboard() {
                                         </ResponsiveContainer>
                                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                                             <span className={`text-[26px] font-semibold text-[#15171C] leading-none ${jetbrainsMono.className}`}>{pipelineTotal}</span>
-                                            <span className="text-[11px] text-[#8A929E] mt-1">total</span>
+                                            <span className="text-[11px] text-[#8A929E] mt-1">{t("dashboard.pipeTotal")}</span>
                                         </div>
                                     </div>
                                     <div className="mt-4 space-y-2">
@@ -442,7 +448,7 @@ export default function EnterpriseDashboard() {
                                     {module.description}
                                 </p>
                                 <div className="flex items-center gap-1 text-[12px] font-semibold text-[#5B53E0]">
-                                    {"Open"}
+                                    {t("dashboard.open")}
                                     <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                 </div>
                             </div>
@@ -453,17 +459,17 @@ export default function EnterpriseDashboard() {
                 {/* Needs your attention — real, clickable items from your live stats */}
                 <div className="lg:col-span-4 h-full bg-white border border-[#E8EAED] p-6 rounded-[14px] flex flex-col">
                         <div className="flex items-center justify-between mb-5">
-                            <span className="text-[15px] font-bold text-[#15171C]">Needs your attention</span>
+                            <span className="text-[15px] font-bold text-[#15171C]">{t("dashboard.needsAttention")}</span>
                             <div className="w-2.5 h-2.5 rounded-full bg-[#34D399] border-4 border-[#E6F4EA]"></div>
                         </div>
 
                         {isLoading ? (
-                            <div className="flex-1 flex items-center justify-center text-[#C7CCD4] text-sm py-10">Loading…</div>
+                            <div className="flex-1 flex items-center justify-center text-[#C7CCD4] text-sm py-10">{t("common.loading")}</div>
                         ) : (() => {
                             const items = [
-                                { show: stats.high_value_matches > 0, count: stats.high_value_matches, label: "recommended candidates to review", icon: "stars", color: "text-[#5B53E0] bg-[#ECEBFB]" },
-                                { show: stats.interviews_scheduled > 0, count: stats.interviews_scheduled, label: "interviews scheduled", icon: "videocam", color: "text-[#D97706] bg-[#FEF3E2]" },
-                                { show: stats.total_applications > 0, count: stats.total_applications, label: "applications in your pipeline", icon: "conversion_path", color: "text-[#15803D] bg-[#E6F4EA]" },
+                                { show: stats.high_value_matches > 0, count: stats.high_value_matches, label: t("dashboard.attnRecommended"), icon: "stars", color: "text-[#5B53E0] bg-[#ECEBFB]" },
+                                { show: stats.interviews_scheduled > 0, count: stats.interviews_scheduled, label: t("dashboard.attnInterviews"), icon: "videocam", color: "text-[#D97706] bg-[#FEF3E2]" },
+                                { show: stats.total_applications > 0, count: stats.total_applications, label: t("dashboard.attnApplications"), icon: "conversion_path", color: "text-[#15803D] bg-[#E6F4EA]" },
                             ].filter((i) => i.show && canAccess("candidates:read"));
 
                             if (items.length === 0) {
@@ -473,7 +479,7 @@ export default function EnterpriseDashboard() {
                                             <span className="material-symbols-rounded text-2xl">task_alt</span>
                                         </div>
                                         <p className="text-[14px] font-semibold text-[#15171C]">You&apos;re all caught up</p>
-                                        <p className="text-[12px] text-[#8A929E] mt-1">New candidates and interviews will show up here.</p>
+                                        <p className="text-[12px] text-[#8A929E] mt-1">{t("dashboard.attentionEmpty")}</p>
                                     </div>
                                 );
                             }
@@ -497,16 +503,16 @@ export default function EnterpriseDashboard() {
 
                         {/* Quick actions */}
                         <div className="mt-5 pt-4 border-t border-[#E8EAED]">
-                            <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-[0.08em] mb-2.5">Quick actions</p>
+                            <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-[0.08em] mb-2.5">{t("dashboard.quickActions")}</p>
                             <div className="flex flex-wrap gap-2">
                                 {canAccess("jobs:read") && (
                                     <Link href="/enterprise/croar-pilot" className="px-3 py-2 rounded-[9px] bg-[#5B53E0] text-white text-[12px] font-semibold hover:bg-[#4A43C9] transition-colors flex items-center gap-1.5">
-                                        <span className="material-symbols-rounded text-base">smart_toy</span> Hire with AI
+                                        <span className="material-symbols-rounded text-base">smart_toy</span> {t("dashboard.hireWithAI")}
                                     </Link>
                                 )}
                                 {canAccess("candidates:read") && (
                                     <Link href="/enterprise/sourcing/chat" className="px-3 py-2 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5">
-                                        <span className="material-symbols-rounded text-base">person_search</span> Source
+                                        <span className="material-symbols-rounded text-base">person_search</span> {t("dashboard.source")}
                                     </Link>
                                 )}
                             </div>

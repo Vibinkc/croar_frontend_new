@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { useI18n } from "@/context/I18nContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CycleStatus } from "@/utils/payroll/api";
@@ -92,6 +93,7 @@ export function Modal({
   /** Tailwind max-width class controlling the dialog width. */
   width?: string;
 }) {
+  const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -112,7 +114,7 @@ export function Modal({
       >
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-900">{title}</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close">
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label={t("common.close")}>
             <span className="material-symbols-rounded text-[20px]">close</span>
           </Button>
         </div>

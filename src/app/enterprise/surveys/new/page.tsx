@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import {
     Check,
@@ -30,6 +31,7 @@ interface Employee {
 
 export default function LaunchSurvey() {
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -79,15 +81,15 @@ export default function LaunchSurvey() {
         try {
             const res = await apiClient.post('/api/v1/enterprise/surveys/launch', formData);
             if (res.ok) {
-                alert("Survey campaign launched successfully!");
+                alert(tr("surveysExt.launchSuccess"));
                 router.push('/enterprise/surveys');
             } else {
                 const error = await res.json();
-                alert(`Failed to launch survey: ${error.message || "Unknown error"}`);
+                alert(tr("surveysExt.launchFailed", { error: error.message || tr("surveysExt.unknownError") }));
             }
         } catch (error) {
             console.error(error);
-            alert("An error occurred while launching. Please try again.");
+            alert(tr("surveysExt.launchError"));
         } finally {
             setSubmitting(false);
         }
@@ -97,7 +99,7 @@ export default function LaunchSurvey() {
         <div className="px-4 sm:px-5 md:px-7 py-16 text-center">
             <div className="inline-flex items-center gap-2.5 text-[13px] font-medium text-[#8A929E]">
                 <span className="w-4 h-4 rounded-full border-2 border-[#E1E4E8] border-t-[#5B53E0] animate-spin" />
-                Syncing with personnel database…
+                {tr("surveysExt.syncingPersonnel")}
             </div>
         </div>
     );
@@ -106,30 +108,30 @@ export default function LaunchSurvey() {
         <div className="px-4 sm:px-5 md:px-7 pb-10 max-w-[1320px] mx-auto w-full space-y-6 animate-in fade-in duration-500">
             {/* Page header */}
             <PageHeader
-                title="Launch Survey Campaign"
-                subtitle="Select target audience and deploy your feedback framework"
+                title={tr("surveysExt.launchCampaignTitle")}
+                subtitle={tr("surveysExt.launchCampaignSubtitle")}
                 onBack={() => router.push('/enterprise/surveys')}
-                help="Pick a template and choose the audience, then deploy. Recipients get a secure link to respond."
+                help={tr("surveysExt.launchCampaignHelp")}
             />
 
             <form onSubmit={handleLaunch} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 {/* Left column: campaign details */}
                 <div className="lg:col-span-5 xl:col-span-4 space-y-6">
                     <Card padding="lg" className="space-y-6">
-                        <CardHeader title="Campaign Details" subtitle="Name and schedule for this survey" />
+                        <CardHeader title={tr("surveysExt.campaignDetailsTitle")} subtitle={tr("surveysExt.campaignDetailsSubtitle")} />
 
-                        <Field label="Campaign Name" htmlFor="survey-campaign-name" required>
+                        <Field label={tr("surveysExt.campaignName")} htmlFor="survey-campaign-name" required>
                             <Input
                                 id="survey-campaign-name"
                                 value={formData.name}
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                placeholder="e.g. Annual Engagement Survey"
+                                placeholder={tr("surveysExt.campaignNamePlaceholder")}
                                 required
                             />
                         </Field>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <Field label="Start Date" htmlFor="survey-start-date" required>
+                            <Field label={tr("surveysExt.startDate")} htmlFor="survey-start-date" required>
                                 <Input
                                     id="survey-start-date"
                                     type="date"
@@ -138,7 +140,7 @@ export default function LaunchSurvey() {
                                     required
                                 />
                             </Field>
-                            <Field label="End Date" htmlFor="survey-end-date" required>
+                            <Field label={tr("surveysExt.endDate")} htmlFor="survey-end-date" required>
                                 <Input
                                     id="survey-end-date"
                                     type="date"
@@ -150,7 +152,7 @@ export default function LaunchSurvey() {
                         </div>
 
                         <div>
-                            <label htmlFor="survey-framework-list" className="block text-[12.5px] font-semibold text-[#374151] mb-2">Selected Framework</label>
+                            <label htmlFor="survey-framework-list" className="block text-[12.5px] font-semibold text-[#374151] mb-2">{tr("surveysExt.selectedFramework")}</label>
                             <div id="survey-framework-list" className="space-y-2">
                                 {templates.map(tpl => {
                                     const active = formData.template_id === tpl.id;
@@ -186,7 +188,7 @@ export default function LaunchSurvey() {
                             disabled={submitting || !formData.template_id || (formData.target_group === 'CUSTOM' && formData.employee_ids.length === 0)}
                         >
                             <Rocket className="w-4 h-4" />
-                            {submitting ? 'Launching…' : 'Deploy Survey'}
+                            {submitting ? tr("surveysExt.launching") : tr("surveysExt.deploySurvey")}
                         </Button>
                     </Card>
                 </div>
@@ -195,8 +197,8 @@ export default function LaunchSurvey() {
                 <Card padding="lg" className="lg:col-span-7 xl:col-span-8 h-full flex flex-col relative overflow-hidden">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#E8EAED] pb-5 mb-5">
                         <div>
-                            <h3 className="text-[15px] font-bold text-[#15171C]">Configure Audience</h3>
-                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">Select target employees for this campaign</p>
+                            <h3 className="text-[15px] font-bold text-[#15171C]">{tr("surveysExt.configureAudience")}</h3>
+                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("surveysExt.configureAudienceDesc")}</p>
                         </div>
                         <div className="flex gap-2 shrink-0">
                             <button
@@ -204,14 +206,14 @@ export default function LaunchSurvey() {
                                 onClick={() => setFormData({...formData, target_group: 'ALL'})}
                                 className={`inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[10px] text-[12.5px] font-semibold transition-colors ${formData.target_group === 'ALL' ? 'bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]' : 'bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7]'}`}
                             >
-                                <Users className="w-3.5 h-3.5" /> Entire Organization
+                                <Users className="w-3.5 h-3.5" /> {tr("surveysExt.entireOrganization")}
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setFormData({...formData, target_group: 'CUSTOM'})}
                                 className={`inline-flex items-center gap-1.5 h-9 px-3.5 rounded-[10px] text-[12.5px] font-semibold transition-colors ${formData.target_group === 'CUSTOM' ? 'bg-[#15171C] text-white shadow-sm' : 'bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7]'}`}
                             >
-                                <UserCheck className="w-3.5 h-3.5" /> Custom Selection
+                                <UserCheck className="w-3.5 h-3.5" /> {tr("surveysExt.customSelection")}
                             </button>
                         </div>
                     </div>
@@ -219,7 +221,7 @@ export default function LaunchSurvey() {
                     {formData.target_group === 'CUSTOM' && formData.employee_ids.length > 0 && (
                         <div className="mb-4">
                             <Badge tone="indigo">
-                                <span className={jetbrainsMono.className}>{formData.employee_ids.length}</span> selected
+                                <span className={jetbrainsMono.className}>{formData.employee_ids.length}</span> {tr("surveysExt.selected")}
                             </Badge>
                         </div>
                     )}
@@ -246,7 +248,7 @@ export default function LaunchSurvey() {
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-[13px] font-bold text-[#15171C] truncate leading-tight">{emp.first_name} {emp.last_name}</p>
-                                        <p className="text-[11.5px] text-[#8A929E] truncate">{emp.designation || 'Specialist'}</p>
+                                        <p className="text-[11.5px] text-[#8A929E] truncate">{emp.designation || tr("surveysExt.specialist")}</p>
                                     </div>
                                 </div>
                             );
@@ -258,9 +260,9 @@ export default function LaunchSurvey() {
                                 <div className="w-16 h-16 rounded-[16px] flex items-center justify-center mx-auto mb-5 text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 8px 24px rgba(91,83,224,0.3)" }}>
                                     <Globe className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">Organization Wide</h3>
+                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("surveysExt.organizationWide")}</h3>
                                 <p className="text-[13px] text-[#8A929E] leading-relaxed">
-                                    Survey will be dispatched to <span className="text-[#5B53E0] font-bold"><span className={jetbrainsMono.className}>{employees.length}</span> employees</span> in the personnel database.
+                                    {tr("surveysExt.dispatchPre")} <span className="text-[#5B53E0] font-bold"><span className={jetbrainsMono.className}>{employees.length}</span> {tr("surveysExt.employeesWord")}</span> {tr("surveysExt.dispatchPost")}
                                 </p>
                             </div>
                         </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useDivision } from "@/context/DivisionContext";
 import { apiClient } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 
 interface Division {
     id: number;
@@ -25,6 +26,7 @@ interface HierarchyDrilldownProps {
 export default function HierarchyDrilldown({ title, description, renderContent, allowDivisionOverview }: HierarchyDrilldownProps) {
     const { selectedDivisionId: globalDivId } = useDivision();
     const { role } = useAuth();
+    const { t } = useI18n();
 
     const [localDivId, setLocalDivId] = useState<number | null>(null);
     const [localDeptId, setLocalDeptId] = useState<number | null>(null);
@@ -117,7 +119,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                                     <span className="material-icons-outlined text-xl">account_balance</span>
                                 </div>
                                 <h3 className="font-bold text-base text-slate-900 z-10">{div.name}</h3>
-                                <p className={`text-[9px] font-black ${variant.text}   mt-0.5 z-10`}>College Division</p>
+                                <p className={`text-[9px] font-black ${variant.text}   mt-0.5 z-10`}>{t("superAdmin.collegeDivision")}</p>
                                 <div className={`absolute -bottom-3 -right-3 opacity-5 ${variant.text} group-hover:opacity-10 transition-all duration-500`}>
                                     <span className="material-icons-outlined text-6xl">account_balance</span>
                                 </div>
@@ -126,7 +128,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                     })}
                     {divisions.length === 0 && (
                         <div className="col-span-full py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
-                            <p className="text-slate-400 font-bold">No divisions found</p>
+                            <p className="text-slate-400 font-bold">{t("superAdmin.noDivisionsFound")}</p>
                         </div>
                     )}
                 </div>
@@ -139,14 +141,14 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
         return (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <nav className="flex items-center gap-2 text-xs font-black   text-slate-400">
-                    <button onClick={() => setLocalDivId(null)} className="hover:text-black transition-all">All Colleges</button>
+                    <button onClick={() => setLocalDivId(null)} className="hover:text-black transition-all">{t("superAdmin.allColleges")}</button>
                     <span className="material-icons-outlined text-sm">chevron_right</span>
                     <span className="text-black">{activeDiv?.name}</span>
                 </nav>
 
                 <div className="flex flex-col gap-1">
-                    <h2 className="text-2xl font-bold text-slate-900">Select Department</h2>
-                    <p className="text-sm text-slate-500">Choose a department in {activeDiv?.name} to view {title.toLowerCase()}.</p>
+                    <h2 className="text-2xl font-bold text-slate-900">{t("superAdmin.selectDepartment")}</h2>
+                    <p className="text-sm text-slate-500">{t("superAdmin.chooseDepartment", { division: activeDiv?.name ?? "", title: title.toLowerCase() })}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -168,7 +170,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                                     <span className="material-icons-outlined text-xl">school</span>
                                 </div>
                                 <h3 className="font-bold text-base text-slate-900 z-10">{dept.name}</h3>
-                                <p className={`text-[9px] font-black ${variant.text}   mt-0.5 z-10`}>Academic Department</p>
+                                <p className={`text-[9px] font-black ${variant.text}   mt-0.5 z-10`}>{t("superAdmin.academicDepartment")}</p>
                                 <div className={`absolute -bottom-3 -right-3 opacity-5 ${variant.text} group-hover:opacity-10 transition-all duration-500`}>
                                     <span className="material-icons-outlined text-6xl">school</span>
                                 </div>
@@ -177,7 +179,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                     })}
                     {!loading && departments.length === 0 && (
                         <div className="col-span-full py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
-                            <p className="text-slate-400 font-bold">No departments found for this division</p>
+                            <p className="text-slate-400 font-bold">{t("superAdmin.noDepartmentsFound")}</p>
                         </div>
                     )}
                 </div>
@@ -194,7 +196,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                     className="hover:text-black transition-all"
                     disabled={!!globalDivId} // Disable if global filter is locked
                 >
-                    All Colleges
+                    {t("superAdmin.allColleges")}
                 </button>
                 <span className="material-icons-outlined text-sm">chevron_right</span>
                 <button onClick={() => setLocalDeptId(null)} className="hover:text-black transition-all">{activeDiv?.name}</button>

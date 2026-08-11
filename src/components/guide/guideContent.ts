@@ -141,7 +141,7 @@ export const GUIDE_TOPICS: GuideTopic[] = [
                 heading: "Talent Search & Automation",
                 paragraphs: ["Source new profiles with AI, and build no-code workflows that run recruiting steps for you."],
                 links: [
-                    { label: "Candidate Search", href: "/enterprise/candidates", desc: "Search and review your candidate database." },
+                    { label: "Candidate Bank", href: "/enterprise/candidates", desc: "Search and review your candidate database." },
                     { label: "Profile Sourcing", href: "/enterprise/sourcing/chat", desc: "Source new profiles with AI assistance." },
                     { label: "Canvas (Automation)", href: "/enterprise/automation", desc: "Visually automate emails, assessments, interviews and onboarding." },
                 ],

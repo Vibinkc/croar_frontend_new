@@ -5,11 +5,13 @@ import { useParams } from "next/navigation";
 import OnboardingTemplateForm from "@/components/enterprise/OnboardingTemplateForm";
 import { BACKEND_URL } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 
 export default function EditOnboardingTemplatePage() {
     const { id } = useParams();
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const [template, setTemplate] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -50,8 +52,8 @@ export default function EditOnboardingTemplatePage() {
                     <span className="material-icons-outlined text-5xl text-rose-500">error_outline</span>
                 </div>
                 <div>
-                    <h4 className="text-xl font-black text-slate-900">Template Not Found</h4>
-                    <Link href="/enterprise/templates/onboarding-templates" className="text-indigo-600 hover:underline mt-4 inline-block font-black text-xs  ">Back to Templates</Link>
+                    <h4 className="text-xl font-black text-slate-900">{tr("templatesMgmt.templateNotFound")}</h4>
+                    <Link href="/enterprise/templates/onboarding-templates" className="text-indigo-600 hover:underline mt-4 inline-block font-black text-xs  ">{tr("templatesMgmt.backToTemplates")}</Link>
                 </div>
             </div>
         );
@@ -68,8 +70,8 @@ export default function EditOnboardingTemplatePage() {
                     <span className="material-icons-outlined">arrow_back</span>
                 </Link>
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Edit Template</h1>
-                    <p className="text-slate-500 font-medium text-sm mt-1">Update your custom onboarding flow.</p>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">{tr("templatesMgmt.editTemplate")}</h1>
+                    <p className="text-slate-500 font-medium text-sm mt-1">{tr("templatesMgmt.editOnboardingSubtitle")}</p>
                 </div>
             </div>
 

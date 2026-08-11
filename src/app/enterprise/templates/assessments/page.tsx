@@ -2,10 +2,13 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
+import { GenLanguage, localeToLanguageName } from "@/i18n/config";
+import GenLanguageSelect from "@/components/ds/GenLanguageSelect";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-    Plus, 
+import {
+    Plus,
     Trash2, 
     X, 
     Save, 
@@ -58,6 +61,8 @@ interface EmailTemplate {
 
 export default function AssessmentTemplatesPage() {
     const { token, canAccess } = useAuth();
+    const { t: tr, locale } = useI18n();
+    const [genLang, setGenLang] = useState<GenLanguage>(localeToLanguageName(locale));
     const [templates, setTemplates] = useState<AssessmentTemplate[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -177,24 +182,24 @@ export default function AssessmentTemplatesPage() {
 
     // Returns a human-readable problem (with the tab to focus), or null when valid.
     const validateTemplate = (): { message: string; tab: 'config' | 'questions' } | null => {
-        if (!name.trim()) return { message: "Add a template name before saving.", tab: 'config' };
-        if (!topic.trim()) return { message: "Add a topic / skills before saving.", tab: 'config' };
+        if (!name.trim()) return { message: tr("templatesMgmt.errNameRequired"), tab: 'config' };
+        if (!topic.trim()) return { message: tr("templatesMgmt.errTopicRequired"), tab: 'config' };
         if (generatedQuestions.length === 0)
-            return { message: "Add at least one question — manually or with AI — before saving.", tab: 'questions' };
+            return { message: tr("templatesMgmt.errQuestionRequired"), tab: 'questions' };
         for (let i = 0; i < generatedQuestions.length; i++) {
             const q = generatedQuestions[i];
             const n = i + 1;
             if (q.type === 'CODING') {
-                if (!(q.title || "").trim()) return { message: `Question ${n}: add a challenge title.`, tab: 'questions' };
+                if (!(q.title || "").trim()) return { message: tr("templatesMgmt.errQChallengeTitle", { n }), tab: 'questions' };
                 if (!((q.description || q.problem_statement || "") as string).trim())
-                    return { message: `Question ${n}: add a problem specification.`, tab: 'questions' };
+                    return { message: tr("templatesMgmt.errQProblemSpec", { n }), tab: 'questions' };
             } else {
-                if (!(q.question || "").trim()) return { message: `Question ${n}: add the question text.`, tab: 'questions' };
+                if (!(q.question || "").trim()) return { message: tr("templatesMgmt.errQText", { n }), tab: 'questions' };
                 const opts = (q.options || []).map(o => (o || "").trim());
                 if (opts.length < 2 || opts.some(o => !o))
-                    return { message: `Question ${n}: fill in every answer option.`, tab: 'questions' };
+                    return { message: tr("templatesMgmt.errQOptions", { n }), tab: 'questions' };
                 if (!(q.correct_answer || "").trim() || !opts.includes((q.correct_answer || "").trim()))
-                    return { message: `Question ${n}: mark which option is the correct answer.`, tab: 'questions' };
+                    return { message: tr("templatesMgmt.errQCorrect", { n }), tab: 'questions' };
             }
         }
         return null;
@@ -204,7 +209,7 @@ export default function AssessmentTemplatesPage() {
     // (including a half-filled manual one), confirm before discarding them.
     const requestGenerate = () => {
         if (!topic.trim()) {
-            setSaveError("Add a topic / skills first so AI knows what to generate.");
+            setSaveError(tr("templatesMgmt.errTopicForAI"));
             setActiveTab('config');
             return;
         }
@@ -220,7 +225,7 @@ export default function AssessmentTemplatesPage() {
         setSaveError(null);
         setIsGenerating(true);
         try {
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/generate-preview?type=${type}&topic=${encodeURIComponent(topic)}&count=${questionCount}`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/generate-preview?type=${type}&topic=${encodeURIComponent(topic)}&count=${questionCount}&language=${encodeURIComponent(genLang)}`, {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -298,11 +303,11 @@ export default function AssessmentTemplatesPage() {
                 fetchTemplates();
                 setIsModalOpen(false);
             } else {
-                setSaveError("Could not save the template. Please try again.");
+                setSaveError(tr("templatesMgmt.errCouldNotSave"));
             }
         } catch (error) {
             console.error("Failed to save assessment template:", error);
-            setSaveError("Something went wrong while saving. Please try again.");
+            setSaveError(tr("templatesMgmt.errSaveGeneric"));
         } finally {
             setIsSaving(false);
         }
@@ -358,12 +363,12 @@ export default function AssessmentTemplatesPage() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Assessment Templates</h1>
-                        <PageHelp title="Assessment Templates">
-                            <p>Reusable assessment templates you can attach to jobs.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("templatesMgmt.assessmentTemplatesTitle")}</h1>
+                        <PageHelp title={tr("templatesMgmt.assessmentTemplatesTitle")}>
+                            <p>{tr("templatesMgmt.assessmentTemplatesHelp")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Standardize technical and skill evaluations.</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("templatesMgmt.assessmentTemplatesSubtitle")}</p>
                 </div>
 
                 <div className="flex items-center gap-2.5">
@@ -373,7 +378,7 @@ export default function AssessmentTemplatesPage() {
                             className="h-8 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
                         >
                             <Plus className="w-3.5 h-3.5" />
-                            New Template
+                            {tr("templatesMgmt.newTemplate")}
                         </button>
                     )}
                     <button 
@@ -388,10 +393,10 @@ export default function AssessmentTemplatesPage() {
             {/* Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
-                    { label: "Total Assessments", value: templates.length, Icon: ListChecks, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-                    { label: "Coding Tests", value: templates.filter(t => t.type === 'CODING' || t.type === 'BOTH').length, Icon: Code, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                    { label: "Aptitude", value: templates.filter(t => t.type === 'APTITUDE' || t.type === 'BOTH').length, Icon: Brain, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-                    { label: "Avg Duration", value: templates.length ? Math.round(templates.reduce((acc, t) => acc + t.test_duration, 0) / templates.length) + "m" : "0m", Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: tr("templatesMgmt.totalAssessments"), value: templates.length, Icon: ListChecks, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
+                    { label: tr("templatesMgmt.codingTests"), value: templates.filter(t => t.type === 'CODING' || t.type === 'BOTH').length, Icon: Code, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: tr("templatesMgmt.aptitude"), value: templates.filter(t => t.type === 'APTITUDE' || t.type === 'BOTH').length, Icon: Brain, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: tr("templatesMgmt.avgDuration"), value: templates.length ? Math.round(templates.reduce((acc, t) => acc + t.test_duration, 0) / templates.length) + "m" : "0m", Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
                 ].map((s) => (
                     <div
                         key={s.label}
@@ -417,7 +422,7 @@ export default function AssessmentTemplatesPage() {
                     <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                     <input 
                         type="text"
-                        placeholder="Search assessments by name or topic..."
+                        placeholder={tr("templatesMgmt.searchAssessmentPlaceholder")}
                         className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                         value={assessmentSearch}
                         onChange={(e) => setAssessmentSearch(e.target.value)}
@@ -430,10 +435,10 @@ export default function AssessmentTemplatesPage() {
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
                     >
-                        <option value="ALL">All Types</option>
-                        <option value="APTITUDE">Aptitude</option>
-                        <option value="CODING">Coding</option>
-                        <option value="BOTH">Hybrid</option>
+                        <option value="ALL">{tr("templatesMgmt.allTypes")}</option>
+                        <option value="APTITUDE">{tr("templatesMgmt.aptitude")}</option>
+                        <option value="CODING">{tr("templatesMgmt.coding")}</option>
+                        <option value="BOTH">{tr("templatesMgmt.hybrid")}</option>
                     </select>
                 </div>
             </div>
@@ -448,27 +453,27 @@ export default function AssessmentTemplatesPage() {
                     </div>
                     {templates.length === 0 ? (
                         <>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Templates Yet</h3>
-                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Create your first skill assessment template to begin testing candidates.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("templatesMgmt.noTemplatesYet")}</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">{tr("templatesMgmt.assessmentEmptyDesc")}</p>
                             {canAccess("assessments:moderate") && (
                                 <button
                                     onClick={() => handleOpenModal()}
                                     className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5"
                                 >
                                     <Plus className="w-3.5 h-3.5" />
-                                    New Template
+                                    {tr("templatesMgmt.newTemplate")}
                                 </button>
                             )}
                         </>
                     ) : (
                         <>
-                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">No Results Found</h3>
-                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">No assessment templates match your current search or filter.</p>
+                            <h3 className="text-[16px] font-bold text-[#15171C] mb-1">{tr("templatesMgmt.noResultsFound")}</h3>
+                            <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">{tr("templatesMgmt.assessmentNoResultsDesc")}</p>
                             <button
                                 onClick={() => { setAssessmentSearch(""); setTypeFilter("ALL"); }}
                                 className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
                             >
-                                Reset Filters
+                                {tr("templatesMgmt.resetFilters")}
                             </button>
                         </>
                     )}
@@ -559,14 +564,14 @@ export default function AssessmentTemplatesPage() {
                                         <Settings2 className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-tight">{editingTemplate ? "Configure Assessment" : "New Assessment"}</h2>
-                                        <p className="text-[12px] text-[#8A929E] mt-0.5">Design evaluation steps & parameters</p>
+                                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight leading-tight">{editingTemplate ? tr("templatesMgmt.configureAssessment") : tr("templatesMgmt.newAssessment")}</h2>
+                                        <p className="text-[12px] text-[#8A929E] mt-0.5">{tr("templatesMgmt.designEvalSteps")}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="flex bg-[#F4F5F7] p-1 rounded-[10px] border border-[#E8EAED]">
-                                        <button type="button" onClick={() => setActiveTab('config')} className={`px-3 py-1.5 rounded-[8px] text-[11px] font-bold transition-all ${activeTab === 'config' ? 'bg-white text-[#15171C] shadow-sm' : 'text-[#8A929E] hover:text-[#15171C]'}`}>1. Details</button>
-                                        <button type="button" onClick={() => setActiveTab('questions')} className={`px-3 py-1.5 rounded-[8px] text-[11px] font-bold transition-all ${activeTab === 'questions' ? 'bg-white text-[#15171C] shadow-sm' : 'text-[#8A929E] hover:text-[#15171C]'}`}>2. Questions</button>
+                                        <button type="button" onClick={() => setActiveTab('config')} className={`px-3 py-1.5 rounded-[8px] text-[11px] font-bold transition-all ${activeTab === 'config' ? 'bg-white text-[#15171C] shadow-sm' : 'text-[#8A929E] hover:text-[#15171C]'}`}>{tr("templatesMgmt.tabDetails")}</button>
+                                        <button type="button" onClick={() => setActiveTab('questions')} className={`px-3 py-1.5 rounded-[8px] text-[11px] font-bold transition-all ${activeTab === 'questions' ? 'bg-white text-[#15171C] shadow-sm' : 'text-[#8A929E] hover:text-[#15171C]'}`}>{tr("templatesMgmt.tabQuestions")}</button>
                                     </div>
                                     <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-[8px] bg-white border border-[#E1E4E8] text-[#6B6F76] hover:bg-[#F4F5F7] hover:text-[#374151] transition-all flex items-center justify-center shadow-sm">
                                         <X className="w-4 h-4" />
@@ -579,14 +584,14 @@ export default function AssessmentTemplatesPage() {
                                 {activeTab === 'config' ? (
                                     <form id="matrix-form" onSubmit={e => { e.preventDefault(); handleSave(); }} className="space-y-6">
                                         <div className="space-y-1.5 group">
-                                            <label htmlFor="assessment-template-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Template Name</label>
+                                            <label htmlFor="assessment-template-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.templateName")}</label>
                                             <input
                                                 id="assessment-template-name"
                                                 type="text"
                                                 value={name}
                                                 onChange={e => setName(e.target.value)}
                                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                placeholder="e.g. Senior Backend Node.js Skills"
+                                                placeholder={tr("templatesMgmt.nameAssessmentPlaceholder")}
                                                 required
                                                 readOnly={!canAccess("assessments:moderate")}
                                             />
@@ -595,11 +600,11 @@ export default function AssessmentTemplatesPage() {
                                         <div className="bg-[#F8F9FA] border border-[#E8EAED] rounded-[14px] p-5 space-y-5">
                                             <div className="flex items-center gap-2">
                                                 <Zap className="w-4 h-4 text-[#5B53E0]" />
-                                                <span className="text-[12.5px] font-bold text-[#15171C]">Test Parameters</span>
+                                                <span className="text-[12.5px] font-bold text-[#15171C]">{tr("templatesMgmt.testParameters")}</span>
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-1.5">
-                                                    <label htmlFor="assessment-type" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Type</label>
+                                                    <label htmlFor="assessment-type" className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.type")}</label>
                                                     <select
                                                         id="assessment-type"
                                                         value={type}
@@ -607,20 +612,20 @@ export default function AssessmentTemplatesPage() {
                                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all cursor-pointer"
                                                         disabled={!canAccess("assessments:moderate")}
                                                     >
-                                                        <option value="APTITUDE">Aptitude Test</option>
-                                                        <option value="CODING">Coding Challenge</option>
-                                                        <option value="BOTH">Hybrid Assessment</option>
+                                                        <option value="APTITUDE">{tr("templatesMgmt.typeAptitudeTest")}</option>
+                                                        <option value="CODING">{tr("templatesMgmt.typeCodingChallenge")}</option>
+                                                        <option value="BOTH">{tr("templatesMgmt.typeHybridAssessment")}</option>
                                                     </select>
                                                 </div>
                                                 <div className="space-y-1.5">
-                                                    <label htmlFor="assessment-topic" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Topic / Skills</label>
+                                                    <label htmlFor="assessment-topic" className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.topicSkills")}</label>
                                                     <input
                                                         id="assessment-topic"
                                                         type="text"
                                                         value={topic}
                                                         onChange={e => setTopic(e.target.value)}
                                                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                        placeholder="e.g. React, Python"
+                                                        placeholder={tr("templatesMgmt.topicPlaceholder")}
                                                         required
                                                         readOnly={!canAccess("assessments:moderate")}
                                                     />
@@ -628,7 +633,7 @@ export default function AssessmentTemplatesPage() {
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-1.5">
-                                                    <label htmlFor="assessment-question-count" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Question Count</label>
+                                                    <label htmlFor="assessment-question-count" className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.questionCount")}</label>
                                                     <input
                                                         id="assessment-question-count"
                                                         type="number"
@@ -640,7 +645,7 @@ export default function AssessmentTemplatesPage() {
                                                     />
                                                 </div>
                                                 <div className="space-y-1.5">
-                                                    <label htmlFor="assessment-duration" className="text-[11px] font-bold text-[#8A929E] ml-0.5">Duration (Mins)</label>
+                                                    <label htmlFor="assessment-duration" className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.durationMins")}</label>
                                                     <input
                                                         id="assessment-duration"
                                                         type="number"
@@ -655,7 +660,7 @@ export default function AssessmentTemplatesPage() {
                                         </div>
 
                                         <div className="space-y-1.5 group">
-                                            <label htmlFor="assessment-email-template" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Invitation Email Template</label>
+                                            <label htmlFor="assessment-email-template" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.invitationEmailTemplate")}</label>
                                             <select
                                                 id="assessment-email-template"
                                                 value={selectedEmailTemplateId}
@@ -663,7 +668,7 @@ export default function AssessmentTemplatesPage() {
                                                 className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all cursor-pointer"
                                                 disabled={!canAccess("assessments:moderate")}
                                             >
-                                                <option value="">Select email template...</option>
+                                                <option value="">{tr("templatesMgmt.selectEmailTemplate")}</option>
                                                 {emailTemplates.map(t => (
                                                     <option key={t.id} value={t.id}>{t.name}</option>
                                                 ))}
@@ -674,10 +679,13 @@ export default function AssessmentTemplatesPage() {
                                     <div className="space-y-6">
                                         <div className="flex items-center justify-between gap-4">
                                             <div>
-                                                <h3 className="text-[14px] font-bold text-[#15171C]">Assessment Questions</h3>
-                                                <p className="text-[11.5px] text-[#8A929E] font-medium mt-0.5">Configure individual questions or generate with AI</p>
+                                                <h3 className="text-[14px] font-bold text-[#15171C]">{tr("templatesMgmt.assessmentQuestions")}</h3>
+                                                <p className="text-[11.5px] text-[#8A929E] font-medium mt-0.5">{tr("templatesMgmt.configQuestionsDesc")}</p>
                                             </div>
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-2 items-center">
+                                                {canAccess("assessments:moderate") && (
+                                                    <GenLanguageSelect value={genLang} onChange={setGenLang} />
+                                                )}
                                                 {canAccess("assessments:moderate") && (
                                                     <button
                                                         onClick={requestGenerate}
@@ -685,7 +693,7 @@ export default function AssessmentTemplatesPage() {
                                                         className="h-8 px-3.5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[12px] font-bold flex items-center gap-1.5 transition-all disabled:opacity-20 shadow-sm"
                                                     >
                                                         {isGenerating ? <RefreshCcw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-indigo-200" />}
-                                                        Generate AI
+                                                        {tr("templatesMgmt.generateAI")}
                                                     </button>
                                                 )}
                                                 {canAccess("assessments:moderate") && (
@@ -694,7 +702,7 @@ export default function AssessmentTemplatesPage() {
                                                         className="h-8 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[10px] text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-sm"
                                                     >
                                                         <Plus className="w-3.5 h-3.5" />
-                                                        Add Question
+                                                        {tr("templatesMgmt.addQuestion")}
                                                     </button>
                                                 )}
                                             </div>
@@ -722,14 +730,14 @@ export default function AssessmentTemplatesPage() {
                                                         {q.type === 'APTITUDE' ? (
                                                             <>
                                                                 <div className="space-y-1.5">
-                                                                    <label htmlFor={`question-text-${q.id}`} className="text-[11px] font-bold text-[#8A929E] ml-0.5">Question Text</label>
+                                                                    <label htmlFor={`question-text-${q.id}`} className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.questionText")}</label>
                                                                     <textarea
                                                                         id={`question-text-${q.id}`}
                                                                         value={q.question}
                                                                         onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
                                                                         className="w-full h-20 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 py-2.5 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none leading-relaxed"
                                                                         readOnly={!canAccess("assessments:moderate")}
-                                                                        placeholder="State the question clearly..."
+                                                                        placeholder={tr("templatesMgmt.questionTextPlaceholder")}
                                                                     />
                                                                 </div>
                                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -744,7 +752,7 @@ export default function AssessmentTemplatesPage() {
                                                                                 }}
                                                                                 className={`w-full h-10 bg-white border-2 rounded-[10px] pl-10 pr-4 text-[12.5px] font-semibold transition-all outline-none ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB]/30 text-[#5B53E0]" : "border-[#E1E4E8] text-[#374151] focus:border-[#5B53E0]"}`}
                                                                                 readOnly={!canAccess("assessments:moderate")}
-                                                                                placeholder={`Option ${oi + 1}`}
+                                                                                placeholder={tr("templatesMgmt.optionLabel", { n: oi + 1 })}
                                                                             />
                                                                             <button 
                                                                                 onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
@@ -761,25 +769,25 @@ export default function AssessmentTemplatesPage() {
                                                             <>
                                                                 <div className="space-y-4">
                                                                     <div className="space-y-1.5">
-                                                                        <label htmlFor={`challenge-title-${q.id}`} className="text-[11px] font-bold text-[#8A929E] ml-0.5">Challenge Title</label>
+                                                                        <label htmlFor={`challenge-title-${q.id}`} className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.challengeTitle")}</label>
                                                                         <input
                                                                             id={`challenge-title-${q.id}`}
                                                                             type="text"
                                                                             value={q.title}
                                                                             onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
                                                                             className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[13.5px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                                            placeholder="e.g. Implement Reverse Linked List"
+                                                                            placeholder={tr("templatesMgmt.challengeTitlePlaceholder")}
                                                                         />
                                                                     </div>
                                                                     <div className="space-y-1.5">
-                                                                        <label htmlFor={`problem-spec-${q.id}`} className="text-[11px] font-bold text-[#8A929E] ml-0.5">Problem Specification</label>
+                                                                        <label htmlFor={`problem-spec-${q.id}`} className="text-[11px] font-bold text-[#8A929E] ml-0.5">{tr("templatesMgmt.problemSpec")}</label>
                                                                         <textarea
                                                                             id={`problem-spec-${q.id}`}
                                                                             value={q.description || q.problem_statement}
                                                                             onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
                                                                             className="w-full h-44 bg-white border border-[#E1E4E8] rounded-[10px] px-4 py-3 text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none leading-relaxed"
                                                                             readOnly={!canAccess("assessments:moderate")}
-                                                                            placeholder="Describe the challenge parameters..."
+                                                                            placeholder={tr("templatesMgmt.problemSpecPlaceholder")}
                                                                         />
                                                                     </div>
                                                                 </div>
@@ -791,8 +799,8 @@ export default function AssessmentTemplatesPage() {
                                             {generatedQuestions.length === 0 && (
                                                 <div className="py-12 flex flex-col items-center justify-center text-center bg-white rounded-[14px] border border-dashed border-[#E8EAED] max-w-sm mx-auto">
                                                     <Search className="w-10 h-10 text-[#8A929E] mb-3" />
-                                                    <h4 className="text-[14px] font-bold text-[#15171C] leading-tight">No Questions Defined</h4>
-                                                    <p className="text-[12px] text-[#8A929E] font-medium max-w-[220px] mt-1.5 leading-relaxed">Start adding questions manually or use AI to generate them.</p>
+                                                    <h4 className="text-[14px] font-bold text-[#15171C] leading-tight">{tr("templatesMgmt.noQuestionsDefined")}</h4>
+                                                    <p className="text-[12px] text-[#8A929E] font-medium max-w-[220px] mt-1.5 leading-relaxed">{tr("templatesMgmt.noQuestionsDesc")}</p>
                                                 </div>
                                             )}
                                         </div>
@@ -810,16 +818,16 @@ export default function AssessmentTemplatesPage() {
                                         </div>
                                     )}
                                     <div className="p-8 flex items-center justify-between gap-6">
-                                        <p className="text-[11.5px] text-[#8A929E] leading-normal max-w-[280px]">This assessment template will be available for all recruitment workflows and job postings.</p>
+                                        <p className="text-[11.5px] text-[#8A929E] leading-normal max-w-[280px]">{tr("templatesMgmt.assessmentFooterNote")}</p>
                                         <button
                                             onClick={handleSave}
                                             type="button"
                                             disabled={isSaving || (!!editingTemplate && !isDirty)}
-                                            title={editingTemplate && !isDirty ? "No changes to save yet" : undefined}
+                                            title={editingTemplate && !isDirty ? tr("templatesMgmt.noChangesYet") : undefined}
                                             className="h-10 px-6 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all flex items-center gap-1.5 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
                                         >
                                             {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                            {isSaving ? "Saving…" : editingTemplate ? "Update Template" : "Save Template"}
+                                            {isSaving ? tr("templatesMgmt.saving") : editingTemplate ? tr("templatesMgmt.updateTemplate") : tr("templatesMgmt.saveTemplate")}
                                         </button>
                                     </div>
                                 </div>
@@ -833,10 +841,10 @@ export default function AssessmentTemplatesPage() {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Delete Template?"
-                message={`Are you sure you want to delete "${templateToDelete?.name}"? This will remove all associated assessment logic.`}
-                confirmLabel="Delete Template"
-                cancelLabel="Cancel"
+                title={tr("templatesMgmt.deleteTemplateTitle")}
+                message={tr("templatesMgmt.deleteConfirmAssessment", { name: templateToDelete?.name ?? "" })}
+                confirmLabel={tr("templatesMgmt.deleteTemplate")}
+                cancelLabel={tr("common.cancel")}
                 isDestructive={true}
             />
 
@@ -844,10 +852,10 @@ export default function AssessmentTemplatesPage() {
                 isOpen={isRegenConfirmOpen}
                 onClose={() => setIsRegenConfirmOpen(false)}
                 onConfirm={() => { setIsRegenConfirmOpen(false); handleGenerateQuestions(); }}
-                title="Replace all questions?"
-                message={`Generating with AI will replace all ${generatedQuestions.length} current question${generatedQuestions.length === 1 ? "" : "s"}, including any you added or edited manually. This cannot be undone.`}
-                confirmLabel="Replace & Generate"
-                cancelLabel="Keep Current"
+                title={tr("templatesMgmt.replaceQuestionsTitle")}
+                message={tr("templatesMgmt.replaceQuestionsMsg", { count: generatedQuestions.length })}
+                confirmLabel={tr("templatesMgmt.replaceGenerate")}
+                cancelLabel={tr("templatesMgmt.keepCurrent")}
                 isDestructive={true}
             />
         </div>

@@ -15,16 +15,17 @@ import {
 } from "@/components/ds";
 import NotLinkedNotice, { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useI18n } from "@/context/I18nContext";
 
 const money = (n: number | string, currency = "INR") =>
   Number(n).toLocaleString("en-IN", { style: "currency", currency, maximumFractionDigits: 0 });
 
 // Module quick-access cards — mirrors the enterprise dashboard module grid.
 const MODULES = [
-  { title: "Timesheets", desc: "Mark attendance and review your work periods.", icon: "schedule", path: "/employee/timesheets", color: "indigo" },
-  { title: "Leave", desc: "Check balances and request time off.", icon: "event_available", path: "/employee/leave", color: "emerald" },
-  { title: "Payslips", desc: "Download and review your released payslips.", icon: "receipt_long", path: "/employee/payslips", color: "indigo" },
-  { title: "Skill Assessments", desc: "Take assigned aptitude & coding tests.", icon: "quiz", path: "/employee/skill-assessments", color: "amber" },
+  { titleKey: "navTimesheets", descKey: "moduleTimesheetsDesc", icon: "schedule", path: "/employee/timesheets", color: "indigo" },
+  { titleKey: "navLeave", descKey: "moduleLeaveDesc", icon: "event_available", path: "/employee/leave", color: "emerald" },
+  { titleKey: "navPayslips", descKey: "modulePayslipsDesc", icon: "receipt_long", path: "/employee/payslips", color: "indigo" },
+  { titleKey: "navSkillAssessments", descKey: "moduleSkillAssessmentsDesc", icon: "quiz", path: "/employee/skill-assessments", color: "amber" },
 ];
 
 const moduleChip: Record<string, string> = {
@@ -43,6 +44,7 @@ const statusTone = (s: string): "success" | "warning" | "danger" | "neutral" => 
 
 export default function EmployeeDashboard() {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [balances, setBalances] = useState<LeaveBalance[]>([]);
   const [requests, setRequests] = useState<LeaveRequest[]>([]);
   const [payslips, setPayslips] = useState<MyPayslip[]>([]);
@@ -51,11 +53,11 @@ export default function EmployeeDashboard() {
   const [surveyCount, setSurveyCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [greeting, setGreeting] = useState("Welcome back");
+  const [greeting, setGreeting] = useState("welcomeBack");
 
   useEffect(() => {
     const h = new Date().getHours();
-    setGreeting(h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening");
+    setGreeting(h < 12 ? "goodMorning" : h < 18 ? "goodAfternoon" : "goodEvening");
   }, []);
 
   useEffect(() => {
@@ -80,7 +82,7 @@ export default function EmployeeDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  const firstName = (user?.full_name || user?.email || "").split(" ")[0] || "there";
+  const firstName = (user?.full_name || user?.email || "").split(" ")[0] || t("employee.there");
   const leaveAvailable = balances.filter((b) => b.is_paid !== false).reduce((s, b) => s + Number(b.balance), 0);
   const pending = requests.filter((r) => r.status === "PENDING").length;
   const latestPayslip = payslips[0] ?? null;
@@ -88,10 +90,10 @@ export default function EmployeeDashboard() {
   const pendingTasks = feedbackCount + surveyCount;
 
   const stats = [
-    { label: "Leave available", value: leaveAvailable, icon: "event_available", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-    { label: "Pending requests", value: pending, icon: "hourglass_top", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-    { label: "Latest net pay", value: latestPayslip ? money(latestPayslip.net_pay, latestPayslip.currency) : "—", icon: "payments", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
-    { label: "Timesheet", value: latestTimesheet?.status ?? "—", icon: "schedule", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+    { label: t("employee.leaveAvailable"), value: leaveAvailable, icon: "event_available", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+    { label: t("employee.pendingRequests"), value: pending, icon: "hourglass_top", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+    { label: t("employee.latestNetPay"), value: latestPayslip ? money(latestPayslip.net_pay, latestPayslip.currency) : "—", icon: "payments", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
+    { label: t("employee.timesheet"), value: latestTimesheet?.status ?? "—", icon: "schedule", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
   ];
 
   if (loading) {
@@ -112,23 +114,23 @@ export default function EmployeeDashboard() {
   }
 
   const needsAttention = [
-    { show: feedbackCount > 0, count: feedbackCount, label: "360 feedback request(s) awaiting you", icon: "rate_review", href: "/employee/feedback", color: "text-[#5B53E0] bg-[#ECEBFB]" },
-    { show: surveyCount > 0, count: surveyCount, label: "survey(s) to complete", icon: "poll", href: "/employee/surveys", color: "text-[#D97706] bg-[#FEF3E2]" },
-    { show: pending > 0, count: pending, label: "leave request(s) awaiting approval", icon: "hourglass_top", href: "/employee/leave", color: "text-[#15803D] bg-[#E6F4EA]" },
+    { show: feedbackCount > 0, count: feedbackCount, label: t("employee.attn360"), icon: "rate_review", href: "/employee/feedback", color: "text-[#5B53E0] bg-[#ECEBFB]" },
+    { show: surveyCount > 0, count: surveyCount, label: t("employee.attnSurveys"), icon: "poll", href: "/employee/surveys", color: "text-[#D97706] bg-[#FEF3E2]" },
+    { show: pending > 0, count: pending, label: t("employee.attnLeave"), icon: "hourglass_top", href: "/employee/leave", color: "text-[#15803D] bg-[#E6F4EA]" },
   ].filter((i) => i.show);
 
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title="Dashboard"
-        subtitle="Your workspace — everything about you at a glance"
-        help={<><p>This is your personal HR workspace.</p><p>Track leave, payslips, timesheets and assigned tasks. Anything needing your attention surfaces here.</p></>}
+        title={t("employee.dashboardTitle")}
+        subtitle={t("employee.dashboardSubtitle")}
+        help={<><p>{t("employee.dashboardHelp1")}</p><p>{t("employee.dashboardHelp2")}</p></>}
         actions={<ThemeToggle />}
       />
 
       {error && !isNoEmployeeLink(error) && (
         <div className="flex items-center gap-2.5 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
-          <span className="material-symbols-rounded text-[18px]">error</span> We couldn&apos;t load some of your data. {error}
+          <span className="material-symbols-rounded text-[18px]">error</span> {t("employee.dashLoadError")} {error}
         </div>
       )}
 
@@ -138,24 +140,24 @@ export default function EmployeeDashboard() {
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[20px] bg-white/[0.08] border border-white/10 text-[10px] font-semibold text-[#C7CCD4] mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse" />
-              My workspace
+              {t("employee.myWorkspaceLower")}
             </div>
             <h1 className="text-[30px] md:text-[38px] font-extrabold tracking-[-1px] leading-[1.05]" style={{ color: "#ffffff" }}>
-              {greeting}, <span style={{ color: "#8B7DFF" }}>{firstName}</span>
+              {t(`employee.${greeting}`)}, <span style={{ color: "#8B7DFF" }}>{firstName}</span>
             </h1>
             <p className="text-[#A8AEB8] text-[14.5px] leading-relaxed mt-3 max-w-md">
               {pendingTasks > 0 ? (
-                <>You have <span className={`text-white font-semibold ${jetbrainsMono.className}`}>{pendingTasks}</span> task{pendingTasks === 1 ? "" : "s"} to complete.</>
+                <>{t("employee.youHave")} <span className={`text-white font-semibold ${jetbrainsMono.className}`}>{pendingTasks}</span> {pendingTasks === 1 ? t("employee.taskToCompleteSuffix") : t("employee.tasksToCompleteSuffix")}</>
               ) : (
-                "You're all caught up — here's a snapshot of your records."
+                t("employee.allCaughtUpSnapshot")
               )}
             </p>
             <div className="flex flex-wrap gap-2.5 mt-6">
               <Link href="/employee/leave" className="h-[44px] px-5 bg-[#5B53E0] text-white rounded-[10px] text-[14px] font-semibold hover:bg-[#4A43C9] transition-colors shadow-[0_8px_20px_rgba(91,83,224,0.4)] flex items-center gap-2">
-                <span className="material-symbols-rounded text-[19px]">event_available</span> Request Leave
+                <span className="material-symbols-rounded text-[19px]">event_available</span> {t("employee.requestLeave")}
               </Link>
               <Link href="/employee/timesheets" className="h-[44px] px-5 bg-white/[0.08] border border-white/15 text-white rounded-[10px] text-[14px] font-semibold hover:bg-white/[0.14] transition-colors flex items-center gap-2">
-                <span className="material-symbols-rounded text-[19px]">schedule</span> Mark Attendance
+                <span className="material-symbols-rounded text-[19px]">schedule</span> {t("employee.markAttendance")}
               </Link>
             </div>
           </div>
@@ -172,15 +174,15 @@ export default function EmployeeDashboard() {
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
           {MODULES.map((m) => (
-            <Link href={m.path} key={m.title} className="group h-full">
+            <Link href={m.path} key={m.titleKey} className="group h-full">
               <Card interactive className="h-full flex flex-col">
                 <div className={`w-11 h-11 rounded-[11px] ${moduleChip[m.color]} flex items-center justify-center mb-4`}>
                   <span className="material-symbols-rounded text-xl">{m.icon}</span>
                 </div>
-                <h3 className="text-[15px] font-bold text-[#15171C] tracking-[-0.2px] group-hover:text-[#5B53E0] transition-colors">{m.title}</h3>
-                <p className="text-[13px] text-[#8A929E] leading-relaxed mt-1 mb-4 flex-1">{m.desc}</p>
+                <h3 className="text-[15px] font-bold text-[#15171C] tracking-[-0.2px] group-hover:text-[#5B53E0] transition-colors">{t(`employee.${m.titleKey}`)}</h3>
+                <p className="text-[13px] text-[#8A929E] leading-relaxed mt-1 mb-4 flex-1">{t(`employee.${m.descKey}`)}</p>
                 <div className="flex items-center gap-1 text-[12px] font-semibold text-[#5B53E0]">
-                  Open <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                  {t("employee.open")} <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </div>
               </Card>
             </Link>
@@ -190,7 +192,7 @@ export default function EmployeeDashboard() {
         <div className="lg:col-span-4 h-full">
           <Card className="h-full flex flex-col">
             <div className="flex items-center justify-between mb-5">
-              <span className="text-[15px] font-bold text-[#15171C]">Needs your attention</span>
+              <span className="text-[15px] font-bold text-[#15171C]">{t("employee.needsAttention")}</span>
               <div className="w-2.5 h-2.5 rounded-full bg-[#34D399] border-4 border-[#E6F4EA]" />
             </div>
             {needsAttention.length === 0 ? (
@@ -198,8 +200,8 @@ export default function EmployeeDashboard() {
                 <div className="w-12 h-12 rounded-[12px] bg-[#E6F4EA] text-[#15803D] flex items-center justify-center mb-3">
                   <span className="material-symbols-rounded text-2xl">task_alt</span>
                 </div>
-                <p className="text-[14px] font-semibold text-[#15171C]">You&apos;re all caught up</p>
-                <p className="text-[12px] text-[#8A929E] mt-1">Tasks and requests will show up here.</p>
+                <p className="text-[14px] font-semibold text-[#15171C]">{t("employee.allCaughtUp")}</p>
+                <p className="text-[12px] text-[#8A929E] mt-1">{t("employee.tasksShowUpHere")}</p>
               </div>
             ) : (
               <div className="space-y-2.5 flex-1">
@@ -224,10 +226,10 @@ export default function EmployeeDashboard() {
       {/* Leave balances + recent requests */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card padding="none" className="overflow-hidden">
-          <CardHeader className="px-6 pt-6" title="Leave balances" subtitle="Your paid & unpaid entitlements"
-            action={<Link href="/employee/leave" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">View all</Link>} />
+          <CardHeader className="px-6 pt-6" title={t("employee.leaveBalances")} subtitle={t("employee.leaveBalancesSubtitle")}
+            action={<Link href="/employee/leave" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">{t("employee.viewAll")}</Link>} />
           {balances.length === 0 ? (
-            <p className="px-6 pb-6 pt-1 text-center text-[13px] text-[#8A929E]">No leave balances yet.</p>
+            <p className="px-6 pb-6 pt-1 text-center text-[13px] text-[#8A929E]">{t("employee.noLeaveBalances")}</p>
           ) : (
             <div className="divide-y divide-[#F0F0F1]">
               {balances.map((b) => {
@@ -239,7 +241,7 @@ export default function EmployeeDashboard() {
                     <div className="mb-1.5 flex items-center justify-between">
                       <span className="text-[13px] font-semibold text-[#15171C]">{b.leave_type_name || b.leave_type_code}</span>
                       <span className="text-[12px] text-[#8A929E]">
-                        <span className={`font-bold text-[#15171C] ${jetbrainsMono.className}`}>{left}</span> left · {Number(b.used)} used
+                        <span className={`font-bold text-[#15171C] ${jetbrainsMono.className}`}>{left}</span> {t("employee.left")} · {Number(b.used)} {t("employee.used")}
                       </span>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#F1F2F5]">
@@ -253,10 +255,10 @@ export default function EmployeeDashboard() {
         </Card>
 
         <Card padding="none" className="overflow-hidden">
-          <CardHeader className="px-6 pt-6" title="Recent leave requests" subtitle="Your latest time-off requests"
-            action={<Link href="/employee/leave" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">View all</Link>} />
+          <CardHeader className="px-6 pt-6" title={t("employee.recentLeaveRequests")} subtitle={t("employee.recentLeaveRequestsSubtitle")}
+            action={<Link href="/employee/leave" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">{t("employee.viewAll")}</Link>} />
           {requests.length === 0 ? (
-            <p className="px-6 pb-6 pt-1 text-center text-[13px] text-[#8A929E]">No leave requests yet.</p>
+            <p className="px-6 pb-6 pt-1 text-center text-[13px] text-[#8A929E]">{t("employee.noLeaveRequests")}</p>
           ) : (
             <div className="divide-y divide-[#F0F0F1]">
               {requests.slice(0, 5).map((r) => (

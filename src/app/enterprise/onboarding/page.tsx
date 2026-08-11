@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { useRouter } from "next/navigation";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
@@ -65,6 +66,7 @@ const safeFormat = (value: string | null | undefined, pattern: string): string =
 
 export default function OnboardingDashboard() {
     const { token } = useAuth();
+    const { t } = useI18n();
     const router = useRouter();
     const [onboardings, setOnboardings] = useState<Onboarding[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -148,12 +150,12 @@ export default function OnboardingDashboard() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Onboarding Hub</h1>
-                        <PageHelp title="Onboarding Hub">
-                            <p>Run onboarding for new hires, then convert them into employees.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{t("onboarding.title")}</h1>
+                        <PageHelp title={t("general.onboardingHubHelpTitle")}>
+                            <p>{t("general.onboardingHubHelpDesc")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Manage new hire integration, workflows, and checklist progress.</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{t("onboarding.subtitle")}</p>
                 </div>
             </header>
 
@@ -163,7 +165,7 @@ export default function OnboardingDashboard() {
                     <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] w-4 h-4 group-focus-within:text-[#5B53E0] transition-colors" />
                     <input
                         type="text"
-                        placeholder="Search candidate name or onboarding code..."
+                        placeholder={t("onboarding.searchPlaceholder")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full h-10 pl-10 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
@@ -177,7 +179,7 @@ export default function OnboardingDashboard() {
                         onChange={(e) => setSelectedJobId(e.target.value)}
                         className="bg-transparent text-[12.5px] font-bold text-[#374151] outline-none pr-2 cursor-pointer flex-1 sm:flex-initial"
                     >
-                        <option value="all">All Pipelines</option>
+                        <option value="all">{t("onboarding.allPipelines")}</option>
                         {jobs.map(job => (
                             <option key={job.id} value={job.id}>{job.title}</option>
                         ))}
@@ -242,7 +244,7 @@ export default function OnboardingDashboard() {
                                                     <p className="text-[12px] font-bold text-[#15171C] truncate leading-tight">
                                                         {ob.job_title || ob.application?.job_requirement?.title || "Unspecified Role"}
                                                     </p>
-                                                    <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mt-0.5 leading-none">Hired Role</p>
+                                                    <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mt-0.5 leading-none">{t("onboarding.hiredRole")}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
@@ -253,7 +255,7 @@ export default function OnboardingDashboard() {
                                                     <p className="text-[12px] font-bold text-[#15171C] leading-tight">
                                                         {safeFormat(ob.initiation_date, "MMM dd, yyyy")}
                                                     </p>
-                                                    <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mt-0.5 leading-none">Start Date</p>
+                                                    <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mt-0.5 leading-none">{t("onboarding.startDate")}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -263,10 +265,10 @@ export default function OnboardingDashboard() {
                                     <div className="flex items-center justify-between pt-3.5 border-t border-[#E8EAED] mt-5">
                                         <div className="flex items-center gap-1.5 text-[#8A929E] text-[10.5px] font-semibold uppercase tracking-wider">
                                             <Activity className="w-3.5 h-3.5" />
-                                            <span>Active Cycle</span>
+                                            <span>{t("onboarding.activeCycle")}</span>
                                         </div>
                                         <div className="text-[#5B53E0] group-hover:text-[#4A43C9] transition-all flex items-center gap-1 text-[13px] font-bold">
-                                            <span>View details</span>
+                                            <span>{t("onboarding.viewDetails")}</span>
                                             <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                                         </div>
                                     </div>
@@ -286,13 +288,13 @@ export default function OnboardingDashboard() {
                             <ClipboardList className="w-6 h-6" />
                         </div>
                     </div>
-                    <h4 className="text-[16px] font-bold text-[#15171C] mb-1">No Onboarding Records</h4>
+                    <h4 className="text-[16px] font-bold text-[#15171C] mb-1">{t("onboarding.noRecords")}</h4>
                     <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Candidate records will appear here once they begin the onboarding process.</p>
                     <button 
                         onClick={() => { setSearchQuery(""); setSelectedJobId("all"); }} 
                         className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
                     >
-                        Reset Filters
+                        {t("general.resetFilters")}
                     </button>
                 </div>
             )}

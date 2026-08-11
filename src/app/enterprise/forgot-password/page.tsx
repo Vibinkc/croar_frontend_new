@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hanken_Grotesk } from "next/font/google";
@@ -9,6 +10,7 @@ import { BACKEND_URL } from "@/utils/api";
 const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export default function ForgotPasswordPage() {
+    const { t: tr } = useI18n();
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -62,10 +64,10 @@ export default function ForgotPasswordPage() {
                         </div>
                         <div className="flex flex-col leading-none">
                             <span className="text-[20px] font-extrabold tracking-[-0.3px] text-white">Croar</span>
-                            <span className="text-[11px] text-[#8A929E] mt-0.5">HR Cloud</span>
+                            <span className="text-[11px] text-[#8A929E] mt-0.5">{tr("auth.hrCloud")}</span>
                         </div>
                     </div>
-                    <h1 className="text-[40px] font-extrabold tracking-[-1.2px] leading-[1.05] text-white mb-5">Password recovery.</h1>
+                    <h1 className="text-[40px] font-extrabold tracking-[-1.2px] leading-[1.05] text-white mb-5">{tr("auth.passwordRecovery")}</h1>
                     <p className="text-[15px] leading-[1.6] text-[#A8AEB8] max-w-[460px]">
                         Don&apos;t worry, it happens to the best of us. Enter your email address and we&apos;ll help you get back into your account in no time.
                     </p>
@@ -84,8 +86,8 @@ export default function ForgotPasswordPage() {
                     </div>
 
                     <div className="mb-8">
-                        <h2 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-1.5">Forgot password?</h2>
-                        <p className="text-[#8A929E] text-sm">Enter your email to receive a reset link</p>
+                        <h2 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-1.5">{tr("auth.forgotPassword")}</h2>
+                        <p className="text-[#8A929E] text-sm">{tr("auth.enterEmailReset")}</p>
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -107,7 +109,7 @@ export default function ForgotPasswordPage() {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label className="block text-[12.5px] font-semibold text-[#374151] mb-1.5" htmlFor="email">
-                                Email address
+                                {tr("general.emailAddress")}
                             </label>
                             <div className="relative">
                                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] material-icons-outlined text-[19px]">email</span>
@@ -132,7 +134,7 @@ export default function ForgotPasswordPage() {
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             ) : (
                                 <>
-                                    <span>Send reset link</span>
+                                    <span>{tr("auth.sendResetLink")}</span>
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                                 </>
                             )}
@@ -145,7 +147,7 @@ export default function ForgotPasswordPage() {
                             className="text-[13px] font-semibold text-[#8A929E] hover:text-[#15171C] transition-colors inline-flex items-center justify-center gap-1.5"
                         >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-                            <span>Back to login</span>
+                            <span>{tr("auth.backToLogin")}</span>
                         </Link>
                     </div>
                 </div>

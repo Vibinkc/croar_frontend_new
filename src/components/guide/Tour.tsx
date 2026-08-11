@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { createPortal } from "react-dom";
 import { useGuide } from "./GuideProvider";
 import { TOUR_STEPS } from "./tourSteps";
+import { useI18n } from "@/context/I18nContext";
 
 const SPOTLIGHT_PAD = 8; // px of breathing room around the highlighted element
 const GAP = 14; // px between the target and the tooltip
@@ -20,6 +21,7 @@ const TIP_WIDTH = 320;
  */
 export function Tour() {
     const { tourActive, stepIndex, setStepIndex, endTour } = useGuide();
+    const { t: tr } = useI18n();
     const [mounted, setMounted] = useState(false);
     const [rect, setRect] = useState<DOMRect | null>(null);
     const [coords, setCoords] = useState({ top: 0, left: 0 });
@@ -137,7 +139,7 @@ export function Tour() {
             <div
                 ref={tipRef}
                 role="dialog"
-                aria-label="Product tour"
+                aria-label={tr("sharedUi.productTour")}
                 className="absolute w-[320px] max-w-[calc(100vw-28px)] bg-white rounded-[14px] shadow-[0_18px_50px_rgba(15,23,42,0.28)] border border-[#E8EAED] p-5 z-[1002]"
                 style={{ top: coords.top, left: coords.left }}
             >
@@ -145,7 +147,7 @@ export function Tour() {
                     <h3 className="text-[15px] font-bold text-[#15171C] leading-snug">{step.title}</h3>
                     <button
                         onClick={endTour}
-                        aria-label="Close tour"
+                        aria-label={tr("sharedUi.closeTour")}
                         className="text-[#8A929E] hover:text-[#374151] transition-colors -mt-0.5 shrink-0"
                     >
                         <span className="material-symbols-rounded text-[20px]">close</span>
@@ -168,14 +170,14 @@ export function Tour() {
                                 onClick={back}
                                 className="h-8 px-3 rounded-[8px] text-[12.5px] font-semibold text-[#6B6F76] hover:bg-[#F4F5F7] transition-colors"
                             >
-                                Back
+                                {tr("sharedUi.back")}
                             </button>
                         )}
                         <button
                             onClick={next}
                             className="h-8 px-4 rounded-[8px] text-[12.5px] font-semibold bg-[#5B53E0] text-white hover:bg-[#4A43C9] transition-colors"
                         >
-                            {isLast ? "Done" : "Next"}
+                            {isLast ? tr("sharedUi.done") : tr("sharedUi.next")}
                         </button>
                     </div>
                 </div>
@@ -185,7 +187,7 @@ export function Tour() {
                         onClick={endTour}
                         className="mt-2.5 text-[11.5px] font-medium text-[#9AA3AF] hover:text-[#6B6F76] transition-colors"
                     >
-                        Skip tour
+                        {tr("sharedUi.skipTour")}
                     </button>
                 )}
             </div>

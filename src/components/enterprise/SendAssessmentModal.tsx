@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { BACKEND_URL } from "@/utils/api";
 import SendTemplateModal from "./SendTemplateModal";
+import { useI18n } from "@/context/I18nContext";
 
 interface AssessmentTemplate {
     id: string;
@@ -22,6 +23,7 @@ interface SendAssessmentModalProps {
 }
 
 export default function SendAssessmentModal({ isOpen, onClose, applicationIds, token }: SendAssessmentModalProps) {
+    const { t: tr } = useI18n();
     const [templates, setTemplates] = useState<AssessmentTemplate[]>([]);
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
@@ -70,14 +72,14 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
             });
 
             if (res.ok) {
-                alert("Assessment sent successfully!");
+                alert(tr("sharedUi.assessmentSentSuccess"));
                 onClose();
             } else {
-                alert("Failed to send assessment.");
+                alert(tr("sharedUi.failedSendAssessment"));
             }
         } catch (e) {
             console.error(e);
-            alert("Error sending assessment.");
+            alert(tr("sharedUi.errorSendingAssessment"));
         } finally {
             setIsSending(false);
         }
@@ -89,14 +91,14 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
         <SendTemplateModal<AssessmentTemplate>
             onClose={onClose}
             headerIcon="psychology"
-            headerLabel={"SEND ASSESSMENT"}
+            headerLabel={tr("sharedUi.sendAssessment")}
             infoText={
                 <>
-                    Sending assessment to <span className="text-indigo-600">{applicationIds.length} candidate(s)</span>.
-                    They will receive an email with the test link.
+                    {tr("sharedUi.sendingAssessmentTo")} <span className="text-indigo-600">{tr("sharedUi.nCandidates", { count: applicationIds.length })}</span>.
+                    {" "}{tr("sharedUi.receiveTestLink")}
                 </>
             }
-            selectLabel="Select Assessment Template"
+            selectLabel={tr("sharedUi.selectAssessmentTemplate")}
             listId="assessment-template-list"
             isLoading={isLoading}
             templates={templates}
@@ -118,7 +120,7 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
                     <div className="mt-3 flex flex-wrap gap-2">
                         <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-white border border-slate-100 px-2 py-0.5 rounded">
                             <span className="material-icons text-[12px]">list</span>
-                            {template.question_count}{" Qs"}
+                            {template.question_count}{" "}{tr("sharedUi.questionsShort")}
                         </div>
                         {template.email_template_name && (
                             <div className="flex items-center gap-1 text-[10px] font-bold text-[#7C3AED] bg-[#7C3AED]/5 border border-[#7C3AED]/10 px-2 py-0.5 rounded">
@@ -131,9 +133,9 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
             )}
             isSending={isSending}
             onSend={handleSend}
-            sendingLabel={"SENDING..."}
+            sendingLabel={tr("sharedUi.sending")}
             sendIcon="send"
-            sendLabel={"SEND NOW"}
+            sendLabel={tr("sharedUi.sendNow")}
         />
     );
 }

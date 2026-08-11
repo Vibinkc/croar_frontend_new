@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { useRouter } from "next/navigation"; // Added
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
-import Link from "next/link";
 import SendEmailModal from "@/components/enterprise/SendEmailModal";
 import SendAssessmentModal from "@/components/enterprise/SendAssessmentModal";
 import SendOnboardingModal from "@/components/enterprise/SendOnboardingModal";
@@ -64,6 +64,8 @@ interface Job {
     title: string;
     company_id?: string;
     location?: string;
+    description?: string;
+    required_skills?: string[];
 }
 
 interface OnboardingTemplate {
@@ -84,6 +86,21 @@ const APPLICATION_STATUSES: Stage[] = [
     { id: 6, name: "Rejected", color: "" },
     { id: 7, name: "Withdrawn", color: "" },
 ];
+
+// Display-only translations for known stage/status names. The raw English `name`
+// is still the value used for drag-drop/API/grouping — we only translate at render.
+const STAGE_NAME_KEYS: Record<string, string> = {
+    "Applied": "pipeline.stageApplied",
+    "Screening": "pipeline.stageScreening",
+    "Interviewing": "pipeline.stageInterviewing",
+    "Offered": "pipeline.stageOffered",
+    "Hired": "pipeline.stageHired",
+    "Rejected": "pipeline.stageRejected",
+    "Withdrawn": "pipeline.stageWithdrawn",
+    "Assessment": "pipeline.stageAssessment",
+    "Interview": "pipeline.stageInterview",
+    "Offer": "pipeline.stageOffer",
+};
 
 const STAGE_COLORS = [
     'border-[#5B53E0]',
@@ -131,6 +148,7 @@ interface CandidateModalProps {
 
 function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefresh, onboardingTemplates, stages, allowStageMove }: CandidateModalProps) {
     const { token, canAccess } = useAuth();
+    const { t } = useI18n();
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
     if (!isOpen || !application) return null;
 
@@ -142,7 +160,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
         <div
             role="button"
             tabIndex={0}
-            aria-label="Close panel"
+            aria-label={t("pipeline.closePanel")}
             className="fixed inset-0 z-50 flex items-center justify-end bg-[#0E1014]/40 backdrop-blur-sm"
             onClick={onClose}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { onClose(); } }}
@@ -173,12 +191,12 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                             <select
                                 value={String(application.current_stage)}
                                 onChange={(e) => onStatusUpdate(application.id, Number(e.target.value))}
-                                title="Move to stage"
-                                aria-label="Move to stage"
+                                title={t("pipeline.moveToStage")}
+                                aria-label={t("pipeline.moveToStage")}
                                 className="h-9 bg-white border border-[#E1E4E8] rounded-[9px] px-2.5 text-[12px] font-medium text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all max-w-[160px] cursor-pointer"
                             >
                                 {stages.map(s => (
-                                    <option key={s.id} value={String(s.id)}>Move to: {s.name}</option>
+                                    <option key={s.id} value={String(s.id)}>{t("pipeline.moveToPrefix")} {STAGE_NAME_KEYS[s.name] ? t(STAGE_NAME_KEYS[s.name]) : s.name}</option>
                                 ))}
                             </select>
                         )}
@@ -191,7 +209,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                     className="h-9 px-3 bg-[#15803D] hover:bg-[#136a33] text-white rounded-[9px] text-[12px] font-semibold transition-colors flex items-center gap-1.5"
                                 >
                                     <span className="material-icons-outlined text-[16px]">visibility</span>
-                                    {"View onboarding"}
+                                    {t("pipeline.viewOnboarding")}
                                 </button>
                             )
                         ) : (
@@ -202,7 +220,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                         value={selectedTemplate}
                                         onChange={(e) => setSelectedTemplate(e.target.value)}
                                     >
-                                        <option value="">Select template</option>
+                                        <option value="">{t("pipeline.selectTemplate")}</option>
                                         {onboardingTemplates.map(t => (
                                             <option key={t.id} value={t.id}>{t.name}</option>
                                         ))}
@@ -210,11 +228,11 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                     <button
                                         onClick={async () => {
                                             if (!selectedTemplate) {
-                                                alert("Please select an onboarding template first.");
+                                                alert(t("pipeline.selectTemplateFirst"));
                                                 return;
                                             }
                                             if (!token) {
-                                                alert("Your session has expired. Please log in again.");
+                                                alert(t("pipeline.sessionExpired"));
                                                 return;
                                             }
                                             try {
@@ -230,22 +248,22 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                                     })
                                                 });
                                                 if (res.ok) {
-                                                    alert("Onboarding initiated successfully!");
+                                                    alert(t("pipeline.onboardingInitiated"));
                                                     onRefresh();
                                                     onClose();
                                                 } else {
                                                     const err = await res.json();
-                                                    alert(err.detail || "Failed to initiate onboarding");
+                                                    alert(err.detail || t("pipeline.onboardingInitiateFailed"));
                                                 }
                                             } catch (e) {
                                                 console.error(e);
-                                                alert("Error initiating onboarding");
+                                                alert(t("pipeline.onboardingInitiateError"));
                                             }
                                         }}
                                         className="h-9 px-3 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[12px] font-semibold transition-colors flex items-center gap-1.5"
                                     >
                                         <span className="material-icons-outlined text-[16px]">person_add</span>
-                                        {"Initiate"}
+                                        {t("pipeline.initiate")}
                                     </button>
                                 </div>
                             )
@@ -264,10 +282,10 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                             <div className="flex items-center justify-between gap-3 mb-4">
                                 <h3 className="text-[14px] font-bold text-[#15171C] flex items-center gap-2">
                                     <span className="w-7 h-7 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">psychology</span></span>
-                                    {"AI Fit Analysis"}
+                                    {t("pipeline.aiFitAnalysis")}
                                 </h3>
                                 <div className={`px-2.5 py-1 rounded-[8px] text-[12px] font-semibold border ${getScoreStyles(ai_match_score)}`}>
-                                    Score {ai_match_score}/100
+                                    {t("pipeline.scoreOutOf", { score: ai_match_score })}
                                 </div>
                             </div>
 
@@ -275,19 +293,19 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
                                     {application.aptitude_score != null && application.aptitude_score > 0 && (
                                         <div className="bg-[#F7F8FA] border border-[#E8EAED] p-3 rounded-[10px]">
-                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">Aptitude</h4>
+                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">{t("pipeline.aptitude")}</h4>
                                             <div className="text-[16px] font-semibold text-[#15171C]">{application.aptitude_score}%</div>
                                         </div>
                                     )}
                                     {application.coding_score != null && application.coding_score > 0 && (
                                         <div className="bg-[#F7F8FA] border border-[#E8EAED] p-3 rounded-[10px]">
-                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">Coding</h4>
+                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">{t("pipeline.coding")}</h4>
                                             <div className="text-[16px] font-semibold text-[#15171C]">{application.coding_score}%</div>
                                         </div>
                                     )}
                                     {application.ai_interview_score != null && application.ai_interview_score > 0 && (
                                         <div className="bg-[#F7F8FA] border border-[#E8EAED] p-3 rounded-[10px]">
-                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">AI Interview</h4>
+                                            <h4 className="text-[10px] font-semibold text-[#9AA3AF] uppercase tracking-wide mb-1">{t("pipeline.aiInterview")}</h4>
                                             <div className="text-[16px] font-semibold text-[#15171C]">{Math.round(application.ai_interview_score)}%</div>
                                         </div>
                                     )}
@@ -297,13 +315,13 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                             <div className="space-y-2.5">
                                 {feedback.fit_reason && (
                                     <div className="bg-[#E6F4EA]/50 border border-[#CDEAD7] p-3.5 rounded-[10px]">
-                                        <h4 className="text-[11px] font-bold text-[#15803D] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><span className="material-icons-outlined text-[15px]">check_circle</span>Why fit</h4>
+                                        <h4 className="text-[11px] font-bold text-[#15803D] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><span className="material-icons-outlined text-[15px]">check_circle</span>{t("pipeline.whyFit")}</h4>
                                         <p className="text-[13px] text-[#4B5563] leading-relaxed">{feedback.fit_reason}</p>
                                     </div>
                                 )}
                                 {feedback.not_fit_reason && (
                                     <div className="bg-[#FDECEC]/50 border border-[#F5C9C9] p-3.5 rounded-[10px]">
-                                        <h4 className="text-[11px] font-bold text-[#C0383C] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><span className="material-icons-outlined text-[15px]">error</span>Gap analysis</h4>
+                                        <h4 className="text-[11px] font-bold text-[#C0383C] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><span className="material-icons-outlined text-[15px]">error</span>{t("pipeline.gapAnalysis")}</h4>
                                         <p className="text-[13px] text-[#4B5563] leading-relaxed">{feedback.not_fit_reason}</p>
                                     </div>
                                 )}
@@ -316,7 +334,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                         <div>
                             <h3 className="text-[14px] font-bold text-[#15171C] mb-3 flex items-center gap-2">
                                 <span className="w-7 h-7 rounded-[8px] bg-[#FEF3E2] text-[#D97706] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">star</span></span>
-                                {"Key Highlights"}
+                                {t("pipeline.keyHighlights")}
                             </h3>
                             <ul className="space-y-2.5">
                                 {feedback.highlights.map((h: string, i: number) => (
@@ -334,7 +352,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                         <div>
                             <h3 className="text-[14px] font-bold text-[#15171C] mb-3 flex items-center gap-2">
                                 <span className="w-7 h-7 rounded-[8px] bg-[#E7ECFB] text-[#3559C7] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">code</span></span>
-                                {"Skills"}
+                                {t("pipeline.skills")}
                             </h3>
                             <div className="flex flex-wrap gap-1.5">
                                 {candidate.skills.map((skill, i) => (
@@ -353,6 +371,8 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
 
 export default function KanbanBoardPage() {
     const { token, canAccess } = useAuth();
+    const { t } = useI18n();
+    const router = useRouter();
     const [applications, setApplications] = useState<Application[]>([]);
     const [stages, setStages] = useState<Stage[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -369,6 +389,9 @@ export default function KanbanBoardPage() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [companies, setCompanies] = useState<Company[]>([]);
     const [selectedJobId, setSelectedJobId] = useState<string>("");
+    // Becomes true once the jobs list has loaded and the default (most recent) job is auto-selected.
+    // We hold the board until then so it doesn't flash the "All jobs" view before the recent job.
+    const [jobsResolved, setJobsResolved] = useState(false);
     const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
     const [selectedLocation, setSelectedLocation] = useState<string>("ALL");
     const [minMatchScore, setMinMatchScore] = useState<number>(0);
@@ -401,7 +424,9 @@ export default function KanbanBoardPage() {
     }, [token]);
 
     useEffect(() => {
-        if (token) {
+        // Wait for the default job to be resolved before loading the board, so we fetch/render for
+        // the recent job straight away instead of flashing the "All jobs" view first.
+        if (token && jobsResolved) {
             // Clear any selection when the job filter changes — otherwise the bulk-action bar keeps
             // counting apps that are no longer on screen (and acts on a stale, invisible set).
             setSelectedApps(new Set());
@@ -409,7 +434,8 @@ export default function KanbanBoardPage() {
             fetchApplications();
             fetchTemplates();
         }
-    }, [token, selectedJobId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token, selectedJobId, jobsResolved]);
 
     const fetchTemplates = async () => {
         try {
@@ -458,6 +484,9 @@ export default function KanbanBoardPage() {
             }
         } catch (e) {
             console.error("Error fetching jobs:", e);
+        } finally {
+            // Unblock the board even if the fetch failed (falls back to the All-jobs view).
+            setJobsResolved(true);
         }
     };
 
@@ -531,7 +560,7 @@ export default function KanbanBoardPage() {
             await fetchApplications();
         } catch (error) {
             setApplications(originalApps);
-            alert("Failed to move candidate.");
+            alert(t("pipeline.failedMoveCandidate"));
         }
     };
 
@@ -644,7 +673,7 @@ export default function KanbanBoardPage() {
 
     const handleBulkDelete = async () => {
         if (selectedApps.size === 0) return;
-        if (!confirm(`Are you sure you want to delete ${selectedApps.size} applications? This action cannot be undone.`)) return;
+        if (!confirm(t("pipeline.confirmDeleteApps", { count: selectedApps.size }))) return;
 
         const idsToDelete = Array.from(selectedApps);
 
@@ -665,7 +694,7 @@ export default function KanbanBoardPage() {
             if (!res.ok) throw new Error("Delete failed");
         } catch (error) {
             console.error("Bulk delete error:", error);
-            alert("Failed to delete some applications. Please refresh.");
+            alert(t("pipeline.failedDeleteApps"));
             fetchApplications(); // Refresh to get actual state
         }
     };
@@ -729,19 +758,60 @@ export default function KanbanBoardPage() {
         const maxStage = applications.reduce((m, a) => Math.max(m, Number(a.current_stage) || 1), 1);
         return Array.from({ length: maxStage }, (_, i) => ({
             id: i + 1,
-            name: fallbackNames[i] || `Stage ${i + 1}`,
+            name: fallbackNames[i] || t("pipeline.stageN", { n: i + 1 }),
             color: STAGE_COLORS[i % STAGE_COLORS.length],
         }));
     }, [isAllJobs, stages, applications]);
 
     const locations = Array.from(new Set(jobs.map(j => j.location).filter(Boolean)));
 
-    const selectedJobTitle = jobs.find(j => j.id === selectedJobId)?.title || "SELECT A JOB";
+    const selectedJobTitle = jobs.find(j => j.id === selectedJobId)?.title || t("pipeline.selectAJob");
 
-    if (isLoading && stages.length === 0) {
+    // Hand the selected job (title + skills + JD) off to sourcing, tied to THIS job. Both the
+    // Profile Sourcing page and Croar Pilot read `croar_source_job` on load and auto-source for it.
+    //  - "chat":  Profile Sourcing auto-searches by title + skills.
+    //  - "pilot": Croar Pilot sources for this existing job (asks how many, then sources).
+    const goSourceForJob = (dest: "chat" | "pilot" = "chat") => {
+        const job = jobs.find(j => j.id === selectedJobId);
+        if (selectedJobId && selectedJobId !== "ALL" && job) {
+            try {
+                sessionStorage.setItem(
+                    "croar_source_job",
+                    JSON.stringify({ id: job.id, title: job.title, skills: (job.required_skills || []).join(", "), description: job.description || "", autostart: true }),
+                );
+            } catch { /* ignore */ }
+        }
+        router.push(dest === "pilot" ? "/enterprise/croar-pilot" : "/enterprise/sourcing/chat");
+    };
+
+    if (!jobsResolved || (isLoading && stages.length === 0)) {
+        // Skeleton that MIRRORS the real layout (white command bar + gray board with columns), so
+        // when the data lands the page doesn't jump/flash — it just fills in. Held until the recent
+        // job is selected so we never flash the "All jobs" view first.
         return (
-            <div className="flex items-center justify-center h-screen bg-white">
-                <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
+            <div className="h-screen flex flex-col bg-white">
+                <div className="px-6 py-4 border-b border-[#E8EAED] flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="space-y-2">
+                        <div className="h-6 w-40 rounded-md bg-[#EEF0F2] animate-pulse" />
+                        <div className="h-3.5 w-56 rounded bg-[#F1F2F5] animate-pulse" />
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                        <div className="h-11 w-64 rounded-[10px] bg-[#F1F2F5] animate-pulse" />
+                        <div className="h-11 w-24 rounded-[10px] bg-[#F1F2F5] animate-pulse" />
+                    </div>
+                </div>
+                <div className="flex-1 bg-[#F7F8FA] p-6 min-h-0">
+                    <div className="h-full flex gap-4">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                            <div key={i} className="flex-1 min-w-0 rounded-[14px] border border-[#E8EAED] bg-white p-3 flex flex-col gap-3">
+                                <div className="h-4 w-24 rounded bg-[#EEF0F2] animate-pulse" />
+                                {Array.from({ length: 3 }).map((_, j) => (
+                                    <div key={j} className="h-16 rounded-[12px] bg-[#F4F5F7] animate-pulse" />
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         );
     }
@@ -764,22 +834,38 @@ export default function KanbanBoardPage() {
                 <div className="px-6 py-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between border-b border-[#F0F0F1]">
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Pipeline</h1>
-                            <PageHelp title="Pipeline">
-                                <p>Drag candidates through your hiring stages &mdash; applied, screening, interview, offer, hired.</p>
+                            <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{t("pipeline.title")}</h1>
+                            <PageHelp title={t("pipeline.title")}>
+                                <p>{t("pipeline.helpPipeline")}</p>
                             </PageHelp>
                         </div>
                         <p className="text-[14px] text-[#8A929E] mt-1 truncate">
-                            {selectedJobId && selectedJobId !== "ALL" ? selectedJobTitle : "Track candidates through every stage"}
+                            {selectedJobId && selectedJobId !== "ALL" ? selectedJobTitle : t("pipeline.trackEveryStage")}
                         </p>
                     </div>
 
                     <div className="flex items-center gap-2.5 shrink-0">
+                        {/* Quick job (pipeline) filter — kept next to the heading so you can switch which
+                            job's pipeline you're viewing without opening the Filters panel. Shares
+                            selectedJobId with the Filters panel, so the two stay in sync. */}
+                        <div className="relative flex-1 lg:flex-none lg:w-64">
+                            <span className="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-lg pointer-events-none">work_outline</span>
+                            <select
+                                value={selectedJobId}
+                                onChange={(e) => setSelectedJobId(e.target.value)}
+                                title={t("pipeline.filterByJob")}
+                                className="w-full h-11 bg-[#F7F8FA] border border-[#E1E4E8] rounded-[10px] pl-11 pr-9 text-[13px] font-semibold text-[#15171C] focus:bg-white focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all outline-none appearance-none cursor-pointer truncate"
+                            >
+                                <option value="">{t("pipeline.allJobs")}</option>
+                                {jobs.map(job => <option key={job.id} value={job.id}>{job.title}</option>)}
+                            </select>
+                            <span className="material-icons-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-lg pointer-events-none">expand_more</span>
+                        </div>
                         <div className="relative group flex-1 lg:flex-none lg:w-80">
                             <span className="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-lg group-focus-within:text-[#5B53E0] transition-colors">search</span>
                             <input
                                 type="text"
-                                placeholder="Search candidates, emails, skills…"
+                                placeholder={t("pipeline.searchPlaceholder")}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full h-11 bg-[#F7F8FA] border border-[#E1E4E8] rounded-[10px] pl-11 pr-4 text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] focus:bg-white focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all outline-none"
@@ -787,12 +873,22 @@ export default function KanbanBoardPage() {
                         </div>
                         <button
                             onClick={() => setIsFilterExpanded(!isFilterExpanded)}
-                            title="Toggle Filters"
+                            title={t("pipeline.toggleFilters")}
                             className={`flex items-center gap-2 px-4 h-11 rounded-[10px] transition-colors shrink-0 ${isFilterExpanded ? 'bg-[#5B53E0] text-white' : 'bg-[#F7F8FA] border border-[#E1E4E8] text-[#6B6F76] hover:bg-[#E8EAED]'}`}
                         >
                             <span className="material-icons-outlined text-xl">{isFilterExpanded ? 'filter_list_off' : 'filter_list'}</span>
-                            <span className="text-[12px] font-semibold tracking-tight">Filters</span>
+                            <span className="text-[12px] font-semibold tracking-tight">{t("pipeline.filters")}</span>
                         </button>
+                        {!isAllJobs && (
+                            <button
+                                onClick={() => goSourceForJob("chat")}
+                                title={t("pipeline.sourceForJobAI")}
+                                className="flex items-center gap-2 px-4 h-11 rounded-[10px] bg-[#5B53E0] text-white hover:bg-[#4A43C9] transition-colors shrink-0"
+                            >
+                                <span className="material-icons-outlined text-xl">person_search</span>
+                                <span className="text-[12px] font-semibold tracking-tight">{t("pipeline.source")}</span>
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -809,7 +905,7 @@ export default function KanbanBoardPage() {
 
                                 {/* Company Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-company" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Enterprise Client</label>
+                                    <label htmlFor="filter-company" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">{t("pipeline.enterpriseClient")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
                                         <span className="material-icons-outlined text-[#9AA3AF] text-lg">corporate_fare</span>
                                         <select
@@ -818,9 +914,9 @@ export default function KanbanBoardPage() {
                                             onChange={(e) => setSelectedCompanyId(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
-                                            <option value="">All Clients</option>
+                                            <option value="">{t("pipeline.allClients")}</option>
                                             {companies.length === 0 ? (
-                                                <option disabled>No clients available</option>
+                                                <option disabled>{t("pipeline.noClients")}</option>
                                             ) : (
                                                 companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)
                                             )}
@@ -830,7 +926,7 @@ export default function KanbanBoardPage() {
 
                                 {/* Role Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-job" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Target Requisition</label>
+                                    <label htmlFor="filter-job" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">{t("pipeline.targetRequisition")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
                                         <span className="material-icons-outlined text-[#9AA3AF] text-lg">work</span>
                                         <select
@@ -839,9 +935,9 @@ export default function KanbanBoardPage() {
                                             onChange={(e) => setSelectedJobId(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer truncate"
                                         >
-                                            <option value="">All Job Requirements</option>
+                                            <option value="">{t("pipeline.allJobRequirements")}</option>
                                             {jobs.length === 0 ? (
-                                                <option disabled>No jobs available</option>
+                                                <option disabled>{t("pipeline.noJobsAvailable")}</option>
                                             ) : (
                                                 jobs.map(job => <option key={job.id} value={job.id}>{job.title}</option>)
                                             )}
@@ -851,7 +947,7 @@ export default function KanbanBoardPage() {
 
                                 {/* Location Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-location" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Geographic Focus</label>
+                                    <label htmlFor="filter-location" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">{t("pipeline.geographicFocus")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
                                         <span className="material-icons-outlined text-[#9AA3AF] text-lg">location_on</span>
                                         <select
@@ -860,7 +956,7 @@ export default function KanbanBoardPage() {
                                             onChange={(e) => setSelectedLocation(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
-                                            <option value="ALL">Global Workforce</option>
+                                            <option value="ALL">{t("pipeline.globalWorkforce")}</option>
                                             {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
                                         </select>
                                     </div>
@@ -868,7 +964,7 @@ export default function KanbanBoardPage() {
 
                                 {/* Match Score Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-score" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">AI Match Accuracy</label>
+                                    <label htmlFor="filter-score" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">{t("pipeline.aiMatchAccuracy")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
                                         <span className="material-icons text-[#5B53E0] text-lg">bolt</span>
                                         <select
@@ -877,16 +973,16 @@ export default function KanbanBoardPage() {
                                             onChange={(e) => setMinMatchScore(Number(e.target.value))}
                                             className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer font-sans"
                                         >
-                                            <option value={0}>Any Score</option>
-                                            <option value={60}>High Match (60%+)</option>
-                                            <option value={80}>Elite Match (80%+)</option>
+                                            <option value={0}>{t("pipeline.anyScore")}</option>
+                                            <option value={60}>{t("pipeline.highMatch")}</option>
+                                            <option value={80}>{t("pipeline.eliteMatch")}</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 {/* Application Period */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-period" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Application Recency</label>
+                                    <label htmlFor="filter-period" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">{t("pipeline.applicationRecency")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
                                         <span className="material-icons-outlined text-[#9AA3AF] text-lg">calendar_today</span>
                                         <select
@@ -895,17 +991,17 @@ export default function KanbanBoardPage() {
                                             onChange={(e) => setAppliedPeriod(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
-                                            <option value="ALL">Lifetime Activity</option>
-                                            <option value="TODAY">Joined Today</option>
-                                            <option value="7D">Last 7 Days</option>
-                                            <option value="30D">Last 30 Days</option>
+                                            <option value="ALL">{t("pipeline.lifetimeActivity")}</option>
+                                            <option value="TODAY">{t("pipeline.joinedToday")}</option>
+                                            <option value="7D">{t("pipeline.last7Days")}</option>
+                                            <option value="30D">{t("pipeline.last30Days")}</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 {/* Source Filter */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="filter-source" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">Origin Source</label>
+                                    <label htmlFor="filter-source" className="text-[9px] font-bold text-[#9AA3AF]   ml-1">{t("pipeline.originSource")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E1E4E8] rounded-[10px] hover:border-[#DAD7F6] transition-all">
                                         <span className="material-icons-outlined text-[#9AA3AF] text-lg">share</span>
                                         <select
@@ -914,7 +1010,7 @@ export default function KanbanBoardPage() {
                                             onChange={(e) => setSelectedSource(e.target.value)}
                                             className="bg-transparent text-[11px] font-bold text-[#374151] outline-none w-full cursor-pointer"
                                         >
-                                            <option value="ALL">All Sources</option>
+                                            <option value="ALL">{t("pipeline.allSources")}</option>
                                             {sourceOptions.map(src => (
                                                 <option key={src} value={src}>{src}</option>
                                             ))}
@@ -932,18 +1028,18 @@ export default function KanbanBoardPage() {
                 {!isLoading && applications.length === 0 && boardStages.length > 0 && (
                     <div className="mb-4 rounded-[14px] border border-[#DAD7F6] bg-[#ECEBFB]/50 p-5 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
                         <div>
-                            <p className="text-sm font-bold text-[#15171C]">No candidates in this pipeline yet</p>
-                            <p className="text-xs text-[#6B6F76] font-semibold mt-0.5">Source candidates with AI, or share the job&apos;s apply link so people can apply.</p>
+                            <p className="text-sm font-bold text-[#15171C]">{t("pipeline.noCandidatesPipeline")}</p>
+                            <p className="text-xs text-[#6B6F76] font-semibold mt-0.5">{t("pipeline.sourceOrShare")}</p>
                         </div>
                         <div className="flex flex-wrap gap-2 shrink-0">
-                            <Link href="/enterprise/sourcing/chat" className="px-4 py-2.5 rounded-[10px] bg-[#5B53E0] text-white text-xs font-bold hover:bg-[#4A43C9] transition-all flex items-center gap-1.5">
+                            <button onClick={() => goSourceForJob("chat")} className="px-4 py-2.5 rounded-[10px] bg-[#5B53E0] text-white text-xs font-bold hover:bg-[#4A43C9] transition-all flex items-center gap-1.5">
                                 <span className="material-symbols-rounded text-base">person_search</span>
-                                {"Source candidates"}
-                            </Link>
-                            <Link href="/enterprise/croar-pilot" className="px-4 py-2.5 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-xs font-bold hover:border-[#5B53E0]/40 transition-all flex items-center gap-1.5">
+                                {t("pipeline.sourceCandidates")}
+                            </button>
+                            <button onClick={() => goSourceForJob("pilot")} className="px-4 py-2.5 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-xs font-bold hover:border-[#5B53E0]/40 transition-all flex items-center gap-1.5">
                                 <span className="material-symbols-rounded text-base">smart_toy</span>
-                                {"Ask Croar Pilot"}
-                            </Link>
+                                {t("pipeline.askCroarPilot")}
+                            </button>
                         </div>
                     </div>
                 )}
@@ -952,14 +1048,14 @@ export default function KanbanBoardPage() {
                         <>
                             <button
                                 onClick={() => scrollBoard(-1)}
-                                title="Previous rounds"
+                                title={t("pipeline.previousRounds")}
                                 className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-[#E8EAED] shadow-[0_4px_14px_rgba(15,23,42,0.12)] flex items-center justify-center text-[#4B5563] hover:text-[#5B53E0] hover:border-[#5B53E0]/40 transition-colors"
                             >
                                 <span className="material-symbols-rounded text-[20px]">chevron_left</span>
                             </button>
                             <button
                                 onClick={() => scrollBoard(1)}
-                                title="More rounds"
+                                title={t("pipeline.moreRounds")}
                                 className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-[#E8EAED] shadow-[0_4px_14px_rgba(15,23,42,0.12)] flex items-center justify-center text-[#4B5563] hover:text-[#5B53E0] hover:border-[#5B53E0]/40 transition-colors"
                             >
                                 <span className="material-symbols-rounded text-[20px]">chevron_right</span>
@@ -995,7 +1091,7 @@ export default function KanbanBoardPage() {
                                         <div className="flex items-center gap-2 min-w-0">
                                             <span className={`w-2 h-2 rounded-full shrink-0 ${accentBar}`} />
                                             <h3 className="text-[13.5px] font-bold text-[#15171C] truncate">
-                                                {stage.name}
+                                                {STAGE_NAME_KEYS[stage.name] ? t(STAGE_NAME_KEYS[stage.name]) : stage.name}
                                             </h3>
                                         </div>
                                         <span className="bg-[#F4F5F7] text-[#4B5563] text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 min-w-[24px] text-center">
@@ -1013,7 +1109,7 @@ export default function KanbanBoardPage() {
                                                 className={`w-3.5 h-3.5 rounded border-[#D4D7DC] focus:ring-0 cursor-pointer ${headerColor}`}
                                             />
                                             <span className="text-xs font-bold text-[#6B6F76]">
-                                                SELECT ALL
+                                                {t("pipeline.selectAll")}
                                             </span>
                                         </div>
                                     )}
@@ -1065,31 +1161,31 @@ export default function KanbanBoardPage() {
                                                                 {app.ai_interview_score != null && (
                                                                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm transition-all animate-in fade-in zoom-in duration-300">
                                                                         <span className="material-icons text-[10px]">psychology</span>
-                                                                        Int: {Math.round(app.ai_interview_score)}%
+                                                                        {t("pipeline.intShort")} {Math.round(app.ai_interview_score)}%
                                                                     </div>
                                                                 )}
                                                                 {app.ai_match_score !== undefined && (
                                                                     <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none ${getScoreStyles(app.ai_match_score)}`}>
                                                                         <span className="material-icons text-[10px]">bolt</span>
-                                                                        AI: {Math.round(app.ai_match_score)}%
+                                                                        {t("pipeline.aiShort")} {Math.round(app.ai_match_score)}%
                                                                     </div>
                                                                 )}
                                                                 {app.aptitude_score != null && app.aptitude_score > 0 && (
                                                                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-blue-50 text-blue-700 border border-blue-200 shadow-sm">
                                                                         <span className="material-icons text-[10px]">psychology</span>
-                                                                        Apt: {app.aptitude_score}%
+                                                                        {t("pipeline.aptShort")} {app.aptitude_score}%
                                                                     </div>
                                                                 )}
                                                                 {app.coding_score != null && app.coding_score > 0 && (
                                                                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
                                                                         <span className="material-icons text-[10px]">code</span>
-                                                                        Cod: {app.coding_score}%
+                                                                        {t("pipeline.codShort")} {app.coding_score}%
                                                                     </div>
                                                                 )}
                                                                 {app.assessment_score != null && app.aptitude_score == null && app.coding_score == null && (
                                                                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-[#ECEBFB] text-[#4A43C9] border border-[#DAD7F6] shadow-sm">
                                                                         <span className="material-icons text-[10px]">quiz</span>
-                                                                        Test: {app.assessment_score}%
+                                                                        {t("pipeline.testShort")} {app.assessment_score}%
                                                                     </div>
                                                                 )}
                                                             </div>
@@ -1100,7 +1196,7 @@ export default function KanbanBoardPage() {
                                                             <div className="flex items-center gap-1.5 text-[11px] text-[#6B6F76]">
 
                                                                 {app.applied_at ? formatDistanceToNow(parseUTC(app.applied_at), { addSuffix: true })
-                                                                    .replace("about ", "") : "Recently"}
+                                                                    .replace("about ", "") : t("pipeline.recently")}
                                                             </div>
 
 
@@ -1114,7 +1210,7 @@ export default function KanbanBoardPage() {
                                     {stageApps.length === 0 && (
                                         <div className="mt-1 rounded-[12px] border border-dashed border-[#E1E4E8] py-10 flex flex-col gap-2 items-center justify-center text-[#9AA3AF]">
                                             <span className="material-icons-outlined text-[26px] text-[#C7CCD4]">inbox</span>
-                                            <span className="text-[12px] font-medium">No candidates yet</span>
+                                            <span className="text-[12px] font-medium">{t("pipeline.noCandidatesYet")}</span>
                                         </div>
                                     )}
                                 </div>
@@ -1150,35 +1246,35 @@ export default function KanbanBoardPage() {
                             className="pointer-events-auto bg-white shadow-[0_14px_34px_rgba(15,23,42,0.16)] rounded-[14px] p-1.5 flex items-center gap-1.5 border border-[#E8EAED] max-w-[calc(100vw-2rem)] overflow-x-auto [&::-webkit-scrollbar]:hidden"
                         >
                             <span className="px-3 text-[12.5px] text-[#6B6F76] shrink-0 whitespace-nowrap">
-                                <span className="font-bold text-[#15171C]">{selectedApps.size}</span> selected
+                                <span className="font-bold text-[#15171C]">{selectedApps.size}</span> {t("pipeline.selectedLabel")}
                             </span>
                             <div className="w-px h-6 bg-[#E8EAED] shrink-0" />
 
                             {canAccess("candidates:update") && !isAllJobs && (
                                 <button onClick={handleBulkMove} className="flex items-center gap-1.5 h-10 px-3.5 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
                                     <span className="material-icons text-[18px]">arrow_forward</span>
-                                    Move to next round
+                                    {t("pipeline.moveToNextRound")}
                                 </button>
                             )}
 
                             {canAccess("communications:create") && (
                                 <button onClick={() => setIsEmailModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
                                     <span className="material-icons text-[18px]">email</span>
-                                    Send email
+                                    {t("pipeline.sendEmail")}
                                 </button>
                             )}
 
                             {canAccess("assessments:moderate") && (
                                 <button onClick={() => setIsAssessmentModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
                                     <span className="material-icons text-[18px]">psychology</span>
-                                    Send assessment
+                                    {t("pipeline.sendAssessment")}
                                 </button>
                             )}
 
                             {canAccess("onboarding:moderate") && (
                                 <button onClick={() => setIsOnboardingModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
                                     <span className="material-icons-outlined text-[18px]">person_add</span>
-                                    Initiate onboarding
+                                    {t("pipeline.initiateOnboarding")}
                                 </button>
                             )}
 
@@ -1187,7 +1283,7 @@ export default function KanbanBoardPage() {
                                     <div className="w-px h-6 bg-[#E8EAED] shrink-0" />
                                     <button onClick={handleBulkDelete} className="flex items-center gap-1.5 h-10 px-3 text-[#C0383C] hover:bg-[#FDECEC] rounded-[9px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
                                         <span className="material-icons text-[18px]">delete</span>
-                                        Delete
+                                        {t("common.delete")}
                                     </button>
                                 </>
                             )}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { apiClient } from "@/utils/api";
+import { useI18n } from "@/context/I18nContext";
 import {
     PageHeader, Card, CardHeader, Button, Input, Textarea, Field, Select, Badge,
     StatCard, StatGrid, EmptyState, jetbrainsMono,
@@ -68,6 +69,7 @@ const isCodingQ = (t: string) => /COD/i.test(t);
 const EMPTY_FORM = { name: "", type: "APTITUDE", topic: "", question_count: 10, test_duration: 30 };
 
 export default function SkillAssessmentsPage() {
+    const { t: tr } = useI18n();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [allAssignments, setAllAssignments] = useState<Assignment[]>([]);
@@ -107,15 +109,15 @@ export default function SkillAssessmentsPage() {
                 apiClient.get("/api/v1/enterprise/skill-assessments/assignments"),
             ]);
             if (tRes.ok) setTemplates(await tRes.json());
-            else setError("Couldn't load assessments.");
+            else setError(tr("postOnboarding.errLoadAssessments"));
             if (eRes.ok) setEmployees(await eRes.json());
             if (aRes.ok) setAllAssignments(await aRes.json());
         } catch {
-            setError("Couldn't load assessments. Check your connection.");
+            setError(tr("postOnboarding.errLoadAssessmentsConn"));
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [tr]);
 
     useEffect(() => { load(); }, [load]);
 
@@ -130,7 +132,7 @@ export default function SkillAssessmentsPage() {
         });
         if (!res.ok) {
             const err = await res.json().catch(() => null);
-            alert(err?.detail || "Failed to create assessment.");
+            alert(err?.detail || tr("postOnboarding.errCreateAssessment"));
             return null;
         }
         return (await res.json()) as Template;
@@ -151,7 +153,7 @@ export default function SkillAssessmentsPage() {
             setForm(EMPTY_FORM);
             await load();
         } catch {
-            alert("Something went wrong creating the assessment.");
+            alert(tr("postOnboarding.errCreateGeneric"));
         } finally {
             setSaving(false);
         }
@@ -159,7 +161,7 @@ export default function SkillAssessmentsPage() {
 
     // Create the template, then open the manual question manager (no AI).
     const handleCreateManual = async () => {
-        if (!form.name.trim() || !form.topic.trim()) { alert("Enter a name and topic first."); return; }
+        if (!form.name.trim() || !form.topic.trim()) { alert(tr("postOnboarding.errNameTopic")); return; }
         setSaving(true);
         try {
             const tpl = await createTemplate();
@@ -207,8 +209,8 @@ export default function SkillAssessmentsPage() {
         for (const q of clean) {
             if (q.type === "APTITUDE") {
                 const opts = q.options.filter((o) => o.trim());
-                if (opts.length < 2) { alert(`"${q.question.slice(0, 40)}…" needs at least 2 options.`); return; }
-                if (!opts.includes(q.correct_answer)) { alert(`Pick the correct option for "${q.question.slice(0, 40)}…".`); return; }
+                if (opts.length < 2) { alert(tr("postOnboarding.errNeedsOptions", { q: q.question.slice(0, 40) })); return; }
+                if (!opts.includes(q.correct_answer)) { alert(tr("postOnboarding.errPickCorrect", { q: q.question.slice(0, 40) })); return; }
             }
         }
         const payload = clean.map((q) => q.type === "CODING"
@@ -221,7 +223,7 @@ export default function SkillAssessmentsPage() {
                 body: JSON.stringify({ generated_questions: payload, question_count: payload.length }),
             });
             if (res.ok) { setQMgrFor(null); await load(); }
-            else { const e = await res.json().catch(() => null); alert(e?.detail || "Failed to save questions."); }
+            else { const e = await res.json().catch(() => null); alert(e?.detail || tr("postOnboarding.errSaveQuestions")); }
         } finally {
             setQSaving(false);
         }
@@ -247,13 +249,13 @@ export default function SkillAssessmentsPage() {
 
     const importCSV = async (file: File) => {
         const rows = parseCSV(await file.text());
-        if (rows.length < 2) { alert("The CSV needs a header row and at least one question."); return; }
+        if (rows.length < 2) { alert(tr("postOnboarding.errCsvHeader")); return; }
         const header = rows[0].map((h) => h.trim().toLowerCase());
         const col = (n: string) => header.indexOf(n);
         const typeI = col("type"), qI = col("question") >= 0 ? col("question") : col("question_text");
         const optIdxs = header.map((h, i) => (/^option/.test(h) ? i : -1)).filter((i) => i >= 0);
         const correctI = col("correct") >= 0 ? col("correct") : col("correct_answer");
-        if (qI < 0) { alert("CSV must have a 'question' column."); return; }
+        if (qI < 0) { alert(tr("postOnboarding.errCsvQuestionCol")); return; }
         const imported: QEdit[] = [];
         for (const r of rows.slice(1)) {
             const type: "APTITUDE" | "CODING" = /cod/i.test((typeI >= 0 ? r[typeI] : "") || "") ? "CODING" : "APTITUDE";
@@ -268,7 +270,7 @@ export default function SkillAssessmentsPage() {
             }
             imported.push({ id: newId(), type, question, options: type === "CODING" ? [] : (options.length ? options : ["", "", "", ""]), correct_answer: type === "CODING" ? "" : correct });
         }
-        if (!imported.length) { alert("No valid rows found in the CSV."); return; }
+        if (!imported.length) { alert(tr("postOnboarding.errCsvNoRows")); return; }
         setQList((p) => [...p, ...imported]);
     };
 
@@ -293,10 +295,10 @@ export default function SkillAssessmentsPage() {
             });
             const body = await res.json().catch(() => null);
             if (res.ok) {
-                alert(`Assigned to ${body?.assigned ?? 0} employee(s).${body?.skipped ? ` ${body.skipped} skipped (already assigned).` : ""}`);
+                alert(`${tr("postOnboarding.assignedToN", { count: body?.assigned ?? 0 })}${body?.skipped ? ` ${tr("postOnboarding.skippedN", { count: body.skipped })}` : ""}`);
                 setAssignFor(null);
             } else {
-                alert(body?.detail || "Failed to assign.");
+                alert(body?.detail || tr("postOnboarding.errAssign"));
             }
         } finally {
             setAssigning(false);
@@ -320,7 +322,7 @@ export default function SkillAssessmentsPage() {
         try {
             const res = await apiClient.get(`/api/v1/enterprise/skill-assessments/assignments/${a.id}/review`);
             if (res.ok) setReview(await res.json());
-            else alert("Couldn't load this submission.");
+            else alert(tr("postOnboarding.errLoadSubmission"));
         } finally {
             setReviewLoading(false);
         }
@@ -337,17 +339,17 @@ export default function SkillAssessmentsPage() {
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             <PageHeader
-                title="Skill Assessments"
-                subtitle="Create timed aptitude & coding tests and assign them to employees"
-                help={<><p>Build a test on any topic (aptitude, coding, verbal, domain-specific), auto-generate its questions, then assign it to employees.</p><p>Employees take it from their workspace; scores land under Results.</p></>}
-                actions={<Button icon="add" onClick={() => { setForm(EMPTY_FORM); setCreating(true); }}>New Assessment</Button>}
+                title={tr("nav.skillAssessments")}
+                subtitle={tr("postOnboarding.skillAssessmentsSubtitle")}
+                help={<><p>{tr("postOnboarding.skillHelp1")}</p><p>{tr("postOnboarding.skillHelp2")}</p></>}
+                actions={<Button icon="add" onClick={() => { setForm(EMPTY_FORM); setCreating(true); }}>{tr("postOnboarding.newAssessment")}</Button>}
             />
 
             <StatGrid>
-                <StatCard label="Assessments" value={templates.length} icon="quiz" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
-                <StatCard label="Ready to assign" value={ready.length} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Employees" value={employees.length} icon="badge" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label="Completed" value={allAssignments.filter((a) => a.status === "COMPLETED").length} icon="grading" gradient="linear-gradient(135deg,#FBBF24,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("postOnboarding.assessments")} value={templates.length} icon="quiz" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
+                <StatCard label={tr("postOnboarding.readyToAssign")} value={ready.length} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("nav.employees")} value={employees.length} icon="badge" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("postOnboarding.completed")} value={allAssignments.filter((a) => a.status === "COMPLETED").length} icon="grading" gradient="linear-gradient(135deg,#FBBF24,#D97706)" glow="rgba(217,119,6,0.25)" />
             </StatGrid>
 
             {loading ? (
@@ -355,12 +357,12 @@ export default function SkillAssessmentsPage() {
                     {[...Array(6)].map((_, i) => <div key={i} className="h-44 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />)}
                 </div>
             ) : error ? (
-                <Card padding="none"><EmptyState tone="muted" icon="error" title="Couldn't load" description={error} action={<Button variant="secondary" onClick={load}>Retry</Button>} /></Card>
+                <Card padding="none"><EmptyState tone="muted" icon="error" title={tr("postOnboarding.couldntLoad")} description={error} action={<Button variant="secondary" onClick={load}>{tr("postOnboarding.retry")}</Button>} /></Card>
             ) : templates.length === 0 ? (
                 <Card padding="none">
-                    <EmptyState tone="brand" icon="quiz" title="No assessments yet"
-                        description="Create your first skill assessment — pick a type and topic, and we'll generate the questions."
-                        action={<Button icon="add" onClick={() => setCreating(true)}>New Assessment</Button>} />
+                    <EmptyState tone="brand" icon="quiz" title={tr("postOnboarding.noAssessmentsYet")}
+                        description={tr("postOnboarding.noAssessmentsYetDesc")}
+                        action={<Button icon="add" onClick={() => setCreating(true)}>{tr("postOnboarding.newAssessment")}</Button>} />
                 </Card>
             ) : (
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -378,16 +380,16 @@ export default function SkillAssessmentsPage() {
                                     <h3 className="text-[14px] font-bold text-[#15171C] truncate">{t.name}</h3>
                                     <p className="text-[12.5px] text-[#8A929E] line-clamp-1 mt-0.5">{t.topic}</p>
                                     <div className={`flex items-center gap-3 mt-3 text-[12px] text-[#6B7280] ${jetbrainsMono.className}`}>
-                                        <span className="inline-flex items-center gap-1"><span className="material-symbols-rounded text-[15px]">help</span>{qn} Qs</span>
+                                        <span className="inline-flex items-center gap-1"><span className="material-symbols-rounded text-[15px]">help</span>{qn} {tr("postOnboarding.qsUnit")}</span>
                                         <span className="inline-flex items-center gap-1"><span className="material-symbols-rounded text-[15px]">schedule</span>{t.test_duration}m</span>
                                     </div>
-                                    {qn === 0 && <p className="mt-2 text-[11.5px] font-semibold text-[#D97706]">Questions still generating…</p>}
+                                    {qn === 0 && <p className="mt-2 text-[11.5px] font-semibold text-[#D97706]">{tr("postOnboarding.questionsGenerating")}</p>}
                                 </div>
                                 <div className="pt-4 mt-3 border-t border-[#E8EAED] space-y-2">
-                                    <Button variant="secondary" size="sm" icon="edit_note" fullWidth onClick={() => openQMgr(t)}>Edit questions</Button>
+                                    <Button variant="secondary" size="sm" icon="edit_note" fullWidth onClick={() => openQMgr(t)}>{tr("postOnboarding.editQuestions")}</Button>
                                     <div className="flex gap-2">
-                                        <Button variant="secondary" size="sm" icon="group_add" className="flex-1" disabled={qn === 0} onClick={() => openAssign(t)}>Assign</Button>
-                                        <Button variant="secondary" size="sm" icon="leaderboard" className="flex-1" onClick={() => openResults(t)}>Results</Button>
+                                        <Button variant="secondary" size="sm" icon="group_add" className="flex-1" disabled={qn === 0} onClick={() => openAssign(t)}>{tr("postOnboarding.assign")}</Button>
+                                        <Button variant="secondary" size="sm" icon="leaderboard" className="flex-1" onClick={() => openResults(t)}>{tr("postOnboarding.results")}</Button>
                                     </div>
                                 </div>
                             </Card>
@@ -401,41 +403,41 @@ export default function SkillAssessmentsPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm">
                     <Card padding="none" className="w-full max-w-lg animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED]">
-                            <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">New Skill Assessment</h2>
-                            <button onClick={() => setCreating(false)} aria-label="Close" className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
+                            <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">{tr("postOnboarding.newSkillAssessment")}</h2>
+                            <button onClick={() => setCreating(false)} aria-label={tr("common.close")} className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
                                 <span className="material-symbols-rounded text-[20px]">close</span>
                             </button>
                         </div>
                         <form onSubmit={handleCreate} className="px-6 py-6 space-y-4">
-                            <Field label="Assessment name" htmlFor="sa-name" required>
-                                <Input id="sa-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Frontend Engineer Skills" required />
+                            <Field label={tr("postOnboarding.assessmentName")} htmlFor="sa-name" required>
+                                <Input id="sa-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={tr("postOnboarding.assessmentNamePlaceholder")} required />
                             </Field>
                             <div className="grid grid-cols-2 gap-4">
-                                <Field label="Type" htmlFor="sa-type" required>
+                                <Field label={tr("postOnboarding.type")} htmlFor="sa-type" required>
                                     <Select id="sa-type" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
-                                        <option value="APTITUDE">Aptitude</option>
-                                        <option value="CODING">Coding</option>
-                                        <option value="BOTH">Aptitude + Coding</option>
+                                        <option value="APTITUDE">{tr("postOnboarding.aptitude")}</option>
+                                        <option value="CODING">{tr("postOnboarding.coding")}</option>
+                                        <option value="BOTH">{tr("postOnboarding.aptitudeCoding")}</option>
                                     </Select>
                                 </Field>
-                                <Field label="Topic" htmlFor="sa-topic" required hint="Any subject">
-                                    <Input id="sa-topic" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} placeholder="e.g. React, SQL, Verbal" required />
+                                <Field label={tr("postOnboarding.topic")} htmlFor="sa-topic" required hint={tr("postOnboarding.anySubject")}>
+                                    <Input id="sa-topic" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} placeholder={tr("postOnboarding.skillPlaceholder")} required />
                                 </Field>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                <Field label="Questions" htmlFor="sa-count" required>
+                                <Field label={tr("postOnboarding.questions")} htmlFor="sa-count" required>
                                     <Input id="sa-count" type="number" min={1} max={50} value={form.question_count} onChange={(e) => setForm({ ...form, question_count: Number(e.target.value) })} required />
                                 </Field>
-                                <Field label="Duration (min)" htmlFor="sa-dur" required>
+                                <Field label={tr("postOnboarding.durationMin")} htmlFor="sa-dur" required>
                                     <Input id="sa-dur" type="number" min={1} value={form.test_duration} onChange={(e) => setForm({ ...form, test_duration: Number(e.target.value) })} required />
                                 </Field>
                             </div>
-                            <p className="text-[12px] text-[#8A929E]">Generate questions with AI from the type & topic, or create the assessment and add questions manually / from a CSV.</p>
+                            <p className="text-[12px] text-[#8A929E]">{tr("postOnboarding.generateHint")}</p>
                             <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-2.5 pt-1">
-                                <Button type="button" variant="secondary" icon="edit_note" disabled={saving} onClick={handleCreateManual}>Add manually</Button>
+                                <Button type="button" variant="secondary" icon="edit_note" disabled={saving} onClick={handleCreateManual}>{tr("postOnboarding.addManually")}</Button>
                                 <div className="flex flex-col-reverse sm:flex-row gap-2.5">
-                                    <Button type="button" variant="ghost" onClick={() => setCreating(false)}>Cancel</Button>
-                                    <Button type="submit" icon="auto_awesome" disabled={saving}>{saving ? "Generating…" : "Create & Generate"}</Button>
+                                    <Button type="button" variant="ghost" onClick={() => setCreating(false)}>{tr("postOnboarding.cancel")}</Button>
+                                    <Button type="submit" icon="auto_awesome" disabled={saving}>{saving ? tr("postOnboarding.generating") : tr("postOnboarding.createGenerate")}</Button>
                                 </div>
                             </div>
                         </form>
@@ -449,13 +451,13 @@ export default function SkillAssessmentsPage() {
                     <Card padding="none" className="w-full max-w-xl max-h-[88vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED]">
                             <div className="min-w-0">
-                                <h2 className="text-[16px] font-extrabold text-[#15171C] truncate">Assign · {assignFor.name}</h2>
-                                <p className="text-[12px] text-[#8A929E] mt-0.5">Pick employees to take this assessment</p>
+                                <h2 className="text-[16px] font-extrabold text-[#15171C] truncate">{tr("postOnboarding.assign")} · {assignFor.name}</h2>
+                                <p className="text-[12px] text-[#8A929E] mt-0.5">{tr("postOnboarding.pickEmployees")}</p>
                             </div>
-                            <Badge tone="indigo" className={jetbrainsMono.className}>{picked.length} selected</Badge>
+                            <Badge tone="indigo" className={jetbrainsMono.className}>{picked.length} {tr("postOnboarding.selected")}</Badge>
                         </div>
                         <div className="px-6 py-4 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            {employees.length === 0 && <p className="text-[13px] text-[#8A929E]">No employees to assign.</p>}
+                            {employees.length === 0 && <p className="text-[13px] text-[#8A929E]">{tr("postOnboarding.noEmployeesToAssign")}</p>}
                             {employees.map((emp) => {
                                 const sel = picked.includes(emp.id);
                                 return (
@@ -466,15 +468,15 @@ export default function SkillAssessmentsPage() {
                                         </span>
                                         <div className="min-w-0">
                                             <p className="text-[13px] font-bold text-[#15171C] truncate">{emp.first_name} {emp.last_name}</p>
-                                            <p className="text-[11.5px] text-[#8A929E] truncate">{emp.designation || "Employee"}</p>
+                                            <p className="text-[11.5px] text-[#8A929E] truncate">{emp.designation || tr("postOnboarding.employeeSingular")}</p>
                                         </div>
                                     </button>
                                 );
                             })}
                         </div>
                         <div className="flex justify-end gap-2.5 px-6 py-4 border-t border-[#E8EAED]">
-                            <Button variant="secondary" onClick={() => setAssignFor(null)}>Cancel</Button>
-                            <Button icon="send" disabled={assigning || picked.length === 0} onClick={handleAssign}>{assigning ? "Assigning…" : `Assign to ${picked.length}`}</Button>
+                            <Button variant="secondary" onClick={() => setAssignFor(null)}>{tr("postOnboarding.cancel")}</Button>
+                            <Button icon="send" disabled={assigning || picked.length === 0} onClick={handleAssign}>{assigning ? tr("postOnboarding.assigning") : tr("postOnboarding.assignToN", { count: picked.length })}</Button>
                         </div>
                     </Card>
                 </div>
@@ -486,13 +488,13 @@ export default function SkillAssessmentsPage() {
                     <Card padding="none" className="w-full max-w-2xl max-h-[88vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED]">
                             <div className="min-w-0">
-                                <h2 className="text-[16px] font-extrabold text-[#15171C] truncate">Results · {resultsFor.name}</h2>
+                                <h2 className="text-[16px] font-extrabold text-[#15171C] truncate">{tr("postOnboarding.results")} · {resultsFor.name}</h2>
                                 <p className="text-[12px] text-[#8A929E] mt-0.5">
-                                    {completed(assignments).length}/{assignments.length} completed
-                                    {avgScore(assignments) != null ? ` · avg ${avgScore(assignments)}%` : ""}
+                                    {completed(assignments).length}/{assignments.length} {tr("postOnboarding.completedLower")}
+                                    {avgScore(assignments) != null ? ` · ${tr("postOnboarding.avg")} ${avgScore(assignments)}%` : ""}
                                 </p>
                             </div>
-                            <button onClick={() => setResultsFor(null)} aria-label="Close" className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
+                            <button onClick={() => setResultsFor(null)} aria-label={tr("common.close")} className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
                                 <span className="material-symbols-rounded text-[20px]">close</span>
                             </button>
                         </div>
@@ -500,7 +502,7 @@ export default function SkillAssessmentsPage() {
                             {resultsLoading ? (
                                 <div className="p-6 space-y-2">{[1, 2, 3].map((i) => <div key={i} className="h-12 rounded-[10px] bg-[#F4F5F7] animate-pulse" />)}</div>
                             ) : assignments.length === 0 ? (
-                                <div className="py-16"><EmptyState tone="muted" icon="group_off" title="Not assigned yet" description="Assign this assessment to employees to see their results here." /></div>
+                                <div className="py-16"><EmptyState tone="muted" icon="group_off" title={tr("postOnboarding.notAssignedYet")} description={tr("postOnboarding.notAssignedYetDesc")} /></div>
                             ) : (
                                 <div className="divide-y divide-[#F0F0F1]">
                                     {assignments.map((a) => (
@@ -510,9 +512,9 @@ export default function SkillAssessmentsPage() {
                                                 {a.status === "COMPLETED"
                                                     ? <span className={`text-[14px] font-extrabold ${jetbrainsMono.className} ${(a.score ?? 0) >= 60 ? "text-[#0E8A6E]" : "text-[#D97706]"}`}>{a.score}%</span>
                                                     : <span className="text-[12px] text-[#8A929E]">—</span>}
-                                                <Badge tone={a.status === "COMPLETED" ? "success" : "warning"} dot>{a.status === "COMPLETED" ? "Done" : "Pending"}</Badge>
+                                                <Badge tone={a.status === "COMPLETED" ? "success" : "warning"} dot>{a.status === "COMPLETED" ? tr("postOnboarding.done") : tr("postOnboarding.pending")}</Badge>
                                                 {a.status === "COMPLETED" && (
-                                                    <Button size="sm" variant="secondary" icon="visibility" onClick={() => openReview(a)}>View</Button>
+                                                    <Button size="sm" variant="secondary" icon="visibility" onClick={() => openReview(a)}>{tr("postOnboarding.view")}</Button>
                                                 )}
                                             </div>
                                         </div>
@@ -530,48 +532,48 @@ export default function SkillAssessmentsPage() {
                     <Card padding="none" className="w-full max-w-2xl max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED]">
                             <div className="min-w-0">
-                                <h2 className="text-[16px] font-extrabold text-[#15171C] truncate">Questions · {qMgrFor.name}</h2>
-                                <p className="text-[12px] text-[#8A929E] mt-0.5">{qList.length} question(s) · add manually or import a CSV</p>
+                                <h2 className="text-[16px] font-extrabold text-[#15171C] truncate">{tr("postOnboarding.questions")} · {qMgrFor.name}</h2>
+                                <p className="text-[12px] text-[#8A929E] mt-0.5">{tr("postOnboarding.questionCountHint", { count: qList.length })}</p>
                             </div>
-                            <button onClick={() => setQMgrFor(null)} aria-label="Close" className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
+                            <button onClick={() => setQMgrFor(null)} aria-label={tr("common.close")} className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
                                 <span className="material-symbols-rounded text-[20px]">close</span>
                             </button>
                         </div>
 
                         {/* Toolbar */}
                         <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-[#E8EAED] bg-[#F8FAFC]">
-                            <Button size="sm" variant="secondary" icon="add" onClick={addMcq}>Add MCQ</Button>
-                            <Button size="sm" variant="secondary" icon="code" onClick={addCoding}>Add Coding</Button>
+                            <Button size="sm" variant="secondary" icon="add" onClick={addMcq}>{tr("postOnboarding.addMcq")}</Button>
+                            <Button size="sm" variant="secondary" icon="code" onClick={addCoding}>{tr("postOnboarding.addCoding")}</Button>
                             <label className="inline-flex items-center gap-2 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] text-[13px] font-semibold hover:bg-[#F4F5F7] cursor-pointer">
-                                <span className="material-symbols-rounded text-[17px]">upload_file</span> Import CSV
+                                <span className="material-symbols-rounded text-[17px]">upload_file</span> {tr("postOnboarding.importCsv")}
                                 <input type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) importCSV(f); e.target.value = ""; }} />
                             </label>
-                            <button onClick={downloadCSVTemplate} className="text-[12px] font-semibold text-[#5B53E0] hover:underline ml-auto">Download CSV template</button>
+                            <button onClick={downloadCSVTemplate} className="text-[12px] font-semibold text-[#5B53E0] hover:underline ml-auto">{tr("postOnboarding.downloadCsv")}</button>
                         </div>
 
                         <div className="overflow-y-auto px-6 py-5 space-y-4">
                             {qList.length === 0 ? (
-                                <div className="py-10"><EmptyState tone="brand" icon="quiz" title="No questions yet" description="Add multiple-choice or coding questions, or import them from a CSV." action={<Button size="sm" icon="add" onClick={addMcq}>Add MCQ</Button>} /></div>
+                                <div className="py-10"><EmptyState tone="brand" icon="quiz" title={tr("postOnboarding.noQuestionsYet")} description={tr("postOnboarding.noQuestionsYetDesc")} action={<Button size="sm" icon="add" onClick={addMcq}>{tr("postOnboarding.addMcq")}</Button>} /></div>
                             ) : qList.map((q, idx) => (
                                 <div key={q.id} className="rounded-[12px] border border-[#E8EAED] overflow-hidden">
                                     <div className="flex items-center justify-between gap-2 px-4 py-2.5 bg-[#F8FAFC] border-b border-[#E8EAED]">
                                         <div className="flex items-center gap-2">
                                             <span className="text-[12px] font-bold text-[#8A929E]">{idx + 1}.</span>
-                                            <Badge tone={q.type === "CODING" ? "teal" : "indigo"}>{q.type === "CODING" ? "Coding" : "MCQ"}</Badge>
+                                            <Badge tone={q.type === "CODING" ? "teal" : "indigo"}>{q.type === "CODING" ? tr("postOnboarding.coding") : tr("postOnboarding.mcq")}</Badge>
                                         </div>
-                                        <button onClick={() => removeQ(q.id)} aria-label="Remove" className="w-7 h-7 rounded-[8px] text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#C0383C] flex items-center justify-center">
+                                        <button onClick={() => removeQ(q.id)} aria-label={tr("postOnboarding.remove")} className="w-7 h-7 rounded-[8px] text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#C0383C] flex items-center justify-center">
                                             <span className="material-symbols-rounded text-[18px]">delete</span>
                                         </button>
                                     </div>
                                     <div className="p-4 space-y-3">
-                                        <Textarea placeholder={q.type === "CODING" ? "Problem statement…" : "Question text…"} value={q.question} onChange={(e) => updateQ(q.id, { question: e.target.value })} className="min-h-[64px]" />
+                                        <Textarea placeholder={q.type === "CODING" ? tr("postOnboarding.problemStatement") : tr("postOnboarding.questionText")} value={q.question} onChange={(e) => updateQ(q.id, { question: e.target.value })} className="min-h-[64px]" />
                                         {q.type === "APTITUDE" && (
                                             <div className="space-y-2">
-                                                <p className="text-[11px] font-semibold text-[#8A929E]">Options — select the correct one</p>
+                                                <p className="text-[11px] font-semibold text-[#8A929E]">{tr("postOnboarding.optionsSelectCorrect")}</p>
                                                 {q.options.map((opt, oi) => (
                                                     <div key={oi} className="flex items-center gap-2.5">
                                                         <input type="radio" name={`correct-${q.id}`} checked={!!opt && q.correct_answer === opt} onChange={() => updateQ(q.id, { correct_answer: opt })} disabled={!opt.trim()} className="h-4 w-4 accent-[#5B53E0] shrink-0" />
-                                                        <Input value={opt} placeholder={`Option ${oi + 1}`} onChange={(e) => setOpt(q.id, oi, e.target.value)} />
+                                                        <Input value={opt} placeholder={tr("postOnboarding.optionN", { n: oi + 1 })} onChange={(e) => setOpt(q.id, oi, e.target.value)} />
                                                     </div>
                                                 ))}
                                             </div>
@@ -582,8 +584,8 @@ export default function SkillAssessmentsPage() {
                         </div>
 
                         <div className="flex justify-end gap-2.5 px-6 py-4 border-t border-[#E8EAED]">
-                            <Button variant="secondary" onClick={() => setQMgrFor(null)}>Cancel</Button>
-                            <Button icon="save" disabled={qSaving} onClick={saveQuestions}>{qSaving ? "Saving…" : "Save questions"}</Button>
+                            <Button variant="secondary" onClick={() => setQMgrFor(null)}>{tr("postOnboarding.cancel")}</Button>
+                            <Button icon="save" disabled={qSaving} onClick={saveQuestions}>{qSaving ? tr("postOnboarding.saving") : tr("postOnboarding.saveQuestions")}</Button>
                         </div>
                     </Card>
                 </div>
@@ -595,13 +597,13 @@ export default function SkillAssessmentsPage() {
                     <Card padding="none" className="w-full max-w-2xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED]">
                             <div className="min-w-0">
-                                <h2 className="text-[16px] font-extrabold text-[#15171C] truncate">Submission · {review?.employee_name || "…"}</h2>
+                                <h2 className="text-[16px] font-extrabold text-[#15171C] truncate">{tr("postOnboarding.submission")} · {review?.employee_name || "…"}</h2>
                                 <p className="text-[12px] text-[#8A929E] mt-0.5">
-                                    {review ? review.template_name : "Loading…"}
-                                    {review?.score != null ? ` · scored ${review.score}%` : ""}
+                                    {review ? review.template_name : tr("common.loading")}
+                                    {review?.score != null ? ` · ${tr("postOnboarding.scored")} ${review.score}%` : ""}
                                 </p>
                             </div>
-                            <button onClick={() => setReview(null)} aria-label="Close" className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
+                            <button onClick={() => setReview(null)} aria-label={tr("common.close")} className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
                                 <span className="material-symbols-rounded text-[20px]">close</span>
                             </button>
                         </div>
@@ -609,7 +611,7 @@ export default function SkillAssessmentsPage() {
                             {reviewLoading || !review ? (
                                 [1, 2, 3].map((i) => <div key={i} className="h-24 rounded-[12px] bg-[#F4F5F7] animate-pulse" />)
                             ) : review.review.length === 0 ? (
-                                <p className="text-[13px] text-[#8A929E] text-center py-8">This assessment has no questions.</p>
+                                <p className="text-[13px] text-[#8A929E] text-center py-8">{tr("postOnboarding.noQuestions")}</p>
                             ) : (
                                 review.review.map((q, idx) => {
                                     const answered = q.answer != null && String(q.answer).trim() !== "";
@@ -618,15 +620,15 @@ export default function SkillAssessmentsPage() {
                                         <div key={q.id} className="rounded-[12px] border border-[#E8EAED] overflow-hidden">
                                             <div className="flex items-start justify-between gap-3 px-4 py-3 bg-[#F8FAFC] border-b border-[#E8EAED]">
                                                 <p className="text-[13px] font-semibold text-[#15171C]"><span className="text-[#8A929E]">{idx + 1}.</span> {q.text}</p>
-                                                {q.is_correct === true && <Badge tone="success" dot>Correct</Badge>}
-                                                {q.is_correct === false && <Badge tone="danger" dot>Wrong</Badge>}
-                                                {q.is_correct === null && <Badge tone="neutral">{coding ? "Code" : "Text"}</Badge>}
+                                                {q.is_correct === true && <Badge tone="success" dot>{tr("postOnboarding.correct")}</Badge>}
+                                                {q.is_correct === false && <Badge tone="danger" dot>{tr("postOnboarding.wrong")}</Badge>}
+                                                {q.is_correct === null && <Badge tone="neutral">{coding ? tr("postOnboarding.code") : tr("postOnboarding.text")}</Badge>}
                                             </div>
                                             <div className="p-4 space-y-2.5">
                                                 <div>
-                                                    <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-1">Their answer</p>
+                                                    <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-1">{tr("postOnboarding.theirAnswer")}</p>
                                                     {!answered ? (
-                                                        <p className="text-[12.5px] italic text-[#C0383C]">No answer submitted</p>
+                                                        <p className="text-[12.5px] italic text-[#C0383C]">{tr("postOnboarding.noAnswerSubmitted")}</p>
                                                     ) : coding ? (
                                                         <pre className={`text-[12px] text-[#15171C] bg-[#0E1014] text-[#E6E8EC] rounded-[8px] p-3 overflow-x-auto whitespace-pre-wrap ${jetbrainsMono.className}`}>{String(q.answer)}</pre>
                                                     ) : (
@@ -635,7 +637,7 @@ export default function SkillAssessmentsPage() {
                                                 </div>
                                                 {q.is_correct === false && q.correct_answer != null && (
                                                     <div>
-                                                        <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-1">Correct answer</p>
+                                                        <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-1">{tr("postOnboarding.correctAnswer")}</p>
                                                         <p className="text-[13px] font-semibold text-[#0E8A6E]">{String(q.correct_answer)}</p>
                                                     </div>
                                                 )}

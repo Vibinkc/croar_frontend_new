@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { hankenGrotesk, jetbrainsMono } from "@/components/ds/fonts";
 import { AuthProvider } from "@/context/AuthContext";
+import { I18nProvider } from "@/context/I18nContext";
 // import AgentCopilot from "@/components/enterprise/AgentCopilot";
 
 export const metadata: Metadata = {
@@ -26,7 +27,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // The inline theme script below sets `data-theme` on <html> before hydration, so the
+    // client markup intentionally differs from the server's — suppress that one-level mismatch.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -35,6 +38,13 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `try{var t=localStorage.getItem('croar-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}`,
+          }}
+        />
+
+        {/* Apply the saved language to <html lang> before hydration. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var l=(document.cookie.match(/croar-locale=(en|ko|ja)/)||[])[1]||localStorage.getItem('croar-locale');if(l==='en'||l==='ko'||l==='ja'){document.documentElement.lang=l;}}catch(e){}`,
           }}
         />
 
@@ -63,10 +73,12 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className={`${hankenGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
-        <AuthProvider>
-          {children}
-          {/* <AgentCopilot /> */}
-        </AuthProvider>
+        <I18nProvider>
+          <AuthProvider>
+            {children}
+            {/* <AgentCopilot /> */}
+          </AuthProvider>
+        </I18nProvider>
       </body>
     </html>
   );

@@ -11,13 +11,10 @@ import {
 } from "@/utils/payroll/api";
 import { PageHeader, StatCard, StatGrid, Card, CardHeader, Badge, Button, jetbrainsMono } from "@/components/ds";
 import NotLinkedNotice, { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
+import { useI18n } from "@/context/I18nContext";
 
-const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const STATUS_LABEL: Record<string, string> = Object.fromEntries(DAY_STATUS_OPTIONS.map((o) => [o.value, o.label]));
-const SELF_MARK: { value: DayStatus; label: string }[] = [
-  { value: "PRESENT", label: "Present" },
-  { value: "WFH", label: "Work From Home" },
-];
+const SELF_MARK: DayStatus[] = ["PRESENT", "WFH"];
 const NON_WORKING = ["HOLIDAY", "WEEKLY_OFF"];
 const LEAVE_LOCKED = ["PAID_LEAVE", "UNPAID_LEAVE", "HALF_DAY", "HALF_DAY_PAID"];
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -34,6 +31,7 @@ const statusTone = (s: string): "success" | "warning" | "danger" | "info" | "neu
 export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const { t } = useI18n();
   const [ts, setTs] = useState<TimesheetDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -90,23 +88,23 @@ export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id
   const summary = !ts
     ? []
     : isHourly
-      ? [{ label: "Total hours", value: ts.total_hours, icon: "timer", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" }]
+      ? [{ label: t("employee.totalHours"), value: ts.total_hours, icon: "timer", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" }]
       : [
-          { label: "Worked days", value: ts.worked_days, icon: "task_alt", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-          { label: "LOP days", value: ts.lop_days, icon: "money_off", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-          { label: "Half days", value: ts.half_days, icon: "hourglass_bottom", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+          { label: t("employee.workedDays"), value: ts.worked_days, icon: "task_alt", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+          { label: t("employee.lopDays"), value: ts.lop_days, icon: "money_off", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+          { label: t("employee.halfDays"), value: ts.half_days, icon: "hourglass_bottom", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
         ];
 
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
       <PageHeader
-        title={ts ? `${ts.period_start} → ${ts.period_end}` : "Timesheet"}
-        subtitle={ts ? (editable ? "Mark your working days Present or Work From Home — HR finalises" : `This timesheet is ${ts.status.toLowerCase()} and read-only`) : undefined}
+        title={ts ? `${ts.period_start} → ${ts.period_end}` : t("employee.timesheet")}
+        subtitle={ts ? (editable ? t("employee.timesheetEditableSubtitle") : t("employee.timesheetReadOnlySubtitle", { status: ts.status.toLowerCase() })) : undefined}
         onBack={() => router.push("/employee/timesheets")}
         actions={ts && (
           <div className="flex items-center gap-2.5">
             <Badge tone={statusTone(ts.status)} dot>{ts.status.charAt(0) + ts.status.slice(1).toLowerCase()}</Badge>
-            {editable && <Button icon="save" disabled={!dirty || busy} onClick={save}>{busy ? "Saving…" : "Save attendance"}</Button>}
+            {editable && <Button icon="save" disabled={!dirty || busy} onClick={save}>{busy ? t("employee.saving") : t("employee.saveAttendance")}</Button>}
           </div>
         )}
       />
@@ -131,19 +129,19 @@ export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id
           </StatGrid>
 
           <Card padding="none" className="overflow-hidden">
-            <CardHeader className="px-6 pt-6" title="Daily attendance" subtitle={editable ? "Editable — mark Present / WFH on working days" : "Read-only"} />
+            <CardHeader className="px-6 pt-6" title={t("employee.dailyAttendance")} subtitle={editable ? t("employee.dailyAttendanceEditable") : t("employee.readOnly")} />
             <div className="overflow-x-auto">
               <table className="w-full text-[13px]">
                 <thead>
                   <tr className="border-y border-[#E8EAED] bg-[#F7F8FA] text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
-                    <th className="px-6 py-3">Date</th>
-                    <th className="px-6 py-3">Day</th>
-                    <th className="px-6 py-3">{isHourly ? "Hours" : "Status"}</th>
+                    <th className="px-6 py-3">{t("employee.colDate")}</th>
+                    <th className="px-6 py-3">{t("employee.colDay")}</th>
+                    <th className="px-6 py-3">{isHourly ? t("employee.colHours") : t("employee.colStatus")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#F0F0F1]">
                   {ts.entries.map((e) => {
-                    const dow = DOW[new Date(e.entry_date + "T00:00:00").getDay()];
+                    const dow = t(`employee.dow${new Date(e.entry_date + "T00:00:00").getDay()}`);
                     const markable = canMark(e);
                     return (
                       <tr key={e.id} className="hover:bg-[#F7F7F8] transition-colors">
@@ -160,7 +158,7 @@ export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id
                           ) : markable ? (
                             <select value={statusFor(e.entry_date, e.day_status)} onChange={(ev) => setStatus(e.entry_date, ev.target.value as DayStatus)}
                               className="rounded-[9px] border border-[#E1E4E8] bg-white px-3 py-1.5 text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20">
-                              {SELF_MARK.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                              {SELF_MARK.map((v) => <option key={v} value={v}>{t(`employee.selfMark_${v}`)}</option>)}
                             </select>
                           ) : (
                             <span className="text-[#374151]">{STATUS_LABEL[e.day_status] ?? e.day_status}</span>

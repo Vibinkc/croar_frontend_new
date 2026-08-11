@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { useDivision } from "@/context/DivisionContext";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 
 export default function BatchSelector() {
     const { role, batch: userBatch } = useAuth();
+    const { t } = useI18n();
     const { selectedDivisionId, selectedDepartmentId, selectedBatch, setSelectedBatch } = useDivision();
     const [batches, setBatches] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
@@ -71,7 +73,7 @@ export default function BatchSelector() {
                     disabled={isStaff}
                     className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl pl-12 pr-10 py-2.5 outline-none hover:border-slate-300 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-all cursor-pointer min-w-[150px] disabled:cursor-default"
                 >
-                    {!isStaff && <option value="" className="text-slate-500 font-bold">All Batches</option>}
+                    {!isStaff && <option value="" className="text-slate-500 font-bold">{t("superAdmin.allBatches")}</option>}
                     {displayedBatches.map((b) => (
                         <option key={b} value={b}>
                             {b}

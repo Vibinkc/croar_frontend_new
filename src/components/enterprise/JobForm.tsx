@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import JobEditor from "@/components/enterprise/JobEditor";
@@ -26,7 +27,13 @@ import {
     AtSign,
     Users
 } from "lucide-react";
-import { jetbrainsMono, Button, Card, CardHeader, Field, Input, Select, PageHeader, cn } from "@/components/ds";
+import { jetbrainsMono, Button, Card, CardHeader, Field, Input, Textarea, Select, PageHeader, cn } from "@/components/ds";
+
+// Remove the temporary <mark> highlight tags the AI adds around newly-inserted JD text, keeping the
+// inner text. Used before persisting a job and before re-sending the JD to the AI, so highlights are
+// a display-only cue and never accumulate in the stored description.
+const stripMarks = (html: string): string =>
+    (html || "").replace(/<mark\b[^>]*>/gi, "").replace(/<\/mark>/gi, "");
 
 interface ApplicationField {
     id: string;
@@ -74,11 +81,17 @@ interface JobFormProps {
 export default function JobForm({ mode, jobId }: JobFormProps) {
     const isEdit = mode === "edit";
     const { token } = useAuth();
+    const { t: tr } = useI18n();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(isEdit);
     const [loadError, setLoadError] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+    const [additionalJD, setAdditionalJD] = useState("");
+    const [isEnhancingJD, setIsEnhancingJD] = useState(false);
+    const [highlightAdd, setHighlightAdd] = useState(false); // pulse the "Add more with AI" panel
+    const [justAdded, setJustAdded] = useState(false); // brief success confirmation after an add
+    const addPanelRef = useRef<HTMLDivElement>(null);
     const [currentStep, setCurrentStep] = useState(1);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [createdJobId, setCreatedJobId] = useState("");
@@ -198,9 +211,9 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
 
     const steps = [
-        { id: 1, name: "Job Details", icon: "ClipboardList" },
-        { id: 2, name: "Application", icon: "Settings" },
-        { id: 3, name: "Workflow", icon: "Network" }
+        { id: 1, name: tr("jobForm.stepJobDetails"), icon: "ClipboardList" },
+        { id: 2, name: tr("jobForm.stepApplication"), icon: "Settings" },
+        { id: 3, name: tr("jobForm.stepWorkflow"), icon: "Network" }
     ];
 
     const handleSubmit = async () => {
@@ -219,7 +232,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     salary_max: formData.salary_max ? Number.parseFloat(formData.salary_max) : null,
                     experience_min: formData.experience_min ? Number.parseInt(formData.experience_min) : 0,
                     experience_max: formData.experience_max ? Number.parseInt(formData.experience_max) : 5,
-                    description: formData.description,
+                    description: stripMarks(formData.description),
                     required_skills: formData.required_skills.split(",").map(s => s.trim()).filter(s => s),
                     auto_fit_analysis: formData.auto_fit_analysis,
                     status_id: formData.status_id,
@@ -241,10 +254,10 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     setShowSuccessModal(true);
                 } else {
                     const error = await res.json();
-                    alert(error.detail || "Failed to update job");
+                    alert(error.detail || tr("jobForm.failedUpdateJob"));
                 }
             } catch (error) {
-                alert("Network error. Please try again.");
+                alert(tr("jobForm.networkError"));
             } finally {
                 setIsSubmitting(false);
             }
@@ -254,6 +267,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             try {
                 const payload = {
                     ...formData,
+                    description: stripMarks(formData.description),
                     salary_min: formData.salary_min ? Number.parseFloat(formData.salary_min) : null,
                     salary_max: formData.salary_max ? Number.parseFloat(formData.salary_max) : null,
                     experience_min: Number.parseInt(formData.experience_min),
@@ -281,7 +295,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const generateAIDescription = async () => {
         if (isEdit) {
             if (!formData.title) {
-                alert("Please enter a job title first");
+                alert(tr("jobForm.pleaseEnterTitle"));
                 return;
             }
 
@@ -295,7 +309,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     },
                     body: JSON.stringify({
                         title: formData.title,
-                        existing_description: formData.description,
+                        existing_description: stripMarks(formData.description),
                         location: formData.location,
                         experience_min: formData.experience_min,
                         experience_max: formData.experience_max
@@ -311,12 +325,13 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                         salary_max: data.salary_max?.toString() || formData.salary_max,
                         required_skills: data.skills?.join(", ") || formData.required_skills
                     });
+                    setHighlightAdd(true);
                 } else {
-                    alert("AI generation failed. Please try again.");
+                    alert(tr("jobForm.aiGenFailed"));
                 }
             } catch (error) {
                 console.error("Error generating JD:", error);
-                alert("Network error during AI generation.");
+                alert(tr("jobForm.networkAiGen"));
             } finally {
                 setIsGeneratingAI(false);
             }
@@ -327,17 +342,80 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/generate-jd`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                    body: JSON.stringify({ title: formData.title, existing_description: formData.description, location: formData.location, experience_min: formData.experience_min, experience_max: formData.experience_max })
+                    body: JSON.stringify({ title: formData.title, existing_description: stripMarks(formData.description), location: formData.location, experience_min: formData.experience_min, experience_max: formData.experience_max })
                 });
                 if (res.ok) {
                     const data = await res.json();
                     setFormData({ ...formData, description: data.description, required_skills: data.skills?.join(", ") || formData.required_skills });
+                    setHighlightAdd(true);
                 }
             } catch (error) {
                 console.error("Failed to generate AI description:", error);
             } finally {
                 setIsGeneratingAI(false);
             }
+        }
+    };
+
+    // When the panel is highlighted (after a JD is generated / content added), bring it into view
+    // and fade the highlight out so the user immediately notices it without scrolling to find it.
+    useEffect(() => {
+        if (!highlightAdd) return;
+        const scrollTimer = setTimeout(() => {
+            addPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 120);
+        const clearTimer = setTimeout(() => setHighlightAdd(false), 4000);
+        return () => {
+            clearTimeout(scrollTimer);
+            clearTimeout(clearTimer);
+        };
+    }, [highlightAdd]);
+
+    // Does a real (non-empty) job description exist yet? Only then do we offer "Add more with AI".
+    const hasJD = (formData.description || "").replace(/<[^>]*>/g, "").trim().length > 10;
+
+    // Fold the user's extra points into the CURRENT description via AI, preserving what's there.
+    const addToJDWithAI = async () => {
+        const extra = additionalJD.trim();
+        if (!extra) return;
+        if (!formData.description || formData.description.replace(/<[^>]*>/g, "").trim().length < 10) {
+            alert(tr("jobForm.writeJDFirst"));
+            return;
+        }
+        setIsEnhancingJD(true);
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/generate-jd`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({
+                    title: formData.title,
+                    // Send a clean copy so prior highlights don't stack; only the new text gets marked.
+                    existing_description: stripMarks(formData.description),
+                    additional_instructions: extra,
+                    location: formData.location,
+                    experience_min: formData.experience_min,
+                    experience_max: formData.experience_max,
+                }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setFormData((prev) => ({
+                    ...prev,
+                    description: data.description || prev.description,
+                    required_skills: data.skills?.join(", ") || prev.required_skills,
+                }));
+                setAdditionalJD("");
+                setJustAdded(true);
+                setHighlightAdd(true);
+                setTimeout(() => setJustAdded(false), 2500);
+            } else {
+                alert(tr("jobForm.aiAddFailed"));
+            }
+        } catch (error) {
+            console.error("Error adding to JD:", error);
+            alert(tr("jobForm.networkUpdateDesc"));
+        } finally {
+            setIsEnhancingJD(false);
         }
     };
 
@@ -357,16 +435,18 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
     const errorInputCls = "border-[#EF4444] bg-[#FDECEC] text-[#C0383C] focus:border-[#EF4444] focus:ring-[#EF4444]/20";
 
-    // Hand the just-created job off to sourcing.
+    // Hand the just-created job off to sourcing. Both auto-start a JD-based search for THIS job
+    // (same as the Pipeline's "Source candidates"):
     //  - "ai":     Croar Pilot auto-starts sourcing from the job's title + JD.
-    //  - "manual": AI Sourcing page, pre-filled with the job title to search.
+    //  - "manual": the Profile Sourcing page auto-searches from the JD, locked to this job.
     const startSourcing = (mode: "ai" | "manual") => {
         try {
             sessionStorage.setItem("croar_source_job", JSON.stringify({
                 id: createdJobId,
                 title: formData.title || "",
+                skills: formData.required_skills || "",
                 description: formData.description || "",
-                autostart: mode === "ai",
+                autostart: true,
             }));
         } catch (e) {
             console.error("Could not hand off to sourcing:", e);
@@ -379,7 +459,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             <div className="min-h-[60vh] w-full flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-[13px] font-medium text-[#8A929E]">Loading details…</span>
+                    <span className="text-[13px] font-medium text-[#8A929E]">{tr("jobForm.loadingDetails")}</span>
                 </div>
             </div>
         );
@@ -392,11 +472,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     <div className="w-14 h-14 rounded-[16px] bg-[#FDECEC] text-[#C0383C] flex items-center justify-center mx-auto mb-4">
                         <span className="material-symbols-rounded text-3xl">error</span>
                     </div>
-                    <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">Couldn&apos;t load this job</h2>
-                    <p className="text-[13.5px] text-[#8A929E] leading-relaxed mb-5">It may have been removed, or you don&apos;t have access to it. Editing is disabled to avoid overwriting it with blank values.</p>
+                    <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">{tr("jobForm.couldntLoadJob")}</h2>
+                    <p className="text-[13.5px] text-[#8A929E] leading-relaxed mb-5">{tr("jobForm.couldntLoadJobDesc")}</p>
                     <div className="flex items-center justify-center gap-2.5">
-                        <Button variant="secondary" onClick={() => fetchJobDetails()}>Retry</Button>
-                        <Button onClick={() => router.push("/enterprise/jobs")}>Back to Jobs</Button>
+                        <Button variant="secondary" onClick={() => fetchJobDetails()}>{tr("common.retry")}</Button>
+                        <Button onClick={() => router.push("/enterprise/jobs")}>{tr("jobForm.backToJobs")}</Button>
                     </div>
                 </div>
             </div>
@@ -407,9 +487,9 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
         <div className="px-4 sm:px-5 md:px-7 pb-6 max-w-[1400px] mx-auto w-full h-full flex flex-col gap-6 animate-in fade-in duration-500 relative">
             {/* Header */}
             <PageHeader
-                help={<><p>Describe the role across the steps — title, requirements, pipeline.</p><p>Use <strong>Draft with AI</strong> for the description. Save, then publish or share the job to start receiving candidates.</p></>}
-                title={isEdit ? "Edit Job" : "Create Job"}
-                subtitle={`Step ${currentStep} of 3 — ${steps.find(s => s.id === currentStep)?.name || "Job Details"}`}
+                help={<><p>{tr("jobForm.outlineResp")}</p><p>{tr("jobForm.autoDraftAI")}</p></>}
+                title={isEdit ? tr("jobForm.editJob") : tr("jobForm.createJob")}
+                subtitle={tr("jobForm.stepSubtitle", { step: currentStep, name: steps.find(s => s.id === currentStep)?.name || tr("jobForm.stepJobDetails") })}
                 onBack={() => router.back()}
                 actions={
                     <>
@@ -432,7 +512,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                             onClick={() => currentStep < 3 ? setCurrentStep(currentStep + 1) : handleSubmit()}
                             className="group shrink-0"
                         >
-                            {isSubmitting ? "Saving…" : currentStep === 3 ? (isEdit ? "Save changes" : "Create job") : "Next step"}
+                            {isSubmitting ? tr("jobForm.saving") : currentStep === 3 ? (isEdit ? tr("jobForm.saveChanges") : tr("jobForm.createJobBtn")) : tr("jobForm.nextStep")}
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </>
@@ -455,19 +535,19 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                     <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
                                                         <ClipboardList className="w-[18px] h-[18px]" />
                                                     </span>
-                                                    Job Profile
+                                                    {tr("jobForm.jobProfile")}
                                                 </span>
                                             }
-                                            subtitle="Core listing details"
+                                            subtitle={tr("jobForm.coreListingDetails")}
                                         />
 
                                         <div className="space-y-4 pt-1">
-                                            <Field label="Job Title" htmlFor="job-title-input" required>
-                                                <Input id="job-title-input" type="text" placeholder="e.g. Senior Frontend Engineer" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
+                                            <Field label={tr("jobForm.jobTitle")} htmlFor="job-title-input" required>
+                                                <Input id="job-title-input" type="text" placeholder={tr("jobForm.jobTitlePlaceholder")} value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
                                             </Field>
 
                                             {companies.length > 0 && (
-                                                <Field label="Company" htmlFor="company-select">
+                                                <Field label={tr("jobForm.company")} htmlFor="company-select">
                                                     <Select id="company-select" className="cursor-pointer" value={formData.company_id} onChange={e => setFormData({ ...formData, company_id: e.target.value })}>
                                                         {companies.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
                                                     </Select>
@@ -485,27 +565,27 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                     <span className="w-9 h-9 rounded-[10px] bg-[#E3F4EF] text-[#0E8A6E] flex items-center justify-center shrink-0">
                                                         <MapPin className="w-[18px] h-[18px]" />
                                                     </span>
-                                                    Work Arrangement
+                                                    {tr("jobForm.workArrangement")}
                                                 </span>
                                             }
-                                            subtitle="Work mode & location"
+                                            subtitle={tr("jobForm.workModeLocation")}
                                         />
 
                                         <div className="space-y-4 pt-1">
                                             <div className="grid grid-cols-2 gap-4">
-                                                <Field label="Type" htmlFor="job-type-select">
+                                                <Field label={tr("jobForm.typeLabel")} htmlFor="job-type-select">
                                                     <Select id="job-type-select" className="cursor-pointer" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
-                                                        <option>Full Time</option><option>Part Time</option><option>Contract</option>
+                                                        <option>{tr("jobForm.fullTime")}</option><option>{tr("jobForm.partTime")}</option><option>{tr("jobForm.contract")}</option><option>{tr("jobForm.internship")}</option>
                                                     </Select>
                                                 </Field>
-                                                <Field label="Mode" htmlFor="work-mode-select">
+                                                <Field label={tr("jobForm.modeLabel")} htmlFor="work-mode-select">
                                                     <Select id="work-mode-select" className="cursor-pointer" value={formData.work_mode} onChange={e => setFormData({ ...formData, work_mode: e.target.value })}>
-                                                        <option>On-Site</option><option>Remote</option><option>Hybrid</option>
+                                                        <option>{tr("jobForm.onSite")}</option><option>{tr("jobForm.remote")}</option><option>{tr("jobForm.hybrid")}</option>
                                                     </Select>
                                                 </Field>
                                             </div>
-                                            <Field label="Location" htmlFor="location-input">
-                                                <Input id="location-input" type="text" placeholder="e.g. San Francisco, CA" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
+                                            <Field label={tr("jobForm.locationLabel")} htmlFor="location-input">
+                                                <Input id="location-input" type="text" placeholder={tr("jobForm.locationPlaceholder")} value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
                                             </Field>
                                         </div>
                                     </Card>
@@ -519,26 +599,26 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                     <span className="w-9 h-9 rounded-[10px] bg-[#FEF3E2] text-[#D97706] flex items-center justify-center shrink-0">
                                                         <Calculator className="w-[18px] h-[18px]" />
                                                     </span>
-                                                    Requirements
+                                                    {tr("jobForm.requirements")}
                                                 </span>
                                             }
-                                            subtitle="Experience & compensation"
+                                            subtitle={tr("jobForm.expComp")}
                                         />
 
                                         <div className="space-y-4 pt-1">
                                             <div className="grid grid-cols-2 gap-4">
-                                                <Field label="Min Exp (Yrs)" htmlFor="experience-min-input" error={isExperienceInvalid ? "Max must be ≥ min" : undefined}>
+                                                <Field label={tr("jobForm.minExpYears")} htmlFor="experience-min-input" error={isExperienceInvalid ? tr("jobForm.maxMustBeMin") : undefined}>
                                                     <Input id="experience-min-input" type="number" min="0" className={cn(jetbrainsMono.className, isExperienceInvalid && errorInputCls)} value={formData.experience_min} onChange={e => setFormData({ ...formData, experience_min: e.target.value })} />
                                                 </Field>
-                                                <Field label="Max Exp (Yrs)" htmlFor="experience-max-input">
+                                                <Field label={tr("jobForm.maxExpYears")} htmlFor="experience-max-input">
                                                     <Input id="experience-max-input" type="number" min="0" className={cn(jetbrainsMono.className, isExperienceInvalid && errorInputCls)} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
                                                 </Field>
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
-                                                <Field label="Min Salary (LPA)" htmlFor="salary-min-input" error={isSalaryInvalid ? "Max must be ≥ min" : undefined}>
+                                                <Field label={tr("jobForm.minSalary")} htmlFor="salary-min-input" error={isSalaryInvalid ? tr("jobForm.maxMustBeMin") : undefined}>
                                                     <Input id="salary-min-input" type="number" min="0" placeholder="5" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
                                                 </Field>
-                                                <Field label="Max Salary (LPA)" htmlFor="salary-max-input">
+                                                <Field label={tr("jobForm.maxSalary")} htmlFor="salary-max-input">
                                                     <Input id="salary-max-input" type="number" min="0" placeholder="15" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
                                                 </Field>
                                             </div>
@@ -554,8 +634,8 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                 <FileText className="w-5 h-5" />
                                             </div>
                                             <div>
-                                                <h3 className="text-[14px] font-bold text-[#15171C]">Job Description &amp; Skills</h3>
-                                                <p className="text-[11px] font-medium text-[#9AA3AF] mt-0.5">Outline the responsibilities and tech stack</p>
+                                                <h3 className="text-[14px] font-bold text-[#15171C]">{tr("jobForm.jobDescSkills")}</h3>
+                                                <p className="text-[11px] font-medium text-[#9AA3AF] mt-0.5">{tr("jobForm.outlineResp")}</p>
                                             </div>
                                         </div>
                                         {isEdit ? (
@@ -574,38 +654,93 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                                     : "bg-[#F4F5F7] text-[#6B6F76] border-[#E8EAED]"
                                                         }`}
                                                 >
-                                                    <option value={1}>Draft</option>
-                                                    <option value={2}>Active</option>
-                                                    <option value={3}>On Hold</option>
-                                                    <option value={4}>Closed</option>
+                                                    <option value={1}>{tr("jobForm.draftStatus")}</option>
+                                                    <option value={2}>{tr("jobForm.activeStatus")}</option>
+                                                    <option value={3}>{tr("jobForm.onHold")}</option>
+                                                    <option value={4}>{tr("jobForm.closedStatus")}</option>
                                                 </Select>
                                                 <Button onClick={generateAIDescription} disabled={isGeneratingAI} className="h-10">
                                                     {isGeneratingAI ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                                                    {isGeneratingAI ? 'Generating…' : 'Auto Draft with AI'}
+                                                    {isGeneratingAI ? tr("jobForm.generating") : tr("jobForm.autoDraftAI")}
                                                 </Button>
                                             </div>
                                         ) : (
                                             <Button onClick={generateAIDescription} disabled={isGeneratingAI} className="h-10">
                                                 {isGeneratingAI ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                                                {isGeneratingAI ? 'Generating…' : 'Auto Draft with AI'}
+                                                {isGeneratingAI ? tr("jobForm.generating") : tr("jobForm.autoDraftAI")}
                                             </Button>
                                         )}
                                     </div>
 
                                     <div className="flex-1 flex flex-col border-b border-[#E8EAED] overflow-y-auto">
-                                        <JobEditor content={formData.description} onChange={(content) => setFormData({ ...formData, description: content })} placeholder="Detail the role, responsibilities, and ideal candidate profile here..." />
+                                        <JobEditor content={formData.description} onChange={(content) => setFormData({ ...formData, description: content })} placeholder={tr("jobForm.jdEditorPlaceholder")} />
                                     </div>
+
+                                    {/* Add more to the AI-generated JD — only surfaced once a JD exists, and
+                                        highlighted + scrolled into view after generation/add so it's easy to spot. */}
+                                    {hasJD && (
+                                        <div
+                                            ref={addPanelRef}
+                                            className={cn(
+                                                "px-5 py-4 border-b shrink-0 transition-all duration-500",
+                                                highlightAdd
+                                                    ? "bg-[#EBE9FB] border-[#C9C4F5] ring-2 ring-[#5B53E0]/50 shadow-[0_0_0_4px_rgba(91,83,224,0.10)]"
+                                                    : "bg-[#F3F2FD] border-[#E4E2FA]"
+                                            )}
+                                        >
+                                            <div className="flex items-center justify-between gap-2 mb-2">
+                                                <div className="flex items-center gap-1.5">
+                                                    <Sparkles className={cn("w-3.5 h-3.5 text-[#5B53E0]", highlightAdd && "animate-pulse")} />
+                                                    <span className="text-[12px] font-bold text-[#5B53E0]">{tr("jobForm.addMoreAI")}</span>
+                                                    {highlightAdd && !justAdded && (
+                                                        <span className="text-[9px] font-black text-white bg-[#5B53E0] rounded-full px-2 py-[3px] tracking-wide">{tr("jobForm.newBadge")}</span>
+                                                    )}
+                                                </div>
+                                                {justAdded && (
+                                                    <span className="flex items-center gap-1 text-[11px] font-bold text-[#15803D]">
+                                                        <CircleCheck className="w-3.5 h-3.5" /> {tr("jobForm.addedToDesc")}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <Textarea
+                                                value={additionalJD}
+                                                onChange={(e) => setAdditionalJD(e.target.value)}
+                                                disabled={isEnhancingJD}
+                                                placeholder={tr("jobForm.addMorePlaceholder")}
+                                                className="min-h-[64px] bg-white"
+                                                onKeyDown={(e) => {
+                                                    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                                                        e.preventDefault();
+                                                        addToJDWithAI();
+                                                    }
+                                                }}
+                                            />
+                                            <div className="flex items-center justify-between gap-3 mt-2">
+                                                <p className="text-[11px] text-[#8A929E]">{tr("jobForm.aiWeavesPoints")}</p>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={addToJDWithAI}
+                                                    disabled={isEnhancingJD || !additionalJD.trim()}
+                                                    className="shrink-0"
+                                                >
+                                                    {isEnhancingJD ? <RefreshCcw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                                                    {isEnhancingJD ? tr("jobForm.adding") : tr("jobForm.addToJD")}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="p-5 bg-[#F7F8FA] shrink-0">
                                         <Field
-                                            label={<>Required Tech Stack <span className="font-normal text-[#9AA3AF]">(Comma Separated)</span></>}
+                                            label={<>{tr("jobForm.requiredTechStack")} <span className="font-normal text-[#9AA3AF]">{tr("jobForm.commaSeparated")}</span></>}
                                             htmlFor="required-skills-input"
                                         >
                                             <div className="relative">
                                                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] z-10 pointer-events-none">
                                                     <AtSign className="w-4 h-4" />
                                                 </div>
-                                                <Input id="required-skills-input" type="text" className="pl-10" placeholder="e.g. React, Node.js, Python, AWS" value={formData.required_skills} onChange={e => setFormData({ ...formData, required_skills: e.target.value })} />
+                                                <Input id="required-skills-input" type="text" className="pl-10" placeholder={tr("jobForm.techStackPlaceholder")} value={formData.required_skills} onChange={e => setFormData({ ...formData, required_skills: e.target.value })} />
                                             </div>
                                         </Field>
                                     </div>
@@ -619,31 +754,31 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                             <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-[#E8EAED] p-5 md:p-6 bg-[#F7F8FA] lg:overflow-y-auto no-scrollbar flex flex-col gap-5">
                                 {/* Header */}
                                 <div>
-                                    <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-tight mb-1.5">Application Form</h1>
-                                    <p className="text-[13px] text-[#8A929E] leading-relaxed">Design the form candidates will fill out when applying for this role.</p>
+                                    <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-tight mb-1.5">{tr("jobForm.applicationForm")}</h1>
+                                    <p className="text-[13px] text-[#8A929E] leading-relaxed">{tr("jobForm.designFormDesc")}</p>
                                 </div>
 
                                 {/* Form Stats */}
                                 <div className="grid grid-cols-2 gap-3">
                                     <Card padding="sm" className="text-center">
                                         <div className={`text-[26px] font-semibold text-[#5B53E0] tracking-[-1px] ${jetbrainsMono.className}`}>{formData.application_fields.length}</div>
-                                        <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">Total Fields</div>
+                                        <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">{tr("jobForm.totalFields")}</div>
                                     </Card>
                                     <Card padding="sm" className="text-center">
                                         <div className={`text-[26px] font-semibold text-[#15803D] tracking-[-1px] ${jetbrainsMono.className}`}>{formData.application_fields.filter(f => f.is_required).length}</div>
-                                        <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">Required</div>
+                                        <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">{tr("jobForm.requiredLabel")}</div>
                                     </Card>
                                 </div>
 
                                 {/* Field Types Guide */}
                                 <Card padding="sm" className="space-y-3">
-                                    <p className="text-[11px] font-semibold text-[#6B6F76] uppercase tracking-wider">Field Types</p>
+                                    <p className="text-[11px] font-semibold text-[#6B6F76] uppercase tracking-wider">{tr("jobForm.fieldTypes")}</p>
                                     {[
-                                        { type: 'Text', color: 'bg-[#E7ECFB] text-[#3559C7]', desc: 'Short or long text answers' },
-                                        { type: 'Email', color: 'bg-[#ECEBFB] text-[#5B53E0]', desc: 'Validated email address' },
-                                        { type: 'Number', color: 'bg-[#FEF3E2] text-[#D97706]', desc: 'Numeric value input' },
-                                        { type: 'File', color: 'bg-[#E3F4EF] text-[#0E8A6E]', desc: 'Document or resume upload' },
-                                        { type: 'Boolean', color: 'bg-[#FDECEC] text-[#C0383C]', desc: 'Yes / No toggle' },
+                                        { type: tr("jobForm.text"), color: 'bg-[#E7ECFB] text-[#3559C7]', desc: tr("jobForm.ftTextDesc") },
+                                        { type: tr("jobForm.email"), color: 'bg-[#ECEBFB] text-[#5B53E0]', desc: tr("jobForm.ftEmailDesc") },
+                                        { type: tr("jobForm.number"), color: 'bg-[#FEF3E2] text-[#D97706]', desc: tr("jobForm.ftNumberDesc") },
+                                        { type: tr("jobForm.file"), color: 'bg-[#E3F4EF] text-[#0E8A6E]', desc: tr("jobForm.ftFileDesc") },
+                                        { type: tr("jobForm.boolean"), color: 'bg-[#FDECEC] text-[#C0383C]', desc: tr("jobForm.ftBooleanDesc") },
                                     ].map(item => (
                                         <div key={item.type} className="flex items-center gap-3">
                                             <span className={`text-[10px] font-semibold px-2 py-1 rounded-[7px] ${item.color} shrink-0 w-14 text-center`}>{item.type}</span>
@@ -661,13 +796,13 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 items-center min-w-0">
                                                     <input type="text" className="bg-transparent border-none outline-none text-[13.5px] font-semibold text-[#15171C] p-0 focus:text-[#5B53E0] transition-colors truncate" value={field.label} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, label: e.target.value } : f) }))} />
                                                     <select className="bg-[#F4F5F7] border border-[#E8EAED] outline-none text-[12px] font-medium text-[#374151] px-3 h-9 rounded-[9px] cursor-pointer hover:bg-[#EEEFF1] transition-colors w-full sm:w-36" value={field.type} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, type: e.target.value as ApplicationField['type'] } : f) }))}>
-                                                        <option value="text">Text</option><option value="email">Email</option><option value="number">Number</option><option value="boolean">Boolean</option><option value="file">File</option>
+                                                        <option value="text">{tr("jobForm.text")}</option><option value="email">{tr("jobForm.email")}</option><option value="number">{tr("jobForm.number")}</option><option value="boolean">{tr("jobForm.boolean")}</option><option value="file">{tr("jobForm.file")}</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2 ml-4 shrink-0">
-                                                <button title={field.is_required ? "Required — click to make optional" : "Optional — click to make required"} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, is_required: !f.is_required } : f) }))} className={`px-2.5 py-1 rounded-[8px] text-[11px] font-semibold border transition-colors ${field.is_required ? 'bg-[#5B53E0] text-white border-[#5B53E0]' : 'bg-[#F4F5F7] text-[#374151] border-[#D4D7DC] hover:bg-[#ECEBFB] hover:text-[#5B53E0] hover:border-[#5B53E0]/40'}`}>{field.is_required ? 'Required' : 'Optional'}</button>
-                                                <button title="Remove question" onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
+                                                <button title={field.is_required ? tr("jobForm.requiredClickOptional") : tr("jobForm.optionalClickRequired")} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, is_required: !f.is_required } : f) }))} className={`px-2.5 py-1 rounded-[8px] text-[11px] font-semibold border transition-colors ${field.is_required ? 'bg-[#5B53E0] text-white border-[#5B53E0]' : 'bg-[#F4F5F7] text-[#374151] border-[#D4D7DC] hover:bg-[#ECEBFB] hover:text-[#5B53E0] hover:border-[#5B53E0]/40'}`}>{field.is_required ? tr("jobForm.required") : tr("jobForm.optional")}</button>
+                                                <button title={tr("jobForm.removeQuestion")} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
                                             </div>
                                         </div>
                                     ))}
@@ -677,7 +812,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                         setFormData(prev => ({ ...prev, application_fields: [...prev.application_fields, newField] }));
                                     }} className="w-full h-12 rounded-[12px] border-2 border-dashed border-[#D4D7DC] text-[#6B6F76] text-[14px] font-semibold hover:border-[#5B53E0] hover:text-[#5B53E0] hover:bg-[#ECEBFB]/40 transition-colors flex items-center justify-center gap-2">
                                         <CirclePlus className="w-5 h-5" />
-                                        Add Question
+                                        {tr("jobForm.addQuestion")}
                                     </button>
                                 </div>
                             </div>
@@ -689,26 +824,26 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                             <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-[#E8EAED] p-5 md:p-6 bg-[#F7F8FA] lg:overflow-y-auto no-scrollbar flex flex-col gap-5">
                                 {/* Header */}
                                 <div>
-                                    <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-tight mb-1.5">Hiring Process</h1>
-                                    <p className="text-[13px] text-[#8A929E] leading-relaxed">Define the stages candidates go through from application to final selection.</p>
+                                    <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-tight mb-1.5">{tr("jobForm.hiringProcess")}</h1>
+                                    <p className="text-[13px] text-[#8A929E] leading-relaxed">{tr("jobForm.defineStagesDesc")}</p>
                                 </div>
 
                                 {/* Stage Stats */}
                                 <Card padding="sm" className="text-center">
                                     <div className={`text-[26px] font-semibold text-[#5B53E0] tracking-[-1px] ${jetbrainsMono.className}`}>{formData.workflow_stages.length}</div>
-                                    <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">Total Stages</div>
+                                    <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">{tr("jobForm.totalStages")}</div>
                                 </Card>
 
                                 {/* Stage Types Guide */}
                                 <Card padding="sm" className="space-y-3">
-                                    <p className="text-[11px] font-semibold text-[#6B6F76] uppercase tracking-wider">Stage Types</p>
+                                    <p className="text-[11px] font-semibold text-[#6B6F76] uppercase tracking-wider">{tr("jobForm.stageTypes")}</p>
                                     {[
-                                        { type: 'Screening', color: 'bg-[#E7ECFB] text-[#3559C7]', desc: 'Initial candidate filtering' },
-                                        { type: 'Aptitude', color: 'bg-[#ECEBFB] text-[#5B53E0]', desc: 'Cognitive & reasoning tests' },
-                                        { type: 'Coding', color: 'bg-[#FEF3E2] text-[#D97706]', desc: 'Technical coding assessment' },
-                                        { type: 'Tech Interview', color: 'bg-[#E3F4EF] text-[#0E8A6E]', desc: 'Deep technical evaluation' },
-                                        { type: 'HR Interview', color: 'bg-[#FDECEC] text-[#C0383C]', desc: 'Culture & fit discussion' },
-                                        { type: 'Final Selection', color: 'bg-[#E6F4EA] text-[#15803D]', desc: 'Final hiring decision' },
+                                        { type: tr("jobForm.stageScreening"), color: 'bg-[#E7ECFB] text-[#3559C7]', desc: tr("jobForm.sgScreeningDesc") },
+                                        { type: tr("jobForm.stageAptitude"), color: 'bg-[#ECEBFB] text-[#5B53E0]', desc: tr("jobForm.sgAptitudeDesc") },
+                                        { type: tr("jobForm.stageCoding"), color: 'bg-[#FEF3E2] text-[#D97706]', desc: tr("jobForm.sgCodingDesc") },
+                                        { type: tr("jobForm.sgTech"), color: 'bg-[#E3F4EF] text-[#0E8A6E]', desc: tr("jobForm.sgTechDesc") },
+                                        { type: tr("jobForm.stageHRInterview"), color: 'bg-[#FDECEC] text-[#C0383C]', desc: tr("jobForm.sgHRDesc") },
+                                        { type: tr("jobForm.stageFinalSelection"), color: 'bg-[#E6F4EA] text-[#15803D]', desc: tr("jobForm.sgFinalDesc") },
                                     ].map(item => (
                                         <div key={item.type} className="flex items-center gap-3">
                                             <span className={`text-[10px] font-semibold px-2 py-1 rounded-[7px] ${item.color} shrink-0 w-20 text-center`}>{item.type}</span>
@@ -722,12 +857,12 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                     {formData.workflow_stages.map((node, idx) => (
                                         <div key={node.id} className="group relative flex items-center gap-3.5 bg-white p-3.5 rounded-[12px] border border-[#E8EAED] border-l-[3px] border-l-[#5B53E0] hover:border-[#5B53E0]/40 transition-colors">
                                             <div className="flex flex-col gap-1 items-center absolute -left-8">
-                                                <button title="Move up" disabled={idx === 0} onClick={() => {
+                                                <button title={tr("jobForm.moveUp")} disabled={idx === 0} onClick={() => {
                                                     const newStages = [...formData.workflow_stages];
                                                     [newStages[idx], newStages[idx - 1]] = [newStages[idx - 1], newStages[idx]];
                                                     setFormData(prev => ({ ...prev, workflow_stages: newStages }));
                                                 }} className="w-6 h-6 rounded-[8px] bg-white border border-[#E1E4E8] shadow-sm flex items-center justify-center text-[#8A929E] hover:text-[#5B53E0] hover:border-[#5B53E0]/40 disabled:opacity-30 transition-colors"><ChevronUp className="w-4 h-4" /></button>
-                                                <button title="Move down" disabled={idx === formData.workflow_stages.length - 1} onClick={() => {
+                                                <button title={tr("jobForm.moveDown")} disabled={idx === formData.workflow_stages.length - 1} onClick={() => {
                                                     const newStages = [...formData.workflow_stages];
                                                     [newStages[idx], newStages[idx + 1]] = [newStages[idx + 1], newStages[idx]];
                                                     setFormData(prev => ({ ...prev, workflow_stages: newStages }));
@@ -737,10 +872,10 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                             <div className="flex-1 space-y-1.5 min-w-0">
                                                 <input type="text" className="w-full bg-transparent border-none outline-none text-[13.5px] font-semibold text-[#15171C] p-0 focus:text-[#5B53E0] transition-colors truncate" value={node.name} onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, name: e.target.value } : s) }))} />
                                                 <select className="bg-[#F4F5F7] border border-[#E8EAED] outline-none text-[11.5px] font-medium text-[#374151] px-2.5 h-8 rounded-[8px] cursor-pointer hover:bg-[#EEEFF1] transition-colors" value={node.type} onChange={(e) => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, type: e.target.value } : s) }))}>
-                                                    {STAGE_TYPES.map(t => (<option key={t.name} value={t.name}>{t.name}</option>))}
+                                                    {STAGE_TYPES.map(t => (<option key={t.name} value={t.name}>{tr("jobForm.stage" + t.name.replace(/\s+/g, ""))}</option>))}
                                                 </select>
                                             </div>
-                                            <button title="Remove stage" onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
+                                            <button title={tr("jobForm.removeStage")} onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
                                         </div>
                                     ))}
 
@@ -750,7 +885,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                         setFormData(prev => ({ ...prev, workflow_stages: [...prev.workflow_stages, newStage] }));
                                     }} className="w-full h-12 rounded-[12px] border-2 border-dashed border-[#D4D7DC] text-[#6B6F76] text-[14px] font-semibold hover:border-[#5B53E0] hover:text-[#5B53E0] hover:bg-[#ECEBFB]/40 transition-colors flex items-center justify-center gap-2">
                                         <ListPlus className="w-5 h-5" />
-                                        Add Stage
+                                        {tr("jobForm.addStage")}
                                     </button>
                                 </div>
                             </div>
@@ -764,21 +899,21 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0E1014]/50 backdrop-blur-sm p-6">
                         <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-sm rounded-[16px] p-6 text-center shadow-[0_14px_34px_rgba(15,23,42,0.16)] relative overflow-hidden border border-[#E8EAED]">
                             <div className="w-12 h-12 bg-[#E6F4EA] text-[#15803D] rounded-[14px] flex items-center justify-center mx-auto mb-3.5"><CircleCheck className="w-7 h-7" /></div>
-                            <h2 className="text-[19px] font-extrabold text-[#15171C] tracking-[-0.4px] mb-1.5 leading-tight">{isEdit ? "Job updated" : "Job created"}</h2>
-                            <p className="text-[12.5px] text-[#8A929E] leading-relaxed mb-5">{isEdit ? "The job details have been updated successfully." : (formData.status_id === 2 ? "The new job has been created and is now live." : "The new job has been created. Set its status to Active to start receiving applications.")}</p>
+                            <h2 className="text-[19px] font-extrabold text-[#15171C] tracking-[-0.4px] mb-1.5 leading-tight">{isEdit ? tr("jobForm.jobUpdated") : tr("jobForm.jobCreated")}</h2>
+                            <p className="text-[12.5px] text-[#8A929E] leading-relaxed mb-5">{isEdit ? tr("jobForm.jobUpdatedDesc") : (formData.status_id === 2 ? tr("jobForm.jobCreatedLive") : tr("jobForm.jobCreatedSetActive"))}</p>
 
                             {!isEdit && (
                                 <div className="mb-4 rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-3.5 text-left">
-                                    <p className="text-[12.5px] font-bold text-[#15171C] mb-0.5">Start sourcing candidates</p>
-                                    <p className="text-[11.5px] text-[#8A929E] leading-relaxed mb-3">Let Croar Pilot match candidates from the job description, or search yourself.</p>
+                                    <p className="text-[12.5px] font-bold text-[#15171C] mb-0.5">{tr("jobForm.startSourcing")}</p>
+                                    <p className="text-[11.5px] text-[#8A929E] leading-relaxed mb-3">{tr("jobForm.pilotMatchDesc")}</p>
                                     <div className="flex flex-col gap-2">
                                         <Button fullWidth onClick={() => startSourcing("ai")}>
                                             <Sparkles className="w-4 h-4" />
-                                            Source with Croar Pilot
+                                            {tr("jobForm.sourceWithPilot")}
                                         </Button>
                                         <Button variant="secondary" fullWidth onClick={() => startSourcing("manual")}>
                                             <Users className="w-4 h-4" />
-                                            Source manually
+                                            {tr("jobForm.sourceManually")}
                                         </Button>
                                     </div>
                                 </div>
@@ -787,11 +922,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                             <div className="flex flex-col gap-2">
                                 <Button variant={isEdit ? "primary" : "secondary"} fullWidth onClick={() => router.push("/enterprise/jobs")}>
                                     <LayoutDashboard className="w-4 h-4" />
-                                    View job board
+                                    {tr("jobForm.viewJobBoard")}
                                 </Button>
                                 <Button variant="secondary" fullWidth onClick={() => window.open(`${window.location.origin}/jobs/${isEdit ? jobId : createdJobId}`, '_blank')}>
                                     <Eye className="w-4 h-4" />
-                                    View job application
+                                    {tr("jobForm.viewJobApplication")}
                                 </Button>
                             </div>
                         </motion.div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import {
     ArrowLeft,
@@ -31,6 +32,7 @@ interface Template {
 export default function SurveyTemplates() {
     const router = useRouter();
     const { canAccess } = useAuth();
+    const { t: tr } = useI18n();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -51,7 +53,7 @@ export default function SurveyTemplates() {
     }, [fetchTemplates]);
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm("Are you sure you want to delete this template?")) return;
+        if (!window.confirm(tr("surveysExt.confirmDeleteTemplate"))) return;
         try {
             const res = await apiClient.delete(`/api/v1/enterprise/surveys/templates/${id}`);
             if (res.ok) fetchTemplates();
@@ -76,16 +78,16 @@ export default function SurveyTemplates() {
                     <button
                         onClick={() => router.push('/enterprise/surveys')}
                         className="w-9 h-9 shrink-0 flex items-center justify-center rounded-[10px] bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7] hover:text-[#15171C] transition-colors shadow-sm"
-                        aria-label="Back to surveys"
+                        aria-label={tr("surveysExt.backToSurveys")}
                     >
                         <ArrowLeft className="w-4 h-4" />
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Survey Frameworks</h1>
-                            <PageHelp title="Survey Frameworks">Your survey question sets. Create one, then launch a campaign from HR Surveys.</PageHelp>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("surveysExt.surveyFrameworks")}</h1>
+                            <PageHelp title={tr("surveysExt.surveyFrameworks")}>{tr("surveysExt.frameworksHelp")}</PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5 truncate">Manage and deploy specialized organizational pulse frameworks</p>
+                        <p className="text-[12.5px] text-[#8A929E] mt-0.5 truncate">{tr("surveysExt.frameworksSubtitle")}</p>
                     </div>
                 </div>
                 {canAccess("surveys:create") && (
@@ -93,17 +95,17 @@ export default function SurveyTemplates() {
                         href="/enterprise/surveys/templates/new"
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors shrink-0 self-start sm:self-auto"
                     >
-                        <Plus className="w-3.5 h-3.5" /> New Template
+                        <Plus className="w-3.5 h-3.5" /> {tr("surveysExt.newTemplate")}
                     </Link>
                 )}
             </header>
 
             {/* Stat cards */}
             <StatGrid>
-                <StatCard label="Frameworks" value={templates.length} icon="poll" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
-                <StatCard label="Categories" value={categoryCount} icon="category" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label="Total Questions" value={totalQuestions} icon="quiz" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label="Showing" value={filteredTemplates.length} icon="description" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={tr("surveysExt.frameworks")} value={templates.length} icon="poll" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
+                <StatCard label={tr("surveysExt.categories")} value={categoryCount} icon="category" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={tr("surveysExt.totalQuestions")} value={totalQuestions} icon="quiz" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={tr("surveysExt.showing")} value={filteredTemplates.length} icon="description" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
             </StatGrid>
 
             {/* Toolbar: search */}
@@ -114,7 +116,7 @@ export default function SurveyTemplates() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search frameworks by title or category…"
+                        placeholder={tr("surveysExt.searchFrameworks")}
                         className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
                     />
                 </div>
@@ -133,22 +135,22 @@ export default function SurveyTemplates() {
                         <LayoutTemplate className="w-8 h-8 text-[#C7CCD4]" />
                     </div>
                     <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
-                        {templates.length === 0 ? "No frameworks yet" : "No frameworks match your search"}
+                        {templates.length === 0 ? tr("surveysExt.noFrameworksYet") : tr("surveysExt.noFrameworksMatch")}
                     </h3>
                     <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
                         {templates.length === 0
-                            ? "Create your first survey framework to start measuring engagement and culture."
-                            : "Try adjusting your search terms to find the framework you're looking for."}
+                            ? tr("surveysExt.noFrameworksYetDesc")
+                            : tr("surveysExt.noFrameworksMatchDesc")}
                     </p>
                     {templates.length === 0 ? (
                         canAccess("surveys:moderate") && (
                             <Link href="/enterprise/surveys/templates/new" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors">
-                                <Plus className="w-4 h-4" /> New Template
+                                <Plus className="w-4 h-4" /> {tr("surveysExt.newTemplate")}
                             </Link>
                         )
                     ) : (
                         <button onClick={() => setSearchQuery("")} className="inline-flex items-center h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] transition-colors">
-                            Clear search
+                            {tr("surveysExt.clearSearch")}
                         </button>
                     )}
                 </div>
@@ -170,13 +172,13 @@ export default function SurveyTemplates() {
                             <div className="mt-4 min-w-0">
                                 <h3 className="text-[15px] font-bold text-[#15171C] tracking-[-0.2px] leading-snug group-hover:text-[#5B53E0] transition-colors line-clamp-1">{tpl.title}</h3>
                                 <p className="text-[10px] font-semibold text-[#C7CCD4] uppercase tracking-[0.04em] mt-1">ID: {tpl.id.slice(0, 8)}</p>
-                                <p className="text-[13px] text-[#8A929E] mt-2 line-clamp-2 leading-relaxed">{tpl.description || "Engagement analytics framework."}</p>
+                                <p className="text-[13px] text-[#8A929E] mt-2 line-clamp-2 leading-relaxed">{tpl.description || tr("surveysExt.engagementAnalyticsFramework")}</p>
                             </div>
 
                             <div className="mt-auto pt-4 flex items-center justify-between border-t border-[#F0F0F1]">
                                 <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[#374151]">
                                     <ListChecks className="w-3.5 h-3.5 text-[#9AA3AF]" />
-                                    <span className={jetbrainsMono.className}>{tpl.questions?.length || 0}</span> questions
+                                    <span className={jetbrainsMono.className}>{tpl.questions?.length || 0}</span> {tr("surveysExt.questions")}
                                 </span>
                                 <div className="flex items-center gap-1">
                                     <button
@@ -185,7 +187,7 @@ export default function SurveyTemplates() {
                                             router.push(`/enterprise/surveys/templates/edit/${tpl.id}`);
                                         }}
                                         className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
-                                        title="Edit framework"
+                                        title={tr("surveysExt.editFramework")}
                                     >
                                         <Pencil className="w-4 h-4" />
                                     </button>
@@ -195,7 +197,7 @@ export default function SurveyTemplates() {
                                             handleDelete(tpl.id);
                                         }}
                                         className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
-                                        title="Delete framework"
+                                        title={tr("surveysExt.deleteFramework")}
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>

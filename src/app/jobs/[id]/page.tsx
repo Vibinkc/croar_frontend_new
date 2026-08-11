@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { BACKEND_URL } from "@/utils/api";
+import { useI18n } from "@/context/I18nContext";
 
 interface ApplicationField {
     id: string;
@@ -37,6 +38,7 @@ interface Organization {
 }
 
 export default function PublicJobPage() {
+    const { t } = useI18n();
     const params = useParams();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -129,11 +131,11 @@ export default function PublicJobPage() {
             if (!isPhoneField(field, fieldKey)) return;
             const value = (formData[fieldKey] || "").trim();
             if (!value) {
-                if (field.is_required) phoneErrors[fieldKey] = "Phone number is required.";
+                if (field.is_required) phoneErrors[fieldKey] = t("candidate.phoneRequired");
                 return;
             }
             if (!isValidPhone(value)) {
-                phoneErrors[fieldKey] = "Enter a valid phone number (7–15 digits).";
+                phoneErrors[fieldKey] = t("candidate.phoneInvalid");
             }
         });
         if (Object.keys(phoneErrors).length > 0) {
@@ -171,7 +173,7 @@ export default function PublicJobPage() {
             if (res.ok) {
                 setApplied(true);
             } else {
-                let msg = "Failed to submit application";
+                let msg = t("candidate.failedToSubmit");
                 try {
                     const errData = await res.json();
                     if (errData?.detail) msg = errData.detail;
@@ -201,13 +203,13 @@ export default function PublicJobPage() {
                 <div className="w-16 h-16 bg-white border border-[#E8EAED] rounded-[16px] flex items-center justify-center mb-6 text-[#C7CCD4]">
                     <span className="material-icons-outlined text-3xl">search_off</span>
                 </div>
-                <h1 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-2">Job not found</h1>
-                <p className="text-[#8A929E] max-w-sm mb-7">The role you are looking for may have been closed or moved.</p>
+                <h1 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#15171C] mb-2">{t("candidate.jobNotFound")}</h1>
+                <p className="text-[#8A929E] max-w-sm mb-7">{t("candidate.jobNotFoundDesc")}</p>
                 <button
                     onClick={() => router.push("/")}
                     className="bg-[#5B53E0] hover:bg-[#4A43C9] text-white px-6 h-[46px] rounded-[10px] font-semibold text-[14px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
                 >
-                    Back to homepage
+                    {t("candidate.backToHomepage")}
                 </button>
             </div>
         );
@@ -296,7 +298,7 @@ export default function PublicJobPage() {
                             )}
                         </div>
                         <div className="flex flex-col leading-tight">
-                            <span className="text-[14px] font-bold text-[#15171C]">Career Portal</span>
+                            <span className="text-[14px] font-bold text-[#15171C]">{t("candidate.careerPortal")}</span>
                             <span className="text-[11px] font-medium text-[#9AA3AF]">
                                 {typeof orgName === 'object' ? orgName.name : orgName}
                             </span>
@@ -322,20 +324,20 @@ export default function PublicJobPage() {
                     )}
                     <div className="flex flex-wrap items-center gap-2 mb-5">
                         <span className="inline-flex items-center px-2.5 py-1 bg-white/[0.1] border border-white/15 text-white text-[12px] font-semibold rounded-[20px]">
-                            {job.job_type || "Full Time"}
+                            {job.job_type || t("candidate.fullTime")}
                         </span>
                         <span className="inline-flex items-center px-2.5 py-1 bg-white/[0.1] border border-white/15 text-[#C7CCD4] text-[12px] font-semibold rounded-[20px]">
-                            {job.work_mode || "On-Site"}
+                            {job.work_mode || t("candidate.onSite")}
                         </span>
                         {isOpen ? (
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#34D399]/15 border border-[#34D399]/30 text-[#34D399] text-[12px] font-semibold rounded-[20px]">
                                 <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
-                                {"Currently hiring"}
+                                {t("candidate.currentlyHiring")}
                             </span>
                         ) : (
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/[0.08] border border-white/15 text-[#C7CCD4] text-[12px] font-semibold rounded-[20px]">
                                 <span className="w-1.5 h-1.5 rounded-full bg-[#9AA3AF]"></span>
-                                {"Applications closed"}
+                                {t("candidate.applicationsClosed")}
                             </span>
                         )}
                     </div>
@@ -345,17 +347,17 @@ export default function PublicJobPage() {
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[#A8AEB8] font-medium text-[14px]">
                         <div className="flex items-center gap-2">
                             <span className="material-icons-outlined text-[#8B7DFF] text-[20px]">location_on</span>
-                            {job.location || "Remote"}
+                            {job.location || t("candidate.remote")}
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="material-icons-outlined text-[#8B7DFF] text-[20px]">work</span>
-                            {job.experience_min || 0}-{job.experience_max || '5+'} yrs exp
+                            {job.experience_min || 0}-{job.experience_max || '5+'} {t("candidate.yrsExp")}
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="material-icons-outlined text-[#8B7DFF] text-[20px]">payments</span>
-                            {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : 'Competitive'}
+                            {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : t("candidate.competitive")}
                             {job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : ''}
-                            <span className="text-[12px] text-white/40">/ {job.salary_frequency || 'yr'}</span>
+                            <span className="text-[12px] text-white/40">/ {job.salary_frequency || t("candidate.yr")}</span>
                         </div>
                     </div>
                 </div>
@@ -366,7 +368,7 @@ export default function PublicJobPage() {
                 <div className="lg:col-span-8">
                     <div className="bg-white rounded-[16px] border border-[#E8EAED] p-7 md:p-9 space-y-8">
                             <div>
-                                <h3 className="text-[11px] font-bold text-[#5B53E0] uppercase tracking-[0.1em] mb-3">About the role</h3>
+                                <h3 className="text-[11px] font-bold text-[#5B53E0] uppercase tracking-[0.1em] mb-3">{t("candidate.aboutTheRole")}</h3>
                                 <div className="text-[#374151] text-[14.5px] leading-[1.7] max-w-none">
                                     <style jsx global>{`
                                         .prose-custom ul {
@@ -405,7 +407,7 @@ export default function PublicJobPage() {
 
                             {job.required_skills && job.required_skills.length > 0 && (
                                 <div>
-                                    <h3 className="text-[11px] font-bold text-[#5B53E0] uppercase tracking-[0.1em] mb-3">Required competencies</h3>
+                                    <h3 className="text-[11px] font-bold text-[#5B53E0] uppercase tracking-[0.1em] mb-3">{t("candidate.requiredCompetencies")}</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {job.required_skills.map((skill: string, idx: number) => (
                                             <span key={idx} className="px-3 py-1.5 bg-[#F4F5F7] text-[#374151] rounded-[8px] border border-[#E8EAED] font-medium text-[12px]">
@@ -426,9 +428,9 @@ export default function PublicJobPage() {
                                 <div className="w-16 h-16 bg-[#F4F5F7] text-[#8A929E] rounded-[16px] flex items-center justify-center mx-auto mb-5">
                                     <span className="material-icons-outlined text-[32px]">lock_clock</span>
                                 </div>
-                                <h3 className="text-[20px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">Applications closed</h3>
+                                <h3 className="text-[20px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">{t("candidate.applicationsClosed")}</h3>
                                 <p className="text-[#8A929E] text-[14px] leading-relaxed">
-                                    This role is no longer accepting applications. Thanks for your interest — please check back for other openings.
+                                    {t("candidate.applicationsClosedDesc")}
                                 </p>
                             </div>
                         ) : applied ? (
@@ -436,16 +438,16 @@ export default function PublicJobPage() {
                                 <div className="w-16 h-16 bg-[#E6F4EA] text-[#15803D] rounded-[16px] flex items-center justify-center mx-auto mb-5">
                                     <span className="material-icons-outlined text-[34px]">check</span>
                                 </div>
-                                <h3 className="text-[22px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">Application sent</h3>
+                                <h3 className="text-[22px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">{t("candidate.applicationSent")}</h3>
                                 <p className="text-[#8A929E] text-[14px] leading-relaxed">
-                                    Thank you for your interest. The recruiting team at {typeof orgName === 'object' ? orgName.name : (orgName || "our team")} has received your profile and will be in touch shortly.
+                                    {t("candidate.applicationSentDesc", { org: typeof orgName === 'object' ? orgName.name : (orgName || t("candidate.ourTeam")) })}
                                 </p>
                             </div>
                         ) : (
                             <>
                                 <div className="mb-6">
-                                    <h2 className="text-[22px] font-extrabold text-[#15171C] tracking-[-0.3px]">Apply now</h2>
-                                    <p className="text-[#8A929E] text-[13px] mt-1">Fast-track your application today</p>
+                                    <h2 className="text-[22px] font-extrabold text-[#15171C] tracking-[-0.3px]">{t("candidate.applyNowHeading")}</h2>
+                                    <p className="text-[#8A929E] text-[13px] mt-1">{t("candidate.fastTrackApplication")}</p>
                                 </div>
 
                                 <form onSubmit={handleApply} className="space-y-4">
@@ -486,7 +488,7 @@ export default function PublicJobPage() {
                                                             </div>
                                                             <div className="flex-1 min-w-0">
                                                                 <p className={`text-[13px] font-medium truncate ${resumeFile ? "text-[#15171C]" : "text-[#8A929E]"}`}>
-                                                                    {resumeFile ? resumeFile.name : `Upload ${field.label}`}
+                                                                    {resumeFile ? resumeFile.name : t("candidate.uploadField", { label: field.label })}
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -507,7 +509,7 @@ export default function PublicJobPage() {
                                                             <label className="text-[12.5px] font-semibold text-[#374151] truncate">
                                                                 {field.label} {field.is_required && <span className="text-[#EF4444]">*</span>}
                                                             </label>
-                                                            <span className={`text-[11px] font-medium ${isChecked ? 'text-[#15803D]' : 'text-[#9AA3AF]'}`}>{isChecked ? 'Yes' : 'No'}</span>
+                                                            <span className={`text-[11px] font-medium ${isChecked ? 'text-[#15803D]' : 'text-[#9AA3AF]'}`}>{isChecked ? t("candidate.yes") : t("candidate.no")}</span>
                                                         </div>
                                                     </div>
                                                     <button
@@ -533,7 +535,7 @@ export default function PublicJobPage() {
                                                     <input
                                                         type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : phoneField ? 'tel' : 'text'}
                                                         step="any"
-                                                        placeholder={`Enter ${field.label.toLowerCase()}`}
+                                                        placeholder={t("candidate.enterField", { label: field.label.toLowerCase() })}
                                                         className={`w-full h-11 pl-10 pr-4 rounded-[10px] bg-white border ${fieldError ? "border-[#EF4444] focus:border-[#EF4444] focus:ring-[#EF4444]/20" : "border-[#E1E4E8] focus:border-[#5B53E0] focus:ring-[#5B53E0]/20"} focus:ring-2 outline-none transition-all text-[#15171C] font-medium text-[14px] placeholder:text-[#9AA3AF] read-only:bg-[#F4F5F7] read-only:text-[#8A929E] read-only:cursor-not-allowed`}
                                                         value={formData[fieldKey] || ""}
                                                         onChange={e => {
@@ -567,12 +569,12 @@ export default function PublicJobPage() {
                                         ) : (
                                             <span className="material-icons-outlined text-[18px]">send</span>
                                         )}
-                                        {isSubmitting ? "Sending…" : "Submit application"}
+                                        {isSubmitting ? t("candidate.sending") : t("candidate.submitApplication")}
                                     </button>
                                 </form>
 
                                 <p className="text-[11px] text-[#9AA3AF] text-center mt-5 leading-relaxed">
-                                    By submitting, you agree to share your profile details with {typeof orgName === 'object' ? orgName.name : (orgName || "our organization")}.
+                                    {t("candidate.consentText", { org: typeof orgName === 'object' ? orgName.name : (orgName || t("candidate.ourOrganizationLower")) })}
                                 </p>
                             </>
                         )}
@@ -583,12 +585,12 @@ export default function PublicJobPage() {
             <footer className="border-t border-[#E8EAED] py-8 mt-4 bg-white">
                 <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-[#9AA3AF] text-[12.5px] font-medium">
-                        Powered by <span className="text-[#5B53E0] font-semibold">Croar</span>
+                        {t("candidate.poweredBy")} <span className="text-[#5B53E0] font-semibold">Croar</span>
                     </p>
                     <div className="flex items-center gap-6 text-[#9AA3AF] text-[12.5px] font-medium">
-                        <button type="button" className="hover:text-[#5B53E0] transition-colors">Privacy</button>
-                        <button type="button" className="hover:text-[#5B53E0] transition-colors">Terms</button>
-                        <button type="button" className="hover:text-[#5B53E0] transition-colors">Contact</button>
+                        <button type="button" className="hover:text-[#5B53E0] transition-colors">{t("candidate.privacy")}</button>
+                        <button type="button" className="hover:text-[#5B53E0] transition-colors">{t("candidate.terms")}</button>
+                        <button type="button" className="hover:text-[#5B53E0] transition-colors">{t("candidate.contact")}</button>
                     </div>
                 </div>
             </footer>

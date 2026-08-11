@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BACKEND_URL } from "@/utils/api";
+import { useI18n } from "@/context/I18nContext";
 
 interface SendEmailModalProps {
     isOpen: boolean;
@@ -24,6 +25,7 @@ interface SenderContext {
 }
 
 export default function SendEmailModal({ isOpen, onClose, candidateIds, candidateEmails, jobId, token }: SendEmailModalProps) {
+    const { t: tr } = useI18n();
     const slug = "default"; // Added to fix "Cannot find name 'slug'" error
     const [templates, setTemplates] = useState<EmailTemplate[]>([]);
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
@@ -144,7 +146,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
             }
 
         } catch (e) {
-            alert("Failed to draft email");
+            alert(tr("forms2.draftFailed"));
         } finally {
             setIsDrafting(false);
         }
@@ -173,15 +175,15 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
 
             if (res.ok) {
                 const result = await res.json();
-                alert(result.message || "Emails sent successfully!");
+                alert(result.message || tr("forms2.emailsSent"));
                 onClose();
             } else {
-                let msg = "Failed to send emails.";
+                let msg = tr("forms2.sendFailed");
                 try { const e = await res.json(); if (e?.detail) msg = typeof e.detail === "string" ? e.detail : msg; } catch { /* ignore */ }
                 alert(msg);
             }
         } catch (e) {
-            alert("Error sending emails.");
+            alert(tr("forms2.sendError"));
         } finally {
             setIsSending(false);
         }
@@ -209,7 +211,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                 onKeyDown={e => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center mb-6 shrink-0">
-                    <h2 className="text-2xl font-black text-slate-800">EMAIL CAMPAIGN ({candidateIds.length})</h2>
+                    <h2 className="text-2xl font-black text-slate-800">{tr("forms2.emailCampaign")} ({candidateIds.length})</h2>
                     <button onClick={onClose} className="p-2 hover:bg-slate-50 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
                         <span className="material-icons-outlined">close</span>
                     </button>
@@ -219,14 +221,14 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
 
                     {/* Template Selection */}
                     <div className="mb-6">
-                        <label htmlFor="email-load-template" className="block text-xs font-bold   text-slate-500 mb-2">Load Template</label>
+                        <label htmlFor="email-load-template" className="block text-xs font-bold   text-slate-500 mb-2">{tr("forms2.loadTemplate")}</label>
                         <select
                             id="email-load-template"
                             className="w-full p-3 border border-slate-200 rounded-xl text-slate-900 bg-white font-medium focus:ring-2 focus:ring-indigo-100 outline-none"
                             value={selectedTemplateId}
                             onChange={(e) => handleTemplateSelect(e.target.value)}
                         >
-                            <option value="" className="text-slate-900 bg-white">-- Custom Email --</option>
+                            <option value="" className="text-slate-900 bg-white">{tr("forms2.customEmail")}</option>
                             {templates.map(t => (
                                 <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>
                             ))}
@@ -238,7 +240,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                         <div className="mb-6 bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex gap-3 items-center">
                             <div className="flex-1">
                                 <input
-                                    placeholder="Email purpose (e.g. Schedule and invite for technical interview)..."
+                                    placeholder={tr("forms2.purposePlaceholder")}
                                     className="w-full p-2.5 rounded-lg border border-indigo-100 text-sm focus:ring-2 focus:ring-indigo-200 outline-none"
                                     value={aiPurpose}
                                     onChange={e => setAiPurpose(e.target.value)}
@@ -250,7 +252,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                                 className="bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
                             >
                                 {isDrafting ? <span className="animate-spin material-icons text-sm">refresh</span> : <span className="material-icons text-sm">auto_awesome</span>}
-                                {"AI DRAFT"}
+                                {tr("forms2.aiDraft")}
                             </button>
                         </div>
                     )}
@@ -259,46 +261,46 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                     <div className="space-y-4">
                         <input
                             className="w-full p-3 border border-slate-200 rounded-xl font-bold text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-100 outline-none"
-                            placeholder="Subject Line"
+                            placeholder={tr("forms2.subjectLinePlaceholder")}
                             value={subject}
                             onChange={e => setSubject(e.target.value)}
                         />
                         <textarea
                             className="w-full p-4 border border-slate-200 rounded-xl h-64 font-mono text-sm text-slate-600 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-100 outline-none resize-none"
-                            placeholder="Write your email here... (Supports HTML)"
+                            placeholder={tr("forms2.emailBodyPlaceholder")}
                             value={body}
                             onChange={e => setBody(e.target.value)}
                         />
 
                         {/* Variable Dashboard */}
                         <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                            <h4 className="text-xs font-bold   text-slate-500 mb-3">Detected Variables</h4>
+                            <h4 className="text-xs font-bold   text-slate-500 mb-3">{tr("forms2.detectedVariables")}</h4>
 
                             <div className="space-y-3">
                                 {/* Standard Variables */}
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     <VariableStatus
-                                        label="Candidate Name"
+                                        label={tr("forms2.candidateName")}
                                         code="{{candidate_name}}"
-                                        status="Available"
+                                        status={tr("forms2.statusAvailable")}
                                         statusColor="text-green-600"
                                     />
                                     <VariableStatus
-                                        label="Job Title"
+                                        label={tr("forms2.jobTitle")}
                                         code="{{job_title}}"
-                                        status="Auto-Detected"
+                                        status={tr("forms2.statusAutoDetected")}
                                         statusColor="text-green-600"
                                     />
                                     <VariableStatus
-                                        label="Company Name"
+                                        label={tr("forms2.companyName")}
                                         code="{{company_name}}"
-                                        status={customVarValues["{{company_name}}"] ? "Overridden" : (senderContext?.company_name ? "Available" : "Missing")}
+                                        status={customVarValues["{{company_name}}"] ? tr("forms2.statusOverridden") : (senderContext?.company_name ? tr("forms2.statusAvailable") : tr("forms2.statusMissing"))}
                                         statusColor={customVarValues["{{company_name}}"] ? "text-blue-600" : (senderContext?.company_name ? "text-green-600" : "text-red-500")}
                                     />
                                     <VariableStatus
-                                        label="Recruiter Name"
+                                        label={tr("forms2.recruiterName")}
                                         code="{{recruiter_name}}"
-                                        status={customVarValues["{{recruiter_name}}"] ? "Overridden" : (senderContext?.recruiter_name ? "Available" : "Missing")}
+                                        status={customVarValues["{{recruiter_name}}"] ? tr("forms2.statusOverridden") : (senderContext?.recruiter_name ? tr("forms2.statusAvailable") : tr("forms2.statusMissing"))}
                                         statusColor={customVarValues["{{recruiter_name}}"] ? "text-blue-600" : (senderContext?.recruiter_name ? "text-green-600" : "text-red-500")}
                                     />
                                 </div>
@@ -308,7 +310,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                                     <div key={v} className="flex items-center gap-3">
                                         <span className="bg-indigo-100 text-indigo-700 font-mono text-xs px-2 py-1 rounded">{`{{${v}}}`}</span>
                                         <input
-                                            placeholder={`Value for ${v}...`}
+                                            placeholder={`${tr("forms2.valueFor")} ${v}...`}
                                             className="flex-1 p-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-300"
                                             value={customVarValues[v] || ""}
                                             onChange={e => setCustomVarValues({ ...customVarValues, [v]: e.target.value })}
@@ -320,7 +322,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                                     <div className="flex items-center gap-3">
                                         <span className="bg-red-50 text-red-600 font-mono text-xs px-2 py-1 rounded">{"{{company_name}}"}</span>
                                         <input
-                                            placeholder="Enter Company Name override..."
+                                            placeholder={tr("forms2.companyOverride")}
                                             className="flex-1 p-2 border border-red-200 rounded-lg text-sm outline-none focus:border-red-300"
                                             value={customVarValues["{{company_name}}"] || ""}
                                             onChange={e => setCustomVarValues({ ...customVarValues, "{{company_name}}": e.target.value })}
@@ -331,7 +333,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                                     <div className="flex items-center gap-3">
                                         <span className="bg-red-50 text-red-600 font-mono text-xs px-2 py-1 rounded">{"{{recruiter_name}}"}</span>
                                         <input
-                                            placeholder="Enter Recruiter Name override..."
+                                            placeholder={tr("forms2.recruiterOverride")}
                                             className="flex-1 p-2 border border-red-200 rounded-lg text-sm outline-none focus:border-red-300"
                                             value={customVarValues["{{recruiter_name}}"] || ""}
                                             onChange={e => setCustomVarValues({ ...customVarValues, "{{recruiter_name}}": e.target.value })}
@@ -352,12 +354,12 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                         {isSending ? (
                             <>
                                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                {"SENDING..."}
+                                {tr("forms2.sending")}
                             </>
                         ) : (
                             <>
                                 <span className="material-icons text-sm">send</span>
-                                {"SEND EMAIL"}
+                                {tr("forms2.sendEmail")}
                             </>
                         )}
                     </button>

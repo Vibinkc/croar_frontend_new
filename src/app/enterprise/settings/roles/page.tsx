@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
+import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -31,6 +32,7 @@ interface Role {
 }
 
 function EnterpriseRolesContent() {
+    const { t: tr } = useI18n();
     const [roles, setRoles] = useState<Role[]>([]);
     const [permissions, setPermissions] = useState<Permission[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -158,12 +160,12 @@ function EnterpriseRolesContent() {
             <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">Roles & Permissions</h1>
-                        <PageHelp title="Roles &amp; Permissions">
-                            <p>Define roles and exactly what each can access, then assign them to people in Team.</p>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("general.rolesPermissions")}</h1>
+                        <PageHelp title={tr("general.rolesPermissions")}>
+                            <p>{tr("general.helpRoles")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">Define access policies and roles</p>
+                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("general.defineAccess")}</p>
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
@@ -173,7 +175,7 @@ function EnterpriseRolesContent() {
                             className="h-8 px-4 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
                         >
                             <span className="material-symbols-rounded text-[16px]">add</span>
-                            Create Role
+                            {tr("general.createRole")}
                         </button>
                     )}
                     <button 
@@ -190,10 +192,10 @@ function EnterpriseRolesContent() {
                     {/* Stat Cards */}
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                         {[
-                            { label: "Total Roles", value: roles.length, Icon: Shield, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)", tip: "Every role in your organization — built-in plus custom." },
-                            { label: "Built-in Roles", value: roles.filter(r => r.is_system).length, Icon: Lock, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)", tip: "Predefined system roles. These can't be edited or deleted." },
-                            { label: "Custom Roles", value: roles.filter(r => !r.is_system).length, Icon: ShieldCheck, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)", tip: "Roles your team created — fully editable." },
-                            { label: "Permission Types", value: permissions.length, Icon: ShieldHalf, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)", tip: "Distinct access actions available to assign across all modules." },
+                            { label: tr("general.totalRoles"), value: roles.length, Icon: Shield, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)", tip: tr("general.totalRolesTip") },
+                            { label: tr("general.builtinRoles"), value: roles.filter(r => r.is_system).length, Icon: Lock, grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)", tip: tr("general.builtinRolesTip") },
+                            { label: tr("general.customRoles"), value: roles.filter(r => !r.is_system).length, Icon: ShieldCheck, grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)", tip: tr("general.customRolesTip") },
+                            { label: tr("general.permissionTypes"), value: permissions.length, Icon: ShieldHalf, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)", tip: tr("general.permissionTypesTip") },
                         ].map((s) => (
                             <div
                                 key={s.label}
@@ -219,7 +221,7 @@ function EnterpriseRolesContent() {
                             <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                             <input 
                                 type="text"
-                                placeholder="Search roles by name or description..."
+                                placeholder={tr("general.searchRolesPlaceholder")}
                                 className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                                 value={roleSearch}
                                 onChange={(e) => setRoleSearch(e.target.value)}
@@ -232,9 +234,9 @@ function EnterpriseRolesContent() {
                                 value={typeFilter}
                                 onChange={(e) => setTypeFilter(e.target.value)}
                             >
-                                <option value="ALL">All Policies</option>
-                                <option value="SYSTEM">System Roles</option>
-                                <option value="CUSTOM">Custom Roles</option>
+                                <option value="ALL">{tr("general.allPolicies")}</option>
+                                <option value="SYSTEM">{tr("general.systemRoles")}</option>
+                                <option value="CUSTOM">{tr("general.customRoles")}</option>
                             </select>
                         </div>
                     </div>
@@ -256,8 +258,8 @@ function EnterpriseRolesContent() {
                                         <span className="material-symbols-rounded text-[22px] text-[#5B53E0]">security</span>
                                     </div>
                                     <div>
-                                        <h2 className="text-[17px] font-bold text-[#15171C] tracking-tight leading-tight">{selectedRole ? "Configure Role" : "Create New Role"}</h2>
-                                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{selectedRole ? "Modify existing access permissions" : "Set up a new organizational access profile"}</p>
+                                        <h2 className="text-[17px] font-bold text-[#15171C] tracking-tight leading-tight">{selectedRole ? tr("general.configureRole") : tr("general.createNewRole")}</h2>
+                                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{selectedRole ? tr("general.modifyPermissions") : tr("general.setupAccessProfile")}</p>
                                     </div>
                                 </div>
                                 <button onClick={() => setIsEditing(false)} className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#6B6F76] hover:bg-[#F4F5F7] hover:text-[#374151] transition-all flex items-center justify-center shadow-sm">
@@ -269,21 +271,21 @@ function EnterpriseRolesContent() {
                                 <div className="lg:col-span-3 flex flex-col justify-between">
                                     <div className="space-y-4 flex-1 flex flex-col mb-4">
                                         <div className="space-y-1.5 group">
-                                            <label htmlFor="role-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Name</label>
+                                            <label htmlFor="role-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.roleName")}</label>
                                             <input
                                                 id="role-name"
                                                 className="w-full h-10 bg-white border border-[#E1E4E8] px-3.5 rounded-[10px] text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
-                                                placeholder="e.g. Finance Lead"
+                                                placeholder={tr("general.roleNamePlaceholder")}
                                                 value={name} onChange={e => setName(e.target.value)} required
                                                 disabled={selectedRole?.is_system}
                                             />
                                         </div>
                                         <div className="space-y-1.5 group flex-1 flex flex-col">
-                                            <label htmlFor="role-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">Role Description</label>
+                                            <label htmlFor="role-description" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.roleDescription")}</label>
                                             <textarea
                                                 id="role-description"
                                                 className="w-full bg-white border border-[#E1E4E8] p-3.5 rounded-[10px] text-[13.5px] text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all resize-none flex-1 min-h-[120px] leading-relaxed"
-                                                placeholder="What can this role do?"
+                                                placeholder={tr("general.roleDescPlaceholder")}
                                                 value={description} onChange={e => setDescription(e.target.value)}
                                             />
                                         </div>
@@ -295,15 +297,15 @@ function EnterpriseRolesContent() {
                                             disabled={isLoading || !!selectedRole?.is_system || (!!selectedRole && !isDirty)}
                                             title={
                                                 selectedRole?.is_system
-                                                    ? "System roles are read-only"
+                                                    ? tr("general.systemRolesReadOnly")
                                                     : selectedRole && !isDirty
-                                                        ? "No changes to save yet"
+                                                        ? tr("general.noChangesYet")
                                                         : undefined
                                             }
                                             className="w-full bg-[#5B53E0] text-white h-10 rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#5B53E0]"
                                         >
                                             {isLoading ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                                            {isLoading ? "Saving..." : selectedRole?.is_system ? "Read-only" : selectedRole ? "Update Permissions" : "Create Role"}
+                                            {isLoading ? tr("general.saving") : selectedRole?.is_system ? tr("general.readOnly") : selectedRole ? tr("general.updatePermissions") : tr("general.createRole")}
                                         </button>
                                     </div>
                                 </div>
@@ -312,15 +314,15 @@ function EnterpriseRolesContent() {
                                     <div className="flex justify-between items-center px-1">
                                         <div className="flex items-center gap-2">
                                             <div className="w-1.5 h-4 bg-[#5B53E0] rounded-full" />
-                                            <h3 className="text-[15px] font-bold text-[#15171C] tracking-tight">Permissions & Actions</h3>
+                                            <h3 className="text-[15px] font-bold text-[#15171C] tracking-tight">{tr("general.permissionsActions")}</h3>
                                         </div>
-                                        <span className="text-[11.5px] font-bold text-[#5B53E0] bg-[#ECEBFB] px-3 py-1 rounded-full border border-[#DAD7F6]/60">{selectedPermIds.length} actions selected</span>
+                                        <span className="text-[11.5px] font-bold text-[#5B53E0] bg-[#ECEBFB] px-3 py-1 rounded-full border border-[#DAD7F6]/60">{tr("general.actionsSelected", { count: selectedPermIds.length })}</span>
                                     </div>
 
                                     {selectedRole?.is_system && (
                                         <div className="flex items-center gap-2 rounded-[10px] border border-[#E8EAED] bg-[#F4F5F7] px-3.5 py-2.5 text-[12.5px] font-semibold text-[#6B6F76]">
                                             <Lock className="w-3.5 h-3.5 shrink-0" />
-                                            This is a built-in system role — its permissions are read-only.
+                                            {tr("general.systemRoleReadOnlyNote")}
                                         </div>
                                     )}
                                     
@@ -328,7 +330,7 @@ function EnterpriseRolesContent() {
                                         <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors text-[20px]">search</span>
                                         <input 
                                             type="text"
-                                            placeholder="Search by module or resource..."
+                                            placeholder={tr("general.searchModuleResource")}
                                             className="w-full h-10 pl-11 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
                                             value={permSearch}
                                             onChange={(e) => setPermSearch(e.target.value)}
@@ -342,7 +344,7 @@ function EnterpriseRolesContent() {
                                                     <span className="w-6 h-6 rounded-[7px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center border border-[#DAD7F6]/60 shrink-0">
                                                         <LayoutGrid className="w-3.5 h-3.5" />
                                                     </span>
-                                                    <h4 className="text-[11.5px] font-bold text-[#15171C] uppercase tracking-wider">{module} Module</h4>
+                                                    <h4 className="text-[11.5px] font-bold text-[#15171C] uppercase tracking-wider">{tr("general.moduleSuffix", { module })}</h4>
                                                 </div>
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
                                                     {groupedPermissions[module].map((perm: Permission) => (
@@ -377,11 +379,11 @@ function EnterpriseRolesContent() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-[#F4F5F7] border-b border-[#E8EAED]">
-                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Role Name</th>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Description</th>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Permissions</th>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">Type</th>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider text-right">Actions</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">{tr("general.roleName")}</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">{tr("general.description")}</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">{tr("general.permissions")}</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider">{tr("general.type")}</th>
+                                    <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-wider text-right">{tr("general.actions")}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#E8EAED]">
@@ -406,7 +408,7 @@ function EnterpriseRolesContent() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <p className="text-[13px] text-[#6B6F76] line-clamp-1 max-w-xs">{role.description || "Standard policy."}</p>
+                                            <p className="text-[13px] text-[#6B6F76] line-clamp-1 max-w-xs">{role.description || tr("general.standardPolicy")}</p>
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-0.5 bg-[#E8EAED]/60 text-[#6B6F76] rounded-[6px] text-[10px] font-bold border border-[#E8EAED] ${jetbrainsMono.className}`}>
@@ -417,12 +419,12 @@ function EnterpriseRolesContent() {
                                             {role.is_system ? (
                                                 <span className="px-2 py-0.5 bg-[#15171C] text-white rounded-[6px] text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit border border-[#15171C]">
                                                     <Lock className="w-2.5 h-2.5" />
-                                                    System
+                                                    {tr("general.system")}
                                                 </span>
                                             ) : (
                                                 <span className="px-2 py-0.5 bg-[#ECEBFB] text-[#5B53E0] border border-[#DAD7F6]/60 rounded-[6px] text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit">
                                                     <Settings2 className="w-2.5 h-2.5" />
-                                                    Custom
+                                                    {tr("general.custom")}
                                                 </span>
                                             )}
                                         </td>
@@ -455,9 +457,14 @@ function EnterpriseRolesContent() {
     );
 }
 
+function RolesFallback() {
+    const { t: tr } = useI18n();
+    return <div className="p-8">{tr("general.loadingSecurityPanel")}</div>;
+}
+
 export default function EnterpriseRolesPage() {
     return (
-        <Suspense fallback={<div className="p-8">Loading Security Panel...</div>}>
+        <Suspense fallback={<RolesFallback />}>
             <EnterpriseRolesContent />
         </Suspense>
     );
