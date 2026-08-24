@@ -55,6 +55,9 @@ export default function PublicJobPage() {
 
     const [formData, setFormData] = useState<Record<string, string>>({});
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    // Authoritative schema.org/JobPosting markup from the backend (correct country + remote
+    // handling, consistent with the Indeed feed). Falls back to the locally-built object.
+    const [jsonLdStr, setJsonLdStr] = useState<string | null>(null);
 
     // A field is a phone field if its type is 'phone' or its label/key references phone/mobile/tel.
     const isPhoneField = (field: ApplicationField, fieldKey: string) => {
@@ -74,6 +77,16 @@ export default function PublicJobPage() {
         if (id) {
             fetchJobDetails();
         }
+    }, [id]);
+
+    // Pull the backend's canonical schema.org JobPosting markup (correct country handling).
+    useEffect(() => {
+        if (!id) return;
+        const baseUrl = BACKEND_URL.endsWith("/") ? BACKEND_URL.slice(0, -1) : BACKEND_URL;
+        fetch(`${baseUrl}/api/v1/jobs/${id}/jobposting.jsonld`)
+            .then((r) => (r.ok ? r.text() : null))
+            .then((txt) => txt && setJsonLdStr(txt))
+            .catch(() => {});
     }, [id]);
 
     const fetchJobDetails = async () => {
@@ -262,7 +275,7 @@ export default function PublicJobPage() {
                 "addressLocality": job.location || "Remote",
                 "addressRegion": "",
                 "postalCode": "",
-                "addressCountry": "IN"
+                "addressCountry": ""
             }
         },
         "baseSalary": job.salary_min ? {
@@ -279,11 +292,11 @@ export default function PublicJobPage() {
 
     return (
         <div className="min-h-screen bg-[#F4F5F7]">
-            {/* Google Jobs Structured Data */}
-            {jsonLd && (
+            {/* Google Jobs Structured Data — prefer the backend's canonical markup. */}
+            {(jsonLdStr || jsonLd) && (
                 <script
                     type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                    dangerouslySetInnerHTML={{ __html: jsonLdStr || JSON.stringify(jsonLd) }}
                 />
             )}
             {/* Top Navigation / Brand */}

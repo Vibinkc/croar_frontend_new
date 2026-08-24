@@ -110,7 +110,7 @@ interface FormState {
   start_date: string | null;
   end_date: string | null;
   google_meet_link: string;
-  interview_type: "GMEET" | "AI";
+  interview_type: "GMEET" | "AI" | "TEAMS";
   interview_template_id: string | null;
 }
 
@@ -131,7 +131,7 @@ const EMPTY_FORM: FormState = {
   start_date: "",
   end_date: "",
   google_meet_link: "",
-  interview_type: "GMEET" as "GMEET" | "AI",
+  interview_type: "GMEET" as "GMEET" | "AI" | "TEAMS",
   interview_template_id: "",
 };
 
@@ -294,7 +294,7 @@ export default function InterviewAutomationPage() {
       start_date: a.start_date ?? "",
       end_date: a.end_date ?? "",
       google_meet_link: a.google_meet_link ?? "",
-      interview_type: ((a as Automation & { interview_type?: string }).interview_type || "GMEET") as "GMEET" | "AI",
+      interview_type: ((a as Automation & { interview_type?: string }).interview_type || "GMEET") as "GMEET" | "AI" | "TEAMS",
       interview_template_id: (a as Automation & { interview_template_id?: string }).interview_template_id || "",
     });
     setActiveTab("config");
@@ -1019,13 +1019,13 @@ export default function InterviewAutomationPage() {
                       <label className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-3 ml-1">
                         {tr("automation.interviewType")} <span className="text-rose-500">*</span>
                       </label>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-3 gap-3">
                         <button
                           type="button"
                           onClick={() => setForm(f => ({ ...f, interview_type: "GMEET" }))}
                           className={`flex flex-col items-center gap-2.5 p-4 rounded-[12px] border-2 transition-all cursor-pointer ${
-                            form.interview_type === "GMEET" 
-                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" 
+                            form.interview_type === "GMEET"
+                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]"
                               : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6] text-[#4B5563]"
                           }`}
                         >
@@ -1034,10 +1034,22 @@ export default function InterviewAutomationPage() {
                         </button>
                         <button
                           type="button"
+                          onClick={() => setForm(f => ({ ...f, interview_type: "TEAMS" }))}
+                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[12px] border-2 transition-all cursor-pointer ${
+                            form.interview_type === "TEAMS"
+                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]"
+                              : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6] text-[#4B5563]"
+                          }`}
+                        >
+                          <Video className="w-5 h-5 shrink-0" />
+                          <span className="text-[12.5px] font-bold">Microsoft Teams</span>
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => setForm(f => ({ ...f, interview_type: "AI" }))}
                           className={`flex flex-col items-center gap-2.5 p-4 rounded-[12px] border-2 transition-all cursor-pointer ${
-                            form.interview_type === "AI" 
-                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" 
+                            form.interview_type === "AI"
+                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]"
                               : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6] text-[#4B5563]"
                           }`}
                         >

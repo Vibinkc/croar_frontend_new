@@ -398,26 +398,32 @@ function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource
                 </ul>
             )}
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
                 {action.job_id && (
                     <Link
                         href={`/enterprise/jobs/${action.job_id}`}
-                        className="px-3.5 h-9 rounded-[9px] bg-[#5B53E0] text-white text-[12.5px] font-semibold hover:bg-[#4A43C9] transition-colors flex items-center gap-1.5"
+                        className="px-2.5 h-8 rounded-[8px] bg-[#5B53E0] text-white text-[11.5px] font-semibold hover:bg-[#4A43C9] transition-colors flex items-center gap-1 whitespace-nowrap"
                     >
-                        <span className="material-symbols-rounded text-base">work</span> {t("croarPilot.viewJob")}
+                        <span className="material-symbols-rounded text-[15px]">work</span> {t("croarPilot.viewJob")}
                     </Link>
                 )}
                 <button
                     onClick={onSource}
-                    className="px-3.5 h-9 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5"
+                    className="px-2.5 h-8 rounded-[8px] bg-white border border-[#E1E4E8] text-[#374151] text-[11.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1 whitespace-nowrap"
                 >
-                    <span className="material-symbols-rounded text-base">person_search</span> {t("croarPilot.sourceCandidates")}
+                    <span className="material-symbols-rounded text-[15px]">person_search</span> {t("croarPilot.sourceCandidates")}
                 </button>
                 <Link
-                    href="/enterprise/candidates/kanban"
-                    className="px-3.5 h-9 rounded-[9px] bg-white border border-[#E1E4E8] text-[#374151] text-[12.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1.5"
+                    href={action.job_id ? `/enterprise/sourcing/projects?job_id=${action.job_id}` : "/enterprise/sourcing/projects"}
+                    className="px-2.5 h-8 rounded-[8px] bg-white border border-[#E1E4E8] text-[#374151] text-[11.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1 whitespace-nowrap"
                 >
-                    <span className="material-symbols-rounded text-base">view_kanban</span> {t("croarPilot.viewPipeline")}
+                    <span className="material-symbols-rounded text-[15px]">smart_toy</span> {t("croarPilot.sourceViaAgent")}
+                </Link>
+                <Link
+                    href="/enterprise/candidates/kanban"
+                    className="px-2.5 h-8 rounded-[8px] bg-white border border-[#E1E4E8] text-[#374151] text-[11.5px] font-semibold hover:bg-[#F4F5F7] transition-colors flex items-center gap-1 whitespace-nowrap"
+                >
+                    <span className="material-symbols-rounded text-[15px]">view_kanban</span> {t("croarPilot.viewPipeline")}
                 </Link>
             </div>
         </div>

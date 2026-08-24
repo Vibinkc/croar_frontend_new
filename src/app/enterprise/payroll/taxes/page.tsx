@@ -5,6 +5,7 @@ import { useI18n } from "@/context/I18nContext";
 import {
   payrollApi,
   taxesApi,
+  settingsApi,
   inr,
   type Employee,
   type TaxProfile,
@@ -90,6 +91,10 @@ export default function TaxesPage() {
   const [liabilities, setLiabilities] = useState<TdsLiabilityRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [orgCurrency, setOrgCurrency] = useState("INR");
+
+  // Format money in the organization's currency rather than always INR.
+  const money = (v: number | string | null | undefined) => inr(v, orgCurrency);
 
   // Declaration modal
   const [declEmp, setDeclEmp] = useState<Employee | null>(null);
@@ -112,6 +117,7 @@ export default function TaxesPage() {
         taxesApi.listChallans(),
         taxesApi.tdsLiabilities(),
       ]);
+      settingsApi.getOrganization().then((org) => org?.currency && setOrgCurrency(org.currency)).catch(() => {});
       setEmployees(emps);
       setProfiles(profs);
       setChallans(chs);
@@ -204,7 +210,7 @@ export default function TaxesPage() {
   async function removeChallan(ch: TdsChallan) {
     const ok = await confirm({
       title: tr("payroll.deleteChallanTitle"),
-      message: tr("payroll.deleteChallanMsg", { number: ch.challan_number, amount: inr(ch.amount) }),
+      message: tr("payroll.deleteChallanMsg", { number: ch.challan_number, amount: money(ch.amount) }),
       confirmLabel: tr("common.delete"),
       tone: "danger",
     });
@@ -276,14 +282,14 @@ export default function TaxesPage() {
         />
         <StatCard
           label={tr("payroll.tdsDeposited")}
-          value={inr(totalDeposited)}
+          value={money(totalDeposited)}
           icon="account_balance"
           gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
           glow="rgba(53,89,199,0.25)"
         />
         <StatCard
           label={tr("payroll.tdsDue")}
-          value={inr(totalDue)}
+          value={money(totalDue)}
           icon="warning"
           gradient="linear-gradient(135deg,#F6B65C,#D97706)"
           glow="rgba(217,119,6,0.25)"
@@ -333,16 +339,16 @@ export default function TaxesPage() {
                     <span className={`text-[13.5px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>{row.period_month}</span>
                     <span className={`text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
                       <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#8A929E] mr-1.5 font-sans">{tr("payroll.dedShort")}</span>
-                      {inr(row.tds_deducted)}
+                      {money(row.tds_deducted)}
                     </span>
                     <span className={`text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
                       <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#8A929E] mr-1.5 font-sans">{tr("payroll.depShort")}</span>
-                      {inr(row.tds_deposited)}
+                      {money(row.tds_deposited)}
                     </span>
                     <div className="col-span-2 md:col-span-1 flex md:justify-end">
                       {bal > 0 ? (
                         <Badge tone="danger">
-                          <span className={jetbrainsMono.className}>{inr(bal)}</span> {tr("payroll.dueSuffix")}
+                          <span className={jetbrainsMono.className}>{money(bal)}</span> {tr("payroll.dueSuffix")}
                         </Badge>
                       ) : (
                         <Badge tone="success" dot>{tr("payroll.settled")}</Badge>
@@ -413,10 +419,10 @@ export default function TaxesPage() {
                   <span className={`text-[12.5px] text-[#374151] ${jetbrainsMono.className} truncate`}>{ch.challan_number}</span>
                   <span className={`hidden md:block text-[12.5px] text-[#374151] ${jetbrainsMono.className}`}>{ch.bsr_code || "—"}</span>
                   <span className="hidden md:block text-[13px] text-[#8A929E]">{ch.deposit_date}</span>
-                  <span className={`hidden md:block text-[13px] font-semibold text-[#15171C] text-right ${jetbrainsMono.className}`}>{inr(ch.amount)}</span>
+                  <span className={`hidden md:block text-[13px] font-semibold text-[#15171C] text-right ${jetbrainsMono.className}`}>{money(ch.amount)}</span>
                   {/* Mobile meta + amount + action */}
                   <div className="flex items-center justify-end gap-2 md:hidden">
-                    <span className={`text-[13px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{inr(ch.amount)}</span>
+                    <span className={`text-[13px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{money(ch.amount)}</span>
                   </div>
                   {canEdit && (
                     <div className="hidden md:flex justify-end">
@@ -510,7 +516,7 @@ export default function TaxesPage() {
 
                     {/* Total Declared */}
                     <div className={`hidden md:block text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
-                      {p ? inr(declaredTotal(p)) : "—"}
+                      {p ? money(declaredTotal(p)) : "—"}
                     </div>
 
                     {/* Status */}
@@ -546,7 +552,7 @@ export default function TaxesPage() {
                     </div>
                     <div className="col-span-2 md:hidden flex items-center justify-between text-[12px] text-[#8A929E]">
                       <span>{p ? tr("payroll.declared") : tr("payroll.notDeclared")}</span>
-                      <span className={jetbrainsMono.className}>{p ? inr(declaredTotal(p)) : "—"}</span>
+                      <span className={jetbrainsMono.className}>{p ? money(declaredTotal(p)) : "—"}</span>
                     </div>
                   </div>
                 );

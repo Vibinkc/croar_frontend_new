@@ -311,6 +311,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                         title: formData.title,
                         existing_description: stripMarks(formData.description),
                         location: formData.location,
+                        work_mode: formData.work_mode,
                         experience_min: formData.experience_min,
                         experience_max: formData.experience_max
                     }),
@@ -342,7 +343,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/generate-jd`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                    body: JSON.stringify({ title: formData.title, existing_description: stripMarks(formData.description), location: formData.location, experience_min: formData.experience_min, experience_max: formData.experience_max })
+                    body: JSON.stringify({ title: formData.title, existing_description: stripMarks(formData.description), location: formData.location, work_mode: formData.work_mode, experience_min: formData.experience_min, experience_max: formData.experience_max })
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -393,6 +394,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     existing_description: stripMarks(formData.description),
                     additional_instructions: extra,
                     location: formData.location,
+                    work_mode: formData.work_mode,
                     experience_min: formData.experience_min,
                     experience_max: formData.experience_max,
                 }),
@@ -451,7 +453,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
         } catch (e) {
             console.error("Could not hand off to sourcing:", e);
         }
-        router.push(mode === "ai" ? "/enterprise/croar-pilot" : "/enterprise/sourcing/chat");
+        router.push(
+            mode === "ai"
+                ? "/enterprise/croar-pilot"
+                : `/enterprise/sourcing/projects${createdJobId ? `?job_id=${createdJobId}` : ""}`,
+        );
     };
 
     if (isEdit && isLoading) {

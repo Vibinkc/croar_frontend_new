@@ -213,7 +213,7 @@ export default function AutomationCanvasPage() {
                     <div className="flex items-center gap-1.5">
                       <span className="material-symbols-rounded text-base animate-pulse" style={{ color }}>{icon}</span>
                       <span className="text-[9.5px] font-extrabold uppercase tracking-wider" style={{ color }}>
-                        {auto.action_type}
+                        {tr("automation.node" + auto.action_type.charAt(0).toUpperCase() + auto.action_type.slice(1))}
                       </span>
                     </div>
                     {!auto.is_enabled && (
@@ -401,17 +401,21 @@ export default function AutomationCanvasPage() {
                   {tr("automation.addAction")}
                 </span>
                 <div className="flex bg-white shadow-[0_12px_24px_rgba(21,23,28,0.08)] border border-[#E8EAED] rounded-[12px] p-1 gap-1 pointer-events-auto">
-                  <button onClick={() => openCreateModal("mail")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#ECEBFB] text-[#5B53E0] transition-colors" title={tr("automation.addMailAutomation")}>
+                  <button onClick={() => openCreateModal("mail")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[9px] hover:bg-[#ECEBFB] text-[#5B53E0] transition-colors" title={tr("automation.addMailAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">mark_email_unread</span>
+                    <span className="text-[12.5px] font-semibold">{tr("automation.nodeMail")}</span>
                   </button>
-                  <button onClick={() => openCreateModal("assessment")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#FEF3E2] text-[#D97706] transition-colors" title={tr("automation.addAssessmentAutomation")}>
+                  <button onClick={() => openCreateModal("assessment")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[9px] hover:bg-[#FEF3E2] text-[#D97706] transition-colors" title={tr("automation.addAssessmentAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">psychology</span>
+                    <span className="text-[12.5px] font-semibold">{tr("automation.nodeAssessment")}</span>
                   </button>
-                  <button onClick={() => openCreateModal("interview")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#E3F4EF] text-[#0E8A6E] transition-colors" title={tr("automation.addInterviewAutomation")}>
+                  <button onClick={() => openCreateModal("interview")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[9px] hover:bg-[#E3F4EF] text-[#0E8A6E] transition-colors" title={tr("automation.addInterviewAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">event_available</span>
+                    <span className="text-[12.5px] font-semibold">{tr("automation.nodeInterview")}</span>
                   </button>
-                  <button onClick={() => openCreateModal("onboarding")} className="w-10 h-10 flex items-center justify-center rounded-[9px] hover:bg-[#F5F3FF] text-[#8B5CF6] transition-colors" title={tr("automation.addOnboardingAutomation")}>
+                  <button onClick={() => openCreateModal("onboarding")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[9px] hover:bg-[#F5F3FF] text-[#8B5CF6] transition-colors" title={tr("automation.addOnboardingAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">person_add</span>
+                    <span className="text-[12.5px] font-semibold">{tr("automation.nodeOnboarding")}</span>
                   </button>
                 </div>
               </div>

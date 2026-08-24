@@ -5,12 +5,14 @@ import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import {
   payrollApi,
+  settingsApi,
   type Employee,
   type PayrollCycle,
   type SalaryStructure,
   inr,
 } from "@/utils/payroll/api";
 import { Banner, Modal } from "@/components/payroll/ui";
+import { Money } from "@/components/payroll/Money";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { useDialog } from "@/components/payroll/DialogProvider";
 import {
@@ -45,6 +47,7 @@ export default function PayrollHome() {
   const [structures, setStructures] = useState<SalaryStructure[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [orgCurrency, setOrgCurrency] = useState("INR");
 
   // Presentation-only list view state (search + status filter).
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,14 +66,16 @@ export default function PayrollHome() {
   async function load() {
     setLoading(true);
     try {
-      const [c, e, s] = await Promise.all([
+      const [c, e, s, org] = await Promise.all([
         payrollApi.listCycles(),
         payrollApi.listEmployees(),
         payrollApi.listStructures(),
+        settingsApi.getOrganization().catch(() => null),
       ]);
       setCycles(c);
       setEmployees(e);
       setStructures(s);
+      if (org?.currency) setOrgCurrency(org.currency);
       setError(null);
     } catch (err) {
       setError((err as Error).message);
@@ -197,7 +202,7 @@ export default function PayrollHome() {
         </Link>
         <StatCard
           label={current ? tr("payroll.currentNetNamed", { name: current.name }) : tr("payroll.currentNet")}
-          value={loading ? "…" : inr(current?.totals?.net ?? 0)}
+          value={loading ? "…" : <Money value={current?.totals?.net ?? 0} currency={orgCurrency} className="text-[20px]" />}
           icon="payments"
           gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
           glow="rgba(53,89,199,0.25)"
@@ -331,7 +336,7 @@ export default function PayrollHome() {
 
                   {/* Net Pay (desktop) */}
                   <div className={`hidden md:block text-[13px] font-semibold text-[#15171C] text-right ${jetbrainsMono.className}`}>
-                    {inr(c.totals?.net ?? 0)}
+                    {inr(c.totals?.net ?? 0, orgCurrency)}
                   </div>
 
                   {/* Status (mobile) + actions */}

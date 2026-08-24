@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/context/I18nContext";
 import {
   payrollApi,
+  settingsApi,
   estimateSalary,
   inr,
   type Employee,
@@ -112,6 +113,8 @@ export default function StructuresPage() {
   const [employeeId, setEmployeeId] = useState("");
   const [ctc, setCtc] = useState("1200000");
   const [currency, setCurrency] = useState("INR");
+  // The company's default currency (KRW/JPY/USD/INR…) — new structures start with it.
+  const [orgCurrency, setOrgCurrency] = useState("INR");
   const [payFrequency, setPayFrequency] = useState<PayFrequency>("MONTHLY");
   const [hourlyRate, setHourlyRate] = useState("");
   // Local calendar date (en-CA → YYYY-MM-DD); toISOString() would give the UTC
@@ -133,6 +136,11 @@ export default function StructuresPage() {
       const [s, e] = await Promise.all([payrollApi.listStructures(), payrollApi.listEmployees()]);
       setStructures(s);
       setEmployees(e);
+      // Pick up the company's currency so new structures default to it (not INR).
+      try {
+        const org = await settingsApi.getOrganization();
+        if (org?.currency) { setOrgCurrency(org.currency); setCurrency((c) => (c === "INR" ? org.currency : c)); }
+      } catch { /* keep default */ }
       setError(null);
     } catch (err) {
       setError((err as Error).message);
@@ -232,7 +240,7 @@ export default function StructuresPage() {
     setEditingId(null);
     setEmployeeId(employees[0]?.id ?? "");
     setCtc("1200000");
-    setCurrency("INR");
+    setCurrency(orgCurrency);
     setPayFrequency("MONTHLY");
     setHourlyRate("");
     setEffectiveFrom(new Date().toLocaleDateString("en-CA"));

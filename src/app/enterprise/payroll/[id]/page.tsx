@@ -5,6 +5,7 @@ import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
 import {
   payrollApi,
+  settingsApi,
   type Adjustment,
   type AdjustmentKind,
   type Employee,
@@ -32,6 +33,10 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [orgCurrency, setOrgCurrency] = useState("INR");
+
+  // Format money in the organization's currency (₩/¥/$/₹ …) rather than always INR.
+  const money = (v: number | string | null | undefined) => inr(v, orgCurrency);
 
   // Sentinel select value meaning "apply this adjustment to every employee".
   const ALL_EMPLOYEES = "__all__";
@@ -46,6 +51,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
     try {
       const c = await payrollApi.getCycle(id);
       setCycle(c);
+      settingsApi.getOrganization().then((org) => org?.currency && setOrgCurrency(org.currency)).catch(() => {});
       // Payslips (computed summary) are available as soon as a run generates
       // them — i.e. any status past DRAFT. The backend gates DRAFT/CANCELLED.
       if (c.status !== "DRAFT" && c.status !== "CANCELLED") {
@@ -101,7 +107,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
   async function removeAdjustment(a: Adjustment) {
     await act(
       () => payrollApi.deleteAdjustment(a.id),
-      tr("payroll.removeAdjustmentConfirm", { label: a.label, amount: inr(a.amount) })
+      tr("payroll.removeAdjustmentConfirm", { label: a.label, amount: money(a.amount) })
     );
   }
 
@@ -194,10 +200,10 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
             <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6">
               <h3 className="mb-4 border-b border-[var(--color-border)] pb-2 font-semibold">{tr("payroll.cycleTotals")}</h3>
               <Row label={tr("payroll.headcount")} value={String(t.headcount ?? 0)} />
-              <Row label={tr("payroll.gross")} value={inr(t.gross ?? 0)} />
-              <Row label={tr("payroll.deductions")} value={`- ${inr(t.deductions ?? 0)}`} tone="text-[var(--color-danger)]" />
+              <Row label={tr("payroll.gross")} value={money(t.gross ?? 0)} />
+              <Row label={tr("payroll.deductions")} value={`- ${money(t.deductions ?? 0)}`} tone="text-[var(--color-danger)]" />
               <div className="mt-2 border-t border-dashed border-[var(--color-border)] pt-2">
-                <Row label={tr("payroll.netPayout")} value={inr(t.net ?? 0)} big tone="text-[var(--color-accent)]" />
+                <Row label={tr("payroll.netPayout")} value={money(t.net ?? 0)} big tone="text-[var(--color-accent)]" />
               </div>
             </div>
           )}
@@ -295,9 +301,9 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                       <td className="px-3 py-3 text-[var(--color-muted)]">
                         {Number(p.lop_days)} / {Number(p.paid_days ?? 0)}
                       </td>
-                      <td className="px-3 py-3 text-right">{inr(p.gross_earnings)}</td>
-                      <td className="px-3 py-3 text-right text-[var(--color-danger)]">- {inr(p.total_deductions)}</td>
-                      <td className="px-3 py-3 text-right font-semibold">{inr(p.net_pay)}</td>
+                      <td className="px-3 py-3 text-right">{money(p.gross_earnings)}</td>
+                      <td className="px-3 py-3 text-right text-[var(--color-danger)]">- {money(p.total_deductions)}</td>
+                      <td className="px-3 py-3 text-right font-semibold">{money(p.net_pay)}</td>
                       <td className="px-3 py-3 text-right">
                         {cycle.status === "PAID" ? (
                           <Link
@@ -389,7 +395,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                         }`}
                       >
                         {a.kind === "earning" ? "+ " : "- "}
-                        {inr(a.amount)}
+                        {money(a.amount)}
                       </td>
                       {canEdit && (
                         <td className="px-3 py-2 text-right">

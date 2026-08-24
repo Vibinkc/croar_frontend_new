@@ -31,13 +31,116 @@ interface Attempt {
   type?: string;
 }
 
+/** Record a webcam answer for a VIDEO assessment question and upload it. */
+function VideoAnswerRecorder({ attemptId, questionId, existingUrl, onUploaded }: {
+  attemptId: string; questionId: string; existingUrl: string; onUploaded: (url: string) => void;
+}) {
+  const liveRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const [phase, setPhase] = useState<"idle" | "ready" | "recording" | "recorded" | "uploading">(existingUrl ? "recorded" : "idle");
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [seconds, setSeconds] = useState(0);
+  const [error, setError] = useState("");
+
+  useEffect(() => () => { streamRef.current?.getTracks().forEach(t => t.stop()); }, []);
+  useEffect(() => {
+    if (phase !== "recording") return;
+    const t = setInterval(() => setSeconds(s => s + 1), 1000);
+    return () => clearInterval(t);
+  }, [phase]);
+
+  const enableCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      streamRef.current = stream;
+      if (liveRef.current) { liveRef.current.srcObject = stream; liveRef.current.muted = true; await liveRef.current.play().catch(() => {}); }
+      setPhase("ready"); setError("");
+    } catch {
+      setError("Camera/microphone access is required to record your answer. Please allow it and retry.");
+    }
+  };
+  const start = () => {
+    if (!streamRef.current) return;
+    chunksRef.current = []; setSeconds(0);
+    const mime = MediaRecorder.isTypeSupported("video/webm") ? "video/webm" : "";
+    const rec = new MediaRecorder(streamRef.current, mime ? { mimeType: mime } : undefined);
+    rec.ondataavailable = e => { if (e.data.size) chunksRef.current.push(e.data); };
+    rec.onstop = () => {
+      const blob = new Blob(chunksRef.current, { type: "video/webm" });
+      setPreviewUrl(URL.createObjectURL(blob)); setPhase("recorded");
+    };
+    recorderRef.current = rec; rec.start(); setPhase("recording");
+  };
+  const stop = () => recorderRef.current?.stop();
+  const upload = async () => {
+    setPhase("uploading"); setError("");
+    try {
+      const blob = new Blob(chunksRef.current, { type: "video/webm" });
+      const fd = new FormData();
+      fd.append("video", blob, `answer-${questionId}.webm`);
+      const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/public/assessment/${attemptId}/video/${questionId}`, { method: "POST", body: fd });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      onUploaded(data.url);
+      streamRef.current?.getTracks().forEach(t => t.stop());
+      setPhase("recorded");
+    } catch {
+      setError("Upload failed. Please try again."); setPhase("recorded");
+    }
+  };
+  const reRecord = () => { setPreviewUrl(""); setPhase(streamRef.current ? "ready" : "idle"); };
+  const mmss = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+  const uploaded = !!existingUrl;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-2 text-rose-400">
+        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+        <span className="text-[10px] font-black tracking-widest uppercase">Video answer</span>
+      </div>
+      <div className="relative rounded-2xl overflow-hidden bg-black aspect-video border border-slate-800">
+        {phase === "recorded" && (previewUrl || uploaded) ? (
+          <video src={previewUrl || `${BACKEND_URL}${existingUrl}`} controls className="w-full h-full object-contain" />
+        ) : (
+          <video ref={liveRef} playsInline className="w-full h-full object-cover" />
+        )}
+        {phase === "recording" && (
+          <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-rose-600 text-white text-[11px] font-black px-2.5 py-1 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> REC {mmss}
+          </div>
+        )}
+        {uploaded && phase === "recorded" && (
+          <div className="absolute top-3 right-3 flex items-center gap-1 bg-emerald-600 text-white text-[11px] font-black px-2.5 py-1 rounded-full">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Saved
+          </div>
+        )}
+      </div>
+      {error && <p className="text-rose-400 text-xs font-semibold">{error}</p>}
+      <div className="flex flex-wrap gap-2.5">
+        {phase === "idle" && <button onClick={enableCamera} className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold">Enable camera</button>}
+        {phase === "ready" && <button onClick={start} className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-bold">● Start recording</button>}
+        {phase === "recording" && <button onClick={stop} className="px-5 py-2.5 rounded-xl bg-slate-200 text-slate-900 text-sm font-bold">■ Stop</button>}
+        {phase === "recorded" && !uploaded && <>
+          <button onClick={upload} className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold">Save answer</button>
+          <button onClick={reRecord} className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold">Re-record</button>
+        </>}
+        {phase === "recorded" && uploaded && <button onClick={reRecord} className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold">Record again</button>}
+        {phase === "uploading" && <button disabled className="px-5 py-2.5 rounded-xl bg-slate-700 text-slate-300 text-sm font-bold">Uploading…</button>}
+      </div>
+      <p className="text-slate-500 text-xs">Record a concise spoken answer on camera, then save it. You can re-record before submitting.</p>
+    </div>
+  );
+}
+
 interface Question {
   id: string;
   title?: string;
   question?: string;
   problem_statement?: string;
   question_text?: string;
-  type: "APTITUDE" | "CODING";
+  type: "APTITUDE" | "CODING" | "VIDEO";
   options?: string[];
   initial_code?: Record<string, string>;
   difficulty?: string;
@@ -457,6 +560,16 @@ export default function CandidateAssessmentPage() {
                     </button>
                   ))}
                 </div>
+              </div>
+            ) : currentQuestion?.type === "VIDEO" ? (
+              <div className="flex-1 flex flex-col p-6 lg:p-10 overflow-y-auto custom-scrollbar">
+                <VideoAnswerRecorder
+                  key={currentQuestion.id}
+                  attemptId={attempt?.id || ""}
+                  questionId={currentQuestion.id}
+                  existingUrl={answers[currentQuestion.id] || ""}
+                  onUploaded={(url) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: url }))}
+                />
               </div>
             ) : (
               <div className="flex-1 flex flex-col overflow-hidden">

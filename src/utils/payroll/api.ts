@@ -443,8 +443,10 @@ export const payrollApi = {
     apiClient.post<BulkEmailResult>(`${P}/cycles/${cycleId}/email-payslips`),
 
   // Employees
-  listEmployees: () => apiClient.get<Employee[]>(E),
-  createEmployee: (body: Partial<Employee>) => apiClient.post<Employee>(E, body),
+  // Trailing slash matches the FastAPI route (`@router.get("/")`) — hitting it without the
+  // slash triggers a 307 redirect whose response carries no CORS header, so the browser blocks it.
+  listEmployees: () => apiClient.get<Employee[]>(`${E}/`),
+  createEmployee: (body: Partial<Employee>) => apiClient.post<Employee>(`${E}/`, body),
   updateEmployee: (id: string, body: Partial<Employee>) =>
     apiClient.put<Employee>(`${E}/${id}`, body),
   deleteEmployee: (id: string) => apiClient.del<void>(`${E}/${id}`),
@@ -1194,10 +1196,38 @@ export function estimateSalary(
   return { gross, totalDeductions, net: round2(gross - totalDeductions), earnings, deductions: ded };
 }
 
-export function inr(value: number | string | null | undefined, currency = "INR"): string {
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  INR: "₹", KRW: "₩", JPY: "¥", USD: "$", EUR: "€", GBP: "£", CNY: "¥",
+  AUD: "A$", CAD: "C$", SGD: "S$", HKD: "HK$", AED: "د.إ", SAR: "﷼", THB: "฿",
+};
+
+/** Split a money amount into its display parts (symbol, separator, grouped digits)
+ *  so callers can render the symbol at a different size/weight than the number.
+ *  `isGlyph` is true when `symbol` is a currency glyph (₩ ¥ €) rather than an ISO
+ *  code fallback ("SAR"), which need different spacing/scaling. */
+export function moneyParts(
+  value: number | string | null | undefined,
+  currency = "INR"
+): { symbol: string; sep: string; amount: string; isGlyph: boolean } {
   const n = Number(value || 0);
-  return `${currency === "INR" ? "₹" : currency + " "}${n.toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
+  const cur = (currency || "INR").toUpperCase();
+  const glyph = CURRENCY_SYMBOLS[cur];
+  const isGlyph = Boolean(glyph);
+  // KRW/JPY are conventionally shown without decimals; INR uses Indian digit grouping.
+  const zeroDecimals = cur === "KRW" || cur === "JPY";
+  const locale = cur === "INR" ? "en-IN" : "en-US";
+  const amount = n.toLocaleString(locale, {
+    minimumFractionDigits: zeroDecimals ? 0 : 2,
+    maximumFractionDigits: zeroDecimals ? 0 : 2,
+  });
+  // Thin space (U+2009) after a glyph so wide symbols don't crowd the digits;
+  // normal space after an ISO code fallback ("SAR 1,234.00").
+  return { symbol: glyph ?? cur, sep: isGlyph ? " " : " ", amount, isGlyph };
+}
+
+/** Format a money amount with the correct symbol + grouping for the given currency.
+ *  (Name kept as `inr` for backwards-compatibility; it now handles any currency.) */
+export function inr(value: number | string | null | undefined, currency = "INR"): string {
+  const { symbol, sep, amount } = moneyParts(value, currency);
+  return `${symbol}${sep}${amount}`;
 }

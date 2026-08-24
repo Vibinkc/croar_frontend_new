@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/context/I18nContext";
 import {
   payrollApi,
+  settingsApi,
   inr,
   type Employee,
   type MoneyLine,
@@ -109,6 +110,7 @@ export default function TemplatesPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [currency, setCurrency] = useState("INR");
+  const [orgCurrency, setOrgCurrency] = useState("INR");
   const [payFrequency, setPayFrequency] = useState<PayFrequency>("MONTHLY");
   const [earnings, setEarnings] = useState<LineDraft[]>([]);
   const [deductions, setDeductions] = useState<LineDraft[]>([]);
@@ -125,6 +127,9 @@ export default function TemplatesPage() {
       const [t, e] = await Promise.all([payrollApi.listTemplates(), payrollApi.listEmployees()]);
       setTemplates(t);
       setEmployees(e);
+      settingsApi.getOrganization().then((org) => {
+        if (org?.currency) { setOrgCurrency(org.currency); setCurrency((c) => (c === "INR" ? org.currency : c)); }
+      }).catch(() => {});
       setError(null);
     } catch (err) {
       setError((err as Error).message);
@@ -201,7 +206,7 @@ export default function TemplatesPage() {
     setEditingId(null);
     setName("");
     setDescription("");
-    setCurrency("INR");
+    setCurrency(orgCurrency);
     setPayFrequency("MONTHLY");
     setEarnings([
       { ...emptyLine(), code: "BASIC", label: tr("payroll.componentBasic"), type: "percent", percent: "40", percent_of: "CTC" },

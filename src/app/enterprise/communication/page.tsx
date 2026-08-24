@@ -64,6 +64,8 @@ const MailboxPage = () => {
     // Inbox unread badge — tracked independently of the active folder so it stays correct while
     // viewing Sent/Favorites/Trash (previously it counted only the currently-loaded folder).
     const [inboxUnread, setInboxUnread] = useState(0);
+    // Mailbox connection state — the Mail module mirrors the Integrations connection.
+    const [mailboxConnected, setMailboxConnected] = useState<boolean | null>(null);
 
     const openCandidateFit = async () => {
         if (!selectedEmail || !token) return;
@@ -229,6 +231,19 @@ const MailboxPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
+    // Mirror the Integrations connection: if the mailbox is disconnected there, the Mail
+    // module reflects it (banner + gated compose) instead of silently using the .env mailbox.
+    useEffect(() => {
+        if (!token) return;
+        (async () => {
+            try {
+                const r = await fetch(`${BACKEND_URL}/api/v1/enterprise/sourcing/chat/connections`, { headers: { Authorization: `Bearer ${token}` } });
+                const d = r.ok ? await r.json() : { connected: false };
+                setMailboxConnected(!!d.connected);
+            } catch { setMailboxConnected(false); }
+        })();
+    }, [token]);
+
     const handleSmartReply = async () => {
         if (!selectedEmail || !token) return;
         setIsGenerating(true);
@@ -345,14 +360,28 @@ const MailboxPage = () => {
                     <p className="text-[13.5px] text-[#8A929E] mt-0.5">{t("mail.subtitle")}</p>
                 </div>
                 {canAccess("communications:create") && (
-                    <button
-                        onClick={() => { setComposeData({ to: '', subject: '', body: '' }); setIsComposeOpen(true); }}
-                        className="inline-flex items-center gap-2 h-11 px-4 bg-[#5B53E0] text-white rounded-[10px] text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
-                    >
-                        <Send className="w-4 h-4" /> {t("mail.compose")}
-                    </button>
+                    mailboxConnected === false ? (
+                        <a href="/enterprise/sourcing/connections" className="inline-flex items-center gap-2 h-11 px-4 border border-[#E1E4E8] bg-white text-[#374151] rounded-[10px] text-[13.5px] font-semibold hover:bg-[#F7F8FA] transition-colors">
+                            <Send className="w-4 h-4" /> {t("mail.connectMailbox")}
+                        </a>
+                    ) : (
+                        <button
+                            onClick={() => { setComposeData({ to: '', subject: '', body: '' }); setIsComposeOpen(true); }}
+                            className="inline-flex items-center gap-2 h-11 px-4 bg-[#5B53E0] text-white rounded-[10px] text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors"
+                        >
+                            <Send className="w-4 h-4" /> {t("mail.compose")}
+                        </button>
+                    )
                 )}
             </header>
+
+            {mailboxConnected === false && (
+                <div className="px-6 py-3 bg-[#FEF6EE] border-b border-[#F5C6A5] flex items-center gap-3 shrink-0">
+                    <span className="w-2 h-2 rounded-full bg-[#B93815] shrink-0" />
+                    <p className="text-[13px] font-semibold text-[#92400E] flex-1">{t("mail.noMailboxBanner")}</p>
+                    <a href="/enterprise/sourcing/connections" className="h-9 px-4 rounded-[10px] bg-[#B93815] text-white text-[12.5px] font-bold hover:bg-[#9A2E12] whitespace-nowrap inline-flex items-center">{t("mail.goToIntegrations")}</a>
+                </div>
+            )}
 
             {/* Mail workspace */}
             <div className="flex flex-1 min-h-0 bg-white overflow-hidden">

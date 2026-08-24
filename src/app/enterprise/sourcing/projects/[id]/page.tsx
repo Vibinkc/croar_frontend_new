@@ -23,6 +23,7 @@ interface Project {
     ats_job_title?: string | null;
     agent?: {
         status?: string; paused?: boolean; daily_target?: number; outreach_mode?: string; approval_type?: string;
+        response_window_days?: number; auto_resource?: boolean;
         filters?: any[]; criteria?: string[]; query?: string;
         outreach_sequence_id?: string; outreach_sequence_name?: string;
     };
@@ -115,9 +116,15 @@ export default function ProjectDetailPage() {
     const [agentTab, setAgentTab] = useState<null | "calibrate" | "settings" | "sourcing" | "candidates">(null);
     const [projCands, setProjCands] = useState<any[]>([]);
     const [candsLoading, setCandsLoading] = useState(false);
+    const [candSubTab, setCandSubTab] = useState<"all" | "ai" | "shortlisted">("all");
+    const [replyView, setReplyView] = useState<any | null>(null); // candidate whose reply is being read
     const [dailyTarget, setDailyTarget] = useState(15);
     const [outreach, setOutreach] = useState<"ai_sequence" | "existing" | "shortlist">("shortlist");
     const [approval, setApproval] = useState<"automatic" | "manual">("manual");
+    // Response-window SLA: days a contacted candidate has to reply before we re-source. 0 = off.
+    const [responseWindow, setResponseWindow] = useState(0);
+    const [autoResource, setAutoResource] = useState(true);
+    const [slaOverdue, setSlaOverdue] = useState(0);
 
     const [sourcing, setSourcing] = useState(false);
     const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
@@ -184,6 +191,13 @@ export default function ProjectDetailPage() {
                 setDailyTarget(p.agent?.daily_target ?? 15);
                 setOutreach((p.agent?.outreach_mode as any) || "shortlist");
                 setApproval((p.agent?.approval_type as any) || "manual");
+                setResponseWindow(p.agent?.response_window_days ?? 0);
+                setAutoResource(p.agent?.auto_resource ?? true);
+                // Response-window SLA sweep (runs on open — no background scheduler yet).
+                try {
+                    const sla = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/projects/${projectId}/check-responses`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+                    if (sla.ok) { const sd = await sla.json(); setSlaOverdue(sd.needs_resourcing || 0); }
+                } catch { /* ignore */ }
                 if (p.agent?.query) setQuery(p.agent.query);
                 if (p.agent?.status && p.agent.status !== "none") setAgentTab("calibrate");
             }
@@ -587,6 +601,13 @@ export default function ProjectDetailPage() {
                     <button onClick={() => setAgentTab(null)} className="ml-2 text-[12.5px] font-semibold text-[#5B53E0] hover:underline">← {tr("agent.backToProject")}</button>
                     <button onClick={() => patch({ paused: !paused })} className={`ml-auto h-9 px-4 rounded-[10px] text-[13px] font-bold flex items-center gap-1.5 ${paused ? "bg-[#5B53E0] text-white hover:bg-[#4A43C9]" : "border border-[#E1E4E8] bg-white text-[#374151] hover:bg-[#F7F8FA]"}`}>{paused ? <><Play className="w-3.5 h-3.5" /> {tr("agent.activateAgent")}</> : <><Pause className="w-3.5 h-3.5" /> {tr("agent.deactivateAgent")}</>}</button>
                 </div>
+                {slaOverdue > 0 && (
+                    <div className="mb-4 flex items-center gap-3 rounded-[12px] border border-[#F5C6A5] bg-[#FEF6EE] px-4 py-3">
+                        <span className="w-2 h-2 rounded-full bg-[#B93815] shrink-0" />
+                        <p className="text-[13px] font-semibold text-[#92400E] flex-1">{tr("agent.slaOverdueBanner", { n: slaOverdue })}</p>
+                        <button onClick={() => setAgentTab("calibrate")} className="h-9 px-4 rounded-[10px] bg-[#B93815] text-white text-[12.5px] font-bold hover:bg-[#9A2E12] whitespace-nowrap">{tr("agent.sourceReplacements")}</button>
+                    </div>
+                )}
                 <div className="grid grid-cols-1 lg:grid-cols-[150px_minmax(0,1fr)] gap-4">
                     {/* Left tabs */}
                     <div className="space-y-1">
@@ -770,9 +791,38 @@ export default function ProjectDetailPage() {
                                     </div>
                                 </div>
 
+                                <div className="mb-8">
+                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("agent.responseWindowTitle")}</h3>
+                                    <p className="text-[12.5px] text-[#8A929E] mb-3">{tr("agent.responseWindowDesc")}</p>
+                                    <div className="grid grid-cols-6 gap-2">
+                                        {[{ v: 0, l: tr("agent.responseOff") }, { v: 1, l: "1d" }, { v: 2, l: "2d" }, { v: 3, l: "3d" }, { v: 5, l: "5d" }, { v: 7, l: "7d" }].map((o) => (
+                                            <button key={o.v} onClick={() => setResponseWindow(o.v)} className={`rounded-[12px] border px-2 py-4 text-center text-[13px] font-bold transition-all ${responseWindow === o.v ? "border-[#5B53E0] bg-[#F4F3FD] ring-2 ring-[#5B53E0]/15 text-[#5B53E0]" : "border-[#E1E4E8] bg-white text-[#374151] hover:border-[#DAD7F6]"}`}>{o.l}</button>
+                                        ))}
+                                    </div>
+                                    <div className="mt-3 flex items-center gap-2.5">
+                                        <span className="text-[12.5px] text-[#8A929E]">{tr("agent.customWindowLabel")}</span>
+                                        <input
+                                            type="number"
+                                            min={1}
+                                            max={365}
+                                            value={responseWindow > 0 ? responseWindow : ""}
+                                            onChange={(e) => { const n = parseInt(e.target.value, 10); setResponseWindow(Number.isFinite(n) && n > 0 ? Math.min(365, n) : 0); }}
+                                            placeholder={tr("agent.customWindowPlaceholder")}
+                                            className={`w-24 h-9 rounded-[10px] border px-3 text-[13px] font-semibold text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 ${responseWindow > 0 && ![1, 2, 3, 5, 7].includes(responseWindow) ? "border-[#5B53E0] bg-[#F4F3FD]" : "border-[#E1E4E8] bg-white"}`}
+                                        />
+                                        <span className="text-[12.5px] text-[#8A929E]">{tr("agent.daysUnit")}</span>
+                                    </div>
+                                    {responseWindow > 0 && (
+                                        <label className="mt-3 flex items-center gap-2.5 cursor-pointer">
+                                            <input type="checkbox" checked={autoResource} onChange={(e) => setAutoResource(e.target.checked)} className="w-4 h-4 accent-[#5B53E0]" />
+                                            <span className="text-[13px] text-[#374151]">{tr("agent.autoResourceLabel")}</span>
+                                        </label>
+                                    )}
+                                </div>
+
                                 <div className="flex justify-end">
                                     <button
-                                        onClick={async () => { await patch({ daily_target: dailyTarget, outreach_mode: outreach, approval_type: approval }); setAgentTab("sourcing"); }}
+                                        onClick={async () => { await patch({ daily_target: dailyTarget, outreach_mode: outreach, approval_type: approval, response_window_days: responseWindow, auto_resource: autoResource }); setAgentTab("sourcing"); }}
                                         className="h-11 px-6 rounded-[10px] bg-[#5B53E0] text-white text-[14px] font-bold hover:bg-[#4A43C9] flex items-center gap-2"
                                     >
                                         {tr("agent.continue")} <ArrowRight className="w-4 h-4" />
@@ -811,6 +861,11 @@ export default function ProjectDetailPage() {
                                 if (v.includes("approv")) return "bg-[#EEF0FB] text-[#4B4FD6]";
                                 return "bg-[#F1F2F5] text-[#6B6F76]";
                             };
+                            const isAi = (s: string) => { const v = (s || "").toLowerCase(); return !(v.includes("manual") || v.includes("approv") || v.includes("direct")); };
+                            const aiList = projCands.filter((c) => isAi(c.source));
+                            const slList = projCands.filter((c) => !isAi(c.source));
+                            const view = candSubTab === "ai" ? aiList : candSubTab === "shortlisted" ? slList : projCands;
+                            const subTabs: [typeof candSubTab, string, number][] = [["all", tr("agent.tabAll"), projCands.length], ["ai", tr("agent.tabAiSourced"), aiList.length], ["shortlisted", tr("agent.tabShortlisted"), slList.length]];
                             return (
                                 <div>
                                     <div className="flex items-center justify-between gap-3 mb-3">
@@ -820,36 +875,60 @@ export default function ProjectDetailPage() {
                                         </div>
                                         <button onClick={fetchProjectCandidates} className="h-9 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[12.5px] font-semibold text-[#374151] hover:bg-[#F7F8FA]">{tr("agent.refresh")}</button>
                                     </div>
+                                    <div className="flex items-center gap-1 mb-3 border-b border-[#E8EAED]">
+                                        {subTabs.map(([k, label, n]) => (
+                                            <button key={k} onClick={() => setCandSubTab(k)} className={`px-3.5 py-2 text-[12.5px] font-semibold border-b-2 -mb-px transition-colors ${candSubTab === k ? "border-[#5B53E0] text-[#5B53E0]" : "border-transparent text-[#8A929E] hover:text-[#374151]"}`}>{label}<span className={`ml-1.5 text-[11px] font-bold px-1.5 py-0.5 rounded-full ${candSubTab === k ? "bg-[#ECEBFB] text-[#5B53E0]" : "bg-[#F1F2F5] text-[#8A929E]"}`}>{n}</span></button>
+                                        ))}
+                                    </div>
                                     {candsLoading ? (
                                         <div className="py-16 flex justify-center"><Loader2 className="w-5 h-5 text-[#5B53E0] animate-spin" /></div>
-                                    ) : projCands.length === 0 ? (
+                                    ) : view.length === 0 ? (
                                         <div className="rounded-[14px] border border-dashed border-[#D8DBE0] bg-[#FBFBFC] py-14 text-center">
                                             <p className="text-[14px] font-bold text-[#15171C]">{tr("agent.noCandidatesYet")}</p>
                                             <p className="text-[12.5px] text-[#8A929E] mt-1">{tr("agent.noCandidatesDesc")}</p>
                                         </div>
                                     ) : (
-                                        <div className="rounded-[14px] border border-[#E8EAED] bg-white overflow-hidden">
-                                            {projCands.map((c) => {
-                                                const p = c.profile || {};
-                                                const sm = srcMeta(c.source);
-                                                return (
-                                                    <div key={c.shortlist_id} className="flex items-center gap-3 px-4 py-3.5 border-b border-[#F0F0F1] last:border-b-0 hover:bg-[#F7F8FA]/50">
-                                                        <div className="min-w-0 flex-1 cursor-pointer" onClick={() => openReview([p], 0)}>
-                                                            <div className="flex items-center gap-2 min-w-0">
-                                                                <span className="text-[13.5px] font-bold text-[#15171C] truncate">{p.full_name || "Unknown"}</span>
-                                                                {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#5B53E0] text-[11.5px] font-semibold inline-flex items-center gap-0.5 shrink-0">{tr("agent.profile")}<ExternalLink className="w-3 h-3" /></a>}
-                                                            </div>
-                                                            <p className="text-[12px] text-[#8A929E] truncate mt-0.5">{p.headline || p.company || p.location || "—"}</p>
-                                                        </div>
-                                                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ${sm.cls}`}>{sm.label}</span>
-                                                        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${statusCls(c.status)}`}>{c.status || tr("agent.notContacted")}</span>
-                                                        <div className="flex items-center gap-1.5 shrink-0">
-                                                            <button onClick={() => setCandidateStatus(c, "Interested")} title={tr("agent.markVerified")} className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#15803D] hover:bg-[#E6F4EA]"><CheckCircle2 className="w-4 h-4" /></button>
-                                                            <button onClick={() => removeCandidate(c)} title={tr("agent.remove")} className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#9AA3AF] hover:text-[#C0383C] hover:bg-rose-50"><X className="w-4 h-4" /></button>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
+                                        <div className="rounded-[14px] border border-[#E8EAED] bg-white overflow-x-auto">
+                                            <table className="w-full text-left border-collapse min-w-[720px]">
+                                                <thead>
+                                                    <tr className="bg-[#F7F8FA] text-[10.5px] uppercase tracking-[0.04em] text-[#8A929E]">
+                                                        <th className="px-4 py-2.5 font-bold">{tr("agent.colCandidate")}</th>
+                                                        <th className="px-4 py-2.5 font-bold">{tr("agent.colSource")}</th>
+                                                        <th className="px-4 py-2.5 font-bold">{tr("agent.colId")}</th>
+                                                        <th className="px-4 py-2.5 font-bold">{tr("agent.colStatus")}</th>
+                                                        <th className="px-4 py-2.5 font-bold text-right">{tr("agent.colActions")}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {view.map((c) => {
+                                                        const p = c.profile || {};
+                                                        const sm = srcMeta(c.source);
+                                                        return (
+                                                            <tr key={c.shortlist_id} className="border-t border-[#F0F0F1] hover:bg-[#F7F8FA]/50">
+                                                                <td className="px-4 py-3">
+                                                                    <div className="min-w-0 cursor-pointer" onClick={() => openReview([p], 0)}>
+                                                                        <div className="flex items-center gap-2 min-w-0">
+                                                                            <span className="text-[13.5px] font-bold text-[#15171C] truncate">{p.full_name || "Unknown"}</span>
+                                                                            {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#5B53E0] text-[11px] font-semibold inline-flex items-center gap-0.5 shrink-0">{tr("agent.profile")}<ExternalLink className="w-3 h-3" /></a>}
+                                                                        </div>
+                                                                        <p className="text-[12px] text-[#8A929E] truncate mt-0.5">{p.headline || p.company || p.location || "—"}</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-4 py-3"><span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${sm.cls}`}>{sm.label}</span></td>
+                                                                <td className="px-4 py-3"><span className="text-[11.5px] font-mono text-[#8A929E]" title={c.shortlist_id}>{(c.shortlist_id || "").slice(0, 8)}</span></td>
+                                                                <td className="px-4 py-3"><span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${statusCls(c.status)}`}>{c.status || tr("agent.notContacted")}</span></td>
+                                                                <td className="px-4 py-3">
+                                                                    <div className="flex items-center gap-1.5 justify-end">
+                                                                        {(c.sent_body || c.reply_body) && <button onClick={() => setReplyView(c)} title={tr("agent.viewThread")} className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#5B53E0] hover:bg-[#F4F3FD]"><Mail className="w-4 h-4" /></button>}
+                                                                        <button onClick={() => setCandidateStatus(c, "Interested")} title={tr("agent.markVerified")} className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#15803D] hover:bg-[#E6F4EA]"><CheckCircle2 className="w-4 h-4" /></button>
+                                                                        <button onClick={() => removeCandidate(c)} title={tr("agent.remove")} className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#9AA3AF] hover:text-[#C0383C] hover:bg-rose-50"><X className="w-4 h-4" /></button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
                                         </div>
                                     )}
                                 </div>
@@ -857,6 +936,48 @@ export default function ProjectDetailPage() {
                         })()}
                     </div>
                 </div>
+
+                {/* Candidate conversation thread — what we sent + what they replied, stored per candidate */}
+                {replyView && (() => {
+                    const c = replyView; const p = c.profile || {};
+                    return (
+                    <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-10 overflow-y-auto no-scrollbar" onClick={() => setReplyView(null)}>
+                        <div className="bg-white rounded-[16px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+                            <div className="p-5 border-b border-[#E8EAED] flex items-center justify-between gap-3">
+                                <div className="min-w-0">
+                                    <h3 className="text-[16px] font-bold text-[#15171C] truncate">{tr("agent.conversation")}</h3>
+                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5 truncate">{p.full_name || "—"}{p.email ? ` · ${p.email}` : ""}</p>
+                                </div>
+                                <button onClick={() => setReplyView(null)} className="w-8 h-8 rounded-[8px] border border-[#E1E4E8] flex items-center justify-center text-[#4B5563] hover:bg-[#F7F8FA] shrink-0"><X className="w-4 h-4" /></button>
+                            </div>
+                            <div className="p-5 space-y-4 max-h-[65vh] overflow-y-auto">
+                                {c.sent_body && (
+                                    <div className="rounded-[12px] border border-[#E1E4E8] bg-[#F7F8FA] p-4">
+                                        <div className="flex items-center justify-between mb-1.5">
+                                            <span className="text-[10.5px] font-bold uppercase tracking-wide text-[#5B53E0]">{tr("agent.sentLabel")}</span>
+                                            <span className="text-[11px] text-[#8A929E]">{c.sent_at ? new Date(c.sent_at).toLocaleString() : ""}</span>
+                                        </div>
+                                        {c.sent_subject && <p className="text-[13px] font-bold text-[#15171C] mb-1">{c.sent_subject}</p>}
+                                        <div className="text-[13px] text-[#374151] leading-relaxed break-words [&_*]:!m-0 [&_p]:mb-2" dangerouslySetInnerHTML={{ __html: c.sent_body }} />
+                                    </div>
+                                )}
+                                {c.reply_body ? (
+                                    <div className="rounded-[12px] border border-[#C7D7FE] bg-[#EFF4FF] p-4">
+                                        <div className="flex items-center justify-between mb-1.5">
+                                            <span className="text-[10.5px] font-bold uppercase tracking-wide text-[#3538CD]">{tr("agent.candidateReply")}</span>
+                                            <span className="text-[11px] text-[#8A929E]">{c.reply_at ? new Date(c.reply_at).toLocaleString() : ""}</span>
+                                        </div>
+                                        {c.reply_subject && <p className="text-[13px] font-bold text-[#15171C] mb-1">{c.reply_subject}</p>}
+                                        <p className="text-[13px] text-[#374151] leading-relaxed whitespace-pre-wrap break-words">{c.reply_body}</p>
+                                    </div>
+                                ) : (
+                                    <p className="text-[12.5px] text-[#8A929E] text-center py-4 rounded-[12px] border border-dashed border-[#D8DBE0] bg-[#FBFBFC]">{tr("agent.noReplyYet")}</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    );
+                })()}
 
                 {/* Review Profiles modal */}
                 {reviewList && reviewList[reviewIdx] && (() => {

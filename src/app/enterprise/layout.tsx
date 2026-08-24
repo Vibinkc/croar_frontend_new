@@ -236,6 +236,7 @@ export default function EnterprisePortalLayout({
                 { label: "Projects", icon: "workspaces", path: "/enterprise/projects", permission: "projects:read" },
                 { label: "Tasks", icon: "checklist", path: "/enterprise/tasks", permission: "tasks:read" },
                 { label: "Skill Assessments", icon: "quiz", path: "/enterprise/skill-assessments", permission: "assessments:read" },
+                { label: "Video Reviews", icon: "smart_display", path: "/enterprise/skill-assessments/video-reviews", permission: "assessments:read" },
                 { label: "360 Assessments", icon: "360", path: "/enterprise/assessments-360", permission: "assessments:read" },
                 { label: "HR Surveys", icon: "poll", path: "/enterprise/surveys", permission: "surveys:read" },
             ]
@@ -270,6 +271,7 @@ export default function EnterprisePortalLayout({
             icon: "settings",
             items: [
                 { label: "Settings", icon: "settings", path: "/enterprise/settings", permission: "organization:read" },
+                { label: "Credits", icon: "account_balance_wallet", path: "/enterprise/credits", permission: "organization:read" },
                 { label: "Team", icon: "groups", path: "/enterprise/team", permission: "organization:moderate" },
                 { label: "Permissions", icon: "admin_panel_settings", path: "/enterprise/settings/roles", permission: "organization:moderate" },
                 { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },

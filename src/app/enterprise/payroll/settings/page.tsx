@@ -409,7 +409,12 @@ export default function SettingsPage() {
               <input className={INPUT_CLS} inputMode="numeric" disabled={!canEdit} value={form.pincode} onChange={(e) => set("pincode", e.target.value)} />
             </Field>
             <Field label={tr("payroll.country")}>
-              <input className={INPUT_CLS} disabled={!canEdit} value={form.country} onChange={(e) => set("country", e.target.value)} />
+              {/* Country drives the statutory payroll engine: India (PF/ESI/TDS), South Korea
+                  (4대보험 + 소득세), Japan (社会保険 + 源泉税), United States (FICA + federal). */}
+              <select className={INPUT_CLS} disabled={!canEdit} value={form.country} onChange={(e) => set("country", e.target.value)}>
+                {["India", "South Korea", "Japan", "United States"].map((c) => <option key={c} value={c}>{c}</option>)}
+                {form.country && !["India", "South Korea", "Japan", "United States"].includes(form.country) && <option value={form.country}>{form.country}</option>}
+              </select>
             </Field>
           </div>
         </Section>

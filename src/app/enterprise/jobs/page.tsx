@@ -37,6 +37,13 @@ interface Company {
     name: string;
 }
 
+interface Member {
+    id: string;
+    full_name: string;
+    email: string;
+    profile_image?: string | null;
+}
+
 interface Job {
     id: string;
     title: string;
@@ -51,6 +58,14 @@ interface Job {
     job_type?: string;
     postings: JobPosting[];
     company_id?: string;
+    owner?: Member | null;
+    collaborators?: Member[];
+}
+
+function initials(name?: string): string {
+    if (!name) return "?";
+    const p = name.trim().split(/\s+/);
+    return ((p[0]?.[0] || "") + (p[1]?.[0] || "")).toUpperCase() || "?";
 }
 
 type TabStatus = "ALL" | "ACTIVE" | "DRAFTS" | "CLOSED";
@@ -67,6 +82,7 @@ export default function EnterpriseJobsPage() {
     const [selectedLocation, setSelectedLocation] = useState<string>("ALL");
     const [selectedType, setSelectedType] = useState<string>("ALL");
     const [copiedJobId, setCopiedJobId] = useState<string | null>(null);
+    const [mineOnly, setMineOnly] = useState(false);
     // Which row's "More" menu is open. Click-toggle (not hover) so it works on touch devices.
     const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
@@ -82,7 +98,7 @@ export default function EnterpriseJobsPage() {
             fetchJobs();
             fetchCompanies();
         }
-    }, [token]);
+    }, [token, mineOnly]);
 
     const fetchCompanies = async () => {
         try {
@@ -125,7 +141,7 @@ export default function EnterpriseJobsPage() {
     const fetchJobs = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${mineOnly ? "?mine=true" : ""}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -293,6 +309,17 @@ export default function EnterpriseJobsPage() {
                 </div>
 
                 <div className="flex items-center gap-2.5">
+                    <button
+                        onClick={() => setMineOnly((v) => !v)}
+                        className={`h-10 px-3.5 rounded-[10px] text-[13px] font-semibold whitespace-nowrap transition-colors border ${
+                            mineOnly
+                                ? "bg-[#5B53E0] text-white border-[#5B53E0] shadow-[0_4px_12px_rgba(91,83,224,0.24)]"
+                                : "bg-white text-[#374151] border-[#E1E4E8] hover:border-[#5B53E0]/40"
+                        }`}
+                        title={tr("jobs.myJobsHint")}
+                    >
+                        {tr("jobs.myJobs")}
+                    </button>
                     <div className="relative flex-1 md:flex-none">
                         <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
                         <select
@@ -430,7 +457,20 @@ export default function EnterpriseJobsPage() {
                                                 <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {job.location || tr("jobs.remote")}</span>
                                                 <span className={jetbrainsMono.className}>{job.experience_min || 0}–{job.experience_max || 5}y</span>
                                             </div>
-                                            <span className="hidden md:block text-[11px] text-[#C7CCD4] mt-0.5">#{job.id.substring(0, 8)}</span>
+                                            <div className="hidden md:flex items-center gap-1.5 mt-1">
+                                                {job.owner ? (
+                                                    <span className="inline-flex items-center gap-1.5 text-[11.5px] text-[#6B6F76]" title={`${tr("jobs.owner")}: ${job.owner.full_name}`}>
+                                                        <span className="w-[18px] h-[18px] rounded-full bg-[#5B53E0] text-white text-[8.5px] font-bold flex items-center justify-center shrink-0">{initials(job.owner.full_name)}</span>
+                                                        {job.owner.full_name}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[11px] font-semibold text-[#B26B08] bg-[#FBEFDC] px-1.5 py-0.5 rounded">{tr("jobs.unassigned")}</span>
+                                                )}
+                                                {(job.collaborators?.length ?? 0) > 0 && (
+                                                    <span className="text-[11px] text-[#8A929E]">+{job.collaborators!.length}</span>
+                                                )}
+                                                <span className="text-[11px] text-[#C7CCD4]">· #{job.id.substring(0, 8)}</span>
+                                            </div>
                                         </div>
                                     </div>
 

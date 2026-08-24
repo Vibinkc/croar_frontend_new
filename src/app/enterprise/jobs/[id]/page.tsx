@@ -21,6 +21,7 @@ import {
     Area
 } from 'recharts';
 import { jetbrainsMono, Button, Card, Badge, StatCard, StatGrid, Input, PageHelp } from "@/components/ds";
+import JobOwnershipPanel, { type Member } from "@/components/enterprise/JobOwnershipPanel";
 
 interface JobStage {
     id: number;
@@ -73,6 +74,9 @@ interface Job {
     customer?: string;
     metrics?: JobMetrics;
     stages?: JobStage[];
+    owner?: Member | null;
+    collaborators?: Member[];
+    last_viewed_at?: string | null;
 }
 
 const STATIC_LEADING_TABS = [
@@ -506,6 +510,15 @@ export default function JobDetailPage() {
 
                                 {/* Summary Sidebar */}
                                 <div className="space-y-6">
+                                    {job && (
+                                        <JobOwnershipPanel
+                                            jobId={job.id}
+                                            owner={job.owner}
+                                            collaborators={job.collaborators}
+                                            lastViewedAt={job.last_viewed_at}
+                                            onAssigned={fetchJobDetails}
+                                        />
+                                    )}
                                     <Card>
                                         <h3 className="text-[13px] font-bold text-[#15171C] mb-4">{tr("jobDetail.stageEfficiency")}</h3>
                                         <div className="space-y-4">

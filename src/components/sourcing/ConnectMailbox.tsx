@@ -10,7 +10,7 @@ type Provider = "gmail" | "outlook" | "imap";
 
 const PROVIDERS: Record<Provider, { label: string; smtp_host: string; smtp_port: number; imap_host: string; imap_port: number; hint: string }> = {
     gmail: { label: "Gmail", smtp_host: "smtp.gmail.com", smtp_port: 587, imap_host: "imap.gmail.com", imap_port: 993, hint: "Use a Google App Password (16 chars) — not your normal login password. Requires 2-step verification enabled." },
-    outlook: { label: "Outlook", smtp_host: "smtp-mail.outlook.com", smtp_port: 587, imap_host: "outlook.office365.com", imap_port: 993, hint: "Use an app password if 2FA is enabled on your Microsoft account." },
+    outlook: { label: "Microsoft 365", smtp_host: "smtp-mail.outlook.com", smtp_port: 587, imap_host: "outlook.office365.com", imap_port: 993, hint: "Use an app password if 2FA is enabled on your Microsoft account." },
     imap: { label: "IMAP", smtp_host: "", smtp_port: 587, imap_host: "", imap_port: 993, hint: "Enter your mail provider's SMTP and IMAP server details." },
 };
 
@@ -48,6 +48,17 @@ export default function ConnectMailbox({ onConnected, onLater, showLater = false
         } catch { setError(tr("sharedUi.networkError")); } finally { setRedirecting(false); }
     };
 
+    // Microsoft 365 uses real "Sign in with Microsoft" (OAuth via Azure AD + Graph).
+    const connectMicrosoft = async () => {
+        setRedirecting(true); setError("");
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/v1/enterprise/sourcing/chat/connections/microsoft/authorize`, { headers: { Authorization: `Bearer ${token}` } });
+            const d = await res.json().catch(() => ({}));
+            if (res.ok && d.authorize_url) { window.location.href = d.authorize_url; return; }
+            setError(typeof d?.detail === "string" ? d.detail : tr("sharedUi.microsoftSigninUnavailable"));
+        } catch { setError(tr("sharedUi.networkError")); } finally { setRedirecting(false); }
+    };
+
     const choose = (p: Provider) => {
         if (p === "gmail") { connectGoogle(); return; }
         const d = PROVIDERS[p];
@@ -77,6 +88,7 @@ export default function ConnectMailbox({ onConnected, onLater, showLater = false
                 <h3 className="text-[20px] font-bold text-[#15171C] text-center leading-snug">{tr("sharedUi.connectYourMailbox")}<br />{tr("sharedUi.toStartSequencing")}</h3>
                 <div className="mt-6 space-y-3">
                     <button onClick={() => choose("gmail")} disabled={redirecting} className="w-full h-12 rounded-[12px] bg-[#F4F5F7] hover:bg-[#ECEEF1] flex items-center justify-center gap-2.5 text-[14px] font-semibold text-[#15171C] disabled:opacity-60">{redirecting ? <Loader2 className="w-5 h-5 animate-spin text-[#5B53E0]" /> : <GmailIcon />} {redirecting ? tr("sharedUi.redirectingToGoogle") : tr("sharedUi.connectGmail")}</button>
+                    <button onClick={connectMicrosoft} disabled={redirecting} className="w-full h-12 rounded-[12px] bg-[#F4F5F7] hover:bg-[#ECEEF1] flex items-center justify-center gap-2.5 text-[14px] font-semibold text-[#15171C] disabled:opacity-60"><OutlookIcon /> {tr("sharedUi.connectM365")}</button>
                 </div>
                 {error && <p className="text-[12.5px] text-[#C0383C] bg-rose-50 border border-rose-100 rounded-[10px] px-3 py-2 mt-4">{error}</p>}
                 <p className="text-center text-[12px] text-[#9AA3AF] mt-5">{tr("sharedUi.manageMailboxPre")} <span className="font-semibold text-[#6B6F76]">{tr("sharedUi.integrations")}</span> {tr("sharedUi.page")}</p>

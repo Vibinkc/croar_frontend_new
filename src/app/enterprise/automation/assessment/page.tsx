@@ -49,6 +49,7 @@ enum AssessmentType {
   APTITUDE = "APTITUDE",
   CODING = "CODING",
   BOTH = "BOTH",
+  VIDEO = "VIDEO",
 }
 
 interface Automation {
