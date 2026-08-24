@@ -612,6 +612,34 @@ function CandidatePicker({
 // localStorage key for the in-progress Pilot chat (so it survives navigating away and back).
 const PILOT_CHAT_KEY = "croar.pilot.currentChat";
 
+// sessionStorage keys another module writes before sending the user here with a request.
+const HANDOFF_KEYS = { rounds: "croar_rounds_job", source: "croar_source_job" } as const;
+type HandoffKind = keyof typeof HANDOFF_KEYS;
+type Handoff = { kind: HandoffKind; ctx: Record<string, unknown> };
+
+/** Read a pending hand-off WITHOUT consuming it.
+ *
+ * Deliberately non-destructive and safe to call more than once: it is used as a useState
+ * initializer, which React invokes twice under StrictMode. Consuming the key here would make the
+ * second call return null and the arriving request would land in whatever chat was already open. */
+function readPilotHandoff(): Handoff | null {
+    if (typeof window === "undefined") return null;
+    for (const kind of Object.keys(HANDOFF_KEYS) as HandoffKind[]) {
+        try {
+            const raw = sessionStorage.getItem(HANDOFF_KEYS[kind]);
+            if (!raw) continue;
+            const ctx = JSON.parse(raw);
+            if (ctx?.autostart) return { kind, ctx };
+        } catch {
+            /* malformed or storage blocked — treat as "no hand-off" */
+        }
+    }
+    return null;
+}
+
+const cleanText = (s: unknown) =>
+    String(s || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&amp;|&lt;|&gt;/g, " ").replace(/\s+/g, " ").trim();
+
 // While the Pilot works, poll the backend for the REAL step it's on right now (e.g. "Generating the
 // questions…") and show exactly that — no guessing. Falls back to a single "Working on it…" line
 // during the brief window before the first step is reported (or for plain chat with no tool step).
@@ -684,6 +712,11 @@ export default function CroarPilotPage() {
     const titleRef = useRef<string>("");
     const scrollRef = useRef<HTMLDivElement>(null);
     const persistReady = useRef(false); // guards the persist effect until after initial hydration
+    // Whether we arrived carrying a request from another module, decided ONCE at first render.
+    // Everything below keys off this value rather than re-reading sessionStorage, so restoring the
+    // previous chat and consuming the hand-off can no longer race each other.
+    const [handoff] = useState(readPilotHandoff);
+    const handoffSent = useRef(false); // a hand-off request is sent exactly once per visit
     // Job handed off from "Source with Croar Pilot": carried as request metadata on every turn of
     // this sourcing conversation so the agent sources for THIS exact job (no re-asking which one).
     const sourceJobRef = useRef<{ id?: string; title?: string } | null>(null);
@@ -714,12 +747,11 @@ export default function CroarPilotPage() {
     // Restore the in-progress chat when returning to the page, so the conversation (pipeline card,
     // sourced candidates, "invites sent" guidance) doesn't vanish on navigation. Client-only.
     useEffect(() => {
+        // A request handed over from another module always opens a FRESH chat. Restoring the
+        // previous one here would drop that request into the middle of an unrelated conversation
+        // and swap in its threadId, so the agent would answer with the old chat's context.
+        if (handoff) return;
         try {
-            // If we arrived from a job hand-off ("Source with Croar Pilot", or "build the rounds
-            // with Croar Pilot"), that starts a FRESH conversation on the current thread — do NOT
-            // restore an old chat, or its saved threadId would clobber this thread and the
-            // follow-up ("5") would land on a thread with no memory of the question.
-            if (sessionStorage.getItem("croar_source_job") || sessionStorage.getItem("croar_rounds_job")) return;
             const raw = localStorage.getItem(PILOT_CHAT_KEY);
             if (raw) {
                 const saved = JSON.parse(raw);
@@ -733,6 +765,9 @@ export default function CroarPilotPage() {
         } catch {
             /* ignore */
         }
+    // Mount-only on purpose: this hydrates the chat once. `handoff` is set by a useState with no
+    // setter, so it is fixed for the life of the page and cannot go stale here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Persist the chat on every change (skip the first run so we don't clobber storage before the
@@ -834,67 +869,54 @@ export default function CroarPilotPage() {
         }
     };
 
-    // Hand-off from the job form's "build the rounds with Croar Pilot" choice. The job was just
-    // saved as a Draft, so the agent has a real job_id to work on: ask it to design the interview
-    // rounds and persist them with set_job_rounds.
+    // A request handed over from another module (job form -> "build the rounds with Croar Pilot",
+    // or "Source with Croar Pilot") is sent as the FIRST message of a brand-new chat. `handoff` was
+    // captured at first render, so this no longer depends on the sessionStorage key still being
+    // there by the time the effect runs.
     useEffect(() => {
-        if (!token) return;
-        let raw: string | null = null;
-        try { raw = sessionStorage.getItem("croar_rounds_job"); } catch { return; }
-        if (!raw) return;
-        try { sessionStorage.removeItem("croar_rounds_job"); } catch { /* ignore */ }
+        if (!token || !handoff || handoffSent.current) return;
+        handoffSent.current = true;
+
+        // Consume the key now that we have definitely acted on it, and drop the stored chat so a
+        // later mount cannot restore the previous conversation on top of this one.
         try {
-            const ctx = JSON.parse(raw);
-            if (!ctx?.autostart) return;
-            const clean = (s: string) => (s || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&amp;|&lt;|&gt;/g, " ").replace(/\s+/g, " ").trim();
-            const title = clean(ctx?.title || "");
-            const skills = clean(ctx?.skills || "");
-            const jd = clean(ctx?.description || "").slice(0, 2000);
-            if (!ctx?.id) return;
-            // Carry the job on every turn so the agent never has to ask which one it is.
-            sourceJobRef.current = { id: ctx.id, title };
-            const prompt =
-                `I've just created the "${title || "this"}" job in Croar (job_id: ${ctx.id}) and saved it as a Draft.` +
+            sessionStorage.removeItem(HANDOFF_KEYS[handoff.kind]);
+            localStorage.removeItem(PILOT_CHAT_KEY);
+        } catch {
+            /* ignore */
+        }
+
+        const ctx = handoff.ctx;
+        const jobId = ctx?.id ? String(ctx.id) : "";
+        const title = cleanText(ctx?.title);
+        const skills = cleanText(ctx?.skills);
+
+        let prompt = "";
+        if (handoff.kind === "rounds") {
+            if (!jobId) return;
+            const jd = cleanText(ctx?.description).slice(0, 2000);
+            prompt =
+                `I've just created the "${title || "this"}" job in Croar (job_id: ${jobId}) and saved it as a Draft.` +
                 (skills ? ` Key skills: ${skills}.` : "") +
                 (jd ? ` Job description: ${jd}` : "") +
                 ` Please design the interview rounds for this role — propose a sensible set of stages` +
                 ` for its seniority and skills, then save them onto this job with set_job_rounds.` +
                 ` Tell me what you picked and why, and let me know I can ask you to adjust them.`;
-            send(prompt);
-        } catch (e) {
-            console.error("Pilot rounds hand-off failed:", e);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token]);
-
-    // Hand-off from job creation ("Source with Croar Pilot"): auto-start sourcing
-    // using the new job's title + description.
-    useEffect(() => {
-        if (!token) return;
-        let raw: string | null = null;
-        try { raw = sessionStorage.getItem("croar_source_job"); } catch { return; }
-        if (!raw) return;
-        try { sessionStorage.removeItem("croar_source_job"); } catch { /* ignore */ }
-        try {
-            const ctx = JSON.parse(raw);
-            if (!ctx?.autostart) return;
-            const clean = (s: string) => (s || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&amp;|&lt;|&gt;/g, " ").replace(/\s+/g, " ").trim();
-            const title = clean(ctx?.title || "");
-            const skills = clean(ctx?.skills || "");
+        } else {
             if (!title && !skills) return;
-            // Remember the exact job so every turn carries its id as metadata (server injects it as
-            // context) — the agent then sources for THIS job without re-asking which one.
-            if (ctx?.id || title) sourceJobRef.current = { id: ctx?.id, title };
             // The job ALREADY exists (just created via the job form) — tell the Pilot so it sources
             // for the existing job instead of building a new pipeline. No count is given, so it will
             // ask "How many candidates should I source?" before it starts sourcing.
-            const prompt = `I've already created the "${title || "this"}" job in Croar${skills ? ` (key skills: ${skills})` : ""}. Please source candidates for this existing job — you don't need to create a new pipeline.`;
-            send(prompt);
-        } catch (e) {
-            console.error("Pilot hand-off failed:", e);
+            prompt =
+                `I've already created the "${title || "this"}" job in Croar${skills ? ` (key skills: ${skills})` : ""}.` +
+                ` Please source candidates for this existing job — you don't need to create a new pipeline.`;
         }
+
+        // Carry the job on every turn so the agent never has to ask which one it is.
+        if (jobId || title) sourceJobRef.current = { id: jobId || undefined, title };
+        send(prompt);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token]);
+    }, [token, handoff]);
 
     const loadSession = async (id: string) => {
         if (!token) return;
