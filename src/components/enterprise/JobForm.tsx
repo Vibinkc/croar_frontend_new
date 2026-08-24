@@ -25,7 +25,8 @@ import {
     Pin,
     FileText,
     AtSign,
-    Users
+    Users,
+    Network
 } from "lucide-react";
 import { jetbrainsMono, Button, Card, CardHeader, Field, Input, Textarea, Select, PageHeader, cn } from "@/components/ds";
 
@@ -94,6 +95,8 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const addPanelRef = useRef<HTMLDivElement>(null);
     const [currentStep, setCurrentStep] = useState(1);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showRoundsChoice, setShowRoundsChoice] = useState(false);
+    const [isHandingOff, setIsHandingOff] = useState(false);
     const [createdJobId, setCreatedJobId] = useState("");
     const [companies, setCompanies] = useState<Company[]>([]);
     const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
@@ -437,6 +440,53 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
     const errorInputCls = "border-[#EF4444] bg-[#FDECEC] text-[#C0383C] focus:border-[#EF4444] focus:ring-[#EF4444]/20";
 
+    // Rounds step: the user picks who builds the interview rounds.
+    //  - "manual": carry on into step 3 and lay the stages out by hand (unchanged behaviour).
+    //  - "pilot":  save what steps 1-2 produced as a DRAFT job right now, then hand that job to
+    //              Croar Pilot so it can design the rounds and write them back with set_job_rounds.
+    //              Saving first is what gives the agent a job_id to act on; Draft keeps the role
+    //              off the public board until the rounds actually exist.
+    const buildRoundsWithPilot = async () => {
+        if (isExperienceInvalid || isSalaryInvalid) return;
+        setIsHandingOff(true);
+        try {
+            const payload = {
+                ...formData,
+                status_id: 1, // Draft — the job goes live once its rounds are settled.
+                description: stripMarks(formData.description),
+                salary_min: formData.salary_min ? Number.parseFloat(formData.salary_min) : null,
+                salary_max: formData.salary_max ? Number.parseFloat(formData.salary_max) : null,
+                experience_min: Number.parseInt(formData.experience_min),
+                experience_max: Number.parseInt(formData.experience_max),
+                required_skills: formData.required_skills.split(",").map(s => s.trim()).filter(s => s),
+            };
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                alert(err.detail || tr("jobForm.roundsHandoffFailed"));
+                return;
+            }
+            const data = await res.json();
+            sessionStorage.setItem("croar_rounds_job", JSON.stringify({
+                id: data.id,
+                title: formData.title || "",
+                skills: formData.required_skills || "",
+                description: stripMarks(formData.description) || "",
+                autostart: true,
+            }));
+            router.push("/enterprise/croar-pilot");
+        } catch (e) {
+            console.error("Could not hand the rounds off to Croar Pilot:", e);
+            alert(tr("jobForm.roundsHandoffFailed"));
+        } finally {
+            setIsHandingOff(false);
+        }
+    };
+
     // Hand the just-created job off to sourcing. Both auto-start a JD-based search for THIS job
     // (same as the Pipeline's "Source candidates"):
     //  - "ai":     Croar Pilot auto-starts sourcing from the job's title + JD.
@@ -515,7 +565,14 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
                         <Button
                             disabled={!canGoNext()}
-                            onClick={() => currentStep < 3 ? setCurrentStep(currentStep + 1) : handleSubmit()}
+                            onClick={() => {
+                                // Leaving the application-form step on a NEW job is where we ask
+                                // who should build the interview rounds. Editing an existing job
+                                // already has its rounds, so it goes straight through.
+                                if (currentStep === 2 && !isEdit) { setShowRoundsChoice(true); return; }
+                                if (currentStep < 3) { setCurrentStep(currentStep + 1); return; }
+                                handleSubmit();
+                            }}
                             className="group shrink-0"
                         >
                             {isSubmitting ? tr("jobForm.saving") : currentStep === 3 ? (isEdit ? tr("jobForm.saveChanges") : tr("jobForm.createJobBtn")) : tr("jobForm.nextStep")}
@@ -899,6 +956,56 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     )}
                 </AnimatePresence>
             </div>
+
+            <AnimatePresence>
+                {showRoundsChoice && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0E1014]/50 backdrop-blur-sm p-6">
+                        <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-md rounded-[16px] p-6 shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED]">
+                            <div className="text-center mb-5">
+                                <div className="w-12 h-12 bg-[#ECEBFB] text-[#5B53E0] rounded-[14px] flex items-center justify-center mx-auto mb-3.5"><Network className="w-6 h-6" /></div>
+                                <h2 className="text-[19px] font-extrabold text-[#15171C] tracking-[-0.4px] mb-1.5 leading-tight">{tr("jobForm.roundsChoiceTitle")}</h2>
+                                <p className="text-[12.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.roundsChoiceDesc")}</p>
+                            </div>
+
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    disabled={isHandingOff}
+                                    onClick={buildRoundsWithPilot}
+                                    className="text-left rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/50 hover:bg-[#F7F8FA] transition-colors p-3.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <Sparkles className="w-4 h-4 text-[#5B53E0]" />
+                                        <span className="text-[13px] font-bold text-[#15171C]">{tr("jobForm.roundsWithPilot")}</span>
+                                    </div>
+                                    <p className="text-[11.5px] text-[#8A929E] leading-relaxed">
+                                        {isHandingOff ? tr("jobForm.roundsHandingOff") : tr("jobForm.roundsWithPilotDesc")}
+                                    </p>
+                                </button>
+
+                                <button
+                                    disabled={isHandingOff}
+                                    onClick={() => { setShowRoundsChoice(false); setCurrentStep(3); }}
+                                    className="text-left rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/50 hover:bg-[#F7F8FA] transition-colors p-3.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <Network className="w-4 h-4 text-[#6B6F76]" />
+                                        <span className="text-[13px] font-bold text-[#15171C]">{tr("jobForm.roundsManual")}</span>
+                                    </div>
+                                    <p className="text-[11.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.roundsManualDesc")}</p>
+                                </button>
+                            </div>
+
+                            <button
+                                disabled={isHandingOff}
+                                onClick={() => setShowRoundsChoice(false)}
+                                className="mt-4 w-full text-[12px] font-semibold text-[#8A929E] hover:text-[#15171C] transition-colors disabled:opacity-60"
+                            >
+                                {tr("common.cancel")}
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {showSuccessModal && (

@@ -715,11 +715,11 @@ export default function CroarPilotPage() {
     // sourced candidates, "invites sent" guidance) doesn't vanish on navigation. Client-only.
     useEffect(() => {
         try {
-            // If we arrived from a job hand-off ("Source with Croar Pilot"), that starts a FRESH
-            // sourcing conversation on the current thread — do NOT restore an old chat, or its saved
-            // threadId would clobber this thread and the follow-up ("5") would land on a thread with
-            // no memory of the question.
-            if (sessionStorage.getItem("croar_source_job")) return;
+            // If we arrived from a job hand-off ("Source with Croar Pilot", or "build the rounds
+            // with Croar Pilot"), that starts a FRESH conversation on the current thread — do NOT
+            // restore an old chat, or its saved threadId would clobber this thread and the
+            // follow-up ("5") would land on a thread with no memory of the question.
+            if (sessionStorage.getItem("croar_source_job") || sessionStorage.getItem("croar_rounds_job")) return;
             const raw = localStorage.getItem(PILOT_CHAT_KEY);
             if (raw) {
                 const saved = JSON.parse(raw);
@@ -833,6 +833,39 @@ export default function CroarPilotPage() {
             setIsLoading(false);
         }
     };
+
+    // Hand-off from the job form's "build the rounds with Croar Pilot" choice. The job was just
+    // saved as a Draft, so the agent has a real job_id to work on: ask it to design the interview
+    // rounds and persist them with set_job_rounds.
+    useEffect(() => {
+        if (!token) return;
+        let raw: string | null = null;
+        try { raw = sessionStorage.getItem("croar_rounds_job"); } catch { return; }
+        if (!raw) return;
+        try { sessionStorage.removeItem("croar_rounds_job"); } catch { /* ignore */ }
+        try {
+            const ctx = JSON.parse(raw);
+            if (!ctx?.autostart) return;
+            const clean = (s: string) => (s || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&amp;|&lt;|&gt;/g, " ").replace(/\s+/g, " ").trim();
+            const title = clean(ctx?.title || "");
+            const skills = clean(ctx?.skills || "");
+            const jd = clean(ctx?.description || "").slice(0, 2000);
+            if (!ctx?.id) return;
+            // Carry the job on every turn so the agent never has to ask which one it is.
+            sourceJobRef.current = { id: ctx.id, title };
+            const prompt =
+                `I've just created the "${title || "this"}" job in Croar (job_id: ${ctx.id}) and saved it as a Draft.` +
+                (skills ? ` Key skills: ${skills}.` : "") +
+                (jd ? ` Job description: ${jd}` : "") +
+                ` Please design the interview rounds for this role — propose a sensible set of stages` +
+                ` for its seniority and skills, then save them onto this job with set_job_rounds.` +
+                ` Tell me what you picked and why, and let me know I can ask you to adjust them.`;
+            send(prompt);
+        } catch (e) {
+            console.error("Pilot rounds hand-off failed:", e);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
 
     // Hand-off from job creation ("Source with Croar Pilot"): auto-start sourcing
     // using the new job's title + description.
