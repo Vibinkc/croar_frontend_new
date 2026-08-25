@@ -15,7 +15,8 @@
         "language": "言語",
         "retry": "再試行",
         "undo": "元に戻す",
-        "redo": "やり直し"
+        "redo": "やり直し",
+        "aiGenerationFailed": "AI生成に失敗しました。もう一度お試しください。"
     },
     "nav": {
         "hiringHub": "採用ハブ",

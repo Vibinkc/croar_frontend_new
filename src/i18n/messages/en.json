@@ -15,7 +15,8 @@
         "language": "Language",
         "retry": "Retry",
         "undo": "Undo",
-        "redo": "Redo"
+        "redo": "Redo",
+        "aiGenerationFailed": "AI generation failed. Please try again."
     },
     "nav": {
         "hiringHub": "Hiring Hub",

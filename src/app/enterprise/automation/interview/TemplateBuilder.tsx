@@ -87,6 +87,12 @@ export default function TemplateBuilder({
       if (res.ok) {
         const data = await res.json();
         setQuestions([...questions, ...(data.questions || [])]);
+      } else {
+        // Tell the user. The server now returns 503 with a reason (e.g. the AI account is
+        // out of credit); this used to fall through silently, so a failed generation was
+        // indistinguishable from the button doing nothing.
+        const err = await res.json().catch(() => null);
+        alert(err?.detail || t("automation.aiGenerationFailed"));
       }
     } catch (error) {
       console.error("Error generating questions:", error);

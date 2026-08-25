@@ -193,6 +193,12 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                     questions: [...prev.questions, ...formatted]
                 }));
                 setIsAiModalOpen(false);
+            } else {
+                // Report it. The server now returns 503 with a reason (e.g. the AI account is
+                // out of credit) instead of an empty 200, and swallowing that here would leave
+                // the user staring at a modal that appears to do nothing.
+                const err = await res.json().catch(() => null);
+                alert(err?.detail || tr("common.aiGenerationFailed"));
             }
         } catch (error) {
             console.error(error);
