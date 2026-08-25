@@ -331,7 +331,9 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     });
                     setHighlightAdd(true);
                 } else {
-                    alert(tr("jobForm.aiGenFailed"));
+                    // Surface the server's reason (e.g. AI credit exhausted) when it sends one.
+                    const err = await res.json().catch(() => null);
+                    alert(err?.detail || tr("jobForm.aiGenFailed"));
                 }
             } catch (error) {
                 console.error("Error generating JD:", error);
@@ -352,6 +354,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     const data = await res.json();
                     setFormData({ ...formData, description: data.description, required_skills: data.skills?.join(", ") || formData.required_skills });
                     setHighlightAdd(true);
+                } else {
+                    // Say so. This branch used to swallow the failure silently, which is why a
+                    // failed generation looked like "the AI just didn't do anything".
+                    const err = await res.json().catch(() => null);
+                    alert(err?.detail || tr("jobForm.aiGenFailed"));
                 }
             } catch (error) {
                 console.error("Failed to generate AI description:", error);
