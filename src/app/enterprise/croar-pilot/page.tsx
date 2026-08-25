@@ -719,7 +719,7 @@ export default function CroarPilotPage() {
     const handoffSent = useRef(false); // a hand-off request is sent exactly once per visit
     // Job handed off from "Source with Croar Pilot": carried as request metadata on every turn of
     // this sourcing conversation so the agent sources for THIS exact job (no re-asking which one).
-    const sourceJobRef = useRef<{ id?: string; title?: string } | null>(null);
+    const sourceJobRef = useRef<{ id?: string; title?: string; intent?: "rounds" | "sourcing" } | null>(null);
 
     const fetchSessions = useCallback(async () => {
         if (!token) return;
@@ -760,6 +760,9 @@ export default function CroarPilotPage() {
                     if (saved.threadId) setThreadId(saved.threadId);
                     if (saved.currentSessionId) setCurrentSessionId(saved.currentSessionId);
                     titleRef.current = saved.title || "";
+                    // Restore WHICH job this chat is about. Without this a page reload dropped the
+                    // job context, so the next turn made the agent ask "which job?" mid-conversation.
+                    if (saved.sourceJob?.id) sourceJobRef.current = saved.sourceJob;
                 }
             }
         } catch {
@@ -781,7 +784,7 @@ export default function CroarPilotPage() {
             if (messages.length) {
                 localStorage.setItem(
                     PILOT_CHAT_KEY,
-                    JSON.stringify({ messages, threadId, currentSessionId, title: titleRef.current }),
+                    JSON.stringify({ messages, threadId, currentSessionId, title: titleRef.current, sourceJob: sourceJobRef.current }),
                 );
             } else {
                 localStorage.removeItem(PILOT_CHAT_KEY);
@@ -841,7 +844,13 @@ export default function CroarPilotPage() {
                     thread_id: threadId,
                     context: "pilot",
                     metadata: sourceJobRef.current?.id
-                        ? { source_job_id: sourceJobRef.current.id, source_job_title: sourceJobRef.current.title || "" }
+                        ? {
+                              source_job_id: sourceJobRef.current.id,
+                              source_job_title: sourceJobRef.current.title || "",
+                              // Tells the server which task this chat is for, so it doesn't inject
+                              // "the user is sourcing candidates" into a rounds conversation.
+                              intent: sourceJobRef.current.intent || "general",
+                          }
                         : {},
                 }),
                 signal: controller.signal,
@@ -913,7 +922,7 @@ export default function CroarPilotPage() {
         }
 
         // Carry the job on every turn so the agent never has to ask which one it is.
-        if (jobId || title) sourceJobRef.current = { id: jobId || undefined, title };
+        if (jobId || title) sourceJobRef.current = { id: jobId || undefined, title, intent: handoff.kind === "rounds" ? "rounds" : "sourcing" };
         send(prompt);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, handoff]);
