@@ -67,6 +67,8 @@ const DEFAULT_WORKFLOW_STAGES: WorkflowStage[] = [
 interface Company {
     id: string;
     name: string;
+    currency?: string;
+    country?: string;
 }
 
 interface EmailTemplate {
@@ -145,7 +147,14 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 const data = await res.json();
                 setCompanies(data);
                 if (!isEdit && data.length > 0) {
-                    setFormData(prev => ({ ...prev, company_id: data[0].id }));
+                    // Money is shown and stored in the ORGANISATION's currency. This used to be
+                    // left at the hardcoded "INR", so a Malaysia-based company's salary was
+                    // labelled and published as rupees.
+                    setFormData(prev => ({
+                        ...prev,
+                        company_id: data[0].id,
+                        salary_currency: data[0].currency || prev.salary_currency,
+                    }));
                 }
             }
         } catch (error) {
@@ -685,11 +694,15 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                 </Field>
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
-                                                <Field label={tr("jobForm.minSalary")} htmlFor="salary-min-input" error={isSalaryInvalid ? tr("jobForm.maxMustBeMin") : undefined}>
-                                                    <Input id="salary-min-input" type="number" min="0" placeholder="5" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
+                                                {/* The unit is spelled out. These inputs used to be bare "Min/Max Salary"
+                                                    with no currency and no period, so an AI-suggested "12" (lakhs) and a
+                                                    hand-typed 1200000 landed in the same column indistinguishably — and the
+                                                    public page then published "INR 12 / Yearly". */}
+                                                <Field label={`${tr("jobForm.minSalary")} (${formData.salary_currency} ${tr("jobForm.perYear")})`} htmlFor="salary-min-input" error={isSalaryInvalid ? tr("jobForm.maxMustBeMin") : undefined}>
+                                                    <Input id="salary-min-input" type="number" min="0" placeholder="600000" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
                                                 </Field>
-                                                <Field label={tr("jobForm.maxSalary")} htmlFor="salary-max-input">
-                                                    <Input id="salary-max-input" type="number" min="0" placeholder="15" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
+                                                <Field label={`${tr("jobForm.maxSalary")} (${formData.salary_currency} ${tr("jobForm.perYear")})`} htmlFor="salary-max-input">
+                                                    <Input id="salary-max-input" type="number" min="0" placeholder="1500000" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
                                                 </Field>
                                             </div>
                                         </div>

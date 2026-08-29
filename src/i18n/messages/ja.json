@@ -2876,7 +2876,8 @@
         "roundsHandingOff": "求人を保存して Croar Pilot を開いています…",
         "roundsManual": "自分で設定する",
         "roundsManualDesc": "ワークフローのステップに進み、各ラウンドを手動で追加・並べ替え・命名します。",
-        "roundsHandoffFailed": "Croar Pilot に引き継げませんでした。もう一度お試しください。"
+        "roundsHandoffFailed": "Croar Pilot に引き継げませんでした。もう一度お試しください。",
+        "perYear": "年間"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",

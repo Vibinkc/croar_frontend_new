@@ -2876,7 +2876,8 @@
         "roundsHandingOff": "Saving the job and opening Croar Pilot…",
         "roundsManual": "Set them up myself",
         "roundsManualDesc": "Continue to the workflow step and add, reorder and name each round by hand.",
-        "roundsHandoffFailed": "Couldn't hand this job to Croar Pilot. Please try again."
+        "roundsHandoffFailed": "Couldn't hand this job to Croar Pilot. Please try again.",
+        "perYear": "per year"
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

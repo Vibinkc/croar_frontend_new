@@ -2876,7 +2876,8 @@
         "roundsHandingOff": "직무를 저장하고 Croar Pilot을 여는 중…",
         "roundsManual": "직접 설정하기",
         "roundsManualDesc": "워크플로우 단계로 이동해 각 라운드를 직접 추가·정렬·명명합니다.",
-        "roundsHandoffFailed": "Croar Pilot으로 전달하지 못했습니다. 다시 시도해 주세요."
+        "roundsHandoffFailed": "Croar Pilot으로 전달하지 못했습니다. 다시 시도해 주세요.",
+        "perYear": "연간"
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",
