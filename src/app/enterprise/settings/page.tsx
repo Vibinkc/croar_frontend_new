@@ -21,12 +21,17 @@ import {
     Activity
 } from "lucide-react";
 
+// Currencies an organisation can operate in. Drives salary suggestions and pay labels.
+const ORG_CURRENCIES = ["INR", "MYR", "SGD", "USD", "EUR", "GBP", "AED", "AUD", "JPY", "KRW"];
+
 interface CompanyProfile {
     id: string;
     name: string;
     logo_url?: string;
     industry?: string;
     location?: string;
+    currency?: string;
+    country?: string;
 }
 
 export default function OrganizationProfilePage() {
@@ -43,6 +48,11 @@ export default function OrganizationProfilePage() {
     const [logoUrl, setLogoUrl] = useState("");
     const [industry, setIndustry] = useState("");
     const [location, setLocation] = useState("");
+    // The organisation's money and base country. These drive salary suggestions and how pay is
+    // labelled everywhere; the columns existed but nothing could ever change them, so every
+    // company was permanently INR/India.
+    const [currency, setCurrency] = useState("INR");
+    const [country, setCountry] = useState("");
     const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
     useEffect(() => {
@@ -74,6 +84,8 @@ export default function OrganizationProfilePage() {
                 setLogoUrl(primary.logo_url || "");
                 setIndustry(primary.industry || "");
                 setLocation(primary.location || "");
+                setCurrency(primary.currency || "INR");
+                setCountry(primary.country || "");
             }
         } catch (e) {
             console.error("Failed to fetch profile", e);
@@ -129,7 +141,7 @@ export default function OrganizationProfilePage() {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ name, logo_url: logoUrl, industry, location })
+                body: JSON.stringify({ name, logo_url: logoUrl, industry, location, currency, country })
             });
 
             if (res.ok) {
@@ -152,7 +164,9 @@ export default function OrganizationProfilePage() {
         name !== (profile?.name || "") ||
         logoUrl !== (profile?.logo_url || "") ||
         industry !== (profile?.industry || "") ||
-        location !== (profile?.location || "");
+        location !== (profile?.location || "") ||
+        currency !== (profile?.currency || "INR") ||
+        country !== (profile?.country || "");
 
     if (isLoading) {
         return (
@@ -394,6 +408,37 @@ export default function OrganizationProfilePage() {
                                         placeholder={tr("general.locationHqPlaceholder")}
                                     />
                                     <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                                </div>
+                            </div>
+
+                            {/* Country + currency drive salary suggestions and how pay is labelled.
+                                Without these an organisation could never stop being INR/India. */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label htmlFor="company-country" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.country")}</label>
+                                    <input
+                                        id="company-country"
+                                        value={country}
+                                        onChange={e => setCountry(e.target.value)}
+                                        readOnly={!canAccess("organization:update")}
+                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
+                                        placeholder={tr("general.countryPlaceholder")}
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label htmlFor="company-currency" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.currency")}</label>
+                                    <select
+                                        id="company-currency"
+                                        value={currency}
+                                        onChange={e => setCurrency(e.target.value)}
+                                        disabled={!canAccess("organization:update")}
+                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all disabled:opacity-60"
+                                    >
+                                        {(ORG_CURRENCIES.includes(currency) ? ORG_CURRENCIES : [currency, ...ORG_CURRENCIES]).map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+                                    <p className="text-[11px] text-[#9AA3AF] ml-0.5">{tr("general.currencyHint")}</p>
                                 </div>
                             </div>
                         </section>

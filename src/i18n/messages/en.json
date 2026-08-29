@@ -2677,7 +2677,11 @@
         "noTemplateAccess": "You don't have access to any template types.",
         "croarPilotCreatesBody": "When the AI builds a hiring pipeline, it auto-generates role-specific email, assessment, interview and onboarding templates — they all show up here.",
         "projectNotFoundDesc": "The project you are looking for does not exist or has been deleted.",
-        "onboardingHubHelpDesc": "Run onboarding for new hires, then convert them into employees."
+        "onboardingHubHelpDesc": "Run onboarding for new hires, then convert them into employees.",
+        "country": "Country",
+        "countryPlaceholder": "e.g. Malaysia",
+        "currency": "Currency",
+        "currencyHint": "Used for salary suggestions and how pay is shown."
     },
     "auth": {
         "loading": "Loading…",
@@ -2877,7 +2881,8 @@
         "roundsManual": "Set them up myself",
         "roundsManualDesc": "Continue to the workflow step and add, reorder and name each round by hand.",
         "roundsHandoffFailed": "Couldn't hand this job to Croar Pilot. Please try again.",
-        "perYear": "per year"
+        "perYear": "per year",
+        "salaryCurrency": "Salary currency"
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

@@ -60,6 +60,10 @@ const DEFAULT_APPLICATION_FIELDS: ApplicationField[] = [
     { id: '5', label: 'Portfolio URL', type: 'text', icon: 'link', is_required: false }
 ];
 
+// Currencies a job can pay in. The job defaults to the hiring organisation's currency but can
+// differ from it — an India-based company hiring one role in Kuala Lumpur pays that job in MYR.
+const SALARY_CURRENCIES = ["INR", "MYR", "SGD", "USD", "EUR", "GBP", "AED", "AUD", "JPY", "KRW"];
+
 const DEFAULT_WORKFLOW_STAGES: WorkflowStage[] = [
     { id: '1', name: 'Initial Screening', type: 'Screening', icon: 'search' }
 ];
@@ -325,7 +329,8 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                         location: formData.location,
                         work_mode: formData.work_mode,
                         experience_min: formData.experience_min,
-                        experience_max: formData.experience_max
+                        experience_max: formData.experience_max,
+                        currency: formData.salary_currency
                     }),
                 });
 
@@ -357,7 +362,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/generate-jd`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                    body: JSON.stringify({ title: formData.title, existing_description: stripMarks(formData.description), location: formData.location, work_mode: formData.work_mode, experience_min: formData.experience_min, experience_max: formData.experience_max })
+                    body: JSON.stringify({ title: formData.title, existing_description: stripMarks(formData.description), location: formData.location, work_mode: formData.work_mode, experience_min: formData.experience_min, experience_max: formData.experience_max, currency: formData.salary_currency })
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -693,6 +698,21 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                     <Input id="experience-max-input" type="number" min="0" className={cn(jetbrainsMono.className, isExperienceInvalid && errorInputCls)} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
                                                 </Field>
                                             </div>
+                                            {/* Which money this job pays in. Defaults to the hiring organisation's
+                                                currency, but a single role can differ (an INR company hiring in
+                                                Kuala Lumpur pays that job in MYR). */}
+                                            <Field label={tr("jobForm.salaryCurrency")} htmlFor="salary-currency-select">
+                                                <Select
+                                                    id="salary-currency-select"
+                                                    value={formData.salary_currency}
+                                                    onChange={e => setFormData({ ...formData, salary_currency: e.target.value })}
+                                                >
+                                                    {(SALARY_CURRENCIES.includes(formData.salary_currency)
+                                                        ? SALARY_CURRENCIES
+                                                        : [formData.salary_currency, ...SALARY_CURRENCIES]
+                                                    ).map(c => (<option key={c} value={c}>{c}</option>))}
+                                                </Select>
+                                            </Field>
                                             <div className="grid grid-cols-2 gap-4">
                                                 {/* The unit is spelled out. These inputs used to be bare "Min/Max Salary"
                                                     with no currency and no period, so an AI-suggested "12" (lakhs) and a
