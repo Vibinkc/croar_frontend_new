@@ -124,21 +124,6 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                     </button>
                 </div>
 
-                <div className="w-px h-6 bg-[#E8EAED] mx-2"></div>
-
-                <button
-                    onClick={() => {
-                        const url = window.prompt(t("jobForm.enterUrl"));
-                        if (url) {
-                            editor.chain().focus().setLink({ href: url }).run();
-                        } else if (url === '') {
-                            editor.chain().focus().unsetLink().run();
-                        }
-                    }}
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('link') ? 'bg-[#5B53E0] text-white' : 'bg-white text-[#374151] hover:text-[#5B53E0]'}`}
-                >
-                    <span className="material-symbols-rounded text-xl">link</span>
-                </button>
             </div>
 
             {/* Editor Canvas - Single Layer Style */}
