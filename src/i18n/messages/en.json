@@ -2897,7 +2897,18 @@
         "perHour": "per hour",
         "addField": "Add field",
         "removeField": "Remove field",
-        "newField": "New field"
+        "newField": "New field",
+        "startChoiceDesc": "A job is a new opening you can add candidates to and advertise on your career page and job boards. Choose how you want to start.",
+        "startBlank": "Complete a form",
+        "startBlankDesc": "Start from a blank form and fill in every detail yourself.",
+        "startTemplate": "Use a template",
+        "startTemplateDesc": "Start from a ready-made role — description, skills and interview rounds included.",
+        "templatePickDesc": "Pick a starter template. Everything it fills in stays editable.",
+        "selectTemplate": "Select template",
+        "selectTemplatePlaceholder": "Choose a role…",
+        "useTemplate": "Use this template",
+        "yearsShort": "yrs",
+        "roundsShort": "rounds"
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

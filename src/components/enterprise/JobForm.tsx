@@ -7,6 +7,7 @@ import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import JobEditor from "@/components/enterprise/JobEditor";
+import { JOB_TEMPLATES, JOB_TEMPLATE_CATEGORIES, findJobTemplate } from "@/components/enterprise/jobTemplates";
 import {
     ArrowRight,
     CircleCheck,
@@ -111,6 +112,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const [currentStep, setCurrentStep] = useState(1);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showRoundsChoice, setShowRoundsChoice] = useState(false);
+    // How a NEW job starts: from a blank form, or pre-filled from a starter template.
+    // "choice" = the two-card picker, "template" = the template dropdown, null = the form itself.
+    // Edit mode never asks — the job already has its content.
+    const [startChoice, setStartChoice] = useState<"choice" | "template" | null>(isEdit ? null : "choice");
+    const [selectedTemplateId, setSelectedTemplateId] = useState("");
     const [isHandingOff, setIsHandingOff] = useState(false);
     const [createdJobId, setCreatedJobId] = useState("");
     const [companies, setCompanies] = useState<Company[]>([]);
@@ -473,6 +479,29 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const canGoNext = () => currentStep === 1 ? (formData.title && !isExperienceInvalid && !isSalaryInvalid) : true;
 
     const errorInputCls = "border-[#EF4444] bg-[#FDECEC] text-[#C0383C] focus:border-[#EF4444] focus:ring-[#EF4444]/20";
+
+    // Copy a starter template into the form and drop into step 1 to edit it.
+    // Deliberately does NOT touch salary_currency or company_id — those come from the hiring
+    // organisation, and a generic template must not overwrite an org's own currency.
+    const applyTemplate = () => {
+        const tpl = findJobTemplate(selectedTemplateId);
+        if (!tpl) return;
+        setFormData(prev => ({
+            ...prev,
+            title: tpl.title,
+            department: tpl.department,
+            job_type: tpl.job_type,
+            work_mode: tpl.work_mode,
+            experience_min: tpl.experience_min,
+            experience_max: tpl.experience_max,
+            required_skills: tpl.required_skills,
+            description: tpl.description,
+            workflow_stages: tpl.stages.map((s, i) => ({
+                id: String(i + 1), name: s.name, type: s.type, icon: s.icon,
+            })),
+        }));
+        setStartChoice(null);
+    };
 
     // Rounds step: the user picks who builds the interview rounds.
     //  - "manual": carry on into step 3 and lay the stages out by hand (unchanged behaviour).
@@ -1032,6 +1061,103 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     )}
                 </AnimatePresence>
             </div>
+
+            {/* Start-of-creation choice: blank form vs. starter template. */}
+            <AnimatePresence>
+                {startChoice && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0E1014]/50 backdrop-blur-sm p-6">
+                        <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-lg rounded-[16px] p-6 shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED]">
+                            <div className="flex items-start justify-between gap-4 mb-5">
+                                <div>
+                                    <h2 className="text-[19px] font-extrabold text-[#15171C] tracking-[-0.4px] mb-1.5 leading-tight">{tr("jobForm.createJob")}</h2>
+                                    <p className="text-[12.5px] text-[#8A929E] leading-relaxed">
+                                        {startChoice === "choice" ? tr("jobForm.startChoiceDesc") : tr("jobForm.templatePickDesc")}
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => router.push("/enterprise/jobs")}
+                                    aria-label={tr("common.cancel")}
+                                    className="w-8 h-8 shrink-0 rounded-[10px] text-[#8A929E] hover:text-[#15171C] hover:bg-[#F7F8FA] transition-colors flex items-center justify-center"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+
+                            {startChoice === "choice" ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <button
+                                        onClick={() => setStartChoice(null)}
+                                        className="text-left rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/50 hover:bg-[#F7F8FA] transition-colors p-4"
+                                    >
+                                        <span className="w-10 h-10 rounded-[12px] bg-[#E7ECFB] text-[#3559C7] flex items-center justify-center mb-3">
+                                            <FileText className="w-5 h-5" />
+                                        </span>
+                                        <span className="block text-[13px] font-bold text-[#15171C] mb-1">{tr("jobForm.startBlank")}</span>
+                                        <span className="block text-[11.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.startBlankDesc")}</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => setStartChoice("template")}
+                                        className="text-left rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/50 hover:bg-[#F7F8FA] transition-colors p-4"
+                                    >
+                                        <span className="w-10 h-10 rounded-[12px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center mb-3">
+                                            <ClipboardList className="w-5 h-5" />
+                                        </span>
+                                        <span className="block text-[13px] font-bold text-[#15171C] mb-1">{tr("jobForm.startTemplate")}</span>
+                                        <span className="block text-[11.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.startTemplateDesc")}</span>
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <Field label={tr("jobForm.selectTemplate")} htmlFor="job-template-select">
+                                        <Select
+                                            id="job-template-select"
+                                            className="cursor-pointer"
+                                            value={selectedTemplateId}
+                                            onChange={e => setSelectedTemplateId(e.target.value)}
+                                        >
+                                            <option value="">{tr("jobForm.selectTemplatePlaceholder")}</option>
+                                            {JOB_TEMPLATE_CATEGORIES.map(cat => (
+                                                <optgroup key={cat} label={cat}>
+                                                    {JOB_TEMPLATES.filter(tpl => tpl.category === cat).map(tpl => (
+                                                        <option key={tpl.id} value={tpl.id}>{tpl.name}</option>
+                                                    ))}
+                                                </optgroup>
+                                            ))}
+                                        </Select>
+                                    </Field>
+
+                                    {(() => {
+                                        const tpl = findJobTemplate(selectedTemplateId);
+                                        if (!tpl) return null;
+                                        return (
+                                            <div className="mt-3 rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-3.5">
+                                                <p className="text-[12px] text-[#4B5057] leading-relaxed mb-2.5">{tpl.summary}</p>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    <span className="text-[10.5px] font-semibold px-2 py-1 rounded-[6px] bg-white border border-[#E8EAED] text-[#6B6F76]">{tpl.job_type}</span>
+                                                    <span className="text-[10.5px] font-semibold px-2 py-1 rounded-[6px] bg-white border border-[#E8EAED] text-[#6B6F76]">{tpl.work_mode}</span>
+                                                    <span className="text-[10.5px] font-semibold px-2 py-1 rounded-[6px] bg-white border border-[#E8EAED] text-[#6B6F76]">{tpl.experience_min}–{tpl.experience_max} {tr("jobForm.yearsShort")}</span>
+                                                    <span className="text-[10.5px] font-semibold px-2 py-1 rounded-[6px] bg-white border border-[#E8EAED] text-[#6B6F76]">{tpl.stages.length} {tr("jobForm.roundsShort")}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })()}
+
+                                    <div className="flex items-center justify-end gap-2 mt-5">
+                                        <Button variant="secondary" onClick={() => { setSelectedTemplateId(""); setStartChoice("choice"); }}>
+                                            {tr("common.back")}
+                                        </Button>
+                                        <Button onClick={applyTemplate} disabled={!selectedTemplateId}>
+                                            {tr("jobForm.useTemplate")}
+                                            <ArrowRight className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {showRoundsChoice && (

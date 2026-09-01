@@ -2897,7 +2897,18 @@
         "perHour": "시간",
         "addField": "항목 추가",
         "removeField": "항목 삭제",
-        "newField": "새 항목"
+        "newField": "새 항목",
+        "startChoiceDesc": "채용 공고는 지원자를 추가하고 채용 페이지 및 채용 사이트에 게시할 수 있는 새로운 포지션입니다. 시작 방법을 선택하세요.",
+        "startBlank": "양식 작성",
+        "startBlankDesc": "빈 양식에서 시작하여 모든 항목을 직접 입력합니다.",
+        "startTemplate": "템플릿 사용",
+        "startTemplateDesc": "직무 설명, 요구 역량, 면접 단계가 포함된 기본 템플릿으로 시작합니다.",
+        "templatePickDesc": "기본 템플릿을 선택하세요. 입력된 내용은 모두 수정할 수 있습니다.",
+        "selectTemplate": "템플릿 선택",
+        "selectTemplatePlaceholder": "직무를 선택하세요…",
+        "useTemplate": "이 템플릿 사용",
+        "yearsShort": "년",
+        "roundsShort": "단계"
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",

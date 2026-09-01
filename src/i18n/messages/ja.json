@@ -2897,7 +2897,18 @@
         "perHour": "時給",
         "addField": "項目を追加",
         "removeField": "項目を削除",
-        "newField": "新しい項目"
+        "newField": "新しい項目",
+        "startChoiceDesc": "求人は、候補者を追加し、採用ページや求人サイトに掲載できる新しいポジションです。開始方法を選択してください。",
+        "startBlank": "フォームに入力",
+        "startBlankDesc": "空のフォームから始めて、すべての項目を自分で入力します。",
+        "startTemplate": "テンプレートを使用",
+        "startTemplateDesc": "職務内容・必要スキル・選考ステップが揃ったテンプレートから始めます。",
+        "templatePickDesc": "テンプレートを選択してください。入力された内容はすべて編集できます。",
+        "selectTemplate": "テンプレートを選択",
+        "selectTemplatePlaceholder": "職種を選択…",
+        "useTemplate": "このテンプレートを使用",
+        "yearsShort": "年",
+        "roundsShort": "ステップ"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",
