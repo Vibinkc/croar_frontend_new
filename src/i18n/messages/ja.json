@@ -3020,7 +3020,13 @@
         "nApplied": "{count}件応募",
         "nAwaiting": "{count}件待機",
         "scrollTabsLeft": "前のタブを表示",
-        "scrollTabsRight": "次のタブを表示"
+        "scrollTabsRight": "次のタブを表示",
+        "tabTeam": "チーム",
+        "tabRecommendations": "AI おすすめ",
+        "tabActivities": "アクティビティ",
+        "tabNotes": "メモ",
+        "tabAttachments": "添付ファイル",
+        "tabReports": "レポート"
     },
     "sourcingIndex": {
         "assistantGreeting": "こんにちは！私はAIソーシングアシスタントです。お探しの人材を教えてください。例：「GitHubでReactエンジニアを探して」。",
@@ -4944,5 +4950,92 @@
         "inviteMemberThenRoles": "メンバーを招待し、1つ以上のロールを割り当てます。",
         "teamManagementHelpTitle": "チーム管理",
         "refresh": "更新"
+    },
+    "jobNotes": {
+        "placeholder": "採用チームへのメモを残す…",
+        "visibleToTeam": "メモはこの求人に関わる全員に表示されます。",
+        "addNote": "メモを追加",
+        "saving": "保存中…",
+        "loading": "メモを読み込み中…",
+        "emptyTitle": "メモはまだありません",
+        "emptyDesc": "面接の所感や予算の決定など、チームが知っておくべきことを記録しましょう。",
+        "someone": "不明",
+        "edited": "編集済み",
+        "pinned": "固定中",
+        "pin": "このメモを固定",
+        "unpin": "固定を解除",
+        "confirmDelete": "このメモを削除しますか？元に戻せません。",
+        "loadFailed": "メモを読み込めませんでした。",
+        "saveFailed": "メモを保存できませんでした。もう一度お試しください。",
+        "deleteFailed": "メモを削除できませんでした。"
+    },
+    "jobFiles": {
+        "dropHere": "ファイルをドロップ、またはクリックして選択",
+        "dropHint": "求人票、承認済み申請書、評価シートなど。最大 20MB。",
+        "uploading": "アップロード中…",
+        "uploadFile": "ファイルをアップロード",
+        "loading": "添付ファイルを読み込み中…",
+        "emptyTitle": "添付ファイルはありません",
+        "emptyDesc": "求人票・承認済みの申請書・評価シートを求人と一緒に保管できます。",
+        "open": "ファイルを開く",
+        "tooLarge": "ファイルサイズが 20MB を超えています。",
+        "confirmDelete": "「{name}」を削除しますか？元に戻せません。",
+        "loadFailed": "添付ファイルを読み込めませんでした。",
+        "uploadFailed": "ファイルをアップロードできませんでした。もう一度お試しください。",
+        "deleteFailed": "ファイルを削除できませんでした。"
+    },
+    "jobActivity": {
+        "title": "アクティビティ",
+        "subtitle": "この求人に起きたことのすべて（新しい順）。",
+        "loading": "アクティビティを読み込み中…",
+        "emptyTitle": "まだ履歴はありません",
+        "emptyDesc": "編集・担当者の変更・公開などが監査ログとしてここに表示されます。",
+        "someone": "不明",
+        "action": {
+            "created": "この求人を作成しました",
+            "updated": "この求人を更新しました",
+            "assigned": "採用チームを変更しました",
+            "viewed": "この求人を閲覧しました",
+            "published": "この求人を公開しました",
+            "deleted": "この求人を削除しました",
+            "note_added": "メモを追加しました",
+            "attachment_added": "ファイルを添付しました",
+            "attachment_removed": "ファイルを削除しました"
+        }
+    },
+    "jobSourcing": {
+        "title": "この求人に候補者を集める",
+        "subtitle": "チャネルを選択してください。いずれも同じパイプラインにつながります。",
+        "live": "公開中",
+        "careerPage": "採用ページ",
+        "careerPageDesc": "候補者に見える公開採用ページを確認します。",
+        "jobBoards": "求人サイト",
+        "jobBoardsDesc": "連携済みの求人サイトへまとめて掲載します。",
+        "sourcingHub": "ソーシングハブ",
+        "sourcingHubDesc": "Croar Pilot がこの職務に合う候補者をウェブから探します。",
+        "recommendations": "レコメンドエンジン",
+        "recommendationsDesc": "データベース内の候補者をこの求人基準でランク付けします。",
+        "backToChannels": "ソーシングチャネルに戻る"
+    },
+    "jobReports": {
+        "emptyTitle": "レポートできるデータがまだありません",
+        "emptyDesc": "応募が始まると、ファネルと流入経路がここに表示されます。",
+        "totalApplicants": "応募者数",
+        "last30Days": "直近30日",
+        "avgFit": "平均マッチ度",
+        "furthestStage": "最終到達ステージ",
+        "funnelTitle": "選考ファネル",
+        "funnelSubtitle": "ステージごとの候補者の分布です。",
+        "unassignedNote": "どのステージにも属していない応募者が {count} 名います。",
+        "qualityTitle": "候補者の質",
+        "qualitySubtitle": "応募者全体の AI マッチスコア分布。",
+        "noScores": "スコア済みの候補者はまだいません。",
+        "unscoredNote": "未スコアの応募者が {count} 名います。",
+        "band": {
+            "strong": "高マッチ（80%以上）",
+            "good": "良好（60〜79%）",
+            "fair": "普通（40〜59%）",
+            "weak": "低い（40%未満）"
+        }
     }
 }

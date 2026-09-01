@@ -22,6 +22,12 @@ import {
 } from 'recharts';
 import { jetbrainsMono, Button, Card, Badge, StatCard, StatGrid, Input, PageHelp } from "@/components/ds";
 import JobOwnershipPanel, { type Member } from "@/components/enterprise/JobOwnershipPanel";
+import PublishJobModal from "@/components/enterprise/PublishJobModal";
+import JobActivitiesTab from "@/components/enterprise/JobActivitiesTab";
+import JobAttachmentsTab from "@/components/enterprise/JobAttachmentsTab";
+import JobNotesTab from "@/components/enterprise/JobNotesTab";
+import JobReportsTab from "@/components/enterprise/JobReportsTab";
+import JobSourcingTab, { type SourcingDestination } from "@/components/enterprise/JobSourcingTab";
 
 interface JobStage {
     id: number;
@@ -79,12 +85,27 @@ interface Job {
     last_viewed_at?: string | null;
 }
 
+// Tabs before the job's own pipeline stages…
 const STATIC_LEADING_TABS = [
     { id: "overview", label: "Overview", count: undefined },
     { id: "info", label: "Info", count: undefined },
-    { id: "sourcing", label: "Profile Sourcing", count: undefined },
+];
+
+// …and the workspace tabs after them. Split in two so the stage tabs — the ones a recruiter
+// actually lives in — sit near the front instead of being pushed past nine other tabs.
+const STATIC_TRAILING_TABS = [
+    { id: "team", label: "Team", count: undefined },
+    { id: "candidate_bank", label: "AI Recommendations", count: undefined },
+    { id: "sourcing", label: "Sourcing", count: undefined },
+    { id: "activities", label: "Activities", count: undefined },
+    { id: "notes", label: "Notes", count: undefined },
+    { id: "attachments", label: "Attachments", count: undefined },
+    { id: "reports", label: "Reports", count: undefined },
     { id: "onboarding_tab", label: "Onboarding", count: undefined },
 ];
+
+/** Every tab that is not derived from the job's stages — used to validate ?tab=<id> deep links. */
+const STATIC_TAB_IDS = new Set([...STATIC_LEADING_TABS, ...STATIC_TRAILING_TABS].map(t => t.id));
 
 export default function JobDetailPage() {
     const params = useParams();
@@ -101,11 +122,20 @@ export default function JobDetailPage() {
     // after sending invites, so the recruiter lands straight on the sourced candidates).
     const [activeTab, setActiveTab] = useState(() => {
         const t = searchParams?.get("tab");
-        return STATIC_LEADING_TABS.some((x) => x.id === t) ? (t as string) : "overview";
+        return t && STATIC_TAB_IDS.has(t) ? t : "overview";
     });
     // The tab strip scrolls horizontally: a job with several interview rounds pushes the later
     // tabs off-screen, and on a trackpad-less machine there was no way to reach them. These drive
     // the left/right arrows, which appear only on the side that actually has more tabs to show.
+    // Counts shown on the Notes / Attachments tabs. The tab strip needs them before the tab is
+    // ever opened, so the child components report their count up as they load.
+    // The Sourcing tab opens on a hub of channels; "profile" is the Profile Sourcing panel the
+    // hub links into. Kept here rather than in JobSourcingTab so the panel below stays put.
+    const [sourcingView, setSourcingView] = useState<"hub" | "profile">("hub");
+    const [showPublish, setShowPublish] = useState(false);
+    const [noteCount, setNoteCount] = useState<number | undefined>(undefined);
+    const [attachmentCount, setAttachmentCount] = useState<number | undefined>(undefined);
+
     const tabStripRef = useRef<HTMLDivElement>(null);
     const [canScrollTabsLeft, setCanScrollTabsLeft] = useState(false);
     const [canScrollTabsRight, setCanScrollTabsRight] = useState(false);
@@ -342,6 +372,11 @@ export default function JobDetailPage() {
 
     const { metrics } = job;
 
+    // Owner + collaborators, shown as the Team tab's count. Undefined (not 0) when nobody is
+    // assigned, so the strip shows a bare "Team" rather than a discouraging "Team (0)".
+    const teamMembers = (job.owner ? 1 : 0) + (job.collaborators?.length || 0);
+    const teamCount = teamMembers || undefined;
+
     // job_statuses: 1 Draft · 2 Active · 3 On Hold · 4 Closed.
     const STATUS_META: Record<number, { label: string; tone: "neutral" | "success" | "warning" | "danger" }> = {
         1: { label: "Draft", tone: "neutral" },
@@ -481,12 +516,21 @@ export default function JobDetailPage() {
                             ...STATIC_LEADING_TABS,
                             ...(job.stages || []).map(s => {
                                 const dynamicCount = applications.filter(app => app.current_stage === s.id).length;
-                                return { 
-                                    id: s.name.toLowerCase().replace(/\s+/g, '_'), 
-                                    label: s.name, 
-                                    count: dynamicCount 
+                                return {
+                                    id: s.name.toLowerCase().replace(/\s+/g, '_'),
+                                    label: s.name,
+                                    count: dynamicCount
                                 };
-                            })
+                            }),
+                            ...STATIC_TRAILING_TABS.map(t => ({
+                                ...t,
+                                // Counts the tab strip can show without opening the tab.
+                                count:
+                                    t.id === "notes" ? noteCount
+                                    : t.id === "attachments" ? attachmentCount
+                                    : t.id === "team" ? teamCount
+                                    : undefined,
+                            })),
                         ].map((tab) => (
                             <button
                                 key={tab.id}
@@ -495,7 +539,18 @@ export default function JobDetailPage() {
                                     activeTab === tab.id ? "text-[#5B53E0]" : "text-[#6B6F76] hover:text-[#374151]"
                                 }`}
                             >
-                                {({ overview: tr("jobDetail.tabOverview"), info: tr("jobDetail.tabInfo"), sourcing: tr("jobDetail.tabSourcing"), onboarding_tab: tr("jobDetail.tabOnboarding") } as Record<string, string>)[tab.id] ?? tab.label}
+                                {({
+                                    overview: tr("jobDetail.tabOverview"),
+                                    info: tr("jobDetail.tabInfo"),
+                                    team: tr("jobDetail.tabTeam"),
+                                    candidate_bank: tr("jobDetail.tabRecommendations"),
+                                    sourcing: tr("jobDetail.tabSourcing"),
+                                    activities: tr("jobDetail.tabActivities"),
+                                    notes: tr("jobDetail.tabNotes"),
+                                    attachments: tr("jobDetail.tabAttachments"),
+                                    reports: tr("jobDetail.tabReports"),
+                                    onboarding_tab: tr("jobDetail.tabOnboarding"),
+                                } as Record<string, string>)[tab.id] ?? tab.label}
                                 {tab.count !== undefined && <span className="ml-1 text-xs">({tab.count})</span>}
                                 {activeTab === tab.id && (
                                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B53E0] rounded-full"></div>
@@ -845,8 +900,31 @@ export default function JobDetailPage() {
                         </Card>
                     )}
 
+                    {/* Sourcing hub — the channel picker the Sourcing tab opens on. */}
+                    {activeTab === "sourcing" && sourcingView === "hub" && (
+                        <JobSourcingTab
+                            isPublished={job.status_id === 2}
+                            onNavigate={(destination: SourcingDestination) => {
+                                if (destination === "sourcing_hub") setSourcingView("profile");
+                                else if (destination === "job_boards") setShowPublish(true);
+                                else if (destination === "recommendations") setActiveTab("candidate_bank");
+                                else window.open(`${window.location.origin}/jobs/${id}`, "_blank", "noopener");
+                            }}
+                        />
+                    )}
+
+                    {activeTab === "sourcing" && sourcingView === "profile" && (
+                        <button
+                            onClick={() => setSourcingView("hub")}
+                            className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors mb-4"
+                        >
+                            <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                            {tr("jobSourcing.backToChannels")}
+                        </button>
+                    )}
+
                     {/* Profile Sourcing Tab Content */}
-                    {activeTab === "sourcing" && (
+                    {activeTab === "sourcing" && sourcingView === "profile" && (
                         <Card padding="none" className="overflow-hidden min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="px-6 py-4 border-b border-[#E8EAED] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <div className="flex items-center gap-2">
@@ -1008,8 +1086,36 @@ export default function JobDetailPage() {
                         </Card>
                     )}
 
-                    {/* Candidate List Content (for stage tabs) */}
-                    {!STATIC_LEADING_TABS.some(t => t.id === activeTab) && (
+                    {activeTab === "team" && job && (
+                        <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <JobOwnershipPanel
+                                jobId={job.id}
+                                owner={job.owner}
+                                collaborators={job.collaborators}
+                                lastViewedAt={job.last_viewed_at}
+                                onAssigned={fetchJobDetails}
+                            />
+                        </div>
+                    )}
+
+                    {activeTab === "activities" && <JobActivitiesTab jobId={String(id)} />}
+
+                    {activeTab === "notes" && (
+                        <JobNotesTab jobId={String(id)} onCountChange={setNoteCount} />
+                    )}
+
+                    {activeTab === "attachments" && (
+                        <JobAttachmentsTab jobId={String(id)} onCountChange={setAttachmentCount} />
+                    )}
+
+                    {activeTab === "reports" && (
+                        <JobReportsTab stages={job.stages || []} applications={applications} />
+                    )}
+
+                    {/* Candidate List Content (for stage tabs).
+                        Keyed off the FULL static tab set — checking only the leading tabs would
+                        render this list underneath Notes, Reports and every other trailing tab. */}
+                    {!STATIC_TAB_IDS.has(activeTab) && (
                         <Card padding="none" className="overflow-hidden min-h-[400px]">
                             <div className="px-6 py-4 border-b border-[#E8EAED] flex items-center justify-between gap-3">
                                 <h3 className="text-[13px] font-bold text-[#15171C]">{tr("jobDetail.candidates")}</h3>
@@ -1098,6 +1204,14 @@ export default function JobDetailPage() {
                         </Card>
                     )}
                 </div>
+
+            <PublishJobModal
+                isOpen={showPublish}
+                onClose={() => setShowPublish(false)}
+                jobId={String(id)}
+                jobTitle={job.title}
+                token={token}
+            />
         </div>
     );
 }

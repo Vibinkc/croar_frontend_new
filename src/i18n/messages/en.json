@@ -3020,7 +3020,13 @@
         "nApplied": "{count} applied",
         "nAwaiting": "{count} awaiting",
         "scrollTabsLeft": "Show previous tabs",
-        "scrollTabsRight": "Show more tabs"
+        "scrollTabsRight": "Show more tabs",
+        "tabTeam": "Team",
+        "tabRecommendations": "AI Recommendations",
+        "tabActivities": "Activities",
+        "tabNotes": "Notes",
+        "tabAttachments": "Attachments",
+        "tabReports": "Reports"
     },
     "sourcingIndex": {
         "assistantGreeting": "Hello! I am your AI Sourcing Assistant. Tell me who you're looking for, e.g., 'Find me React Engineers on GitHub'.",
@@ -4944,5 +4950,92 @@
         "inviteMemberThenRoles": "Invite a member, then give them one or more roles.",
         "teamManagementHelpTitle": "Team Management",
         "refresh": "Refresh"
+    },
+    "jobNotes": {
+        "placeholder": "Leave a note for the hiring team…",
+        "visibleToTeam": "Notes are visible to everyone on this job.",
+        "addNote": "Add note",
+        "saving": "Saving…",
+        "loading": "Loading notes…",
+        "emptyTitle": "No notes yet",
+        "emptyDesc": "Capture interview debriefs, budget decisions or anything the team should know about this role.",
+        "someone": "Someone",
+        "edited": "edited",
+        "pinned": "Pinned",
+        "pin": "Pin this note",
+        "unpin": "Unpin this note",
+        "confirmDelete": "Delete this note? This cannot be undone.",
+        "loadFailed": "Could not load notes.",
+        "saveFailed": "Could not save the note. Try again.",
+        "deleteFailed": "Could not delete the note."
+    },
+    "jobFiles": {
+        "dropHere": "Drop a file here, or click to browse",
+        "dropHint": "Briefs, signed requisition forms, scorecards. Up to 20 MB.",
+        "uploading": "Uploading…",
+        "uploadFile": "Upload a file",
+        "loading": "Loading attachments…",
+        "emptyTitle": "No attachments yet",
+        "emptyDesc": "Keep the job brief, the approved requisition and any scorecards with the role itself.",
+        "open": "Open file",
+        "tooLarge": "That file is larger than 20 MB.",
+        "confirmDelete": "Delete “{name}”? This cannot be undone.",
+        "loadFailed": "Could not load attachments.",
+        "uploadFailed": "Could not upload the file. Try again.",
+        "deleteFailed": "Could not delete the file."
+    },
+    "jobActivity": {
+        "title": "Activity",
+        "subtitle": "Everything that has happened to this job, newest first.",
+        "loading": "Loading activity…",
+        "emptyTitle": "Nothing has happened yet",
+        "emptyDesc": "Edits, assignments and publishing all show up here as an audit trail.",
+        "someone": "Someone",
+        "action": {
+            "created": "created this job",
+            "updated": "updated this job",
+            "assigned": "changed the hiring team",
+            "viewed": "viewed this job",
+            "published": "published this job",
+            "deleted": "deleted this job",
+            "note_added": "added a note",
+            "attachment_added": "attached a file",
+            "attachment_removed": "removed a file"
+        }
+    },
+    "jobSourcing": {
+        "title": "Get candidates onto this job",
+        "subtitle": "Choose a channel. Each one feeds the same pipeline.",
+        "live": "Live",
+        "careerPage": "Career page",
+        "careerPageDesc": "View this job as a candidate sees it on your public career page.",
+        "jobBoards": "Job boards",
+        "jobBoardsDesc": "Publish to the job boards you have connected, in one step.",
+        "sourcingHub": "Sourcing hub",
+        "sourcingHubDesc": "Let Croar Pilot search the web for candidates who match this role.",
+        "recommendations": "Recommendation engine",
+        "recommendationsDesc": "Rank the candidates already in your database against this job.",
+        "backToChannels": "Back to sourcing channels"
+    },
+    "jobReports": {
+        "emptyTitle": "No data to report yet",
+        "emptyDesc": "Once candidates start applying, the funnel and source breakdown appear here.",
+        "totalApplicants": "Total applicants",
+        "last30Days": "Last 30 days",
+        "avgFit": "Average fit",
+        "furthestStage": "Furthest stage",
+        "funnelTitle": "Pipeline funnel",
+        "funnelSubtitle": "How candidates are distributed across your stages.",
+        "unassignedNote": "{count} applicant(s) are not in any configured stage yet.",
+        "qualityTitle": "Candidate quality",
+        "qualitySubtitle": "AI match scores across everyone who applied.",
+        "noScores": "No candidates have been scored yet.",
+        "unscoredNote": "{count} applicant(s) have not been scored yet.",
+        "band": {
+            "strong": "Strong match (80%+)",
+            "good": "Good match (60–79%)",
+            "fair": "Fair match (40–59%)",
+            "weak": "Weak match (under 40%)"
+        }
     }
 }
