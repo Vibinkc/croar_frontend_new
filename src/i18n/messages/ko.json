@@ -2890,7 +2890,11 @@
         "freqMonthly": "월간",
         "freqWeekly": "주간",
         "freqDaily": "일간",
-        "freqHourly": "시간당"
+        "freqHourly": "시간당",
+        "perMonth": "월",
+        "perWeek": "주",
+        "perDay": "일",
+        "perHour": "시간"
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",

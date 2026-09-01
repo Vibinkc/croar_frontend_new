@@ -2890,7 +2890,11 @@
         "freqMonthly": "月間",
         "freqWeekly": "週間",
         "freqDaily": "日額",
-        "freqHourly": "時給"
+        "freqHourly": "時給",
+        "perMonth": "月額",
+        "perWeek": "週額",
+        "perDay": "日額",
+        "perHour": "時給"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",

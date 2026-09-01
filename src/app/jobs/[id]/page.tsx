@@ -285,7 +285,9 @@ export default function PublicJobPage() {
                 "@type": "QuantitativeValue",
                 "minValue": job.salary_min,
                 "maxValue": job.salary_max || job.salary_min,
-                "unitText": job.salary_frequency === "Yearly" ? "YEAR" : "MONTH"
+                // Map every pay period Google accepts. This was `Yearly ? "YEAR" : "MONTH"`, so a
+                // Daily, Weekly or Hourly job was published to Google for Jobs as a MONTHLY salary.
+                "unitText": ({ Yearly: "YEAR", Monthly: "MONTH", Weekly: "WEEK", Daily: "DAY", Hourly: "HOUR" } as Record<string, string>)[job.salary_frequency || "Yearly"] || "YEAR"
             }
         } : undefined
     } : null;

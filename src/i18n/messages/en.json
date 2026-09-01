@@ -2890,7 +2890,11 @@
         "freqMonthly": "Monthly",
         "freqWeekly": "Weekly",
         "freqDaily": "Daily",
-        "freqHourly": "Hourly"
+        "freqHourly": "Hourly",
+        "perMonth": "per month",
+        "perWeek": "per week",
+        "perDay": "per day",
+        "perHour": "per hour"
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

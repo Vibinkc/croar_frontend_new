@@ -66,6 +66,12 @@ const SALARY_CURRENCIES = ["INR", "MYR", "SGD", "USD", "EUR", "GBP", "AED", "AUD
 // How the salary figure is expressed. Stored all along as salary_frequency but never shown,
 // so every job silently claimed "Yearly" whatever the employer actually meant.
 const SALARY_FREQUENCIES = ["Yearly", "Monthly", "Weekly", "Daily", "Hourly"];
+// The salary inputs must say what the number MEANS. They were hardcoded to "per year", so
+// choosing Daily still labelled the field "(INR per year)" — the wrong unit against the
+// user's own selection.
+const FREQUENCY_LABEL_KEY: Record<string, string> = {
+    Yearly: "perYear", Monthly: "perMonth", Weekly: "perWeek", Daily: "perDay", Hourly: "perHour",
+};
 
 const DEFAULT_WORKFLOW_STAGES: WorkflowStage[] = [
     { id: '1', name: 'Initial Screening', type: 'Screening', icon: 'search' }
@@ -247,7 +253,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     work_mode: formData.work_mode,
                     location: formData.location,
                     department: formData.department,
-                    salary_currency: formData.salary_currency,
+                    salary_currency: formData.salary_currency, frequency: formData.salary_frequency,
                     salary_frequency: formData.salary_frequency,
                     salary_min: formData.salary_min ? Number.parseFloat(formData.salary_min) : null,
                     salary_max: formData.salary_max ? Number.parseFloat(formData.salary_max) : null,
@@ -337,7 +343,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                         work_mode: formData.work_mode,
                         experience_min: formData.experience_min,
                         experience_max: formData.experience_max,
-                        currency: formData.salary_currency
+                        currency: formData.salary_currency, frequency: formData.salary_frequency
                     }),
                 });
 
@@ -369,7 +375,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/generate-jd`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                    body: JSON.stringify({ title: formData.title, existing_description: stripMarks(formData.description), location: formData.location, work_mode: formData.work_mode, experience_min: formData.experience_min, experience_max: formData.experience_max, currency: formData.salary_currency })
+                    body: JSON.stringify({ title: formData.title, existing_description: stripMarks(formData.description), location: formData.location, work_mode: formData.work_mode, experience_min: formData.experience_min, experience_max: formData.experience_max, currency: formData.salary_currency, frequency: formData.salary_frequency })
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -748,10 +754,10 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                     with no currency and no period, so an AI-suggested "12" (lakhs) and a
                                                     hand-typed 1200000 landed in the same column indistinguishably — and the
                                                     public page then published "INR 12 / Yearly". */}
-                                                <Field label={`${tr("jobForm.minSalary")} (${formData.salary_currency} ${tr("jobForm.perYear")})`} htmlFor="salary-min-input" error={isSalaryInvalid ? tr("jobForm.maxMustBeMin") : undefined}>
+                                                <Field label={`${tr("jobForm.minSalary")} (${formData.salary_currency} ${tr("jobForm." + (FREQUENCY_LABEL_KEY[formData.salary_frequency] || "perYear"))})`} htmlFor="salary-min-input" error={isSalaryInvalid ? tr("jobForm.maxMustBeMin") : undefined}>
                                                     <Input id="salary-min-input" type="number" min="0" placeholder="600000" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_min} onChange={e => setFormData({ ...formData, salary_min: e.target.value })} />
                                                 </Field>
-                                                <Field label={`${tr("jobForm.maxSalary")} (${formData.salary_currency} ${tr("jobForm.perYear")})`} htmlFor="salary-max-input">
+                                                <Field label={`${tr("jobForm.maxSalary")} (${formData.salary_currency} ${tr("jobForm." + (FREQUENCY_LABEL_KEY[formData.salary_frequency] || "perYear"))})`} htmlFor="salary-max-input">
                                                     <Input id="salary-max-input" type="number" min="0" placeholder="1500000" className={cn(jetbrainsMono.className, isSalaryInvalid && errorInputCls)} value={formData.salary_max} onChange={e => setFormData({ ...formData, salary_max: e.target.value })} />
                                                 </Field>
                                             </div>
