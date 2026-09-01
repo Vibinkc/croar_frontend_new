@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
@@ -103,6 +103,29 @@ export default function JobDetailPage() {
         const t = searchParams?.get("tab");
         return STATIC_LEADING_TABS.some((x) => x.id === t) ? (t as string) : "overview";
     });
+    // The tab strip scrolls horizontally: a job with several interview rounds pushes the later
+    // tabs off-screen, and on a trackpad-less machine there was no way to reach them. These drive
+    // the left/right arrows, which appear only on the side that actually has more tabs to show.
+    const tabStripRef = useRef<HTMLDivElement>(null);
+    const [canScrollTabsLeft, setCanScrollTabsLeft] = useState(false);
+    const [canScrollTabsRight, setCanScrollTabsRight] = useState(false);
+
+    const syncTabArrows = useCallback(() => {
+        const el = tabStripRef.current;
+        if (!el) return;
+        // 1px of slack: sub-pixel widths otherwise leave the right arrow permanently enabled.
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        setCanScrollTabsLeft(el.scrollLeft > 1);
+        setCanScrollTabsRight(el.scrollLeft < maxScroll - 1);
+    }, []);
+
+    const scrollTabs = (direction: -1 | 1) => {
+        const el = tabStripRef.current;
+        if (!el) return;
+        // Move by most of a screenful, keeping a sliver of the previous tab visible as an anchor.
+        el.scrollBy({ left: direction * Math.max(160, el.clientWidth * 0.75), behavior: "smooth" });
+    };
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [onboardings, setOnboardings] = useState<any[]>([]);
     const [isOnboardingLoading, setIsOnboardingLoading] = useState(false);
@@ -267,6 +290,18 @@ export default function JobDetailPage() {
         }
     };
 
+    // Keep the tab arrows in step with the strip. A ResizeObserver covers both the window being
+    // resized and the strip gaining tabs once the job's stages arrive; `job` in the deps re-runs
+    // this on the render where the strip first exists (it is behind the isLoading early return).
+    useEffect(() => {
+        const el = tabStripRef.current;
+        if (!el) return;
+        syncTabArrows();
+        const ro = new ResizeObserver(syncTabArrows);
+        ro.observe(el);
+        return () => ro.disconnect();
+    }, [syncTabArrows, job]);
+
     if (isLoading) {
         return (
             <div className="px-4 sm:px-5 md:px-7 pb-20 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
@@ -421,8 +456,27 @@ export default function JobDetailPage() {
 
             {/* Tabs & Content */}
             <div className="space-y-6">
-                    {/* Tabs Navigation */}
-                    <div className="flex border-b border-[#E1E4E8] gap-8 overflow-x-auto no-scrollbar">
+                    {/* Tabs Navigation — scrolls horizontally, with arrows for the overflow. */}
+                    <div className="relative border-b border-[#E1E4E8]">
+                        {canScrollTabsLeft && (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={() => scrollTabs(-1)}
+                                    aria-label={tr("jobDetail.scrollTabsLeft")}
+                                    className="absolute left-0 top-0 bottom-[4px] z-20 w-8 flex items-center justify-center bg-white text-[#6B6F76] hover:text-[#5B53E0] transition-colors"
+                                >
+                                    <span className="material-symbols-rounded text-[22px]">chevron_left</span>
+                                </button>
+                                {/* Fade so a half-cut tab reads as "there is more", not as a clipped label. */}
+                                <div className="absolute left-8 top-0 bottom-[4px] z-10 w-6 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+                            </>
+                        )}
+
+                        {/* Padding is keyed off "does it overflow at all", not off each arrow's own
+                            flag — tying it to the flags would shift the tabs sideways the instant
+                            you started scrolling. */}
+                        <div ref={tabStripRef} onScroll={syncTabArrows} className={`flex gap-8 overflow-x-auto no-scrollbar ${canScrollTabsLeft || canScrollTabsRight ? "px-10" : ""}`}>
                         {[
                             ...STATIC_LEADING_TABS,
                             ...(job.stages || []).map(s => {
@@ -448,6 +502,21 @@ export default function JobDetailPage() {
                                 )}
                             </button>
                         ))}
+                        </div>
+
+                        {canScrollTabsRight && (
+                            <>
+                                <div className="absolute right-8 top-0 bottom-[4px] z-10 w-6 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                                <button
+                                    type="button"
+                                    onClick={() => scrollTabs(1)}
+                                    aria-label={tr("jobDetail.scrollTabsRight")}
+                                    className="absolute right-0 top-0 bottom-[4px] z-20 w-8 flex items-center justify-center bg-white text-[#6B6F76] hover:text-[#5B53E0] transition-colors"
+                                >
+                                    <span className="material-symbols-rounded text-[22px]">chevron_right</span>
+                                </button>
+                            </>
+                        )}
                     </div>
 
 

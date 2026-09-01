@@ -3018,7 +3018,9 @@
         "nSourced": "{count}件ソーシング",
         "nMailSent": "{count}件メール送信",
         "nApplied": "{count}件応募",
-        "nAwaiting": "{count}件待機"
+        "nAwaiting": "{count}件待機",
+        "scrollTabsLeft": "前のタブを表示",
+        "scrollTabsRight": "次のタブを表示"
     },
     "sourcingIndex": {
         "assistantGreeting": "こんにちは！私はAIソーシングアシスタントです。お探しの人材を教えてください。例：「GitHubでReactエンジニアを探して」。",

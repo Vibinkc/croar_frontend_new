@@ -3018,7 +3018,9 @@
         "nSourced": "{count}건 소싱",
         "nMailSent": "{count}건 메일 발송",
         "nApplied": "{count}건 지원",
-        "nAwaiting": "{count}건 대기"
+        "nAwaiting": "{count}건 대기",
+        "scrollTabsLeft": "이전 탭 보기",
+        "scrollTabsRight": "다음 탭 보기"
     },
     "sourcingIndex": {
         "assistantGreeting": "안녕하세요! 저는 AI 소싱 어시스턴트입니다. 찾으시는 인재를 말씀해 주세요. 예: 'GitHub에서 React 엔지니어를 찾아줘'.",

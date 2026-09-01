@@ -3018,7 +3018,9 @@
         "nSourced": "{count} sourced",
         "nMailSent": "{count} mail sent",
         "nApplied": "{count} applied",
-        "nAwaiting": "{count} awaiting"
+        "nAwaiting": "{count} awaiting",
+        "scrollTabsLeft": "Show previous tabs",
+        "scrollTabsRight": "Show more tabs"
     },
     "sourcingIndex": {
         "assistantGreeting": "Hello! I am your AI Sourcing Assistant. Tell me who you're looking for, e.g., 'Find me React Engineers on GitHub'.",
