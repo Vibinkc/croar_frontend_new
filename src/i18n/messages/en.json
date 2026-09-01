@@ -2894,7 +2894,10 @@
         "perMonth": "per month",
         "perWeek": "per week",
         "perDay": "per day",
-        "perHour": "per hour"
+        "perHour": "per hour",
+        "addField": "Add field",
+        "removeField": "Remove field",
+        "newField": "New field"
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

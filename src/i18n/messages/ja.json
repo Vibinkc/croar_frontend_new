@@ -2894,7 +2894,10 @@
         "perMonth": "月額",
         "perWeek": "週額",
         "perDay": "日額",
-        "perHour": "時給"
+        "perHour": "時給",
+        "addField": "項目を追加",
+        "removeField": "項目を削除",
+        "newField": "新しい項目"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",

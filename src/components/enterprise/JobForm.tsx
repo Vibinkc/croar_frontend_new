@@ -941,17 +941,17 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                             </div>
                                             <div className="flex items-center gap-2 ml-4 shrink-0">
                                                 <button title={field.is_required ? tr("jobForm.requiredClickOptional") : tr("jobForm.optionalClickRequired")} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, is_required: !f.is_required } : f) }))} className={`px-2.5 py-1 rounded-[8px] text-[11px] font-semibold border transition-colors ${field.is_required ? 'bg-[#5B53E0] text-white border-[#5B53E0]' : 'bg-[#F4F5F7] text-[#374151] border-[#D4D7DC] hover:bg-[#ECEBFB] hover:text-[#5B53E0] hover:border-[#5B53E0]/40'}`}>{field.is_required ? tr("jobForm.required") : tr("jobForm.optional")}</button>
-                                                <button title={tr("jobForm.removeQuestion")} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
+                                                <button title={tr("jobForm.removeField")} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
                                             </div>
                                         </div>
                                     ))}
 
                                     <button onClick={() => {
-                                        const newField: ApplicationField = { id: Date.now().toString(), label: 'New Question', type: 'text', icon: 'Type', is_required: false };
+                                        const newField: ApplicationField = { id: Date.now().toString(), label: tr('jobForm.newField'), type: 'text', icon: 'Type', is_required: false };
                                         setFormData(prev => ({ ...prev, application_fields: [...prev.application_fields, newField] }));
                                     }} className="w-full h-12 rounded-[12px] border-2 border-dashed border-[#D4D7DC] text-[#6B6F76] text-[14px] font-semibold hover:border-[#5B53E0] hover:text-[#5B53E0] hover:bg-[#ECEBFB]/40 transition-colors flex items-center justify-center gap-2">
                                         <CirclePlus className="w-5 h-5" />
-                                        {tr("jobForm.addQuestion")}
+                                        {tr("jobForm.addField")}
                                     </button>
                                 </div>
                             </div>
