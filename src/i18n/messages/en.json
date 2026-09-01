@@ -2882,7 +2882,15 @@
         "roundsManualDesc": "Continue to the workflow step and add, reorder and name each round by hand.",
         "roundsHandoffFailed": "Couldn't hand this job to Croar Pilot. Please try again.",
         "perYear": "per year",
-        "salaryCurrency": "Salary currency"
+        "salaryCurrency": "Salary currency",
+        "headcount": "Headcount",
+        "headcountHint": "How many people this role will hire.",
+        "salaryFrequency": "Salary frequency",
+        "freqYearly": "Yearly",
+        "freqMonthly": "Monthly",
+        "freqWeekly": "Weekly",
+        "freqDaily": "Daily",
+        "freqHourly": "Hourly"
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

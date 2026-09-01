@@ -63,6 +63,9 @@ const DEFAULT_APPLICATION_FIELDS: ApplicationField[] = [
 // Currencies a job can pay in. The job defaults to the hiring organisation's currency but can
 // differ from it — an India-based company hiring one role in Kuala Lumpur pays that job in MYR.
 const SALARY_CURRENCIES = ["INR", "MYR", "SGD", "USD", "EUR", "GBP", "AED", "AUD", "JPY", "KRW"];
+// How the salary figure is expressed. Stored all along as salary_frequency but never shown,
+// so every job silently claimed "Yearly" whatever the employer actually meant.
+const SALARY_FREQUENCIES = ["Yearly", "Monthly", "Weekly", "Daily", "Hourly"];
 
 const DEFAULT_WORKFLOW_STAGES: WorkflowStage[] = [
     { id: '1', name: 'Initial Screening', type: 'Screening', icon: 'search' }
@@ -119,6 +122,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
         salary_max: "",
         experience_min: "0",
         experience_max: "5",
+        headcount: "1",
         description: "",
         required_skills: "",
         auto_fit_analysis: false,
@@ -189,6 +193,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     salary_max: data.salary_max?.toString() || "",
                     experience_min: data.experience_min?.toString() || "0",
                     experience_max: data.experience_max?.toString() || "5",
+                    headcount: data.headcount?.toString() || "1",
                     description: data.description || "",
                     required_skills: data.required_skills?.join(", ") || "",
                     auto_fit_analysis: data.auto_fit_analysis || false,
@@ -248,6 +253,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     salary_max: formData.salary_max ? Number.parseFloat(formData.salary_max) : null,
                     experience_min: formData.experience_min ? Number.parseInt(formData.experience_min) : 0,
                     experience_max: formData.experience_max ? Number.parseInt(formData.experience_max) : 5,
+                    headcount: formData.headcount ? Number.parseInt(formData.headcount) : 1,
                     description: stripMarks(formData.description),
                     required_skills: formData.required_skills.split(",").map(s => s.trim()).filter(s => s),
                     auto_fit_analysis: formData.auto_fit_analysis,
@@ -288,6 +294,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     salary_max: formData.salary_max ? Number.parseFloat(formData.salary_max) : null,
                     experience_min: Number.parseInt(formData.experience_min),
                     experience_max: Number.parseInt(formData.experience_max),
+                    headcount: Number.parseInt(formData.headcount) || 1,
                     required_skills: formData.required_skills.split(",").map(s => s.trim()).filter(s => s)
                 };
                 const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/`, {
@@ -626,8 +633,10 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                         />
 
                                         <div className="space-y-4 pt-1">
-                                            <Field label={tr("jobForm.jobTitle")} htmlFor="job-title-input" required>
-                                                <Input id="job-title-input" type="text" placeholder={tr("jobForm.jobTitlePlaceholder")} value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
+                                            {/* 255 is the DB column limit; showing the count stops a long title
+                                                being silently rejected as a 422 on save. */}
+                                            <Field label={tr("jobForm.jobTitle")} htmlFor="job-title-input" required hint={`${formData.title.length} / 255`}>
+                                                <Input id="job-title-input" type="text" maxLength={255} placeholder={tr("jobForm.jobTitlePlaceholder")} value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
                                             </Field>
 
                                             {companies.length > 0 && (
@@ -698,6 +707,13 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                     <Input id="experience-max-input" type="number" min="0" className={cn(jetbrainsMono.className, isExperienceInvalid && errorInputCls)} value={formData.experience_max} onChange={e => setFormData({ ...formData, experience_max: e.target.value })} />
                                                 </Field>
                                             </div>
+
+                                            {/* How many people this requisition hires. Without it, a req for 5
+                                                openings looks identical to one, and "positions filled" cannot
+                                                be reported. */}
+                                            <Field label={tr("jobForm.headcount")} htmlFor="headcount-input" hint={tr("jobForm.headcountHint")}>
+                                                <Input id="headcount-input" type="number" min="1" step="1" className={jetbrainsMono.className} value={formData.headcount} onChange={e => setFormData({ ...formData, headcount: e.target.value })} />
+                                            </Field>
                                             {/* Which money this job pays in. Defaults to the hiring organisation's
                                                 currency, but a single role can differ (an INR company hiring in
                                                 Kuala Lumpur pays that job in MYR). */}
@@ -711,6 +727,20 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                         ? SALARY_CURRENCIES
                                                         : [formData.salary_currency, ...SALARY_CURRENCIES]
                                                     ).map(c => (<option key={c} value={c}>{c}</option>))}
+                                                </Select>
+                                            </Field>
+                                            {/* What the salary figure means. Stored since day one but never
+                                                shown, so every job silently claimed "Yearly". */}
+                                            <Field label={tr("jobForm.salaryFrequency")} htmlFor="salary-frequency-select">
+                                                <Select
+                                                    id="salary-frequency-select"
+                                                    value={formData.salary_frequency}
+                                                    onChange={e => setFormData({ ...formData, salary_frequency: e.target.value })}
+                                                >
+                                                    {(SALARY_FREQUENCIES.includes(formData.salary_frequency)
+                                                        ? SALARY_FREQUENCIES
+                                                        : [formData.salary_frequency, ...SALARY_FREQUENCIES]
+                                                    ).map(f => (<option key={f} value={f}>{tr("jobForm.freq" + f) || f}</option>))}
                                                 </Select>
                                             </Field>
                                             <div className="grid grid-cols-2 gap-4">

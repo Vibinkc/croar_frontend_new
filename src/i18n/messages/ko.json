@@ -2882,7 +2882,15 @@
         "roundsManualDesc": "워크플로우 단계로 이동해 각 라운드를 직접 추가·정렬·명명합니다.",
         "roundsHandoffFailed": "Croar Pilot으로 전달하지 못했습니다. 다시 시도해 주세요.",
         "perYear": "연간",
-        "salaryCurrency": "급여 통화"
+        "salaryCurrency": "급여 통화",
+        "headcount": "채용 인원",
+        "headcountHint": "이 직무로 채용할 인원 수입니다.",
+        "salaryFrequency": "급여 주기",
+        "freqYearly": "연간",
+        "freqMonthly": "월간",
+        "freqWeekly": "주간",
+        "freqDaily": "일간",
+        "freqHourly": "시간당"
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",

@@ -2882,7 +2882,15 @@
         "roundsManualDesc": "ワークフローのステップに進み、各ラウンドを手動で追加・並べ替え・命名します。",
         "roundsHandoffFailed": "Croar Pilot に引き継げませんでした。もう一度お試しください。",
         "perYear": "年間",
-        "salaryCurrency": "給与通貨"
+        "salaryCurrency": "給与通貨",
+        "headcount": "採用人数",
+        "headcountHint": "この求人で採用する人数です。",
+        "salaryFrequency": "給与サイクル",
+        "freqYearly": "年間",
+        "freqMonthly": "月間",
+        "freqWeekly": "週間",
+        "freqDaily": "日額",
+        "freqHourly": "時給"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",
