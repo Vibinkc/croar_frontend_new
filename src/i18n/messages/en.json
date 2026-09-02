@@ -2943,7 +2943,11 @@
         "assessmentGenerating": "Writing…",
         "assessmentQuestionsReady": "{n} questions ready",
         "assessmentTopicFirst": "Give the assessment a topic first",
-        "assessmentGenFailed": "Could not write the questions. Check the AI credits and try again."
+        "assessmentGenFailed": "Could not write the questions. Check the AI credits and try again.",
+        "assessmentTopicLabel": "Topic",
+        "assessmentQuestions": "Questions",
+        "interviewDailyLimit": "Interviews per day",
+        "interviewDailyLimitHint": "How many candidates can be booked into this round each day."
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",
@@ -5218,5 +5222,22 @@
             "BOTH": "Aptitude + Coding",
             "VIDEO": "Video answers"
         }
+    },
+    "roundDrawer": {
+        "title": {
+            "assessment": "Assessment",
+            "interview": "Interview",
+            "email": "Email",
+            "onboarding": "Onboarding"
+        },
+        "chip": {
+            "assessment": "Assessment",
+            "interview": "Interview",
+            "email": "Email",
+            "onboarding": "Onboarding"
+        },
+        "forRound": "Round {index} — {name}",
+        "save": "Save to this round",
+        "detach": "Remove from this round"
     }
 }

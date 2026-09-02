@@ -6,6 +6,12 @@ import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { type GenLanguage, localeToLanguageName } from "@/i18n/config";
 import GenLanguageSelect from "@/components/ds/GenLanguageSelect";
+import RoundAutomationDrawer, {
+    type AutomationKind,
+    DrawerInput,
+    DrawerLabel,
+    DrawerSelect,
+} from "@/components/enterprise/RoundAutomationDrawer";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import JobEditor from "@/components/enterprise/JobEditor";
@@ -22,7 +28,6 @@ import {
     Eye,
     Calculator,
     ChevronUp,
-    CirclePlus,
     ChevronDown,
     ListPlus,
     FileText,
@@ -169,6 +174,8 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const [onboardingTemplates, setOnboardingTemplates] = useState<{ id: string; name: string }[]>([]);
     // Which stage's questions are being written, and in what language.
     const [genStageId, setGenStageId] = useState<string | null>(null);
+    // Which round is being configured, and which automation of it.
+    const [drawer, setDrawer] = useState<{ stageId: string; kind: AutomationKind } | null>(null);
     const [genLang, setGenLang] = useState<GenLanguage>(localeToLanguageName(locale));
 
     const [formData, setFormData] = useState({
@@ -1170,232 +1177,27 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                             <button title={tr("jobForm.removeStage")} onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
                                         </div>
 
-                                        {/* What this round DOES. Held as draft state and armed as a real
-                                            assessment automation the moment the job is created. */}
-                                        {node.assessment ? (
-                                            <div className="mt-1.5 ml-[52px] rounded-[11px] border border-[#E8EAED] bg-[#FBFBFC] p-3 space-y-2.5">
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-[#5B53E0]">
-                                                        <Sparkles className="w-3.5 h-3.5" />
-                                                        {tr("jobForm.assessmentOnRound")}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, assessment: null } : s) }))}
-                                                        className="text-[11.5px] font-semibold text-[#8A929E] hover:text-[#C0383C] transition-colors"
-                                                    >
-                                                        {tr("jobForm.assessmentRemove")}
-                                                    </button>
-                                                </div>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                                    <Select
-                                                        className="cursor-pointer h-9 text-[12px]"
-                                                        value={node.assessment.type}
-                                                        aria-label={tr("jobForm.assessmentType")}
-                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, type: e.target.value as StageAssessment["type"] } } : s) }))}
-                                                    >
-                                                        {ASSESSMENT_TYPES.map(t => (<option key={t} value={t}>{tr("jobRounds.type." + t)}</option>))}
-                                                    </Select>
-                                                    <Input
-                                                        className="h-9 text-[12px]"
-                                                        value={node.assessment.topic}
-                                                        placeholder={tr("jobForm.assessmentTopic")}
-                                                        aria-label={tr("jobForm.assessmentTopic")}
-                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, topic: e.target.value } } : s) }))}
-                                                    />
-                                                    <Input
-                                                        className="h-9 text-[12px]"
-                                                        type="number"
-                                                        min={1}
-                                                        max={50}
-                                                        value={node.assessment.question_count}
-                                                        aria-label={tr("jobForm.assessmentCount")}
-                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, question_count: Number(e.target.value) } } : s) }))}
-                                                    />
-                                                    <Input
-                                                        className="h-9 text-[12px]"
-                                                        type="number"
-                                                        min={5}
-                                                        max={240}
-                                                        value={node.assessment.test_duration}
-                                                        aria-label={tr("jobForm.assessmentDuration")}
-                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, test_duration: Number(e.target.value) } } : s) }))}
-                                                    />
-                                                </div>
-                                                {/* Written here rather than after the job exists:
-                                                    generate-preview needs only the topic and type, and
-                                                    the questions travel with the automation on create. */}
-                                                <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                                                    <GenLanguageSelect value={genLang} onChange={setGenLang} />
-                                                    <Button
-                                                        size="sm"
-                                                        variant="secondary"
-                                                        disabled={!node.assessment.topic.trim() || genStageId === node.id}
-                                                        onClick={() => generateStageQuestions(node.id)}
-                                                        title={!node.assessment.topic.trim() ? tr("jobForm.assessmentTopicFirst") : undefined}
-                                                    >
-                                                        <Sparkles className="w-3.5 h-3.5" />
-                                                        {genStageId === node.id
-                                                            ? tr("jobForm.assessmentGenerating")
-                                                            : (node.assessment.generated_questions?.length
-                                                                ? tr("jobForm.assessmentRegenerate")
-                                                                : tr("jobForm.assessmentGenerate"))}
-                                                    </Button>
-                                                    {!!node.assessment.generated_questions?.length && (
-                                                        <span className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-[#15803D]">
-                                                            <CircleCheck className="w-3.5 h-3.5" />
-                                                            {tr("jobForm.assessmentQuestionsReady", { n: node.assessment.generated_questions.length })}
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                {!!node.assessment.generated_questions?.length && (
-                                                    <ol className="mt-1 space-y-1 max-h-[132px] overflow-y-auto pr-1">
-                                                        {node.assessment.generated_questions.slice(0, 8).map((q, qi) => (
-                                                            <li key={(q.id as string) || qi} className="text-[10.5px] text-[#6B6F76] leading-relaxed flex gap-1.5">
-                                                                <span className="text-[#B4BAC3] shrink-0">{qi + 1}.</span>
-                                                                <span className="truncate">{String(q.question || q.text || "")}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ol>
-                                                )}
-
-                                                <p className="text-[10.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.assessmentHint")}</p>
-                                            </div>
-                                        ) : null}
-
-                                        {node.interview && (
-                                            <div className="mt-1.5 ml-[52px] rounded-[11px] border border-[#E8EAED] bg-[#FBFBFC] p-3 space-y-2.5">
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-[#3559C7]">
-                                                        <Users className="w-3.5 h-3.5" />
-                                                        {tr("jobForm.interviewOnRound")}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, interview: null } : s) }))}
-                                                        className="text-[11.5px] font-semibold text-[#8A929E] hover:text-[#C0383C] transition-colors"
-                                                    >
-                                                        {tr("jobForm.assessmentRemove")}
-                                                    </button>
-                                                </div>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                                    <Select
-                                                        className="cursor-pointer h-9 text-[12px]"
-                                                        value={node.interview.interview_type}
-                                                        aria-label={tr("jobForm.interviewType")}
-                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.interview ? { ...s, interview: { ...s.interview, interview_type: e.target.value as StageInterview["interview_type"] } } : s) }))}
-                                                    >
-                                                        {INTERVIEW_TYPES.map(t => (<option key={t} value={t}>{tr("jobForm.interviewType" + t)}</option>))}
-                                                    </Select>
-                                                    <Input
-                                                        className="h-9 text-[12px]"
-                                                        type="email"
-                                                        value={node.interview.interviewer_email}
-                                                        placeholder={tr("jobForm.interviewerEmail")}
-                                                        aria-label={tr("jobForm.interviewerEmail")}
-                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.interview ? { ...s, interview: { ...s.interview, interviewer_email: e.target.value } } : s) }))}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {node.email && (
-                                            <div className="mt-1.5 ml-[52px] rounded-[11px] border border-[#E8EAED] bg-[#FBFBFC] p-3 space-y-2.5">
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-[#0E8A6E]">
-                                                        <AtSign className="w-3.5 h-3.5" />
-                                                        {tr("jobForm.emailOnRound")}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, email: null } : s) }))}
-                                                        className="text-[11.5px] font-semibold text-[#8A929E] hover:text-[#C0383C] transition-colors"
-                                                    >
-                                                        {tr("jobForm.assessmentRemove")}
-                                                    </button>
-                                                </div>
-                                                <Select
-                                                    className="cursor-pointer h-9 text-[12px]"
-                                                    value={node.email.template_id}
-                                                    aria-label={tr("jobForm.emailTemplate")}
-                                                    onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.email ? { ...s, email: { template_id: e.target.value } } : s) }))}
-                                                >
-                                                    <option value="">{tr("jobForm.emailTemplatePick")}</option>
-                                                    {emailTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
-                                                </Select>
-                                                {emailTemplates.length === 0 && (
-                                                    <p className="text-[10.5px] text-[#B45309] leading-relaxed">{tr("jobForm.emailNoTemplates")}</p>
-                                                )}
-                                            </div>
-                                        )}
-
-                                        {node.onboarding && (
-                                            <div className="mt-1.5 ml-[52px] rounded-[11px] border border-[#E8EAED] bg-[#FBFBFC] p-3 space-y-2.5">
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-[#B45309]">
-                                                        <CircleCheck className="w-3.5 h-3.5" />
-                                                        {tr("jobForm.onboardingOnRound")}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, onboarding: null } : s) }))}
-                                                        className="text-[11.5px] font-semibold text-[#8A929E] hover:text-[#C0383C] transition-colors"
-                                                    >
-                                                        {tr("jobForm.assessmentRemove")}
-                                                    </button>
-                                                </div>
-                                                <Select
-                                                    className="cursor-pointer h-9 text-[12px]"
-                                                    value={node.onboarding.template_id}
-                                                    aria-label={tr("jobForm.onboardingTemplate")}
-                                                    onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.onboarding ? { ...s, onboarding: { template_id: e.target.value } } : s) }))}
-                                                >
-                                                    <option value="">{tr("jobForm.onboardingTemplatePick")}</option>
-                                                    {onboardingTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
-                                                </Select>
-                                                {onboardingTemplates.length === 0 && (
-                                                    <p className="text-[10.5px] text-[#B45309] leading-relaxed">{tr("jobForm.onboardingNoTemplates")}</p>
-                                                )}
-                                                <p className="text-[10.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.onboardingHint")}</p>
-                                            </div>
-                                        )}
-
-                                        {/* Attach whatever this round should DO. Each becomes a real
-                                            automation, keyed to this stage, once the job exists. */}
-                                        <div className="mt-1.5 ml-[52px] flex flex-wrap items-center gap-3">
-                                            {!node.assessment && (
+                                        {/* What this round DOES, as compact chips. Configuring opens the
+                                            same right-hand drawer the Automation module uses, because
+                                            these are the same automations. */}
+                                        <div className="mt-1.5 ml-[52px] flex flex-wrap items-center gap-2">
+                                            {([
+                                                ["assessment", !!node.assessment, tr("jobForm.assessmentAdd"), tr("roundDrawer.chip.assessment"), "quiz", "text-[#5B53E0] bg-[#ECEBFB] border-[#DAD7F6]"],
+                                                ["interview", !!node.interview, tr("jobForm.interviewAdd"), tr("roundDrawer.chip.interview"), "co_present", "text-[#3559C7] bg-[#E7ECFB] border-[#C9D5F5]"],
+                                                ["email", !!node.email, tr("jobForm.emailAdd"), tr("roundDrawer.chip.email"), "forward_to_inbox", "text-[#0E8A6E] bg-[#E3F4EF] border-[#BFE3D8]"],
+                                                ["onboarding", !!node.onboarding, tr("jobForm.onboardingAdd"), tr("roundDrawer.chip.onboarding"), "person_add", "text-[#B45309] bg-[#FEF3E2] border-[#F3DDBA]"],
+                                            ] as [AutomationKind, boolean, string, string, string, string][]).map(([kind, attached, addLabel, onLabel, icon, tone]) => (
                                                 <button
-                                                    onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, assessment: { type: ASSESSMENT_FOR_STAGE[s.type] || "APTITUDE", topic: "", criteria: "60% to pass", question_count: 10, test_duration: 30 } } : s) }))}
-                                                    className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-[#8A929E] hover:text-[#5B53E0] transition-colors"
+                                                    key={kind}
+                                                    onClick={() => setDrawer({ stageId: node.id, kind })}
+                                                    className={attached
+                                                        ? "inline-flex items-center gap-1.5 h-7 px-2.5 rounded-[8px] border text-[11.5px] font-bold transition-colors " + tone
+                                                        : "inline-flex items-center gap-1.5 h-7 px-2.5 rounded-[8px] border border-dashed border-[#DDE0E5] text-[11.5px] font-semibold text-[#8A929E] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors"}
                                                 >
-                                                    <CirclePlus className="w-3.5 h-3.5" />
-                                                    {tr("jobForm.assessmentAdd")}
+                                                    <span className="material-symbols-rounded text-[15px]">{attached ? icon : "add"}</span>
+                                                    {attached ? onLabel : addLabel}
                                                 </button>
-                                            )}
-                                            {!node.interview && (
-                                                <button
-                                                    onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, interview: { interview_type: "GMEET", interviewer_email: "", daily_limit: 5 } } : s) }))}
-                                                    className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-[#8A929E] hover:text-[#3559C7] transition-colors"
-                                                >
-                                                    <CirclePlus className="w-3.5 h-3.5" />
-                                                    {tr("jobForm.interviewAdd")}
-                                                </button>
-                                            )}
-                                            {!node.email && (
-                                                <button
-                                                    onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, email: { template_id: "" } } : s) }))}
-                                                    className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-[#8A929E] hover:text-[#0E8A6E] transition-colors"
-                                                >
-                                                    <CirclePlus className="w-3.5 h-3.5" />
-                                                    {tr("jobForm.emailAdd")}
-                                                </button>
-                                            )}
-                                            {!node.onboarding && (
-                                                <button
-                                                    onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, onboarding: { template_id: "" } } : s) }))}
-                                                    className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-[#8A929E] hover:text-[#B45309] transition-colors"
-                                                >
-                                                    <CirclePlus className="w-3.5 h-3.5" />
-                                                    {tr("jobForm.onboardingAdd")}
-                                                </button>
-                                            )}
+                                            ))}
                                         </div>
                                     </div>
                                     ))}
@@ -1414,6 +1216,176 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     )}
                 </AnimatePresence>
             </div>
+
+            {/* Configuring what a round does. Same slide-over shape as the Automation module,
+                because these are the same automations. */}
+            {(() => {
+                if (!drawer) return null;
+                const idx = formData.workflow_stages.findIndex(s => s.id === drawer.stageId);
+                const node = formData.workflow_stages[idx];
+                if (!node) return null;
+
+                const patch = (changes: Partial<WorkflowStage>) =>
+                    setFormData(prev => ({
+                        ...prev,
+                        workflow_stages: prev.workflow_stages.map(s => (s.id === node.id ? { ...s, ...changes } : s)),
+                    }));
+
+                const a = node.assessment;
+                const iv = node.interview;
+                const em = node.email;
+                const ob = node.onboarding;
+
+                // Opening a drawer for something not yet attached seeds a sensible default, so the
+                // form is never blank on arrival.
+                if (drawer.kind === "assessment" && !a) {
+                    patch({ assessment: { type: ASSESSMENT_FOR_STAGE[node.type] || "APTITUDE", topic: "", criteria: "60% to pass", question_count: 10, test_duration: 30 } });
+                    return null;
+                }
+                if (drawer.kind === "interview" && !iv) {
+                    patch({ interview: { interview_type: "GMEET", interviewer_email: "", daily_limit: 5 } });
+                    return null;
+                }
+                if (drawer.kind === "email" && !em) { patch({ email: { template_id: "" } }); return null; }
+                if (drawer.kind === "onboarding" && !ob) { patch({ onboarding: { template_id: "" } }); return null; }
+
+                const detach = () => {
+                    patch({ [drawer.kind === "email" ? "email" : drawer.kind]: null } as Partial<WorkflowStage>);
+                    setDrawer(null);
+                };
+
+                return (
+                    <RoundAutomationDrawer
+                        isOpen
+                        kind={drawer.kind}
+                        roundName={node.name}
+                        roundIndex={idx + 1}
+                        onClose={() => setDrawer(null)}
+                        onSave={() => setDrawer(null)}
+                        canSave={
+                            drawer.kind === "assessment" ? !!a?.topic.trim()
+                            : drawer.kind === "email" ? !!em?.template_id
+                            : drawer.kind === "onboarding" ? !!ob?.template_id
+                            : true
+                        }
+                    >
+                        {drawer.kind === "assessment" && a && (
+                            <>
+                                <div>
+                                    <DrawerLabel htmlFor="rd-a-type" required>{tr("jobForm.assessmentType")}</DrawerLabel>
+                                    <DrawerSelect id="rd-a-type" value={a.type} onChange={v => patch({ assessment: { ...a, type: v as StageAssessment["type"] } })}>
+                                        {ASSESSMENT_TYPES.map(t => (<option key={t} value={t}>{tr("jobRounds.type." + t)}</option>))}
+                                    </DrawerSelect>
+                                </div>
+                                <div>
+                                    <DrawerLabel htmlFor="rd-a-topic" required>{tr("jobForm.assessmentTopicLabel")}</DrawerLabel>
+                                    <DrawerInput id="rd-a-topic" value={a.topic} placeholder={tr("jobForm.assessmentTopic")} onChange={e => patch({ assessment: { ...a, topic: e.target.value } })} />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <DrawerLabel htmlFor="rd-a-count">{tr("jobForm.assessmentCount")}</DrawerLabel>
+                                        <DrawerInput id="rd-a-count" type="number" min={1} max={50} value={a.question_count} onChange={e => patch({ assessment: { ...a, question_count: Number(e.target.value) } })} />
+                                    </div>
+                                    <div>
+                                        <DrawerLabel htmlFor="rd-a-dur">{tr("jobForm.assessmentDuration")}</DrawerLabel>
+                                        <DrawerInput id="rd-a-dur" type="number" min={5} max={240} value={a.test_duration} onChange={e => patch({ assessment: { ...a, test_duration: Number(e.target.value) } })} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <DrawerLabel htmlFor="rd-a-crit">{tr("jobRounds.criteriaLabel")}</DrawerLabel>
+                                    <DrawerInput id="rd-a-crit" value={a.criteria} placeholder={tr("jobRounds.criteriaPlaceholder")} onChange={e => patch({ assessment: { ...a, criteria: e.target.value } })} />
+                                </div>
+
+                                <div className="rounded-[12px] border border-[#E8EAED] bg-[#FBFBFC] p-4 space-y-3">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <span className="text-[12px] font-bold text-[#15171C]">{tr("jobForm.assessmentQuestions")}</span>
+                                        <GenLanguageSelect value={genLang} onChange={setGenLang} />
+                                    </div>
+                                    <Button
+                                        fullWidth
+                                        variant="secondary"
+                                        disabled={!a.topic.trim() || genStageId === node.id}
+                                        onClick={() => generateStageQuestions(node.id)}
+                                    >
+                                        <Sparkles className="w-4 h-4" />
+                                        {genStageId === node.id ? tr("jobForm.assessmentGenerating") : (a.generated_questions?.length ? tr("jobForm.assessmentRegenerate") : tr("jobForm.assessmentGenerate"))}
+                                    </Button>
+                                    {!!a.generated_questions?.length && (
+                                        <>
+                                            <p className="text-[11.5px] font-semibold text-[#15803D] flex items-center gap-1.5">
+                                                <CircleCheck className="w-4 h-4" />
+                                                {tr("jobForm.assessmentQuestionsReady", { n: a.generated_questions.length })}
+                                            </p>
+                                            <ol className="space-y-1.5 max-h-[180px] overflow-y-auto pr-1">
+                                                {a.generated_questions.map((q, qi) => (
+                                                    <li key={(q.id as string) || qi} className="text-[11.5px] text-[#4B5057] leading-relaxed flex gap-1.5">
+                                                        <span className="text-[#B4BAC3] shrink-0">{qi + 1}.</span>
+                                                        <span>{String(q.question || q.text || "")}</span>
+                                                    </li>
+                                                ))}
+                                            </ol>
+                                        </>
+                                    )}
+                                </div>
+                            </>
+                        )}
+
+                        {drawer.kind === "interview" && iv && (
+                            <>
+                                <div>
+                                    <DrawerLabel htmlFor="rd-i-type" required>{tr("jobForm.interviewType")}</DrawerLabel>
+                                    <DrawerSelect id="rd-i-type" value={iv.interview_type} onChange={v => patch({ interview: { ...iv, interview_type: v as StageInterview["interview_type"] } })}>
+                                        {INTERVIEW_TYPES.map(t => (<option key={t} value={t}>{tr("jobForm.interviewType" + t)}</option>))}
+                                    </DrawerSelect>
+                                </div>
+                                <div>
+                                    <DrawerLabel htmlFor="rd-i-mail">{tr("jobForm.interviewerEmail")}</DrawerLabel>
+                                    <DrawerInput id="rd-i-mail" type="email" value={iv.interviewer_email} placeholder="interviewer@company.com" onChange={e => patch({ interview: { ...iv, interviewer_email: e.target.value } })} />
+                                </div>
+                                <div>
+                                    <DrawerLabel htmlFor="rd-i-limit">{tr("jobForm.interviewDailyLimit")}</DrawerLabel>
+                                    <DrawerInput id="rd-i-limit" type="number" min={1} max={50} value={iv.daily_limit} onChange={e => patch({ interview: { ...iv, daily_limit: Number(e.target.value) } })} />
+                                    <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1">{tr("jobForm.interviewDailyLimitHint")}</p>
+                                </div>
+                            </>
+                        )}
+
+                        {drawer.kind === "email" && em && (
+                            <div>
+                                <DrawerLabel htmlFor="rd-e-tpl" required>{tr("jobForm.emailTemplate")}</DrawerLabel>
+                                <DrawerSelect id="rd-e-tpl" value={em.template_id} onChange={v => patch({ email: { template_id: v } })}>
+                                    <option value="">{tr("jobForm.emailTemplatePick")}</option>
+                                    {emailTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
+                                </DrawerSelect>
+                                {emailTemplates.length === 0 && (
+                                    <p className="text-[11.5px] text-[#B45309] mt-2 ml-1 leading-relaxed">{tr("jobForm.emailNoTemplates")}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {drawer.kind === "onboarding" && ob && (
+                            <div>
+                                <DrawerLabel htmlFor="rd-o-tpl" required>{tr("jobForm.onboardingTemplate")}</DrawerLabel>
+                                <DrawerSelect id="rd-o-tpl" value={ob.template_id} onChange={v => patch({ onboarding: { template_id: v } })}>
+                                    <option value="">{tr("jobForm.onboardingTemplatePick")}</option>
+                                    {onboardingTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
+                                </DrawerSelect>
+                                {onboardingTemplates.length === 0 && (
+                                    <p className="text-[11.5px] text-[#B45309] mt-2 ml-1 leading-relaxed">{tr("jobForm.onboardingNoTemplates")}</p>
+                                )}
+                                <p className="text-[11px] text-[#8A929E] mt-2 ml-1 leading-relaxed">{tr("jobForm.onboardingHint")}</p>
+                            </div>
+                        )}
+
+                        <button
+                            onClick={detach}
+                            className="w-full text-[12px] font-semibold text-[#8A929E] hover:text-[#C0383C] transition-colors pt-1"
+                        >
+                            {tr("roundDrawer.detach")}
+                        </button>
+                    </RoundAutomationDrawer>
+                );
+            })()}
 
             {/* Start-of-creation choice: blank form vs. starter template. */}
             <AnimatePresence>

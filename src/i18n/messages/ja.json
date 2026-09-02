@@ -2943,7 +2943,11 @@
         "assessmentGenerating": "作成中…",
         "assessmentQuestionsReady": "設問 {n} 問を用意済み",
         "assessmentTopicFirst": "先にアセスメントのトピックを入力してください",
-        "assessmentGenFailed": "設問を作成できませんでした。AI クレジットを確認してください。"
+        "assessmentGenFailed": "設問を作成できませんでした。AI クレジットを確認してください。",
+        "assessmentTopicLabel": "トピック",
+        "assessmentQuestions": "設問",
+        "interviewDailyLimit": "1日あたりの面接数",
+        "interviewDailyLimitHint": "このステップで1日に予約できる候補者数です。"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",
@@ -5218,5 +5222,22 @@
             "BOTH": "適性 + コーディング",
             "VIDEO": "動画回答"
         }
+    },
+    "roundDrawer": {
+        "title": {
+            "assessment": "アセスメント",
+            "interview": "面接",
+            "email": "メール",
+            "onboarding": "オンボーディング"
+        },
+        "chip": {
+            "assessment": "アセスメント",
+            "interview": "面接",
+            "email": "メール",
+            "onboarding": "オンボーディング"
+        },
+        "forRound": "ステップ {index} — {name}",
+        "save": "このステップに保存",
+        "detach": "このステップから削除"
     }
 }
