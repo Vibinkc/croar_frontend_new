@@ -3030,7 +3030,8 @@
         "tabNotes": "メモ",
         "tabAttachments": "添付ファイル",
         "tabReports": "レポート",
-        "tabCandidates": "候補者"
+        "tabCandidates": "候補者",
+        "tabAppForm": "応募フォーム"
     },
     "sourcingIndex": {
         "assistantGreeting": "こんにちは！私はAIソーシングアシスタントです。お探しの人材を教えてください。例：「GitHubでReactエンジニアを探して」。",
@@ -5062,7 +5063,7 @@
         "searchFirstHint": "まず検索を — 同一人物の重複登録を防ぎます。",
         "tabSearch": "検索",
         "tabUpload": "履歴書をアップロード",
-        "tabInvite": "招待",
+        "tabInvite": "フォーム送信",
         "cvDrop": "履歴書をドロップ、またはクリックして選択",
         "cvHint": "PDF・DOC・DOCX・RTF・TXT、最大 20MB。内容を読み取って候補者を自動作成します。",
         "cvReading": "履歴書を読み取り中…",
@@ -5084,7 +5085,13 @@
         "linkCopied": "応募リンクをコピーしました",
         "copy": "コピー",
         "uploadHint": "履歴書を解析し、この求人に対してスコアリングします。",
-        "inviteHint": "招待はこの求人のソーシングファネルに記録されます。"
+        "inviteHint": "招待はこの求人のソーシングファネルに記録されます。",
+        "formIntro": "この求人の応募フォームを誰にでもメールで送れます（人材プールになくても可）。本人が入力すると、このパイプラインに入ります。",
+        "formNamePlaceholder": "氏名（任意・挨拶文に使用）",
+        "formSend": "フォームを送信",
+        "formSent": "{email} に応募フォームを送信しました",
+        "formSentTest": "テストモード — 実際の宛先ではなく {email} に送信しました",
+        "formSendFailed": "フォームを送信できませんでした。メール設定を確認してください。"
     },
     "jobBoard": {
         "emptyTitle": "この求人にはまだ候補者がいません",
@@ -5099,5 +5106,34 @@
         "unnamed": "名前未設定",
         "unassigned": "ステージ未設定",
         "unassignedHint": "この求人に存在しないステージにいる候補者です。パイプラインへ移動してください。"
+    },
+    "appForm": {
+        "title": "応募フォーム",
+        "subtitle": "この求人で候補者に尋ねる項目です。公開求人ページのフォーム、および「候補者を追加」から送るフォームに反映されます。",
+        "preview": "プレビュー",
+        "save": "フォームを保存",
+        "saving": "保存中…",
+        "saved": "フォームを保存しました。候補者にはすぐ反映されます。",
+        "saveFailed": "フォームを保存できませんでした。もう一度お試しください。",
+        "addField": "項目を追加",
+        "removeField": "項目を削除",
+        "newField": "新しい項目",
+        "labelPlaceholder": "尋ねる内容（例：LinkedIn プロフィール）",
+        "typeLabel": "項目の種類",
+        "required": "必須",
+        "moveUp": "上へ移動",
+        "moveDown": "下へ移動",
+        "needOneField": "フォームには少なくとも 1 つの項目が必要です。",
+        "needLabels": "すべての項目に名称が必要です。",
+        "emptyTitle": "項目がありません",
+        "emptyDesc": "候補者が入力できるよう項目を追加してください。",
+        "footnote": "変更は新しい応募から適用されます。既存の応募者の回答はそのまま残ります。",
+        "type": {
+            "text": "テキスト",
+            "email": "メール",
+            "number": "数値",
+            "boolean": "はい / いいえ",
+            "file": "ファイル"
+        }
     }
 }

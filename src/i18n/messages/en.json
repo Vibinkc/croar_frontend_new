@@ -3030,7 +3030,8 @@
         "tabNotes": "Notes",
         "tabAttachments": "Attachments",
         "tabReports": "Reports",
-        "tabCandidates": "Candidates"
+        "tabCandidates": "Candidates",
+        "tabAppForm": "Application form"
     },
     "sourcingIndex": {
         "assistantGreeting": "Hello! I am your AI Sourcing Assistant. Tell me who you're looking for, e.g., 'Find me React Engineers on GitHub'.",
@@ -5062,7 +5063,7 @@
         "searchFirstHint": "Search first — it keeps one person to one record.",
         "tabSearch": "Search",
         "tabUpload": "Upload CV",
-        "tabInvite": "Invite",
+        "tabInvite": "Send form",
         "cvDrop": "Drop a CV here, or click to browse",
         "cvHint": "PDF, DOC, DOCX, RTF or TXT. Up to 20 MB. We read it and create the candidate for you.",
         "cvReading": "Reading the CV…",
@@ -5084,7 +5085,13 @@
         "linkCopied": "Apply link copied",
         "copy": "Copy",
         "uploadHint": "The CV is parsed and scored against this job.",
-        "inviteHint": "Invites are recorded in this job's sourcing funnel."
+        "inviteHint": "Invites are recorded in this job's sourcing funnel.",
+        "formIntro": "Email this job's own application form to anyone — in your talent pool or not. They fill it in themselves and land in this pipeline.",
+        "formNamePlaceholder": "Their name (optional, used in the greeting)",
+        "formSend": "Send form",
+        "formSent": "Application form sent to {email}",
+        "formSentTest": "Test mode — the form was sent to {email} instead of the real address",
+        "formSendFailed": "Could not send the form. Check the mail settings and try again."
     },
     "jobBoard": {
         "emptyTitle": "No candidates on this job yet",
@@ -5099,5 +5106,34 @@
         "unnamed": "Unnamed candidate",
         "unassigned": "Not in a stage",
         "unassignedHint": "These candidates sit on a stage this job no longer has. Move them into the pipeline."
+    },
+    "appForm": {
+        "title": "Application form",
+        "subtitle": "What this job asks a candidate for. This is the form they see on the public job page and the one emailed from Add candidate.",
+        "preview": "Preview",
+        "save": "Save form",
+        "saving": "Saving…",
+        "saved": "Form saved. Candidates will see it straight away.",
+        "saveFailed": "Could not save the form. Try again.",
+        "addField": "Add field",
+        "removeField": "Remove field",
+        "newField": "New field",
+        "labelPlaceholder": "What to ask for, e.g. LinkedIn profile",
+        "typeLabel": "Field type",
+        "required": "Required",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "needOneField": "A form needs at least one field.",
+        "needLabels": "Every field needs a label.",
+        "emptyTitle": "This form has no fields",
+        "emptyDesc": "Add at least one so candidates have something to fill in.",
+        "footnote": "Changes apply to new applications. People who already applied keep the answers they gave.",
+        "type": {
+            "text": "Text",
+            "email": "Email",
+            "number": "Number",
+            "boolean": "Yes / No",
+            "file": "File upload"
+        }
     }
 }

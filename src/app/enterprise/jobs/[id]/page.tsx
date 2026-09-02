@@ -30,6 +30,7 @@ import JobReportsTab from "@/components/enterprise/JobReportsTab";
 import JobSourcingTab, { type SourcingDestination } from "@/components/enterprise/JobSourcingTab";
 import JobPipelineBoard from "@/components/enterprise/JobPipelineBoard";
 import AddCandidateModal from "@/components/enterprise/AddCandidateModal";
+import JobApplicationFormTab, { type ApplicationField } from "@/components/enterprise/JobApplicationFormTab";
 
 interface JobStage {
     id: number;
@@ -82,6 +83,7 @@ interface Job {
     customer?: string;
     metrics?: JobMetrics;
     stages?: JobStage[];
+    application_fields?: { id: string; label: string; type: string; icon: string; is_required: boolean }[];
     owner?: Member | null;
     collaborators?: Member[];
     last_viewed_at?: string | null;
@@ -98,6 +100,7 @@ const STATIC_LEADING_TABS = [
 // actually lives in — sit near the front instead of being pushed past nine other tabs.
 const STATIC_TRAILING_TABS = [
     { id: "team", label: "Team", count: undefined },
+    { id: "app_form", label: "Application form", count: undefined },
     { id: "candidate_bank", label: "AI Recommendations", count: undefined },
     { id: "sourcing", label: "Sourcing", count: undefined },
     { id: "activities", label: "Activities", count: undefined },
@@ -551,6 +554,7 @@ export default function JobDetailPage() {
                                     overview: tr("jobDetail.tabOverview"),
                                     info: tr("jobDetail.tabInfo"),
                                     team: tr("jobDetail.tabTeam"),
+                                    app_form: tr("jobDetail.tabAppForm"),
                                     candidate_bank: tr("jobDetail.tabRecommendations"),
                                     sourcing: tr("jobDetail.tabSourcing"),
                                     activities: tr("jobDetail.tabActivities"),
@@ -1115,6 +1119,14 @@ export default function JobDetailPage() {
                                 onAssigned={fetchJobDetails}
                             />
                         </div>
+                    )}
+
+                    {activeTab === "app_form" && (
+                        <JobApplicationFormTab
+                            jobId={String(id)}
+                            fields={(job.application_fields || []) as ApplicationField[]}
+                            onSaved={fetchJobDetails}
+                        />
                     )}
 
                     {activeTab === "activities" && <JobActivitiesTab jobId={String(id)} />}

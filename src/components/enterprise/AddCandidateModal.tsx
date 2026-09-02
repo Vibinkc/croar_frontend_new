@@ -65,6 +65,7 @@ export default function AddCandidateModal({
     const [isDragging, setIsDragging] = useState(false);
     const [uploadResult, setUploadResult] = useState<{ full_name: string; email?: string; match_score?: number; created_candidate: boolean; already_on_job: boolean } | null>(null);
     const [inviteEmail, setInviteEmail] = useState("");
+    const [inviteName, setInviteName] = useState("");
     const [isInviting, setIsInviting] = useState(false);
     const [inviteDone, setInviteDone] = useState("");
     const applyLink = typeof window !== "undefined" ? `${window.location.origin}/jobs/${jobId}` : "";
@@ -101,6 +102,7 @@ export default function AddCandidateModal({
         setMode("search");
         setUploadResult(null);
         setInviteEmail("");
+        setInviteName("");
         setInviteDone("");
         void search("");
         const t = setTimeout(() => inputRef.current?.focus(), 120);
@@ -164,39 +166,34 @@ export default function AddCandidateModal({
         }
     };
 
-    // Invite works off the pool: we look the email up, and only send if we have that person.
-    // Anyone else gets the apply link to send themselves, which is honest about what the
-    // backend can actually do rather than pretending an email went out.
-    const sendInvite = async () => {
-        const email = inviteEmail.trim().toLowerCase();
+    // Sends the job's OWN application form (the fields configured on the job) as an apply link.
+    // Works for anyone, in the pool or not — they fill it in themselves and arrive in the
+    // pipeline as a normal applicant.
+    const sendForm = async () => {
+        const email = inviteEmail.trim();
         if (!email) return;
         setIsInviting(true);
         setError("");
         setInviteDone("");
         try {
-            const url = new URL(`${BACKEND_URL}/api/v1/enterprise/candidates/`);
-            url.searchParams.set("q", email);
-            url.searchParams.set("page_size", "10");
-            const found = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` } });
-            const data = found.ok ? await found.json() : null;
-            const list: PoolCandidate[] = Array.isArray(data) ? data : data?.items || [];
-            const match = list.find(c => (c.email || "").toLowerCase() === email);
-            if (!match) {
-                setError(tr("addCandidate.inviteNotInPool"));
-                return;
-            }
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/invite-candidate`, {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/send-form`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ candidate_id: match.id }),
+                body: JSON.stringify({ email, name: inviteName.trim() || null }),
             });
             const payload = await res.json().catch(() => null);
             if (!res.ok) throw new Error(payload?.detail || String(res.status));
-            setInviteDone(tr("addCandidate.inviteSent", { email }));
+            if (!payload?.sent) throw new Error(tr("addCandidate.formSendFailed"));
+            setInviteDone(
+                payload.test_mode
+                    ? tr("addCandidate.formSentTest", { email: payload.test_email || "" })
+                    : tr("addCandidate.formSent", { email })
+            );
             setInviteEmail("");
+            setInviteName("");
             onAdded();
         } catch (e) {
-            setError(e instanceof Error && e.message ? e.message : tr("addCandidate.inviteFailed"));
+            setError(e instanceof Error && e.message ? e.message : tr("addCandidate.formSendFailed"));
         } finally {
             setIsInviting(false);
         }
@@ -406,23 +403,33 @@ export default function AddCandidateModal({
                             {mode === "invite" && (
                                 <div className="p-6 space-y-4">
                                     <p className="text-[12.5px] text-[#6B6F76] leading-relaxed">
-                                        {tr("addCandidate.inviteIntro")}
+                                        {tr("addCandidate.formIntro")}
                                     </p>
-                                    <div className="flex gap-2">
-                                        <div className="flex-1">
-                                            <Input
-                                                icon="mail"
-                                                type="email"
-                                                value={inviteEmail}
-                                                onChange={e => setInviteEmail(e.target.value)}
-                                                onKeyDown={e => { if (e.key === "Enter") void sendInvite(); }}
-                                                placeholder={tr("addCandidate.invitePlaceholder")}
-                                                aria-label={tr("addCandidate.invitePlaceholder")}
-                                            />
+                                    <div className="space-y-2.5">
+                                        <Input
+                                            icon="person"
+                                            type="text"
+                                            value={inviteName}
+                                            onChange={e => setInviteName(e.target.value)}
+                                            placeholder={tr("addCandidate.formNamePlaceholder")}
+                                            aria-label={tr("addCandidate.formNamePlaceholder")}
+                                        />
+                                        <div className="flex gap-2">
+                                            <div className="flex-1">
+                                                <Input
+                                                    icon="mail"
+                                                    type="email"
+                                                    value={inviteEmail}
+                                                    onChange={e => setInviteEmail(e.target.value)}
+                                                    onKeyDown={e => { if (e.key === "Enter") void sendForm(); }}
+                                                    placeholder={tr("addCandidate.invitePlaceholder")}
+                                                    aria-label={tr("addCandidate.invitePlaceholder")}
+                                                />
+                                            </div>
+                                            <Button onClick={sendForm} disabled={!inviteEmail.trim() || isInviting}>
+                                                {isInviting ? tr("addCandidate.inviteSending") : tr("addCandidate.formSend")}
+                                            </Button>
                                         </div>
-                                        <Button onClick={sendInvite} disabled={!inviteEmail.trim() || isInviting}>
-                                            {isInviting ? tr("addCandidate.inviteSending") : tr("addCandidate.inviteSend")}
-                                        </Button>
                                     </div>
 
                                     {inviteDone && (

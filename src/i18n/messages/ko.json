@@ -3030,7 +3030,8 @@
         "tabNotes": "메모",
         "tabAttachments": "첨부 파일",
         "tabReports": "리포트",
-        "tabCandidates": "후보자"
+        "tabCandidates": "후보자",
+        "tabAppForm": "지원서 양식"
     },
     "sourcingIndex": {
         "assistantGreeting": "안녕하세요! 저는 AI 소싱 어시스턴트입니다. 찾으시는 인재를 말씀해 주세요. 예: 'GitHub에서 React 엔지니어를 찾아줘'.",
@@ -5062,7 +5063,7 @@
         "searchFirstHint": "먼저 검색하세요 — 중복 등록을 방지합니다.",
         "tabSearch": "검색",
         "tabUpload": "이력서 업로드",
-        "tabInvite": "초대",
+        "tabInvite": "양식 보내기",
         "cvDrop": "이력서를 끌어다 놓거나 클릭하여 선택하세요",
         "cvHint": "PDF, DOC, DOCX, RTF, TXT. 최대 20MB. 내용을 읽어 후보자를 자동 생성합니다.",
         "cvReading": "이력서를 읽는 중…",
@@ -5084,7 +5085,13 @@
         "linkCopied": "지원 링크를 복사했습니다",
         "copy": "복사",
         "uploadHint": "이력서를 분석해 이 채용 건 기준으로 점수를 매깁니다.",
-        "inviteHint": "초대 내역은 이 채용 건의 소싱 퍼널에 기록됩니다."
+        "inviteHint": "초대 내역은 이 채용 건의 소싱 퍼널에 기록됩니다.",
+        "formIntro": "이 채용 건의 지원서 양식을 누구에게나 이메일로 보냅니다. 인재 풀에 없어도 됩니다. 본인이 작성하면 이 파이프라인에 들어옵니다.",
+        "formNamePlaceholder": "이름 (선택, 인사말에 사용)",
+        "formSend": "양식 보내기",
+        "formSent": "{email}(으)로 지원서 양식을 보냈습니다",
+        "formSentTest": "테스트 모드 — 실제 주소 대신 {email}(으)로 전송했습니다",
+        "formSendFailed": "양식을 보내지 못했습니다. 메일 설정을 확인 후 다시 시도하세요."
     },
     "jobBoard": {
         "emptyTitle": "아직 이 채용 건에 후보자가 없습니다",
@@ -5099,5 +5106,34 @@
         "unnamed": "이름 없음",
         "unassigned": "단계 미지정",
         "unassignedHint": "이 채용 건에 더 이상 없는 단계에 있는 후보자입니다. 파이프라인으로 이동시키세요."
+    },
+    "appForm": {
+        "title": "지원서 양식",
+        "subtitle": "이 채용 건에서 후보자에게 요청하는 항목입니다. 공개 채용 페이지와 '후보자 추가'에서 보내는 양식에 그대로 적용됩니다.",
+        "preview": "미리보기",
+        "save": "양식 저장",
+        "saving": "저장 중…",
+        "saved": "양식을 저장했습니다. 후보자에게 즉시 반영됩니다.",
+        "saveFailed": "양식을 저장하지 못했습니다. 다시 시도하세요.",
+        "addField": "항목 추가",
+        "removeField": "항목 삭제",
+        "newField": "새 항목",
+        "labelPlaceholder": "요청할 내용 (예: LinkedIn 프로필)",
+        "typeLabel": "항목 유형",
+        "required": "필수",
+        "moveUp": "위로 이동",
+        "moveDown": "아래로 이동",
+        "needOneField": "양식에는 최소 한 개의 항목이 필요합니다.",
+        "needLabels": "모든 항목에 이름이 필요합니다.",
+        "emptyTitle": "항목이 없습니다",
+        "emptyDesc": "후보자가 작성할 수 있도록 항목을 추가하세요.",
+        "footnote": "변경 사항은 새 지원부터 적용됩니다. 기존 지원자의 답변은 그대로 유지됩니다.",
+        "type": {
+            "text": "텍스트",
+            "email": "이메일",
+            "number": "숫자",
+            "boolean": "예 / 아니오",
+            "file": "파일 업로드"
+        }
     }
 }
