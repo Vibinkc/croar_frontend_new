@@ -165,8 +165,6 @@ export default function AssessmentIntegrations() {
     }, [items]);
 
     const connectedCount = items.filter(i => i.connected).length;
-    // Identical across the category, so it is shown once rather than on every card.
-    const shared = items[0];
 
     return (
         <div className="space-y-6">
@@ -176,27 +174,6 @@ export default function AssessmentIntegrations() {
                     {tr("integrations.assessSubtitle", { connected: connectedCount, total: items.length })}
                 </p>
             </div>
-
-            {/* Every assessment tool behaves identically once connected, so this is said once here
-                rather than repeated verbatim on all five cards. */}
-            {!isLoading && shared && (
-                <div className="rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5">
-                        {shared.capabilities.map(c => (
-                            <p key={c} className="text-[11.5px] text-[#4B5057] leading-relaxed flex gap-1.5">
-                                <span className="material-symbols-rounded text-[14px] text-[#15803D] shrink-0 mt-px">check</span>
-                                {c}
-                            </p>
-                        ))}
-                        {shared.limitations.map(l => (
-                            <p key={l} className="text-[11.5px] text-[#8A929E] leading-relaxed flex gap-1.5">
-                                <span className="material-symbols-rounded text-[14px] text-[#B4BAC3] shrink-0 mt-px">remove</span>
-                                {l}
-                            </p>
-                        ))}
-                    </div>
-                </div>
-            )}
 
             {error && (
                 <div className="rounded-[12px] border border-[#F5C6C7] bg-[#FDECEC] px-4 py-3 text-[12.5px] text-[#C0383C]">
@@ -269,8 +246,24 @@ export default function AssessmentIntegrations() {
                                                 )}
                                             </div>
 
+                                            {/* What connecting actually buys, and what it does not. */}
+                                            <ul className="mt-3 space-y-1">
+                                                {it.capabilities.map(c => (
+                                                    <li key={c} className="text-[11.5px] text-[#4B5057] leading-relaxed flex gap-1.5">
+                                                        <span className="material-symbols-rounded text-[14px] text-[#15803D] shrink-0 mt-px">check</span>
+                                                        {c}
+                                                    </li>
+                                                ))}
+                                                {it.limitations.map(l => (
+                                                    <li key={l} className="text-[11.5px] text-[#8A929E] leading-relaxed flex gap-1.5">
+                                                        <span className="material-symbols-rounded text-[14px] text-[#B4BAC3] shrink-0 mt-px">remove</span>
+                                                        {l}
+                                                    </li>
+                                                ))}
+                                            </ul>
+
                                             {it.connected && it.connection?.invite_url && (
-                                                <p className="mt-2.5 pl-[52px] text-[11px] text-[#8A929E] truncate">
+                                                <p className="mt-2.5 text-[11px] text-[#8A929E] truncate">
                                                     {tr("integrations.usingLink")}{" "}
                                                     <span className="text-[#374151]">{it.connection.invite_url}</span>
                                                 </p>
