@@ -2910,8 +2910,6 @@
         "useTemplate": "Use this template",
         "yearsShort": "yrs",
         "roundsShort": "rounds",
-        "createNow": "Create job",
-        "createNowHint": "Create the job now — you can add the application form and interview rounds from the job page.",
         "assessmentAdd": "Add an assessment to this round",
         "assessmentOnRound": "Assessment on this round",
         "assessmentRemove": "Remove",

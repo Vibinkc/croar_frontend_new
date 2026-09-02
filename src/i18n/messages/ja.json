@@ -2910,8 +2910,6 @@
         "useTemplate": "このテンプレートを使用",
         "yearsShort": "年",
         "roundsShort": "ステップ",
-        "createNow": "求人を作成",
-        "createNowHint": "今すぐ作成できます。応募フォームと選考ステップは求人ページから追加できます。",
         "assessmentAdd": "このステップにアセスメントを追加",
         "assessmentOnRound": "このステップのアセスメント",
         "assessmentRemove": "削除",
