@@ -5105,7 +5105,20 @@
         "moveFailed": "후보자를 이동하지 못했습니다. 다시 시도하세요.",
         "unnamed": "이름 없음",
         "unassigned": "단계 미지정",
-        "unassignedHint": "이 채용 건에 더 이상 없는 단계에 있는 후보자입니다. 파이프라인으로 이동시키세요."
+        "unassignedHint": "이 채용 건에 더 이상 없는 단계에 있는 후보자입니다. 파이프라인으로 이동시키세요.",
+        "drop": "탈락 처리",
+        "dropHint": "선발 대상에서 제외하되 보드에는 남겨 둡니다",
+        "restore": "다시 선발 대상으로",
+        "remove": "채용 건에서 제거",
+        "removeHint": "이 채용 건에서만 제외합니다. 인재 풀에는 그대로 남습니다.",
+        "confirmRemove": "이 후보자를 채용 건에서 제거하시겠습니까? 인재 풀에는 남으며 나중에 다시 추가할 수 있습니다.",
+        "dropFailed": "후보자 상태를 변경하지 못했습니다. 다시 시도하세요.",
+        "removeFailed": "후보자를 제거하지 못했습니다. 다시 시도하세요.",
+        "droppedBadge": "탈락",
+        "hiredBadge": "채용됨",
+        "inPipeline": "진행 중 {count}명",
+        "hired": "채용 {count}명",
+        "dropped": "탈락 {count}명"
     },
     "appForm": {
         "title": "지원서 양식",

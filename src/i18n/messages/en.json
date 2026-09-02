@@ -5105,7 +5105,20 @@
         "moveFailed": "Could not move this candidate. Try again.",
         "unnamed": "Unnamed candidate",
         "unassigned": "Not in a stage",
-        "unassignedHint": "These candidates sit on a stage this job no longer has. Move them into the pipeline."
+        "unassignedHint": "These candidates sit on a stage this job no longer has. Move them into the pipeline.",
+        "drop": "Drop",
+        "dropHint": "Out of the running, but kept on the board",
+        "restore": "Put back in the running",
+        "remove": "Remove from job",
+        "removeHint": "Takes them off this job. They stay in your talent pool.",
+        "confirmRemove": "Remove this candidate from the job? They stay in your talent pool, and you can add them back later.",
+        "dropFailed": "Could not update this candidate. Try again.",
+        "removeFailed": "Could not remove this candidate. Try again.",
+        "droppedBadge": "Dropped",
+        "hiredBadge": "Hired",
+        "inPipeline": "{count} in pipeline",
+        "hired": "{count} hired",
+        "dropped": "{count} dropped"
     },
     "appForm": {
         "title": "Application form",

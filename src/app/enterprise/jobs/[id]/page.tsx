@@ -1100,6 +1100,7 @@ export default function JobDetailPage() {
 
                     {activeTab === "candidates" && (
                         <JobPipelineBoard
+                            jobId={String(id)}
                             stages={job.stages || []}
                             applications={applications}
                             onAddCandidate={() => setShowAddCandidate(true)}

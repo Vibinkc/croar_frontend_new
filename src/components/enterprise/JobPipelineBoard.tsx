@@ -18,7 +18,14 @@ export interface BoardApplication {
     current_stage: number;
     ai_match_score?: number;
     applied_at: string;
+    /** Seeded application_statuses: 1 Applied · 5 Hired · 6 Rejected ("dropped"). */
+    status_id?: number;
+    source?: string | null;
 }
+
+/** A dropped candidate stays on the board, greyed, so the job keeps its own history. */
+const STATUS_REJECTED = 6;
+const STATUS_HIRED = 5;
 
 const initials = (name?: string | null) =>
     (name || "?")
@@ -49,6 +56,7 @@ const scoreTone = (s?: number) => {
  * else, rather than quietly skipping them.
  */
 export default function JobPipelineBoard({
+    jobId,
     stages,
     applications,
     onAddCandidate,
@@ -56,6 +64,7 @@ export default function JobPipelineBoard({
     onPostToBoards,
     onChanged,
 }: {
+    jobId: string;
     stages: BoardStage[];
     applications: BoardApplication[];
     onAddCandidate: () => void;
@@ -79,6 +88,13 @@ export default function JobPipelineBoard({
         [stages, applications]
     );
 
+    // Hired / dropped / still-live, mirroring the three outcomes a job actually has.
+    const counts = useMemo(() => {
+        const dropped = applications.filter(a => a.status_id === STATUS_REJECTED).length;
+        const hired = applications.filter(a => a.status_id === STATUS_HIRED).length;
+        return { dropped, hired, inPipeline: applications.length - dropped - hired };
+    }, [applications]);
+
     // Applications sitting on a stage the job no longer has. Shown in their own column rather
     // than vanishing — otherwise the board's totals silently disagree with the job's counts.
     const orphaned = useMemo(() => {
@@ -100,6 +116,27 @@ export default function JobPipelineBoard({
             onChanged();
         } catch {
             setError(tr("jobBoard.moveFailed"));
+        } finally {
+            setMovingId(null);
+        }
+    };
+
+    /** Drop = out of the running but still on the board. Remove = off the job entirely. */
+    const act = async (applicationId: string, what: "drop" | "restore" | "remove") => {
+        if (what === "remove" && !window.confirm(tr("jobBoard.confirmRemove"))) return;
+        setMovingId(applicationId);
+        setMenuFor(null);
+        setError("");
+        try {
+            const base = `${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/applications/${applicationId}`;
+            const res = await fetch(what === "remove" ? base : `${base}/${what}`, {
+                method: what === "remove" ? "DELETE" : "POST",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            onChanged();
+        } catch {
+            setError(tr(what === "remove" ? "jobBoard.removeFailed" : "jobBoard.dropFailed"));
         } finally {
             setMovingId(null);
         }
@@ -133,12 +170,16 @@ export default function JobPipelineBoard({
         );
     }
 
-    const renderCard = (app: BoardApplication, stageId: number) => (
+    const renderCard = (app: BoardApplication, stageId: number) => {
+        const dropped = app.status_id === STATUS_REJECTED;
+        const hired = app.status_id === STATUS_HIRED;
+        return (
         <div
             key={app.id}
             className={cn(
                 "relative bg-white border border-[#E8EAED] rounded-[11px] p-3 transition-shadow hover:shadow-[0_4px_14px_rgba(15,23,42,0.07)]",
-                movingId === app.id && "opacity-50"
+                movingId === app.id && "opacity-50",
+                dropped && "opacity-60 bg-[#FBFBFC] border-dashed"
             )}
         >
             <div className="flex items-start gap-2.5">
@@ -182,6 +223,36 @@ export default function JobPipelineBoard({
                                             {s.name}
                                         </button>
                                     ))}
+
+                                <div className="my-1.5 border-t border-[#F0F0F1]" />
+
+                                {dropped ? (
+                                    <button
+                                        onClick={() => act(app.id, "restore")}
+                                        className="w-full text-left px-3 py-2 text-[12.5px] font-semibold text-[#15803D] hover:bg-[#E6F4EA] transition-colors flex items-center gap-2"
+                                    >
+                                        <span className="material-symbols-rounded text-[16px]">undo</span>
+                                        {tr("jobBoard.restore")}
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => act(app.id, "drop")}
+                                        className="w-full text-left px-3 py-2 text-[12.5px] text-[#374151] hover:bg-[#FEF3E2] hover:text-[#B45309] transition-colors flex items-center gap-2"
+                                        title={tr("jobBoard.dropHint")}
+                                    >
+                                        <span className="material-symbols-rounded text-[16px]">do_not_disturb_on</span>
+                                        {tr("jobBoard.drop")}
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={() => act(app.id, "remove")}
+                                    className="w-full text-left px-3 py-2 text-[12.5px] text-[#374151] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors flex items-center gap-2"
+                                    title={tr("jobBoard.removeHint")}
+                                >
+                                    <span className="material-symbols-rounded text-[16px]">remove</span>
+                                    {tr("jobBoard.remove")}
+                                </button>
                             </div>
                         </>
                     )}
@@ -189,6 +260,16 @@ export default function JobPipelineBoard({
             </div>
 
             <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
+                {dropped && (
+                    <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#FEF3E2] text-[#B45309]">
+                        {tr("jobBoard.droppedBadge")}
+                    </span>
+                )}
+                {hired && (
+                    <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#E6F4EA] text-[#15803D]">
+                        {tr("jobBoard.hiredBadge")}
+                    </span>
+                )}
                 {typeof app.ai_match_score === "number" && (
                     <span
                         className={cn(
@@ -210,7 +291,8 @@ export default function JobPipelineBoard({
                 ))}
             </div>
         </div>
-    );
+        );
+    };
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -221,9 +303,21 @@ export default function JobPipelineBoard({
             )}
 
             <div className="flex items-center justify-between gap-3 mb-4">
-                <p className="text-[12.5px] text-[#8A929E]">
-                    {tr("jobBoard.summary", { count: applications.length, stages: stages.length })}
-                </p>
+                <div className="flex flex-wrap items-center gap-2 text-[11.5px] font-semibold">
+                    <span className="px-2.5 py-1 rounded-full bg-[#ECEBFB] text-[#5B53E0]">
+                        {tr("jobBoard.inPipeline", { count: counts.inPipeline })}
+                    </span>
+                    {counts.hired > 0 && (
+                        <span className="px-2.5 py-1 rounded-full bg-[#E6F4EA] text-[#15803D]">
+                            {tr("jobBoard.hired", { count: counts.hired })}
+                        </span>
+                    )}
+                    {counts.dropped > 0 && (
+                        <span className="px-2.5 py-1 rounded-full bg-[#FEF3E2] text-[#B45309]">
+                            {tr("jobBoard.dropped", { count: counts.dropped })}
+                        </span>
+                    )}
+                </div>
                 <Button size="sm" onClick={onAddCandidate}>
                     <span className="material-symbols-rounded text-[17px]">person_add</span>
                     {tr("jobBoard.addCandidate")}
