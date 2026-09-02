@@ -22,7 +22,7 @@ import {
 } from 'recharts';
 import { jetbrainsMono, Button, Card, Badge, StatCard, StatGrid, Input, PageHelp } from "@/components/ds";
 import JobOwnershipPanel, { type Member } from "@/components/enterprise/JobOwnershipPanel";
-import PublishJobModal from "@/components/enterprise/PublishJobModal";
+import JobPostingPanel from "@/components/enterprise/JobPostingPanel";
 import JobActivitiesTab from "@/components/enterprise/JobActivitiesTab";
 import JobAttachmentsTab from "@/components/enterprise/JobAttachmentsTab";
 import JobNotesTab from "@/components/enterprise/JobNotesTab";
@@ -139,8 +139,7 @@ export default function JobDetailPage() {
     // ever opened, so the child components report their count up as they load.
     // The Sourcing tab opens on a hub of channels; "profile" is the Profile Sourcing panel the
     // hub links into. Kept here rather than in JobSourcingTab so the panel below stays put.
-    const [sourcingView, setSourcingView] = useState<"hub" | "profile">("hub");
-    const [showPublish, setShowPublish] = useState(false);
+    const [sourcingView, setSourcingView] = useState<"hub" | "profile" | "posting">("hub");
     const [showAddCandidate, setShowAddCandidate] = useState(false);
     const [noteCount, setNoteCount] = useState<number | undefined>(undefined);
     const [attachmentCount, setAttachmentCount] = useState<number | undefined>(undefined);
@@ -921,11 +920,29 @@ export default function JobDetailPage() {
                             isPublished={job.status_id === 2}
                             onNavigate={(destination: SourcingDestination) => {
                                 if (destination === "sourcing_hub") setSourcingView("profile");
-                                else if (destination === "job_boards") setShowPublish(true);
+                                else if (destination === "job_boards") setSourcingView("posting");
                                 else if (destination === "recommendations") setActiveTab("candidate_bank");
                                 else window.open(`${window.location.origin}/jobs/${id}`, "_blank", "noopener");
                             }}
                         />
+                    )}
+
+                    {activeTab === "sourcing" && sourcingView === "posting" && (
+                        <>
+                            <button
+                                onClick={() => setSourcingView("hub")}
+                                className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors mb-4"
+                            >
+                                <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                                {tr("jobSourcing.backToChannels")}
+                            </button>
+                            <JobPostingPanel
+                                jobId={String(id)}
+                                jobTitle={job.title}
+                                token={token}
+                                onPublished={fetchJobDetails}
+                            />
+                        </>
                     )}
 
                     {activeTab === "sourcing" && sourcingView === "profile" && (
@@ -1108,7 +1125,7 @@ export default function JobDetailPage() {
                             applications={applications}
                             onAddCandidate={() => setShowAddCandidate(true)}
                             onSourceCandidates={() => { setSourcingView("profile"); setActiveTab("sourcing"); }}
-                            onPostToBoards={() => setShowPublish(true)}
+                            onPostToBoards={() => { setSourcingView("posting"); setActiveTab("sourcing"); }}
                             onChanged={() => { fetchApplications(); fetchJobDetails(); }}
                         />
                     )}
@@ -1252,13 +1269,6 @@ export default function JobDetailPage() {
                 onAdded={() => { fetchApplications(); fetchJobDetails(); }}
             />
 
-            <PublishJobModal
-                isOpen={showPublish}
-                onClose={() => setShowPublish(false)}
-                jobId={String(id)}
-                jobTitle={job.title}
-                token={token}
-            />
         </div>
     );
 }
