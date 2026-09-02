@@ -3031,7 +3031,8 @@
         "tabAttachments": "添付ファイル",
         "tabReports": "レポート",
         "tabCandidates": "候補者",
-        "tabAppForm": "応募フォーム"
+        "tabAppForm": "応募フォーム",
+        "tabRounds": "選考ステップ"
     },
     "sourcingIndex": {
         "assistantGreeting": "こんにちは！私はAIソーシングアシスタントです。お探しの人材を教えてください。例：「GitHubでReactエンジニアを探して」。",
@@ -5147,6 +5148,43 @@
             "number": "数値",
             "boolean": "はい / いいえ",
             "file": "ファイル"
+        }
+    },
+    "jobRounds": {
+        "title": "選考ステップ",
+        "subtitle": "各ステップで実際に何を行うかを設定します。アセスメントを紐付けて Croar に設問を作成させることも、手動レビューのままにすることもできます。",
+        "loading": "ステップを読み込み中…",
+        "loadFailed": "この求人のステップを読み込めませんでした。",
+        "noStages": "ステップがまだありません。「求人を編集」から追加してください。",
+        "addAssessment": "アセスメントを追加",
+        "attach": "アセスメントを紐付け",
+        "saving": "保存中…",
+        "createFailed": "アセスメントを紐付けできませんでした。もう一度お試しください。",
+        "removeAssessment": "アセスメントを削除",
+        "confirmRemove": "このステップからアセスメントを削除しますか？",
+        "removeFailed": "アセスメントを削除できませんでした。",
+        "generate": "AI で設問を作成",
+        "generating": "作成中…",
+        "generateFailed": "設問を作成できませんでした。AI クレジットを確認してください。",
+        "questionsReady": "設問 {n} 問を用意済み",
+        "topicRequired": "先にアセスメントのトピックを入力してください。",
+        "typeLabel": "アセスメント種別",
+        "topicLabel": "トピック",
+        "topicPlaceholder": "例：React と TypeScript の基礎",
+        "countLabel": "設問数",
+        "durationLabel": "制限時間（分）",
+        "criteriaLabel": "合格基準",
+        "criteriaPlaceholder": "例：60% 以上",
+        "meta": "設問 {count} 問 · {minutes} 分 · {criteria}",
+        "hasInterview": "面接",
+        "hasEmail": "メール",
+        "moreTitle": "面接日程とステップ別メール",
+        "moreHint": "面接やメールの自動化が設定済みのステップは上にバッジ表示されます。設定は自動化メニューで行い、アセスメントと同じステップトリガーで実行されます。",
+        "type": {
+            "APTITUDE": "適性",
+            "CODING": "コーディング",
+            "BOTH": "適性 + コーディング",
+            "VIDEO": "動画回答"
         }
     }
 }

@@ -31,6 +31,7 @@ import JobSourcingTab, { type SourcingDestination } from "@/components/enterpris
 import JobPipelineBoard from "@/components/enterprise/JobPipelineBoard";
 import AddCandidateModal from "@/components/enterprise/AddCandidateModal";
 import JobApplicationFormTab, { type ApplicationField } from "@/components/enterprise/JobApplicationFormTab";
+import JobRoundsTab from "@/components/enterprise/JobRoundsTab";
 
 interface JobStage {
     id: number;
@@ -101,6 +102,7 @@ const STATIC_LEADING_TABS = [
 const STATIC_TRAILING_TABS = [
     { id: "team", label: "Team", count: undefined },
     { id: "app_form", label: "Application form", count: undefined },
+    { id: "rounds", label: "Rounds", count: undefined },
     { id: "candidate_bank", label: "AI Recommendations", count: undefined },
     { id: "sourcing", label: "Sourcing", count: undefined },
     { id: "activities", label: "Activities", count: undefined },
@@ -555,6 +557,7 @@ export default function JobDetailPage() {
                                     info: tr("jobDetail.tabInfo"),
                                     team: tr("jobDetail.tabTeam"),
                                     app_form: tr("jobDetail.tabAppForm"),
+                                    rounds: tr("jobDetail.tabRounds"),
                                     candidate_bank: tr("jobDetail.tabRecommendations"),
                                     sourcing: tr("jobDetail.tabSourcing"),
                                     activities: tr("jobDetail.tabActivities"),
@@ -1128,6 +1131,10 @@ export default function JobDetailPage() {
                             fields={(job.application_fields || []) as ApplicationField[]}
                             onSaved={fetchJobDetails}
                         />
+                    )}
+
+                    {activeTab === "rounds" && (
+                        <JobRoundsTab jobId={String(id)} stages={job.stages || []} onChanged={fetchJobDetails} />
                     )}
 
                     {activeTab === "activities" && <JobActivitiesTab jobId={String(id)} />}

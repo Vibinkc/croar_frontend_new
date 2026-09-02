@@ -3031,7 +3031,8 @@
         "tabAttachments": "첨부 파일",
         "tabReports": "리포트",
         "tabCandidates": "후보자",
-        "tabAppForm": "지원서 양식"
+        "tabAppForm": "지원서 양식",
+        "tabRounds": "면접 단계"
     },
     "sourcingIndex": {
         "assistantGreeting": "안녕하세요! 저는 AI 소싱 어시스턴트입니다. 찾으시는 인재를 말씀해 주세요. 예: 'GitHub에서 React 엔지니어를 찾아줘'.",
@@ -5147,6 +5148,43 @@
             "number": "숫자",
             "boolean": "예 / 아니오",
             "file": "파일 업로드"
+        }
+    },
+    "jobRounds": {
+        "title": "면접 단계",
+        "subtitle": "각 단계에서 실제로 무엇을 할지 설정합니다. 평가를 연결하고 Croar가 문항을 작성하도록 하거나, 수동 검토 단계로 남겨둘 수 있습니다.",
+        "loading": "단계를 불러오는 중…",
+        "loadFailed": "이 채용 건의 단계를 불러오지 못했습니다.",
+        "noStages": "아직 단계가 없습니다. '채용 건 수정'에서 추가하세요.",
+        "addAssessment": "평가 추가",
+        "attach": "평가 연결",
+        "saving": "저장 중…",
+        "createFailed": "평가를 연결하지 못했습니다. 다시 시도하세요.",
+        "removeAssessment": "평가 삭제",
+        "confirmRemove": "이 단계에서 평가를 삭제하시겠습니까?",
+        "removeFailed": "평가를 삭제하지 못했습니다.",
+        "generate": "AI로 문항 작성",
+        "generating": "작성 중…",
+        "generateFailed": "문항을 작성하지 못했습니다. AI 크레딧을 확인 후 다시 시도하세요.",
+        "questionsReady": "문항 {n}개 준비됨",
+        "topicRequired": "먼저 평가 주제를 입력하세요.",
+        "typeLabel": "평가 유형",
+        "topicLabel": "주제",
+        "topicPlaceholder": "예: React 및 TypeScript 기초",
+        "countLabel": "문항 수",
+        "durationLabel": "제한 시간 (분)",
+        "criteriaLabel": "합격 기준",
+        "criteriaPlaceholder": "예: 60% 이상",
+        "meta": "문항 {count}개 · {minutes}분 · {criteria}",
+        "hasInterview": "면접",
+        "hasEmail": "이메일",
+        "moreTitle": "면접 일정 및 단계별 이메일",
+        "moreHint": "면접이나 이메일 자동화가 연결된 단계는 위에 표시됩니다. 해당 설정은 자동화 메뉴에서 하며, 평가와 동일한 단계 트리거로 실행됩니다.",
+        "type": {
+            "APTITUDE": "적성",
+            "CODING": "코딩",
+            "BOTH": "적성 + 코딩",
+            "VIDEO": "영상 답변"
         }
     }
 }

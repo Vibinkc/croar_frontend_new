@@ -3031,7 +3031,8 @@
         "tabAttachments": "Attachments",
         "tabReports": "Reports",
         "tabCandidates": "Candidates",
-        "tabAppForm": "Application form"
+        "tabAppForm": "Application form",
+        "tabRounds": "Rounds"
     },
     "sourcingIndex": {
         "assistantGreeting": "Hello! I am your AI Sourcing Assistant. Tell me who you're looking for, e.g., 'Find me React Engineers on GitHub'.",
@@ -5147,6 +5148,43 @@
             "number": "Number",
             "boolean": "Yes / No",
             "file": "File upload"
+        }
+    },
+    "jobRounds": {
+        "title": "Interview rounds",
+        "subtitle": "What actually happens at each round. Attach an assessment and let Croar write the questions, or leave a round as a manual review.",
+        "loading": "Loading rounds…",
+        "loadFailed": "Could not load this job's rounds.",
+        "noStages": "This job has no rounds yet. Add them from Edit job.",
+        "addAssessment": "Add an assessment",
+        "attach": "Attach assessment",
+        "saving": "Saving…",
+        "createFailed": "Could not attach the assessment. Try again.",
+        "removeAssessment": "Remove assessment",
+        "confirmRemove": "Remove the assessment from this round?",
+        "removeFailed": "Could not remove the assessment.",
+        "generate": "Write questions with AI",
+        "generating": "Writing…",
+        "generateFailed": "Could not write the questions. Check the AI credits and try again.",
+        "questionsReady": "{n} questions ready",
+        "topicRequired": "Give the assessment a topic first.",
+        "typeLabel": "Assessment type",
+        "topicLabel": "Topic",
+        "topicPlaceholder": "e.g. React and TypeScript fundamentals",
+        "countLabel": "Questions",
+        "durationLabel": "Time limit (minutes)",
+        "criteriaLabel": "Pass criteria",
+        "criteriaPlaceholder": "e.g. 60% to pass",
+        "meta": "{count} questions · {minutes} min · {criteria}",
+        "hasInterview": "Interview",
+        "hasEmail": "Email",
+        "moreTitle": "Interview scheduling and stage emails",
+        "moreHint": "Rounds that already have an interview or an email automation are badged above. Those are set up in the Automation section, and fire from the same stage triggers as assessments.",
+        "type": {
+            "APTITUDE": "Aptitude",
+            "CODING": "Coding",
+            "BOTH": "Aptitude + Coding",
+            "VIDEO": "Video answers"
         }
     }
 }
