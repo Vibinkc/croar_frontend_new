@@ -5275,6 +5275,9 @@
         "feedIndeed": "Indeed XML feed (all your live jobs)",
         "feedGoogle": "This job's schema.org markup",
         "copy": "Copy",
-        "copied": "Copied"
+        "copied": "Copied",
+        "notReachableTitle": "Boards can't reach this site yet",
+        "notReachableDesc": "Your public address is {url}. Crawlers can't fetch that, so a job will show as Listed here but never appear on a board. Set FRONTEND_URL to your real domain in production.",
+        "notSecure": "Your public address ({url}) isn't HTTPS. Google for Jobs requires it, and most boards will refuse to crawl."
     }
 }

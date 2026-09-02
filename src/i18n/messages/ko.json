@@ -5275,6 +5275,9 @@
         "feedIndeed": "Indeed XML 피드 (게시 중인 전체 채용 건)",
         "feedGoogle": "이 채용 건의 schema.org 마크업",
         "copy": "복사",
-        "copied": "복사됨"
+        "copied": "복사됨",
+        "notReachableTitle": "채용 사이트가 아직 이 사이트에 접근할 수 없습니다",
+        "notReachableDesc": "공개 주소가 {url}입니다. 크롤러가 접근할 수 없어 여기서는 '게시됨'으로 표시돼도 실제 채용 사이트에는 나타나지 않습니다. 운영 환경에서 FRONTEND_URL을 실제 도메인으로 설정하세요.",
+        "notSecure": "공개 주소({url})가 HTTPS가 아닙니다. Google for Jobs는 HTTPS를 요구하며 대부분의 사이트가 크롤링을 거부합니다."
     }
 }

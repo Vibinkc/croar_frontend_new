@@ -102,6 +102,11 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
             });
             const data = await res.json();
             const list: Portal[] = data.portals || [];
+            setReach({
+                base: data.public_base_url || "",
+                reachable: !!data.public_url_reachable,
+                secure: !!data.public_url_secure,
+            });
             setPortals(list);
             // Default-select the truly self-serve portals (structured + feed).
             // Pre-select only what will actually go out. Ticking a board that needs credentials
@@ -135,6 +140,8 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
     const feedUrl = `${BACKEND_URL}/api/v1/jobs/feed/indeed.xml`;
     const jsonLdUrl = `${BACKEND_URL}/api/v1/jobs/${jobId}/jobposting.jsonld`;
     const [copied, setCopied] = useState("");
+    // Whether a crawler could actually fetch this site. "LISTED" is meaningless if it cannot.
+    const [reach, setReach] = useState<{ base: string; reachable: boolean; secure: boolean } | null>(null);
     const copy = (value: string, key: string) => {
         void navigator.clipboard?.writeText(value);
         setCopied(key);
@@ -183,6 +190,28 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                 <p className="text-[10.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-0.5">{tr("forms2.targetPosition")}</p>
                 <p className="text-[14px] font-bold text-[#15171C]">{jobTitle}</p>
             </div>
+
+            {/* A board can only list a job it can fetch. Publishing "succeeds" regardless, so
+                without this the page reports LISTED for a URL nothing outside this machine can
+                reach — which is precisely the confusion it caused. */}
+            {reach && !reach.reachable && (
+                <div className="p-3.5 rounded-[12px] border border-[#F3DDBA] bg-[#FEF3E2]">
+                    <p className="text-[12px] font-bold text-[#8A5B08] flex items-center gap-1.5">
+                        <span className="material-symbols-rounded text-[17px]">warning</span>
+                        {tr("publishHub.notReachableTitle")}
+                    </p>
+                    <p className="text-[11.5px] text-[#8A5B08] leading-relaxed mt-1">
+                        {tr("publishHub.notReachableDesc", { url: reach.base || "—" })}
+                    </p>
+                </div>
+            )}
+            {reach && reach.reachable && !reach.secure && (
+                <div className="p-3.5 rounded-[12px] border border-[#F3DDBA] bg-[#FEF3E2]">
+                    <p className="text-[11.5px] text-[#8A5B08] leading-relaxed">
+                        {tr("publishHub.notSecure", { url: reach.base })}
+                    </p>
+                </div>
+            )}
 
             {/* Where it already went. postings comes back on the job and had never
                 been rendered, so a published job looked identical to an unpublished one. */}

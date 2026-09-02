@@ -5275,6 +5275,9 @@
         "feedIndeed": "Indeed XML フィード（公開中の全求人）",
         "feedGoogle": "この求人の schema.org マークアップ",
         "copy": "コピー",
-        "copied": "コピーしました"
+        "copied": "コピーしました",
+        "notReachableTitle": "求人サイトがこのサイトにアクセスできません",
+        "notReachableDesc": "公開アドレスが {url} です。クローラーが取得できないため、ここでは「掲載中」と表示されても実際の求人サイトには出ません。本番環境では FRONTEND_URL を実際のドメインに設定してください。",
+        "notSecure": "公開アドレス（{url}）が HTTPS ではありません。Google for Jobs は HTTPS が必須で、多くのサイトはクロールを拒否します。"
     }
 }
