@@ -21,6 +21,8 @@ interface Integration {
     category: string;
     summary: string;
     docs_url?: string | null;
+    icon_url?: string | null;
+    brand_color?: string;
     capabilities: string[];
     limitations: string[];
     fields: Field[];
@@ -55,6 +57,28 @@ const CATEGORY_META: Record<string, { icon: string; chip: string }> = {
  * Each card states what connecting actually does, and what it does not, rather than implying a
  * two-way sync that is not there.
  */
+/** Provider logo, falling back to a branded monogram when the favicon will not load. */
+function IntegrationLogo({ name, src, colour }: { name: string; src?: string | null; colour?: string }) {
+    const [failed, setFailed] = useState(false);
+    const tint = colour || "#5B53E0";
+    if (src && !failed) {
+        return (
+            <span className="w-10 h-10 shrink-0 rounded-[11px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt="" className="w-5 h-5 object-contain" onError={() => setFailed(true)} />
+            </span>
+        );
+    }
+    return (
+        <span
+            className="w-10 h-10 shrink-0 rounded-[11px] flex items-center justify-center text-[15px] font-extrabold text-white"
+            style={{ background: tint }}
+        >
+            {name.trim().charAt(0).toUpperCase()}
+        </span>
+    );
+}
+
 export default function AssessmentIntegrations() {
     const { token } = useAuth();
     const { t: tr } = useI18n();
@@ -141,6 +165,8 @@ export default function AssessmentIntegrations() {
     }, [items]);
 
     const connectedCount = items.filter(i => i.connected).length;
+    // Identical across the category, so it is shown once rather than on every card.
+    const shared = items[0];
 
     return (
         <div className="space-y-6">
@@ -150,6 +176,27 @@ export default function AssessmentIntegrations() {
                     {tr("integrations.assessSubtitle", { connected: connectedCount, total: items.length })}
                 </p>
             </div>
+
+            {/* Every assessment tool behaves identically once connected, so this is said once here
+                rather than repeated verbatim on all five cards. */}
+            {!isLoading && shared && (
+                <div className="rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                        {shared.capabilities.map(c => (
+                            <p key={c} className="text-[11.5px] text-[#4B5057] leading-relaxed flex gap-1.5">
+                                <span className="material-symbols-rounded text-[14px] text-[#15803D] shrink-0 mt-px">check</span>
+                                {c}
+                            </p>
+                        ))}
+                        {shared.limitations.map(l => (
+                            <p key={l} className="text-[11.5px] text-[#8A929E] leading-relaxed flex gap-1.5">
+                                <span className="material-symbols-rounded text-[14px] text-[#B4BAC3] shrink-0 mt-px">remove</span>
+                                {l}
+                            </p>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {error && (
                 <div className="rounded-[12px] border border-[#F5C6C7] bg-[#FDECEC] px-4 py-3 text-[12.5px] text-[#C0383C]">
@@ -178,19 +225,29 @@ export default function AssessmentIntegrations() {
 
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     {list.map(it => (
-                                        <Card key={it.key} padding="sm" className={cn(it.connected && "border-[#BFE3CC]")}>
+                                        <Card
+                                            key={it.key}
+                                            padding="sm"
+                                            className={cn(
+                                                "transition-colors",
+                                                it.connected ? "border-[#BFE3CC] bg-[#FCFDFC]" : "hover:border-[#D4D7DC]"
+                                            )}
+                                        >
                                             <div className="flex items-start justify-between gap-3">
-                                                <div className="min-w-0">
-                                                    <div className="flex items-center gap-2 flex-wrap">
-                                                        <h3 className="text-[13.5px] font-bold text-[#15171C]">{it.name}</h3>
-                                                        {it.connected && (
-                                                            <span className="inline-flex items-center gap-1 text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#E6F4EA] text-[#15803D]">
-                                                                <span className="material-symbols-rounded text-[13px]">check_circle</span>
-                                                                {tr("integrations.assessConnected")}
-                                                            </span>
-                                                        )}
+                                                <div className="flex items-start gap-3 min-w-0">
+                                                    <IntegrationLogo name={it.name} src={it.icon_url} colour={it.brand_color} />
+                                                    <div className="min-w-0">
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <h3 className="text-[13.5px] font-bold text-[#15171C]">{it.name}</h3>
+                                                            {it.connected && (
+                                                                <span className="inline-flex items-center gap-1 text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#E6F4EA] text-[#15803D]">
+                                                                    <span className="material-symbols-rounded text-[13px]">check_circle</span>
+                                                                    {tr("integrations.assessConnected")}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-[12px] text-[#8A929E] mt-0.5 leading-relaxed">{it.summary}</p>
                                                     </div>
-                                                    <p className="text-[12px] text-[#8A929E] mt-0.5 leading-relaxed">{it.summary}</p>
                                                 </div>
                                                 {it.connected ? (
                                                     <Button
@@ -212,24 +269,8 @@ export default function AssessmentIntegrations() {
                                                 )}
                                             </div>
 
-                                            {/* What connecting actually buys, and what it does not. */}
-                                            <ul className="mt-3 space-y-1">
-                                                {it.capabilities.map(c => (
-                                                    <li key={c} className="text-[11.5px] text-[#4B5057] leading-relaxed flex gap-1.5">
-                                                        <span className="material-symbols-rounded text-[14px] text-[#15803D] shrink-0 mt-px">check</span>
-                                                        {c}
-                                                    </li>
-                                                ))}
-                                                {it.limitations.map(l => (
-                                                    <li key={l} className="text-[11.5px] text-[#8A929E] leading-relaxed flex gap-1.5">
-                                                        <span className="material-symbols-rounded text-[14px] text-[#B4BAC3] shrink-0 mt-px">remove</span>
-                                                        {l}
-                                                    </li>
-                                                ))}
-                                            </ul>
-
                                             {it.connected && it.connection?.invite_url && (
-                                                <p className="mt-2.5 text-[11px] text-[#8A929E] truncate">
+                                                <p className="mt-2.5 pl-[52px] text-[11px] text-[#8A929E] truncate">
                                                     {tr("integrations.usingLink")}{" "}
                                                     <span className="text-[#374151]">{it.connection.invite_url}</span>
                                                 </p>
