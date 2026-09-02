@@ -163,7 +163,30 @@
         "disconnectDesc": "このメールアドレスから現在送信中のアクティブなメールシーケンスはキャンセルされます。関連するエイリアスも接続解除されます。",
         "typeToConfirm": "確認するには「DISCONNECT」と入力してください",
         "cancel": "キャンセル",
-        "confirm": "確認"
+        "confirm": "確認",
+        "assessTitle": "アセスメントツール",
+        "assessSubtitle": "{total} 件中 {connected} 件を連携済み。連携したツールは選考ステップで選べます。",
+        "loading": "アセスメントツールを読み込み中…",
+        "loadFailed": "アセスメントツールを読み込めませんでした。",
+        "connect": "連携する",
+        "connecting": "連携中…",
+        "save": "連携を保存",
+        "confirmDisconnect": "{name} の連携を解除しますか？このツールを使うステップは招待の送信を停止します。",
+        "disconnectFailed": "連携を解除できませんでした。",
+        "missingFields": "次の項目を入力してください：{fields}",
+        "docs": "提供元のドキュメント",
+        "usingLink": "招待リンク：",
+        "boardsHint": "求人サイト {count} 件は掲載の仕組みが異なるため、専用画面で管理します。",
+        "manageBoards": "求人サイトを管理",
+        "category": {
+            "assessment": "アセスメント",
+            "job_board": "求人サイト",
+            "meeting": "オンライン会議",
+            "email": "メール"
+        },
+        "assessConnected": "連携済み",
+        "assessDisconnect": "連携を解除",
+        "assessConnectFailed": "ツールを連携できませんでした。入力内容をご確認ください。"
     },
     "shortlisted": {
         "title": "人材パイプライン",

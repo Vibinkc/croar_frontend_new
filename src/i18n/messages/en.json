@@ -163,7 +163,30 @@
         "disconnectDesc": "Any active email sequences currently sending from this email address will be cancelled. Associated aliases will also be disconnected.",
         "typeToConfirm": "Type “DISCONNECT” to confirm",
         "cancel": "Cancel",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "assessTitle": "Assessment tools",
+        "assessSubtitle": "{connected} of {total} connected. A connected tool can be picked on any interview round.",
+        "loading": "Loading assessment tools…",
+        "loadFailed": "Could not load assessment tools.",
+        "connect": "Connect",
+        "connecting": "Connecting…",
+        "save": "Save connection",
+        "confirmDisconnect": "Disconnect {name}? Rounds using it will stop sending its invite.",
+        "disconnectFailed": "Could not disconnect.",
+        "missingFields": "Fill in: {fields}",
+        "docs": "Provider docs",
+        "usingLink": "Invite link:",
+        "boardsHint": "{count} job boards are managed on their own screen, because publishing to them works differently.",
+        "manageBoards": "Manage job boards",
+        "category": {
+            "assessment": "Assessments",
+            "job_board": "Job boards",
+            "meeting": "Meetings",
+            "email": "Email"
+        },
+        "assessConnected": "Connected",
+        "assessDisconnect": "Disconnect",
+        "assessConnectFailed": "Could not connect that tool. Check the details and try again."
     },
     "shortlisted": {
         "title": "Talent Pipeline",
