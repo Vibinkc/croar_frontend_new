@@ -5252,5 +5252,22 @@
         "forRound": "Round {index} — {name}",
         "save": "Save to this round",
         "detach": "Remove from this round"
+    },
+    "publishHub": {
+        "freeTitle": "Free job posting",
+        "freeDesc": "Boards that pick your job up from the page itself. Publishes straight away.",
+        "connectTitle": "Use your own accounts",
+        "connectDesc": "Boards you already have a login for. Connect once, then post with the rest.",
+        "partnerTitle": "Partner boards",
+        "partnerDesc": "Boards that only accept posts through a commercial agreement.",
+        "careerTitle": "Your career page",
+        "careerDesc": "The apply link candidates use. Share it anywhere — applications land in this job's pipeline.",
+        "copyLink": "Copy apply link",
+        "openPage": "Open page",
+        "backToChannels": "Back to channels",
+        "connectNow": "Connect",
+        "rePublish": "Re-publish",
+        "liveNote": "Live on the boards that accepted it. The rest need an account or an agreement.",
+        "partnerNote": "These boards need a signed agreement with the provider before anything can be posted. Croar can't publish to them for you — contact the board, then connect the account under Job Portals."
     }
 }

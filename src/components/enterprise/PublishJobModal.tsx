@@ -80,6 +80,8 @@ const STATUS_PILL: Record<string, { label: string; cls: string; icon: ElementTyp
 export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, token }: PublishJobModalProps) {
     const { t: tr } = useI18n();
     const [portals, setPortals] = useState<Portal[]>([]);
+    // The modal opens on a channel hub; a channel then shows only the boards it covers.
+    const [channel, setChannel] = useState<GroupKey | "career" | null>(null);
     const [selected, setSelected] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -111,6 +113,7 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
         if (isOpen) {
             setStatus("idle");
             setResults([]);
+            setChannel(null);
             loadCatalog();
         }
     }, [isOpen, loadCatalog]);
@@ -119,8 +122,11 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
         return PUBLISH_GROUPS.map((g) => ({
             ...g,
             portals: portals.filter((p) => groupFor(p) === g.key),
-        })).filter((g) => g.portals.length > 0);
-    }, [portals]);
+        })).filter((g) => g.portals.length > 0 && (channel === null || g.key === channel));
+    }, [portals, channel]);
+
+    const countFor = (k: GroupKey) => portals.filter((p) => groupFor(p) === k).length;
+    const publicUrl = typeof window !== "undefined" ? `${window.location.origin}/jobs/${jobId}` : "";
 
     const toggle = (key: string) =>
         setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
@@ -196,6 +202,77 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                 <p className="text-[14px] font-bold text-[#15171C]">{jobTitle}</p>
                             </div>
 
+                            {/* Channel hub — pick how this job should reach candidates. Each card
+                                leads to something Croar can actually do. */}
+                            {!loading && channel === null && (
+                                <div className="space-y-2.5">
+                                    {([
+                                        ["ready", "public", tr("publishHub.freeTitle"), tr("publishHub.freeDesc"), countFor("ready")],
+                                        ["connect", "vpn_key", tr("publishHub.connectTitle"), tr("publishHub.connectDesc"), countFor("connect")],
+                                        ["partner", "handshake", tr("publishHub.partnerTitle"), tr("publishHub.partnerDesc"), countFor("partner")],
+                                    ] as [GroupKey, string, string, string, number][]).map(([key, icon, title, desc, n]) => (
+                                        <button
+                                            key={key}
+                                            disabled={n === 0}
+                                            onClick={() => setChannel(key)}
+                                            className="w-full p-3.5 rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/45 hover:bg-[#FBFBFE] transition-colors flex items-center gap-3 text-left disabled:opacity-50 disabled:pointer-events-none"
+                                        >
+                                            <span className="w-10 h-10 shrink-0 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                                <span className="material-symbols-rounded text-[21px]">{icon}</span>
+                                            </span>
+                                            <span className="min-w-0 flex-1">
+                                                <span className="block text-[13.5px] font-bold text-[#15171C]">
+                                                    {title} <span className="text-[#A8AEB8] font-semibold">({n})</span>
+                                                </span>
+                                                <span className="block text-[11.5px] text-[#8A929E] leading-relaxed">{desc}</span>
+                                            </span>
+                                            <span className="material-symbols-rounded text-[20px] text-[#C3C7CE] shrink-0">chevron_right</span>
+                                        </button>
+                                    ))}
+
+                                    {/* Croar has no inbound board integrations, so rather than an
+                                        empty "connect" card this shows the route candidates really
+                                        take today. */}
+                                    <div className="p-3.5 rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA]">
+                                        <div className="flex items-center gap-3">
+                                            <span className="w-10 h-10 shrink-0 rounded-[11px] bg-[#E3F4EF] text-[#0E8A6E] flex items-center justify-center">
+                                                <span className="material-symbols-rounded text-[21px]">link</span>
+                                            </span>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-[13.5px] font-bold text-[#15171C]">{tr("publishHub.careerTitle")}</p>
+                                                <p className="text-[11.5px] text-[#8A929E] leading-relaxed">{tr("publishHub.careerDesc")}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2 mt-3">
+                                            <button
+                                                onClick={() => { void navigator.clipboard?.writeText(publicUrl); }}
+                                                className="flex-1 h-9 rounded-[9px] border border-[#E8EAED] bg-white text-[12px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors"
+                                            >
+                                                {tr("publishHub.copyLink")}
+                                            </button>
+                                            <a
+                                                href={publicUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex-1 h-9 rounded-[9px] border border-[#E8EAED] bg-white text-[12px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors flex items-center justify-center"
+                                            >
+                                                {tr("publishHub.openPage")}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {!loading && channel !== null && (
+                                <button
+                                    onClick={() => setChannel(null)}
+                                    className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
+                                >
+                                    <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                                    {tr("publishHub.backToChannels")}
+                                </button>
+                            )}
+
                             {loading ? (
                                 <div className="py-8 flex justify-center">
                                     <div className="w-6 h-6 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
@@ -239,6 +316,15 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                                                     {portal.connected ? "Connected" : "Not connected"}
                                                                 </span>
                                                             )}
+                                                            {portal.requires_credentials && !portal.connected && (
+                                                                <a
+                                                                    href="/enterprise/settings/job-portals"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                    className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#ECEBFB] text-[#5B53E0] hover:bg-[#DAD7F6] transition-colors"
+                                                                >
+                                                                    {tr("publishHub.connectNow")}
+                                                                </a>
+                                                            )}
                                                         </div>
                                                         {portal.note && <p className="text-[11px] text-[#8A929E] leading-snug mt-1">{portal.note}</p>}
                                                         {pill && (
@@ -260,10 +346,14 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                         </div>
 
                         {/* Footer */}
+                        {/* The hub has nothing to publish yet, and partner boards cannot be
+                            published to from here at all — so the action bar only appears where
+                            pressing it would actually do something. */}
+                        {channel !== null && channel !== "partner" && (
                         <div className="px-5 py-4 bg-[#F7F8FA] border-t border-[#E8EAED] flex items-center justify-between gap-3 sticky bottom-0">
                             <p className="text-[11px] text-[#8A929E] max-w-[210px] leading-snug">
                                 {status === "success"
-                                    ? "Structured-data & feed portals are live; connect or contact partner boards to reach the rest."
+                                    ? tr("publishHub.liveNote")
                                     : tr("forms2.indexingSchedule")}
                             </p>
 
@@ -281,9 +371,16 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                 ) : (
                                     <Send className="w-4 h-4" />
                                 )}
-                                {isSubmitting ? tr("forms2.publishing") : status === "success" ? "Re-publish" : status === "error" ? tr("forms2.failed") : tr("forms2.confirmPublish")}
+                                {isSubmitting ? tr("forms2.publishing") : status === "success" ? tr("publishHub.rePublish") : status === "error" ? tr("forms2.failed") : tr("forms2.confirmPublish")}
                             </button>
                         </div>
+                        )}
+
+                        {channel === "partner" && (
+                            <div className="px-5 py-4 bg-[#F7F8FA] border-t border-[#E8EAED] sticky bottom-0">
+                                <p className="text-[11.5px] text-[#8A929E] leading-relaxed">{tr("publishHub.partnerNote")}</p>
+                            </div>
+                        )}
                     </motion.div>
                 </div>
             )}
