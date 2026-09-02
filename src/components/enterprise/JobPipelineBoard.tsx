@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
@@ -76,7 +76,42 @@ export default function JobPipelineBoard({
     const { token } = useAuth();
     const { t: tr } = useI18n();
     const [movingId, setMovingId] = useState<string | null>(null);
-    const [menuFor, setMenuFor] = useState<string | null>(null);
+    // The open menu, with the screen position it should render at. Held here rather than
+    // positioned inside the card because the board is a scroll container and would clip it.
+    const [menu, setMenu] = useState<{ id: string; top: number; left: number; flip: boolean } | null>(null);
+    const menuFor = menu?.id ?? null;
+
+    const openMenu = (id: string, el: HTMLElement) => {
+        if (menuFor === id) {
+            setMenu(null);
+            return;
+        }
+        const r = el.getBoundingClientRect();
+        // Roughly the tallest the menu gets: a header, one row per stage, a divider and two actions.
+        const height = 96 + stages.length * 34;
+        const flip = r.bottom + height > window.innerHeight - 12;
+        setMenu({
+            id,
+            top: flip ? Math.max(12, r.top - height - 4) : r.bottom + 4,
+            // Right-align to the button, clamped so it never runs off the left edge.
+            left: Math.max(12, r.right - 208),
+            flip,
+        });
+    };
+    const closeMenu = () => setMenu(null);
+
+    // The menu is positioned in viewport coordinates, so any scroll or resize would leave it
+    // floating away from its card. Close it instead of trying to follow.
+    useEffect(() => {
+        if (!menu) return;
+        const close = () => setMenu(null);
+        window.addEventListener("scroll", close, true);
+        window.addEventListener("resize", close);
+        return () => {
+            window.removeEventListener("scroll", close, true);
+            window.removeEventListener("resize", close);
+        };
+    }, [menu]);
     const [error, setError] = useState("");
 
     const columns = useMemo(
@@ -104,7 +139,7 @@ export default function JobPipelineBoard({
 
     const move = async (applicationId: string, newStage: number) => {
         setMovingId(applicationId);
-        setMenuFor(null);
+        closeMenu();
         setError("");
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/applications/${applicationId}/stage`, {
@@ -125,7 +160,7 @@ export default function JobPipelineBoard({
     const act = async (applicationId: string, what: "drop" | "restore" | "remove") => {
         if (what === "remove" && !window.confirm(tr("jobBoard.confirmRemove"))) return;
         setMovingId(applicationId);
-        setMenuFor(null);
+        closeMenu();
         setError("");
         try {
             const base = `${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/applications/${applicationId}`;
@@ -198,17 +233,21 @@ export default function JobPipelineBoard({
 
                 <div className="relative shrink-0">
                     <button
-                        onClick={() => setMenuFor(menuFor === app.id ? null : app.id)}
+                        onClick={e => openMenu(app.id, e.currentTarget)}
                         aria-label={tr("jobBoard.moveTo")}
+                        aria-expanded={menuFor === app.id}
                         className="w-7 h-7 rounded-[8px] flex items-center justify-center text-[#8A929E] hover:text-[#15171C] hover:bg-[#F7F8FA] transition-colors"
                     >
                         <span className="material-symbols-rounded text-[17px]">more_vert</span>
                     </button>
-                    {menuFor === app.id && (
+                    {menu?.id === app.id && (
                         <>
                             {/* Click-away layer, so the menu closes without a document listener. */}
-                            <div className="fixed inset-0 z-20" onClick={() => setMenuFor(null)} />
-                            <div className="absolute right-0 top-8 z-30 w-52 bg-white border border-[#E8EAED] rounded-[11px] shadow-[0_10px_28px_rgba(15,23,42,0.14)] py-1.5">
+                            <div className="fixed inset-0 z-[60]" onClick={closeMenu} />
+                            <div
+                                style={{ top: menu.top, left: menu.left }}
+                                className="fixed z-[61] w-52 max-h-[60vh] overflow-y-auto bg-white border border-[#E8EAED] rounded-[11px] shadow-[0_10px_28px_rgba(15,23,42,0.14)] py-1.5"
+                            >
                                 <p className="px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.06em] text-[#8A929E]">
                                     {tr("jobBoard.moveTo")}
                                 </p>
