@@ -2960,7 +2960,16 @@
         "togImmediate": "Send immediately",
         "togImmediateHint": "Auto-send on round change",
         "togAutoMove": "Auto-move",
-        "togAutoMoveHint": "Advance to next round"
+        "togAutoMoveHint": "Advance to next round",
+        "assessmentRunBy": "Who runs this test",
+        "providerCroar": "Croar",
+        "providerCroarHint": "Built-in test, AI-written questions, scored automatically",
+        "providerExternal": "Another tool",
+        "providerExternalHint": "Codility, HackerRank, TestGorilla — you paste the link",
+        "externalName": "Tool name",
+        "externalNamePlaceholder": "e.g. Codility",
+        "externalUrl": "Invite link",
+        "externalUrlHint": "Sent to the candidate when they reach this round. Their result is recorded in that tool, not in Croar."
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

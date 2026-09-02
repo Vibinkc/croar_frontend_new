@@ -2960,7 +2960,16 @@
         "togImmediate": "즉시 발송",
         "togImmediateHint": "단계 변경 시 자동 발송",
         "togAutoMove": "자동 이동",
-        "togAutoMoveHint": "다음 단계로 자동 진행"
+        "togAutoMoveHint": "다음 단계로 자동 진행",
+        "assessmentRunBy": "이 평가를 진행할 주체",
+        "providerCroar": "Croar",
+        "providerCroarHint": "내장 평가 · AI 문항 · 자동 채점",
+        "providerExternal": "외부 도구",
+        "providerExternalHint": "Codility, HackerRank, TestGorilla — 링크를 붙여넣습니다",
+        "externalName": "도구 이름",
+        "externalNamePlaceholder": "예: Codility",
+        "externalUrl": "초대 링크",
+        "externalUrlHint": "후보자가 이 단계에 도달하면 발송됩니다. 결과는 Croar가 아닌 해당 도구에 기록됩니다."
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",

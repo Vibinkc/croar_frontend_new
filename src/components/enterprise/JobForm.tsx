@@ -54,6 +54,10 @@ interface ApplicationField {
 }
 
 interface StageAssessment {
+    /** CROAR runs the built-in test; EXTERNAL sends the candidate to another tool's link. */
+    provider: "CROAR" | "EXTERNAL";
+    external_url: string;
+    external_provider_name: string;
     type: "APTITUDE" | "CODING" | "BOTH" | "VIDEO";
     topic: string;
     criteria: string;
@@ -600,9 +604,13 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             const base = { job_requirement_id: newJobId, stage_index: index, stage_name: stage.name };
 
             const a = stage.assessment;
-            if (a?.topic?.trim()) {
+            const assessmentReady = a && (a.provider === "EXTERNAL" ? !!a.external_url.trim() : !!a.topic.trim());
+            if (a && assessmentReady) {
                 calls.push(post("assessment/", {
                     ...base,
+                    provider: a.provider,
+                    external_url: a.provider === "EXTERNAL" ? a.external_url.trim() : null,
+                    external_provider_name: a.provider === "EXTERNAL" ? a.external_provider_name.trim() || null : null,
                     type: a.type,
                     topic: a.topic.trim(),
                     criteria: a.criteria?.trim() || "60% to pass",
@@ -1251,7 +1259,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 // Opening a drawer for something not yet attached seeds a sensible default, so the
                 // form is never blank on arrival.
                 if (drawer.kind === "assessment" && !a) {
-                    patch({ assessment: { type: ASSESSMENT_FOR_STAGE[node.type] || "APTITUDE", topic: "", criteria: "60% to pass", question_count: 10, test_duration: 30, email_template_id: "", is_enabled: true, auto_move: false } });
+                    patch({ assessment: { provider: "CROAR", external_url: "", external_provider_name: "", type: ASSESSMENT_FOR_STAGE[node.type] || "APTITUDE", topic: "", criteria: "60% to pass", question_count: 10, test_duration: 30, email_template_id: "", is_enabled: true, auto_move: false } });
                     return null;
                 }
                 if (drawer.kind === "interview" && !iv) {
@@ -1275,7 +1283,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                         onClose={() => setDrawer(null)}
                         onSave={() => setDrawer(null)}
                         canSave={
-                            drawer.kind === "assessment" ? !!a?.topic.trim()
+                            drawer.kind === "assessment" ? (a?.provider === "EXTERNAL" ? !!a?.external_url.trim() : !!a?.topic.trim())
                             : drawer.kind === "email" ? !!em?.template_id
                             : drawer.kind === "onboarding" ? !!ob?.template_id
                             : true
@@ -1283,17 +1291,68 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     >
                         {drawer.kind === "assessment" && a && (
                             <>
+                                {/* Croar's own test, or another tool's. Mirrors how the reference
+                                    ATS pairs a built-in assessment with third-party providers. */}
                                 <div>
+                                    <DrawerLabel required>{tr("jobForm.assessmentRunBy")}</DrawerLabel>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {([
+                                            ["CROAR", tr("jobForm.providerCroar"), tr("jobForm.providerCroarHint")],
+                                            ["EXTERNAL", tr("jobForm.providerExternal"), tr("jobForm.providerExternalHint")],
+                                        ] as [StageAssessment["provider"], string, string][]).map(([key, label, hint]) => (
+                                            <button
+                                                key={key}
+                                                onClick={() => patch({ assessment: { ...a, provider: key } })}
+                                                className={cn(
+                                                    "text-left p-3 rounded-[12px] border transition-colors",
+                                                    a.provider === key
+                                                        ? "border-[#5B53E0] bg-[#ECEBFB]/40"
+                                                        : "border-[#E1E4E8] hover:border-[#5B53E0]/40"
+                                                )}
+                                            >
+                                                <span className="block text-[12.5px] font-bold text-[#15171C]">{label}</span>
+                                                <span className="block text-[10.5px] text-[#8A929E] leading-snug mt-0.5">{hint}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {a.provider === "EXTERNAL" && (
+                                    <>
+                                        <div>
+                                            <DrawerLabel htmlFor="rd-a-extname">{tr("jobForm.externalName")}</DrawerLabel>
+                                            <DrawerInput
+                                                id="rd-a-extname"
+                                                value={a.external_provider_name}
+                                                placeholder={tr("jobForm.externalNamePlaceholder")}
+                                                onChange={e => patch({ assessment: { ...a, external_provider_name: e.target.value } })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <DrawerLabel htmlFor="rd-a-exturl" required>{tr("jobForm.externalUrl")}</DrawerLabel>
+                                            <DrawerInput
+                                                id="rd-a-exturl"
+                                                type="url"
+                                                value={a.external_url}
+                                                placeholder="https://app.codility.com/invite/..."
+                                                onChange={e => patch({ assessment: { ...a, external_url: e.target.value } })}
+                                            />
+                                            <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1 leading-relaxed">{tr("jobForm.externalUrlHint")}</p>
+                                        </div>
+                                    </>
+                                )}
+
+                                <div className={a.provider === "EXTERNAL" ? "hidden" : undefined}>
                                     <DrawerLabel htmlFor="rd-a-type" required>{tr("jobForm.assessmentType")}</DrawerLabel>
                                     <DrawerSelect id="rd-a-type" value={a.type} onChange={v => patch({ assessment: { ...a, type: v as StageAssessment["type"] } })}>
                                         {ASSESSMENT_TYPES.map(t => (<option key={t} value={t}>{tr("jobRounds.type." + t)}</option>))}
                                     </DrawerSelect>
                                 </div>
-                                <div>
+                                <div className={a.provider === "EXTERNAL" ? "hidden" : undefined}>
                                     <DrawerLabel htmlFor="rd-a-topic" required>{tr("jobForm.assessmentTopicLabel")}</DrawerLabel>
                                     <DrawerInput id="rd-a-topic" value={a.topic} placeholder={tr("jobForm.assessmentTopic")} onChange={e => patch({ assessment: { ...a, topic: e.target.value } })} />
                                 </div>
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-3", a.provider === "EXTERNAL" && "hidden")}>
                                     <div>
                                         <DrawerLabel htmlFor="rd-a-count">{tr("jobForm.assessmentCount")}</DrawerLabel>
                                         <DrawerInput id="rd-a-count" type="number" min={1} max={50} value={a.question_count} onChange={e => patch({ assessment: { ...a, question_count: Number(e.target.value) } })} />
@@ -1308,7 +1367,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                     <DrawerInput id="rd-a-crit" value={a.criteria} placeholder={tr("jobRounds.criteriaPlaceholder")} onChange={e => patch({ assessment: { ...a, criteria: e.target.value } })} />
                                 </div>
 
-                                <div className="rounded-[12px] border border-[#E8EAED] bg-[#FBFBFC] p-4 space-y-3">
+                                <div className={cn("rounded-[12px] border border-[#E8EAED] bg-[#FBFBFC] p-4 space-y-3", a.provider === "EXTERNAL" && "hidden")}>
                                     <div className="flex flex-wrap items-center justify-between gap-2">
                                         <span className="text-[12px] font-bold text-[#15171C]">{tr("jobForm.assessmentQuestions")}</span>
                                         <GenLanguageSelect value={genLang} onChange={setGenLang} />

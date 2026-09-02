@@ -2960,7 +2960,16 @@
         "togImmediate": "すぐに送信",
         "togImmediateHint": "ステップ変更時に自動送信",
         "togAutoMove": "自動で進める",
-        "togAutoMoveHint": "次のステップへ進める"
+        "togAutoMoveHint": "次のステップへ進める",
+        "assessmentRunBy": "このテストの実施元",
+        "providerCroar": "Croar",
+        "providerCroarHint": "内蔵テスト・AI 作成の設問・自動採点",
+        "providerExternal": "外部ツール",
+        "providerExternalHint": "Codility・HackerRank・TestGorilla — リンクを貼り付けます",
+        "externalName": "ツール名",
+        "externalNamePlaceholder": "例：Codility",
+        "externalUrl": "招待リンク",
+        "externalUrlHint": "候補者がこのステップに到達すると送信されます。結果は Croar ではなくそのツールに記録されます。"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",
