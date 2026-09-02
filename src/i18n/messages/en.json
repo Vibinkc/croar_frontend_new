@@ -2919,7 +2919,19 @@
         "assessmentTopic": "Topic, e.g. React fundamentals",
         "assessmentCount": "Number of questions",
         "assessmentDuration": "Time limit in minutes",
-        "assessmentHint": "Created when you create the job. You can write the questions with AI from the job's Rounds tab."
+        "assessmentHint": "Created when you create the job. You can write the questions with AI from the job's Rounds tab.",
+        "interviewAdd": "Add an interview",
+        "interviewOnRound": "Interview on this round",
+        "interviewType": "Interview type",
+        "interviewTypeGMEET": "Google Meet",
+        "interviewTypeTEAMS": "Microsoft Teams",
+        "interviewTypeAI": "AI interview",
+        "interviewerEmail": "Interviewer email",
+        "emailAdd": "Add an email",
+        "emailOnRound": "Email on this round",
+        "emailTemplate": "Email template",
+        "emailTemplatePick": "Choose a template…",
+        "emailNoTemplates": "No email templates yet — create one in Mail, then come back."
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

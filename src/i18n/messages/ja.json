@@ -2919,7 +2919,19 @@
         "assessmentTopic": "トピック（例：React の基礎）",
         "assessmentCount": "設問数",
         "assessmentDuration": "制限時間（分）",
-        "assessmentHint": "求人の作成時に一緒に作られます。設問は求人の「選考ステップ」タブから AI で作成できます。"
+        "assessmentHint": "求人の作成時に一緒に作られます。設問は求人の「選考ステップ」タブから AI で作成できます。",
+        "interviewAdd": "面接を追加",
+        "interviewOnRound": "このステップの面接",
+        "interviewType": "面接の種類",
+        "interviewTypeGMEET": "Google Meet",
+        "interviewTypeTEAMS": "Microsoft Teams",
+        "interviewTypeAI": "AI 面接",
+        "interviewerEmail": "面接官のメール",
+        "emailAdd": "メールを追加",
+        "emailOnRound": "このステップのメール",
+        "emailTemplate": "メールテンプレート",
+        "emailTemplatePick": "テンプレートを選択…",
+        "emailNoTemplates": "メールテンプレートがありません — メール画面で作成してから戻ってください。"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",

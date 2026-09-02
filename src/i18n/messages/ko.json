@@ -2919,7 +2919,19 @@
         "assessmentTopic": "주제 (예: React 기초)",
         "assessmentCount": "문항 수",
         "assessmentDuration": "제한 시간 (분)",
-        "assessmentHint": "채용 건을 생성할 때 함께 만들어집니다. 문항은 채용 건의 '면접 단계' 탭에서 AI로 작성할 수 있습니다."
+        "assessmentHint": "채용 건을 생성할 때 함께 만들어집니다. 문항은 채용 건의 '면접 단계' 탭에서 AI로 작성할 수 있습니다.",
+        "interviewAdd": "면접 추가",
+        "interviewOnRound": "이 단계의 면접",
+        "interviewType": "면접 유형",
+        "interviewTypeGMEET": "Google Meet",
+        "interviewTypeTEAMS": "Microsoft Teams",
+        "interviewTypeAI": "AI 면접",
+        "interviewerEmail": "면접관 이메일",
+        "emailAdd": "이메일 추가",
+        "emailOnRound": "이 단계의 이메일",
+        "emailTemplate": "이메일 템플릿",
+        "emailTemplatePick": "템플릿을 선택하세요…",
+        "emailNoTemplates": "이메일 템플릿이 없습니다 — 메일에서 먼저 생성한 뒤 돌아오세요."
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",
