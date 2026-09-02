@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
+import { type GenLanguage, localeToLanguageName } from "@/i18n/config";
+import GenLanguageSelect from "@/components/ds/GenLanguageSelect";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import JobEditor from "@/components/enterprise/JobEditor";
@@ -50,6 +52,8 @@ interface StageAssessment {
     criteria: string;
     question_count: number;
     test_duration: number;
+    /** Written here via /assessment/generate-preview and saved with the automation on create. */
+    generated_questions?: { id?: string; question?: string; [k: string]: unknown }[] | null;
 }
 
 interface WorkflowStage {
@@ -139,7 +143,7 @@ interface JobFormProps {
 export default function JobForm({ mode, jobId }: JobFormProps) {
     const isEdit = mode === "edit";
     const { token } = useAuth();
-    const { t: tr } = useI18n();
+    const { t: tr, locale } = useI18n();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(isEdit);
     const [loadError, setLoadError] = useState(false);
@@ -163,6 +167,9 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const [companies, setCompanies] = useState<Company[]>([]);
     const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
     const [onboardingTemplates, setOnboardingTemplates] = useState<{ id: string; name: string }[]>([]);
+    // Which stage's questions are being written, and in what language.
+    const [genStageId, setGenStageId] = useState<string | null>(null);
+    const [genLang, setGenLang] = useState<GenLanguage>(localeToLanguageName(locale));
 
     const [formData, setFormData] = useState({
         title: "",
@@ -577,6 +584,9 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     question_count: Number(a.question_count) || 10,
                     test_duration: Number(a.test_duration) || 30,
                     is_enabled: true,
+                    // Questions written on the Workflow step travel with the automation, so the
+                    // round is ready the moment the job exists.
+                    generated_questions: a.generated_questions?.length ? a.generated_questions : null,
                 }));
             }
 
@@ -614,6 +624,38 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             }
         }
         if (calls.length) await Promise.all(calls);
+    };
+
+    // Write the questions for one round, before any job exists. generate-preview needs only the
+    // topic and type, so the wizard can do this and hand the result to the automation on create.
+    const generateStageQuestions = async (stageId: string) => {
+        const stage = formData.workflow_stages.find(s => s.id === stageId);
+        const a = stage?.assessment;
+        if (!a?.topic?.trim()) return;
+        setGenStageId(stageId);
+        try {
+            const qs = `type=${a.type}&topic=${encodeURIComponent(a.topic.trim())}`
+                + `&count=${Number(a.question_count) || 10}&language=${encodeURIComponent(genLang)}`;
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/generate-preview?${qs}`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            const raw = await res.json();
+            const list = Array.isArray(raw) ? raw : (raw.questions || []);
+            setFormData(prev => ({
+                ...prev,
+                workflow_stages: prev.workflow_stages.map(s =>
+                    s.id === stageId && s.assessment
+                        ? { ...s, assessment: { ...s.assessment, generated_questions: list } }
+                        : s
+                ),
+            }));
+        } catch {
+            alert(tr("jobForm.assessmentGenFailed"));
+        } finally {
+            setGenStageId(null);
+        }
     };
 
     // Copy a starter template into the form and drop into step 1 to edit it.
@@ -1179,6 +1221,44 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                         onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, test_duration: Number(e.target.value) } } : s) }))}
                                                     />
                                                 </div>
+                                                {/* Written here rather than after the job exists:
+                                                    generate-preview needs only the topic and type, and
+                                                    the questions travel with the automation on create. */}
+                                                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                                                    <GenLanguageSelect value={genLang} onChange={setGenLang} />
+                                                    <Button
+                                                        size="sm"
+                                                        variant="secondary"
+                                                        disabled={!node.assessment.topic.trim() || genStageId === node.id}
+                                                        onClick={() => generateStageQuestions(node.id)}
+                                                        title={!node.assessment.topic.trim() ? tr("jobForm.assessmentTopicFirst") : undefined}
+                                                    >
+                                                        <Sparkles className="w-3.5 h-3.5" />
+                                                        {genStageId === node.id
+                                                            ? tr("jobForm.assessmentGenerating")
+                                                            : (node.assessment.generated_questions?.length
+                                                                ? tr("jobForm.assessmentRegenerate")
+                                                                : tr("jobForm.assessmentGenerate"))}
+                                                    </Button>
+                                                    {!!node.assessment.generated_questions?.length && (
+                                                        <span className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-[#15803D]">
+                                                            <CircleCheck className="w-3.5 h-3.5" />
+                                                            {tr("jobForm.assessmentQuestionsReady", { n: node.assessment.generated_questions.length })}
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {!!node.assessment.generated_questions?.length && (
+                                                    <ol className="mt-1 space-y-1 max-h-[132px] overflow-y-auto pr-1">
+                                                        {node.assessment.generated_questions.slice(0, 8).map((q, qi) => (
+                                                            <li key={(q.id as string) || qi} className="text-[10.5px] text-[#6B6F76] leading-relaxed flex gap-1.5">
+                                                                <span className="text-[#B4BAC3] shrink-0">{qi + 1}.</span>
+                                                                <span className="truncate">{String(q.question || q.text || "")}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ol>
+                                                )}
+
                                                 <p className="text-[10.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.assessmentHint")}</p>
                                             </div>
                                         ) : null}

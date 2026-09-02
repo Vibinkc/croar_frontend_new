@@ -2937,7 +2937,13 @@
         "onboardingTemplate": "オンボーディングテンプレート",
         "onboardingTemplatePick": "テンプレートを選択…",
         "onboardingNoTemplates": "オンボーディングテンプレートがありません — オンボーディングハブで作成してから戻ってください。",
-        "onboardingHint": "通常は最終ステップです。到達すると入社者へオンボーディングフォームが送られます。"
+        "onboardingHint": "通常は最終ステップです。到達すると入社者へオンボーディングフォームが送られます。",
+        "assessmentGenerate": "AI で設問を作成",
+        "assessmentRegenerate": "設問を作り直す",
+        "assessmentGenerating": "作成中…",
+        "assessmentQuestionsReady": "設問 {n} 問を用意済み",
+        "assessmentTopicFirst": "先にアセスメントのトピックを入力してください",
+        "assessmentGenFailed": "設問を作成できませんでした。AI クレジットを確認してください。"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",

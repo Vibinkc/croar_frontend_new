@@ -2937,7 +2937,13 @@
         "onboardingTemplate": "Onboarding template",
         "onboardingTemplatePick": "Choose a template…",
         "onboardingNoTemplates": "No onboarding templates yet — create one in Onboarding Hub, then come back.",
-        "onboardingHint": "Usually the final round: reaching it sends the hire their onboarding form."
+        "onboardingHint": "Usually the final round: reaching it sends the hire their onboarding form.",
+        "assessmentGenerate": "Write questions with AI",
+        "assessmentRegenerate": "Rewrite questions",
+        "assessmentGenerating": "Writing…",
+        "assessmentQuestionsReady": "{n} questions ready",
+        "assessmentTopicFirst": "Give the assessment a topic first",
+        "assessmentGenFailed": "Could not write the questions. Check the AI credits and try again."
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",
