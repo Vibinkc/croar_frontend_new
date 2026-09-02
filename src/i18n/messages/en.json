@@ -2755,7 +2755,7 @@
     "jobForm": {
         "createJob": "Create Job",
         "editJob": "Edit Job",
-        "stepSubtitle": "Step {step} of 3 — {name}",
+        "stepSubtitle": "Step {step} of {total} — {name}",
         "stepJobDetails": "Job Details",
         "stepApplication": "Application",
         "stepWorkflow": "Workflow",
@@ -2911,7 +2911,15 @@
         "yearsShort": "yrs",
         "roundsShort": "rounds",
         "createNow": "Create job",
-        "createNowHint": "Create the job now — you can add the application form and interview rounds from the job page."
+        "createNowHint": "Create the job now — you can add the application form and interview rounds from the job page.",
+        "assessmentAdd": "Add an assessment to this round",
+        "assessmentOnRound": "Assessment on this round",
+        "assessmentRemove": "Remove",
+        "assessmentType": "Assessment type",
+        "assessmentTopic": "Topic, e.g. React fundamentals",
+        "assessmentCount": "Number of questions",
+        "assessmentDuration": "Time limit in minutes",
+        "assessmentHint": "Created when you create the job. You can write the questions with AI from the job's Rounds tab."
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

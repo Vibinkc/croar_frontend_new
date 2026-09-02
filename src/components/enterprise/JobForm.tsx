@@ -20,6 +20,7 @@ import {
     Eye,
     Calculator,
     ChevronUp,
+    CirclePlus,
     ChevronDown,
     ListPlus,
     FileText,
@@ -43,13 +44,32 @@ interface ApplicationField {
     is_required: boolean;
 }
 
+interface StageAssessment {
+    type: "APTITUDE" | "CODING" | "BOTH" | "VIDEO";
+    topic: string;
+    criteria: string;
+    question_count: number;
+    test_duration: number;
+}
+
 interface WorkflowStage {
     id: string;
     name: string;
     type: string;
     icon: string;
     email_template_id?: string;
+    /** Draft only. Stripped from the job payload and POSTed to /assessment/ after creation,
+     *  because an assessment automation needs a job_requirement_id that does not exist yet. */
+    assessment?: StageAssessment | null;
 }
+
+const ASSESSMENT_TYPES: StageAssessment["type"][] = ["APTITUDE", "CODING", "BOTH", "VIDEO"];
+
+/** Stage types that normally carry a test, used only to pre-pick a sensible assessment type. */
+const ASSESSMENT_FOR_STAGE: Record<string, StageAssessment["type"]> = {
+    Aptitude: "APTITUDE",
+    Coding: "CODING",
+};
 
 const DEFAULT_APPLICATION_FIELDS: ApplicationField[] = [
     { id: '1', label: 'Full Name', type: 'text', icon: 'person', is_required: true },
@@ -271,7 +291,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     status_id: formData.status_id,
                     company_id: formData.company_id,
                     application_fields: formData.application_fields,
-                    workflow_stages: formData.workflow_stages
+                    // Send only the fields the job endpoint owns. `assessment` is wizard-only draft
+                    // state — it becomes a real automation after the job exists, not part of the job.
+                    workflow_stages: formData.workflow_stages.map(s => ({
+                        id: s.id, name: s.name, type: s.type, icon: s.icon, email_template_id: s.email_template_id,
+                    }))
                 };
 
                 const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}`, {
@@ -316,6 +340,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 if (res.ok) {
                     const data = await res.json();
                     setCreatedJobId(data.id);
+                    await armStageAssessments(data.id);
                     // Land on the job itself rather than a success modal. The job page is where the
                     // next actions actually live — add a candidate, source, post to boards — so a
                     // modal offering a subset of them just adds a step between the recruiter and
@@ -483,6 +508,36 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
     const errorInputCls = "border-[#EF4444] bg-[#FDECEC] text-[#C0383C] focus:border-[#EF4444] focus:ring-[#EF4444]/20";
 
+    // Create the assessment automations the user configured on the Workflow step. Runs once the
+    // job exists, since each automation is keyed to its job_requirement_id. Best-effort per
+    // stage: one failure must not lose the job that was just created.
+    const armStageAssessments = async (newJobId: string) => {
+        const configured = formData.workflow_stages
+            .map((s, i) => ({ stage: s, index: i + 1 }))
+            .filter(x => x.stage.assessment?.topic?.trim());
+        if (configured.length === 0) return;
+        await Promise.all(
+            configured.map(({ stage, index }) => {
+                const a = stage.assessment as StageAssessment;
+                return fetch(`${BACKEND_URL}/api/v1/enterprise/assessment/`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify({
+                        job_requirement_id: newJobId,
+                        stage_index: index,
+                        stage_name: stage.name,
+                        type: a.type,
+                        topic: a.topic.trim(),
+                        criteria: a.criteria?.trim() || "60% to pass",
+                        question_count: Number(a.question_count) || 10,
+                        test_duration: Number(a.test_duration) || 30,
+                        is_enabled: true,
+                    }),
+                }).catch(() => null);
+            })
+        );
+    };
+
     // Copy a starter template into the form and drop into step 1 to edit it.
     // Deliberately does NOT touch salary_currency or company_id — those come from the hiring
     // organisation, and a generic template must not overwrite an org's own currency.
@@ -611,7 +666,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             <PageHeader
                 help={<><p>{tr("jobForm.outlineResp")}</p><p>{tr("jobForm.autoDraftAI")}</p></>}
                 title={isEdit ? tr("jobForm.editJob") : tr("jobForm.createJob")}
-                subtitle={tr("jobForm.stepSubtitle", { step: currentStep, name: steps.find(s => s.id === currentStep)?.name || tr("jobForm.stepJobDetails") })}
+                subtitle={tr("jobForm.stepSubtitle", { step: currentStep, total: steps.length, name: steps.find(s => s.id === currentStep)?.name || tr("jobForm.stepJobDetails") })}
                 onBack={() => router.back()}
                 actions={
                     <>
@@ -971,7 +1026,8 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                             <div className="lg:col-span-8 p-5 md:p-6 overflow-y-auto no-scrollbar flex flex-col items-center">
                                 <div className="w-full max-w-lg space-y-2.5 pb-10 pl-8">
                                     {formData.workflow_stages.map((node, idx) => (
-                                        <div key={node.id} className="group relative flex items-center gap-3.5 bg-white p-3.5 rounded-[12px] border border-[#E8EAED] border-l-[3px] border-l-[#5B53E0] hover:border-[#5B53E0]/40 transition-colors">
+                                    <div key={node.id} className="relative">
+                                        <div className="group relative flex items-center gap-3.5 bg-white p-3.5 rounded-[12px] border border-[#E8EAED] border-l-[3px] border-l-[#5B53E0] hover:border-[#5B53E0]/40 transition-colors">
                                             <div className="flex flex-col gap-1 items-center absolute -left-8">
                                                 <button title={tr("jobForm.moveUp")} disabled={idx === 0} onClick={() => {
                                                     const newStages = [...formData.workflow_stages];
@@ -993,6 +1049,70 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                             </div>
                                             <button title={tr("jobForm.removeStage")} onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.filter(s => s.id !== node.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
                                         </div>
+
+                                        {/* What this round DOES. Held as draft state and armed as a real
+                                            assessment automation the moment the job is created. */}
+                                        {node.assessment ? (
+                                            <div className="mt-1.5 ml-[52px] rounded-[11px] border border-[#E8EAED] bg-[#FBFBFC] p-3 space-y-2.5">
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-[#5B53E0]">
+                                                        <Sparkles className="w-3.5 h-3.5" />
+                                                        {tr("jobForm.assessmentOnRound")}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, assessment: null } : s) }))}
+                                                        className="text-[11.5px] font-semibold text-[#8A929E] hover:text-[#C0383C] transition-colors"
+                                                    >
+                                                        {tr("jobForm.assessmentRemove")}
+                                                    </button>
+                                                </div>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                                    <Select
+                                                        className="cursor-pointer h-9 text-[12px]"
+                                                        value={node.assessment.type}
+                                                        aria-label={tr("jobForm.assessmentType")}
+                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, type: e.target.value as StageAssessment["type"] } } : s) }))}
+                                                    >
+                                                        {ASSESSMENT_TYPES.map(t => (<option key={t} value={t}>{tr("jobRounds.type." + t)}</option>))}
+                                                    </Select>
+                                                    <Input
+                                                        className="h-9 text-[12px]"
+                                                        value={node.assessment.topic}
+                                                        placeholder={tr("jobForm.assessmentTopic")}
+                                                        aria-label={tr("jobForm.assessmentTopic")}
+                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, topic: e.target.value } } : s) }))}
+                                                    />
+                                                    <Input
+                                                        className="h-9 text-[12px]"
+                                                        type="number"
+                                                        min={1}
+                                                        max={50}
+                                                        value={node.assessment.question_count}
+                                                        aria-label={tr("jobForm.assessmentCount")}
+                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, question_count: Number(e.target.value) } } : s) }))}
+                                                    />
+                                                    <Input
+                                                        className="h-9 text-[12px]"
+                                                        type="number"
+                                                        min={5}
+                                                        max={240}
+                                                        value={node.assessment.test_duration}
+                                                        aria-label={tr("jobForm.assessmentDuration")}
+                                                        onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.assessment ? { ...s, assessment: { ...s.assessment, test_duration: Number(e.target.value) } } : s) }))}
+                                                    />
+                                                </div>
+                                                <p className="text-[10.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.assessmentHint")}</p>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, assessment: { type: ASSESSMENT_FOR_STAGE[s.type] || "APTITUDE", topic: "", criteria: "60% to pass", question_count: 10, test_duration: 30 } } : s) }))}
+                                                className="mt-1.5 ml-[52px] inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-[#8A929E] hover:text-[#5B53E0] transition-colors"
+                                            >
+                                                <CirclePlus className="w-3.5 h-3.5" />
+                                                {tr("jobForm.assessmentAdd")}
+                                            </button>
+                                        )}
+                                    </div>
                                     ))}
 
                                     <button onClick={() => {
