@@ -9,6 +9,8 @@ export interface JobPostingPanelProps {
     jobId: string;
     jobTitle: string;
     token: string | null;
+    /** Where this job has already been published, straight off the job record. */
+    postings?: { platform: string; status?: string | null; external_id?: string | null }[];
     /** Called after a successful publish so the caller can refresh the job. */
     onPublished?: () => void;
 }
@@ -76,7 +78,7 @@ const STATUS_PILL: Record<string, { label: string; cls: string; icon: ElementTyp
     ERROR: { label: "Error", cls: "bg-[#FCE8E8] text-[#C0383C]", icon: AlertCircle },
 };
 
-export default function JobPostingPanel({ jobId, jobTitle, token, onPublished }: JobPostingPanelProps) {
+export default function JobPostingPanel({ jobId, jobTitle, token, postings = [], onPublished }: JobPostingPanelProps) {
     const { t: tr } = useI18n();
     const [portals, setPortals] = useState<Portal[]>([]);
     // The modal opens on a channel hub; a channel then shows only the boards it covers.
@@ -124,6 +126,16 @@ export default function JobPostingPanel({ jobId, jobTitle, token, onPublished }:
 
     const countFor = (k: GroupKey) => portals.filter((p) => groupFor(p) === k).length;
     const publicUrl = typeof window !== "undefined" ? `${window.location.origin}/jobs/${jobId}` : "";
+    // What a board is actually given: Indeed ingests the XML feed, Google reads the page's
+    // JSON-LD. Both are served by the API, not the app, so they are shown rather than guessed at.
+    const feedUrl = `${BACKEND_URL}/api/v1/jobs/feed/indeed.xml`;
+    const jsonLdUrl = `${BACKEND_URL}/api/v1/jobs/${jobId}/jobposting.jsonld`;
+    const [copied, setCopied] = useState("");
+    const copy = (value: string, key: string) => {
+        void navigator.clipboard?.writeText(value);
+        setCopied(key);
+        window.setTimeout(() => setCopied(""), 1600);
+    };
 
     const toggle = (key: string) =>
         setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
@@ -167,6 +179,30 @@ export default function JobPostingPanel({ jobId, jobTitle, token, onPublished }:
                 <p className="text-[10.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-0.5">{tr("forms2.targetPosition")}</p>
                 <p className="text-[14px] font-bold text-[#15171C]">{jobTitle}</p>
             </div>
+
+            {/* Where it already went. postings comes back on the job and had never
+                been rendered, so a published job looked identical to an unpublished one. */}
+            {postings.length > 0 && channel === null && (
+                <div className="p-3.5 rounded-[12px] border border-[#BFE3CC] bg-[#E6F4EA]">
+                    <p className="text-[10.5px] font-bold text-[#15803D] uppercase tracking-wider mb-2">
+                        {tr("publishHub.liveOn", { count: postings.length })}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                        {postings.map((p, i) => (
+                            <span
+                                key={`${p.platform}-${i}`}
+                                className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-[6px] bg-white border border-[#BFE3CC] text-[#15803D]"
+                            >
+                                <span className="material-symbols-rounded text-[13px]">check_circle</span>
+                                {p.platform}
+                                {p.status && p.status !== "LIVE" && (
+                                    <span className="text-[#8A929E] font-medium">· {p.status}</span>
+                                )}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Channel hub — pick how this job should reach candidates. Each card
                 leads to something Croar can actually do. */}
@@ -226,6 +262,38 @@ export default function JobPostingPanel({ jobId, jobTitle, token, onPublished }:
                             </a>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Indeed Job Sync wants a feed URL and Google reads the page markup.
+                Croar hosts both; without showing them the setup cannot be finished. */}
+            {!loading && channel === "connect" && (
+                <div className="p-3.5 rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] space-y-2.5">
+                    <p className="text-[11.5px] font-bold text-[#15171C]">{tr("publishHub.feedTitle")}</p>
+                    <p className="text-[11px] text-[#8A929E] leading-relaxed">{tr("publishHub.feedDesc")}</p>
+                    {([
+                        [tr("publishHub.feedIndeed"), feedUrl, "feed"],
+                        [tr("publishHub.feedGoogle"), jsonLdUrl, "jsonld"],
+                    ] as [string, string, string][]).map(([label, value, key]) => (
+                        <div key={key}>
+                            <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mb-1">{label}</p>
+                            <div className="flex gap-1.5">
+                                <input
+                                    readOnly
+                                    value={value}
+                                    onFocus={(e) => e.currentTarget.select()}
+                                    aria-label={label}
+                                    className="flex-1 min-w-0 h-8 px-2 rounded-[8px] border border-[#E8EAED] bg-white text-[11px] text-[#374151]"
+                                />
+                                <button
+                                    onClick={() => copy(value, key)}
+                                    className="h-8 px-2.5 rounded-[8px] border border-[#E8EAED] bg-white text-[11px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors shrink-0"
+                                >
+                                    {copied === key ? tr("publishHub.copied") : tr("publishHub.copy")}
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
 

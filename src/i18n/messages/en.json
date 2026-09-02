@@ -5268,6 +5268,13 @@
         "connectNow": "Connect",
         "rePublish": "Re-publish",
         "liveNote": "Live on the boards that accepted it. The rest need an account or an agreement.",
-        "partnerNote": "These boards need a signed agreement with the provider before anything can be posted. Croar can't publish to them for you — contact the board, then connect the account under Job Portals."
+        "partnerNote": "These boards need a signed agreement with the provider before anything can be posted. Croar can't publish to them for you — contact the board, then connect the account under Job Portals.",
+        "liveOn": "Live on {count} channel(s)",
+        "feedTitle": "What to give the board",
+        "feedDesc": "Some boards pull from a feed rather than being pushed to. Paste these where the board asks for them — Indeed under Job Sync, Google in Search Console.",
+        "feedIndeed": "Indeed XML feed (all your live jobs)",
+        "feedGoogle": "This job's schema.org markup",
+        "copy": "Copy",
+        "copied": "Copied"
     }
 }

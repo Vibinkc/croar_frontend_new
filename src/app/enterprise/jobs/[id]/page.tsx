@@ -84,6 +84,7 @@ interface Job {
     customer?: string;
     metrics?: JobMetrics;
     stages?: JobStage[];
+    postings?: { platform: string; status?: string | null; external_id?: string | null }[];
     application_fields?: { id: string; label: string; type: string; icon: string; is_required: boolean }[];
     owner?: Member | null;
     collaborators?: Member[];
@@ -940,6 +941,7 @@ export default function JobDetailPage() {
                                 jobId={String(id)}
                                 jobTitle={job.title}
                                 token={token}
+                                postings={job.postings || []}
                                 onPublished={fetchJobDetails}
                             />
                         </>

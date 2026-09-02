@@ -5268,6 +5268,13 @@
         "connectNow": "連携",
         "rePublish": "再掲載",
         "liveNote": "掲載に成功したサイトで公開中です。残りはアカウント連携か契約が必要です。",
-        "partnerNote": "これらのサイトは提供元との契約が必要です。Croar が代理で掲載することはできません。契約後、「求人サイト」でアカウントを連携してください。"
+        "partnerNote": "これらのサイトは提供元との契約が必要です。Croar が代理で掲載することはできません。契約後、「求人サイト」でアカウントを連携してください。",
+        "liveOn": "{count} チャネルで公開中",
+        "feedTitle": "求人サイトに渡す情報",
+        "feedDesc": "一部のサイトは送信ではなくフィードを取得します。サイトが指定する場所に貼り付けてください — Indeed は Job Sync、Google は Search Console です。",
+        "feedIndeed": "Indeed XML フィード（公開中の全求人）",
+        "feedGoogle": "この求人の schema.org マークアップ",
+        "copy": "コピー",
+        "copied": "コピーしました"
     }
 }
