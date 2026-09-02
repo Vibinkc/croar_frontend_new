@@ -63,6 +63,7 @@ interface WorkflowStage {
     assessment?: StageAssessment | null;
     interview?: StageInterview | null;
     email?: StageEmail | null;
+    onboarding?: StageOnboarding | null;
 }
 
 const ASSESSMENT_TYPES: StageAssessment["type"][] = ["APTITUDE", "CODING", "BOTH", "VIDEO"];
@@ -80,6 +81,12 @@ interface StageEmail {
 }
 
 const INTERVIEW_TYPES: StageInterview["interview_type"][] = ["GMEET", "TEAMS", "AI"];
+
+interface StageOnboarding {
+    /** Which onboarding form the hire is sent. Optional on the model, but an onboarding with no
+     *  template asks the candidate for nothing, so the UI insists on one. */
+    template_id: string;
+}
 
 /** Stage types that normally carry a test, used only to pre-pick a sensible assessment type. */
 const ASSESSMENT_FOR_STAGE: Record<string, StageAssessment["type"]> = {
@@ -155,6 +162,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const [createdJobId, setCreatedJobId] = useState("");
     const [companies, setCompanies] = useState<Company[]>([]);
     const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
+    const [onboardingTemplates, setOnboardingTemplates] = useState<{ id: string; name: string }[]>([]);
 
     const [formData, setFormData] = useState({
         title: "",
@@ -189,6 +197,17 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             }
         } catch (error) {
             console.error("Failed to fetch email templates:", error);
+        }
+    }, [token]);
+
+    const fetchOnboardingTemplates = useCallback(async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/onboarding/templates/`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) setOnboardingTemplates(await res.json());
+        } catch (error) {
+            console.error("Failed to fetch onboarding templates:", error);
         }
     }, [token]);
 
@@ -267,6 +286,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 fetchJobDetails();
                 fetchCompanies();
                 fetchEmailTemplates();
+            fetchOnboardingTemplates();
             }
         } else {
             if (token) {
@@ -274,7 +294,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 fetchEmailTemplates();
             }
         }
-    }, [token, jobId, isEdit, fetchJobDetails, fetchCompanies, fetchEmailTemplates]);
+    }, [token, jobId, isEdit, fetchJobDetails, fetchCompanies, fetchEmailTemplates, fetchOnboardingTemplates]);
 
 
     // The application form is edited on the job itself (Application form tab), so the wizard no
@@ -574,12 +594,22 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
             const em = stage.email;
             if (em?.template_id) {
-                calls.push(post("automation/", {
+                // The mail automation endpoint is /automation/mail, not /automation/.
+                calls.push(post("automation/mail", {
                     ...base,
                     criteria: `Email at ${stage.name}`,
                     template_id: em.template_id,
                     is_enabled: true,
                     is_immediate: true,
+                }));
+            }
+
+            const ob = stage.onboarding;
+            if (ob?.template_id) {
+                calls.push(post("onboarding-automation/", {
+                    ...base,
+                    template_id: ob.template_id,
+                    is_enabled: true,
                 }));
             }
         }
@@ -1217,6 +1247,36 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                             </div>
                                         )}
 
+                                        {node.onboarding && (
+                                            <div className="mt-1.5 ml-[52px] rounded-[11px] border border-[#E8EAED] bg-[#FBFBFC] p-3 space-y-2.5">
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-[#B45309]">
+                                                        <CircleCheck className="w-3.5 h-3.5" />
+                                                        {tr("jobForm.onboardingOnRound")}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, onboarding: null } : s) }))}
+                                                        className="text-[11.5px] font-semibold text-[#8A929E] hover:text-[#C0383C] transition-colors"
+                                                    >
+                                                        {tr("jobForm.assessmentRemove")}
+                                                    </button>
+                                                </div>
+                                                <Select
+                                                    className="cursor-pointer h-9 text-[12px]"
+                                                    value={node.onboarding.template_id}
+                                                    aria-label={tr("jobForm.onboardingTemplate")}
+                                                    onChange={e => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id && s.onboarding ? { ...s, onboarding: { template_id: e.target.value } } : s) }))}
+                                                >
+                                                    <option value="">{tr("jobForm.onboardingTemplatePick")}</option>
+                                                    {onboardingTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
+                                                </Select>
+                                                {onboardingTemplates.length === 0 && (
+                                                    <p className="text-[10.5px] text-[#B45309] leading-relaxed">{tr("jobForm.onboardingNoTemplates")}</p>
+                                                )}
+                                                <p className="text-[10.5px] text-[#8A929E] leading-relaxed">{tr("jobForm.onboardingHint")}</p>
+                                            </div>
+                                        )}
+
                                         {/* Attach whatever this round should DO. Each becomes a real
                                             automation, keyed to this stage, once the job exists. */}
                                         <div className="mt-1.5 ml-[52px] flex flex-wrap items-center gap-3">
@@ -1245,6 +1305,15 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                 >
                                                     <CirclePlus className="w-3.5 h-3.5" />
                                                     {tr("jobForm.emailAdd")}
+                                                </button>
+                                            )}
+                                            {!node.onboarding && (
+                                                <button
+                                                    onClick={() => setFormData(prev => ({ ...prev, workflow_stages: prev.workflow_stages.map(s => s.id === node.id ? { ...s, onboarding: { template_id: "" } } : s) }))}
+                                                    className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-[#8A929E] hover:text-[#B45309] transition-colors"
+                                                >
+                                                    <CirclePlus className="w-3.5 h-3.5" />
+                                                    {tr("jobForm.onboardingAdd")}
                                                 </button>
                                             )}
                                         </div>

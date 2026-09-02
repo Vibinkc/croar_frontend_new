@@ -2931,7 +2931,13 @@
         "emailOnRound": "이 단계의 이메일",
         "emailTemplate": "이메일 템플릿",
         "emailTemplatePick": "템플릿을 선택하세요…",
-        "emailNoTemplates": "이메일 템플릿이 없습니다 — 메일에서 먼저 생성한 뒤 돌아오세요."
+        "emailNoTemplates": "이메일 템플릿이 없습니다 — 메일에서 먼저 생성한 뒤 돌아오세요.",
+        "onboardingAdd": "온보딩 추가",
+        "onboardingOnRound": "이 단계의 온보딩",
+        "onboardingTemplate": "온보딩 템플릿",
+        "onboardingTemplatePick": "템플릿을 선택하세요…",
+        "onboardingNoTemplates": "온보딩 템플릿이 없습니다 — 온보딩 허브에서 먼저 생성한 뒤 돌아오세요.",
+        "onboardingHint": "보통 마지막 단계입니다. 이 단계에 도달하면 입사자에게 온보딩 양식이 발송됩니다."
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",

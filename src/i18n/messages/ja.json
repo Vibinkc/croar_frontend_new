@@ -2931,7 +2931,13 @@
         "emailOnRound": "このステップのメール",
         "emailTemplate": "メールテンプレート",
         "emailTemplatePick": "テンプレートを選択…",
-        "emailNoTemplates": "メールテンプレートがありません — メール画面で作成してから戻ってください。"
+        "emailNoTemplates": "メールテンプレートがありません — メール画面で作成してから戻ってください。",
+        "onboardingAdd": "オンボーディングを追加",
+        "onboardingOnRound": "このステップのオンボーディング",
+        "onboardingTemplate": "オンボーディングテンプレート",
+        "onboardingTemplatePick": "テンプレートを選択…",
+        "onboardingNoTemplates": "オンボーディングテンプレートがありません — オンボーディングハブで作成してから戻ってください。",
+        "onboardingHint": "通常は最終ステップです。到達すると入社者へオンボーディングフォームが送られます。"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",

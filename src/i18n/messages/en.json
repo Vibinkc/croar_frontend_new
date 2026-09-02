@@ -2931,7 +2931,13 @@
         "emailOnRound": "Email on this round",
         "emailTemplate": "Email template",
         "emailTemplatePick": "Choose a template…",
-        "emailNoTemplates": "No email templates yet — create one in Mail, then come back."
+        "emailNoTemplates": "No email templates yet — create one in Mail, then come back.",
+        "onboardingAdd": "Add onboarding",
+        "onboardingOnRound": "Onboarding on this round",
+        "onboardingTemplate": "Onboarding template",
+        "onboardingTemplatePick": "Choose a template…",
+        "onboardingNoTemplates": "No onboarding templates yet — create one in Onboarding Hub, then come back.",
+        "onboardingHint": "Usually the final round: reaching it sends the hire their onboarding form."
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",
