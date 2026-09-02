@@ -2947,7 +2947,22 @@
         "assessmentTopicLabel": "Topic",
         "assessmentQuestions": "Questions",
         "interviewDailyLimit": "Interviews per day",
-        "interviewDailyLimitHint": "How many candidates can be booked into this round each day."
+        "interviewDailyLimitHint": "How many candidates can be booked into this round each day.",
+        "triggerCriteria": "Trigger criteria",
+        "criteriaPlaceholder": "Describe the condition, e.g. 'AI score > 80' or 'Interview cleared'…",
+        "criteriaHelp": "Clear plain-language conditions help your team know when this fires.",
+        "emailTemplateOptional": "Email template (optional)",
+        "noTemplateDefault": "No template — use the default",
+        "introEmailTemplate": "Intro email template",
+        "noEmailManual": "No email — send it manually",
+        "startTime": "Start time",
+        "endTime": "End time",
+        "togEnable": "Enable automation",
+        "togEnableHint": "Turn rules on/off",
+        "togImmediate": "Send immediately",
+        "togImmediateHint": "Auto-send on round change",
+        "togAutoMove": "Auto-move",
+        "togAutoMoveHint": "Advance to next round"
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

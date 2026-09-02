@@ -2947,7 +2947,22 @@
         "assessmentTopicLabel": "トピック",
         "assessmentQuestions": "設問",
         "interviewDailyLimit": "1日あたりの面接数",
-        "interviewDailyLimitHint": "このステップで1日に予約できる候補者数です。"
+        "interviewDailyLimitHint": "このステップで1日に予約できる候補者数です。",
+        "triggerCriteria": "実行条件",
+        "criteriaPlaceholder": "条件を記入してください。例：「AI スコア 80 以上」「面接通過」…",
+        "criteriaHelp": "条件を平易な言葉で書いておくと、いつ実行されるかチームに伝わります。",
+        "emailTemplateOptional": "メールテンプレート（任意）",
+        "noTemplateDefault": "テンプレートなし — 既定を使用",
+        "introEmailTemplate": "案内メールテンプレート",
+        "noEmailManual": "メールなし — 手動で送信",
+        "startTime": "開始時刻",
+        "endTime": "終了時刻",
+        "togEnable": "自動化を有効化",
+        "togEnableHint": "ルールのオン/オフ",
+        "togImmediate": "すぐに送信",
+        "togImmediateHint": "ステップ変更時に自動送信",
+        "togAutoMove": "自動で進める",
+        "togAutoMoveHint": "次のステップへ進める"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",

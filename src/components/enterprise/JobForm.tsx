@@ -11,6 +11,8 @@ import RoundAutomationDrawer, {
     DrawerInput,
     DrawerLabel,
     DrawerSelect,
+    DrawerTextarea,
+    DrawerToggle,
 } from "@/components/enterprise/RoundAutomationDrawer";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
@@ -57,6 +59,9 @@ interface StageAssessment {
     criteria: string;
     question_count: number;
     test_duration: number;
+    email_template_id: string;
+    is_enabled: boolean;
+    auto_move: boolean;
     /** Written here via /assessment/generate-preview and saved with the automation on create. */
     generated_questions?: { id?: string; question?: string; [k: string]: unknown }[] | null;
 }
@@ -82,11 +87,21 @@ interface StageInterview {
     interview_type: "GMEET" | "TEAMS" | "AI";
     interviewer_email: string;
     daily_limit: number;
+    criteria: string;
+    start_time: string;
+    end_time: string;
+    email_template_id: string;
+    is_enabled: boolean;
+    auto_move: boolean;
 }
 
 interface StageEmail {
     /** MailAutomationCreate requires a template; there is no "just send something" mode. */
     template_id: string;
+    criteria: string;
+    is_enabled: boolean;
+    is_immediate: boolean;
+    auto_move: boolean;
 }
 
 const INTERVIEW_TYPES: StageInterview["interview_type"][] = ["GMEET", "TEAMS", "AI"];
@@ -95,6 +110,9 @@ interface StageOnboarding {
     /** Which onboarding form the hire is sent. Optional on the model, but an onboarding with no
      *  template asks the candidate for nothing, so the UI insists on one. */
     template_id: string;
+    email_template_id: string;
+    is_enabled: boolean;
+    auto_move: boolean;
 }
 
 /** Stage types that normally carry a test, used only to pre-pick a sensible assessment type. */
@@ -590,7 +608,9 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                     criteria: a.criteria?.trim() || "60% to pass",
                     question_count: Number(a.question_count) || 10,
                     test_duration: Number(a.test_duration) || 30,
-                    is_enabled: true,
+                    email_template_id: a.email_template_id || null,
+                    is_enabled: a.is_enabled,
+                    auto_move: a.auto_move,
                     // Questions written on the Workflow step travel with the automation, so the
                     // round is ready the moment the job exists.
                     generated_questions: a.generated_questions?.length ? a.generated_questions : null,
@@ -601,11 +621,15 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             if (iv) {
                 calls.push(post("interview-automation/", {
                     ...base,
-                    criteria: `Interview at ${stage.name}`,
+                    criteria: iv.criteria?.trim() || `Interview at ${stage.name}`,
                     interview_type: iv.interview_type,
                     interviewer_email: iv.interviewer_email?.trim() || null,
                     daily_limit: Number(iv.daily_limit) || 5,
-                    is_enabled: true,
+                    start_time: iv.start_time || "09:00",
+                    end_time: iv.end_time || "17:00",
+                    email_template_id: iv.email_template_id || null,
+                    is_enabled: iv.is_enabled,
+                    auto_move: iv.auto_move,
                 }));
             }
 
@@ -614,10 +638,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 // The mail automation endpoint is /automation/mail, not /automation/.
                 calls.push(post("automation/mail", {
                     ...base,
-                    criteria: `Email at ${stage.name}`,
+                    criteria: em.criteria?.trim() || `Email at ${stage.name}`,
                     template_id: em.template_id,
-                    is_enabled: true,
-                    is_immediate: true,
+                    is_enabled: em.is_enabled,
+                    is_immediate: em.is_immediate,
+                    auto_move: em.auto_move,
                 }));
             }
 
@@ -626,7 +651,9 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 calls.push(post("onboarding-automation/", {
                     ...base,
                     template_id: ob.template_id,
-                    is_enabled: true,
+                    email_template_id: ob.email_template_id || null,
+                    is_enabled: ob.is_enabled,
+                    auto_move: ob.auto_move,
                 }));
             }
         }
@@ -1239,15 +1266,15 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 // Opening a drawer for something not yet attached seeds a sensible default, so the
                 // form is never blank on arrival.
                 if (drawer.kind === "assessment" && !a) {
-                    patch({ assessment: { type: ASSESSMENT_FOR_STAGE[node.type] || "APTITUDE", topic: "", criteria: "60% to pass", question_count: 10, test_duration: 30 } });
+                    patch({ assessment: { type: ASSESSMENT_FOR_STAGE[node.type] || "APTITUDE", topic: "", criteria: "60% to pass", question_count: 10, test_duration: 30, email_template_id: "", is_enabled: true, auto_move: false } });
                     return null;
                 }
                 if (drawer.kind === "interview" && !iv) {
-                    patch({ interview: { interview_type: "GMEET", interviewer_email: "", daily_limit: 5 } });
+                    patch({ interview: { interview_type: "GMEET", interviewer_email: "", daily_limit: 5, criteria: "", start_time: "09:00", end_time: "17:00", email_template_id: "", is_enabled: true, auto_move: false } });
                     return null;
                 }
-                if (drawer.kind === "email" && !em) { patch({ email: { template_id: "" } }); return null; }
-                if (drawer.kind === "onboarding" && !ob) { patch({ onboarding: { template_id: "" } }); return null; }
+                if (drawer.kind === "email" && !em) { patch({ email: { template_id: "", criteria: "", is_enabled: true, is_immediate: true, auto_move: false } }); return null; }
+                if (drawer.kind === "onboarding" && !ob) { patch({ onboarding: { template_id: "", email_template_id: "", is_enabled: true, auto_move: false } }); return null; }
 
                 const detach = () => {
                     patch({ [drawer.kind === "email" ? "email" : drawer.kind]: null } as Partial<WorkflowStage>);
@@ -1327,6 +1354,19 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                         </>
                                     )}
                                 </div>
+
+                                <div>
+                                    <DrawerLabel htmlFor="rd-a-mail">{tr("jobForm.emailTemplateOptional")}</DrawerLabel>
+                                    <DrawerSelect id="rd-a-mail" value={a.email_template_id} onChange={v => patch({ assessment: { ...a, email_template_id: v } })}>
+                                        <option value="">{tr("jobForm.noTemplateDefault")}</option>
+                                        {emailTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
+                                    </DrawerSelect>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <DrawerToggle icon="check_circle" title={tr("jobForm.togEnable")} hint={tr("jobForm.togEnableHint")} checked={a.is_enabled} onChange={v => patch({ assessment: { ...a, is_enabled: v } })} />
+                                    <DrawerToggle icon="arrow_forward" iconClass="text-[#5B53E0]" title={tr("jobForm.togAutoMove")} hint={tr("jobForm.togAutoMoveHint")} checked={a.auto_move} onChange={v => patch({ assessment: { ...a, auto_move: v } })} />
+                                </div>
                             </>
                         )}
 
@@ -1347,13 +1387,44 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                     <DrawerInput id="rd-i-limit" type="number" min={1} max={50} value={iv.daily_limit} onChange={e => patch({ interview: { ...iv, daily_limit: Number(e.target.value) } })} />
                                     <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1">{tr("jobForm.interviewDailyLimitHint")}</p>
                                 </div>
+
+                                <div>
+                                    <DrawerLabel htmlFor="rd-i-crit">{tr("jobForm.triggerCriteria")}</DrawerLabel>
+                                    <DrawerTextarea id="rd-i-crit" rows={3} value={iv.criteria} placeholder={tr("jobForm.criteriaPlaceholder")} onChange={e => patch({ interview: { ...iv, criteria: e.target.value } })} />
+                                    <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1">{tr("jobForm.criteriaHelp")}</p>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <DrawerLabel htmlFor="rd-i-start">{tr("jobForm.startTime")}</DrawerLabel>
+                                        <DrawerInput id="rd-i-start" type="time" value={iv.start_time} onChange={e => patch({ interview: { ...iv, start_time: e.target.value } })} />
+                                    </div>
+                                    <div>
+                                        <DrawerLabel htmlFor="rd-i-end">{tr("jobForm.endTime")}</DrawerLabel>
+                                        <DrawerInput id="rd-i-end" type="time" value={iv.end_time} onChange={e => patch({ interview: { ...iv, end_time: e.target.value } })} />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <DrawerLabel htmlFor="rd-i-tpl">{tr("jobForm.emailTemplateOptional")}</DrawerLabel>
+                                    <DrawerSelect id="rd-i-tpl" value={iv.email_template_id} onChange={v => patch({ interview: { ...iv, email_template_id: v } })}>
+                                        <option value="">{tr("jobForm.noTemplateDefault")}</option>
+                                        {emailTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
+                                    </DrawerSelect>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <DrawerToggle icon="check_circle" title={tr("jobForm.togEnable")} hint={tr("jobForm.togEnableHint")} checked={iv.is_enabled} onChange={v => patch({ interview: { ...iv, is_enabled: v } })} />
+                                    <DrawerToggle icon="arrow_forward" iconClass="text-[#5B53E0]" title={tr("jobForm.togAutoMove")} hint={tr("jobForm.togAutoMoveHint")} checked={iv.auto_move} onChange={v => patch({ interview: { ...iv, auto_move: v } })} />
+                                </div>
                             </>
                         )}
 
                         {drawer.kind === "email" && em && (
+                            <>
                             <div>
                                 <DrawerLabel htmlFor="rd-e-tpl" required>{tr("jobForm.emailTemplate")}</DrawerLabel>
-                                <DrawerSelect id="rd-e-tpl" value={em.template_id} onChange={v => patch({ email: { template_id: v } })}>
+                                <DrawerSelect id="rd-e-tpl" value={em.template_id} onChange={v => patch({ email: { ...em, template_id: v } })}>
                                     <option value="">{tr("jobForm.emailTemplatePick")}</option>
                                     {emailTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
                                 </DrawerSelect>
@@ -1361,12 +1432,26 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                     <p className="text-[11.5px] text-[#B45309] mt-2 ml-1 leading-relaxed">{tr("jobForm.emailNoTemplates")}</p>
                                 )}
                             </div>
+
+                                <div>
+                                    <DrawerLabel htmlFor="rd-e-crit">{tr("jobForm.triggerCriteria")}</DrawerLabel>
+                                    <DrawerTextarea id="rd-e-crit" rows={3} value={em.criteria} placeholder={tr("jobForm.criteriaPlaceholder")} onChange={e => patch({ email: { ...em, criteria: e.target.value } })} />
+                                    <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1">{tr("jobForm.criteriaHelp")}</p>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <DrawerToggle icon="check_circle" title={tr("jobForm.togEnable")} hint={tr("jobForm.togEnableHint")} checked={em.is_enabled} onChange={v => patch({ email: { ...em, is_enabled: v } })} />
+                                    <DrawerToggle icon="bolt" iconClass="text-amber-500" title={tr("jobForm.togImmediate")} hint={tr("jobForm.togImmediateHint")} checked={em.is_immediate} onChange={v => patch({ email: { ...em, is_immediate: v } })} />
+                                    <DrawerToggle icon="arrow_forward" iconClass="text-[#5B53E0]" title={tr("jobForm.togAutoMove")} hint={tr("jobForm.togAutoMoveHint")} checked={em.auto_move} onChange={v => patch({ email: { ...em, auto_move: v } })} />
+                                </div>
+                            </>
                         )}
 
                         {drawer.kind === "onboarding" && ob && (
+                            <>
                             <div>
                                 <DrawerLabel htmlFor="rd-o-tpl" required>{tr("jobForm.onboardingTemplate")}</DrawerLabel>
-                                <DrawerSelect id="rd-o-tpl" value={ob.template_id} onChange={v => patch({ onboarding: { template_id: v } })}>
+                                <DrawerSelect id="rd-o-tpl" value={ob.template_id} onChange={v => patch({ onboarding: { ...ob, template_id: v } })}>
                                     <option value="">{tr("jobForm.onboardingTemplatePick")}</option>
                                     {onboardingTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
                                 </DrawerSelect>
@@ -1375,6 +1460,20 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                 )}
                                 <p className="text-[11px] text-[#8A929E] mt-2 ml-1 leading-relaxed">{tr("jobForm.onboardingHint")}</p>
                             </div>
+
+                                <div>
+                                    <DrawerLabel htmlFor="rd-o-mail">{tr("jobForm.introEmailTemplate")}</DrawerLabel>
+                                    <DrawerSelect id="rd-o-mail" value={ob.email_template_id} onChange={v => patch({ onboarding: { ...ob, email_template_id: v } })}>
+                                        <option value="">{tr("jobForm.noEmailManual")}</option>
+                                        {emailTemplates.map(t => (<option key={t.id} value={t.id}>{t.name}</option>))}
+                                    </DrawerSelect>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <DrawerToggle icon="check_circle" title={tr("jobForm.togEnable")} hint={tr("jobForm.togEnableHint")} checked={ob.is_enabled} onChange={v => patch({ onboarding: { ...ob, is_enabled: v } })} />
+                                    <DrawerToggle icon="arrow_forward" iconClass="text-[#5B53E0]" title={tr("jobForm.togAutoMove")} hint={tr("jobForm.togAutoMoveHint")} checked={ob.auto_move} onChange={v => patch({ onboarding: { ...ob, auto_move: v } })} />
+                                </div>
+                            </>
                         )}
 
                         <button

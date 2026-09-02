@@ -83,6 +83,47 @@ export function DrawerTextarea(props: React.TextareaHTMLAttributes<HTMLTextAreaE
     );
 }
 
+/** Toggle row copied from the Automation module: icon chip, two lines of text, switch. */
+export function DrawerToggle({
+    icon,
+    iconClass = "text-emerald-500",
+    title,
+    hint,
+    checked,
+    onChange,
+}: {
+    icon: string;
+    iconClass?: string;
+    title: string;
+    hint: string;
+    checked: boolean;
+    onChange: (v: boolean) => void;
+}) {
+    return (
+        <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+            <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E8EAED] shrink-0">
+                    <span className={`material-symbols-rounded text-[18px] ${iconClass}`}>{icon}</span>
+                </div>
+                <div className="min-w-0">
+                    <p className="text-[13px] font-bold text-[#15171C] truncate">{title}</p>
+                    <p className="text-[11px] text-[#9AA3AF] font-medium truncate">{hint}</p>
+                </div>
+            </div>
+            <button
+                type="button"
+                role="switch"
+                aria-checked={checked}
+                aria-label={title}
+                onClick={() => onChange(!checked)}
+                className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer shrink-0 ${checked ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+            >
+                <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`} />
+            </button>
+        </div>
+    );
+}
+
 export default function RoundAutomationDrawer({
     isOpen,
     kind,

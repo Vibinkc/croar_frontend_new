@@ -2947,7 +2947,22 @@
         "assessmentTopicLabel": "주제",
         "assessmentQuestions": "문항",
         "interviewDailyLimit": "일일 면접 수",
-        "interviewDailyLimitHint": "이 단계에서 하루에 예약할 수 있는 후보자 수입니다."
+        "interviewDailyLimitHint": "이 단계에서 하루에 예약할 수 있는 후보자 수입니다.",
+        "triggerCriteria": "실행 조건",
+        "criteriaPlaceholder": "조건을 설명하세요. 예: 'AI 점수 80 초과' 또는 '면접 통과'…",
+        "criteriaHelp": "조건을 쉬운 말로 적어두면 팀이 언제 실행되는지 알 수 있습니다.",
+        "emailTemplateOptional": "이메일 템플릿 (선택)",
+        "noTemplateDefault": "템플릿 없음 — 기본값 사용",
+        "introEmailTemplate": "안내 이메일 템플릿",
+        "noEmailManual": "이메일 없음 — 직접 발송",
+        "startTime": "시작 시간",
+        "endTime": "종료 시간",
+        "togEnable": "자동화 사용",
+        "togEnableHint": "규칙 켜기/끄기",
+        "togImmediate": "즉시 발송",
+        "togImmediateHint": "단계 변경 시 자동 발송",
+        "togAutoMove": "자동 이동",
+        "togAutoMoveHint": "다음 단계로 자동 진행"
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",
