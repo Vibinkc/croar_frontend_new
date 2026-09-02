@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { Button, Input, cn } from "@/components/ds";
+import { Button, Input, cn, jetbrainsMono } from "@/components/ds";
 
 interface PoolCandidate {
     id: string;
@@ -57,6 +57,18 @@ export default function AddCandidateModal({
     const [error, setError] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
+    // Three ways to get someone onto a job, mirroring how a recruiter actually works:
+    // they are already in the pool, you have their CV, or you only have their email.
+    const [mode, setMode] = useState<"search" | "upload" | "invite">("search");
+    const fileRef = useRef<HTMLInputElement>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [uploadResult, setUploadResult] = useState<{ full_name: string; email?: string; match_score?: number; created_candidate: boolean; already_on_job: boolean } | null>(null);
+    const [inviteEmail, setInviteEmail] = useState("");
+    const [isInviting, setIsInviting] = useState(false);
+    const [inviteDone, setInviteDone] = useState("");
+    const applyLink = typeof window !== "undefined" ? `${window.location.origin}/jobs/${jobId}` : "";
+
     const search = useCallback(
         async (q: string) => {
             setIsSearching(true);
@@ -86,6 +98,10 @@ export default function AddCandidateModal({
         setQuery("");
         setAddedIds(new Set());
         setError("");
+        setMode("search");
+        setUploadResult(null);
+        setInviteEmail("");
+        setInviteDone("");
         void search("");
         const t = setTimeout(() => inputRef.current?.focus(), 120);
         return () => clearTimeout(t);
@@ -117,6 +133,72 @@ export default function AddCandidateModal({
             setError(e instanceof Error && e.message ? e.message : tr("addCandidate.addFailed"));
         } finally {
             setAddingId(null);
+        }
+    };
+
+    const uploadCv = async (f: File) => {
+        setError("");
+        setUploadResult(null);
+        if (f.size > 20 * 1024 * 1024) {
+            setError(tr("addCandidate.cvTooLarge"));
+            return;
+        }
+        setIsUploading(true);
+        try {
+            const body = new FormData();
+            body.append("file", f);
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/candidates/upload`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body,
+            });
+            const payload = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(payload?.detail || String(res.status));
+            setUploadResult(payload);
+            onAdded();
+        } catch (e) {
+            setError(e instanceof Error && e.message ? e.message : tr("addCandidate.cvFailed"));
+        } finally {
+            setIsUploading(false);
+            if (fileRef.current) fileRef.current.value = "";
+        }
+    };
+
+    // Invite works off the pool: we look the email up, and only send if we have that person.
+    // Anyone else gets the apply link to send themselves, which is honest about what the
+    // backend can actually do rather than pretending an email went out.
+    const sendInvite = async () => {
+        const email = inviteEmail.trim().toLowerCase();
+        if (!email) return;
+        setIsInviting(true);
+        setError("");
+        setInviteDone("");
+        try {
+            const url = new URL(`${BACKEND_URL}/api/v1/enterprise/candidates/`);
+            url.searchParams.set("q", email);
+            url.searchParams.set("page_size", "10");
+            const found = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` } });
+            const data = found.ok ? await found.json() : null;
+            const list: PoolCandidate[] = Array.isArray(data) ? data : data?.items || [];
+            const match = list.find(c => (c.email || "").toLowerCase() === email);
+            if (!match) {
+                setError(tr("addCandidate.inviteNotInPool"));
+                return;
+            }
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/invite-candidate`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ candidate_id: match.id }),
+            });
+            const payload = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(payload?.detail || String(res.status));
+            setInviteDone(tr("addCandidate.inviteSent", { email }));
+            setInviteEmail("");
+            onAdded();
+        } catch (e) {
+            setError(e instanceof Error && e.message ? e.message : tr("addCandidate.inviteFailed"));
+        } finally {
+            setIsInviting(false);
         }
     };
 
@@ -158,17 +240,40 @@ export default function AddCandidateModal({
                                 </button>
                             </div>
 
-                            <div className="mt-3">
-                                <Input
-                                    ref={inputRef}
-                                    icon="search"
-                                    type="text"
-                                    value={query}
-                                    onChange={e => setQuery(e.target.value)}
-                                    placeholder={tr("addCandidate.searchPlaceholder")}
-                                    aria-label={tr("addCandidate.searchPlaceholder")}
-                                />
+                            <div className="flex gap-5 mt-3 border-b border-[#F0F0F1] -mb-4">
+                                {([
+                                    ["search", "person_search", tr("addCandidate.tabSearch")],
+                                    ["upload", "upload_file", tr("addCandidate.tabUpload")],
+                                    ["invite", "send", tr("addCandidate.tabInvite")],
+                                ] as const).map(([id, icon, label]) => (
+                                    <button
+                                        key={id}
+                                        onClick={() => { setMode(id); setError(""); }}
+                                        className={cn(
+                                            "relative pb-2.5 flex items-center gap-1.5 text-[13px] font-bold transition-colors",
+                                            mode === id ? "text-[#5B53E0]" : "text-[#8A929E] hover:text-[#374151]"
+                                        )}
+                                    >
+                                        <span className="material-symbols-rounded text-[17px]">{icon}</span>
+                                        {label}
+                                        {mode === id && <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-[#5B53E0] rounded-full" />}
+                                    </button>
+                                ))}
                             </div>
+
+                            {mode === "search" && (
+                                <div className="mt-5">
+                                    <Input
+                                        ref={inputRef}
+                                        icon="search"
+                                        type="text"
+                                        value={query}
+                                        onChange={e => setQuery(e.target.value)}
+                                        placeholder={tr("addCandidate.searchPlaceholder")}
+                                        aria-label={tr("addCandidate.searchPlaceholder")}
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex-1 overflow-y-auto">
@@ -178,7 +283,7 @@ export default function AddCandidateModal({
                                 </div>
                             )}
 
-                            {isSearching && results.length === 0 ? (
+                            {mode !== "search" ? null : isSearching && results.length === 0 ? (
                                 <p className="py-12 text-center text-[13px] text-[#8A929E]">
                                     {tr("addCandidate.searching")}
                                 </p>
@@ -238,8 +343,120 @@ export default function AddCandidateModal({
                             )}
                         </div>
 
+                            {mode === "upload" && (
+                                <div className="p-6">
+                                    <button
+                                        type="button"
+                                        onClick={() => fileRef.current?.click()}
+                                        onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
+                                        onDragLeave={() => setIsDragging(false)}
+                                        onDrop={e => {
+                                            e.preventDefault();
+                                            setIsDragging(false);
+                                            const f = e.dataTransfer.files?.[0];
+                                            if (f) void uploadCv(f);
+                                        }}
+                                        disabled={isUploading}
+                                        className={cn(
+                                            "w-full rounded-[12px] border-2 border-dashed px-6 py-10 text-center transition-colors",
+                                            isDragging ? "border-[#5B53E0] bg-[#F5F4FE]" : "border-[#DDE0E5] bg-[#FAFBFC] hover:border-[#5B53E0]/50 hover:bg-[#F7F8FA]",
+                                            isUploading && "opacity-60 cursor-wait"
+                                        )}
+                                    >
+                                        <span className="material-symbols-rounded text-[32px] text-[#5B53E0]">
+                                            {isUploading ? "progress_activity" : "cloud_upload"}
+                                        </span>
+                                        <p className="text-[13.5px] font-bold text-[#15171C] mt-2">
+                                            {isUploading ? tr("addCandidate.cvReading") : tr("addCandidate.cvDrop")}
+                                        </p>
+                                        <p className="text-[11.5px] text-[#8A929E] mt-1">{tr("addCandidate.cvHint")}</p>
+                                    </button>
+                                    <input
+                                        ref={fileRef}
+                                        type="file"
+                                        accept=".pdf,.doc,.docx,.rtf,.txt"
+                                        className="hidden"
+                                        onChange={e => { const f = e.target.files?.[0]; if (f) void uploadCv(f); }}
+                                    />
+
+                                    {uploadResult && (
+                                        <div className="mt-4 rounded-[12px] border border-[#BFE3CC] bg-[#E6F4EA] p-4">
+                                            <div className="flex items-start gap-2.5">
+                                                <span className="material-symbols-rounded text-[20px] text-[#15803D]">check_circle</span>
+                                                <div className="min-w-0">
+                                                    <p className="text-[13px] font-bold text-[#15171C]">
+                                                        {uploadResult.already_on_job
+                                                            ? tr("addCandidate.cvAlreadyOnJob", { name: uploadResult.full_name })
+                                                            : uploadResult.created_candidate
+                                                              ? tr("addCandidate.cvCreated", { name: uploadResult.full_name })
+                                                              : tr("addCandidate.cvMatched", { name: uploadResult.full_name })}
+                                                    </p>
+                                                    <p className="text-[11.5px] text-[#3F7550] mt-0.5">
+                                                        {[uploadResult.email, typeof uploadResult.match_score === "number" ? tr("addCandidate.cvScore", { score: Math.round(uploadResult.match_score) }) : null]
+                                                            .filter(Boolean)
+                                                            .join(" \u00b7 ")}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {mode === "invite" && (
+                                <div className="p-6 space-y-4">
+                                    <p className="text-[12.5px] text-[#6B6F76] leading-relaxed">
+                                        {tr("addCandidate.inviteIntro")}
+                                    </p>
+                                    <div className="flex gap-2">
+                                        <div className="flex-1">
+                                            <Input
+                                                icon="mail"
+                                                type="email"
+                                                value={inviteEmail}
+                                                onChange={e => setInviteEmail(e.target.value)}
+                                                onKeyDown={e => { if (e.key === "Enter") void sendInvite(); }}
+                                                placeholder={tr("addCandidate.invitePlaceholder")}
+                                                aria-label={tr("addCandidate.invitePlaceholder")}
+                                            />
+                                        </div>
+                                        <Button onClick={sendInvite} disabled={!inviteEmail.trim() || isInviting}>
+                                            {isInviting ? tr("addCandidate.inviteSending") : tr("addCandidate.inviteSend")}
+                                        </Button>
+                                    </div>
+
+                                    {inviteDone && (
+                                        <div className="rounded-[12px] border border-[#BFE3CC] bg-[#E6F4EA] px-4 py-3 text-[12.5px] text-[#15803D] flex items-center gap-2">
+                                            <span className="material-symbols-rounded text-[18px]">check_circle</span>
+                                            {inviteDone}
+                                        </div>
+                                    )}
+
+                                    <div className="rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4">
+                                        <p className="text-[12px] font-bold text-[#15171C] mb-1">{tr("addCandidate.shareLink")}</p>
+                                        <p className="text-[11.5px] text-[#8A929E] leading-relaxed mb-2.5">{tr("addCandidate.shareLinkHint")}</p>
+                                        <div className="flex gap-2">
+                                            <input
+                                                readOnly
+                                                value={applyLink}
+                                                onFocus={e => e.currentTarget.select()}
+                                                aria-label={tr("addCandidate.shareLink")}
+                                                className={cn("flex-1 min-w-0 h-10 px-3 rounded-[10px] border border-[#E8EAED] bg-white text-[12px] text-[#374151]", jetbrainsMono.className)}
+                                            />
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => { void navigator.clipboard?.writeText(applyLink); setInviteDone(tr("addCandidate.linkCopied")); }}
+                                            >
+                                                <span className="material-symbols-rounded text-[17px]">content_copy</span>
+                                                {tr("addCandidate.copy")}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                         <div className="px-6 py-3.5 border-t border-[#F0F0F1] bg-[#FBFBFC] flex items-center justify-between gap-3">
-                            <p className="text-[11.5px] text-[#8A929E]">{tr("addCandidate.searchFirstHint")}</p>
+                            <p className="text-[11.5px] text-[#8A929E]">{mode === "search" ? tr("addCandidate.searchFirstHint") : mode === "upload" ? tr("addCandidate.uploadHint") : tr("addCandidate.inviteHint")}</p>
                             <Button variant="secondary" size="sm" onClick={onClose}>
                                 {tr("common.done")}
                             </Button>

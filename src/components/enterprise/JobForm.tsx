@@ -630,6 +630,21 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                             ))}
                         </div>
 
+                        {/* Once the JD exists the job is worth creating. The application form and
+                            interview rounds are refinements, and both are reachable from the job
+                            itself — so holding the requisition hostage to them only delays it. */}
+                        {!isEdit && currentStep === 1 && (
+                            <Button
+                                variant="secondary"
+                                disabled={!canGoNext() || !formData.description?.trim() || isSubmitting}
+                                onClick={handleSubmit}
+                                className="shrink-0"
+                                title={tr("jobForm.createNowHint")}
+                            >
+                                {isSubmitting ? tr("jobForm.saving") : tr("jobForm.createNow")}
+                            </Button>
+                        )}
+
                         <Button
                             disabled={!canGoNext()}
                             onClick={() => {
