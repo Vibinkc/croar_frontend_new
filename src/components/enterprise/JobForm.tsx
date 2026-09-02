@@ -14,7 +14,6 @@ import {
     MapPin,
     Sparkles,
     RefreshCcw,
-    CirclePlus,
     ClipboardList,
     X,
     LayoutDashboard,
@@ -23,7 +22,6 @@ import {
     ChevronUp,
     ChevronDown,
     ListPlus,
-    Pin,
     FileText,
     AtSign,
     Users,
@@ -243,10 +241,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     }, [token, jobId, isEdit, fetchJobDetails, fetchCompanies, fetchEmailTemplates]);
 
 
+    // The application form is edited on the job itself (Application form tab), so the wizard no
+    // longer asks for it up front — a job's questions can be shaped after it exists.
     const steps = [
         { id: 1, name: tr("jobForm.stepJobDetails"), icon: "ClipboardList" },
-        { id: 2, name: tr("jobForm.stepApplication"), icon: "Settings" },
-        { id: 3, name: tr("jobForm.stepWorkflow"), icon: "Network" }
+        { id: 2, name: tr("jobForm.stepWorkflow"), icon: "Network" }
     ];
 
     const handleSubmit = async () => {
@@ -648,16 +647,16 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                         <Button
                             disabled={!canGoNext()}
                             onClick={() => {
-                                // Leaving the application-form step on a NEW job is where we ask
-                                // who should build the interview rounds. Editing an existing job
-                                // already has its rounds, so it goes straight through.
-                                if (currentStep === 2 && !isEdit) { setShowRoundsChoice(true); return; }
-                                if (currentStep < 3) { setCurrentStep(currentStep + 1); return; }
+                                // Leaving Job Details on a NEW job is where we ask who should
+                                // build the interview rounds. Editing an existing job already has
+                                // its rounds, so it goes straight through.
+                                if (currentStep === 1 && !isEdit) { setShowRoundsChoice(true); return; }
+                                if (currentStep < 2) { setCurrentStep(currentStep + 1); return; }
                                 handleSubmit();
                             }}
                             className="group shrink-0"
                         >
-                            {isSubmitting ? tr("jobForm.saving") : currentStep === 3 ? (isEdit ? tr("jobForm.saveChanges") : tr("jobForm.createJobBtn")) : tr("jobForm.nextStep")}
+                            {isSubmitting ? tr("jobForm.saving") : currentStep === 2 ? (isEdit ? tr("jobForm.saveChanges") : tr("jobForm.createJobBtn")) : tr("jobForm.nextStep")}
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </>
@@ -941,76 +940,6 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                             <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-[#E8EAED] p-5 md:p-6 bg-[#F7F8FA] lg:overflow-y-auto no-scrollbar flex flex-col gap-5">
                                 {/* Header */}
                                 <div>
-                                    <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-tight mb-1.5">{tr("jobForm.applicationForm")}</h1>
-                                    <p className="text-[13px] text-[#8A929E] leading-relaxed">{tr("jobForm.designFormDesc")}</p>
-                                </div>
-
-                                {/* Form Stats */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <Card padding="sm" className="text-center">
-                                        <div className={`text-[26px] font-semibold text-[#5B53E0] tracking-[-1px] ${jetbrainsMono.className}`}>{formData.application_fields.length}</div>
-                                        <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">{tr("jobForm.totalFields")}</div>
-                                    </Card>
-                                    <Card padding="sm" className="text-center">
-                                        <div className={`text-[26px] font-semibold text-[#15803D] tracking-[-1px] ${jetbrainsMono.className}`}>{formData.application_fields.filter(f => f.is_required).length}</div>
-                                        <div className="text-[10px] font-semibold text-[#9AA3AF] mt-0.5 uppercase tracking-wide">{tr("jobForm.requiredLabel")}</div>
-                                    </Card>
-                                </div>
-
-                                {/* Field Types Guide */}
-                                <Card padding="sm" className="space-y-3">
-                                    <p className="text-[11px] font-semibold text-[#6B6F76] uppercase tracking-wider">{tr("jobForm.fieldTypes")}</p>
-                                    {[
-                                        { type: tr("jobForm.text"), color: 'bg-[#E7ECFB] text-[#3559C7]', desc: tr("jobForm.ftTextDesc") },
-                                        { type: tr("jobForm.email"), color: 'bg-[#ECEBFB] text-[#5B53E0]', desc: tr("jobForm.ftEmailDesc") },
-                                        { type: tr("jobForm.number"), color: 'bg-[#FEF3E2] text-[#D97706]', desc: tr("jobForm.ftNumberDesc") },
-                                        { type: tr("jobForm.file"), color: 'bg-[#E3F4EF] text-[#0E8A6E]', desc: tr("jobForm.ftFileDesc") },
-                                        { type: tr("jobForm.boolean"), color: 'bg-[#FDECEC] text-[#C0383C]', desc: tr("jobForm.ftBooleanDesc") },
-                                    ].map(item => (
-                                        <div key={item.type} className="flex items-center gap-3">
-                                            <span className={`text-[10px] font-semibold px-2 py-1 rounded-[7px] ${item.color} shrink-0 w-14 text-center`}>{item.type}</span>
-                                            <span className="text-[12px] text-[#8A929E] font-medium">{item.desc}</span>
-                                        </div>
-                                    ))}
-                                </Card>
-                            </div>
-                            <div className="lg:col-span-8 p-5 md:p-6 overflow-y-auto no-scrollbar">
-                                <div className="flex flex-col gap-2.5 max-w-3xl mx-auto pb-10">
-                                    {formData.application_fields.map((field) => (
-                                        <div key={field.id} className="p-3.5 bg-white rounded-[12px] border border-[#E8EAED] flex items-center justify-between group hover:border-[#5B53E0]/40 transition-colors">
-                                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                                                <div className="w-9 h-9 rounded-[10px] bg-[#F4F5F7] flex items-center justify-center text-[#9AA3AF] group-hover:text-[#5B53E0] group-hover:bg-[#ECEBFB] transition-colors shrink-0"><Pin className="w-4 h-4" /></div>
-                                                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 items-center min-w-0">
-                                                    <input type="text" className="bg-transparent border-none outline-none text-[13.5px] font-semibold text-[#15171C] p-0 focus:text-[#5B53E0] transition-colors truncate" value={field.label} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, label: e.target.value } : f) }))} />
-                                                    <select className="bg-[#F4F5F7] border border-[#E8EAED] outline-none text-[12px] font-medium text-[#374151] px-3 h-9 rounded-[9px] cursor-pointer hover:bg-[#EEEFF1] transition-colors w-full sm:w-36" value={field.type} onChange={(e) => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, type: e.target.value as ApplicationField['type'] } : f) }))}>
-                                                        <option value="text">{tr("jobForm.text")}</option><option value="email">{tr("jobForm.email")}</option><option value="number">{tr("jobForm.number")}</option><option value="boolean">{tr("jobForm.boolean")}</option><option value="file">{tr("jobForm.file")}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2 ml-4 shrink-0">
-                                                <button title={field.is_required ? tr("jobForm.requiredClickOptional") : tr("jobForm.optionalClickRequired")} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.map(f => f.id === field.id ? { ...f, is_required: !f.is_required } : f) }))} className={`px-2.5 py-1 rounded-[8px] text-[11px] font-semibold border transition-colors ${field.is_required ? 'bg-[#5B53E0] text-white border-[#5B53E0]' : 'bg-[#F4F5F7] text-[#374151] border-[#D4D7DC] hover:bg-[#ECEBFB] hover:text-[#5B53E0] hover:border-[#5B53E0]/40'}`}>{field.is_required ? tr("jobForm.required") : tr("jobForm.optional")}</button>
-                                                <button title={tr("jobForm.removeField")} onClick={() => setFormData(prev => ({ ...prev, application_fields: prev.application_fields.filter(f => f.id !== field.id) }))} className="w-8 h-8 rounded-[9px] border border-[#E8EAED] bg-white text-[#8A929E] hover:bg-[#FDECEC] hover:text-[#EF4444] hover:border-[#F7D7D7] transition-colors flex items-center justify-center shrink-0"><X className="w-4 h-4" /></button>
-                                            </div>
-                                        </div>
-                                    ))}
-
-                                    <button onClick={() => {
-                                        const newField: ApplicationField = { id: Date.now().toString(), label: tr('jobForm.newField'), type: 'text', icon: 'Type', is_required: false };
-                                        setFormData(prev => ({ ...prev, application_fields: [...prev.application_fields, newField] }));
-                                    }} className="w-full h-12 rounded-[12px] border-2 border-dashed border-[#D4D7DC] text-[#6B6F76] text-[14px] font-semibold hover:border-[#5B53E0] hover:text-[#5B53E0] hover:bg-[#ECEBFB]/40 transition-colors flex items-center justify-center gap-2">
-                                        <CirclePlus className="w-5 h-5" />
-                                        {tr("jobForm.addField")}
-                                    </button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    )}
-
-                    {currentStep === 3 && (
-                        <motion.div key="step3" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden h-full">
-                            <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-[#E8EAED] p-5 md:p-6 bg-[#F7F8FA] lg:overflow-y-auto no-scrollbar flex flex-col gap-5">
-                                {/* Header */}
-                                <div>
                                     <h1 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C] leading-tight mb-1.5">{tr("jobForm.hiringProcess")}</h1>
                                     <p className="text-[13px] text-[#8A929E] leading-relaxed">{tr("jobForm.defineStagesDesc")}</p>
                                 </div>
@@ -1205,7 +1134,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
 
                                 <button
                                     disabled={isHandingOff}
-                                    onClick={() => { setShowRoundsChoice(false); setCurrentStep(3); }}
+                                    onClick={() => { setShowRoundsChoice(false); setCurrentStep(2); }}
                                     className="text-left rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/50 hover:bg-[#F7F8FA] transition-colors p-3.5 disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <div className="flex items-center gap-2 mb-1">
