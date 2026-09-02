@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type ElementType } from "react";
-import { CheckCircle2, AlertCircle, Send, Link2, Clock, Lock } from "lucide-react";
+import { CheckCircle2, AlertCircle, Send, Link2, Lock } from "lucide-react";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 
@@ -72,7 +72,11 @@ const INTEGRATION_BADGE: Record<string, { label: string; cls: string }> = {
 const STATUS_PILL: Record<string, { label: string; cls: string; icon: ElementType }> = {
     PUBLISHED: { label: "Published", cls: "bg-[#E4F5EF] text-[#0E8A6E]", icon: CheckCircle2 },
     LISTED: { label: "Listed", cls: "bg-[#E4F5EF] text-[#0E8A6E]", icon: CheckCircle2 },
-    QUEUED: { label: "Queued", cls: "bg-[#E8EEFD] text-[#3559C7]", icon: Clock },
+    // Not a success and not a pending sync — the board was never pushed to. Amber, like the
+    // other "you still have to do something" states, rather than blue-and-hopeful.
+    CONNECTED_NO_PUSH: { label: "Post it yourself", cls: "bg-[#FBEFDC] text-[#B26B08]", icon: Link2 },
+    // Rows written before the rename carry the old name; render them the same way.
+    QUEUED: { label: "Post it yourself", cls: "bg-[#FBEFDC] text-[#B26B08]", icon: Link2 },
     NOT_CONNECTED: { label: "Connect first", cls: "bg-[#FBEFDC] text-[#B26B08]", icon: Link2 },
     PARTNER_REQUIRED: { label: "Partner required", cls: "bg-[#FBEFDC] text-[#B26B08]", icon: Lock },
     ERROR: { label: "Error", cls: "bg-[#FCE8E8] text-[#C0383C]", icon: AlertCircle },
