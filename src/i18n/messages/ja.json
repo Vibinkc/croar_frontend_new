@@ -186,7 +186,10 @@
         },
         "assessConnected": "連携済み",
         "assessDisconnect": "連携を解除",
-        "assessConnectFailed": "ツールを連携できませんでした。入力内容をご確認ください。"
+        "assessConnectFailed": "ツールを連携できませんでした。入力内容をご確認ください。",
+        "freeApi": "無料 API",
+        "paidApi": "有料 API",
+        "verified": "確認済み"
     },
     "shortlisted": {
         "title": "人材パイプライン",

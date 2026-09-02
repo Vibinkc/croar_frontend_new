@@ -23,11 +23,12 @@ interface Integration {
     docs_url?: string | null;
     icon_url?: string | null;
     brand_color?: string;
+    api_tier?: string;
     capabilities: string[];
     limitations: string[];
     fields: Field[];
     connected: boolean;
-    connection?: { display_name?: string; invite_url?: string | null } | null;
+    connection?: { display_name?: string; invite_url?: string | null; verified?: boolean } | null;
 }
 
 interface BoardRow {
@@ -219,7 +220,20 @@ export default function AssessmentIntegrations() {
                                                             {it.connected && (
                                                                 <span className="inline-flex items-center gap-1 text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#E6F4EA] text-[#15803D]">
                                                                     <span className="material-symbols-rounded text-[13px]">check_circle</span>
-                                                                    {tr("integrations.assessConnected")}
+                                                                    {it.connection?.verified
+                                                                        ? tr("integrations.verified")
+                                                                        : tr("integrations.assessConnected")}
+                                                                </span>
+                                                            )}
+                                                            {/* Whether this tool can actually be connected, or only linked to. */}
+                                                            {it.api_tier === "free" && (
+                                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#ECEBFB] text-[#5B53E0]">
+                                                                    {tr("integrations.freeApi")}
+                                                                </span>
+                                                            )}
+                                                            {it.api_tier === "paid" && (
+                                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#FEF3E2] text-[#B45309]">
+                                                                    {tr("integrations.paidApi")}
                                                                 </span>
                                                             )}
                                                         </div>

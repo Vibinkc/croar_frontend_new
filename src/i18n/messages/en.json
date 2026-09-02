@@ -186,7 +186,10 @@
         },
         "assessConnected": "Connected",
         "assessDisconnect": "Disconnect",
-        "assessConnectFailed": "Could not connect that tool. Check the details and try again."
+        "assessConnectFailed": "Could not connect that tool. Check the details and try again.",
+        "freeApi": "Free API",
+        "paidApi": "Paid API",
+        "verified": "Verified"
     },
     "shortlisted": {
         "title": "Talent Pipeline",
