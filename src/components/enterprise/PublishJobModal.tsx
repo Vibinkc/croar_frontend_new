@@ -34,11 +34,30 @@ interface PublishResult {
     message: string | null;
 }
 
-const COUNTRY_GROUPS: { code: string; label: string }[] = [
-    { code: "GLOBAL", label: "Global" },
-    { code: "KR", label: "Korea (한국)" },
-    { code: "JP", label: "Japan (日本)" },
+const COUNTRY_LABEL: Record<string, string> = {
+    GLOBAL: "Global",
+    KR: "Korea (한국)",
+    JP: "Japan (日本)",
+};
+
+/**
+ * Publishing targets, grouped by what the recruiter has to do before the board will take the
+ * post — which is the actual decision here. Country is still shown, but as a label on each
+ * board rather than the thing that separates them: a board you cannot post to is not more
+ * useful for being in the same country as one you can.
+ */
+type GroupKey = "ready" | "connect" | "partner";
+
+const PUBLISH_GROUPS: { key: GroupKey; label: string; hint: string }[] = [
+    { key: "ready", label: "Ready to post", hint: "Publishes as soon as you hit Publish — nothing to set up." },
+    { key: "connect", label: "Needs your account", hint: "Connect your own account once, then these publish with the rest." },
+    { key: "partner", label: "Needs a partner contract", hint: "These boards only accept posts through a commercial agreement." },
 ];
+
+const groupFor = (p: Portal): GroupKey => {
+    if (p.connected || !p.requires_credentials) return "ready";
+    return p.integration === "partner" ? "partner" : "connect";
+};
 
 // Integration-type badge styling.
 const INTEGRATION_BADGE: Record<string, { label: string; cls: string }> = {
@@ -78,7 +97,9 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
             const list: Portal[] = data.portals || [];
             setPortals(list);
             // Default-select the truly self-serve portals (structured + feed).
-            setSelected(list.filter((p) => p.integration === "structured" || p.integration === "feed").map((p) => p.key));
+            // Pre-select only what will actually go out. Ticking a board that needs credentials
+            // just produces a failure row on publish.
+            setSelected(list.filter((p) => groupFor(p) === "ready").map((p) => p.key));
         } catch {
             setPortals([]);
         } finally {
@@ -95,9 +116,9 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
     }, [isOpen, loadCatalog]);
 
     const grouped = useMemo(() => {
-        return COUNTRY_GROUPS.map((g) => ({
+        return PUBLISH_GROUPS.map((g) => ({
             ...g,
-            portals: portals.filter((p) => p.country === g.code),
+            portals: portals.filter((p) => groupFor(p) === g.key),
         })).filter((g) => g.portals.length > 0);
     }, [portals]);
 
@@ -181,8 +202,13 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                 </div>
                             ) : (
                                 grouped.map((group) => (
-                                    <div key={group.code} className="space-y-2">
-                                        <p className="text-[10.5px] font-bold text-[#8A929E] uppercase tracking-wider ml-0.5">{group.label}</p>
+                                    <div key={group.key} className="space-y-2">
+                                        <div className="ml-0.5">
+                                            <p className="text-[10.5px] font-bold text-[#8A929E] uppercase tracking-wider">
+                                                {group.label} <span className="text-[#C3C7CE]">({group.portals.length})</span>
+                                            </p>
+                                            <p className="text-[10.5px] text-[#A8AEB8] mt-0.5">{group.hint}</p>
+                                        </div>
                                         {group.portals.map((portal) => {
                                             const badge = INTEGRATION_BADGE[portal.integration] || INTEGRATION_BADGE.partner;
                                             const isSel = selected.includes(portal.key);
@@ -203,6 +229,10 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                                                                 <img src={portal.logo} alt="" className="w-4 h-4 object-contain rounded-[3px] shrink-0" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                                                             )}
                                                             <p className="text-[13px] font-bold text-[#15171C]">{portal.name}</p>
+                                                            {/* Country is now a property of the board, not the grouping. */}
+                                                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#F1F2F5] text-[#6B6F76]">
+                                                                {COUNTRY_LABEL[portal.country] || portal.country}
+                                                            </span>
                                                             <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide ${badge.cls}`}>{badge.label}</span>
                                                             {portal.requires_credentials && (
                                                                 <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide ${portal.connected ? "bg-[#E4F5EF] text-[#0E8A6E]" : "bg-[#F1F2F5] text-[#8A929E]"}`}>
