@@ -16,7 +16,8 @@
         "retry": "Retry",
         "undo": "Undo",
         "redo": "Redo",
-        "aiGenerationFailed": "AI generation failed. Please try again."
+        "aiGenerationFailed": "AI generation failed. Please try again.",
+        "done": "Done"
     },
     "nav": {
         "hiringHub": "Hiring Hub",
@@ -3026,7 +3027,8 @@
         "tabActivities": "Activities",
         "tabNotes": "Notes",
         "tabAttachments": "Attachments",
-        "tabReports": "Reports"
+        "tabReports": "Reports",
+        "tabCandidates": "Candidates"
     },
     "sourcingIndex": {
         "assistantGreeting": "Hello! I am your AI Sourcing Assistant. Tell me who you're looking for, e.g., 'Find me React Engineers on GitHub'.",
@@ -5037,5 +5039,38 @@
             "fair": "Fair match (40–59%)",
             "weak": "Weak match (under 40%)"
         }
+    },
+    "addCandidate": {
+        "title": "Add candidate",
+        "toJob": "to {job}",
+        "searchPlaceholder": "Search your talent pool by name, email or skill…",
+        "searching": "Searching…",
+        "searchFailed": "Could not search the talent pool.",
+        "noMatches": "No one matches that",
+        "noMatchesHint": "Try a different name, email or skill.",
+        "poolEmpty": "Your talent pool is empty",
+        "poolEmptyHint": "Source candidates or let people apply, then add them to jobs from here.",
+        "unnamed": "Unnamed candidate",
+        "noDetails": "No contact details yet",
+        "add": "Add",
+        "adding": "Adding…",
+        "added": "Added",
+        "onJob": "On this job",
+        "addFailed": "Could not add this candidate. Try again.",
+        "searchFirstHint": "Search first — it keeps one person to one record."
+    },
+    "jobBoard": {
+        "emptyTitle": "No candidates on this job yet",
+        "emptyDesc": "Add someone from your talent pool, let Croar Pilot source for you, or advertise the role. Everything feeds the same pipeline.",
+        "addCandidate": "Add candidate",
+        "sourceCandidates": "Source candidates",
+        "postToBoards": "Post to job boards",
+        "summary": "{count} candidate(s) across {stages} stage(s)",
+        "emptyStage": "Nobody here yet",
+        "moveTo": "Move to",
+        "moveFailed": "Could not move this candidate. Try again.",
+        "unnamed": "Unnamed candidate",
+        "unassigned": "Not in a stage",
+        "unassignedHint": "These candidates sit on a stage this job no longer has. Move them into the pipeline."
     }
 }

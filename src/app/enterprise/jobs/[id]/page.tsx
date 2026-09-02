@@ -28,6 +28,8 @@ import JobAttachmentsTab from "@/components/enterprise/JobAttachmentsTab";
 import JobNotesTab from "@/components/enterprise/JobNotesTab";
 import JobReportsTab from "@/components/enterprise/JobReportsTab";
 import JobSourcingTab, { type SourcingDestination } from "@/components/enterprise/JobSourcingTab";
+import JobPipelineBoard from "@/components/enterprise/JobPipelineBoard";
+import AddCandidateModal from "@/components/enterprise/AddCandidateModal";
 
 interface JobStage {
     id: number;
@@ -87,6 +89,7 @@ interface Job {
 
 // Tabs before the job's own pipeline stages…
 const STATIC_LEADING_TABS = [
+    { id: "candidates", label: "Candidates", count: undefined },
     { id: "overview", label: "Overview", count: undefined },
     { id: "info", label: "Info", count: undefined },
 ];
@@ -133,6 +136,7 @@ export default function JobDetailPage() {
     // hub links into. Kept here rather than in JobSourcingTab so the panel below stays put.
     const [sourcingView, setSourcingView] = useState<"hub" | "profile">("hub");
     const [showPublish, setShowPublish] = useState(false);
+    const [showAddCandidate, setShowAddCandidate] = useState(false);
     const [noteCount, setNoteCount] = useState<number | undefined>(undefined);
     const [attachmentCount, setAttachmentCount] = useState<number | undefined>(undefined);
 
@@ -513,7 +517,10 @@ export default function JobDetailPage() {
                             you started scrolling. */}
                         <div ref={tabStripRef} onScroll={syncTabArrows} className={`flex gap-8 overflow-x-auto no-scrollbar ${canScrollTabsLeft || canScrollTabsRight ? "px-10" : ""}`}>
                         {[
-                            ...STATIC_LEADING_TABS,
+                            ...STATIC_LEADING_TABS.map(t => ({
+                                ...t,
+                                count: t.id === "candidates" ? applications.length : undefined,
+                            })),
                             ...(job.stages || []).map(s => {
                                 const dynamicCount = applications.filter(app => app.current_stage === s.id).length;
                                 return {
@@ -540,6 +547,7 @@ export default function JobDetailPage() {
                                 }`}
                             >
                                 {({
+                                    candidates: tr("jobDetail.tabCandidates"),
                                     overview: tr("jobDetail.tabOverview"),
                                     info: tr("jobDetail.tabInfo"),
                                     team: tr("jobDetail.tabTeam"),
@@ -1086,6 +1094,17 @@ export default function JobDetailPage() {
                         </Card>
                     )}
 
+                    {activeTab === "candidates" && (
+                        <JobPipelineBoard
+                            stages={job.stages || []}
+                            applications={applications}
+                            onAddCandidate={() => setShowAddCandidate(true)}
+                            onSourceCandidates={() => { setSourcingView("profile"); setActiveTab("sourcing"); }}
+                            onPostToBoards={() => setShowPublish(true)}
+                            onChanged={() => { fetchApplications(); fetchJobDetails(); }}
+                        />
+                    )}
+
                     {activeTab === "team" && job && (
                         <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <JobOwnershipPanel
@@ -1204,6 +1223,14 @@ export default function JobDetailPage() {
                         </Card>
                     )}
                 </div>
+
+            <AddCandidateModal
+                isOpen={showAddCandidate}
+                onClose={() => setShowAddCandidate(false)}
+                jobId={String(id)}
+                jobTitle={job.title}
+                onAdded={() => { fetchApplications(); fetchJobDetails(); }}
+            />
 
             <PublishJobModal
                 isOpen={showPublish}

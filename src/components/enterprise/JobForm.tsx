@@ -317,7 +317,11 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 if (res.ok) {
                     const data = await res.json();
                     setCreatedJobId(data.id);
-                    setShowSuccessModal(true);
+                    // Land on the job itself rather than a success modal. The job page is where the
+                    // next actions actually live — add a candidate, source, post to boards — so a
+                    // modal offering a subset of them just adds a step between the recruiter and
+                    // the work.
+                    router.push(`/enterprise/jobs/${data.id}?tab=candidates`);
                 }
             } catch (error) {
                 console.error("Failed to submit job:", error);

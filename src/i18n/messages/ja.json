@@ -16,7 +16,8 @@
         "retry": "再試行",
         "undo": "元に戻す",
         "redo": "やり直し",
-        "aiGenerationFailed": "AI生成に失敗しました。もう一度お試しください。"
+        "aiGenerationFailed": "AI生成に失敗しました。もう一度お試しください。",
+        "done": "完了"
     },
     "nav": {
         "hiringHub": "採用ハブ",
@@ -3026,7 +3027,8 @@
         "tabActivities": "アクティビティ",
         "tabNotes": "メモ",
         "tabAttachments": "添付ファイル",
-        "tabReports": "レポート"
+        "tabReports": "レポート",
+        "tabCandidates": "候補者"
     },
     "sourcingIndex": {
         "assistantGreeting": "こんにちは！私はAIソーシングアシスタントです。お探しの人材を教えてください。例：「GitHubでReactエンジニアを探して」。",
@@ -5037,5 +5039,38 @@
             "fair": "普通（40〜59%）",
             "weak": "低い（40%未満）"
         }
+    },
+    "addCandidate": {
+        "title": "候補者を追加",
+        "toJob": "{job} に追加",
+        "searchPlaceholder": "氏名・メール・スキルで人材プールを検索…",
+        "searching": "検索中…",
+        "searchFailed": "人材プールを検索できませんでした。",
+        "noMatches": "該当する候補者がいません",
+        "noMatchesHint": "別の氏名・メール・スキルでお試しください。",
+        "poolEmpty": "人材プールが空です",
+        "poolEmptyHint": "候補者をソーシングするか応募を受け付けたうえで、ここから求人に追加できます。",
+        "unnamed": "名前未設定",
+        "noDetails": "連絡先情報なし",
+        "add": "追加",
+        "adding": "追加中…",
+        "added": "追加済み",
+        "onJob": "参加済み",
+        "addFailed": "候補者を追加できませんでした。もう一度お試しください。",
+        "searchFirstHint": "まず検索を — 同一人物の重複登録を防ぎます。"
+    },
+    "jobBoard": {
+        "emptyTitle": "この求人にはまだ候補者がいません",
+        "emptyDesc": "人材プールから追加する、Croar Pilot にソーシングさせる、または求人を掲載する。いずれも同じパイプラインにつながります。",
+        "addCandidate": "候補者を追加",
+        "sourceCandidates": "候補者をソーシング",
+        "postToBoards": "求人サイトに掲載",
+        "summary": "{stages} ステージに候補者 {count} 名",
+        "emptyStage": "まだいません",
+        "moveTo": "移動先",
+        "moveFailed": "候補者を移動できませんでした。もう一度お試しください。",
+        "unnamed": "名前未設定",
+        "unassigned": "ステージ未設定",
+        "unassignedHint": "この求人に存在しないステージにいる候補者です。パイプラインへ移動してください。"
     }
 }

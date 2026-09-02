@@ -16,7 +16,8 @@
         "retry": "다시 시도",
         "undo": "실행 취소",
         "redo": "다시 실행",
-        "aiGenerationFailed": "AI 생성에 실패했습니다. 다시 시도해 주세요."
+        "aiGenerationFailed": "AI 생성에 실패했습니다. 다시 시도해 주세요.",
+        "done": "완료"
     },
     "nav": {
         "hiringHub": "채용 허브",
@@ -3026,7 +3027,8 @@
         "tabActivities": "활동 기록",
         "tabNotes": "메모",
         "tabAttachments": "첨부 파일",
-        "tabReports": "리포트"
+        "tabReports": "리포트",
+        "tabCandidates": "후보자"
     },
     "sourcingIndex": {
         "assistantGreeting": "안녕하세요! 저는 AI 소싱 어시스턴트입니다. 찾으시는 인재를 말씀해 주세요. 예: 'GitHub에서 React 엔지니어를 찾아줘'.",
@@ -5037,5 +5039,38 @@
             "fair": "보통 (40–59%)",
             "weak": "낮음 (40% 미만)"
         }
+    },
+    "addCandidate": {
+        "title": "후보자 추가",
+        "toJob": "{job}에 추가",
+        "searchPlaceholder": "이름, 이메일, 역량으로 인재 풀 검색…",
+        "searching": "검색 중…",
+        "searchFailed": "인재 풀을 검색하지 못했습니다.",
+        "noMatches": "일치하는 후보자가 없습니다",
+        "noMatchesHint": "다른 이름, 이메일 또는 역량으로 검색해 보세요.",
+        "poolEmpty": "인재 풀이 비어 있습니다",
+        "poolEmptyHint": "후보자를 소싱하거나 지원을 받은 뒤 여기에서 채용 건에 추가하세요.",
+        "unnamed": "이름 없음",
+        "noDetails": "연락처 정보 없음",
+        "add": "추가",
+        "adding": "추가 중…",
+        "added": "추가됨",
+        "onJob": "이미 참여 중",
+        "addFailed": "후보자를 추가하지 못했습니다. 다시 시도하세요.",
+        "searchFirstHint": "먼저 검색하세요 — 중복 등록을 방지합니다."
+    },
+    "jobBoard": {
+        "emptyTitle": "아직 이 채용 건에 후보자가 없습니다",
+        "emptyDesc": "인재 풀에서 추가하거나, Croar Pilot으로 소싱하거나, 공고를 게시하세요. 모두 같은 파이프라인으로 연결됩니다.",
+        "addCandidate": "후보자 추가",
+        "sourceCandidates": "후보자 소싱",
+        "postToBoards": "채용 사이트에 게시",
+        "summary": "{stages}개 단계에 후보자 {count}명",
+        "emptyStage": "아직 없습니다",
+        "moveTo": "이동",
+        "moveFailed": "후보자를 이동하지 못했습니다. 다시 시도하세요.",
+        "unnamed": "이름 없음",
+        "unassigned": "단계 미지정",
+        "unassignedHint": "이 채용 건에 더 이상 없는 단계에 있는 후보자입니다. 파이프라인으로 이동시키세요."
     }
 }

@@ -198,7 +198,6 @@ export default function EnterprisePortalLayout({
                 { label: "Dashboard", icon: "dashboard", path: "/enterprise/dashboard", permission: "organization:read" },
                 { label: "Croar Pilot", icon: "smart_toy", path: "/enterprise/croar-pilot", permission: "jobs:read" },
                 { label: "Jobs", icon: "work", path: "/enterprise/jobs", permission: "jobs:read" },
-                { label: "Pipeline", icon: "view_kanban", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
                 { label: "Mail", icon: "mail", path: "/enterprise/communication", permission: "communications:read" },
                 { label: "Job Portals", icon: "share", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
                 { label: "Onboarding Hub", icon: "hub", path: "/enterprise/onboarding", permission: "onboarding:read" },
