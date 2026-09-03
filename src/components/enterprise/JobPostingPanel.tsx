@@ -234,6 +234,37 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
         window.setTimeout(() => setCopied(""), 1600);
     };
 
+    // Boards are stored by key; the recruiter knows them by name. Falls back to the key so a
+    // board dropped from the catalogue still shows as something rather than nothing.
+    const nameFor = useCallback(
+        (key: string) => portals.find((p) => p.key === key)?.name || key,
+        [portals]
+    );
+
+    const [removing, setRemoving] = useState("");
+
+    /** Take the job off one board and drop the posting row. */
+    const removePosting = useCallback(
+        async (platform: string) => {
+            if (!token) return;
+            if (!window.confirm(tr("publishHub.removeConfirm", { board: nameFor(platform) }))) return;
+            setRemoving(platform);
+            try {
+                const res = await fetch(
+                    `${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/publish/${encodeURIComponent(platform)}`,
+                    { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
+                );
+                if (!res.ok) throw new Error(String(res.status));
+                onPublished?.();
+            } catch {
+                setStatus("error");
+            } finally {
+                setRemoving("");
+            }
+        },
+        [token, jobId, nameFor, onPublished, tr]
+    );
+
     const toggle = (key: string) =>
         setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
 
@@ -310,10 +341,20 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                     {postings.map((p, i) => (
                         <span
                             key={`${p.platform}-${i}`}
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#E6F4EA] text-[#15803D]"
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold pl-2 pr-1 py-0.5 rounded-full bg-[#E6F4EA] text-[#15803D]"
                         >
                             <span className="material-symbols-rounded text-[13px]">check_circle</span>
-                            {p.platform}
+                            {/* The catalogue's display name, not the row's storage key. */}
+                            {nameFor(p.platform)}
+                            <button
+                                onClick={() => void removePosting(p.platform)}
+                                disabled={removing === p.platform}
+                                title={tr("publishHub.removeFrom", { board: nameFor(p.platform) })}
+                                aria-label={tr("publishHub.removeFrom", { board: nameFor(p.platform) })}
+                                className="w-4 h-4 rounded-full flex items-center justify-center text-[#15803D]/60 hover:text-white hover:bg-[#15803D] transition-colors disabled:opacity-40"
+                            >
+                                <span className="material-symbols-rounded text-[12px]">close</span>
+                            </button>
                         </span>
                     ))}
                 </div>

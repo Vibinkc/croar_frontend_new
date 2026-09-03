@@ -5322,6 +5322,8 @@
         "selected": "選択済み",
         "contactBoard": "サイトに問い合わせ",
         "connectedTag": "連携済み",
-        "registerFeed": "フィードを登録"
+        "registerFeed": "フィードを登録",
+        "removeFrom": "{board} から削除",
+        "removeConfirm": "この求人を {board} から取り下げますか？Croar のフィードを読むサイトは次回のクロールで削除します。Croar が送信していないサイトには取り消すものがありません。"
     }
 }

@@ -5322,6 +5322,8 @@
         "selected": "선택됨",
         "contactBoard": "사이트에 문의",
         "connectedTag": "연결됨",
-        "registerFeed": "피드 등록"
+        "registerFeed": "피드 등록",
+        "removeFrom": "{board}에서 내리기",
+        "removeConfirm": "이 채용 공고를 {board}에서 내릴까요? Croar 피드를 읽는 사이트는 다음 크롤링 때 제거하며, Croar가 전송한 적 없는 사이트는 되돌릴 것이 없습니다."
     }
 }

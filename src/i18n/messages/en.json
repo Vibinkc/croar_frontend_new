@@ -5322,6 +5322,8 @@
         "selected": "Selected",
         "contactBoard": "Contact the board",
         "connectedTag": "Connected",
-        "registerFeed": "Register feed"
+        "registerFeed": "Register feed",
+        "removeFrom": "Remove from {board}",
+        "removeConfirm": "Take this job off {board}? Boards that read Croar's feed drop it on their next crawl; a board Croar never pushed to has nothing to recall."
     }
 }
