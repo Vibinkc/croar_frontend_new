@@ -60,14 +60,6 @@ const groupFor = (p: Portal): GroupKey => {
     return p.integration === "partner" ? "partner" : "connect";
 };
 
-// Integration-type badge styling.
-const INTEGRATION_BADGE: Record<string, { label: string; cls: string }> = {
-    structured: { label: "Auto · schema.org", cls: "bg-[#E4F5EF] text-[#0E8A6E]" },
-    feed: { label: "XML feed", cls: "bg-[#E8EEFD] text-[#3559C7]" },
-    api: { label: "Connect", cls: "bg-[#ECEBFB] text-[#5B53E0]" },
-    partner: { label: "Partner required", cls: "bg-[#FBEFDC] text-[#B26B08]" },
-};
-
 // Result-status pill styling.
 const STATUS_PILL: Record<string, { label: string; cls: string; icon: ElementType }> = {
     PUBLISHED: { label: "Published", cls: "bg-[#E4F5EF] text-[#0E8A6E]", icon: CheckCircle2 },
@@ -130,7 +122,9 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
         return PUBLISH_GROUPS.map((g) => ({
             ...g,
             portals: portals.filter((p) => groupFor(p) === g.key),
-        })).filter((g) => g.portals.length > 0 && (channel === null || g.key === channel));
+            // Only the chosen channel's boards. Without the `channel !== null` guard the hub
+            // rendered every group beneath itself, which is the choice it exists to offer.
+        })).filter((g) => g.portals.length > 0 && channel !== null && g.key === channel);
     }, [portals, channel]);
 
     const countFor = (k: GroupKey) => portals.filter((p) => groupFor(p) === k).length;
@@ -186,24 +180,25 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
         <div className="space-y-4">
         {/* Content */}
         <div className="p-5 space-y-4">
-            <div className="p-3 bg-[#ECEBFB]/50 border border-[#DAD7F6]/60 rounded-[12px]">
-                <p className="text-[10.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-0.5">{tr("forms2.targetPosition")}</p>
-                <p className="text-[14px] font-bold text-[#15171C]">{jobTitle}</p>
-            </div>
+            <p className="text-[13px] text-[#8A929E]">
+                {tr("forms2.targetPosition")}{" "}
+                <span className="font-bold text-[#15171C]">{jobTitle}</span>
+            </p>
 
             {/* A board can only list a job it can fetch. Publishing "succeeds" regardless, so
                 without this the page reports LISTED for a URL nothing outside this machine can
                 reach — which is precisely the confusion it caused. */}
             {reach && !reach.reachable && (
-                <div className="p-3.5 rounded-[12px] border border-[#F3DDBA] bg-[#FEF3E2]">
-                    <p className="text-[12px] font-bold text-[#8A5B08] flex items-center gap-1.5">
-                        <span className="material-symbols-rounded text-[17px]">warning</span>
+                <details className="rounded-[10px] border border-[#F3DDBA] bg-[#FEF3E2] px-3 py-2 group">
+                    <summary className="text-[11.5px] font-bold text-[#8A5B08] flex items-center gap-1.5 cursor-pointer list-none">
+                        <span className="material-symbols-rounded text-[16px]">warning</span>
                         {tr("publishHub.notReachableTitle")}
-                    </p>
-                    <p className="text-[11.5px] text-[#8A5B08] leading-relaxed mt-1">
+                        <span className="material-symbols-rounded text-[16px] ml-auto transition-transform group-open:rotate-180">expand_more</span>
+                    </summary>
+                    <p className="text-[11px] text-[#8A5B08] leading-relaxed mt-1.5">
                         {tr("publishHub.notReachableDesc", { url: reach.base || "—" })}
                     </p>
-                </div>
+                </details>
             )}
             {reach && reach.reachable && !reach.secure && (
                 <div className="p-3.5 rounded-[12px] border border-[#F3DDBA] bg-[#FEF3E2]">
@@ -216,24 +211,19 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
             {/* Where it already went. postings comes back on the job and had never
                 been rendered, so a published job looked identical to an unpublished one. */}
             {postings.length > 0 && channel === null && (
-                <div className="p-3.5 rounded-[12px] border border-[#BFE3CC] bg-[#E6F4EA]">
-                    <p className="text-[10.5px] font-bold text-[#15803D] uppercase tracking-wider mb-2">
+                <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider mr-0.5">
                         {tr("publishHub.liveOn", { count: postings.length })}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                        {postings.map((p, i) => (
-                            <span
-                                key={`${p.platform}-${i}`}
-                                className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-[6px] bg-white border border-[#BFE3CC] text-[#15803D]"
-                            >
-                                <span className="material-symbols-rounded text-[13px]">check_circle</span>
-                                {p.platform}
-                                {p.status && p.status !== "LIVE" && (
-                                    <span className="text-[#8A929E] font-medium">· {p.status}</span>
-                                )}
-                            </span>
-                        ))}
-                    </div>
+                    </span>
+                    {postings.map((p, i) => (
+                        <span
+                            key={`${p.platform}-${i}`}
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#E6F4EA] text-[#15803D]"
+                        >
+                            <span className="material-symbols-rounded text-[13px]">check_circle</span>
+                            {p.platform}
+                        </span>
+                    ))}
                 </div>
             )}
 
@@ -354,7 +344,6 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                             <p className="text-[10.5px] text-[#A8AEB8] mt-0.5">{group.hint}</p>
                         </div>
                         {group.portals.map((portal) => {
-                            const badge = INTEGRATION_BADGE[portal.integration] || INTEGRATION_BADGE.partner;
                             const isSel = selected.includes(portal.key);
                             const result = resultByKey[portal.key];
                             const pill = result ? STATUS_PILL[result.status] : null;
@@ -367,20 +356,37 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                         isSel ? "border-[#5B53E0] bg-[#ECEBFB]/30" : "border-[#E8EAED] hover:border-[#5B53E0]/40"
                                     }`}
                                 >
+                                    {/* A tick, because selecting boards is what this list is for and a
+                                        tinted border alone did not say "chosen". */}
+                                    <span
+                                        className={`w-[18px] h-[18px] mt-0.5 shrink-0 rounded-[5px] border flex items-center justify-center transition-colors ${
+                                            isSel ? "bg-[#5B53E0] border-[#5B53E0] text-white" : "border-[#D4D7DC] bg-white text-transparent"
+                                        }`}
+                                    >
+                                        <span className="material-symbols-rounded text-[13px]">check</span>
+                                    </span>
+
+                                    <span className="w-7 h-7 shrink-0 rounded-[8px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden">
+                                        {portal.logo ? (
+                                            /* eslint-disable-next-line @next/next/no-img-element */
+                                            <img src={portal.logo} alt="" className="w-4 h-4 object-contain" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                                        ) : (
+                                            <span className="text-[11px] font-extrabold text-[#8A929E]">{portal.name.charAt(0)}</span>
+                                        )}
+                                    </span>
+
                                     <div className="min-w-0 flex-1">
                                         <div className="flex items-center gap-2 flex-wrap">
-                                            {portal.logo && (
-                                                <img src={portal.logo} alt="" className="w-4 h-4 object-contain rounded-[3px] shrink-0" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-                                            )}
                                             <p className="text-[13px] font-bold text-[#15171C]">{portal.name}</p>
-                                            {/* Country is now a property of the board, not the grouping. */}
-                                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#F1F2F5] text-[#6B6F76]">
+                                            {/* Country stays — it is the one fact that varies within a group.
+                                                The integration type is what the GROUP already says, so
+                                                repeating it on every row was noise. */}
+                                            <span className="text-[10px] font-semibold text-[#A8AEB8]">
                                                 {COUNTRY_LABEL[portal.country] || portal.country}
                                             </span>
-                                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide ${badge.cls}`}>{badge.label}</span>
-                                            {portal.requires_credentials && (
-                                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide ${portal.connected ? "bg-[#E4F5EF] text-[#0E8A6E]" : "bg-[#F1F2F5] text-[#8A929E]"}`}>
-                                                    {portal.connected ? "Connected" : "Not connected"}
+                                            {portal.requires_credentials && portal.connected && (
+                                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#E4F5EF] text-[#0E8A6E]">
+                                                    Connected
                                                 </span>
                                             )}
                                             {portal.requires_credentials && !portal.connected && (
