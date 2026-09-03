@@ -63,7 +63,8 @@
         "team": "팀",
         "permissions": "권한",
         "partners": "파트너",
-        "templates": "템플릿"
+        "templates": "템플릿",
+        "careerPage": "채용 페이지"
     },
     "sequences": {
         "title": "시퀀스",

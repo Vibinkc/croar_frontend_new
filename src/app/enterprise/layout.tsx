@@ -29,6 +29,7 @@ const NAV_I18N: Record<string, string> = {
     "Pipeline": "nav.pipeline",
     "Mail": "nav.mail",
     "Job Portals": "nav.jobPortals",
+    "Career Page": "nav.careerPage",
     "Onboarding Hub": "nav.onboardingHub",
     "Projects": "nav.projects",
     "Sequences": "nav.sequences",
@@ -146,6 +147,7 @@ export default function EnterprisePortalLayout({
             const routePermissions: Record<string, string> = {
                 "/enterprise/croar-pilot": "jobs:read",
                 "/enterprise/jobs": "jobs:read",
+                "/enterprise/career-page": "jobs:read",
                 "/enterprise/candidates": "candidates:read",
                 "/enterprise/communication": "communications:read",
                 "/enterprise/automation": "automation:read",
@@ -199,6 +201,7 @@ export default function EnterprisePortalLayout({
                 { label: "Croar Pilot", icon: "smart_toy", path: "/enterprise/croar-pilot", permission: "jobs:read" },
                 { label: "Jobs", icon: "work", path: "/enterprise/jobs", permission: "jobs:read" },
                 { label: "Mail", icon: "mail", path: "/enterprise/communication", permission: "communications:read" },
+                { label: "Career Page", icon: "public", path: "/enterprise/career-page", permission: "jobs:read" },
                 { label: "Job Portals", icon: "share", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
                 { label: "Onboarding Hub", icon: "hub", path: "/enterprise/onboarding", permission: "onboarding:read" },
             ]

@@ -63,7 +63,8 @@
         "team": "Team",
         "permissions": "Permissions",
         "partners": "Partners",
-        "templates": "Templates"
+        "templates": "Templates",
+        "careerPage": "Career Page"
     },
     "sequences": {
         "title": "Sequences",

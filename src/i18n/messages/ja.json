@@ -63,7 +63,8 @@
         "team": "チーム",
         "permissions": "権限",
         "partners": "パートナー",
-        "templates": "テンプレート"
+        "templates": "テンプレート",
+        "careerPage": "採用ページ"
     },
     "sequences": {
         "title": "シーケンス",
