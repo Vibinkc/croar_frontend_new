@@ -16,6 +16,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
+import { useAuth } from "@/context/AuthContext";
 
 interface Company {
     id: string;
@@ -34,18 +35,18 @@ interface PublicJob {
 
 export default function CareerPageSettings() {
     const { t: tr } = useI18n();
-    const [token, setToken] = useState<string | null>(null);
+    const { token, isLoading: authLoading } = useAuth();
     const [company, setCompany] = useState<Company | null>(null);
     const [jobs, setJobs] = useState<PublicJob[]>([]);
     const [loading, setLoading] = useState(true);
     const [copied, setCopied] = useState(false);
 
-    useEffect(() => {
-        setToken(localStorage.getItem("token"));
-    }, []);
-
     const load = useCallback(async () => {
-        if (!token) return;
+        if (authLoading) return; // still restoring the session; not an answer yet
+        if (!token) {
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         try {
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/company/`, {
@@ -68,7 +69,7 @@ export default function CareerPageSettings() {
         } finally {
             setLoading(false);
         }
-    }, [token]);
+    }, [token, authLoading]);
 
     useEffect(() => {
         void load();
