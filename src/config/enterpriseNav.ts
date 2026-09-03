@@ -48,6 +48,7 @@ export const ENTERPRISE_MODULES: NavModule[] = [
                     { label: "Jobs", icon: "business_center", path: "/enterprise/jobs", permission: "jobs:read" },
                     { label: "Pipeline", icon: "filter_list", path: "/enterprise/candidates/kanban", permission: "candidates:read" },
                     { label: "Mail", icon: "alternate_email", path: "/enterprise/communication", permission: "communications:read" },
+                    { label: "Career Page", icon: "public", path: "/enterprise/career-page", permission: "jobs:read" },
                     { label: "Job Portals", icon: "rocket_launch", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
                     { label: "Onboarding Hub", icon: "person_add", path: "/enterprise/onboarding", permission: "onboarding:read" },
                 ],

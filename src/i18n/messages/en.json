@@ -5345,5 +5345,18 @@
         "inboundBoardHint": "In your {board} job ad, set the application email to the address above.",
         "notLiveTitle": "This job's page is not live",
         "notLiveDesc": "Every board here finds the job by reading its public page or the feed built from it. While the status is not Active, that page is not listed, so publishing would reach nobody. Set the job to Active first."
+    },
+    "careerPage": {
+        "title": "Career page",
+        "subtitle": "Your public jobs page. Share the link anywhere — applications land straight in the job's pipeline.",
+        "linkTitle": "Your career page link",
+        "linkDesc": "This is what candidates see, and what job boards read when they crawl your jobs.",
+        "copy": "Copy",
+        "copied": "Copied",
+        "open": "Open",
+        "liveTitle": "Live on the page",
+        "liveDesc": "A job appears here only while its status is Active. That is the same rule that decides whether a job board can find it.",
+        "noJobs": "No jobs are live yet. Set a job's status to Active and it appears here.",
+        "noCompany": "No company profile found, so there is no career page address yet."
     }
 }
