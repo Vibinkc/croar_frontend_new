@@ -74,6 +74,85 @@ const STATUS_PILL: Record<string, { label: string; cls: string; icon: ElementTyp
     ERROR: { label: "Error", cls: "bg-[#FCE8E8] text-[#C0383C]", icon: AlertCircle },
 };
 
+/** Flat illustrations for the four routes to market.
+ *
+ * Drawn here rather than pulled in as assets: they are four small geometric scenes, and inline
+ * SVG keeps them on the page's own palette instead of shipping four PNGs.
+ */
+function HubArt({ kind }: { kind: "free" | "connect" | "partner" | "career" }) {
+    const common = { width: 96, height: 70, viewBox: "0 0 96 70", fill: "none", "aria-hidden": true } as const;
+
+    if (kind === "free") {
+        // A job board page with one listing highlighted — what publishing produces.
+        return (
+            <svg {...common}>
+                <ellipse cx="20" cy="56" rx="15" ry="8" fill="#DFF3E9" />
+                <path d="M14 50c-5-3-6-11-1-15s12-1 12 5-6 13-11 10z" fill="#3FBF8F" />
+                <rect x="22" y="10" width="66" height="46" rx="5" fill="#fff" stroke="#DFE1E6" />
+                <rect x="22" y="10" width="66" height="9" rx="5" fill="#F2F3F7" />
+                <circle cx="29" cy="14.5" r="1.6" fill="#C9CDD6" />
+                <circle cx="34.5" cy="14.5" r="1.6" fill="#C9CDD6" />
+                <rect x="28" y="25" width="22" height="16" rx="3" fill="#5B53E0" />
+                <rect x="55" y="25" width="27" height="3" rx="1.5" fill="#DDE0E6" />
+                <rect x="55" y="32" width="20" height="3" rx="1.5" fill="#DDE0E6" />
+                <rect x="55" y="39" width="24" height="3" rx="1.5" fill="#DDE0E6" />
+                <rect x="28" y="47" width="54" height="3" rx="1.5" fill="#EDEEF2" />
+            </svg>
+        );
+    }
+    if (kind === "connect") {
+        // Rows with status dots plus a key: boards you sign into yourself.
+        return (
+            <svg {...common}>
+                <ellipse cx="76" cy="56" rx="14" ry="7" fill="#EDECFB" />
+                <rect x="10" y="12" width="62" height="42" rx="5" fill="#fff" stroke="#DFE1E6" />
+                <rect x="18" y="21" width="34" height="3.5" rx="1.75" fill="#3FBF8F" />
+                <circle cx="60" cy="22.5" r="3" fill="#3FBF8F" />
+                <rect x="18" y="31" width="40" height="3.5" rx="1.75" fill="#F5C24D" />
+                <circle cx="64" cy="32.5" r="3" fill="#F5C24D" />
+                <rect x="18" y="41" width="28" height="3.5" rx="1.75" fill="#DDE0E6" />
+                <circle cx="54" cy="42.5" r="3" fill="#DDE0E6" />
+                <circle cx="74" cy="42" r="9" fill="#5B53E0" />
+                <circle cx="74" cy="39.5" r="3" fill="#fff" />
+                <rect x="72.8" y="41.5" width="2.4" height="7" rx="1.2" fill="#fff" />
+                <rect x="74.6" y="45" width="3.4" height="2" rx="1" fill="#fff" />
+            </svg>
+        );
+    }
+    if (kind === "partner") {
+        // A signed agreement — these boards only take posts under a contract.
+        return (
+            <svg {...common}>
+                <ellipse cx="48" cy="58" rx="24" ry="7" fill="#F2F3F7" />
+                <rect x="24" y="8" width="42" height="48" rx="4" fill="#fff" stroke="#DFE1E6" />
+                <rect x="32" y="17" width="26" height="3.5" rx="1.75" fill="#5B53E0" />
+                <rect x="32" y="26" width="20" height="3" rx="1.5" fill="#DDE0E6" />
+                <rect x="32" y="33" width="26" height="3" rx="1.5" fill="#DDE0E6" />
+                <rect x="32" y="40" width="16" height="3" rx="1.5" fill="#DDE0E6" />
+                <path d="M32 50c4-4 7 3 11-1s6 2 11-3" stroke="#3FBF8F" strokeWidth="2.2" strokeLinecap="round" />
+                <circle cx="70" cy="20" r="10" fill="#EDECFB" />
+                <path d="M70 15.5v9M65.5 20h9" stroke="#5B53E0" strokeWidth="2.4" strokeLinecap="round" />
+            </svg>
+        );
+    }
+    // The apply link itself — the route that always works.
+    return (
+        <svg {...common}>
+            <ellipse cx="48" cy="58" rx="26" ry="7" fill="#DFF3E9" />
+            <rect x="18" y="10" width="60" height="42" rx="5" fill="#fff" stroke="#DFE1E6" />
+            <rect x="18" y="10" width="60" height="9" rx="5" fill="#F2F3F7" />
+            <circle cx="25" cy="14.5" r="1.6" fill="#C9CDD6" />
+            <rect x="26" y="26" width="20" height="3" rx="1.5" fill="#DDE0E6" />
+            <rect x="26" y="33" width="30" height="3" rx="1.5" fill="#DDE0E6" />
+            <rect x="26" y="42" width="22" height="6" rx="3" fill="#0E8A6E" />
+            <g transform="translate(56 30)">
+                <rect x="0" y="4" width="13" height="7" rx="3.5" fill="none" stroke="#0E8A6E" strokeWidth="2.2" />
+                <rect x="8" y="4" width="13" height="7" rx="3.5" fill="none" stroke="#0E8A6E" strokeWidth="2.2" />
+            </g>
+        </svg>
+    );
+}
+
 export default function JobPostingPanel({ jobId, jobTitle, token, postings = [], onPublished }: JobPostingPanelProps) {
     const { t: tr } = useI18n();
     const [portals, setPortals] = useState<Portal[]>([]);
@@ -227,51 +306,51 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                 </div>
             )}
 
-            {/* Channel hub — pick how this job should reach candidates. Each card
-                leads to something Croar can actually do. */}
+            {/* Channel hub — pick how this job should reach candidates. A card per route, two
+                up, so the four options are compared side by side rather than scanned down a
+                list. Each one leads to something Croar can actually do. */}
             {!loading && channel === null && (
-                <div className="space-y-2.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     {([
-                        ["ready", "public", tr("publishHub.freeTitle"), tr("publishHub.freeDesc"), countFor("ready")],
-                        ["connect", "vpn_key", tr("publishHub.connectTitle"), tr("publishHub.connectDesc"), countFor("connect")],
-                        ["partner", "handshake", tr("publishHub.partnerTitle"), tr("publishHub.partnerDesc"), countFor("partner")],
-                    ] as [GroupKey, string, string, string, number][]).map(([key, icon, title, desc, n]) => (
-                        <button
-                            key={key}
-                            disabled={n === 0}
-                            onClick={() => setChannel(key)}
-                            className="w-full p-3.5 rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/45 hover:bg-[#FBFBFE] transition-colors flex items-center gap-3 text-left disabled:opacity-50 disabled:pointer-events-none"
-                        >
-                            <span className="w-10 h-10 shrink-0 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
-                                <span className="material-symbols-rounded text-[21px]">{icon}</span>
-                            </span>
-                            <span className="min-w-0 flex-1">
-                                <span className="block text-[13.5px] font-bold text-[#15171C]">
-                                    {title} <span className="text-[#A8AEB8] font-semibold">({n})</span>
+                        ["ready", "free", tr("publishHub.freeTitle"), tr("publishHub.freeDesc"), countFor("ready")],
+                        ["connect", "connect", tr("publishHub.connectTitle"), tr("publishHub.connectDesc"), countFor("connect")],
+                        ["partner", "partner", tr("publishHub.partnerTitle"), tr("publishHub.partnerDesc"), countFor("partner")],
+                    ] as [GroupKey, "free" | "connect" | "partner", string, string, number][]).map(
+                        ([key, art, title, desc, n]) => (
+                            <button
+                                key={key}
+                                disabled={n === 0}
+                                onClick={() => setChannel(key)}
+                                className="group p-4 rounded-[12px] border border-[#E8EAED] bg-white hover:border-[#5B53E0]/45 hover:shadow-[0_2px_10px_rgba(91,83,224,0.07)] transition-all flex items-center gap-3 text-left disabled:opacity-55 disabled:pointer-events-none"
+                            >
+                                <span className="shrink-0"><HubArt kind={art} /></span>
+                                <span className="min-w-0 flex-1">
+                                    <span className="block text-[14px] font-bold text-[#15171C]">
+                                        {title} <span className="text-[#A8AEB8] font-semibold">({n})</span>
+                                    </span>
+                                    <span className="block text-[12px] text-[#8A929E] leading-relaxed mt-1">{desc}</span>
                                 </span>
-                                <span className="block text-[11.5px] text-[#8A929E] leading-relaxed">{desc}</span>
-                            </span>
-                            <span className="material-symbols-rounded text-[20px] text-[#C3C7CE] shrink-0">chevron_right</span>
-                        </button>
-                    ))}
+                                <span className="material-symbols-rounded text-[20px] text-[#C3C7CE] group-hover:text-[#5B53E0] transition-colors shrink-0">
+                                    chevron_right
+                                </span>
+                            </button>
+                        )
+                    )}
 
-                    {/* Croar has no inbound board integrations, so rather than an
-                        empty "connect" card this shows the route candidates really
-                        take today. */}
-                    <div className="p-3.5 rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA]">
-                        <div className="flex items-center gap-3">
-                            <span className="w-10 h-10 shrink-0 rounded-[11px] bg-[#E3F4EF] text-[#0E8A6E] flex items-center justify-center">
-                                <span className="material-symbols-rounded text-[21px]">link</span>
-                            </span>
+                    {/* Croar has no inbound board integrations, so rather than an empty
+                        "connect" card this shows the route candidates really take today. */}
+                    <div className="p-4 rounded-[12px] border border-[#E8EAED] bg-white flex flex-col">
+                        <div className="flex items-center gap-3 flex-1">
+                            <span className="shrink-0"><HubArt kind="career" /></span>
                             <div className="min-w-0 flex-1">
-                                <p className="text-[13.5px] font-bold text-[#15171C]">{tr("publishHub.careerTitle")}</p>
-                                <p className="text-[11.5px] text-[#8A929E] leading-relaxed">{tr("publishHub.careerDesc")}</p>
+                                <p className="text-[14px] font-bold text-[#15171C]">{tr("publishHub.careerTitle")}</p>
+                                <p className="text-[12px] text-[#8A929E] leading-relaxed mt-1">{tr("publishHub.careerDesc")}</p>
                             </div>
                         </div>
-                        <div className="flex gap-2 mt-3">
+                        <div className="border-t border-[#F0F0F1] mt-3 pt-2.5 flex items-center gap-5">
                             <button
                                 onClick={() => { void navigator.clipboard?.writeText(publicUrl); }}
-                                className="flex-1 h-9 rounded-[9px] border border-[#E8EAED] bg-white text-[12px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors"
+                                className="text-[12px] font-bold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
                             >
                                 {tr("publishHub.copyLink")}
                             </button>
@@ -279,7 +358,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                 href={publicUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1 h-9 rounded-[9px] border border-[#E8EAED] bg-white text-[12px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors flex items-center justify-center"
+                                className="text-[12px] font-bold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
                             >
                                 {tr("publishHub.openPage")}
                             </a>
@@ -349,7 +428,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                             <p className="text-[12px] text-[#8A929E] mt-0.5">{group.hint}</p>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {group.portals.map((portal) => {
                                 const isSel = selected.includes(portal.key);
                                 const result = resultByKey[portal.key];
@@ -366,17 +445,17 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                     >
                                         <div className="p-3.5 flex-1">
                                             <div className="flex items-start gap-3">
-                                                <span className="w-11 h-11 shrink-0 rounded-[10px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden">
+                                                <span className="w-14 h-14 shrink-0 rounded-[10px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden">
                                                     {portal.logo ? (
                                                         /* eslint-disable-next-line @next/next/no-img-element */
                                                         <img
                                                             src={portal.logo}
                                                             alt=""
-                                                            className="w-6 h-6 object-contain"
+                                                            className="w-8 h-8 object-contain"
                                                             onError={(e) => { e.currentTarget.style.display = "none"; }}
                                                         />
                                                     ) : (
-                                                        <span className="text-[13px] font-extrabold text-[#8A929E]">{portal.name.charAt(0)}</span>
+                                                        <span className="text-[17px] font-extrabold text-[#8A929E]">{portal.name.charAt(0)}</span>
                                                     )}
                                                 </span>
                                                 <div className="min-w-0 flex-1">
@@ -416,7 +495,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                             )}
                                         </div>
 
-                                        <div className="border-t border-[#F0F0F1] px-3.5 py-2.5">
+                                        <div className="border-t border-[#F0F0F1] px-3.5 py-2.5 flex justify-center">
                                             {selectable ? (
                                                 <button
                                                     onClick={() => toggle(portal.key)}

@@ -5316,7 +5316,7 @@
         "notSecure": "공개 주소({url})가 HTTPS가 아닙니다. Google for Jobs는 HTTPS를 요구하며 대부분의 사이트가 크롤링을 거부합니다.",
         "breadcrumbRoot": "채용 사이트",
         "gridTitle": "채용 사이트에 게시",
-        "gridCount": "({count}곳 이용 가능)",
+        "gridCount": "(총 {count}곳)",
         "learnMore": "자세히 보기",
         "enable": "이 채용 건에 사용",
         "selected": "선택됨",

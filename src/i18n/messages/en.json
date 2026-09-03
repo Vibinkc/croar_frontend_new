@@ -5316,7 +5316,7 @@
         "notSecure": "Your public address ({url}) isn't HTTPS. Google for Jobs requires it, and most boards will refuse to crawl.",
         "breadcrumbRoot": "Job boards",
         "gridTitle": "Publish to job boards",
-        "gridCount": "({count} available)",
+        "gridCount": "({count} total)",
         "learnMore": "Learn more",
         "enable": "Enable for this job",
         "selected": "Selected",

@@ -5316,7 +5316,7 @@
         "notSecure": "公開アドレス（{url}）が HTTPS ではありません。Google for Jobs は HTTPS が必須で、多くのサイトはクロールを拒否します。",
         "breadcrumbRoot": "求人サイト",
         "gridTitle": "求人サイトに掲載",
-        "gridCount": "（{count} 件利用可能）",
+        "gridCount": "（全 {count} 件）",
         "learnMore": "詳細",
         "enable": "この求人で使う",
         "selected": "選択済み",
