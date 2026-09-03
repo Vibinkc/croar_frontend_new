@@ -29,6 +29,8 @@ interface Integration {
     icon_url: string | null;
     brand_color: string;
     api_tier: "free" | "paid" | "link";
+    free_to_try: boolean;
+    trial_note: string;
     connected: boolean;
 }
 
@@ -68,6 +70,7 @@ export default function IntegrationsMarketplace() {
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState("all");
+    const [freeOnly, setFreeOnly] = useState(false);
 
     const load = useCallback(async () => {
         if (authLoading) return;
@@ -104,9 +107,10 @@ export default function IntegrationsMarketplace() {
         return items.filter(
             (i) =>
                 (category === "all" || i.category === category) &&
+                (!freeOnly || i.free_to_try) &&
                 (!q || i.name.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q))
         );
-    }, [items, query, category]);
+    }, [items, query, category, freeOnly]);
 
     const connectedCount = items.filter((i) => i.connected).length;
 
@@ -122,6 +126,16 @@ export default function IntegrationsMarketplace() {
 
             <div className="flex items-center gap-2 flex-wrap">
                 <div className="flex gap-1 flex-wrap">
+                    <button
+                        onClick={() => setFreeOnly((v) => !v)}
+                        className={`h-8 px-3 rounded-[8px] text-[12px] font-semibold transition-colors ${
+                            freeOnly
+                                ? "bg-[#5B53E0] text-white"
+                                : "border border-[#E8EAED] bg-white text-[#6B6F76] hover:border-[#5B53E0]/50 hover:text-[#5B53E0]"
+                        }`}
+                    >
+                        {tr("integrations.freeToTry")}
+                    </button>
                     {categories.map((c) => (
                         <button
                             key={c}
@@ -179,13 +193,25 @@ export default function IntegrationsMarketplace() {
                                 <span className="text-[12px] font-bold text-[#5B53E0]">
                                     {item.connected ? tr("integrations.manage") : tr("integrations.enable")}
                                 </span>
-                                {/* Which tools cost nothing to connect is the first question asked
-                                    of a marketplace, so it is on the card rather than a page deeper. */}
-                                {item.api_tier === "free" && (
-                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#E4F5EF] text-[#0E8A6E]">
-                                        {tr("integrations.freeApi")}
-                                    </span>
-                                )}
+                                {/* Which tools can be tried without a sales call is the first
+                                    question asked of a marketplace, so it is on the card rather
+                                    than a page deeper. Kept separate from "free API": a tool can
+                                    offer one without the other. */}
+                                <span className="flex gap-1">
+                                    {item.free_to_try && (
+                                        <span
+                                            title={item.trial_note}
+                                            className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#EDECFB] text-[#5B53E0]"
+                                        >
+                                            {tr("integrations.freeToTry")}
+                                        </span>
+                                    )}
+                                    {item.api_tier === "free" && (
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#E4F5EF] text-[#0E8A6E]">
+                                            {tr("integrations.freeApi")}
+                                        </span>
+                                    )}
+                                </span>
                             </div>
                         </Link>
                     ))}

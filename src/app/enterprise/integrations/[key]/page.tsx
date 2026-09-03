@@ -38,6 +38,8 @@ interface Integration {
     brand_color: string;
     api_tier: "free" | "paid" | "link";
     requires_consent: boolean;
+    free_to_try: boolean;
+    trial_note: string;
     supports_webhook: boolean;
     setup_steps: string[];
     capabilities: string[];
@@ -238,6 +240,12 @@ export default function IntegrationDetail() {
 
                 <div className="border-t border-[#F0F0F1] pt-4 space-y-3">
                     <p className="text-[12.5px] text-[#374151] leading-relaxed">{item.what_it_does}</p>
+
+                    {item.free_to_try && item.trial_note && (
+                        <p className="text-[12px] text-[#0E8A6E] bg-[#E4F5EF] rounded-[8px] px-3 py-2 leading-relaxed">
+                            {item.trial_note}
+                        </p>
+                    )}
 
                     {item.setup_steps?.length > 0 && (
                         <ol className="space-y-2 pt-1">
