@@ -214,7 +214,8 @@
         "optional": "선택",
         "noPermission": "조직 수정 권한이 필요합니다.",
         "notFound": "해당 연동이 없습니다.",
-        "backToAll": "전체 연동으로 돌아가기"
+        "backToAll": "전체 연동으로 돌아가기",
+        "boardsTitle": "채용 사이트"
     },
     "shortlisted": {
         "title": "인재 파이프라인",

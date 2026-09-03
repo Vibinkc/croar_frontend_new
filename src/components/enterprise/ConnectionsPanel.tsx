@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import AssessmentIntegrations from "@/components/enterprise/AssessmentIntegrations";
 import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
 import { Search, Loader2, X, MoreHorizontal, ChevronDown, Plus, CheckCircle2, Mail } from "lucide-react";
@@ -263,13 +262,8 @@ export default function ConnectionsPanel() {
                 </section>
             )}
 
-            {/* Assessment tools. Connected here once, then picked on any interview round instead
-                of the recruiter pasting the same invite link onto every round. */}
-            {(!q || matches("assessment") || matches("codility") || matches("hackerrank") || matches("testgorilla")) && (
-                <section className="mb-6">
-                    <AssessmentIntegrations />
-                </section>
-            )}
+            {/* The assessment and interview tools are the marketplace grid above this panel,
+                not a second list down here. */}
 
             {/* ATS integrations */}
             {(!q || matches("ats") || atsFiltered.length > 0) && (

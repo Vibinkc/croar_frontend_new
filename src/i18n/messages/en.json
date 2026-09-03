@@ -214,7 +214,8 @@
         "optional": "optional",
         "noPermission": "You need organisation-update permission.",
         "notFound": "That integration does not exist.",
-        "backToAll": "Back to all integrations"
+        "backToAll": "Back to all integrations",
+        "boardsTitle": "Job boards"
     },
     "shortlisted": {
         "title": "Talent Pipeline",

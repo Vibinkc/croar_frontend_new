@@ -64,6 +64,7 @@ export default function IntegrationsMarketplace() {
     const { t: tr } = useI18n();
     const { token, isLoading: authLoading } = useAuth();
     const [items, setItems] = useState<Integration[]>([]);
+    const [boards, setBoards] = useState<{ key: string; name: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState("all");
@@ -81,6 +82,7 @@ export default function IntegrationsMarketplace() {
             });
             const data = await res.json();
             setItems(data.integrations || []);
+            setBoards(data.job_boards || []);
         } catch {
             setItems([]);
         } finally {
@@ -187,6 +189,35 @@ export default function IntegrationsMarketplace() {
                             </div>
                         </Link>
                     ))}
+                </div>
+            )}
+
+            {/* Job boards are in the same catalogue but publish rather than connect, so they get
+                a pointer to their own screen instead of a card that would behave differently
+                from every other card here. */}
+            {boards.length > 0 && (
+                <div className="rounded-[12px] border border-[#E8EAED] bg-white p-4">
+                    <h2 className="text-[14px] font-bold text-[#15171C]">{tr("integrations.boardsTitle")}</h2>
+                    <p className="text-[12px] text-[#8A929E] leading-relaxed mt-1">
+                        {tr("integrations.boardsHint", { count: boards.length })}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                        {boards.slice(0, 12).map((b) => (
+                            <span
+                                key={b.key}
+                                className="text-[11px] font-semibold px-2 py-1 rounded-[6px] bg-[#F7F8FA] border border-[#E8EAED] text-[#4B5057]"
+                            >
+                                {b.name}
+                            </span>
+                        ))}
+                    </div>
+                    <Link
+                        href="/enterprise/settings/job-portals"
+                        className="inline-flex items-center gap-1.5 mt-3.5 h-9 px-3 rounded-[9px] border border-[#E8EAED] bg-white text-[12px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors"
+                    >
+                        <span className="material-symbols-rounded text-[17px]">open_in_new</span>
+                        {tr("integrations.manageBoards")}
+                    </Link>
                 </div>
             )}
 

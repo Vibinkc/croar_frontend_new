@@ -214,7 +214,8 @@
         "optional": "任意",
         "noPermission": "組織の編集権限が必要です。",
         "notFound": "その連携は存在しません。",
-        "backToAll": "すべての連携に戻る"
+        "backToAll": "すべての連携に戻る",
+        "boardsTitle": "求人サイト"
     },
     "shortlisted": {
         "title": "人材パイプライン",
