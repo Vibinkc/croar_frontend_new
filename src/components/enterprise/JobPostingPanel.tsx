@@ -11,6 +11,9 @@ export interface JobPostingPanelProps {
     token: string | null;
     /** Where this job has already been published, straight off the job record. */
     postings?: { platform: string; status?: string | null; external_id?: string | null }[];
+    /** Whether the public job page is live. Comes from the server — status_id is not a
+     *  reliable test, which is why the API answers this question itself. */
+    accepting?: boolean;
     /** Called after a successful publish so the caller can refresh the job. */
     onPublished?: () => void;
 }
@@ -180,7 +183,7 @@ function HubArt({ kind }: { kind: "free" | "connect" | "partner" | "career" | "i
     );
 }
 
-export default function JobPostingPanel({ jobId, jobTitle, token, postings = [], onPublished }: JobPostingPanelProps) {
+export default function JobPostingPanel({ jobId, jobTitle, token, postings = [], accepting = true, onPublished }: JobPostingPanelProps) {
     const { t: tr } = useI18n();
     const [portals, setPortals] = useState<Portal[]>([]);
     // The modal opens on a channel hub; a channel then shows only the boards it covers.
@@ -424,6 +427,19 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                             </button>
                         </span>
                     ))}
+                </div>
+            )}
+
+            {/* Every board here reads the public job page or the feed built from it. If that
+                page is not live, ticking boards publishes to nothing — so say it once, at the
+                top, rather than letting the publish fail. */}
+            {!accepting && (
+                <div className="p-3.5 rounded-[12px] border border-[#F3DDBA] bg-[#FEF3E2]">
+                    <p className="text-[12px] font-bold text-[#8A5B08] flex items-center gap-1.5">
+                        <span className="material-symbols-rounded text-[17px]">visibility_off</span>
+                        {tr("publishHub.notLiveTitle")}
+                    </p>
+                    <p className="text-[11.5px] text-[#8A5B08] leading-relaxed mt-1">{tr("publishHub.notLiveDesc")}</p>
                 </div>
             )}
 

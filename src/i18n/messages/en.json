@@ -5342,6 +5342,8 @@
         "inboundBoardsTitle": "Where to put the address",
         "inboundBoardsDesc": "Every board words it differently, but each one has a field for the address applications are sent to.",
         "inboundBoardSearch": "Search boards by name",
-        "inboundBoardHint": "In your {board} job ad, set the application email to the address above."
+        "inboundBoardHint": "In your {board} job ad, set the application email to the address above.",
+        "notLiveTitle": "This job's page is not live",
+        "notLiveDesc": "Every board here finds the job by reading its public page or the feed built from it. While the status is not Active, that page is not listed, so publishing would reach nobody. Set the job to Active first."
     }
 }

@@ -69,6 +69,9 @@ interface Job {
     location: string;
     created_at: string;
     status_id: number;
+    // Whether the public job page is live. Server-computed from the status name — the
+    // status_id map below is not reliable enough to decide this.
+    accepting_applications?: boolean;
     salary_min?: number;
     salary_max?: number;
     salary_currency?: string;
@@ -942,6 +945,7 @@ export default function JobDetailPage() {
                                 jobTitle={job.title}
                                 token={token}
                                 postings={job.postings || []}
+                                accepting={job.accepting_applications !== false}
                                 onPublished={fetchJobDetails}
                             />
                         </>
