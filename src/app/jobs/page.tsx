@@ -21,6 +21,18 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useI18n } from "@/context/I18nContext";
 
+interface Branding {
+    company_name?: string;
+    company_logo?: string;
+    headline?: string;
+    intro?: string;
+    brand_color?: string;
+    cover_url?: string;
+    contact_email?: string;
+    website?: string;
+    social?: Record<string, string>;
+}
+
 interface PublicJob {
     id: string;
     title: string;
@@ -56,10 +68,29 @@ function JobPortalContent() {
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
     const [selectedType, setSelectedType] = useState<string>("ALL");
     const [selectedLocation, setSelectedLocation] = useState<string>("ALL");
+    // Career-page branding, set by the company in Recruit -> Career Page. Null until it loads,
+    // and stays null when the page is opened without a company slug.
+    const [branding, setBranding] = useState<Branding | null>(null);
+
+    const brandColor = /^#[0-9a-f]{3,8}$/i.test(branding?.brand_color || "") ? branding!.brand_color : "";
 
     useEffect(() => {
         fetchJobs();
     }, [companyId, companySlug]);
+
+    useEffect(() => {
+        if (!companySlug) return;
+        void (async () => {
+            try {
+                const res = await fetch(
+                    `${BACKEND_URL}/api/v1/enterprise/public/jobs/career-page?company_slug=${encodeURIComponent(companySlug)}`
+                );
+                if (res.ok) setBranding(await res.json());
+            } catch {
+                /* branding is decoration: the job list still renders without it */
+            }
+        })();
+    }, [companySlug]);
 
     const fetchJobs = async () => {
         setIsLoading(true);
@@ -141,14 +172,35 @@ function JobPortalContent() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <span className="px-4 py-2 bg-indigo-50 text-indigo-600 text-[11px] font-black uppercase tracking-[0.2em] rounded-full mb-6 inline-block">
+                        {branding?.company_logo && (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img
+                                src={branding.company_logo}
+                                alt={branding.company_name || ""}
+                                className="h-12 w-auto object-contain mx-auto mb-6"
+                                onError={(e) => { e.currentTarget.style.display = "none"; }}
+                            />
+                        )}
+                        <span
+                            className="px-4 py-2 bg-indigo-50 text-indigo-600 text-[11px] font-black uppercase tracking-[0.2em] rounded-full mb-6 inline-block"
+                            style={brandColor ? { background: `${brandColor}14`, color: brandColor } : undefined}
+                        >
                             {tr("candidate.joinOurMission")}
                         </span>
                         <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight mb-8 leading-[1.05]">
-                            {tr("candidate.shapeTheFutureWith")} <span className="text-indigo-600">{companyInfo?.name || tr("candidate.us")}</span>
+                            {branding?.headline ? (
+                                branding.headline
+                            ) : (
+                                <>
+                                    {tr("candidate.shapeTheFutureWith")}{" "}
+                                    <span className="text-indigo-600" style={brandColor ? { color: brandColor } : undefined}>
+                                        {branding?.company_name || companyInfo?.name || tr("candidate.us")}
+                                    </span>
+                                </>
+                            )}
                         </h1>
                         <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto mb-12">
-                            {tr("candidate.heroDescription")}
+                            {branding?.intro || tr("candidate.heroDescription")}
                         </p>
                     </motion.div>
 
