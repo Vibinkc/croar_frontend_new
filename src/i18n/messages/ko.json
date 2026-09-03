@@ -217,7 +217,11 @@
         "backToAll": "전체 연동으로 돌아가기",
         "boardsTitle": "채용 사이트",
         "editConnection": "연결 수정",
-        "saveChanges": "변경 사항 저장"
+        "saveChanges": "변경 사항 저장",
+        "webhookTitle": "결과 수신 웹훅",
+        "webhookDesc": "{name}에 이 주소를 붙여넣으면 점수를 다시 보낼 수 있습니다. 설정하지 않으면 지원자가 시험을 치러도 Croar에는 아무것도 도달하지 않습니다.",
+        "webhookUnreachable": "이 주소는 localhost를 가리키므로 외부 서비스가 접근할 수 없습니다. 백엔드를 배포하거나 터널을 실행하세요.",
+        "copy": "복사"
     },
     "shortlisted": {
         "title": "인재 파이프라인",

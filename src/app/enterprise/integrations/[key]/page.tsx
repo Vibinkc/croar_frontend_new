@@ -38,6 +38,8 @@ interface Integration {
     brand_color: string;
     api_tier: "free" | "paid" | "link";
     requires_consent: boolean;
+    supports_webhook: boolean;
+    setup_steps: string[];
     capabilities: string[];
     limitations: string[];
     fields: Field[];
@@ -71,6 +73,11 @@ export default function IntegrationDetail() {
     const [error, setError] = useState("");
     // Editing an existing connection reuses the connect form; the POST upserts.
     const [editing, setEditing] = useState(false);
+    // The company's result webhook, shown for providers that post results back. It is what
+    // actually makes those integrations work, so it belongs on the connect page rather than
+    // buried in an API nobody calls by hand.
+    const [webhook, setWebhook] = useState<{ url: string; reachable: boolean } | null>(null);
+    const [copiedHook, setCopiedHook] = useState(false);
 
     const canEdit = canAccess ? canAccess("organization:update") : false;
 
@@ -88,6 +95,13 @@ export default function IntegrationDetail() {
             const data = await res.json();
             const found = (data.integrations || []).find((i: Integration) => i.key === params.key) || null;
             setItem(found);
+
+            if (found?.supports_webhook) {
+                const wr = await fetch(`${BACKEND_URL}/api/v1/enterprise/integrations/webhook`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (wr.ok) setWebhook(await wr.json());
+            }
             // Already connected means already agreed; re-ticking a box they ticked before is noise.
             setAgreed(Boolean(found?.connected));
         } catch {
@@ -224,6 +238,54 @@ export default function IntegrationDetail() {
 
                 <div className="border-t border-[#F0F0F1] pt-4 space-y-3">
                     <p className="text-[12.5px] text-[#374151] leading-relaxed">{item.what_it_does}</p>
+
+                    {item.setup_steps?.length > 0 && (
+                        <ol className="space-y-2 pt-1">
+                            {item.setup_steps.map((step, i) => (
+                                <li key={i} className="flex gap-2.5 text-[12px] text-[#374151] leading-relaxed">
+                                    <span className="w-[18px] h-[18px] shrink-0 mt-px rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold flex items-center justify-center">
+                                        {i + 1}
+                                    </span>
+                                    {step}
+                                </li>
+                            ))}
+                        </ol>
+                    )}
+
+                    {webhook && (
+                        <div className="rounded-[10px] border border-[#E8EAED] bg-[#FAFAFB] p-3">
+                            <p className="text-[11.5px] font-bold text-[#15171C]">{tr("integrations.webhookTitle")}</p>
+                            <p className="text-[11px] text-[#8A929E] leading-relaxed mt-0.5 mb-2">
+                                {tr("integrations.webhookDesc", { name: item.name })}
+                            </p>
+                            <div className="flex gap-1.5">
+                                <input
+                                    readOnly
+                                    value={webhook.url}
+                                    aria-label={tr("integrations.webhookTitle")}
+                                    onFocus={(e) => e.currentTarget.select()}
+                                    className="flex-1 min-w-0 h-8 px-2 rounded-[8px] border border-[#E8EAED] bg-white text-[11px] font-mono text-[#374151]"
+                                />
+                                <button
+                                    onClick={() => {
+                                        void navigator.clipboard?.writeText(webhook.url);
+                                        setCopiedHook(true);
+                                        window.setTimeout(() => setCopiedHook(false), 1600);
+                                    }}
+                                    className="h-8 px-2.5 rounded-[8px] border border-[#E8EAED] bg-white text-[11px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors shrink-0"
+                                >
+                                    {copiedHook ? tr("integrations.copied") : tr("integrations.copy")}
+                                </button>
+                            </div>
+                            {/* A webhook pointed at localhost never arrives, and the failure is
+                                silent at both ends. Say it here rather than after a lost result. */}
+                            {!webhook.reachable && (
+                                <p className="text-[11px] text-[#B26B08] leading-relaxed mt-2">
+                                    {tr("integrations.webhookUnreachable")}
+                                </p>
+                            )}
+                        </div>
+                    )}
 
                     {/* What it does and does not do, kept separate. A connect screen that only
                         lists capabilities is how a product ends up promising a score sync it

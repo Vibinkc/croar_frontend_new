@@ -217,7 +217,11 @@
         "backToAll": "Back to all integrations",
         "boardsTitle": "Job boards",
         "editConnection": "Edit connection",
-        "saveChanges": "Save changes"
+        "saveChanges": "Save changes",
+        "webhookTitle": "Your result webhook",
+        "webhookDesc": "Paste this into {name} so it can send scores back. Without it, a candidate can sit the test and nothing reaches Croar.",
+        "webhookUnreachable": "This address points at localhost, which no provider can reach. Deploy the backend or run a tunnel before relying on it.",
+        "copy": "Copy"
     },
     "shortlisted": {
         "title": "Talent Pipeline",

@@ -217,7 +217,11 @@
         "backToAll": "すべての連携に戻る",
         "boardsTitle": "求人サイト",
         "editConnection": "連携を編集",
-        "saveChanges": "変更を保存"
+        "saveChanges": "変更を保存",
+        "webhookTitle": "結果を受け取る Webhook",
+        "webhookDesc": "この URL を {name} に貼り付けるとスコアが返ってきます。設定しないと、候補者が受験しても Croar には何も届きません。",
+        "webhookUnreachable": "この URL は localhost を指しており、外部サービスからは到達できません。バックエンドを公開するかトンネルを使ってください。",
+        "copy": "コピー"
     },
     "shortlisted": {
         "title": "人材パイプライン",
