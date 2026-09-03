@@ -219,7 +219,6 @@ export default function EnterprisePortalLayout({
                 // { label: "Candidate Bank", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
                 { label: "Projects", icon: "folder_open", path: "/enterprise/sourcing/projects", permission: "candidates:read" },
                 { label: "Sequences", icon: "mail", path: "/enterprise/sourcing/sequences", permission: "candidates:read" },
-                { label: "Integrations", icon: "extension", path: "/enterprise/integrations", permission: "jobs:read" },
                 { label: "Profile Sourcing", icon: "travel_explore", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
                 { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
             ]
@@ -278,6 +277,7 @@ export default function EnterprisePortalLayout({
             icon: "settings",
             items: [
                 { label: "Settings", icon: "settings", path: "/enterprise/settings", permission: "organization:read" },
+                { label: "Integrations", icon: "extension", path: "/enterprise/integrations", permission: "jobs:read" },
                 { label: "Credits", icon: "account_balance_wallet", path: "/enterprise/credits", permission: "organization:read" },
                 { label: "Team", icon: "groups", path: "/enterprise/team", permission: "organization:moderate" },
                 { label: "Permissions", icon: "admin_panel_settings", path: "/enterprise/settings/roles", permission: "organization:moderate" },
