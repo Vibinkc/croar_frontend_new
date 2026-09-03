@@ -5313,6 +5313,14 @@
         "copied": "복사됨",
         "notReachableTitle": "채용 사이트가 아직 이 사이트에 접근할 수 없습니다",
         "notReachableDesc": "공개 주소가 {url}입니다. 크롤러가 접근할 수 없어 여기서는 '게시됨'으로 표시돼도 실제 채용 사이트에는 나타나지 않습니다. 운영 환경에서 FRONTEND_URL을 실제 도메인으로 설정하세요.",
-        "notSecure": "공개 주소({url})가 HTTPS가 아닙니다. Google for Jobs는 HTTPS를 요구하며 대부분의 사이트가 크롤링을 거부합니다."
+        "notSecure": "공개 주소({url})가 HTTPS가 아닙니다. Google for Jobs는 HTTPS를 요구하며 대부분의 사이트가 크롤링을 거부합니다.",
+        "breadcrumbRoot": "채용 사이트",
+        "gridTitle": "채용 사이트에 게시",
+        "gridCount": "({count}곳 이용 가능)",
+        "learnMore": "자세히 보기",
+        "enable": "이 채용 건에 사용",
+        "selected": "선택됨",
+        "contactBoard": "사이트에 문의",
+        "connectedTag": "연결됨"
     }
 }

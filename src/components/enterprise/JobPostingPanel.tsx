@@ -320,99 +320,131 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                 </div>
             )}
 
-            {!loading && channel !== null && (
-                <button
-                    onClick={() => setChannel(null)}
-                    className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
-                >
-                    <span className="material-symbols-rounded text-[18px]">arrow_back</span>
-                    {tr("publishHub.backToChannels")}
-                </button>
-            )}
-
             {loading ? (
                 <div className="py-8 flex justify-center">
                     <div className="w-6 h-6 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
                 </div>
             ) : (
                 grouped.map((group) => (
-                    <div key={group.key} className="space-y-2">
-                        <div className="ml-0.5">
-                            <p className="text-[10.5px] font-bold text-[#8A929E] uppercase tracking-wider">
-                                {group.label} <span className="text-[#C3C7CE]">({group.portals.length})</span>
-                            </p>
-                            <p className="text-[10.5px] text-[#A8AEB8] mt-0.5">{group.hint}</p>
+                    <div key={group.key} className="space-y-3">
+                        {/* Breadcrumb back to the channel hub, so the page says where you are. */}
+                        <div className="flex items-center gap-1.5 text-[12px]">
+                            <button
+                                onClick={() => setChannel(null)}
+                                className="font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
+                            >
+                                {tr("publishHub.breadcrumbRoot")}
+                            </button>
+                            <span className="material-symbols-rounded text-[15px] text-[#C3C7CE]">chevron_right</span>
+                            <span className="text-[#6B6F76]">{group.label}</span>
                         </div>
-                        {group.portals.map((portal) => {
-                            const isSel = selected.includes(portal.key);
-                            const result = resultByKey[portal.key];
-                            const pill = result ? STATUS_PILL[result.status] : null;
-                            return (
-                                <button
-                                    key={portal.key}
-                                    onClick={() => toggle(portal.key)}
-                                    title={portal.note || ""}
-                                    className={`w-full p-3 rounded-[12px] border transition-all flex items-start justify-between gap-3 text-left ${
-                                        isSel ? "border-[#5B53E0] bg-[#ECEBFB]/30" : "border-[#E8EAED] hover:border-[#5B53E0]/40"
-                                    }`}
-                                >
-                                    {/* A tick, because selecting boards is what this list is for and a
-                                        tinted border alone did not say "chosen". */}
-                                    <span
-                                        className={`w-[18px] h-[18px] mt-0.5 shrink-0 rounded-[5px] border flex items-center justify-center transition-colors ${
-                                            isSel ? "bg-[#5B53E0] border-[#5B53E0] text-white" : "border-[#D4D7DC] bg-white text-transparent"
+
+                        <div>
+                            <h3 className="text-[15px] font-bold text-[#15171C]">
+                                {tr("publishHub.gridTitle")}{" "}
+                                <span className="text-[#A8AEB8] font-semibold">
+                                    {tr("publishHub.gridCount", { count: group.portals.length })}
+                                </span>
+                            </h3>
+                            <p className="text-[12px] text-[#8A929E] mt-0.5">{group.hint}</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {group.portals.map((portal) => {
+                                const isSel = selected.includes(portal.key);
+                                const result = resultByKey[portal.key];
+                                const pill = result ? STATUS_PILL[result.status] : null;
+                                // Partner boards cannot be published to from here, so their card
+                                // offers the board's own page instead of a dead Enable control.
+                                const selectable = group.key !== "partner";
+                                return (
+                                    <div
+                                        key={portal.key}
+                                        className={`rounded-[12px] border bg-white flex flex-col transition-colors ${
+                                            isSel ? "border-[#5B53E0]" : "border-[#E8EAED]"
                                         }`}
                                     >
-                                        <span className="material-symbols-rounded text-[13px]">check</span>
-                                    </span>
+                                        <div className="p-3.5 flex-1">
+                                            <div className="flex items-start gap-3">
+                                                <span className="w-11 h-11 shrink-0 rounded-[10px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden">
+                                                    {portal.logo ? (
+                                                        /* eslint-disable-next-line @next/next/no-img-element */
+                                                        <img
+                                                            src={portal.logo}
+                                                            alt=""
+                                                            className="w-6 h-6 object-contain"
+                                                            onError={(e) => { e.currentTarget.style.display = "none"; }}
+                                                        />
+                                                    ) : (
+                                                        <span className="text-[13px] font-extrabold text-[#8A929E]">{portal.name.charAt(0)}</span>
+                                                    )}
+                                                </span>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <p className="text-[13.5px] font-bold text-[#15171C]">{portal.name}</p>
+                                                        <span className="text-[10px] font-semibold text-[#A8AEB8]">
+                                                            {COUNTRY_LABEL[portal.country] || portal.country}
+                                                        </span>
+                                                        {portal.connected && (
+                                                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#E4F5EF] text-[#0E8A6E]">
+                                                                {tr("publishHub.connectedTag")}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    {portal.docs_url && (
+                                                        <a
+                                                            href={portal.docs_url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-[11.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
+                                                        >
+                                                            {tr("publishHub.learnMore")}
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </div>
 
-                                    <span className="w-7 h-7 shrink-0 rounded-[8px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden">
-                                        {portal.logo ? (
-                                            /* eslint-disable-next-line @next/next/no-img-element */
-                                            <img src={portal.logo} alt="" className="w-4 h-4 object-contain" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-                                        ) : (
-                                            <span className="text-[11px] font-extrabold text-[#8A929E]">{portal.name.charAt(0)}</span>
-                                        )}
-                                    </span>
+                                            {portal.note && (
+                                                <p className="text-[11.5px] text-[#8A929E] leading-relaxed mt-2.5">{portal.note}</p>
+                                            )}
 
-                                    <div className="min-w-0 flex-1">
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                            <p className="text-[13px] font-bold text-[#15171C]">{portal.name}</p>
-                                            {/* Country stays — it is the one fact that varies within a group.
-                                                The integration type is what the GROUP already says, so
-                                                repeating it on every row was noise. */}
-                                            <span className="text-[10px] font-semibold text-[#A8AEB8]">
-                                                {COUNTRY_LABEL[portal.country] || portal.country}
-                                            </span>
-                                            {portal.requires_credentials && portal.connected && (
-                                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#E4F5EF] text-[#0E8A6E]">
-                                                    Connected
+                                            {pill && (
+                                                <span className={`inline-flex items-center gap-1 mt-2.5 text-[10px] font-bold px-2 py-0.5 rounded-[6px] ${pill.cls}`}>
+                                                    <pill.icon className="w-3 h-3" />
+                                                    {pill.label}
                                                 </span>
                                             )}
-                                            {portal.requires_credentials && !portal.connected && (
-                                                <a
-                                                    href="/enterprise/settings/job-portals"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#ECEBFB] text-[#5B53E0] hover:bg-[#DAD7F6] transition-colors"
+                                        </div>
+
+                                        <div className="border-t border-[#F0F0F1] px-3.5 py-2.5">
+                                            {selectable ? (
+                                                <button
+                                                    onClick={() => toggle(portal.key)}
+                                                    className={`inline-flex items-center gap-1.5 text-[12px] font-bold transition-colors ${
+                                                        isSel ? "text-[#5B53E0]" : "text-[#6B6F76] hover:text-[#5B53E0]"
+                                                    }`}
                                                 >
-                                                    {tr("publishHub.connectNow")}
+                                                    <span className="material-symbols-rounded text-[17px]">
+                                                        {isSel ? "check_circle" : "add_circle"}
+                                                    </span>
+                                                    {isSel ? tr("publishHub.selected") : tr("publishHub.enable")}
+                                                </button>
+                                            ) : (
+                                                <a
+                                                    href={portal.docs_url || "#"}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1.5 text-[12px] font-bold text-[#B45309] hover:text-[#8A5B08] transition-colors"
+                                                >
+                                                    <span className="material-symbols-rounded text-[17px]">lock</span>
+                                                    {tr("publishHub.contactBoard")}
                                                 </a>
                                             )}
                                         </div>
-                                        {portal.note && <p className="text-[11px] text-[#8A929E] leading-snug mt-1">{portal.note}</p>}
-                                        {pill && (
-                                            <span className={`inline-flex items-center gap-1 mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded-[6px] ${pill.cls}`}>
-                                                <pill.icon className="w-3 h-3" />
-                                                {pill.label}
-                                            </span>
-                                        )}
                                     </div>
-                                    <div className={`w-5 h-5 mt-0.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${isSel ? "bg-[#5B53E0] border-[#5B53E0]" : "border-[#CBD0D8]"}`}>
-                                        {isSel && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-                                    </div>
-                                </button>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
                 ))
             )}

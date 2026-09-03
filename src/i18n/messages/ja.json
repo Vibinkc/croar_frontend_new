@@ -5313,6 +5313,14 @@
         "copied": "コピーしました",
         "notReachableTitle": "求人サイトがこのサイトにアクセスできません",
         "notReachableDesc": "公開アドレスが {url} です。クローラーが取得できないため、ここでは「掲載中」と表示されても実際の求人サイトには出ません。本番環境では FRONTEND_URL を実際のドメインに設定してください。",
-        "notSecure": "公開アドレス（{url}）が HTTPS ではありません。Google for Jobs は HTTPS が必須で、多くのサイトはクロールを拒否します。"
+        "notSecure": "公開アドレス（{url}）が HTTPS ではありません。Google for Jobs は HTTPS が必須で、多くのサイトはクロールを拒否します。",
+        "breadcrumbRoot": "求人サイト",
+        "gridTitle": "求人サイトに掲載",
+        "gridCount": "（{count} 件利用可能）",
+        "learnMore": "詳細",
+        "enable": "この求人で使う",
+        "selected": "選択済み",
+        "contactBoard": "サイトに問い合わせ",
+        "connectedTag": "連携済み"
     }
 }
