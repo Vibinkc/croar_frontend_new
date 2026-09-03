@@ -5290,7 +5290,7 @@
     },
     "publishHub": {
         "freeTitle": "Free job posting",
-        "freeDesc": "Boards that pick your job up from the page itself. Publishes straight away.",
+        "freeDesc": "Boards fed by Croar's job feed and your job page. Free — register the feed once per board.",
         "connectTitle": "Use your own accounts",
         "connectDesc": "Boards you already have a login for. Connect once, then post with the rest.",
         "partnerTitle": "Partner boards",
@@ -5305,8 +5305,8 @@
         "liveNote": "Live on the boards that accepted it. The rest need an account or an agreement.",
         "partnerNote": "These boards need a signed agreement with the provider before anything can be posted. Croar can't publish to them for you — contact the board, then connect the account under Job Portals.",
         "liveOn": "Live on {count} channel(s)",
-        "feedTitle": "What to give the board",
-        "feedDesc": "Some boards pull from a feed rather than being pushed to. Paste these where the board asks for them — Indeed under Job Sync, Google in Search Console.",
+        "feedTitle": "Register this feed once per board",
+        "feedDesc": "These boards pull jobs from a feed rather than being pushed to. Paste the URL where the board asks for it — Indeed under Job Sync, Google in Search Console, and each aggregator on its own sign-up page, linked on its card. It is free and only needed once.",
         "feedIndeed": "Indeed XML feed (all your live jobs)",
         "feedGoogle": "This job's schema.org markup",
         "copy": "Copy",
@@ -5321,6 +5321,7 @@
         "enable": "Enable for this job",
         "selected": "Selected",
         "contactBoard": "Contact the board",
-        "connectedTag": "Connected"
+        "connectedTag": "Connected",
+        "registerFeed": "Register feed"
     }
 }

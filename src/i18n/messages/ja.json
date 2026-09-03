@@ -5289,8 +5289,8 @@
         "detach": "このステップから削除"
     },
     "publishHub": {
-        "freeTitle": "無料掲載",
-        "freeDesc": "求人ページを自動で収集するサイトです。すぐに掲載されます。",
+        "freeTitle": "無料求人掲載",
+        "freeDesc": "Croar の求人フィードと求人ページを読み込むサイトです。無料 — サイトごとにフィードを一度登録します。",
         "connectTitle": "自社アカウントを使用",
         "connectDesc": "すでにアカウントをお持ちのサイトです。一度連携すれば一緒に掲載できます。",
         "partnerTitle": "パートナーサイト",
@@ -5305,8 +5305,8 @@
         "liveNote": "掲載に成功したサイトで公開中です。残りはアカウント連携か契約が必要です。",
         "partnerNote": "これらのサイトは提供元との契約が必要です。Croar が代理で掲載することはできません。契約後、「求人サイト」でアカウントを連携してください。",
         "liveOn": "{count} チャネルで公開中",
-        "feedTitle": "求人サイトに渡す情報",
-        "feedDesc": "一部のサイトは送信ではなくフィードを取得します。サイトが指定する場所に貼り付けてください — Indeed は Job Sync、Google は Search Console です。",
+        "feedTitle": "サイトごとにこのフィードを一度登録します",
+        "feedDesc": "これらのサイトは送信ではなくフィードを読み取ります。サイトが求める欄に URL を貼り付けてください — Indeed は Job Sync、Google は Search Console、各求人検索サイトはカードにリンクされた登録ページです。無料で、一度だけで済みます。",
         "feedIndeed": "Indeed XML フィード（公開中の全求人）",
         "feedGoogle": "この求人の schema.org マークアップ",
         "copy": "コピー",
@@ -5321,6 +5321,7 @@
         "enable": "この求人で使う",
         "selected": "選択済み",
         "contactBoard": "サイトに問い合わせ",
-        "connectedTag": "連携済み"
+        "connectedTag": "連携済み",
+        "registerFeed": "フィードを登録"
     }
 }

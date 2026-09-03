@@ -21,10 +21,14 @@ interface Portal {
     country: string; // GLOBAL | KR | JP
     integration: string; // structured | feed | api | partner
     requires_credentials: boolean;
+    /** True only when a required connect field stands between you and posting. */
+    setup_required?: boolean;
     connected: boolean;
     docs_url: string | null;
     note: string | null;
     logo?: string | null;
+    /** Where the employer registers Croar's feed with this board (aggregators only). */
+    submit_url?: string | null;
 }
 
 interface PublishResult {
@@ -50,20 +54,29 @@ const COUNTRY_LABEL: Record<string, string> = {
 type GroupKey = "ready" | "connect" | "partner";
 
 const PUBLISH_GROUPS: { key: GroupKey; label: string; hint: string }[] = [
-    { key: "ready", label: "Ready to post", hint: "Publishes as soon as you hit Publish — nothing to set up." },
+    { key: "ready", label: "Free job posting", hint: "Free boards fed by Croar's job feed and the job page's schema.org data. Register the feed once per board and every job flows automatically." },
     { key: "connect", label: "Needs your account", hint: "Connect your own account once, then these publish with the rest." },
     { key: "partner", label: "Needs a partner contract", hint: "These boards only accept posts through a commercial agreement." },
 ];
 
 const groupFor = (p: Portal): GroupKey => {
-    if (p.connected || !p.requires_credentials) return "ready";
-    return p.integration === "partner" ? "partner" : "connect";
+    // Partner first: a board that needs a contract has no connect form, so testing for
+    // credentials before the integration type filed every one of them under "ready" — the
+    // one group that promises the job actually goes out.
+    if (p.integration === "partner") return "partner";
+    // setup_required, not requires_credentials: Google for Jobs and Indeed have connect
+    // forms whose fields are all optional, and they list without them.
+    if (p.connected || !p.setup_required) return "ready";
+    return "connect";
 };
 
 // Result-status pill styling.
 const STATUS_PILL: Record<string, { label: string; cls: string; icon: ElementType }> = {
     PUBLISHED: { label: "Published", cls: "bg-[#E4F5EF] text-[#0E8A6E]", icon: CheckCircle2 },
     LISTED: { label: "Listed", cls: "bg-[#E4F5EF] text-[#0E8A6E]", icon: CheckCircle2 },
+    // Croar's half is done; the board still needs the feed registered once, so this is a
+    // reminder rather than a success.
+    FEED_READY: { label: "Register feed once", cls: "bg-[#FBEFDC] text-[#B26B08]", icon: Send },
     // Not a success and not a pending sync — the board was never pushed to. Amber, like the
     // other "you still have to do something" states, rather than blue-and-hopeful.
     CONNECTED_NO_PUSH: { label: "Post it yourself", cls: "bg-[#FBEFDC] text-[#B26B08]", icon: Link2 },
@@ -369,7 +382,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
 
             {/* Indeed Job Sync wants a feed URL and Google reads the page markup.
                 Croar hosts both; without showing them the setup cannot be finished. */}
-            {!loading && channel === "connect" && (
+            {!loading && (channel === "connect" || channel === "ready") && (
                 <div className="p-3.5 rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] space-y-2.5">
                     <p className="text-[11.5px] font-bold text-[#15171C]">{tr("publishHub.feedTitle")}</p>
                     <p className="text-[11px] text-[#8A929E] leading-relaxed">{tr("publishHub.feedDesc")}</p>
@@ -470,16 +483,30 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                                             </span>
                                                         )}
                                                     </div>
-                                                    {portal.docs_url && (
-                                                        <a
-                                                            href={portal.docs_url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-[11.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
-                                                        >
-                                                            {tr("publishHub.learnMore")}
-                                                        </a>
-                                                    )}
+                                                    <div className="flex items-center gap-2.5">
+                                                        {portal.docs_url && (
+                                                            <a
+                                                                href={portal.docs_url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-[11.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
+                                                            >
+                                                                {tr("publishHub.learnMore")}
+                                                            </a>
+                                                        )}
+                                                        {/* The one-time step Croar cannot do for you, on the
+                                                            board it applies to. */}
+                                                        {portal.submit_url && portal.submit_url !== portal.docs_url && (
+                                                            <a
+                                                                href={portal.submit_url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-[11.5px] font-semibold text-[#8A929E] hover:text-[#5B53E0] transition-colors"
+                                                            >
+                                                                {tr("publishHub.registerFeed")}
+                                                            </a>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
 

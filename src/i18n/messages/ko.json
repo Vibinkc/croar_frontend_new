@@ -5289,8 +5289,8 @@
         "detach": "이 단계에서 제거"
     },
     "publishHub": {
-        "freeTitle": "무료 게시",
-        "freeDesc": "채용 페이지를 직접 수집하는 사이트입니다. 즉시 게시됩니다.",
+        "freeTitle": "무료 채용 게시",
+        "freeDesc": "Croar 채용 피드와 채용 페이지를 읽는 사이트입니다. 무료 — 사이트마다 피드를 한 번만 등록하세요.",
         "connectTitle": "보유 계정 사용",
         "connectDesc": "이미 계정이 있는 사이트입니다. 한 번 연결하면 함께 게시됩니다.",
         "partnerTitle": "파트너 사이트",
@@ -5305,8 +5305,8 @@
         "liveNote": "게시에 성공한 사이트에 노출 중입니다. 나머지는 계정 연결 또는 계약이 필요합니다.",
         "partnerNote": "이 사이트들은 사전에 제공업체와의 계약이 필요합니다. Croar가 대신 게시할 수 없으며, 계약 후 '채용 사이트'에서 계정을 연결하세요.",
         "liveOn": "{count}개 채널에 게시 중",
-        "feedTitle": "채용 사이트에 제공할 정보",
-        "feedDesc": "일부 사이트는 전송이 아니라 피드를 직접 가져갑니다. 사이트에서 요구하는 위치에 붙여넣으세요 — Indeed는 Job Sync, Google은 Search Console입니다.",
+        "feedTitle": "사이트마다 이 피드를 한 번 등록하세요",
+        "feedDesc": "이 사이트들은 전송이 아니라 피드를 읽어 갑니다. 사이트가 요구하는 곳에 URL을 붙여넣으세요 — Indeed는 Job Sync, Google은 Search Console, 각 취업 검색 사이트는 카드에 링크된 등록 페이지입니다. 무료이며 한 번만 하면 됩니다.",
         "feedIndeed": "Indeed XML 피드 (게시 중인 전체 채용 건)",
         "feedGoogle": "이 채용 건의 schema.org 마크업",
         "copy": "복사",
@@ -5321,6 +5321,7 @@
         "enable": "이 채용 건에 사용",
         "selected": "선택됨",
         "contactBoard": "사이트에 문의",
-        "connectedTag": "연결됨"
+        "connectedTag": "연결됨",
+        "registerFeed": "피드 등록"
     }
 }
