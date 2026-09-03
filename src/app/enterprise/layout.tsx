@@ -151,6 +151,7 @@ export default function EnterprisePortalLayout({
             const routePermissions: Record<string, string> = {
                 "/enterprise/croar-pilot": "jobs:read",
                 "/enterprise/jobs": "jobs:read",
+                "/enterprise/integrations": "jobs:read",
                 "/enterprise/career-page": "jobs:read",
                 "/enterprise/candidates": "candidates:read",
                 "/enterprise/communication": "communications:read",
@@ -218,7 +219,7 @@ export default function EnterprisePortalLayout({
                 // { label: "Candidate Bank", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
                 { label: "Projects", icon: "folder_open", path: "/enterprise/sourcing/projects", permission: "candidates:read" },
                 { label: "Sequences", icon: "mail", path: "/enterprise/sourcing/sequences", permission: "candidates:read" },
-                { label: "Integrations", icon: "extension", path: "/enterprise/sourcing/connections", permission: "candidates:read" },
+                { label: "Integrations", icon: "extension", path: "/enterprise/integrations", permission: "jobs:read" },
                 { label: "Profile Sourcing", icon: "travel_explore", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
                 { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
             ]
