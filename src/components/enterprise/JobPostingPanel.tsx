@@ -206,10 +206,17 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                 secure: !!data.public_url_secure,
             });
             setPortals(list);
-            // Default-select the truly self-serve portals (structured + feed).
-            // Pre-select only what will actually go out. Ticking a board that needs credentials
-            // just produces a failure row on publish.
-            setSelected(list.filter((p) => groupFor(p) === "ready").map((p) => p.key));
+            // Pre-tick only the boards that go live on their own: the ones that crawl the job
+            // page or read the feed without anyone registering anything. That used to be the
+            // whole "ready" group, but the group now also holds thirty aggregators that each
+            // need a one-time feed registration — ticking those by default would publish to
+            // thirty boards the company has not signed up to, and fill "Live on N channels"
+            // with rows that are waiting on the recruiter, not on the board.
+            setSelected(
+                list
+                    .filter((p) => groupFor(p) === "ready" && (p.integration === "structured" || p.integration === "feed"))
+                    .map((p) => p.key)
+            );
         } catch {
             setPortals([]);
         } finally {
