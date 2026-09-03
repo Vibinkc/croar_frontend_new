@@ -18,6 +18,7 @@ import Link from "next/link";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
+import ConnectionsPanel from "@/components/enterprise/ConnectionsPanel";
 
 interface Integration {
     key: string;
@@ -188,6 +189,12 @@ export default function IntegrationsMarketplace() {
                     ))}
                 </div>
             )}
+
+            {/* Mailboxes, calendar, Slack and the ATS list. Same screen, because "what is this
+                account connected to?" is one question and used to have two answers. */}
+            <div className="border-t border-[#E8EAED] pt-6 mt-2">
+                <ConnectionsPanel />
+            </div>
         </div>
     );
 }
