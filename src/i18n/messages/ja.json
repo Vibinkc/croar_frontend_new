@@ -64,7 +64,11 @@
         "permissions": "権限",
         "partners": "パートナー",
         "templates": "テンプレート",
-        "careerPage": "採用ページ"
+        "careerPage": "採用ページ",
+        "jobPosts": "求人投稿",
+        "careerPageSettings": "採用ページ設定",
+        "embedShare": "埋め込みと共有",
+        "backToCroar": "Croar に戻る"
     },
     "sequences": {
         "title": "シーケンス",
@@ -5395,6 +5399,12 @@
         "saving": "保存中…",
         "savedMsg": "保存しました",
         "noPermission": "変更するには組織の編集権限が必要です。",
-        "copyLink": "リンクをコピー"
+        "copyLink": "リンクをコピー",
+        "jobPostsTitle": "求人投稿",
+        "jobPostsSubtitle": "候補者が今この採用ページで見られる求人です。",
+        "settingsTitle": "採用ページ設定",
+        "settingsSubtitle": "公開求人ページの見せ方を設定します。",
+        "embedTitle": "埋め込みと共有",
+        "embedSubtitle": "自社サイトに求人を掲載したり、求人サイトにフィードを渡したりします。"
     }
 }

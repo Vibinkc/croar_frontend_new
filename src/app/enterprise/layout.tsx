@@ -30,6 +30,10 @@ const NAV_I18N: Record<string, string> = {
     "Mail": "nav.mail",
     "Job Portals": "nav.jobPortals",
     "Career Page": "nav.careerPage",
+    "Job Posts": "nav.jobPosts",
+    "Career Page Settings": "nav.careerPageSettings",
+    "Embed & Share": "nav.embedShare",
+    "Back to Croar": "nav.backToCroar",
     "Onboarding Hub": "nav.onboardingHub",
     "Projects": "nav.projects",
     "Sequences": "nav.sequences",
@@ -282,6 +286,22 @@ export default function EnterprisePortalLayout({
         }
     ];
 
+    // The career page is a section of its own: once you are inside it the sidebar shows its
+    // screens instead of the whole portal, with a way back at the top. The ⌘K palette still
+    // works off the full portal nav below, so nothing becomes unreachable while you are here.
+    const inCareerPage = pathname.startsWith("/enterprise/career-page");
+    const careerPageGroups = [
+        {
+            title: "Career Page",
+            icon: "public",
+            items: [
+                { label: "Job Posts", icon: "list_alt", path: "/enterprise/career-page", permission: "jobs:read" },
+                { label: "Career Page Settings", icon: "tune", path: "/enterprise/career-page/settings", permission: "jobs:read" },
+                { label: "Embed & Share", icon: "code", path: "/enterprise/career-page/embed", permission: "jobs:read" },
+            ],
+        },
+    ];
+
     // Filter navGroups and items based on permissions
     const accessibleNavGroups = navGroups
         .map(group => ({
@@ -290,14 +310,25 @@ export default function EnterprisePortalLayout({
         }))
         .filter(group => group.items.length > 0);
 
-    // Flattened list for the ⌘K command palette.
+    const sidebarGroups = inCareerPage
+        ? careerPageGroups.map((g) => ({ ...g, items: g.items.filter((i) => canAccess(i.permission)) }))
+        : accessibleNavGroups;
+
+    // Flattened list for the ⌘K command palette. Always the full portal, never the section —
+    // the palette is how you leave a section without hunting for the back link.
     const commandItems = accessibleNavGroups.flatMap(g =>
         g.items.map(i => ({ label: navLabel(i.label), icon: i.icon, path: i.path, group: navLabel(g.title) }))
     );
 
     // True when the given path is the best (most specific) match for the current route.
     const isItemActive = (path: string) => {
-        const allPaths = accessibleNavGroups.flatMap(g => g.items.map(i => i.path));
+        // Section paths belong here too. The "is there a longer match?" test is what stops a
+        // parent from lighting up on its children, and it can only see paths it is given —
+        // without the career-page sub-routes, Job Posts stayed active on Settings and Embed.
+        const allPaths = [
+            ...accessibleNavGroups.flatMap(g => g.items.map(i => i.path)),
+            ...careerPageGroups.flatMap(g => g.items.map(i => i.path)),
+        ];
         let isActive = pathname === path;
 
         if (!isActive && pathname.startsWith(path + "/")) {
@@ -328,7 +359,7 @@ export default function EnterprisePortalLayout({
         } ${isSidebarCollapsed ? 'justify-center px-0' : ''}`;
     };
 
-    const activeGroupTitle = accessibleNavGroups.find(g => g.items.some(i => isItemActive(i.path)))?.title;
+    const activeGroupTitle = sidebarGroups.find(g => g.items.some(i => isItemActive(i.path)))?.title;
     const isGroupOpen = (title: string) => openGroups[title] ?? (title === activeGroupTitle);
     const toggleGroup = (title: string) =>
         setOpenGroups(prev => ({ ...prev, [title]: !(prev[title] ?? (title === activeGroupTitle)) }));
@@ -410,8 +441,18 @@ export default function EnterprisePortalLayout({
                     </button>
 
                     {/* Navigation Groups — collapsible accordion (keeps the long menu scannable) */}
+                    {inCareerPage && (
+                        <Link
+                            href="/enterprise/jobs"
+                            className={`flex items-center gap-2 mb-3 mx-1 px-3.5 h-9 rounded-[10px] text-[12px] font-semibold text-[#8A929E] hover:text-white hover:bg-white/[0.04] transition-colors ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
+                        >
+                            <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                            {!isSidebarCollapsed && navLabel("Back to Croar")}
+                        </Link>
+                    )}
+
                     <nav data-tour="nav" className={isSidebarCollapsed ? "space-y-4 px-1" : "space-y-1 px-1"}>
-                        {accessibleNavGroups.map((group) => {
+                        {sidebarGroups.map((group) => {
                             const open = isSidebarCollapsed ? true : isGroupOpen(group.title);
                             const hasActive = group.items.some((i) => isItemActive(i.path));
                             return (

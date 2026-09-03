@@ -64,7 +64,11 @@
         "permissions": "권한",
         "partners": "파트너",
         "templates": "템플릿",
-        "careerPage": "채용 페이지"
+        "careerPage": "채용 페이지",
+        "jobPosts": "채용 공고",
+        "careerPageSettings": "채용 페이지 설정",
+        "embedShare": "삽입 및 공유",
+        "backToCroar": "Croar로 돌아가기"
     },
     "sequences": {
         "title": "시퀀스",
@@ -5395,6 +5399,12 @@
         "saving": "저장 중…",
         "savedMsg": "저장됨",
         "noPermission": "변경하려면 조직 수정 권한이 필요합니다.",
-        "copyLink": "링크 복사"
+        "copyLink": "링크 복사",
+        "jobPostsTitle": "채용 공고",
+        "jobPostsSubtitle": "지원자가 지금 채용 페이지에서 볼 수 있는 공고입니다.",
+        "settingsTitle": "채용 페이지 설정",
+        "settingsSubtitle": "공개 채용 페이지가 어떻게 보일지 설정합니다.",
+        "embedTitle": "삽입 및 공유",
+        "embedSubtitle": "자사 웹사이트에 채용 공고를 넣거나, 채용 사이트에 피드를 전달하세요."
     }
 }

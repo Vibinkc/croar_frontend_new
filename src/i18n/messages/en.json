@@ -64,7 +64,11 @@
         "permissions": "Permissions",
         "partners": "Partners",
         "templates": "Templates",
-        "careerPage": "Career Page"
+        "careerPage": "Career Page",
+        "jobPosts": "Job Posts",
+        "careerPageSettings": "Career Page Settings",
+        "embedShare": "Embed & Share",
+        "backToCroar": "Back to Croar"
     },
     "sequences": {
         "title": "Sequences",
@@ -5395,6 +5399,12 @@
         "saving": "Saving…",
         "savedMsg": "Saved",
         "noPermission": "You need organisation-update permission to change these.",
-        "copyLink": "Copy link"
+        "copyLink": "Copy link",
+        "jobPostsTitle": "Job posts",
+        "jobPostsSubtitle": "What candidates can see on your career page right now.",
+        "settingsTitle": "Career page settings",
+        "settingsSubtitle": "How your public jobs page presents itself.",
+        "embedTitle": "Embed & share",
+        "embedSubtitle": "Put your jobs on your own website, or hand the feed to a job board."
     }
 }
