@@ -215,7 +215,9 @@
         "noPermission": "組織の編集権限が必要です。",
         "notFound": "その連携は存在しません。",
         "backToAll": "すべての連携に戻る",
-        "boardsTitle": "求人サイト"
+        "boardsTitle": "求人サイト",
+        "editConnection": "連携を編集",
+        "saveChanges": "変更を保存"
     },
     "shortlisted": {
         "title": "人材パイプライン",
@@ -3021,7 +3023,9 @@
         "externalName": "ツール名",
         "externalNamePlaceholder": "例：Codility",
         "externalUrl": "招待リンク",
-        "externalUrlHint": "候補者がこのステップに到達すると送信されます。結果は Croar ではなくそのツールに記録されます。"
+        "externalUrlHint": "候補者がこのステップに到達すると送信されます。結果は Croar ではなくそのツールに記録されます。",
+        "externalOther": "その他（手入力）",
+        "externalNoneConnected": "接続済みのツールがありません。連携で接続するとここで選べます。"
     },
     "jobDetail": {
         "jobNotFound": "求人が見つかりません",

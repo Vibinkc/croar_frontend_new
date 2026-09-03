@@ -215,7 +215,9 @@
         "noPermission": "조직 수정 권한이 필요합니다.",
         "notFound": "해당 연동이 없습니다.",
         "backToAll": "전체 연동으로 돌아가기",
-        "boardsTitle": "채용 사이트"
+        "boardsTitle": "채용 사이트",
+        "editConnection": "연결 수정",
+        "saveChanges": "변경 사항 저장"
     },
     "shortlisted": {
         "title": "인재 파이프라인",
@@ -3021,7 +3023,9 @@
         "externalName": "도구 이름",
         "externalNamePlaceholder": "예: Codility",
         "externalUrl": "초대 링크",
-        "externalUrlHint": "후보자가 이 단계에 도달하면 발송됩니다. 결과는 Croar가 아닌 해당 도구에 기록됩니다."
+        "externalUrlHint": "후보자가 이 단계에 도달하면 발송됩니다. 결과는 Croar가 아닌 해당 도구에 기록됩니다.",
+        "externalOther": "기타 (직접 입력)",
+        "externalNoneConnected": "연결된 도구가 없습니다. 연동에서 먼저 연결하면 여기서 선택할 수 있습니다."
     },
     "jobDetail": {
         "jobNotFound": "채용을 찾을 수 없습니다",

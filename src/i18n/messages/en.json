@@ -215,7 +215,9 @@
         "noPermission": "You need organisation-update permission.",
         "notFound": "That integration does not exist.",
         "backToAll": "Back to all integrations",
-        "boardsTitle": "Job boards"
+        "boardsTitle": "Job boards",
+        "editConnection": "Edit connection",
+        "saveChanges": "Save changes"
     },
     "shortlisted": {
         "title": "Talent Pipeline",
@@ -3021,7 +3023,9 @@
         "externalName": "Tool name",
         "externalNamePlaceholder": "e.g. Codility",
         "externalUrl": "Invite link",
-        "externalUrlHint": "Sent to the candidate when they reach this round. Their result is recorded in that tool, not in Croar."
+        "externalUrlHint": "Sent to the candidate when they reach this round. Their result is recorded in that tool, not in Croar.",
+        "externalOther": "Something else (type it in)",
+        "externalNoneConnected": "No tools connected yet. Connect one in Integrations to pick it here."
     },
     "jobDetail": {
         "jobNotFound": "Job Not Found",

@@ -65,6 +65,8 @@ export default function IntegrationDetail() {
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
+    // Editing an existing connection reuses the connect form; the POST upserts.
+    const [editing, setEditing] = useState(false);
 
     const canEdit = canAccess ? canAccess("organization:update") : false;
 
@@ -116,6 +118,7 @@ export default function IntegrationDetail() {
                 setError(typeof body.detail === "string" ? body.detail : tr("integrations.connectFailed"));
                 return;
             }
+            setEditing(false);
             await load();
         } catch {
             setError(tr("integrations.connectFailed"));
@@ -255,7 +258,7 @@ export default function IntegrationDetail() {
                     )}
                 </div>
 
-                {item.connected ? (
+                {item.connected && !editing ? (
                     <div className="border-t border-[#F0F0F1] pt-4 space-y-3">
                         <div className="text-[12px] text-[#6B6F76] space-y-1">
                             {item.connection?.invite_url && (
@@ -273,13 +276,27 @@ export default function IntegrationDetail() {
                                 </p>
                             )}
                         </div>
-                        <button
-                            onClick={() => void disconnect()}
-                            disabled={busy || !canEdit}
-                            className="h-9 px-4 rounded-[9px] border border-[#E8EAED] bg-white text-[12.5px] font-bold text-[#C0383C] hover:bg-[#FCE8E8] transition-colors disabled:opacity-50"
-                        >
-                            {tr("integrations.disconnect")}
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => {
+                                    // Seed the form with what is safe to show. The API key is never
+                                    // returned, so it starts empty and is only overwritten if typed.
+                                    setValues({ invite_url: item.connection?.invite_url || "" });
+                                    setEditing(true);
+                                }}
+                                disabled={busy || !canEdit}
+                                className="h-9 px-4 rounded-[9px] border border-[#E8EAED] bg-white text-[12.5px] font-bold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors disabled:opacity-50"
+                            >
+                                {tr("integrations.editConnection")}
+                            </button>
+                            <button
+                                onClick={() => void disconnect()}
+                                disabled={busy || !canEdit}
+                                className="h-9 px-4 rounded-[9px] border border-[#E8EAED] bg-white text-[12.5px] font-bold text-[#C0383C] hover:bg-[#FCE8E8] transition-colors disabled:opacity-50"
+                            >
+                                {tr("integrations.disconnect")}
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <div className="border-t border-[#F0F0F1] pt-4 space-y-3.5">
@@ -339,7 +356,7 @@ export default function IntegrationDetail() {
 
                         <div className="flex items-center gap-2 pt-1">
                             <button
-                                onClick={() => router.push("/enterprise/integrations")}
+                                onClick={() => (editing ? setEditing(false) : router.push("/enterprise/integrations"))}
                                 className="h-9 px-4 rounded-[9px] border border-[#E8EAED] bg-white text-[12.5px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 transition-colors"
                             >
                                 {tr("integrations.cancel")}
@@ -349,7 +366,11 @@ export default function IntegrationDetail() {
                                 disabled={!canSubmit}
                                 className="h-9 px-4 rounded-[9px] bg-[#5B53E0] text-white text-[12.5px] font-bold hover:bg-[#4A43C9] transition-colors disabled:opacity-40"
                             >
-                                {busy ? tr("integrations.connecting") : tr("integrations.integrate")}
+                                {busy
+                                    ? tr("integrations.connecting")
+                                    : editing
+                                      ? tr("integrations.saveChanges")
+                                      : tr("integrations.integrate")}
                             </button>
                             {!canEdit && (
                                 <span className="text-[11.5px] text-[#8A929E]">{tr("integrations.noPermission")}</span>

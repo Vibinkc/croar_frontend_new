@@ -173,6 +173,28 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     const { t: tr, locale } = useI18n();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(isEdit);
+    // Tools this company has connected in Integrations. A round picks one of these rather than
+    // re-typing a name and pasting a URL, which is the point of connecting a tool once.
+    const [connectedTools, setConnectedTools] = useState<
+        { integration: string; display_name: string; invite_url: string | null }[]
+    >([]);
+
+    useEffect(() => {
+        if (!token) return;
+        void (async () => {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/integrations/connections`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                setConnectedTools(data.connections || []);
+            } catch {
+                /* the round still works with a hand-typed tool */
+            }
+        })();
+    }, [token]);
+
     const [loadError, setLoadError] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
@@ -1321,12 +1343,57 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                     <>
                                         <div>
                                             <DrawerLabel htmlFor="rd-a-extname">{tr("jobForm.externalName")}</DrawerLabel>
-                                            <DrawerInput
-                                                id="rd-a-extname"
-                                                value={a.external_provider_name}
-                                                placeholder={tr("jobForm.externalNamePlaceholder")}
-                                                onChange={e => patch({ assessment: { ...a, external_provider_name: e.target.value } })}
-                                            />
+                                            {connectedTools.length > 0 ? (
+                                                <>
+                                                    <DrawerSelect
+                                                        id="rd-a-extname"
+                                                        value={
+                                                            connectedTools.some(t => t.display_name === a.external_provider_name)
+                                                                ? a.external_provider_name
+                                                                : "__other__"
+                                                        }
+                                                        onChange={v => {
+                                                            const tool = connectedTools.find(t => t.display_name === v);
+                                                            patch({
+                                                                assessment: {
+                                                                    ...a,
+                                                                    external_provider_name: tool ? tool.display_name : "",
+                                                                    // Prefilled from the connection, not locked to it: one job may
+                                                                    // use a different form from another.
+                                                                    external_url: tool?.invite_url || a.external_url,
+                                                                },
+                                                            });
+                                                        }}
+                                                    >
+                                                        <option value="__other__">{tr("jobForm.externalOther")}</option>
+                                                        {connectedTools.map(t => (
+                                                            <option key={t.integration} value={t.display_name}>{t.display_name}</option>
+                                                        ))}
+                                                    </DrawerSelect>
+                                                    {!connectedTools.some(t => t.display_name === a.external_provider_name) && (
+                                                        <DrawerInput
+                                                            className="mt-2"
+                                                            value={a.external_provider_name}
+                                                            placeholder={tr("jobForm.externalNamePlaceholder")}
+                                                            onChange={e => patch({ assessment: { ...a, external_provider_name: e.target.value } })}
+                                                        />
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <DrawerInput
+                                                        id="rd-a-extname"
+                                                        value={a.external_provider_name}
+                                                        placeholder={tr("jobForm.externalNamePlaceholder")}
+                                                        onChange={e => patch({ assessment: { ...a, external_provider_name: e.target.value } })}
+                                                    />
+                                                    {/* Nothing connected yet — say where that is done rather than
+                                                        leaving the recruiter to find it. */}
+                                                    <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1 leading-relaxed">
+                                                        {tr("jobForm.externalNoneConnected")}
+                                                    </p>
+                                                </>
+                                            )}
                                         </div>
                                         <div>
                                             <DrawerLabel htmlFor="rd-a-exturl" required>{tr("jobForm.externalUrl")}</DrawerLabel>
