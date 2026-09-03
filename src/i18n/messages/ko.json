@@ -5324,6 +5324,24 @@
         "connectedTag": "연결됨",
         "registerFeed": "피드 등록",
         "removeFrom": "{board}에서 내리기",
-        "removeConfirm": "이 채용 공고를 {board}에서 내릴까요? Croar 피드를 읽는 사이트는 다음 크롤링 때 제거하며, Croar가 전송한 적 없는 사이트는 되돌릴 것이 없습니다."
+        "removeConfirm": "이 채용 공고를 {board}에서 내릴까요? Croar 피드를 읽는 사이트는 다음 크롤링 때 제거하며, Croar가 전송한 적 없는 사이트는 되돌릴 것이 없습니다.",
+        "inboundTitle": "이메일로 받는 지원서",
+        "inboundDesc": "직접 게시한 사이트에서 지원자를 이 주소로 전달하면 이 채용 건의 후보자로 등록됩니다.",
+        "inboundHeading": "이 채용 건의 이메일 주소",
+        "inboundIntro": "대부분의 사이트는 ATS가 지원자 목록을 직접 읽는 것을 허용하지 않지만, 지정한 주소로 지원자를 메일로 보내주는 기능은 거의 모두 제공합니다. 이 주소로 온 메일은 이력서를 분석해 이 채용 건에 맞춰 점수를 매기고 파이프라인에 추가합니다.",
+        "inboundAddressLabel": "이메일 주소",
+        "inboundOwnMailbox": "연결된 메일함 {mailbox} 으로 수신됩니다.",
+        "inboundSharedMailbox": "Croar 공용 메일함 {mailbox} 으로 수신됩니다. 직접 관리하는 메일함을 연결하세요.",
+        "inboundStep1": "위 주소를 복사하세요.",
+        "inboundStep2": "사이트의 채용 공고에서 지원서 수신 주소로 지정하거나, 이력서를 직접 이 주소로 전달하세요.",
+        "inboundStep3": "각 메일이 이 채용 건의 후보자가 되며 이력서가 첨부되고 점수가 매겨집니다.",
+        "inboundCheck": "새 지원서 확인",
+        "inboundCheckFailed": "메일함에 접속할 수 없습니다.",
+        "inboundNoMailbox": "연결된 메일함이 없어 지원서를 받을 곳이 없습니다.",
+        "inboundConnectMailbox": "메일함 연결하기",
+        "inboundBoardsTitle": "주소를 넣는 위치",
+        "inboundBoardsDesc": "사이트마다 표현은 다르지만 지원서를 보낼 주소를 입력하는 항목이 있습니다.",
+        "inboundBoardSearch": "사이트 이름 검색",
+        "inboundBoardHint": "{board} 채용 공고에서 지원서 수신 주소를 위 주소로 설정하세요."
     }
 }

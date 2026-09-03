@@ -5324,6 +5324,24 @@
         "connectedTag": "連携済み",
         "registerFeed": "フィードを登録",
         "removeFrom": "{board} から削除",
-        "removeConfirm": "この求人を {board} から取り下げますか？Croar のフィードを読むサイトは次回のクロールで削除します。Croar が送信していないサイトには取り消すものがありません。"
+        "removeConfirm": "この求人を {board} から取り下げますか？Croar のフィードを読むサイトは次回のクロールで削除します。Croar が送信していないサイトには取り消すものがありません。",
+        "inboundTitle": "メールで届く応募",
+        "inboundDesc": "自分で掲載したサイトから応募者をこの宛先に転送すると、この求人の候補者として登録されます。",
+        "inboundHeading": "この求人のメールアドレス",
+        "inboundIntro": "多くのサイトは ATS が応募者一覧を読み取ることを許可しませんが、指定した宛先に応募者をメールで送る機能はほぼ必ずあります。ここに届いたメールは履歴書を解析し、この求人に対して採点したうえでパイプラインに追加します。",
+        "inboundAddressLabel": "メールアドレス",
+        "inboundOwnMailbox": "連携済みのメールボックス {mailbox} に届きます。",
+        "inboundSharedMailbox": "Croar の共用メールボックス {mailbox} に届きます。自社のメールボックスを連携してください。",
+        "inboundStep1": "上のアドレスをコピーします。",
+        "inboundStep2": "サイトの求人広告で応募先メールアドレスに設定するか、履歴書を直接この宛先に転送します。",
+        "inboundStep3": "各メールがこの求人の候補者になり、履歴書が添付され採点されます。",
+        "inboundCheck": "新しい応募を確認",
+        "inboundCheckFailed": "メールボックスに接続できませんでした。",
+        "inboundNoMailbox": "連携されたメールボックスがないため、応募の届く先がありません。",
+        "inboundConnectMailbox": "メールボックスを連携",
+        "inboundBoardsTitle": "アドレスを入力する場所",
+        "inboundBoardsDesc": "サイトによって呼び方は異なりますが、応募の送信先アドレスを入力する欄が必ずあります。",
+        "inboundBoardSearch": "サイト名で検索",
+        "inboundBoardHint": "{board} の求人広告で、応募先メールアドレスを上のアドレスに設定します。"
     }
 }

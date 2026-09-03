@@ -51,7 +51,9 @@ const COUNTRY_LABEL: Record<string, string> = {
  * board rather than the thing that separates them: a board you cannot post to is not more
  * useful for being in the same country as one you can.
  */
-type GroupKey = "ready" | "connect" | "partner";
+// "inbound" is not a group of boards — it is the return path, so it carries no portals and
+// is filtered out of `grouped` accordingly.
+type GroupKey = "ready" | "connect" | "partner" | "inbound";
 
 const PUBLISH_GROUPS: { key: GroupKey; label: string; hint: string }[] = [
     { key: "ready", label: "Free job posting", hint: "Free boards fed by Croar's job feed and the job page's schema.org data. Register the feed once per board and every job flows automatically." },
@@ -92,7 +94,7 @@ const STATUS_PILL: Record<string, { label: string; cls: string; icon: ElementTyp
  * Drawn here rather than pulled in as assets: they are four small geometric scenes, and inline
  * SVG keeps them on the page's own palette instead of shipping four PNGs.
  */
-function HubArt({ kind }: { kind: "free" | "connect" | "partner" | "career" }) {
+function HubArt({ kind }: { kind: "free" | "connect" | "partner" | "career" | "inbound" }) {
     const common = { width: 96, height: 70, viewBox: "0 0 96 70", fill: "none", "aria-hidden": true } as const;
 
     if (kind === "free") {
@@ -145,6 +147,18 @@ function HubArt({ kind }: { kind: "free" | "connect" | "partner" | "career" }) {
                 <path d="M32 50c4-4 7 3 11-1s6 2 11-3" stroke="#3FBF8F" strokeWidth="2.2" strokeLinecap="round" />
                 <circle cx="70" cy="20" r="10" fill="#EDECFB" />
                 <path d="M70 15.5v9M65.5 20h9" stroke="#5B53E0" strokeWidth="2.4" strokeLinecap="round" />
+            </svg>
+        );
+    }
+    if (kind === "inbound") {
+        // An envelope arriving at a person — applications coming back in.
+        return (
+            <svg {...common}>
+                <ellipse cx="48" cy="58" rx="25" ry="7" fill="#EDECFB" />
+                <rect x="18" y="16" width="60" height="38" rx="5" fill="#fff" stroke="#DFE1E6" />
+                <path d="M18 21l30 20 30-20" fill="none" stroke="#5B53E0" strokeWidth="2.4" strokeLinejoin="round" />
+                <circle cx="74" cy="18" r="8" fill="#3FBF8F" />
+                <path d="M70.5 18l2.5 2.5 4.5-4.5" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
         );
     }
@@ -264,6 +278,52 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
         },
         [token, jobId, nameFor, onPublished, tr]
     );
+
+    // The job's own address. Loaded lazily: only the inbound channel needs it, and it costs a
+    // round trip that the other channels have no use for.
+    const [inbox, setInbox] = useState<{
+        address: string | null;
+        mailbox: string | null;
+        mailbox_is_own: boolean;
+        connect_url: string;
+    } | null>(null);
+    const [checking, setChecking] = useState(false);
+    const [checkResult, setCheckResult] = useState<string>("");
+    const [boardQuery, setBoardQuery] = useState("");
+
+    useEffect(() => {
+        if (channel !== "inbound" || inbox || !token) return;
+        void (async () => {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/inbox`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setInbox(await res.json());
+            } catch {
+                setInbox({ address: null, mailbox: null, mailbox_is_own: false, connect_url: "" });
+            }
+        })();
+    }, [channel, inbox, token, jobId]);
+
+    /** Read the mailbox now, rather than waiting for the next sync. */
+    const checkInbox = async () => {
+        if (!token) return;
+        setChecking(true);
+        setCheckResult("");
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/inbox/check`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            setCheckResult(data.message || "");
+            if (data.created) onPublished?.();
+        } catch {
+            setCheckResult(tr("publishHub.inboundCheckFailed"));
+        } finally {
+            setChecking(false);
+        }
+    };
 
     const toggle = (key: string) =>
         setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
@@ -391,6 +451,22 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                         )
                     )}
 
+                    {/* The return path. Publishing pushes a job out; boards you posted on
+                        yourself send applicants back here. */}
+                    <button
+                        onClick={() => setChannel("inbound")}
+                        className="group p-4 rounded-[12px] border border-[#E8EAED] bg-white hover:border-[#5B53E0]/45 hover:shadow-[0_2px_10px_rgba(91,83,224,0.07)] transition-all flex items-center gap-3 text-left"
+                    >
+                        <span className="shrink-0"><HubArt kind="inbound" /></span>
+                        <span className="min-w-0 flex-1">
+                            <span className="block text-[14px] font-bold text-[#15171C]">{tr("publishHub.inboundTitle")}</span>
+                            <span className="block text-[12px] text-[#8A929E] leading-relaxed mt-1">{tr("publishHub.inboundDesc")}</span>
+                        </span>
+                        <span className="material-symbols-rounded text-[20px] text-[#C3C7CE] group-hover:text-[#5B53E0] transition-colors shrink-0">
+                            chevron_right
+                        </span>
+                    </button>
+
                     {/* Croar has no inbound board integrations, so rather than an empty
                         "connect" card this shows the route candidates really take today. */}
                     <div className="p-4 rounded-[12px] border border-[#E8EAED] bg-white flex flex-col">
@@ -418,6 +494,143 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                             </a>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {!loading && channel === "inbound" && (
+                <div className="space-y-4">
+                    <div className="flex items-center gap-1.5 text-[12px]">
+                        <button
+                            onClick={() => setChannel(null)}
+                            className="font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
+                        >
+                            {tr("publishHub.breadcrumbRoot")}
+                        </button>
+                        <span className="material-symbols-rounded text-[15px] text-[#C3C7CE]">chevron_right</span>
+                        <span className="text-[#6B6F76]">{tr("publishHub.inboundTitle")}</span>
+                    </div>
+
+                    <div className="rounded-[12px] border border-[#E8EAED] bg-white p-4 space-y-3">
+                        <div>
+                            <h3 className="text-[15px] font-bold text-[#15171C]">{tr("publishHub.inboundHeading")}</h3>
+                            <p className="text-[12px] text-[#8A929E] leading-relaxed mt-1">{tr("publishHub.inboundIntro")}</p>
+                        </div>
+
+                        {inbox?.address ? (
+                            <>
+                                <div>
+                                    <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mb-1">
+                                        {tr("publishHub.inboundAddressLabel")}
+                                    </p>
+                                    <div className="flex gap-1.5">
+                                        <input
+                                            readOnly
+                                            value={inbox.address}
+                                            onFocus={(e) => e.currentTarget.select()}
+                                            aria-label={tr("publishHub.inboundAddressLabel")}
+                                            className="flex-1 min-w-0 h-9 px-2.5 rounded-[8px] border border-[#E8EAED] bg-[#FAFAFB] text-[12px] font-mono text-[#374151]"
+                                        />
+                                        <button
+                                            onClick={() => copy(inbox.address || "", "inbox")}
+                                            className="h-9 px-3 rounded-[8px] bg-[#5B53E0] text-white text-[12px] font-semibold hover:bg-[#4A43C9] transition-colors shrink-0"
+                                        >
+                                            {copied === "inbox" ? tr("publishHub.copied") : tr("publishHub.copy")}
+                                        </button>
+                                    </div>
+                                    {/* Whose inbox it lands in is not a detail — it decides who can read
+                                        the applications before Croar does. */}
+                                    <p className="text-[11px] text-[#8A929E] mt-1.5">
+                                        {inbox.mailbox_is_own
+                                            ? tr("publishHub.inboundOwnMailbox", { mailbox: inbox.mailbox || "" })
+                                            : tr("publishHub.inboundSharedMailbox", { mailbox: inbox.mailbox || "" })}
+                                    </p>
+                                </div>
+
+                                <ol className="space-y-2">
+                                    {[
+                                        tr("publishHub.inboundStep1"),
+                                        tr("publishHub.inboundStep2"),
+                                        tr("publishHub.inboundStep3"),
+                                    ].map((step, i) => (
+                                        <li key={i} className="flex gap-2.5 text-[12px] text-[#374151] leading-relaxed">
+                                            <span className="w-[18px] h-[18px] shrink-0 mt-px rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold flex items-center justify-center">
+                                                {i + 1}
+                                            </span>
+                                            {step}
+                                        </li>
+                                    ))}
+                                </ol>
+
+                                <div className="flex items-center gap-3 pt-1">
+                                    <button
+                                        onClick={() => void checkInbox()}
+                                        disabled={checking}
+                                        className="h-9 px-3.5 rounded-[9px] border border-[#E8EAED] bg-white text-[12px] font-bold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
+                                    >
+                                        <span className={`material-symbols-rounded text-[17px] ${checking ? "animate-spin" : ""}`}>
+                                            {checking ? "progress_activity" : "refresh"}
+                                        </span>
+                                        {tr("publishHub.inboundCheck")}
+                                    </button>
+                                    {checkResult && <span className="text-[11.5px] text-[#6B6F76]">{checkResult}</span>}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="p-3 rounded-[10px] border border-[#F3DDBA] bg-[#FEF3E2]">
+                                <p className="text-[11.5px] font-bold text-[#8A5B08]">{tr("publishHub.inboundNoMailbox")}</p>
+                                <a
+                                    href={inbox?.connect_url || "/enterprise/sourcing/connections"}
+                                    className="text-[11.5px] font-semibold text-[#8A5B08] underline mt-1 inline-block"
+                                >
+                                    {tr("publishHub.inboundConnectMailbox")}
+                                </a>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Where to paste it, board by board. The boards themselves are the ones
+                        already in the catalogue — no second list to keep in step. */}
+                    {inbox?.address && (
+                        <div className="rounded-[12px] border border-[#E8EAED] bg-white p-4 space-y-3">
+                            <div>
+                                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("publishHub.inboundBoardsTitle")}</h3>
+                                <p className="text-[12px] text-[#8A929E] leading-relaxed mt-1">{tr("publishHub.inboundBoardsDesc")}</p>
+                            </div>
+                            <input
+                                value={boardQuery}
+                                onChange={(e) => setBoardQuery(e.target.value)}
+                                placeholder={tr("publishHub.inboundBoardSearch")}
+                                className="w-full h-9 px-3 rounded-[9px] border border-[#E8EAED] bg-white text-[12.5px] text-[#15171C] placeholder:text-[#A8AEB8] focus:border-[#5B53E0]/50 outline-none"
+                            />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[380px] overflow-y-auto">
+                                {portals
+                                    .filter((p) => p.name.toLowerCase().includes(boardQuery.trim().toLowerCase()))
+                                    .map((portal) => (
+                                        <div key={portal.key} className="rounded-[10px] border border-[#E8EAED] p-3 flex items-start gap-2.5">
+                                            <span className="w-8 h-8 shrink-0 rounded-[8px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden">
+                                                {portal.logo ? (
+                                                    /* eslint-disable-next-line @next/next/no-img-element */
+                                                    <img
+                                                        src={portal.logo}
+                                                        alt=""
+                                                        className="w-5 h-5 object-contain"
+                                                        onError={(e) => { e.currentTarget.style.display = "none"; }}
+                                                    />
+                                                ) : (
+                                                    <span className="text-[12px] font-extrabold text-[#8A929E]">{portal.name.charAt(0)}</span>
+                                                )}
+                                            </span>
+                                            <div className="min-w-0">
+                                                <p className="text-[12.5px] font-bold text-[#15171C]">{portal.name}</p>
+                                                <p className="text-[11px] text-[#8A929E] leading-relaxed mt-0.5">
+                                                    {tr("publishHub.inboundBoardHint", { board: portal.name })}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
