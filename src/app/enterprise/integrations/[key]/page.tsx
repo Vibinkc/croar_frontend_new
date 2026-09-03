@@ -51,7 +51,11 @@ interface Integration {
     } | null;
 }
 
-const MAX_CREDENTIAL = 255;
+// Long enough for a signed token, not merely for an API key. 255 was copied from Manatal's
+// Codility screen, where the credential is a short key — a Testlify access token is a JWT of
+// roughly 520 characters, so the input silently truncated it mid-signature and the provider
+// answered "invalid signature" for a value the user had pasted correctly.
+const MAX_CREDENTIAL = 4096;
 
 export default function IntegrationDetail() {
     const { t: tr } = useI18n();
@@ -307,9 +311,11 @@ export default function IntegrationDetail() {
                                         {f.label}
                                         {!f.required && <span className="text-[#A8AEB8] font-semibold"> · {tr("integrations.optional")}</span>}
                                     </label>
-                                    <span className="text-[10.5px] text-[#A8AEB8] tabular-nums">
-                                        {(values[f.name] || "").length} / {MAX_CREDENTIAL}
-                                    </span>
+                                    {(values[f.name] || "").length > MAX_CREDENTIAL * 0.8 && (
+                                        <span className="text-[10.5px] text-[#A8AEB8] tabular-nums">
+                                            {(values[f.name] || "").length} / {MAX_CREDENTIAL}
+                                        </span>
+                                    )}
                                 </div>
                                 <input
                                     type={f.type === "password" ? "password" : "text"}
