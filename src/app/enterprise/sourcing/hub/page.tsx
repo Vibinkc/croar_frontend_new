@@ -117,7 +117,12 @@ export default function SourcingHub() {
     const [toast, setToast] = useState("");
 
     const keyOf = (p: Profile) => p.profile_url || p.email || p.full_name;
-    const canSearch = titles.length > 0 || skills.length > 0 || company.trim() !== "";
+    // A value typed into the box counts even before Enter commits it to a chip. Manatal's own
+    // hub requires the commit and leaves Search dead until you find that out, which is the
+    // single most confusing thing about that screen.
+    const pendingTitles = titleDraft.trim() ? [...titles, titleDraft.trim()] : titles;
+    const pendingSkills = skillDraft.trim() ? [...skills, skillDraft.trim()] : skills;
+    const canSearch = pendingTitles.length > 0 || pendingSkills.length > 0 || company.trim() !== "";
 
     const loadJobs = useCallback(async () => {
         if (!token) return;
@@ -143,9 +148,15 @@ export default function SourcingHub() {
         setSearching(true);
         setError("");
         try {
+            // Commit whatever is still in the boxes, so the search matches what is on screen.
+            setTitles(pendingTitles);
+            setSkills(pendingSkills);
+            setTitleDraft("");
+            setSkillDraft("");
+
             const p = new URLSearchParams();
-            titles.forEach((t) => p.append("job_titles", t));
-            skills.forEach((s) => p.append("skills", s));
+            pendingTitles.forEach((t) => p.append("job_titles", t));
+            pendingSkills.forEach((s) => p.append("skills", s));
             if (location.trim()) p.set("location", location.trim());
             if (company.trim()) p.set("company", company.trim());
             if (yearsMin) p.set("years_min", yearsMin);
@@ -244,8 +255,10 @@ export default function SourcingHub() {
                                 placeholder={tr("hub.enterJobTitle")}
                                 onChange={(e) => setTitleDraft(e.target.value)}
                                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addChip(titleDraft, titles, setTitles, () => setTitleDraft("")); } }}
+                                onBlur={() => addChip(titleDraft, titles, setTitles, () => setTitleDraft(""))}
                             />
                             <Chips values={titles} onRemove={(v) => setTitles(titles.filter((x) => x !== v))} />
+                            <p className="text-[11px] text-[#A8AEB8]">{tr("hub.enterToAdd")}</p>
                         </Section>
 
                         <Section title={tr("hub.location")} icon="location_on"
@@ -272,8 +285,10 @@ export default function SourcingHub() {
                                 placeholder={tr("hub.enterSkill")}
                                 onChange={(e) => setSkillDraft(e.target.value)}
                                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addChip(skillDraft, skills, setSkills, () => setSkillDraft("")); } }}
+                                onBlur={() => addChip(skillDraft, skills, setSkills, () => setSkillDraft(""))}
                             />
                             <Chips values={skills} onRemove={(v) => setSkills(skills.filter((x) => x !== v))} />
+                            <p className="text-[11px] text-[#A8AEB8]">{tr("hub.enterToAdd")}</p>
                         </Section>
 
                         <Section title={tr("hub.experience")} icon="badge"

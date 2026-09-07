@@ -5485,6 +5485,7 @@
         "summary": "要約",
         "email": "メール",
         "openProfile": "元のプロフィールを開く",
-        "close": "閉じる"
+        "close": "閉じる",
+        "enterToAdd": "複数追加するには Enter を押します。"
     }
 }

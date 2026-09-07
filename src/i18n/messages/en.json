@@ -5485,6 +5485,7 @@
         "summary": "Summary",
         "email": "Email",
         "openProfile": "Open the original profile",
-        "close": "Close"
+        "close": "Close",
+        "enterToAdd": "Press Enter to add more than one."
     }
 }

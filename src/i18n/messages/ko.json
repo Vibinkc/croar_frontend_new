@@ -5485,6 +5485,7 @@
         "summary": "요약",
         "email": "이메일",
         "openProfile": "원본 프로필 열기",
-        "close": "닫기"
+        "close": "닫기",
+        "enterToAdd": "여러 개를 추가하려면 Enter를 누르세요."
     }
 }
