@@ -402,6 +402,10 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                 });
 
                 if (res.ok) {
+                    // Editing armed nothing before this: the job saved and every round automation
+                    // the recruiter had just set up was dropped without a word, because nothing
+                    // was ever sent. The POSTs replace per (job, stage), so re-arming is safe.
+                    await armStageAssessments(jobId as string);
                     setShowSuccessModal(true);
                 } else {
                     const error = await res.json();
