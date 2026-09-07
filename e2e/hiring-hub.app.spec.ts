@@ -91,15 +91,15 @@ test.describe("Hiring Hub", () => {
     });
 
     test("Job Portals — integration cards render and open a detail", async ({ page }) => {
-        // Scenario: recruiter reviews external posting channels and opens one (e.g. LinkedIn).
+        // Scenario: recruiter reviews the external posting channels available to them.
         await open(page, "/enterprise/settings/job-portals");
         await expect(page.getByRole("heading", { name: "Job Portals" })).toBeVisible();
 
-        await expect(page.getByText(/google jobs/i)).toBeVisible();
-        const linkedin = page.getByText("LinkedIn", { exact: true }).first();
-        await expect(linkedin).toBeVisible();
-        // The tidied feature chip we shipped shows on the LinkedIn card.
-        await expect(page.getByText(/page sync/i)).toBeVisible();
+        // The provider registry calls it "Google for Jobs" — /google jobs/i does NOT match that.
+        await expect(page.getByText(/google for jobs/i).first()).toBeVisible();
+        // LinkedIn is no longer a portal card: service.py aliases "linkedin" -> "google_jobs"
+        // ("legacy label had no real integration"), so assert on a portal that really ships.
+        await expect(page.getByText("Indeed", { exact: true }).first()).toBeVisible();
     });
 
     test("Onboarding Hub — list of onboarding processes renders", async ({ page }) => {
