@@ -253,9 +253,14 @@ export default function EnterprisePortalLayout({
             icon: "travel_explore",
             items: [
                 { label: "Sourcing Hub", icon: "travel_explore", path: "/enterprise/sourcing/hub", permission: "candidates:read" },
-                { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
-                { label: "Projects", icon: "folder_open", path: "/enterprise/sourcing/projects", permission: "candidates:read" },
-                { label: "Sequences", icon: "mail", path: "/enterprise/sourcing/sequences", permission: "candidates:read" },
+                // Hidden from the nav, matching Manatal, which has no equivalent of these three.
+                // Commented rather than deleted: all three still have working pages and live
+                // routes behind them, so this is a presentation decision that can be reversed by
+                // uncommenting. Note they also disappear from the command palette, which builds
+                // its list from these items.
+                // { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
+                // { label: "Projects", icon: "folder_open", path: "/enterprise/sourcing/projects", permission: "candidates:read" },
+                // { label: "Sequences", icon: "mail", path: "/enterprise/sourcing/sequences", permission: "candidates:read" },
             ]
         },
         {
@@ -538,6 +543,29 @@ export default function EnterprisePortalLayout({
                         {sidebarGroups.map((group) => {
                             const open = isSidebarCollapsed ? true : isGroupOpen(group.title);
                             const hasActive = group.items.some((i) => isItemActive(i.path));
+
+                            // One child means there is nothing to disclose: render it flat, with
+                            // the group's icon, so it reads as the destination it is. The label
+                            // comes from the child unless the child just repeats the group name.
+                            if (!isSidebarCollapsed && group.items.length === 1) {
+                                const only = group.items[0];
+                                const active = isItemActive(only.path);
+                                return (
+                                    <Link
+                                        key={group.title}
+                                        href={only.path}
+                                        className={`flex items-center gap-3 px-3.5 py-2.5 mb-2 rounded-[4px] transition-all duration-150 text-[12.5px] ${
+                                            active
+                                                ? "bg-[#E3F2FD] text-[#1976D2] font-medium border-l-[3px] border-[#1976D2] pl-[11px]"
+                                                : "text-[#424242] hover:bg-[#F5F6F8] hover:text-[#212121] font-normal border-l-[3px] border-transparent pl-[11px]"
+                                        }`}
+                                    >
+                                        <Icon name={group.icon} className={`text-[18px] ${active ? "text-[#1976D2]" : "text-[#757575]"}`} />
+                                        <span className="whitespace-nowrap">{navLabel(only.label === group.title ? group.title : only.label)}</span>
+                                    </Link>
+                                );
+                            }
+
                             return (
                                 <div key={group.title} className={isSidebarCollapsed ? "" : "mb-2"}>
                                     {isSidebarCollapsed && (
