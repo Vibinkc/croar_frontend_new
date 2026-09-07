@@ -41,6 +41,8 @@ const NAV_I18N: Record<string, string> = {
     "Profile Sourcing": "nav.profileSourcing",
     "Sourcing Hub": "nav.sourcingHub",
     "Candidates List": "nav.candidatesList",
+    "Advanced Search": "nav.advancedSearch",
+    "Folders": "nav.folders",
     "Shortlisted Talent": "nav.shortlistedTalent",
     "Candidates": "nav.candidates",
     "Canvas": "nav.canvas",
@@ -156,6 +158,8 @@ export default function EnterprisePortalLayout({
                 "/enterprise/integrations": "jobs:read",
                 "/enterprise/career-page": "jobs:read",
                 "/enterprise/candidates": "candidates:read",
+                "/enterprise/candidates/search": "candidates:read",
+                "/enterprise/candidates/folders": "candidates:read",
                 "/enterprise/sourcing/hub": "candidates:read",
                 "/enterprise/communication": "communications:read",
                 "/enterprise/automation": "automation:read",
@@ -229,12 +233,23 @@ export default function EnterprisePortalLayout({
         //         { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
         //     ]
         // },
+        // Candidates and Sourcing Hub are deliberately two groups, matching Manatal. They answer
+        // different questions: Candidates is "who do we already know?", the hub is "who else is
+        // out there?". Folding them together buries the database under the search.
+        {
+            title: "Candidates",
+            icon: "groups",
+            items: [
+                { label: "Candidates List", icon: "format_list_bulleted", path: "/enterprise/candidates", permission: "candidates:read" },
+                { label: "Advanced Search", icon: "search", path: "/enterprise/candidates/search", permission: "candidates:read" },
+                { label: "Folders", icon: "folder", path: "/enterprise/candidates/folders", permission: "candidates:read" },
+            ]
+        },
         {
             title: "Sourcing Hub",
             icon: "travel_explore",
             items: [
                 { label: "Sourcing Hub", icon: "travel_explore", path: "/enterprise/sourcing/hub", permission: "candidates:read" },
-                { label: "Candidates List", icon: "groups", path: "/enterprise/candidates", permission: "candidates:read" },
                 { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
                 { label: "Projects", icon: "folder_open", path: "/enterprise/sourcing/projects", permission: "candidates:read" },
                 { label: "Sequences", icon: "mail", path: "/enterprise/sourcing/sequences", permission: "candidates:read" },
@@ -361,6 +376,9 @@ export default function EnterprisePortalLayout({
         }
 
         // Exception: "Candidate Bank" should NOT be active if we are on "Applicant Pipeline"
+        if (path === "/enterprise/candidates" && (pathname.startsWith("/enterprise/candidates/search") || pathname.startsWith("/enterprise/candidates/folders"))) {
+            return false;
+        }
         if (path === "/enterprise/candidates" && pathname.startsWith("/enterprise/candidates/kanban")) {
             isActive = false;
         }
