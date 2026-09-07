@@ -49,3 +49,7 @@ e2e/.auth/
 
 # keep the example, ignore the real creds file
 !.env.test.example
+
+# Local Playwright crawl script — carries a token path and hardcoded test-account IDs,
+# so it is one developer's tool rather than something the repo should ship.
+pw_crawl.js
