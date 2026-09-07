@@ -39,6 +39,8 @@ const NAV_I18N: Record<string, string> = {
     "Sequences": "nav.sequences",
     "Integrations": "nav.integrations",
     "Profile Sourcing": "nav.profileSourcing",
+    "Sourcing Hub": "nav.sourcingHub",
+    "Candidates List": "nav.candidatesList",
     "Shortlisted Talent": "nav.shortlistedTalent",
     "Candidates": "nav.candidates",
     "Canvas": "nav.canvas",
@@ -154,6 +156,7 @@ export default function EnterprisePortalLayout({
                 "/enterprise/integrations": "jobs:read",
                 "/enterprise/career-page": "jobs:read",
                 "/enterprise/candidates": "candidates:read",
+                "/enterprise/sourcing/hub": "candidates:read",
                 "/enterprise/communication": "communications:read",
                 "/enterprise/automation": "automation:read",
                 "/enterprise/employees": "employees:read",
@@ -211,16 +214,30 @@ export default function EnterprisePortalLayout({
                 { label: "Onboarding Hub", icon: "hub", path: "/enterprise/onboarding", permission: "onboarding:read" },
             ]
         },
+        // Talent Search is commented out in favour of the Sourcing Hub, which covers the same
+        // ground in one screen: filters, results, and the path onto a job. Kept rather than
+        // deleted — Projects, Sequences and Shortlisted Talent still have working pages behind
+        // them, and this is a presentation decision that may well be reversed.
+        //
+        // {
+        //     title: "Talent Search",
+        //     icon: "person_search",
+        //     items: [
+        //         { label: "Projects", icon: "folder_open", path: "/enterprise/sourcing/projects", permission: "candidates:read" },
+        //         { label: "Sequences", icon: "mail", path: "/enterprise/sourcing/sequences", permission: "candidates:read" },
+        //         { label: "Profile Sourcing", icon: "travel_explore", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
+        //         { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
+        //     ]
+        // },
         {
-            title: "Talent Search",
-            icon: "person_search",
+            title: "Sourcing Hub",
+            icon: "travel_explore",
             items: [
-                // Hidden for now — re-enable to bring the Candidate Bank back into the sidebar.
-                // { label: "Candidate Bank", icon: "person_search", path: "/enterprise/candidates", permission: "candidates:read" },
+                { label: "Sourcing Hub", icon: "travel_explore", path: "/enterprise/sourcing/hub", permission: "candidates:read" },
+                { label: "Candidates List", icon: "groups", path: "/enterprise/candidates", permission: "candidates:read" },
+                { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
                 { label: "Projects", icon: "folder_open", path: "/enterprise/sourcing/projects", permission: "candidates:read" },
                 { label: "Sequences", icon: "mail", path: "/enterprise/sourcing/sequences", permission: "candidates:read" },
-                { label: "Profile Sourcing", icon: "travel_explore", path: "/enterprise/sourcing/chat", permission: "candidates:read" },
-                { label: "Shortlisted Talent", icon: "how_to_reg", path: "/enterprise/sourcing/shortlisted", permission: "candidates:read" },
             ]
         },
         {
