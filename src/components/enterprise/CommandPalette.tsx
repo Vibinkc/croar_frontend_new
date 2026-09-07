@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 export interface CommandItem {
     label: string;
@@ -139,7 +140,7 @@ export default function CommandPalette({
                 <div className="max-h-[380px] overflow-y-auto p-2 custom-scrollbar">
                     {filtered.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 gap-3">
-                            <span className="material-symbols-rounded text-[32px] text-[#D1D5DB]">search_off</span>
+                            <i className="mdi mdi-magnify-close text-[32px] text-[#D1D5DB]" />
                             <p className="text-[13px] text-[#9E9E9E] font-medium">{tr("forms2.noMatches")}</p>
                         </div>
                     ) : (
@@ -169,9 +170,7 @@ export default function CommandPalette({
                                             <div className={`w-7 h-7 rounded-[4px] flex items-center justify-center shrink-0 transition-colors ${
                                                 isActive ? "bg-[#E3F2FD]" : "bg-[#F5F6F8]"
                                             }`}>
-                                                <span className={`material-symbols-rounded text-[16px] ${isActive ? "text-[#1976D2]" : "text-[#9E9E9E]"}`}>
-                                                    {item.icon}
-                                                </span>
+                                                <Icon name={item.icon} className={`text-[16px] ${isActive ? "text-[#1976D2]" : "text-[#9E9E9E]"}`} />
                                             </div>
                                             <span className={`flex-1 text-[13px] font-semibold ${isActive ? "text-[#1976D2]" : "text-[#424242]"}`}>
                                                 {item.label}

@@ -21,7 +21,7 @@ export default function NotLinkedNotice() {
   return (
     <div className="mx-auto flex max-w-lg flex-col items-center justify-center rounded-2xl border border-[#E0E0E0] bg-white px-6 py-16 text-center">
       <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-[4px] bg-[#E3F2FD] text-[#1976D2]">
-        <span className="material-symbols-rounded text-[32px]">badge</span>
+        <i className="mdi mdi-badge-account text-[32px]" />
       </span>
       <h2 className="text-[18px] font-bold tracking-tight text-[#212121]">
         {t("employee.notLinkedTitle")}

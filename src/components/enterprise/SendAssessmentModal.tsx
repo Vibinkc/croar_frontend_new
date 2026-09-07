@@ -114,17 +114,17 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
                             </p>
                         </div>
                         {selectedTemplateId === template.id && (
-                            <span className="material-icons text-indigo-600 text-sm">check_circle</span>
+                            <i className="mdi mdi-check-circle text-indigo-600 text-sm" />
                         )}
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                         <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-white border border-slate-100 px-2 py-0.5 rounded">
-                            <span className="material-icons text-[12px]">list</span>
+                            <i className="mdi mdi-format-list-bulleted text-[12px]" />
                             {template.question_count}{" "}{tr("sharedUi.questionsShort")}
                         </div>
                         {template.email_template_name && (
                             <div className="flex items-center gap-1 text-[10px] font-bold text-[#1E88E5] bg-[#1E88E5]/5 border border-[#1E88E5]/10 px-2 py-0.5 rounded">
-                                <span className="material-icons text-[12px]">email</span>
+                                <i className="mdi mdi-email text-[12px]" />
                                 {""}{template.email_template_name}
                             </div>
                         )}

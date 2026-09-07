@@ -38,10 +38,10 @@ import {
     Eye,
     Sparkles,
     Link as LinkIcon
-} from "lucide-react";
+} from "@/components/icons";
 import { API_BASE_URL } from "@/lib/api-config";
 import { useI18n } from "@/context/I18nContext";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 const PLATFORM_LOGOS: Record<string, React.FC<{ className?: string }>> = {
     github: ({ className }) => (

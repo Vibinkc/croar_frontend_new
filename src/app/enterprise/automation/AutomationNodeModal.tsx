@@ -7,6 +7,7 @@ import { GenLanguage, localeToLanguageName } from "@/i18n/config";
 import GenLanguageSelect from "@/components/ds/GenLanguageSelect";
 import { BACKEND_URL } from "@/utils/api";
 import { AnimatePresence, motion } from "framer-motion";
+import { Icon } from "@/components/ds";
 
 interface WorkflowStage {
   name: string;
@@ -477,7 +478,7 @@ export default function AutomationNodeModal({
         <div className="fixed inset-0 z-[200] flex justify-end">
           {toast && (
             <div className={`fixed top-5 right-5 z-[500] flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-semibold transition-all duration-300 ${toast.type === "success" ? "bg-emerald-500 text-white" : "bg-red-500 text-white"}`}>
-              <span className="material-symbols-rounded text-base">{toast.type === "success" ? "check_circle" : "error"}</span>
+              <Icon name={toast.type === "success" ? "check_circle" : "error"} className="text-base" />
               {String(toast.msg)}
             </div>
           )}
@@ -489,7 +490,7 @@ export default function AutomationNodeModal({
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#E0E0E0] shrink-0 bg-white">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-[4px] flex items-center justify-center border border-current shadow-sm" style={{ backgroundColor: headerMeta.bg, color: headerMeta.color }}>
-                  <span className="material-symbols-rounded text-[20px]">{headerMeta.icon}</span>
+                  <Icon name={headerMeta.icon} className="text-[20px]" />
                 </div>
                 <div>
                   <h2 className="text-[18px] font-extrabold text-[#212121] leading-tight">{editingId ? tr("automation.editAction") : tr("automation.createAction")}</h2>
@@ -498,7 +499,7 @@ export default function AutomationNodeModal({
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={onClose} className="w-9 h-9 rounded-[4px] hover:bg-[#F5F6F8] flex items-center justify-center text-[#757575] transition-colors border border-[#E0E0E0]">
-                  <span className="material-symbols-rounded text-lg">close</span>
+                  <i className="mdi mdi-close text-lg" />
                 </button>
               </div>
             </div>
@@ -674,7 +675,7 @@ export default function AutomationNodeModal({
                              {loading ? (
                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                              ) : (
-                               <span className="material-symbols-rounded text-lg">auto_awesome</span>
+                               <i className="mdi mdi-auto-fix text-lg" />
                              )}
                              {form.generated_questions?.length ? tr("automation.regenerateDraftAI") : tr("automation.draftQuestionsAI")}
                           </button>
@@ -772,7 +773,7 @@ export default function AutomationNodeModal({
                              onClick={handleGenerateTimeSlots}
                              className="w-full h-11 bg-[#1976D2] text-white rounded-[4px] text-[13px] font-semibold hover:bg-[#1565C0] shadow-md shadow-[#1976D2]/15 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#1976D2]/20"
                            >
-                              <span className="material-symbols-rounded text-lg">schedule</span>
+                              <i className="mdi mdi-clock-outline text-lg" />
                               {tr("automation.nextConfigureTimeSlots")}
                            </button>
                         </div>
@@ -874,13 +875,13 @@ export default function AutomationNodeModal({
                                }}
                                className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#E0E0E0] rounded-[4px] text-[12px] font-semibold text-[#1976D2] hover:bg-[#1976D2] hover:text-white transition-all shadow-sm"
                              >
-                               <span className="material-symbols-rounded text-sm">add</span>
+                               <i className="mdi mdi-plus text-sm" />
                                {tr("automation.addQuestion")}
                              </button>
                         </div>
                         {(!form.generated_questions || form.generated_questions.length === 0) ? (
                           <div className="py-12 flex flex-col items-center justify-center bg-[#FAFAFA]/50 rounded-[4px] border-2 border-dashed border-[#E0E0E0]">
-                             <span className="material-symbols-rounded text-[#9E9E9E] text-3xl mb-2">auto_awesome</span>
+                             <i className="mdi mdi-auto-fix text-[#9E9E9E] text-3xl mb-2" />
                              <p className="text-[13px] font-semibold text-[#757575]">{tr("automation.noQuestionsYet")}</p>
                              <button onClick={() => setActiveTab("config")} className="mt-2 text-[12px] text-[#1976D2] font-bold hover:underline">{tr("automation.goToConfigGenerate")}</button>
                           </div>
@@ -900,7 +901,7 @@ export default function AutomationNodeModal({
                                        }}
                                        className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#E53935] hover:bg-[#FFEBEE] transition-all opacity-0 group-hover:opacity-100"
                                      >
-                                         <span className="material-symbols-rounded text-base">delete</span>
+                                         <i className="mdi mdi-delete text-base" />
                                      </button>
                                   </div>
 
@@ -942,7 +943,7 @@ export default function AutomationNodeModal({
                                                 }}
                                                 className={`absolute left-3 top-3 w-5 h-5 rounded-[3px] flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#1976D2] text-white" : "bg-slate-100 text-[#757575] hover:bg-slate-200"}`}
                                               >
-                                                <span className="material-symbols-rounded text-xs">{q.correct_answer === opt ? "check" : "circle"}</span>
+                                                <Icon name={q.correct_answer === opt ? "check" : "circle"} className="text-xs" />
                                               </button>
                                             </div>
                                           ))}
@@ -1010,7 +1011,7 @@ export default function AutomationNodeModal({
                         </div>
                         {(!form.time_slots || form.time_slots.length === 0) ? (
                           <div className="py-12 flex flex-col items-center justify-center bg-[#FAFAFA]/50 rounded-[4px] border-2 border-dashed border-[#E0E0E0]">
-                             <span className="material-symbols-rounded text-[#9E9E9E] text-3xl mb-2">schedule</span>
+                             <i className="mdi mdi-clock-outline text-[#9E9E9E] text-3xl mb-2" />
                              <p className="text-[13px] font-semibold text-[#757575]">{tr("automation.noTimeSlotsGenerated")}</p>
                              <button onClick={handleGenerateTimeSlots} className="mt-2 text-[12px] text-[#1976D2] font-bold hover:underline">{tr("automation.autoGenerateSlotsPlain")}</button>
                           </div>
@@ -1034,7 +1035,7 @@ export default function AutomationNodeModal({
                                     }}
                                     className="text-[#9E9E9E] hover:text-[#E53935] transition-colors"
                                   >
-                                     <span className="material-symbols-rounded text-[16px]">close</span>
+                                     <i className="mdi mdi-close text-[16px]" />
                                   </button>
                                 </div>
                              ))} 
@@ -1068,7 +1069,7 @@ export default function AutomationNodeModal({
                   <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <>
-                    <span className="material-symbols-rounded text-lg">{editingId ? "save" : "add_circle"}</span>
+                    <Icon name={editingId ? "save" : "add_circle"} className="text-lg" />
                     {editingId ? tr("automation.updateNode", { type: type.toUpperCase() }) : tr("automation.addNode", { type: type.toUpperCase() })}
                   </>
                 )}

@@ -6,7 +6,7 @@ import Editor from "@monaco-editor/react";
 import {
   Timer, ChevronRight, ChevronLeft, Play, Send, HelpCircle, Info, Code2,
   CheckCircle2, AlertCircle, Clock, Layout, Terminal, Activity,
-} from "lucide-react";
+} from "@/components/icons";
 import { meApi, type SkillAssessmentDetail, type SkillQuestion } from "@/utils/payroll/api";
 import { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
 import { useI18n } from "@/context/I18nContext";

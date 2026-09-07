@@ -241,7 +241,7 @@ export default function IntegrationsMarketplace() {
                         href="/enterprise/settings/job-portals"
                         className="inline-flex items-center gap-1.5 mt-3.5 h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12px] font-semibold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[17px]">open_in_new</span>
+                        <i className="mdi mdi-open-in-new text-[17px]" />
                         {tr("integrations.manageBoards")}
                     </Link>
                 </div>

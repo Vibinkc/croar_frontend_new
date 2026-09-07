@@ -19,7 +19,7 @@ import {
   AlertCircle,
   Check,
   Circle
-} from "lucide-react";
+} from "@/components/icons";
 
 
 import { useState, useEffect, useCallback } from "react";

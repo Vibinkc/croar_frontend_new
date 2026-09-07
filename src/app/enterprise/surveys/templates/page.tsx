@@ -15,7 +15,7 @@ import {
     Pencil,
     Trash2,
     LayoutTemplate,
-} from "lucide-react";
+} from "@/components/icons";
 import { StatGrid, StatCard, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface Template {

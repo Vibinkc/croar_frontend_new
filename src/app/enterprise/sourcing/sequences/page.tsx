@@ -6,7 +6,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine, ResponsiveContai
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
-import { Search, Filter, Plus, Loader2, Mail, MoreHorizontal, X, ChevronDown, Zap, Reply, ThumbsUp, Send } from "lucide-react";
+import { Search, Filter, Plus, Loader2, Mail, MoreHorizontal, X, ChevronDown, Zap, Reply, ThumbsUp, Send } from "@/components/icons";
 import ConnectMailbox from "@/components/sourcing/ConnectMailbox";
 
 interface Sequence {

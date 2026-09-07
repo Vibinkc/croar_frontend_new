@@ -72,14 +72,14 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                         className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9E9E9E] hover:bg-white hover:text-[#1976D2] transition-all shadow-sm"
                         title={t("common.undo")}
                     >
-                        <span className="material-symbols-rounded text-xl">undo</span>
+                        <i className="mdi mdi-undo text-xl" />
                     </button>
                     <button
                         onClick={() => editor.chain().focus().redo().run()}
                         className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9E9E9E] hover:bg-white hover:text-[#1976D2] transition-all shadow-sm"
                         title={t("common.redo")}
                     >
-                        <span className="material-symbols-rounded text-xl">redo</span>
+                        <i className="mdi mdi-redo text-xl" />
                     </button>
                 </div>
 
@@ -91,19 +91,19 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                         onClick={() => editor.chain().focus().toggleBold().run()}
                         className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('bold') ? 'bg-[#1976D2] text-white' : 'bg-white text-[#424242] hover:text-[#1976D2]'}`}
                     >
-                        <span className="material-symbols-rounded text-xl">format_bold</span>
+                        <i className="mdi mdi-format-bold text-xl" />
                     </button>
                     <button
                         onClick={() => editor.chain().focus().toggleItalic().run()}
                         className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('') ? 'bg-[#1976D2] text-white' : 'bg-white text-[#424242] hover:text-[#1976D2]'}`}
                     >
-                        <span className="material-symbols-rounded text-xl">format_italic</span>
+                        <i className="mdi mdi-format-italic text-xl" />
                     </button>
                     <button
                         onClick={() => editor.chain().focus().toggleUnderline().run()}
                         className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('underline') ? 'bg-[#1976D2] text-white' : 'bg-white text-[#424242] hover:text-[#1976D2]'}`}
                     >
-                        <span className="material-symbols-rounded text-xl">format_underlined</span>
+                        <i className="mdi mdi-format-underline text-xl" />
                     </button>
                 </div>
 
@@ -114,13 +114,13 @@ const JobEditor = ({ content, onChange, placeholder }: JobEditorProps) => {
                         onClick={() => editor.chain().focus().toggleBulletList().run()}
                         className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('bulletList') ? 'bg-[#1976D2] text-white' : 'bg-white text-[#424242] hover:text-[#1976D2]'}`}
                     >
-                        <span className="material-symbols-rounded text-xl">format_list_bulleted</span>
+                        <i className="mdi mdi-format-list-bulleted text-xl" />
                     </button>
                     <button
                         onClick={() => editor.chain().focus().toggleOrderedList().run()}
                         className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all shadow-sm ${editor.isActive('orderedList') ? 'bg-[#1976D2] text-white' : 'bg-white text-[#424242] hover:text-[#1976D2]'}`}
                     >
-                        <span className="material-symbols-rounded text-xl">format_list_numbered</span>
+                        <i className="mdi mdi-format-list-numbered text-xl" />
                     </button>
                 </div>
 

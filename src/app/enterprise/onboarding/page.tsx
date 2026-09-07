@@ -16,7 +16,7 @@ import {
     Activity,
     UserCircle,
     ClipboardList
-} from "lucide-react";
+} from "@/components/icons";
 import { jetbrainsMono, PageHelp } from "@/components/ds";
 
 interface OnboardingStatus {
@@ -173,7 +173,7 @@ export default function OnboardingDashboard() {
                 </div>
 
                 <div className="flex items-center gap-2 bg-white border border-[#E0E0E0] px-3 h-10 rounded-[4px] shadow-sm shrink-0 w-full sm:w-auto">
-                    <span className="material-symbols-rounded text-[#9E9E9E] text-[20px]">filter_list</span>
+                    <i className="mdi mdi-filter-variant text-[#9E9E9E] text-[20px]" />
                     <select 
                         value={selectedJobId}
                         onChange={(e) => setSelectedJobId(e.target.value)}

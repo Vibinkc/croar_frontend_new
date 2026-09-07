@@ -35,7 +35,7 @@ import {
     Phone,
     BarChart3,
     X
-} from "lucide-react";
+} from "@/components/icons";
 import Link from "next/link";
 import { PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, AreaChart, Area } from "recharts";
 import { Chart } from "react-google-charts";

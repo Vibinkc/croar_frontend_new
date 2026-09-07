@@ -115,7 +115,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
             <div className="w-full max-w-[480px] space-y-5 animate-in fade-in zoom-in-95 duration-500">
                 <Card padding="lg" className="text-center">
                     <div className="w-16 h-16 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center mx-auto mb-6">
-                        <span className="material-symbols-rounded text-[34px]">verified</span>
+                        <i className="mdi mdi-check-decagram text-[34px]" />
                     </div>
                     <h1 className="text-[24px] font-extrabold text-[#212121] tracking-[-0.3px] mb-2">{tr("surveysExt.thankYou")}</h1>
                     <p className="text-[14px] text-[#424242] leading-relaxed">
@@ -168,7 +168,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                     <div className="flex items-center justify-between gap-3">
                         <Badge tone="indigo">{invite?.instance.template.survey_type.name}</Badge>
                         <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#757575]">
-                            <span className="material-symbols-rounded text-[15px]">lock</span>
+                            <i className="mdi mdi-lock text-[15px]" />
                             {tr("surveysExt.confidential")}
                         </span>
                     </div>
@@ -179,7 +179,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                         {invite?.instance.template.description || tr("surveysExt.everyVoiceMatters")}
                     </p>
                     <p className="inline-flex items-center gap-1.5 text-[12.5px] text-[#757575] leading-relaxed">
-                        <span className="material-symbols-rounded text-[16px]">info</span>
+                        <i className="mdi mdi-information text-[16px]" />
                         {tr("surveysExt.answerAllConfidential")}
                     </p>
                 </Card>
@@ -244,7 +244,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                                         >
                                             {opt}
                                             {responses[i]?.answer_value === optIdx && (
-                                                <span className="material-symbols-rounded text-[20px]">check_circle</span>
+                                                <i className="mdi mdi-check-circle text-[20px]" />
                                             )}
                                         </button>
                                     ))}
@@ -275,7 +275,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                             {submitting ? tr("surveysExt.submitting") : tr("surveysExt.completeEntry")}
                         </Button>
                         <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#757575]">
-                            <span className="material-symbols-rounded text-[15px]">lock</span>
+                            <i className="mdi mdi-lock text-[15px]" />
                             {tr("surveysExt.encryptedSubmission")}
                         </p>
                     </div>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { Button, Card, Textarea, Select, Field, Badge, PageHelp, jetbrainsMono } from "@/components/ds";
+import { Button, Card, Textarea, Select, Field, Badge, PageHelp, jetbrainsMono, Icon } from "@/components/ds";
 
 interface Question {
     id: string;
@@ -189,7 +189,7 @@ export default function X360QuestionBank() {
                         aria-label={tr("common.back")}
                         className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#757575] hover:text-[#1976D2] hover:border-[#E0E0E0] transition-all flex items-center justify-center shrink-0 shadow-sm"
                     >
-                        <span className="material-symbols-rounded text-[20px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[20px]" />
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
@@ -227,7 +227,7 @@ export default function X360QuestionBank() {
                                 <div className={`text-[30px] font-semibold tracking-[-1px] text-[#212121] mt-2 ${jetbrainsMono.className}`}>{s.value}</div>
                             </div>
                             <span className="w-10 h-10 rounded-[4px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
-                                <span className="material-symbols-rounded text-[20px]">{s.icon}</span>
+                                <Icon name={s.icon} className="text-[20px]" />
                             </span>
                         </div>
                     </div>
@@ -243,7 +243,7 @@ export default function X360QuestionBank() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div className="flex items-center gap-3">
                             <div className="w-11 h-11 bg-white/15 backdrop-blur-md rounded-[4px] flex items-center justify-center border border-white/25">
-                                <span className="material-symbols-rounded text-white text-[22px]">auto_awesome</span>
+                                <i className="mdi mdi-auto-fix text-white text-[22px]" />
                             </div>
                             <div>
                                 <h2 className="text-[17px] font-extrabold tracking-[-0.3px] leading-tight">{tr("nav.scenarioArchitect")}</h2>
@@ -275,9 +275,7 @@ export default function X360QuestionBank() {
                                             : 'bg-white/[0.08] text-white/90 border-white/15 hover:bg-white/[0.14]'
                                         }`}
                                     >
-                                        <span className="material-symbols-rounded text-[18px] shrink-0">
-                                            {aiConfig.categories.includes(cat.id) ? 'check_circle' : 'circle'}
-                                        </span>
+                                        <Icon name={aiConfig.categories.includes(cat.id) ? 'check_circle' : 'circle'} className="text-[18px] shrink-0" />
                                         {cat.label}
                                     </button>
                                 ))}
@@ -289,7 +287,7 @@ export default function X360QuestionBank() {
                                         onClick={() => toggleAiCategory(cat)}
                                         className="flex items-center gap-2 px-3.5 py-2 rounded-[4px] text-[12.5px] font-semibold transition-all border whitespace-nowrap bg-white text-[#1976D2] border-white shadow-sm"
                                     >
-                                        <span className="material-symbols-rounded text-[18px] shrink-0 text-[#EF6C00]">new_releases</span>
+                                        <i className="mdi mdi-new-box text-[18px] shrink-0 text-[#EF6C00]" />
                                         {cat}
                                     </button>
                                 ))}
@@ -353,7 +351,7 @@ export default function X360QuestionBank() {
                                             aria-label={tr("assess360.addCategory")}
                                             className="w-11 h-11 shrink-0 bg-white text-[#1976D2] rounded-[4px] flex items-center justify-center hover:bg-white/90 active:scale-95 transition-all shadow-sm"
                                         >
-                                            <span className="material-symbols-rounded">add</span>
+                                            <i className="mdi mdi-plus" />
                                         </button>
                                     </div>
                                 </div>
@@ -369,7 +367,7 @@ export default function X360QuestionBank() {
                                         </>
                                     ) : (
                                         <>
-                                            <span className="material-symbols-rounded text-[20px]">bolt</span>
+                                            <i className="mdi mdi-lightning-bolt text-[20px]" />
                                             <span>{tr("assess360.generateQuestions")}</span>
                                         </>
                                     )}
@@ -386,7 +384,7 @@ export default function X360QuestionBank() {
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                         <div className="flex items-center gap-3.5">
                             <div className="w-11 h-11 bg-[#FFF3E0] rounded-[4px] flex items-center justify-center text-[#EF6C00] border border-[#FFB300]/40 shrink-0">
-                                <span className="material-symbols-rounded text-[22px]">auto_awesome</span>
+                                <i className="mdi mdi-auto-fix text-[22px]" />
                             </div>
                             <div>
                                 <h3 className="text-[16px] font-bold text-[#212121] tracking-tight">{tr("assess360.aiSuggestionsReady")}</h3>
@@ -447,7 +445,7 @@ export default function X360QuestionBank() {
                             className="bg-[#FAFCFE] p-5 rounded-[4px] border-2 border-dashed border-[#BBDEFB] hover:border-[#1976D2] hover:bg-[#F4F3FE] transition-all cursor-pointer flex flex-col items-center justify-center text-center group min-h-[176px]"
                         >
                             <div className="w-14 h-14 bg-white rounded-[4px] flex items-center justify-center text-[#1976D2] shadow-sm border border-[#E0E0E0] group-hover:scale-105 transition-transform mb-3">
-                                <span className="material-symbols-rounded text-[26px]">add_circle</span>
+                                <i className="mdi mdi-plus-circle text-[26px]" />
                             </div>
                             <h3 className="text-[14px] font-bold text-[#212121] tracking-tight mb-0.5">{tr("assess360.createCompetency")}</h3>
                             <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("assess360.manualEntry")}</p>
@@ -475,7 +473,7 @@ export default function X360QuestionBank() {
                                     <div className="absolute top-0 right-0 w-20 h-20 bg-[#E3F2FD]/60 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-[#E3F2FD] transition-colors" />
 
                                     <div className="w-14 h-14 bg-[#212121] rounded-[4px] flex items-center justify-center text-white group-hover:scale-105 transition-transform mb-3">
-                                        <span className="material-symbols-rounded text-[26px]">{icon}</span>
+                                        <Icon name={icon} className="text-[26px]" />
                                     </div>
 
                                     <h3 className="text-[14px] font-bold text-[#212121] tracking-tight mb-0.5">{label}</h3>
@@ -486,7 +484,7 @@ export default function X360QuestionBank() {
                                     </div>
 
                                     <div className="absolute bottom-4 right-5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                                        <span className="material-symbols-rounded text-[#1976D2] text-[20px]">arrow_right_alt</span>
+                                        <i className="mdi mdi-arrow-right text-[#1976D2] text-[20px]" />
                                     </div>
                                 </Card>
                             );
@@ -496,7 +494,7 @@ export default function X360QuestionBank() {
                         {questions.length === 0 && (
                             <div className="col-span-full bg-white rounded-[4px] p-16 md:p-20 text-center border border-dashed border-[#E0E0E0]">
                                 <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mx-auto mb-5">
-                                    <span className="material-symbols-rounded text-[#BDBDBD] text-[32px]">inventory_2</span>
+                                    <i className="mdi mdi-package-variant-closed text-[#BDBDBD] text-[32px]" />
                                 </div>
                                 <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("assess360.knowledgeBaseEmpty")}</h3>
                                 <p className="text-[#757575] text-[14px] max-w-sm mx-auto mb-7">{tr("assess360.knowledgeBaseEmptyDesc")}</p>
@@ -510,7 +508,7 @@ export default function X360QuestionBank() {
             <Card padding="lg">
                 <div className="flex items-center gap-3 mb-5">
                     <div className="w-10 h-10 bg-[#E3F2FD] rounded-[4px] flex items-center justify-center text-[#1976D2] shrink-0">
-                        <span className="material-symbols-rounded text-[20px]">edit_note</span>
+                        <i className="mdi mdi-note-edit text-[20px]" />
                     </div>
                     <div>
                         <h2 className="text-[16px] font-bold text-[#212121] tracking-tight">{tr("assess360.newQuestion")}</h2>
@@ -539,7 +537,7 @@ export default function X360QuestionBank() {
                                     <option value="RATING">{tr("assess360.ratingType")}</option>
                                     <option value="TEXT">{tr("assess360.openText")}</option>
                                 </Select>
-                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]">unfold_more</span>
+                                <i className="mdi mdi-unfold-more-horizontal absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]" />
                             </div>
                         </Field>
                         <Field label={tr("assess360.coreCategory")} htmlFor="manual-core-category">
@@ -551,7 +549,7 @@ export default function X360QuestionBank() {
                                 >
                                     {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
                                 </Select>
-                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]">unfold_more</span>
+                                <i className="mdi mdi-unfold-more-horizontal absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]" />
                             </div>
                         </Field>
                     </div>

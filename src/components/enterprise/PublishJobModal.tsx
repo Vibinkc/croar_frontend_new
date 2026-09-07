@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Globe, X } from "lucide-react";
+import { Globe, X } from "@/components/icons";
 import { useI18n } from "@/context/I18nContext";
 import JobPostingPanel from "@/components/enterprise/JobPostingPanel";
 

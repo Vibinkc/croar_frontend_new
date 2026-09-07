@@ -11,7 +11,7 @@ import {
     Trash2,
     Badge as BadgeIcon,
     X,
-} from "lucide-react";
+} from "@/components/icons";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";

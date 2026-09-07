@@ -60,9 +60,7 @@ export default function BatchSelector() {
         <div className="flex items-center gap-2">
             <div className="h-8 w-[1px] bg-slate-200 mx-2"></div>
             <div className="relative group">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-icons-outlined text-sm pointer-events-none">
-                    event_repeat
-                </span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 mdi mdi-calendar-refresh text-sm pointer-events-none" />
                 <select
                     value={selectedBatch || ""}
                     onChange={(e) => {
@@ -81,7 +79,7 @@ export default function BatchSelector() {
                     ))}
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center">
-                    <span className="material-icons-outlined text-slate-400 text-sm">expand_more</span>
+                    <i className="mdi mdi-chevron-down text-slate-400 text-sm" />
                 </div>
             </div>
         </div>

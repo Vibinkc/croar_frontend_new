@@ -7,7 +7,7 @@ import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 interface OnboardingDocument {
     id: string;
@@ -278,7 +278,7 @@ export default function OnboardingDetailsPage() {
         return (
             <div className="flex flex-col items-center justify-center h-screen bg-[#F8F9FA] text-center px-6">
                 <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mb-4">
-                    <span className="material-symbols-rounded text-3xl">error</span>
+                    <i className="mdi mdi-alert-circle text-3xl" />
                 </div>
                 <h2 className="text-lg font-black text-slate-800 mb-1">
                     {loadFailed ? tr("onboardingDetail.couldntLoad") : tr("onboardingDetail.notFound")}
@@ -320,7 +320,7 @@ export default function OnboardingDetailsPage() {
                         onClick={() => router.back()} 
                         className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 rounded-xl text-slate-400 transition-all border border-transparent hover:border-slate-200"
                     >
-                        <span className="material-symbols-rounded">arrow_back</span>
+                        <i className="mdi mdi-arrow-left" />
                     </button>
                     <div className="flex items-center gap-1.5">
                         <h1 className="text-xl font-black text-slate-800 tracking-tight">{tr("onboardingDetail.onboarding")}</h1>
@@ -353,7 +353,7 @@ export default function OnboardingDetailsPage() {
                             onClick={() => router.push(`/enterprise/employees/add?candidateId=${onboarding.application?.candidate_id}`)}
                             className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black   shadow-lg shadow-emerald-200 transition-all flex items-center gap-2"
                         >
-                            <span className="material-symbols-rounded text-sm">badge</span>
+                            <i className="mdi mdi-badge-account text-sm" />
                             <span>{tr("onboardingDetail.convertToEmployee")}</span>
                         </button>
                     )}
@@ -423,9 +423,7 @@ export default function OnboardingDetailsPage() {
                                             className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-all"
                                         >
                                             <h3 className="text-sm font-black text-slate-800 tracking-tight">{section.title}</h3>
-                                            <span className={`material-symbols-rounded transition-transform duration-300 ${expandedSections.has(section.title) ? "rotate-180" : ""}`}>
-                                                keyboard_arrow_down
-                                            </span>
+                                            <i className={`mdi mdi-chevron-down transition-transform duration-300 ${expandedSections.has(section.title) ? "rotate-180" : ""}`} />
                                         </button>
                                         <AnimatePresence initial={false}>
                                             {expandedSections.has(section.title) && (
@@ -450,7 +448,7 @@ export default function OnboardingDetailsPage() {
                                                                             }`}
                                                                             title={rejectedFieldNames.has(field.name) ? tr("onboardingDetail.selectedForCorrection") : tr("onboardingDetail.requestCorrectionField")}
                                                                         >
-                                                                            <span className="material-symbols-rounded text-xs">{rejectedFieldNames.has(field.name) ? "close" : "edit_square"}</span>
+                                                                            <Icon name={rejectedFieldNames.has(field.name) ? "close" : "edit_square"} className="text-xs" />
                                                                         </button>
                                                                     )}
                                                                 </div>
@@ -467,7 +465,7 @@ export default function OnboardingDetailsPage() {
                                                                                     onClick={() => window.open(`${BACKEND_URL.replace('/api/v1', '')}/${val.replaceAll('\\', '/')}`, '_blank')}
                                                                                     className="flex items-center gap-2 text-[#1E88E5] hover:underline"
                                                                                 >
-                                                                                    <span className="material-symbols-rounded text-sm">attach_file</span>
+                                                                                    <i className="mdi mdi-paperclip text-sm" />
                                                                                     <span className="text-xs">{tr("onboardingDetail.viewUpload")}</span>
                                                                                 </button>
                                                                             );
@@ -486,7 +484,7 @@ export default function OnboardingDetailsPage() {
                                 ))
                             ) : (
                                 <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-200">
-                                    <span className="material-symbols-rounded text-4xl text-slate-200 mb-4">description</span>
+                                    <i className="mdi mdi-file-document-outline text-4xl text-slate-200 mb-4" />
                                     <p className="text-slate-400 text-xs font-black  ">{tr("onboardingDetail.noProfileData")}</p>
                                 </div>
                             )}
@@ -516,7 +514,7 @@ export default function OnboardingDetailsPage() {
                         )}
                         {(!onboarding.documents || onboarding.documents.length === 0) ? (
                             <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
-                                <span className="material-symbols-rounded text-4xl text-slate-200 mb-3">folder_open</span>
+                                <i className="mdi mdi-folder-open text-4xl text-slate-200 mb-3" />
                                 <p className="text-slate-400 text-xs font-black">{tr("onboardingDetail.noDocuments")}</p>
                             </div>
                         ) : (
@@ -525,7 +523,7 @@ export default function OnboardingDetailsPage() {
                                 <div key={doc.id} className="bg-white border border-slate-100 rounded-2xl p-6 flex items-center justify-between hover:border-[#1E88E5]/30 hover:shadow-xl hover:shadow-[#1E88E5]/5 transition-all group">
                                     <div className="flex items-center gap-4 text-left">
                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${doc.status === "Received" ? "bg-emerald-50 text-emerald-600" : "bg-slate-50 text-slate-400"}`}>
-                                            <span className="material-symbols-rounded">{doc.status === "Received" ? "check_circle" : "file_present"}</span>
+                                            <Icon name={doc.status === "Received" ? "check_circle" : "file_present"} />
                                         </div>
                                         <div>
                                             <h4 className="text-sm font-black text-slate-800">{doc.name}</h4>
@@ -543,9 +541,7 @@ export default function OnboardingDetailsPage() {
                                                 }`}
                                                 title={rejectedDocIds.has(doc.id) ? tr("onboardingDetail.markedForRejection") : tr("onboardingDetail.rejectDocument")}
                                             >
-                                                <span className="material-symbols-rounded text-lg">
-                                                    {rejectedDocIds.has(doc.id) ? "close" : "error"}
-                                                </span>
+                                                <Icon name={rejectedDocIds.has(doc.id) ? "close" : "error"} className="text-lg" />
                                             </button>
                                         )}
                                         {doc.status === "Received" && doc.file_path && (
@@ -553,7 +549,7 @@ export default function OnboardingDetailsPage() {
                                                 onClick={() => window.open(`${BACKEND_URL.replace('/api/v1', '')}/${doc.file_path!.replaceAll('\\', '/')}`, '_blank')}
                                                 className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1E88E5]/5 text-[#1E88E5] hover:bg-[#1E88E5] hover:text-white transition-all shadow-sm"
                                             >
-                                                <span className="material-symbols-rounded text-lg">visibility</span>
+                                                <i className="mdi mdi-eye text-lg" />
                                             </button>
                                         )}
                                     </div>
@@ -648,7 +644,7 @@ export default function OnboardingDetailsPage() {
                                 {onboarding.activities?.map((act: OnboardingActivity) => (
                                     <div key={act.id} className="relative pl-12 group/act">
                                         <div className="absolute left-0 top-1.5 w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 z-10 transition-colors group-hover/act:border-[#1E88E5] group-hover/act:text-[#1E88E5]">
-                                            <span className="material-symbols-rounded text-base">history</span>
+                                            <i className="mdi mdi-history text-base" />
                                         </div>
                                         <div>
                                             <h4 className="text-sm font-black text-slate-800">{act.description}</h4>
@@ -691,7 +687,7 @@ export default function OnboardingDetailsPage() {
                                         onClick={() => setIsRejectModalOpen(false)}
                                         className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 rounded-xl text-slate-400"
                                     >
-                                        <span className="material-symbols-rounded">close</span>
+                                        <i className="mdi mdi-close" />
                                     </button>
                                 </div>
 
@@ -707,7 +703,7 @@ export default function OnboardingDetailsPage() {
                                                             return (
                                                                 <span key={id} className="px-3 py-1 bg-white border border-rose-200 text-rose-600 text-[10px] font-bold rounded-xl flex items-center gap-2">
                                                                     {doc?.name}
-                                                                    <button onClick={() => toggleDocRejection(id)} className="material-symbols-rounded text-xs hover:text-rose-800">close</button>
+                                                                    <button onClick={() => toggleDocRejection(id)} className="mdi mdi-close text-xs hover:text-rose-800" />
                                                                 </span>
                                                             );
                                                         })}
@@ -722,7 +718,7 @@ export default function OnboardingDetailsPage() {
                                                         {Array.from(rejectedFieldNames).map(name => (
                                                             <span key={name} className="px-3 py-1 bg-white border border-indigo-200 text-indigo-600 text-[10px] font-bold rounded-xl flex items-center gap-2">
                                                                 {name.replaceAll('_', ' ').toUpperCase()}
-                                                                <button onClick={() => toggleFieldRejection(name)} className="material-symbols-rounded text-xs hover:text-indigo-800">close</button>
+                                                                <button onClick={() => toggleFieldRejection(name)} className="mdi mdi-close text-xs hover:text-indigo-800" />
                                                             </span>
                                                         ))}
                                                     </div>

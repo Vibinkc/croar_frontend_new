@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { Card, EmptyState, cn } from "@/components/ds";
+import { Card, EmptyState, cn, Icon } from "@/components/ds";
 
 interface JobActivity {
     id: string;
@@ -109,7 +109,7 @@ export default function JobActivitiesTab({ jobId }: { jobId: string }) {
                                     look.cls
                                 )}
                             >
-                                <span className="material-symbols-rounded text-[17px]">{look.icon}</span>
+                                <Icon name={look.icon} className="text-[17px]" />
                             </span>
                             <div className="min-w-0 flex-1 pt-1">
                                 <p className="text-[13px] text-[#212121] leading-snug">

@@ -36,8 +36,8 @@ import {
     AtSign,
     Users,
     Network
-} from "lucide-react";
-import { jetbrainsMono, Button, Card, CardHeader, Field, Input, Textarea, Select, PageHeader, cn } from "@/components/ds";
+} from "@/components/icons";
+import { jetbrainsMono, Button, Card, CardHeader, Field, Input, Textarea, Select, PageHeader, cn, Icon } from "@/components/ds";
 
 // Remove the temporary <mark> highlight tags the AI adds around newly-inserted JD text, keeping the
 // inner text. Used before persisting a job and before re-sending the JD to the AI, so highlights are
@@ -835,7 +835,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
             <div className="min-h-[60vh] w-full flex items-center justify-center px-4">
                 <div className="text-center max-w-sm">
                     <div className="w-14 h-14 rounded-[4px] bg-[#FFEBEE] text-[#C62828] flex items-center justify-center mx-auto mb-4">
-                        <span className="material-symbols-rounded text-3xl">error</span>
+                        <i className="mdi mdi-alert-circle text-3xl" />
                     </div>
                     <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-1.5">{tr("jobForm.couldntLoadJob")}</h2>
                     <p className="text-[13.5px] text-[#757575] leading-relaxed mb-5">{tr("jobForm.couldntLoadJobDesc")}</p>
@@ -1240,7 +1240,7 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
                                                         ? "inline-flex items-center gap-1.5 h-7 px-2.5 rounded-[4px] border text-[11.5px] font-bold transition-colors " + tone
                                                         : "inline-flex items-center gap-1.5 h-7 px-2.5 rounded-[4px] border border-dashed border-[#DDE0E5] text-[11.5px] font-semibold text-[#757575] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors"}
                                                 >
-                                                    <span className="material-symbols-rounded text-[15px]">{attached ? icon : "add"}</span>
+                                                    <Icon name={attached ? icon : "add"} className="text-[15px]" />
                                                     {attached ? onLabel : addLabel}
                                                 </button>
                                             ))}

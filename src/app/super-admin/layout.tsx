@@ -80,7 +80,7 @@ export default function SuperAdminLayout({
                             onClick={() => setIsMobileMenuOpen(true)}
                             className="w-10 h-10 rounded-[4px] hover:bg-[#F5F6F8] flex items-center justify-center transition-colors"
                         >
-                            <span className="material-icons-outlined text-[#424242]">menu</span>
+                            <i className="mdi mdi-menu text-[#424242]" />
                         </button>
                         <span className="flex items-center gap-2">
                             <CroarMark size={28} />

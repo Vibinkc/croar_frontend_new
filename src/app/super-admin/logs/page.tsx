@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { Activity, Clock, ShieldAlert, History } from "lucide-react";
+import { Activity, Clock, ShieldAlert, History } from "@/components/icons";
 import { Card, Badge, Button, EmptyState, PageHeader, jetbrainsMono } from "@/components/ds";
 
 interface AuditLog {

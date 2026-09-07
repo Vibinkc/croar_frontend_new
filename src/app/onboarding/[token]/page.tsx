@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button, Card, Input, Select, Field, Badge, CroarMark, cn } from "@/components/ds";
+import { Button, Card, Input, Select, Field, Badge, CroarMark, cn, Icon } from "@/components/ds";
 import { useI18n } from "@/context/I18nContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -147,7 +147,7 @@ export default function CandidateOnboardingPage() {
         return (
             <div className="min-h-screen bg-[#F6F7F9] flex items-center justify-center p-6">
                 <div className="flex flex-col items-center gap-4 text-[#757575]">
-                    <span className="animate-spin material-icons-outlined text-[#1976D2] text-4xl">progress_activity</span>
+                    <span className="animate-spin mdi mdi-loading text-[#1976D2] text-4xl" />
                     <span className="text-[13px] font-semibold">{t("candidate.loadingProfile")}</span>
                 </div>
             </div>
@@ -158,7 +158,7 @@ export default function CandidateOnboardingPage() {
         return (
             <div className="min-h-screen bg-[#F6F7F9] flex flex-col items-center justify-center p-6 text-center">
                 <div className="w-16 h-16 rounded-[4px] bg-[#FFEBEE] text-[#C62828] flex items-center justify-center mb-6">
-                    <span className="material-icons-outlined text-3xl">link_off</span>
+                    <i className="mdi mdi-link-off text-3xl" />
                 </div>
                 <h1 className="text-2xl font-extrabold text-[#212121] mb-2 tracking-[-0.3px]">{t("candidate.processNotFound")}</h1>
                 <p className="text-[#757575] max-w-sm text-[14px]">{t("candidate.linkExpired")}</p>
@@ -201,7 +201,7 @@ export default function CandidateOnboardingPage() {
                             <option key={opt} value={opt}>{opt}</option>
                         ))}
                     </Select>
-                    <span className="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]">expand_more</span>
+                    <i className="mdi mdi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]" />
                 </div>
             );
         }
@@ -213,7 +213,7 @@ export default function CandidateOnboardingPage() {
                     <div className="flex items-center justify-between rounded-[4px] border border-[#CDEbe1] bg-[#E8F5E9] px-3.5 py-2.5">
                         <div className="flex items-center gap-3">
                             <span className="w-8 h-8 rounded-[4px] bg-[#2E7D32] text-white flex items-center justify-center">
-                                <span className="material-icons-outlined text-[18px]">check</span>
+                                <i className="mdi mdi-check text-[18px]" />
                             </span>
                             <div className="flex flex-col leading-tight">
                                 <span className="text-[13px] font-semibold text-[#0B6B56]">{t("candidate.fileUploaded")}</span>
@@ -226,7 +226,7 @@ export default function CandidateOnboardingPage() {
                                 className="w-7 h-7 rounded-[4px] bg-white/60 text-[#2E7D32] flex items-center justify-center hover:bg-[#E53935] hover:text-white transition-colors"
                                 aria-label={t("candidate.removeFile")}
                             >
-                                <span className="material-icons-outlined text-[16px]">close</span>
+                                <i className="mdi mdi-close text-[16px]" />
                             </button>
                         )}
                     </div>
@@ -245,9 +245,7 @@ export default function CandidateOnboardingPage() {
                         isRejected ? "bg-[#FFEBEE] border-[#EF9A9A]" : "bg-[#FAFAFA] border-[#D6DAE0]",
                         !isDisabled && "group-hover:border-[#1976D2] group-hover:bg-[#F3F2FD]"
                     )}>
-                        <span className={cn("material-icons-outlined text-[22px]", isRejected ? "text-[#C62828]" : "text-[#9E9E9E]")}>
-                            {isRejected ? "error" : "cloud_upload"}
-                        </span>
+                        <Icon name={isRejected ? "error" : "cloud_upload"} className={cn("text-[22px]", isRejected ? "text-[#C62828]" : "text-[#9E9E9E]")} />
                         <p className={cn("text-[12px] font-semibold", isRejected ? "text-[#C62828]" : "text-[#616161]")}>
                             {isDisabled ? t("candidate.fieldLocked") : isRejected ? t("candidate.uploadCorrectedFile") : t("candidate.clickToUpload")}
                         </p>
@@ -283,7 +281,7 @@ export default function CandidateOnboardingPage() {
                 <h3 className="text-[22px] font-extrabold text-[#212121] tracking-[-0.3px]">{section.title}</h3>
                 {(onboarding.rejected_fields?.length ?? 0) > 0 && (
                     <Badge tone="warning" className="w-fit mt-1">
-                        <span className="material-icons-outlined text-[14px]">info</span>
+                        <i className="mdi mdi-information text-[14px]" />
                         {t("candidate.someFieldsNeedCorrection")}
                     </Badge>
                 )}
@@ -356,7 +354,7 @@ export default function CandidateOnboardingPage() {
                                             active ? "bg-[#1976D2] text-white shadow-[0_6px_16px_rgba(25,118,210,0.28)] ring-4 ring-[#1976D2]/12" :
                                             "bg-white border border-[#E0E0E0] text-[#9E9E9E]"
                                         )}>
-                                            <span className="material-icons-outlined text-[18px]">{done ? "check" : s.icon}</span>
+                                            <Icon name={done ? "check" : s.icon} className="text-[18px]" />
                                         </div>
                                         <span className={cn(
                                             "text-[10px] font-bold mt-2 text-center transition-colors duration-500",
@@ -384,7 +382,7 @@ export default function CandidateOnboardingPage() {
                             <Card padding="lg" className="text-center relative overflow-hidden">
                                 <div className="absolute top-0 left-0 w-full h-1 bg-[#2E7D32]" />
                                 <div className="w-20 h-20 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center mx-auto mb-7 mt-2">
-                                    <span className="material-icons-outlined text-4xl">check_circle</span>
+                                    <i className="mdi mdi-check-circle text-4xl" />
                                 </div>
                                 <h2 className="text-[26px] font-extrabold text-[#212121] mb-3 tracking-[-0.4px]">{t("candidate.onboardingSubmitted")}</h2>
                                 <p className="text-[#616161] max-w-sm mx-auto leading-relaxed text-[14px]">
@@ -403,7 +401,7 @@ export default function CandidateOnboardingPage() {
                                     <div className="space-y-7">
                                         <div className="text-center">
                                             <div className="w-16 h-16 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center mx-auto mb-5">
-                                                <span className="material-icons-outlined text-3xl">fingerprint</span>
+                                                <i className="mdi mdi-fingerprint text-3xl" />
                                             </div>
                                             <h2 className="text-[26px] font-extrabold text-[#212121] tracking-[-0.4px]">{t("candidate.identityVerification")}</h2>
                                             <p className="text-[#757575] text-[13px] font-semibold mt-1">{t("candidate.secureGatewayAccess")}</p>
@@ -442,7 +440,7 @@ export default function CandidateOnboardingPage() {
                                 {currentStep?.id === "welcome" && (
                                     <div className="text-center py-4">
                                         <div className="w-16 h-16 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center mx-auto mb-6">
-                                            <span className="material-icons-outlined text-3xl">celebration</span>
+                                            <i className="mdi mdi-party-popper text-3xl" />
                                         </div>
                                         <h2 className="text-[30px] font-extrabold text-[#212121] tracking-[-0.6px] leading-none mb-3">{t("candidate.youreHired")}</h2>
                                         <Badge tone="indigo" className="text-[13px] px-3 py-1 mb-6">{onboarding.job_title || t("candidate.newRole")}</Badge>
@@ -462,7 +460,7 @@ export default function CandidateOnboardingPage() {
                 </AnimatePresence>
 
                 <p className="text-center text-[11px] text-[#B4BAC2] mt-6 flex items-center justify-center gap-1.5">
-                    <span className="material-icons-outlined text-[13px]">lock</span>
+                    <i className="mdi mdi-lock text-[13px]" />
                     {t("candidate.securedBy")} Croar
                 </p>
             </main>

@@ -5,6 +5,7 @@ import { apiClient } from "@/utils/api";
 import { useDivision } from "@/context/DivisionContext";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 interface Department {
     id: number;
@@ -90,13 +91,11 @@ export default function DepartmentSelector() {
                     className={`flex items-center gap-2 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl px-3 py-2.5 outline-none hover:border-slate-300 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-all cursor-pointer min-w-[200px] ${loading ? 'opacity-50' : ''}`}
                     disabled={loading}
                 >
-                    <span className="material-icons-outlined text-sm text-slate-400">domain</span>
+                    <i className="mdi mdi-domain text-sm text-slate-400" />
                     <span className="flex-1 text-left truncate">
                         {selectedDept ? selectedDept.name : tr("general.allDepartments")}
                     </span>
-                    <span className="material-icons-outlined text-sm text-slate-400">
-                        {isOpen ? "expand_less" : "expand_more"}
-                    </span>
+                    <Icon name={isOpen ? "expand_less" : "expand_more"} className="text-sm text-slate-400" />
                 </button>
 
                 {isOpen && (
@@ -108,7 +107,7 @@ export default function DepartmentSelector() {
                                 className={`w-full text-left px-4 py-2.5 text-xs font-bold hover:bg-slate-50 transition-colors flex items-center gap-2 ${!selectedDepartmentId ? "bg-slate-100 text-slate-900" : "text-slate-600"
                                     }`}
                             >
-                                <span className="material-icons-outlined text-sm">apps</span>{" "}
+                                <i className="mdi mdi-apps text-sm" />{" "}
                                 {tr("general.allDepartments")}
                             </button>
 
@@ -120,7 +119,7 @@ export default function DepartmentSelector() {
                                     className={`w-full text-left px-4 py-2.5 text-xs font-bold hover:bg-slate-50 transition-colors flex items-center gap-2 ${selectedDepartmentId === dept.id ? "bg-slate-100 text-slate-900" : "text-slate-600"
                                         }`}
                                 >
-                                    <span className="material-icons-outlined text-sm">school</span>{" "}
+                                    <i className="mdi mdi-school text-sm" />{" "}
                                     {dept.name}
                                 </button>
                             ))}
@@ -131,7 +130,7 @@ export default function DepartmentSelector() {
                                     onClick={() => setShowAll(true)}
                                     className="w-full text-left px-4 py-2.5 text-xs font-black   text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
                                 >
-                                    <span className="material-icons-outlined text-sm">expand_more</span>{" "}
+                                    <i className="mdi mdi-chevron-down text-sm" />{" "}
                                     {tr("general.moreCount", { count: departments.length - INITIAL_DISPLAY_COUNT })}
                                 </button>
                             )}
@@ -142,7 +141,7 @@ export default function DepartmentSelector() {
                                     onClick={() => setShowAll(false)}
                                     className="w-full text-left px-4 py-2.5 text-xs font-black   text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-colors border-t border-slate-100 flex items-center gap-2"
                                 >
-                                    <span className="material-icons-outlined text-sm">expand_less</span>{" "}
+                                    <i className="mdi mdi-chevron-up text-sm" />{" "}
                                     {tr("general.showLess")}
                                 </button>
                             )}

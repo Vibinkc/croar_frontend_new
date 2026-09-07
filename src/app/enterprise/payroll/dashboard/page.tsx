@@ -161,7 +161,7 @@ export default function DashboardPage() {
           ) : (
             <div className="flex flex-col items-center gap-3 py-10 text-center">
               <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center">
-                <span className="material-symbols-rounded text-[28px]">event_busy</span>
+                <i className="mdi mdi-calendar-remove text-[28px]" />
               </div>
               <p className="text-[13px] text-[#757575]">{tr("payroll.noPayrollCyclesYet")}</p>
               <Link href="/enterprise/payroll" className="text-[13px] font-semibold text-[#1976D2] hover:underline">
@@ -219,7 +219,7 @@ export default function DashboardPage() {
         {data.recent_cycles.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 text-center">
             <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
-              <span className="material-symbols-rounded text-[28px]">history</span>
+              <i className="mdi mdi-history text-[28px]" />
             </div>
             <p className="text-[13px] text-[#757575]">{tr("payroll.noCyclesYet")}</p>
           </div>

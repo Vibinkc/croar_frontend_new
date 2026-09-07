@@ -17,7 +17,7 @@ import {
   Activity,
   Cpu,
   Monitor
-} from "lucide-react";
+} from "@/components/icons";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 

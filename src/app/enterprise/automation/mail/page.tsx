@@ -17,7 +17,7 @@ import {
   Save,
   CheckCircle2,
   AlertCircle
-} from "lucide-react";
+} from "@/components/icons";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";

@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { apiClient } from "@/utils/api";
 import Link from "next/link";
-import { PageHeader, StatGrid, StatCard, Card, Badge } from "@/components/ds";
+import { PageHeader, StatGrid, StatCard, Card, Badge, Icon } from "@/components/ds";
 import { useI18n } from "@/context/I18nContext";
 
 interface PlatformStats {
@@ -105,7 +105,7 @@ function SuperAdminDashboardContent() {
                             <Link key={a.label} href={a.href} className="group">
                                 <Card interactive className="flex items-center gap-3.5 h-full">
                                     <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0 group-hover:bg-[#1976D2] group-hover:text-white transition-colors">
-                                        <span className="material-symbols-rounded text-[20px]">{a.icon}</span>
+                                        <Icon name={a.icon} className="text-[20px]" />
                                     </span>
                                     <div className="min-w-0">
                                         <p className="text-[13.5px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors">{a.label}</p>

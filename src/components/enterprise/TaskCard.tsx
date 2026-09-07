@@ -17,7 +17,7 @@ export default function TaskCard({ task, getStatusColor }: TaskCardProps) {
         <div className="group bg-white rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Link href={`/enterprise/projects/${task.project_id}`}>
-                    <span className="material-symbols-rounded p-1.5 bg-indigo-50 text-[#1E88E5] rounded-lg cursor-pointer hover:bg-indigo-100 transition-colors text-base">open_in_new</span>
+                    <i className="mdi mdi-open-in-new p-1.5 bg-indigo-50 text-[#1E88E5] rounded-lg cursor-pointer hover:bg-indigo-100 transition-colors text-base" />
                 </Link>
             </div>
             

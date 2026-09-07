@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
-import { Search, Filter, ChevronDown } from "lucide-react";
+import { Search, Filter, ChevronDown } from "@/components/icons";
 import { Button, StatCard, StatGrid, Badge, Card, EmptyState, jetbrainsMono, PageHelp } from "@/components/ds";
 
 interface Cycle {
@@ -99,21 +99,21 @@ export default function X360Dashboard() {
                             href="/enterprise/assessments-360/questions"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[13px] font-semibold hover:bg-[#F5F6F8] transition-colors shadow-sm"
                         >
-                            <span className="material-symbols-rounded text-[17px]">quiz</span>
+                            <i className="mdi mdi-help-box text-[17px]" />
                             {tr("postOnboarding.questionBank")}
                         </Link>
                         <Link
                             href="/enterprise/assessments-360/templates"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[13px] font-semibold hover:bg-[#F5F6F8] transition-colors shadow-sm"
                         >
-                            <span className="material-symbols-rounded text-[17px]">description</span>
+                            <i className="mdi mdi-file-document-outline text-[17px]" />
                             {tr("postOnboarding.templates")}
                         </Link>
                         <Link
                             href="/enterprise/assessments-360/new"
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-colors"
                         >
-                            <span className="material-symbols-rounded text-[17px]">add</span>
+                            <i className="mdi mdi-plus text-[17px]" />
                             {tr("postOnboarding.newCycle")}
                         </Link>
                     </div>
@@ -163,7 +163,7 @@ export default function X360Dashboard() {
             <Card padding="none" className="overflow-hidden min-h-[420px]">
                 <div className="flex items-center justify-between px-5 py-3.5 bg-[#FAFAFA] border-b border-[#E0E0E0]">
                     <div className="flex items-center gap-2.5">
-                        <span className="material-symbols-rounded text-[#1976D2] text-[19px]">dashboard_customize</span>
+                        <i className="mdi mdi-view-dashboard-edit text-[#1976D2] text-[19px]" />
                         <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("postOnboarding.assessmentCycles")}</h2>
                     </div>
                     <Link href="/enterprise/assessments-360/cycles" className="text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0] transition-colors">
@@ -232,7 +232,7 @@ export default function X360Dashboard() {
                                     {/* Cycle Details */}
                                     <div className="flex items-center gap-3 min-w-0">
                                         <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                            <span className="material-symbols-rounded text-[18px]">sync</span>
+                                            <i className="mdi mdi-sync text-[18px]" />
                                         </span>
                                         <div className="min-w-0">
                                             <p className="text-[14px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors truncate">{cycle.name}</p>
@@ -250,11 +250,11 @@ export default function X360Dashboard() {
                                     {/* Timeline (desktop) */}
                                     <div className="hidden md:flex flex-col gap-1">
                                         <div className="flex items-center gap-1.5 text-[12.5px] text-[#424242]">
-                                            <span className="material-symbols-rounded text-[15px] text-[#9E9E9E]">calendar_today</span>
+                                            <i className="mdi mdi-calendar text-[15px] text-[#9E9E9E]" />
                                             <span className={jetbrainsMono.className}>{new Date(cycle.start_date).toLocaleDateString()}</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 text-[12.5px] text-[#424242]">
-                                            <span className="material-symbols-rounded text-[15px] text-[#9E9E9E]">event</span>
+                                            <i className="mdi mdi-calendar text-[15px] text-[#9E9E9E]" />
                                             <span className={jetbrainsMono.className}>{new Date(cycle.end_date).toLocaleDateString()}</span>
                                         </div>
                                     </div>
@@ -266,7 +266,7 @@ export default function X360Dashboard() {
                                     <div className="flex items-center justify-end">
                                         <button className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[12px] font-semibold hover:bg-[#212121] hover:text-white hover:border-[#212121] transition-colors">
                                             {tr("payroll.manage")}
-                                            <span className="material-symbols-rounded text-[15px]">trending_up</span>
+                                            <i className="mdi mdi-trending-up text-[15px]" />
                                         </button>
                                     </div>
                                 </div>

@@ -19,8 +19,7 @@ import {
   Card,
   Field as DSField,
   PageHeader,
-  jetbrainsMono,
-} from "@/components/ds";
+  jetbrainsMono, Icon } from "@/components/ds";
 
 // Shared field control classes — aligns every native <input>/<select> in this
 // page with the design-system Input/Select look (hairline border, indigo focus).
@@ -246,7 +245,7 @@ export default function SettingsPage() {
                 : "text-[#616161] hover:text-[#424242]"
             }`}
           >
-            <span className="material-symbols-rounded text-[18px]">{t.icon}</span>
+            <Icon name={t.icon} className="text-[18px]" />
             {tr(`payroll.settingsTab_${t.key}`)}
           </button>
         ))}
@@ -461,7 +460,7 @@ export default function SettingsPage() {
           >
             <span className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-[#E3F2FD] text-[#1976D2]">
-                <span className="material-symbols-rounded text-[20px]">manage_accounts</span>
+                <i className="mdi mdi-account-cog text-[20px]" />
               </span>
               <span>
                 <span className="block text-[13.5px] font-bold text-[#212121]">{tr("payroll.usersRoles")}</span>
@@ -470,7 +469,7 @@ export default function SettingsPage() {
                 </span>
               </span>
             </span>
-            <span className="material-symbols-rounded text-[#BDBDBD]">chevron_right</span>
+            <i className="mdi mdi-chevron-right text-[#BDBDBD]" />
           </Link>
         </Section>
 
@@ -663,7 +662,7 @@ function StatutoryComplianceSection({ canEdit }: { canEdit: boolean }) {
         {STAT_GROUPS.map((g) => (
           <div key={g.group} className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4">
             <div className="mb-3.5 flex items-center gap-2">
-              <span className="material-symbols-rounded text-[20px] text-[#1976D2]">{g.icon}</span>
+              <Icon name={g.icon} className="text-[20px] text-[#1976D2]" />
               <span className="text-[14px] font-bold text-[#212121]">{tr(`payroll.statGroup_${g.id}`)}</span>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -963,7 +962,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         {/* Uploaded Word (.docx) template */}
         <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4">
           <div className="mb-1.5 flex items-center gap-2">
-            <span className="material-symbols-rounded text-[20px] text-[#1976D2]">description</span>
+            <i className="mdi mdi-file-document-outline text-[20px] text-[#1976D2]" />
             <span className="text-[14px] font-bold text-[#212121]">{tr("payroll.advancedDocTemplate")}</span>
           </div>
           <p className="mb-2 text-[12px] leading-relaxed text-[#757575] [&_code]:rounded-[3px] [&_code]:bg-[#E3F2FD] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[11px] [&_code]:font-semibold [&_code]:text-[#1976D2]">
@@ -991,7 +990,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
           {ps.has_doc_template ? (
             <div className="flex flex-wrap items-center gap-3 rounded-[4px] border border-[#E0E0E0] bg-white px-3 py-2.5">
-              <span className="material-symbols-rounded text-[20px] text-[#2E7D32]">check_circle</span>
+              <i className="mdi mdi-check-circle text-[20px] text-[#2E7D32]" />
               <span className="min-w-0 flex-1 truncate text-[13px] text-[#424242]">{ps.doc_filename || "template.docx"}</span>
               {canEdit && (
                 <Button
@@ -1012,7 +1011,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
           {ps.has_doc_template && !ps.doc_has_tokens && (
             <div className="mt-3 flex items-start gap-2 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-3 py-2.5 text-[13px] text-[#C62828]">
-              <span className="material-symbols-rounded text-[20px]">warning</span>
+              <i className="mdi mdi-alert text-[20px]" />
               <span>
                 {tr("payroll.thisTemplateHas")} <strong>{tr("payroll.docNoFillableFields")}</strong>{tr("payroll.docSoPayslips")} <strong>{tr("payroll.docNoData")}</strong>. {tr("payroll.docUse")}{" "}
                 <strong>{tr("payroll.docMapYourOwnQuoted")}</strong> {tr("payroll.docBelowMapEachRow")}
@@ -1052,7 +1051,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         {/* Smart mapping wizard — upload YOUR template, map fields, no tokens */}
         <div className="rounded-[4px] border border-[#1976D2]/25 bg-[#E3F2FD]/40 p-4">
           <div className="mb-1.5 flex items-center gap-2">
-            <span className="material-symbols-rounded text-[20px] text-[#1976D2]">auto_fix_high</span>
+            <i className="mdi mdi-auto-fix text-[20px] text-[#1976D2]" />
             <span className="text-[14px] font-bold text-[#212121]">{tr("payroll.mapOwnTemplate")}</span>
           </div>
           <p className="mb-3 text-[12px] leading-relaxed text-[#757575]">
@@ -1063,7 +1062,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
           {ps.doc_mapped && (
             <div className="mb-3 flex flex-wrap items-center gap-3 rounded-[4px] border border-[#E0E0E0] bg-white px-3 py-2.5">
-              <span className="material-symbols-rounded text-[20px] text-[#2E7D32]">link</span>
+              <i className="mdi mdi-link-variant text-[20px] text-[#2E7D32]" />
               <span className="min-w-0 flex-1 truncate text-[13px] text-[#424242]">
                 {tr("payroll.mappedFrom")} <strong>{ps.doc_filename || tr("payroll.yourTemplate")}</strong>
               </span>
@@ -1084,7 +1083,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
           {canEdit && (
             <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-[4px] border border-[#1976D2]/40 bg-white px-3.5 text-[13px] font-semibold text-[#1976D2] hover:bg-[#E3F2FD] transition-colors">
-              <span className="material-symbols-rounded text-[18px]">upload_file</span>
+              <i className="mdi mdi-file-upload text-[18px]" />
               {busy ? tr("payroll.scanning") : ps.doc_mapped ? tr("payroll.rescanReplace") : tr("payroll.uploadMyTemplate")}
               <input
                 type="file"
@@ -1201,7 +1200,7 @@ function MappingWizard({
             className="w-8 h-8 rounded-[4px] text-[#757575] hover:bg-[#F5F6F8] hover:text-[#424242] flex items-center justify-center transition-colors"
             aria-label={tr("common.close")}
           >
-            <span className="material-symbols-rounded text-[22px]">close</span>
+            <i className="mdi mdi-close text-[22px]" />
           </button>
         </div>
 
@@ -1282,7 +1281,7 @@ function MappingWizard({
 function SavedNote({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2 rounded-[4px] border border-[#BBE7CE] bg-[#E8F5E9] px-4 py-3 text-[13px] font-medium text-[#2E7D32]">
-      <span className="material-symbols-rounded text-[20px]">check_circle</span>
+      <i className="mdi mdi-check-circle text-[20px]" />
       {children}
     </div>
   );
@@ -1293,7 +1292,7 @@ function SelectWrap({ children, className }: { children: React.ReactNode; classN
   return (
     <div className={`relative ${className ?? ""}`}>
       {children}
-      <span className="material-symbols-rounded absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none">expand_more</span>
+      <i className="mdi mdi-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none" />
     </div>
   );
 }
@@ -1301,7 +1300,7 @@ function SelectWrap({ children, className }: { children: React.ReactNode; classN
 function Chip({ icon, children }: { icon: string; children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#EEEEEE] px-2.5 py-0.5 text-[12px] font-semibold text-[#4F4F4F]">
-      <span className="material-symbols-rounded text-[14px] text-[#1976D2]">{icon}</span>
+      <Icon name={icon} className="text-[14px] text-[#1976D2]" />
       {children}
     </span>
   );
@@ -1324,7 +1323,7 @@ function Section({
     <Card padding="lg" className={wide ? "xl:col-span-2" : ""}>
       <div className="mb-5 flex items-center gap-3 border-b border-[#E0E0E0] pb-4">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] bg-[#E3F2FD] text-[#1976D2]">
-          <span className="material-symbols-rounded text-[22px]">{icon}</span>
+          <Icon name={icon} className="text-[22px]" />
         </span>
         <div>
           <h2 className="text-[15px] font-bold text-[#212121]">{title}</h2>

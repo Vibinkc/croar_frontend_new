@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { UserCog, Users, Clock, X, Check, Eye } from "lucide-react";
+import { UserCog, Users, Clock, X, Check, Eye } from "@/components/icons";
 
 export interface Member {
     id: string;

@@ -129,7 +129,7 @@ export default function TimesheetDetailPage({ params }: { params: Promise<{ id: 
   return (
     <div className="px-4 sm:px-5 md:px-7 py-6 mx-auto max-w-4xl w-full">
       <Link href="/enterprise/payroll/timesheets" className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]">
-        <span className="material-symbols-rounded text-[18px]">arrow_back</span> {tr("nav.timesheets")}
+        <i className="mdi mdi-arrow-left text-[18px]" /> {tr("nav.timesheets")}
       </Link>
 
       <div className="mb-5">

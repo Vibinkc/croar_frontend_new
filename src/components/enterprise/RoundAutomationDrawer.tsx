@@ -2,8 +2,9 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Save, X } from "lucide-react";
+import { ChevronDown, Save, X } from "@/components/icons";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 export type AutomationKind = "assessment" | "interview" | "email" | "onboarding";
 
@@ -103,7 +104,7 @@ export function DrawerToggle({
         <div className="flex items-center justify-between p-4 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]">
             <div className="flex items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E0E0E0] shrink-0">
-                    <span className={`material-symbols-rounded text-[18px] ${iconClass}`}>{icon}</span>
+                    <Icon name={icon} className={`text-[18px] ${iconClass}`} />
                 </div>
                 <div className="min-w-0">
                     <p className="text-[13px] font-bold text-[#212121] truncate">{title}</p>
@@ -169,7 +170,7 @@ export default function RoundAutomationDrawer({
                         <div className="px-6 py-5 border-b border-[#E0E0E0] flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-3 min-w-0">
                                 <div className={`w-10 h-10 rounded-[4px] flex items-center justify-center border shadow-sm shrink-0 ${tone.chip}`}>
-                                    <span className="material-symbols-rounded text-[20px]">{tone.icon}</span>
+                                    <Icon name={tone.icon} className="text-[20px]" />
                                 </div>
                                 <div className="min-w-0">
                                     <h2 className="text-[16px] font-extrabold text-[#212121] leading-tight truncate">

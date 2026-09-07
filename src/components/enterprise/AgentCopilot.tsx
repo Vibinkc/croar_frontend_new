@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { API_BASE_URL } from '@/lib/api-config';
 import { useI18n } from '@/context/I18nContext';
+import { Icon } from "@/components/ds";
 
 interface Message {
     role: 'user' | 'agent';
@@ -79,7 +80,7 @@ const AgentCopilot = () => {
                 className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-full shadow-2xl flex items-center justify-center text-white z-[9999] hover:scale-110 transition-transform active:scale-95"
                 title={tr("forms2.openCopilot")}
             >
-                <span className="material-symbols-rounded text-3xl">psychology</span>
+                <i className="mdi mdi-brain text-3xl" />
                 {isLoading && (
                     <div className="absolute inset-0 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>
                 )}
@@ -110,7 +111,7 @@ const AgentCopilot = () => {
                             <div className="px-6 py-4 bg-white border-b border-[#E0E0E0] flex items-center justify-between gap-3 shrink-0">
                                 <div>
                                     <h2 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight flex items-center gap-2">
-                                        <span className="material-symbols-rounded text-[#1976D2] text-[22px]">smart_toy</span> Agent OS
+                                        <i className="mdi mdi-robot text-[#1976D2] text-[22px]" /> Agent OS
                                     </h2>
                                     <p className="text-[13px] text-[#757575] mt-0.5">{tr("forms2.copilotActive")}</p>
                                 </div>
@@ -118,7 +119,7 @@ const AgentCopilot = () => {
                                     onClick={() => setIsOpen(false)} 
                                     className="w-9 h-9 rounded-[4px] hover:bg-[#F5F6F8] flex items-center justify-center text-[#9E9E9E] hover:text-[#424242] transition-colors border border-transparent hover:border-[#E0E0E0]"
                                 >
-                                    <span className="material-symbols-rounded text-[20px]">close</span>
+                                    <i className="mdi mdi-close text-[20px]" />
                                 </button>
                             </div>
 
@@ -127,9 +128,7 @@ const AgentCopilot = () => {
                                 {messages.map((msg, idx) => (
                                     <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${msg.role === 'agent' ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-600'}`}>
-                                            <span className="material-symbols-rounded text-xl">
-                                                {msg.role === 'agent' ? 'smart_toy' : 'person'}
-                                            </span>
+                                            <Icon name={msg.role === 'agent' ? 'smart_toy' : 'person'} className="text-xl" />
                                         </div>
                                         <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
                                             msg.role === 'agent' 
@@ -144,7 +143,7 @@ const AgentCopilot = () => {
                                 {isLoading && (
                                     <div className="flex gap-3">
                                         <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 animate-pulse">
-                                            <span className="material-symbols-rounded text-xl">bolt</span>
+                                            <i className="mdi mdi-lightning-bolt text-xl" />
                                         </div>
                                         <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl rounded-tl-none">
                                             <div className="flex gap-1">
@@ -165,14 +164,14 @@ const AgentCopilot = () => {
                                                 onClick={() => handleSendMessage("Shortlist candidates for React Role")}
                                                 className="text-left p-3 rounded-xl border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 transition-all text-sm font-medium text-slate-700 flex items-center gap-3 group"
                                             >
-                                                <span className="material-symbols-rounded text-slate-400 group-hover:text-indigo-600 transition-colors">person_search</span>
+                                                <i className="mdi mdi-account-search text-slate-400 group-hover:text-indigo-600 transition-colors" />
                                                 <span>{tr("forms2.shortlistReact")}</span>
                                             </button>
                                             <button 
                                                 onClick={() => handleSendMessage("Check onboarding status for new hires")}
                                                 className="text-left p-3 rounded-xl border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 transition-all text-sm font-medium text-slate-700 flex items-center gap-3 group"
                                             >
-                                                <span className="material-symbols-rounded text-slate-400 group-hover:text-indigo-600 transition-colors">fact_check</span>
+                                                <i className="mdi mdi-clipboard-check text-slate-400 group-hover:text-indigo-600 transition-colors" />
                                                 <span>{tr("forms2.checkOnboarding")}</span>
                                             </button>
                                         </div>
@@ -197,7 +196,7 @@ const AgentCopilot = () => {
                                         disabled={isLoading || !inputValue.trim()}
                                         className="absolute right-2 top-2 w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
                                     >
-                                        <span className="material-symbols-rounded">send</span>
+                                        <i className="mdi mdi-send" />
                                     </button>
                                 </div>
                                 <p className="mt-3 text-[10px] text-center text-slate-400 font-medium">{tr("forms2.poweredByCroar")}</p>

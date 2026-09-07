@@ -13,7 +13,7 @@ import {
     Network,
     ExternalLink,
     Calendar,
-} from "lucide-react";
+} from "@/components/icons";
 import ProjectKanban from "@/components/enterprise/ProjectKanban";
 import { apiClient } from "@/utils/api";
 import { StatCard, StatGrid, Badge, EmptyState, Button, PageHelp, jetbrainsMono } from "@/components/ds";

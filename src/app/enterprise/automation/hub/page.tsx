@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 export default function AutomationHubPage() {
     const { canAccess } = useAuth();
@@ -59,7 +59,7 @@ export default function AutomationHubPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-xl bg-[#1E88E5]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#1E88E5]/5">
-                        <span className="material-symbols-rounded text-[#1E88E5] text-2xl">settings_suggest</span>
+                        <i className="mdi mdi-cog-refresh text-[#1E88E5] text-2xl" />
                     </div>
                     <div>
                         <div className="flex items-center gap-1.5">
@@ -99,7 +99,7 @@ export default function AutomationHubPage() {
                                                 module.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
                                                 'bg-purple-50 text-purple-600'
                                             }`}>
-                                                <span className="material-symbols-rounded text-xl">{module.icon}</span>
+                                                <Icon name={module.icon} className="text-xl" />
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-black text-slate-900 leading-tight">{module.label}</span>
@@ -127,7 +127,7 @@ export default function AutomationHubPage() {
                                             className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-xs font-black hover:border-[#1E88E5] hover:text-[#1E88E5] transition-all shadow-sm active:scale-95 group-hover:shadow-indigo-100 group-hover:shadow-md"
                                         >
                                             {tr("automation.openModule")}
-                                            <span className="material-symbols-rounded text-base">arrow_forward</span>
+                                            <i className="mdi mdi-arrow-right text-base" />
                                         </Link>
                                     </td>
                                 </tr>
@@ -141,7 +141,7 @@ export default function AutomationHubPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="p-5 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
                     <div className="flex items-center gap-3 mb-3">
-                        <span className="material-symbols-rounded text-indigo-600">lightbulb</span>
+                        <i className="mdi mdi-lightbulb text-indigo-600" />
                         <h3 className="text-sm font-black text-indigo-900">{tr("automation.efficiencyTip")}</h3>
                     </div>
                     <p className="text-[11px] text-indigo-700/80 font-medium leading-relaxed">
@@ -150,7 +150,7 @@ export default function AutomationHubPage() {
                 </div>
                 <div className="p-5 bg-emerald-50/50 rounded-xl border border-emerald-100/50">
                     <div className="flex items-center gap-3 mb-3">
-                        <span className="material-symbols-rounded text-emerald-600">bolt</span>
+                        <i className="mdi mdi-lightning-bolt text-emerald-600" />
                         <h3 className="text-sm font-black text-emerald-900">{tr("automation.instantExecution")}</h3>
                     </div>
                     <p className="text-[11px] text-emerald-700/80 font-medium leading-relaxed">
@@ -159,7 +159,7 @@ export default function AutomationHubPage() {
                 </div>
                 <div className="p-5 bg-amber-50/50 rounded-xl border border-amber-100/50">
                     <div className="flex items-center gap-3 mb-3">
-                        <span className="material-symbols-rounded text-amber-600">auto_awesome</span>
+                        <i className="mdi mdi-auto-fix text-amber-600" />
                         <h3 className="text-sm font-black text-amber-900">{tr("automation.aiOptimization")}</h3>
                     </div>
                     <p className="text-[11px] text-amber-700/80 font-medium leading-relaxed">

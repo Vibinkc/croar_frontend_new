@@ -36,7 +36,7 @@ export default function AIGenerationOverlay({ isOpen, title }: AIGenerationOverl
                     <div className="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
                     <div className="absolute inset-0 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="material-icons-outlined text-4xl text-slate-800 animate-pulse">auto_awesome</span>
+                        <i className="mdi mdi-auto-fix text-4xl text-slate-800 animate-pulse" />
                     </div>
                 </div>
 

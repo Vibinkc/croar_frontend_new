@@ -5,7 +5,7 @@ import { useI18n } from "@/context/I18nContext";
 import { auditApi, type AuditEntry } from "@/utils/payroll/api";
 import { Banner } from "@/components/payroll/ui";
 import { Badge, Card, PageHeader, jetbrainsMono } from "@/components/ds";
-import { Activity, ChevronLeft, ChevronRight, History } from "lucide-react";
+import { Activity, ChevronLeft, ChevronRight, History } from "@/components/icons";
 
 const PAGE_SIZE = 10;
 

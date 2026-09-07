@@ -17,7 +17,7 @@ import {
     Sparkles,
     UserCheck,
     Send
-} from "lucide-react";
+} from "@/components/icons";
 
 export default function CandidateEngagementPage() {
     const params = useParams();

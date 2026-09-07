@@ -267,7 +267,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
                     <div className="flex items-center gap-3 min-w-0">
                         <span className="w-10 h-10 rounded-[4px] bg-[#212121] text-white flex items-center justify-center shrink-0">
-                            <span className="material-symbols-rounded text-[22px]">account_tree</span>
+                            <i className="mdi mdi-file-tree text-[22px]" />
                         </span>
                         <div className="min-w-0">
                             <h3 className="text-[15px] font-bold text-[#212121]">{isEdit ? tr("forms.competencyRefinement") : tr("forms.competencyArchitecture")}</h3>
@@ -337,7 +337,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                                                 <div className="flex justify-between items-center pt-2.5 border-t border-[#E0E0E0] mt-auto">
                                                     <Badge tone="neutral" className="rounded-[3px] px-2 py-0.5 text-[10px]">{q.type}</Badge>
                                                     <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all ${isSelected ? 'bg-[#1976D2] border-[#1976D2] text-white' : 'bg-[#F5F6F8] border-[#E0E0E0] text-transparent group-hover:border-[#9E9E9E]'}`}>
-                                                        <span className="material-symbols-rounded text-[15px] font-bold">check</span>
+                                                        <i className="mdi mdi-check text-[15px] font-bold" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -382,12 +382,12 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                         <div className="p-5 border-b border-[#E0E0E0] flex justify-between items-center bg-[#FAFAFA]">
                             <div className="flex items-center gap-2.5">
                                 <span className="w-8 h-8 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
-                                    <span className="material-symbols-rounded text-[19px]">psychology</span>
+                                    <i className="mdi mdi-brain text-[19px]" />
                                 </span>
                                 <h2 className="text-[15px] font-bold text-[#212121]">{tr("forms.aiStrategyWizard")}</h2>
                             </div>
                             <button onClick={() => setIsAiWizardOpen(false)} className="w-7 h-7 rounded-[3px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#424242] flex items-center justify-center transition-colors">
-                                <span className="material-symbols-rounded text-[19px]">close</span>
+                                <i className="mdi mdi-close text-[19px]" />
                             </button>
                         </div>
                         <div className="p-6 space-y-5">
@@ -418,7 +418,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                                     </>
                                 ) : (
                                     <>
-                                        <span className="material-symbols-rounded text-[19px]">magic_button</span>
+                                        <i className="mdi mdi-auto-fix text-[19px]" />
                                         <span>{tr("forms.injectAiInsights")}</span>
                                     </>
                                 )}

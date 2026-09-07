@@ -24,7 +24,7 @@ import {
     Lock,
     Loader2,
     AlertTriangle
-} from "lucide-react";
+} from "@/components/icons";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { jetbrainsMono, PageHelp } from "@/components/ds";
 
@@ -360,7 +360,7 @@ export default function EmailTemplatesPage() {
             {/* Search and Filter Bar */}
             <div className="flex flex-col sm:flex-row items-center gap-3">
                 <div className="flex-1 relative group w-full">
-                    <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors text-[20px]">search</span>
+                    <i className="mdi mdi-magnify absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors text-[20px]" />
                     <input 
                         type="text"
                         placeholder={tr("templatesMgmt.searchEmailPlaceholder")}
@@ -370,7 +370,7 @@ export default function EmailTemplatesPage() {
                     />
                 </div>
                 <div className="flex items-center gap-2 bg-white border border-[#E0E0E0] px-3 h-10 rounded-[4px] shadow-sm shrink-0 w-full sm:w-auto">
-                    <span className="material-symbols-rounded text-[#9E9E9E] text-[20px]">filter_list</span>
+                    <i className="mdi mdi-filter-variant text-[#9E9E9E] text-[20px]" />
                     <select 
                         className="bg-transparent text-[12px] font-bold text-[#424242] outline-none pr-2 cursor-pointer flex-1 sm:flex-initial"
                         value={categoryFilter}
@@ -440,7 +440,7 @@ export default function EmailTemplatesPage() {
                                             onClick={(e) => { e.stopPropagation(); handleOpenModal(template); }}
                                             className="w-8 h-8 flex items-center justify-center text-[#757575] hover:text-[#1976D2] hover:bg-[#E3F2FD] rounded-[4px] border border-transparent hover:border-[#BBDEFB]/60 transition-all"
                                         >
-                                            <span className="material-symbols-rounded text-[18px]">edit</span>
+                                            <i className="mdi mdi-pencil text-[18px]" />
                                         </button>
                                         {canAccess("communications:delete") && (
                                             <button 
@@ -451,7 +451,7 @@ export default function EmailTemplatesPage() {
                                                 }}
                                                 className="w-8 h-8 flex items-center justify-center text-[#757575] hover:text-rose-500 hover:bg-rose-50 rounded-[4px] border border-transparent hover:border-rose-100 transition-all"
                                             >
-                                                <span className="material-symbols-rounded text-[18px]">delete</span>
+                                                <i className="mdi mdi-delete text-[18px]" />
                                             </button>
                                         )}
                                     </div>

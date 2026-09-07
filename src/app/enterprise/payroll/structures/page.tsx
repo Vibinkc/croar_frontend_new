@@ -25,8 +25,7 @@ import {
   StatCard,
   StatGrid,
   PageHeader,
-  jetbrainsMono,
-} from "@/components/ds";
+  jetbrainsMono, Icon } from "@/components/ds";
 import {
   Search,
   Filter,
@@ -40,7 +39,7 @@ import {
   Wallet,
   Landmark,
   SlidersHorizontal,
-} from "lucide-react";
+} from "@/components/icons";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { useDialog } from "@/components/payroll/DialogProvider";
 
@@ -562,7 +561,7 @@ export default function StructuresPage() {
                           className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#E3F2FD] hover:text-[#1976D2] transition-colors"
                           title={tr("payroll.editStructure")}
                         >
-                          <span className="material-symbols-rounded text-[18px]">edit</span>
+                          <i className="mdi mdi-pencil text-[18px]" />
                         </button>
                         <button
                           onClick={() => remove(s.id)}

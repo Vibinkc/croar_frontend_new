@@ -373,15 +373,15 @@ export default function SkillAssessmentsPage() {
                                 <div>
                                     <div className="flex items-start justify-between gap-2 mb-2">
                                         <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                            <span className="material-symbols-rounded text-[22px]">quiz</span>
+                                            <i className="mdi mdi-help-box text-[22px]" />
                                         </span>
                                         <Badge tone={TYPE_TONE[t.type] || "neutral"}>{t.type}</Badge>
                                     </div>
                                     <h3 className="text-[14px] font-bold text-[#212121] truncate">{t.name}</h3>
                                     <p className="text-[12.5px] text-[#757575] line-clamp-1 mt-0.5">{t.topic}</p>
                                     <div className={`flex items-center gap-3 mt-3 text-[12px] text-[#616161] ${jetbrainsMono.className}`}>
-                                        <span className="inline-flex items-center gap-1"><span className="material-symbols-rounded text-[15px]">help</span>{qn} {tr("postOnboarding.qsUnit")}</span>
-                                        <span className="inline-flex items-center gap-1"><span className="material-symbols-rounded text-[15px]">schedule</span>{t.test_duration}m</span>
+                                        <span className="inline-flex items-center gap-1"><i className="mdi mdi-help-circle text-[15px]" />{qn} {tr("postOnboarding.qsUnit")}</span>
+                                        <span className="inline-flex items-center gap-1"><i className="mdi mdi-clock-outline text-[15px]" />{t.test_duration}m</span>
                                     </div>
                                     {qn === 0 && <p className="mt-2 text-[11.5px] font-semibold text-[#EF6C00]">{tr("postOnboarding.questionsGenerating")}</p>}
                                 </div>
@@ -405,7 +405,7 @@ export default function SkillAssessmentsPage() {
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0]">
                             <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121]">{tr("postOnboarding.newSkillAssessment")}</h2>
                             <button onClick={() => setCreating(false)} aria-label={tr("common.close")} className="w-8 h-8 rounded-[4px] text-[#757575] hover:bg-[#EEEEEE] flex items-center justify-center">
-                                <span className="material-symbols-rounded text-[20px]">close</span>
+                                <i className="mdi mdi-close text-[20px]" />
                             </button>
                         </div>
                         <form onSubmit={handleCreate} className="px-6 py-6 space-y-4">
@@ -464,7 +464,7 @@ export default function SkillAssessmentsPage() {
                                     <button key={emp.id} type="button" onClick={() => togglePick(emp.id)}
                                         className={`flex items-center gap-3 p-3 rounded-[4px] border text-left transition-all ${sel ? "border-[#1976D2] bg-[#E3F2FD]/50" : "border-[#E0E0E0] bg-white hover:border-[#9E9E9E]"}`}>
                                         <span className={`w-8 h-8 rounded-[4px] flex items-center justify-center text-[12px] font-extrabold uppercase ${sel ? "bg-[#1976D2] text-white" : "bg-[#E3F2FD] text-[#1976D2]"}`}>
-                                            {sel ? <span className="material-symbols-rounded text-[17px]">check</span> : emp.first_name?.[0]}
+                                            {sel ? <i className="mdi mdi-check text-[17px]" /> : emp.first_name?.[0]}
                                         </span>
                                         <div className="min-w-0">
                                             <p className="text-[13px] font-bold text-[#212121] truncate">{emp.first_name} {emp.last_name}</p>
@@ -495,7 +495,7 @@ export default function SkillAssessmentsPage() {
                                 </p>
                             </div>
                             <button onClick={() => setResultsFor(null)} aria-label={tr("common.close")} className="w-8 h-8 rounded-[4px] text-[#757575] hover:bg-[#EEEEEE] flex items-center justify-center">
-                                <span className="material-symbols-rounded text-[20px]">close</span>
+                                <i className="mdi mdi-close text-[20px]" />
                             </button>
                         </div>
                         <div className="overflow-y-auto">
@@ -536,7 +536,7 @@ export default function SkillAssessmentsPage() {
                                 <p className="text-[12px] text-[#757575] mt-0.5">{tr("postOnboarding.questionCountHint", { count: qList.length })}</p>
                             </div>
                             <button onClick={() => setQMgrFor(null)} aria-label={tr("common.close")} className="w-8 h-8 rounded-[4px] text-[#757575] hover:bg-[#EEEEEE] flex items-center justify-center">
-                                <span className="material-symbols-rounded text-[20px]">close</span>
+                                <i className="mdi mdi-close text-[20px]" />
                             </button>
                         </div>
 
@@ -545,7 +545,7 @@ export default function SkillAssessmentsPage() {
                             <Button size="sm" variant="secondary" icon="add" onClick={addMcq}>{tr("postOnboarding.addMcq")}</Button>
                             <Button size="sm" variant="secondary" icon="code" onClick={addCoding}>{tr("postOnboarding.addCoding")}</Button>
                             <label className="inline-flex items-center gap-2 h-9 px-3 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[13px] font-semibold hover:bg-[#F5F6F8] cursor-pointer">
-                                <span className="material-symbols-rounded text-[17px]">upload_file</span> {tr("postOnboarding.importCsv")}
+                                <i className="mdi mdi-file-upload text-[17px]" /> {tr("postOnboarding.importCsv")}
                                 <input type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) importCSV(f); e.target.value = ""; }} />
                             </label>
                             <button onClick={downloadCSVTemplate} className="text-[12px] font-semibold text-[#1976D2] hover:underline ml-auto">{tr("postOnboarding.downloadCsv")}</button>
@@ -562,7 +562,7 @@ export default function SkillAssessmentsPage() {
                                             <Badge tone={q.type === "CODING" ? "teal" : "indigo"}>{q.type === "CODING" ? tr("postOnboarding.coding") : tr("postOnboarding.mcq")}</Badge>
                                         </div>
                                         <button onClick={() => removeQ(q.id)} aria-label={tr("postOnboarding.remove")} className="w-7 h-7 rounded-[4px] text-[#757575] hover:bg-[#FFEBEE] hover:text-[#C62828] flex items-center justify-center">
-                                            <span className="material-symbols-rounded text-[18px]">delete</span>
+                                            <i className="mdi mdi-delete text-[18px]" />
                                         </button>
                                     </div>
                                     <div className="p-4 space-y-3">
@@ -604,7 +604,7 @@ export default function SkillAssessmentsPage() {
                                 </p>
                             </div>
                             <button onClick={() => setReview(null)} aria-label={tr("common.close")} className="w-8 h-8 rounded-[4px] text-[#757575] hover:bg-[#EEEEEE] flex items-center justify-center">
-                                <span className="material-symbols-rounded text-[20px]">close</span>
+                                <i className="mdi mdi-close text-[20px]" />
                             </button>
                         </div>
                         <div className="overflow-y-auto px-6 py-5 space-y-5">

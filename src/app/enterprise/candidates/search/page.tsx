@@ -16,7 +16,7 @@ import { useCallback, useEffect, useState } from "react";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
-import { Badge, Button, EmptyState, PageHeader, cn } from "@/components/ds";
+import { Badge, Button, EmptyState, PageHeader, cn, Icon } from "@/components/ds";
 
 interface Result {
     id: string;
@@ -70,7 +70,7 @@ function Section({ title, icon, children }: { title: string; icon: string; child
     return (
         <div className="border-b border-[#E0E0E0] last:border-b-0 px-4 py-3.5">
             <div className="flex items-center gap-2 mb-2.5">
-                <span className="material-symbols-rounded text-[18px] text-[#9E9E9E]">{icon}</span>
+                <Icon name={icon} className="text-[18px] text-[#9E9E9E]" />
                 <span className="text-[13px] font-semibold text-[#212121]">{title}</span>
             </div>
             <div className="flex flex-col gap-2">{children}</div>
@@ -229,7 +229,7 @@ export default function AdvancedSearchPage() {
                                         <span key={s} className="inline-flex items-center gap-1 text-[11.5px] font-semibold pl-2 pr-1 py-1 rounded-[4px] bg-[#E3F2FD] text-[#1565C0]">
                                             {s}
                                             <button type="button" onClick={() => setSkills(skills.filter((x) => x !== s))} aria-label={`Remove ${s}`}>
-                                                <span className="material-symbols-rounded text-[15px]">cancel</span>
+                                                <i className="mdi mdi-close-circle text-[15px]" />
                                             </button>
                                         </span>
                                     ))}
@@ -377,21 +377,21 @@ export default function AdvancedSearchPage() {
                                                     <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[12px] text-[#757575]">
                                                         {c.email ? (
                                                             <a href={`mailto:${c.email}`} className="inline-flex items-center gap-1 text-[#2E7D32] hover:underline">
-                                                                <span className="material-symbols-rounded text-[15px]">mail</span>{c.email}
+                                                                <i className="mdi mdi-email text-[15px]" />{c.email}
                                                             </a>
                                                         ) : (
                                                             <span className="inline-flex items-center gap-1 text-[#EF6C00]">
-                                                                <span className="material-symbols-rounded text-[15px]">mail_off</span>{tr("advSearch.noEmailShort")}
+                                                                <i className="mdi mdi-email-off text-[15px]" />{tr("advSearch.noEmailShort")}
                                                             </span>
                                                         )}
                                                         {c.location && (
                                                             <span className="inline-flex items-center gap-1">
-                                                                <span className="material-symbols-rounded text-[15px]">location_on</span>{c.location}
+                                                                <i className="mdi mdi-map-marker text-[15px]" />{c.location}
                                                             </span>
                                                         )}
                                                         {c.company && (
                                                             <span className="inline-flex items-center gap-1">
-                                                                <span className="material-symbols-rounded text-[15px]">apartment</span>{c.company}
+                                                                <i className="mdi mdi-office-building text-[15px]" />{c.company}
                                                             </span>
                                                         )}
                                                     </div>

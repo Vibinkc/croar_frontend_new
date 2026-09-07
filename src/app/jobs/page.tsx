@@ -17,7 +17,7 @@ import {
     Zap,
     Clock,
     DollarSign
-} from "lucide-react";
+} from "@/components/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useI18n } from "@/context/I18nContext";
 
@@ -447,7 +447,7 @@ export default function JobPortalPage() {
     return (
         <Suspense fallback={
             <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center p-6">
-                <div className="animate-spin material-icons-outlined text-indigo-600 text-4xl">sync</div>
+                <div className="animate-spin mdi mdi-sync text-indigo-600 text-4xl"></div>
             </div>
         }>
             <JobPortalContent />

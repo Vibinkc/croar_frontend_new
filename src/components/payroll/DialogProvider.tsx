@@ -17,6 +17,7 @@ import { createPortal } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 type Tone = "default" | "danger";
 
@@ -151,7 +152,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
                 <div
                   className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconWrapCls}`}
                 >
-                  <span className="material-symbols-rounded">{icon}</span>
+                  <Icon name={icon} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h2 className="text-lg font-bold text-slate-900">{dialog.title}</h2>

@@ -108,7 +108,7 @@ export default function ReportsPage() {
       <Card interactive padding="lg" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-start gap-4 min-w-0">
           <span className="w-11 h-11 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-            <span className="material-symbols-rounded text-[22px]">summarize</span>
+            <i className="mdi mdi-text-box text-[22px]" />
           </span>
           <div className="min-w-0">
             <h3 className="text-[15px] font-bold text-[#212121]">{tr("payroll.payrollSummary")}</h3>
@@ -160,7 +160,7 @@ export default function ReportsPage() {
         ) : cycles.length === 0 ? (
           <Card padding="lg" className="flex flex-col items-center justify-center text-center py-16">
             <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
-              <span className="material-symbols-rounded text-[32px] text-[#BDBDBD]">receipt_long</span>
+              <i className="mdi mdi-receipt text-[32px] text-[#BDBDBD]" />
             </div>
             <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("payroll.noCyclesYet")}</h3>
             <p className="text-[#757575] text-[14px] max-w-xs mx-auto">
@@ -180,7 +180,7 @@ export default function ReportsPage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                      <span className="material-symbols-rounded text-[20px]">receipt_long</span>
+                      <i className="mdi mdi-receipt text-[20px]" />
                     </span>
                     <Badge tone={STATUS_TONE[c.status as CycleStatus] ?? "neutral"} dot>
                       {c.status}
@@ -228,7 +228,7 @@ export default function ReportsPage() {
                       </div>
                     ) : (
                       <div className="flex items-center gap-1.5 text-[12px] italic text-[#757575]">
-                        <span className="material-symbols-rounded text-[16px]">lock</span>
+                        <i className="mdi mdi-lock text-[16px]" />
                         {c.status === "CANCELLED" ? "Cancelled — no register" : "Run the cycle first"}
                       </div>
                     )}

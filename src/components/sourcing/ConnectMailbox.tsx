@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Loader2, ChevronLeft, ShieldCheck } from "lucide-react";
+import { Mail, Loader2, ChevronLeft, ShieldCheck } from "@/components/icons";
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/lib/api-config";
 import { useI18n } from "@/context/I18nContext";

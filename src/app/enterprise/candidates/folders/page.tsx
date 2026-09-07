@@ -318,11 +318,9 @@ export default function FoldersPage() {
                                                 className="flex items-center gap-2.5 min-w-0 flex-1 text-left"
                                             >
                                                 <span className={cn(
-                                                    "material-symbols-rounded text-[20px]",
+                                                    "mdi mdi-folder text-[20px]",
                                                     activeId === f.id ? "text-[#1976D2]" : "text-[#9E9E9E]"
-                                                )}>
-                                                    folder
-                                                </span>
+                                                )} />
                                                 <span className="min-w-0 flex-1">
                                                     <span className={cn(
                                                         "block text-[13.5px] font-semibold truncate",
@@ -342,7 +340,7 @@ export default function FoldersPage() {
                                                 onClick={() => { setRenamingId(f.id); setRenameDraft(f.name); }}
                                                 className="w-7 h-7 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#1976D2] hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
-                                                <span className="material-symbols-rounded text-[17px]">edit</span>
+                                                <i className="mdi mdi-pencil text-[17px]" />
                                             </button>
                                             <button
                                                 type="button"
@@ -351,7 +349,7 @@ export default function FoldersPage() {
                                                 onClick={() => setConfirmDelete(f.id)}
                                                 className="w-7 h-7 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#C62828] hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
-                                                <span className="material-symbols-rounded text-[17px]">delete</span>
+                                                <i className="mdi mdi-delete text-[17px]" />
                                             </button>
                                         </div>
                                     )}
@@ -409,19 +407,19 @@ export default function FoldersPage() {
                                                     <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[12px] text-[#757575]">
                                                         {m.email && (
                                                             <a href={`mailto:${m.email}`} className="inline-flex items-center gap-1 text-[#2E7D32] hover:underline">
-                                                                <span className="material-symbols-rounded text-[15px]">mail</span>
+                                                                <i className="mdi mdi-email text-[15px]" />
                                                                 {m.email}
                                                             </a>
                                                         )}
                                                         {m.location && (
                                                             <span className="inline-flex items-center gap-1">
-                                                                <span className="material-symbols-rounded text-[15px]">location_on</span>
+                                                                <i className="mdi mdi-map-marker text-[15px]" />
                                                                 {m.location}
                                                             </span>
                                                         )}
                                                         {m.company && (
                                                             <span className="inline-flex items-center gap-1">
-                                                                <span className="material-symbols-rounded text-[15px]">apartment</span>
+                                                                <i className="mdi mdi-office-building text-[15px]" />
                                                                 {m.company}
                                                             </span>
                                                         )}
@@ -446,7 +444,7 @@ export default function FoldersPage() {
                                                     onClick={() => void removeMember(m.id)}
                                                     className="w-9 h-9 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors shrink-0"
                                                 >
-                                                    <span className="material-symbols-rounded text-[20px]">folder_off</span>
+                                                    <i className="mdi mdi-folder-remove text-[20px]" />
                                                 </button>
                                             </div>
                                         );

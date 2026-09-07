@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useI18n } from "@/context/I18nContext";
-import { Badge, Card, cn } from "@/components/ds";
+import { Badge, Card, cn, Icon } from "@/components/ds";
 
 /**
  * The Sourcing tab's landing view: one card per way of getting candidates onto this job.
@@ -99,7 +99,7 @@ export default function JobSourcingTab({
                                     ch.chip
                                 )}
                             >
-                                <span className="material-symbols-rounded text-[22px]">{ch.icon}</span>
+                                <Icon name={ch.icon} className="text-[22px]" />
                             </span>
                             <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2 mb-1">
@@ -116,9 +116,7 @@ export default function JobSourcingTab({
                                     {tr(`jobSourcing.${ch.descKey}`)}
                                 </p>
                             </div>
-                            <span className="material-symbols-rounded text-[20px] text-[#BDBDBD] shrink-0">
-                                chevron_right
-                            </span>
+                            <i className="mdi mdi-chevron-right text-[20px] text-[#BDBDBD] shrink-0" />
                         </div>
                     </Card>
                 ))}

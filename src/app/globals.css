@@ -1,3 +1,4 @@
+@import "@mdi/font/css/materialdesignicons.min.css";
 @import "tailwindcss";
 
 /* Tailwind v4 removed the default pointer cursor on buttons — restore it for clickable elements. */
@@ -284,8 +285,8 @@ button, a, span, p, label {
 }
 
 /* Material Icons Fill on Hover */
-.sidebar-item:hover .material-symbols-rounded,
-.sidebar-item.active .material-symbols-rounded {
+.sidebar-item:hover .mdi,
+.sidebar-item.active .mdi {
   font-variation-settings: 'FILL' 1;
 }
 
@@ -361,7 +362,9 @@ button, a, span, p, label {
   animation: pulse-slow 4s ease-in-out infinite;
 }
 
-/* Material Icons/Symbols Optimization */
+/* Icon font metrics. Applies to MDI now; the two Material classes are kept for any
+   straggler the codemod could not resolve, so it degrades to a glyph, not a word. */
+.mdi,
 .material-icons,
 .material-icons-outlined,
 .material-symbols-rounded {

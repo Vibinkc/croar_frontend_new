@@ -116,12 +116,12 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                                 className={`flex flex-col p-5 ${variant.bg} border border-transparent ${variant.border} rounded-2xl ${variant.shadow} transition-all text-left group relative overflow-hidden`}
                             >
                                 <div className={`h-10 w-10 ${variant.iconBg} rounded-xl flex items-center justify-center mb-3 ${variant.text} group-hover:scale-110 transition-all`}>
-                                    <span className="material-icons-outlined text-xl">account_balance</span>
+                                    <i className="mdi mdi-bank text-xl" />
                                 </div>
                                 <h3 className="font-bold text-base text-slate-900 z-10">{div.name}</h3>
                                 <p className={`text-[9px] font-black ${variant.text}   mt-0.5 z-10`}>{t("superAdmin.collegeDivision")}</p>
                                 <div className={`absolute -bottom-3 -right-3 opacity-5 ${variant.text} group-hover:opacity-10 transition-all duration-500`}>
-                                    <span className="material-icons-outlined text-6xl">account_balance</span>
+                                    <i className="mdi mdi-bank text-6xl" />
                                 </div>
                             </button>
                         );
@@ -142,7 +142,7 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <nav className="flex items-center gap-2 text-xs font-black   text-slate-400">
                     <button onClick={() => setLocalDivId(null)} className="hover:text-black transition-all">{t("superAdmin.allColleges")}</button>
-                    <span className="material-icons-outlined text-sm">chevron_right</span>
+                    <i className="mdi mdi-chevron-right text-sm" />
                     <span className="text-black">{activeDiv?.name}</span>
                 </nav>
 
@@ -167,12 +167,12 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                                 className={`flex flex-col p-5 ${variant.bg} border border-transparent ${variant.border} rounded-2xl ${variant.shadow} transition-all text-left group relative overflow-hidden`}
                             >
                                 <div className={`h-10 w-10 ${variant.iconBg} rounded-xl flex items-center justify-center mb-3 ${variant.text} group-hover:scale-110 transition-all`}>
-                                    <span className="material-icons-outlined text-xl">school</span>
+                                    <i className="mdi mdi-school text-xl" />
                                 </div>
                                 <h3 className="font-bold text-base text-slate-900 z-10">{dept.name}</h3>
                                 <p className={`text-[9px] font-black ${variant.text}   mt-0.5 z-10`}>{t("superAdmin.academicDepartment")}</p>
                                 <div className={`absolute -bottom-3 -right-3 opacity-5 ${variant.text} group-hover:opacity-10 transition-all duration-500`}>
-                                    <span className="material-icons-outlined text-6xl">school</span>
+                                    <i className="mdi mdi-school text-6xl" />
                                 </div>
                             </button>
                         );
@@ -198,11 +198,11 @@ export default function HierarchyDrilldown({ title, description, renderContent, 
                 >
                     {t("superAdmin.allColleges")}
                 </button>
-                <span className="material-icons-outlined text-sm">chevron_right</span>
+                <i className="mdi mdi-chevron-right text-sm" />
                 <button onClick={() => setLocalDeptId(null)} className="hover:text-black transition-all">{activeDiv?.name}</button>
                 {activeDept && (
                     <>
-                        <span className="material-icons-outlined text-sm">chevron_right</span>
+                        <i className="mdi mdi-chevron-right text-sm" />
                         <span className="text-black">{activeDept?.name}</span>
                     </>
                 )}

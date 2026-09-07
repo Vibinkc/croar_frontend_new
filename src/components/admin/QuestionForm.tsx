@@ -251,7 +251,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                             onClick={onCancel}
                             className="text-gray-400 hover:text-gray-600"
                         >
-                            <span className="material-symbols-rounded">close</span>
+                            <i className="mdi mdi-close" />
                         </button>
                     </div>
                 )}
@@ -296,7 +296,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                 disabled={generating || !topic}
                                 className="mt-2 text-[10px] font-black   text-slate-600 hover:text-slate-700 flex items-center gap-1 disabled:opacity-50"
                             >
-                                <span className="material-icons-outlined text-sm">auto_awesome</span>{" "}
+                                <i className="mdi mdi-auto-fix text-sm" />{" "}
                                 {tr("superAdmin.generateWithAi")}
                             </button>
                         )}
@@ -435,7 +435,7 @@ export default function QuestionForm({ onSuccess, onCancel, initialType = "APTIT
                                             onClick={() => setTestCases(testCases.filter((_, i) => i !== idx))}
                                             className="p-1 text-gray-300 hover:text-slate-900 transition-colors"
                                         >
-                                            <span className="material-icons-outlined text-sm">delete</span>
+                                            <i className="mdi mdi-delete text-sm" />
                                         </button>
                                     </div>
                                 ))}

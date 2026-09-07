@@ -7,6 +7,7 @@ import { useI18n } from "@/context/I18nContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CycleStatus } from "@/utils/payroll/api";
+import { Icon } from "@/components/ds";
 
 // Map payroll statuses onto Croar's <Badge> variants so payroll badges match the
 // rest of the Croar app exactly.
@@ -38,7 +39,7 @@ export function PageHeader({
     <header className="flex flex-wrap items-start justify-between gap-4">
       <div className="flex items-center gap-3">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1E88E5]/10 shadow-sm shadow-[#1E88E5]/5">
-          <span className="material-symbols-rounded text-2xl text-[#1E88E5]">{icon}</span>
+          <Icon name={icon} className="text-2xl text-[#1E88E5]" />
         </div>
         <div>
           <h1 className="text-2xl font-black leading-tight tracking-tight text-slate-900">{title}</h1>
@@ -65,7 +66,7 @@ export function StatCard({
 }) {
   return (
     <div className="group rounded-xl border border-slate-100 bg-white p-5 shadow-sm transition-all duration-300 hover:border-[#1E88E5]/20 hover:shadow-md">
-      <span className="material-symbols-rounded mb-3 text-[#1E88E5]">{icon}</span>
+      <Icon name={icon} className="mb-3 text-[#1E88E5]" />
       <div className={`text-2xl font-black tracking-tight ${tone}`}>{value}</div>
       <div className="mt-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</div>
     </div>
@@ -115,7 +116,7 @@ export function Modal({
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-900">{title}</h2>
           <Button variant="ghost" size="icon" onClick={onClose} aria-label={t("common.close")}>
-            <span className="material-symbols-rounded text-[20px]">close</span>
+            <i className="mdi mdi-close text-[20px]" />
           </Button>
         </div>
         {children}

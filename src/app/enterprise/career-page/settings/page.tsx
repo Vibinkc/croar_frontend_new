@@ -211,7 +211,7 @@ export default function CareerPageSettingsScreen() {
                         </button>
                         {saved && (
                             <span className="text-[12px] font-semibold text-[#2E7D32] inline-flex items-center gap-1">
-                                <span className="material-symbols-rounded text-[16px]">check_circle</span>
+                                <i className="mdi mdi-check-circle text-[16px]" />
                                 {tr("careerPage.savedMsg")}
                             </span>
                         )}

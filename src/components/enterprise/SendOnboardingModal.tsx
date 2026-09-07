@@ -113,7 +113,7 @@ export default function SendOnboardingModal({ isOpen, onClose, applicationIds, t
                         )}
                     </div>
                     {selectedTemplateId === template.id && (
-                        <span className="material-icons text-indigo-600 text-sm">check_circle</span>
+                        <i className="mdi mdi-check-circle text-indigo-600 text-sm" />
                     )}
                 </div>
             )}

@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "./cn";
+import { Icon } from "./Icon";
 
 export interface EmptyStateProps {
     /** Material Symbols glyph. */
@@ -37,7 +38,7 @@ export function EmptyState({ icon, title, description, action, secondary, tone =
                             : undefined
                     }
                 >
-                    <span className="material-symbols-rounded text-[28px]">{icon}</span>
+                    <Icon name={icon} className="text-[28px]" />
                 </div>
             </div>
             <h3 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121] mb-1.5">{title}</h3>

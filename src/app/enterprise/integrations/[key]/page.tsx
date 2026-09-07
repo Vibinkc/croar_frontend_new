@@ -191,7 +191,7 @@ export default function IntegrationDetail() {
                 <Link href="/enterprise/integrations" className="font-semibold text-[#1976D2] hover:text-[#1565C0] transition-colors">
                     {tr("integrations.title")}
                 </Link>
-                <span className="material-symbols-rounded text-[15px] text-[#BDBDBD]">chevron_right</span>
+                <i className="mdi mdi-chevron-right text-[15px] text-[#BDBDBD]" />
                 <span className="text-[#616161]">{item.name}</span>
             </div>
 

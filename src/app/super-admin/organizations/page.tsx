@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { apiClient } from "@/utils/api";
-import { Search, Building2, Users, Trash2, Filter, ChevronDown, X, FileEdit, Network } from "lucide-react";
+import { Search, Building2, Users, Trash2, Filter, ChevronDown, X, FileEdit, Network } from "@/components/icons";
 import { PageHeader, StatGrid, StatCard, Card, Field, Input, Select, Button, Badge, EmptyState, jetbrainsMono } from "@/components/ds";
 import { useI18n } from "@/context/I18nContext";
 

@@ -42,10 +42,10 @@ import {
     List,
     Table2,
     ChevronUp
-} from "lucide-react";
+} from "@/components/icons";
 import { Chart } from "react-google-charts";
 import { API_BASE_URL } from "@/lib/api-config";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 interface Profile {
     full_name: string;

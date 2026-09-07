@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { jetbrainsMono } from "@/components/ds";
+import { jetbrainsMono, Icon } from "@/components/ds";
 
 interface OnboardingField {
     name: string;
@@ -226,7 +226,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                             onClick={(e) => { e.stopPropagation(); removeSection(s.id); }}
                                             className={`p-1 rounded-[3px] transition-colors ${activeSectionId === s.id ? "hover:bg-[#1976D2]/10 text-[#1976D2]" : "hover:bg-red-50 text-[#757575] hover:text-rose-500"}`}
                                         >
-                                            <span className="material-icons-outlined text-[16px]">delete</span>
+                                            <i className="mdi mdi-delete text-[16px]" />
                                         </button>
                                     )}
                                 </div>
@@ -247,7 +247,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                     onClick={addSection}
                                     className="w-10 h-10 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] flex items-center justify-center transition-all shadow-sm"
                                 >
-                                    <span className="material-icons-outlined text-[20px]">add</span>
+                                    <i className="mdi mdi-plus text-[20px]" />
                                 </button>
                             </div>
                         )}
@@ -280,9 +280,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                     <div key={idx} className="p-3.5 bg-white rounded-[4px] border border-[#E0E0E0] flex items-center justify-between group/field hover:border-[#1976D2]/40 transition-all">
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center border border-[#BBDEFB]/60 transition-colors">
-                                                <span className="material-icons-outlined text-[18px]">
-                                                    {field.type === "text" ? "input" : field.type === "date" ? "event" : field.type === "select" ? "list" : field.type === "file" ? "upload_file" : "contact_phone"}
-                                                </span>
+                                                <Icon name={field.type === "text" ? "input" : field.type === "date" ? "event" : field.type === "select" ? "list" : field.type === "file" ? "upload_file" : "contact_phone"} className="text-[18px]" />
                                             </div>
                                             <div>
                                                 <p className="text-[13.5px] font-bold text-[#212121]">{field.label}</p>
@@ -294,7 +292,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                                 onClick={() => removeField(activeSectionId, idx)}
                                                 className="opacity-0 group-hover/field:opacity-100 p-1 text-[#757575] hover:text-rose-500 hover:bg-rose-50 rounded-[3px] transition-all"
                                             >
-                                                <span className="material-icons-outlined text-[16px]">close</span>
+                                                <i className="mdi mdi-close text-[16px]" />
                                             </button>
                                         )}
                                     </div>
@@ -372,7 +370,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                                                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setNewFieldRequired(!newFieldRequired); } }}
                                                 className={`flex items-center gap-2 cursor-pointer h-10 px-3.5 rounded-[4px] border transition-all ${newFieldRequired ? "bg-[#E3F2FD]/30 border-[#1976D2] text-[#1976D2]" : "bg-white border-[#E0E0E0] text-[#757575]"}`}
                                             >
-                                                <span className="material-icons-outlined text-[18px]">{newFieldRequired ? "check_box" : "check_box_outline_blank"}</span>
+                                                <Icon name={newFieldRequired ? "check_box" : "check_box_outline_blank"} className="text-[18px]" />
                                                 <span className="text-[11px] font-bold">{tr("forms.markAsRequired")}</span>
                                             </div>
                                         </div>
@@ -389,7 +387,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full text-center p-8 space-y-4">
                             <div className="w-14 h-14 bg-[#E3F2FD] border border-[#BBDEFB]/60 text-[#1976D2] rounded-[4px] flex items-center justify-center">
-                                <span className="material-icons-outlined text-3xl animate-pulse">layers</span>
+                                <i className="mdi mdi-layers text-3xl animate-pulse" />
                             </div>
                             <div>
                                 <h4 className="text-[16px] font-bold text-[#212121]">{tr("forms.selectASection")}</h4>
@@ -404,7 +402,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
 
             {saveError && (
                 <div className="mt-6 flex items-start gap-2.5 rounded-[4px] border border-amber-200 bg-amber-50 px-4 py-3.5">
-                    <span className="material-icons-outlined text-[18px] text-amber-600 mt-0.5 shrink-0">error_outline</span>
+                    <i className="mdi mdi-alert-circle-outline text-[18px] text-amber-600 mt-0.5 shrink-0" />
                     <p className="text-[12.5px] font-semibold text-amber-800 leading-relaxed">{saveError}</p>
                 </div>
             )}
@@ -423,7 +421,7 @@ export default function OnboardingTemplateForm({ template }: OnboardingTemplateF
                         title={template && !isDirty ? tr("forms.noChangesToSave") : undefined}
                         className="h-10 px-6 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(25,118,210,0.2)] transition-all flex items-center gap-1.5 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#1976D2]"
                     >
-                        {isSaving && <span className="material-icons-outlined text-[18px] animate-spin">progress_activity</span>}
+                        {isSaving && <i className="mdi mdi-loading text-[18px] animate-spin" />}
                         {isSaving ? (template ? tr("forms.updating") : tr("forms.savingEllipsis")) : (template ? tr("forms.updateTemplate") : tr("forms.saveTemplate"))}
                     </button>
                 )}

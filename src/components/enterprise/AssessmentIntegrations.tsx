@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { Button, Card, Input, cn } from "@/components/ds";
+import { Button, Card, Input, cn, Icon } from "@/components/ds";
 
 interface Field {
     name: string;
@@ -194,7 +194,7 @@ export default function AssessmentIntegrations() {
                             <section key={category} className="space-y-3">
                                 <div className="flex items-center gap-2.5">
                                     <span className={cn("w-8 h-8 rounded-[4px] flex items-center justify-center", meta.chip)}>
-                                        <span className="material-symbols-rounded text-[18px]">{meta.icon}</span>
+                                        <Icon name={meta.icon} className="text-[18px]" />
                                     </span>
                                     <h2 className="text-[15px] font-bold text-[#212121]">
                                         {tr(`integrations.category.${category}`)}
@@ -219,7 +219,7 @@ export default function AssessmentIntegrations() {
                                                             <h3 className="text-[13.5px] font-bold text-[#212121]">{it.name}</h3>
                                                             {it.connected && (
                                                                 <span className="inline-flex items-center gap-1 text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#E8F5E9] text-[#2E7D32]">
-                                                                    <span className="material-symbols-rounded text-[13px]">check_circle</span>
+                                                                    <i className="mdi mdi-check-circle text-[13px]" />
                                                                     {it.connection?.verified
                                                                         ? tr("integrations.verified")
                                                                         : tr("integrations.assessConnected")}
@@ -264,13 +264,13 @@ export default function AssessmentIntegrations() {
                                             <ul className="mt-3 space-y-1">
                                                 {it.capabilities.map(c => (
                                                     <li key={c} className="text-[11.5px] text-[#4B5057] leading-relaxed flex gap-1.5">
-                                                        <span className="material-symbols-rounded text-[14px] text-[#2E7D32] shrink-0 mt-px">check</span>
+                                                        <i className="mdi mdi-check text-[14px] text-[#2E7D32] shrink-0 mt-px" />
                                                         {c}
                                                     </li>
                                                 ))}
                                                 {it.limitations.map(l => (
                                                     <li key={l} className="text-[11.5px] text-[#757575] leading-relaxed flex gap-1.5">
-                                                        <span className="material-symbols-rounded text-[14px] text-[#B4BAC3] shrink-0 mt-px">remove</span>
+                                                        <i className="mdi mdi-minus text-[14px] text-[#B4BAC3] shrink-0 mt-px" />
                                                         {l}
                                                     </li>
                                                 ))}
@@ -337,7 +337,7 @@ export default function AssessmentIntegrations() {
                         <section className="space-y-3">
                             <div className="flex items-center gap-2.5">
                                 <span className={cn("w-8 h-8 rounded-[4px] flex items-center justify-center", CATEGORY_META.job_board.chip)}>
-                                    <span className="material-symbols-rounded text-[18px]">campaign</span>
+                                    <i className="mdi mdi-bullhorn text-[18px]" />
                                 </span>
                                 <h2 className="text-[15px] font-bold text-[#212121]">{tr("integrations.category.job_board")}</h2>
                             </div>
@@ -357,7 +357,7 @@ export default function AssessmentIntegrations() {
                                 </div>
                                 <Link href="/enterprise/settings/job-portals">
                                     <Button size="sm" variant="secondary">
-                                        <span className="material-symbols-rounded text-[17px]">open_in_new</span>
+                                        <i className="mdi mdi-open-in-new text-[17px]" />
                                         {tr("integrations.manageBoards")}
                                     </Button>
                                 </Link>

@@ -24,7 +24,7 @@ import {
   Check,
   CheckCircle2,
   AlertCircle
-} from "lucide-react";
+} from "@/components/icons";
 
 // --- Types ---
 

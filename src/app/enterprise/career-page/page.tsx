@@ -62,9 +62,7 @@ export default function CareerPageJobPosts() {
                                             {[job.location, job.work_mode, job.job_type].filter(Boolean).join(" · ") || "—"}
                                         </span>
                                     </span>
-                                    <span className="material-symbols-rounded text-[18px] text-[#BDBDBD] group-hover:text-[#1976D2] transition-colors">
-                                        chevron_right
-                                    </span>
+                                    <i className="mdi mdi-chevron-right text-[18px] text-[#BDBDBD] group-hover:text-[#1976D2] transition-colors" />
                                 </a>
                             ))}
                         </div>

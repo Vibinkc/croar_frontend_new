@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { Sparkles, ExternalLink, Bookmark, ArrowRight, ThumbsUp, Loader2 } from "lucide-react";
+import { Sparkles, ExternalLink, Bookmark, ArrowRight, ThumbsUp, Loader2 } from "@/components/icons";
 import { API_BASE_URL } from "@/lib/api-config";
 import { useI18n } from "@/context/I18nContext";
 

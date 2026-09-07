@@ -109,7 +109,7 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
     <div className="px-4 sm:px-5 md:px-7 py-6 max-w-[1320px] mx-auto w-full animate-fade-in flex flex-col gap-6">
       <div className="no-print">
         <Link href={`/enterprise/payroll/${slip.cycle_id}`} className="mb-3 inline-flex items-center gap-1 text-sm text-[var(--color-primary)]">
-          <span className="material-symbols-rounded text-[18px]">arrow_back</span> {tr("payroll.backToCycle")}
+          <i className="mdi mdi-arrow-left text-[18px]" /> {tr("payroll.backToCycle")}
         </Link>
         <PageHeader
           title={employee ? `${employee.first_name} ${employee.last_name}` : tr("payroll.payslip")}
@@ -121,7 +121,7 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
                 disabled={downloading}
                 className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
               >
-                <span className="material-symbols-rounded text-[18px]">download</span>
+                <i className="mdi mdi-download text-[18px]" />
                 {downloading ? tr("payroll.preparing") : tr("payroll.downloadPdf")}
               </button>
               {tpl?.has_doc_template && (
@@ -130,7 +130,7 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
                   disabled={downloadingDoc}
                   className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
                 >
-                  <span className="material-symbols-rounded text-[18px]">description</span>
+                  <i className="mdi mdi-file-document-outline text-[18px]" />
                   {downloadingDoc ? tr("payroll.preparing") : tr("payroll.downloadWord")}
                 </button>
               )}
@@ -140,7 +140,7 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
                   disabled={emailing}
                   className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-hover)] px-4 py-2 text-sm font-semibold text-[var(--color-muted)] hover:text-[var(--color-text)] disabled:opacity-60"
                 >
-                  <span className="material-symbols-rounded text-[18px]">mail</span>
+                  <i className="mdi mdi-email text-[18px]" />
                   {emailing ? tr("payroll.sending") : tr("payroll.emailToEmployee")}
                 </button>
               )}
@@ -148,7 +148,7 @@ export default function PayslipDetail({ params }: { params: Promise<{ id: string
                 onClick={() => window.print()}
                 className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
               >
-                <span className="material-symbols-rounded text-[18px]">print</span> {tr("payroll.print")}
+                <i className="mdi mdi-printer text-[18px]" /> {tr("payroll.print")}
               </button>
             </>
           }

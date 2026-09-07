@@ -158,7 +158,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
     <div className="px-4 sm:px-5 md:px-7 py-6 max-w-[1320px] mx-auto w-full animate-fade-in flex flex-col gap-6">
       <div>
         <Link href="/enterprise/payroll" className="mb-3 inline-flex items-center gap-1 text-sm text-[var(--color-primary)]">
-          <span className="material-symbols-rounded text-[18px]">arrow_back</span> {tr("payroll.backToPayroll")}
+          <i className="mdi mdi-arrow-left text-[18px]" /> {tr("payroll.backToPayroll")}
         </Link>
         <PageHeader
           title={cycle.name}
@@ -272,7 +272,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
           </div>
           {cycle.status === "DRAFT" || cycle.status === "CANCELLED" ? (
             <div className="py-12 text-center text-[var(--color-muted)]">
-              <span className="material-symbols-rounded mb-2 text-4xl text-[var(--color-dim)]">receipt_long</span>
+              <i className="mdi mdi-receipt mb-2 text-4xl text-[var(--color-dim)]" />
               <p>
                 {cycle.status === "DRAFT"
                   ? tr("payroll.runToGeneratePayslips")
@@ -348,7 +348,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                 }}
                 className="flex items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-3 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
               >
-                <span className="material-symbols-rounded text-[18px]">add</span>{" "}
+                <i className="mdi mdi-plus text-[18px]" />{" "}
                 {tr("payroll.addAdjustment")}
               </button>
             )}
@@ -405,7 +405,7 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                             title={tr("payroll.removeAdjustment")}
                             className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--color-dim)] hover:bg-[var(--color-danger)]/10 hover:text-[var(--color-danger)]"
                           >
-                            <span className="material-symbols-rounded text-[18px]">delete</span>
+                            <i className="mdi mdi-delete text-[18px]" />
                           </button>
                         </td>
                       )}

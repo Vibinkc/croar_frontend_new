@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 interface SendTemplateModalTemplate {
     id: string;
@@ -68,11 +69,11 @@ export default function SendTemplateModal<T extends SendTemplateModalTemplate>({
             >
                 <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                     <h2 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <span className="material-icons text-indigo-600">{headerIcon}</span>
+                        <Icon name={headerIcon} className="text-indigo-600" />
                         {headerLabel}
                     </h2>
                     <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-slate-200/50 flex items-center justify-center text-slate-400">
-                        <span className="material-icons-outlined">close</span>
+                        <i className="mdi mdi-close" />
                     </button>
                 </div>
 
@@ -138,7 +139,7 @@ export default function SendTemplateModal<T extends SendTemplateModalTemplate>({
                             </>
                         ) : (
                             <>
-                                <span className="material-icons text-[14px]">{sendIcon}</span>
+                                <Icon name={sendIcon} className="text-[14px]" />
                                 {sendLabel}
                             </>
                         )}

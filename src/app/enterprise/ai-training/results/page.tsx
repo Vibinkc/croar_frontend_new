@@ -16,7 +16,7 @@ import {
     Eye,
     ShieldAlert,
     Atom
-} from "lucide-react";
+} from "@/components/icons";
 import { PageHelp } from "@/components/ds";
 
 interface Result {

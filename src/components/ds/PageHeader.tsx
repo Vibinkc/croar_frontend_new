@@ -1,6 +1,7 @@
 import React from "react";
 import { useI18n } from "@/context/I18nContext";
 import { cn } from "./cn";
+import { Icon } from "./Icon";
 import { PageHelp } from "./PageHelp";
 
 export interface PageHeaderProps {
@@ -34,12 +35,12 @@ export function PageHeader({ title, subtitle, icon, onBack, help, actions, class
                         aria-label={t("common.back")}
                         className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#757575] hover:text-[#1976D2] hover:border-[#E0E0E0] transition-all flex items-center justify-center shrink-0 shadow-sm"
                     >
-                        <span className="material-symbols-rounded text-[20px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[20px]" />
                     </button>
                 )}
                 {icon && (
                     <span className="hidden sm:flex w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] items-center justify-center shrink-0">
-                        <span className="material-symbols-rounded text-[22px]">{icon}</span>
+                        <Icon name={icon} className="text-[22px]" />
                     </span>
                 )}
                 <div className="min-w-0">

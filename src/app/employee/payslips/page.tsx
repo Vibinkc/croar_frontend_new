@@ -33,7 +33,7 @@ export default function MyPayslipsPage() {
 
       {error && (
         <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
-          <span className="material-symbols-rounded text-[18px]">error</span> {error}
+          <i className="mdi mdi-alert-circle text-[18px]" /> {error}
         </div>
       )}
 

@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 interface Message {
     role: "user" | "agent";
@@ -164,7 +164,7 @@ function PilotSetupForm({
                 <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#1976D2]">{t("croarPilot.quickSetup")}</p>
                 {onClose && (
                     <button onClick={onClose} className="text-[#9E9E9E] hover:text-[#424242] transition-colors" title={t("croarPilot.close")}>
-                        <span className="material-symbols-rounded text-lg">close</span>
+                        <i className="mdi mdi-close text-lg" />
                     </button>
                 )}
             </div>
@@ -323,7 +323,7 @@ function PilotSetupForm({
                     disabled={step === 0}
                     className="px-4 h-10 rounded-[4px] text-[13px] font-semibold text-[#424242] border border-[#E0E0E0] hover:bg-[#F5F6F8] transition-colors disabled:opacity-40 flex items-center gap-1"
                 >
-                    <span className="material-symbols-rounded text-lg">chevron_left</span>
+                    <i className="mdi mdi-chevron-left text-lg" />
                     {"Previous"}
                 </button>
                 {isLast ? (
@@ -332,7 +332,7 @@ function PilotSetupForm({
                         disabled={!step0Valid || !step1Valid}
                         className="px-5 h-10 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
-                        <span className="material-symbols-rounded text-lg">rocket_launch</span>
+                        <i className="mdi mdi-rocket-launch text-lg" />
                         {"Build pipeline"}
                     </button>
                 ) : (
@@ -342,7 +342,7 @@ function PilotSetupForm({
                         className="px-5 h-10 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] transition-colors disabled:opacity-50 flex items-center gap-1"
                     >
                         {"Next"}
-                        <span className="material-symbols-rounded text-lg">chevron_right</span>
+                        <i className="mdi mdi-chevron-right text-lg" />
                     </button>
                 )}
             </div>
@@ -377,7 +377,7 @@ function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource
         <div className="rounded-[4px] border border-[#C8E6C9] bg-[#E8F5E9]/40 p-5">
             <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 rounded-[4px] bg-[#2E7D32] text-white flex items-center justify-center shrink-0">
-                    <span className="material-symbols-rounded text-[20px]">check_circle</span>
+                    <i className="mdi mdi-check-circle text-[20px]" />
                 </div>
                 <div className="min-w-0">
                     <p className="text-[14px] font-bold text-[#212121] truncate">
@@ -391,7 +391,7 @@ function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource
                 <ul className="space-y-1.5 mb-4">
                     {action.armed.map((a, i) => (
                         <li key={i} className="flex items-start gap-2 text-[13px] text-[#424242]">
-                            <span className="material-symbols-rounded text-[#2E7D32] text-base mt-0.5">check</span>
+                            <i className="mdi mdi-check text-[#2E7D32] text-base mt-0.5" />
                             <span>{a}</span>
                         </li>
                     ))}
@@ -404,26 +404,26 @@ function PipelineBuiltCard({ action, onSource }: { action: PilotAction; onSource
                         href={`/enterprise/jobs/${action.job_id}`}
                         className="px-2.5 h-8 rounded-[4px] bg-[#1976D2] text-white text-[11.5px] font-semibold hover:bg-[#1565C0] transition-colors flex items-center gap-1 whitespace-nowrap"
                     >
-                        <span className="material-symbols-rounded text-[15px]">work</span> {t("croarPilot.viewJob")}
+                        <i className="mdi mdi-briefcase text-[15px]" /> {t("croarPilot.viewJob")}
                     </Link>
                 )}
                 <button
                     onClick={onSource}
                     className="px-2.5 h-8 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[11.5px] font-semibold hover:bg-[#F5F6F8] transition-colors flex items-center gap-1 whitespace-nowrap"
                 >
-                    <span className="material-symbols-rounded text-[15px]">person_search</span> {t("croarPilot.sourceCandidates")}
+                    <i className="mdi mdi-account-search text-[15px]" /> {t("croarPilot.sourceCandidates")}
                 </button>
                 <Link
                     href={action.job_id ? `/enterprise/sourcing/projects?job_id=${action.job_id}` : "/enterprise/sourcing/projects"}
                     className="px-2.5 h-8 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[11.5px] font-semibold hover:bg-[#F5F6F8] transition-colors flex items-center gap-1 whitespace-nowrap"
                 >
-                    <span className="material-symbols-rounded text-[15px]">smart_toy</span> {t("croarPilot.sourceViaAgent")}
+                    <i className="mdi mdi-robot text-[15px]" /> {t("croarPilot.sourceViaAgent")}
                 </Link>
                 <Link
                     href="/enterprise/candidates/kanban"
                     className="px-2.5 h-8 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[11.5px] font-semibold hover:bg-[#F5F6F8] transition-colors flex items-center gap-1 whitespace-nowrap"
                 >
-                    <span className="material-symbols-rounded text-[15px]">view_kanban</span> {t("croarPilot.viewPipeline")}
+                    <i className="mdi mdi-view-column text-[15px]" /> {t("croarPilot.viewPipeline")}
                 </Link>
             </div>
         </div>
@@ -514,14 +514,14 @@ function CandidatePicker({
                             href={`/enterprise/jobs/${jobId}?tab=sourcing`}
                             className="px-3.5 h-9 rounded-[4px] bg-[#1976D2] text-white text-[12.5px] font-semibold hover:bg-[#1565C0] transition-colors flex items-center gap-1.5"
                         >
-                            <span className="material-symbols-rounded text-base">person_search</span> {t("croarPilot.viewSourcedCandidates")}
+                            <i className="mdi mdi-account-search text-base" /> {t("croarPilot.viewSourcedCandidates")}
                         </Link>
                     )}
                     <Link
                         href="/enterprise/candidates/kanban"
                         className="px-3.5 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[12.5px] font-semibold hover:bg-[#F5F6F8] transition-colors flex items-center gap-1.5"
                     >
-                        <span className="material-symbols-rounded text-base">view_kanban</span> {t("croarPilot.viewPipeline")}
+                        <i className="mdi mdi-view-column text-base" /> {t("croarPilot.viewPipeline")}
                     </Link>
                 </div>
             </div>
@@ -597,7 +597,7 @@ function CandidatePicker({
                         disabled={sending || selected.size === 0}
                         className="mt-4 w-full h-11 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                        <span className="material-symbols-rounded text-lg">mark_email_read</span>
+                        <i className="mdi mdi-email-check text-lg" />
                         {sending ? "Sending…" : `Send invites to ${selected.size} selected`}
                     </button>
                     <p className="mt-2 text-[10px] text-center text-[#EF6C00] font-semibold">
@@ -678,7 +678,7 @@ function PilotThinking({ threadId, token }: { threadId: string; token: string | 
                 className="w-8 h-8 rounded-[4px] flex items-center justify-center text-white shrink-0 animate-pulse"
                 style={{ background: "linear-gradient(135deg,#42A5F5,#1976D2)" }}
             >
-                <span className="material-symbols-rounded text-[19px]">bolt</span>
+                <i className="mdi mdi-lightning-bolt text-[19px]" />
             </div>
             <div className="bg-white border border-[#E0E0E0] px-4 py-3 rounded-[4px] rounded-tl-[4px] flex items-center gap-3 min-w-[250px]">
                 {/* key={label} re-triggers the fade each time the real step changes */}
@@ -1003,7 +1003,7 @@ export default function CroarPilotPage() {
                 <div className="flex items-center justify-between px-4 pt-4 pb-2">
                     <span className="text-[13px] font-bold text-[#212121]">{t("croarPilot.conversations")}</span>
                     <button onClick={() => setShowHistory(false)} className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:bg-[#F5F6F8] transition-colors">
-                        <span className="material-symbols-rounded text-[20px]">close</span>
+                        <i className="mdi mdi-close text-[20px]" />
                     </button>
                 </div>
                 <div className="px-3 pb-2">
@@ -1011,7 +1011,7 @@ export default function CroarPilotPage() {
                         onClick={newChat}
                         className="w-full flex items-center justify-center gap-2 h-11 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[20px]">add</span>
+                        <i className="mdi mdi-plus text-[20px]" />
                         {"New chat"}
                     </button>
                 </div>
@@ -1030,7 +1030,7 @@ export default function CroarPilotPage() {
                                     : "text-[#424242] hover:bg-[#F5F6F8]"
                             }`}
                         >
-                            <span className="material-symbols-rounded text-base shrink-0 text-[#9E9E9E]">forum</span>
+                            <i className="mdi mdi-forum text-base shrink-0 text-[#9E9E9E]" />
                             <span className="truncate flex-1">{s.title || "Untitled"}</span>
                             <span
                                 role="button"
@@ -1041,11 +1041,9 @@ export default function CroarPilotPage() {
                                         deleteSession(e, s.session_id);
                                     }
                                 }}
-                                className="material-symbols-rounded text-base text-[#BDBDBD] hover:text-[#E53935] opacity-0 group-hover:opacity-100 transition-all"
+                                className="mdi mdi-delete text-base text-[#BDBDBD] hover:text-[#E53935] opacity-0 group-hover:opacity-100 transition-all"
                                 title={t("croarPilot.deleteLabel")}
-                            >
-                                delete
-                            </span>
+                            />
                         </button>
                     ))}
                 </div>
@@ -1069,14 +1067,14 @@ export default function CroarPilotPage() {
                         onClick={() => setShowHistory(true)}
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[13px] font-semibold hover:bg-[#F5F6F8] transition-colors shadow-sm"
                     >
-                        <span className="material-symbols-rounded text-[18px] text-[#616161]">history</span>
+                        <i className="mdi mdi-history text-[18px] text-[#616161]" />
                         {t("croarPilot.history")}
                     </button>
                     <button
                         onClick={newChat}
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[18px]">edit_square</span>
+                        <i className="mdi mdi-square-edit-outline text-[18px]" />
                         {t("croarPilot.newChat")}
                     </button>
                 </div>
@@ -1109,10 +1107,10 @@ export default function CroarPilotPage() {
                                         className="text-left p-4 rounded-[4px] bg-white border border-[#E0E0E0] hover:border-[#1976D2]/50 hover:shadow-[0_6px_18px_rgba(0,0,0,0.06)] transition-all text-[14px] font-medium text-[#424242] flex items-center gap-3 group"
                                     >
                                         <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                            <span className="material-symbols-rounded text-[19px]">bolt</span>
+                                            <i className="mdi mdi-lightning-bolt text-[19px]" />
                                         </span>
                                         <span className="flex-1">{t("croarPilot.example" + (exi + 1))}</span>
-                                        <span className="material-symbols-rounded text-[#BDBDBD] group-hover:text-[#1976D2] group-hover:translate-x-0.5 transition-all">arrow_forward</span>
+                                        <i className="mdi mdi-arrow-right text-[#BDBDBD] group-hover:text-[#1976D2] group-hover:translate-x-0.5 transition-all" />
                                     </button>
                                 ))}
                             </div>
@@ -1164,9 +1162,7 @@ export default function CroarPilotPage() {
                                         }`}
                                         style={msg.role === "agent" ? { background: "linear-gradient(135deg,#42A5F5,#1976D2)" } : undefined}
                                     >
-                                        <span className="material-symbols-rounded text-[19px]">
-                                            {msg.role === "agent" ? "smart_toy" : "person"}
-                                        </span>
+                                        <Icon name={msg.role === "agent" ? "smart_toy" : "person"} className="text-[19px]" />
                                     </div>
                                     <div
                                         className={`max-w-[80%] p-4 text-[14px] leading-relaxed ${
@@ -1198,7 +1194,7 @@ export default function CroarPilotPage() {
                                 )}
                                 {wantsForm && setupDone.has(idx) && (
                                     <p className="pl-11 text-[12px] font-semibold text-[#2E7D32] flex items-center gap-1">
-                                        <span className="material-symbols-rounded text-base">check_circle</span>
+                                        <i className="mdi mdi-check-circle text-base" />
                                         {"Details submitted"}
                                     </p>
                                 )}
@@ -1267,7 +1263,7 @@ export default function CroarPilotPage() {
                                 className="w-9 h-9 rounded-[4px] flex items-center justify-center text-white shrink-0 transition-all active:scale-95 disabled:opacity-40"
                                 style={{ background: "linear-gradient(135deg,#42A5F5,#1976D2)" }}
                             >
-                                <span className="material-symbols-rounded text-[20px]">arrow_upward</span>
+                                <i className="mdi mdi-arrow-up text-[20px]" />
                             </button>
                         </div>
                         <p className="mt-2 text-[10px] text-center text-[#9E9E9E] font-medium">

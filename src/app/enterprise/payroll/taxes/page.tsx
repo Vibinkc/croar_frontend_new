@@ -313,7 +313,7 @@ export default function TaxesPage() {
         ) : liabilities.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
             <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center mb-4">
-              <span className="material-symbols-rounded text-[26px] text-[#BDBDBD]">receipt_long</span>
+              <i className="mdi mdi-receipt text-[26px] text-[#BDBDBD]" />
             </div>
             <p className="text-[13.5px] text-[#757575] max-w-sm">
               {tr("payroll.noTdsWithheld")}
@@ -394,7 +394,7 @@ export default function TaxesPage() {
         ) : challans.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
             <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center mb-4">
-              <span className="material-symbols-rounded text-[26px] text-[#BDBDBD]">request_quote</span>
+              <i className="mdi mdi-file-document-edit text-[26px] text-[#BDBDBD]" />
             </div>
             <p className="text-[13.5px] text-[#757575]">{tr("payroll.noChallans")}</p>
           </div>
@@ -431,7 +431,7 @@ export default function TaxesPage() {
                         title={tr("payroll.deleteChallanTitle")}
                         className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors"
                       >
-                        <span className="material-symbols-rounded text-[18px]">delete</span>
+                        <i className="mdi mdi-delete text-[18px]" />
                       </button>
                     </div>
                   )}
@@ -447,7 +447,7 @@ export default function TaxesPage() {
                         title={tr("payroll.deleteChallanTitle")}
                         className="w-8 h-8 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors"
                       >
-                        <span className="material-symbols-rounded text-[18px]">delete</span>
+                        <i className="mdi mdi-delete text-[18px]" />
                       </button>
                     )}
                   </div>
@@ -475,7 +475,7 @@ export default function TaxesPage() {
         ) : employees.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
             <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center mb-4">
-              <span className="material-symbols-rounded text-[26px] text-[#BDBDBD]">group</span>
+              <i className="mdi mdi-account-group text-[26px] text-[#BDBDBD]" />
             </div>
             <p className="text-[13.5px] text-[#757575]">{tr("payroll.noEmployeesYet")}</p>
           </div>

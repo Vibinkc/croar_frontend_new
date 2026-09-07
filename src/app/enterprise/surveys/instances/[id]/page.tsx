@@ -16,7 +16,7 @@ import {
     HelpCircle,
     TrendingUp,
     MessageSquareQuote,
-} from "lucide-react";
+} from "@/components/icons";
 import { Card, Badge, StatGrid, StatCard, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface AIAnalysis {

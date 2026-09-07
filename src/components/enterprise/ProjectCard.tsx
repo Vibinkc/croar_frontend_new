@@ -43,7 +43,7 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-3">
                         <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-[#1E88E5] group-hover:text-white transition-all shadow-inner">
-                            <span className="material-symbols-rounded text-lg">folder_managed</span>
+                            <i className="mdi mdi-folder-cog text-lg" />
                         </div>
                         <div>
                             <div className="flex items-center gap-1.5">
@@ -57,7 +57,7 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                     <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200">
                         {canModerate && (
                             <Link href={`/enterprise/projects/${project.id}`} className="w-7 h-7 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#1E88E5] hover:border-[#1E88E5]/20 transition-all shadow-sm">
-                                <span className="material-symbols-rounded text-base">edit</span>
+                                <i className="mdi mdi-pencil text-base" />
                             </Link>
                         )}
                         {canDelete && (
@@ -65,7 +65,7 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
                                 onClick={() => onDelete(project.id, project.name)} 
                                 className="w-7 h-7 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all shadow-sm"
                             >
-                                <span className="material-symbols-rounded text-base">delete</span>
+                                <i className="mdi mdi-delete text-base" />
                             </button>
                         )}
                     </div>
@@ -99,7 +99,7 @@ export default function ProjectCard({ project, canModerate, canDelete, onDelete 
             
             <div className="px-4 py-2.5 bg-slate-50/50 flex items-center justify-between border-t border-slate-50">
                 <div className="flex items-center gap-1 opacity-40">
-                    <span className="material-symbols-rounded text-xs">schedule</span>
+                    <i className="mdi mdi-clock-outline text-xs" />
                     <span className="text-[8px] font-black   truncate">{project.start_date ? new Date(project.start_date).toLocaleDateString() : tr("sharedUi.tbd")}</span>
                 </div>
                 <span className="text-[9px] font-black text-[#1E88E5]   opacity-80 group-hover:opacity-100 group-hover:tracking-[0.2em] transition-all">Mission_Data</span>

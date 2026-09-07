@@ -187,15 +187,15 @@ export default function JobPipelineBoard({
                     action={
                         <div className="flex flex-col sm:flex-row gap-2.5 justify-center">
                             <Button onClick={onAddCandidate}>
-                                <span className="material-symbols-rounded text-[18px]">person_add</span>
+                                <i className="mdi mdi-account-plus text-[18px]" />
                                 {tr("jobBoard.addCandidate")}
                             </Button>
                             <Button variant="secondary" onClick={onSourceCandidates}>
-                                <span className="material-symbols-rounded text-[18px]">travel_explore</span>
+                                <i className="mdi mdi-earth text-[18px]" />
                                 {tr("jobBoard.sourceCandidates")}
                             </Button>
                             <Button variant="secondary" onClick={onPostToBoards}>
-                                <span className="material-symbols-rounded text-[18px]">campaign</span>
+                                <i className="mdi mdi-bullhorn text-[18px]" />
                                 {tr("jobBoard.postToBoards")}
                             </Button>
                         </div>
@@ -238,7 +238,7 @@ export default function JobPipelineBoard({
                         aria-expanded={menuFor === app.id}
                         className="w-7 h-7 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[17px]">more_vert</span>
+                        <i className="mdi mdi-dots-vertical text-[17px]" />
                     </button>
                     {menu?.id === app.id && (
                         <>
@@ -270,7 +270,7 @@ export default function JobPipelineBoard({
                                         onClick={() => act(app.id, "restore")}
                                         className="w-full text-left px-3 py-2 text-[12.5px] font-semibold text-[#2E7D32] hover:bg-[#E8F5E9] transition-colors flex items-center gap-2"
                                     >
-                                        <span className="material-symbols-rounded text-[16px]">undo</span>
+                                        <i className="mdi mdi-undo text-[16px]" />
                                         {tr("jobBoard.restore")}
                                     </button>
                                 ) : (
@@ -279,7 +279,7 @@ export default function JobPipelineBoard({
                                         className="w-full text-left px-3 py-2 text-[12.5px] text-[#424242] hover:bg-[#FFF3E0] hover:text-[#E65100] transition-colors flex items-center gap-2"
                                         title={tr("jobBoard.dropHint")}
                                     >
-                                        <span className="material-symbols-rounded text-[16px]">do_not_disturb_on</span>
+                                        <i className="mdi mdi-minus-circle text-[16px]" />
                                         {tr("jobBoard.drop")}
                                     </button>
                                 )}
@@ -289,7 +289,7 @@ export default function JobPipelineBoard({
                                     className="w-full text-left px-3 py-2 text-[12.5px] text-[#424242] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors flex items-center gap-2"
                                     title={tr("jobBoard.removeHint")}
                                 >
-                                    <span className="material-symbols-rounded text-[16px]">remove</span>
+                                    <i className="mdi mdi-minus text-[16px]" />
                                     {tr("jobBoard.remove")}
                                 </button>
                             </div>
@@ -358,7 +358,7 @@ export default function JobPipelineBoard({
                     )}
                 </div>
                 <Button size="sm" onClick={onAddCandidate}>
-                    <span className="material-symbols-rounded text-[17px]">person_add</span>
+                    <i className="mdi mdi-account-plus text-[17px]" />
                     {tr("jobBoard.addCandidate")}
                 </Button>
             </div>

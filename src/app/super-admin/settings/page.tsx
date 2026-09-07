@@ -12,7 +12,7 @@ import {
     LogIn,
     CheckCircle2,
     AlertCircle,
-} from "lucide-react";
+} from "@/components/icons";
 import { Card, CardHeader, Badge, Button, PageHeader, jetbrainsMono } from "@/components/ds";
 
 interface SystemSetting {

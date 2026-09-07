@@ -16,7 +16,7 @@ import {
     ShieldPlus,
     UserCircle,
     X
-} from "lucide-react";
+} from "@/components/icons";
 import { Button, StatCard, StatGrid, Badge, Card, Input, Textarea, Select, Field, PageHelp } from "@/components/ds";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
@@ -278,7 +278,7 @@ function TeamManagementContent() {
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 md:flex-none">
-                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none">filter_list</span>
+                        <i className="mdi mdi-filter-variant absolute left-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none" />
                         <Select
                             className="h-11 pl-10 pr-8 text-[13px] font-semibold text-[#424242] w-full md:w-auto md:min-w-[160px]"
                             value={selectedRoleFilter}

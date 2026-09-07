@@ -71,7 +71,7 @@ export default function SelfServiceFiller({
             className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-700"
             aria-label={t("employee.close")}
           >
-            <span className="material-symbols-rounded text-[22px]">close</span>
+            <i className="mdi mdi-close text-[22px]" />
           </button>
         </div>
 

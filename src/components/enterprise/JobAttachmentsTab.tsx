@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { Button, Card, EmptyState, cn } from "@/components/ds";
+import { Button, Card, EmptyState, cn, Icon } from "@/components/ds";
 
 interface JobAttachment {
     id: string;
@@ -146,9 +146,7 @@ export default function JobAttachmentsTab({
                         isUploading && "opacity-60 cursor-wait"
                     )}
                 >
-                    <span className="material-symbols-rounded text-[32px] text-[#1976D2]">
-                        {isUploading ? "progress_activity" : "cloud_upload"}
-                    </span>
+                    <Icon name={isUploading ? "progress_activity" : "cloud_upload"} className="text-[32px] text-[#1976D2]" />
                     <p className="text-[13px] font-bold text-[#212121] mt-2">
                         {isUploading ? tr("jobFiles.uploading") : tr("jobFiles.dropHere")}
                     </p>
@@ -183,7 +181,7 @@ export default function JobAttachmentsTab({
                         description={tr("jobFiles.emptyDesc")}
                         action={
                             <Button onClick={() => inputRef.current?.click()}>
-                                <span className="material-symbols-rounded text-[18px]">upload</span>
+                                <i className="mdi mdi-upload text-[18px]" />
                                 {tr("jobFiles.uploadFile")}
                             </Button>
                         }
@@ -202,7 +200,7 @@ export default function JobAttachmentsTab({
                                             look.cls
                                         )}
                                     >
-                                        <span className="material-symbols-rounded text-[20px]">{look.icon}</span>
+                                        <Icon name={look.icon} className="text-[20px]" />
                                     </span>
                                     <div className="min-w-0 flex-1">
                                         <p className="text-[13px] font-bold text-[#212121] truncate">{item.filename}</p>
@@ -224,7 +222,7 @@ export default function JobAttachmentsTab({
                                         aria-label={tr("jobFiles.open")}
                                         className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#1976D2] hover:bg-[#FAFAFA] transition-colors"
                                     >
-                                        <span className="material-symbols-rounded text-[18px]">open_in_new</span>
+                                        <i className="mdi mdi-open-in-new text-[18px]" />
                                     </a>
                                     <button
                                         onClick={() => remove(item)}
@@ -232,7 +230,7 @@ export default function JobAttachmentsTab({
                                         aria-label={tr("common.delete")}
                                         className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                     >
-                                        <span className="material-symbols-rounded text-[18px]">delete</span>
+                                        <i className="mdi mdi-delete text-[18px]" />
                                     </button>
                                 </li>
                             );

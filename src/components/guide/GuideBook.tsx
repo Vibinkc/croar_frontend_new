@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useGuide } from "./GuideProvider";
 import { GUIDE_TOPICS, type GuideTopic } from "./guideContent";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 /** Flatten a topic to a single searchable string. */
 function topicText(t: GuideTopic): string {
@@ -68,7 +69,7 @@ export function GuideBook() {
                     <div className="relative flex items-center justify-between gap-4">
                         <div className="flex items-center gap-2.5 min-w-0">
                             <span className="w-9 h-9 rounded-[4px] bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
-                                <span className="material-symbols-rounded text-[20px] text-[#42A5F5]">menu_book</span>
+                                <i className="mdi mdi-book-open-page-variant text-[20px] text-[#42A5F5]" />
                             </span>
                             <div className="min-w-0">
                                 <h2 className="text-[16px] font-bold leading-tight">{tr("sharedUi.croarGuide")}</h2>
@@ -76,12 +77,12 @@ export function GuideBook() {
                             </div>
                         </div>
                         <button onClick={close} aria-label={tr("sharedUi.closeGuide")} className="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0">
-                            <span className="material-symbols-rounded text-[20px]">close</span>
+                            <i className="mdi mdi-close text-[20px]" />
                         </button>
                     </div>
                     {/* Search */}
                     <div className="relative mt-3">
-                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-[18px]">search</span>
+                        <i className="mdi mdi-magnify absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-[18px]" />
                         <input
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
@@ -106,7 +107,7 @@ export function GuideBook() {
                                     onClick={() => setActiveId(t.id)}
                                     className={`flex items-center gap-2.5 px-3 h-9 rounded-[4px] text-[13px] font-semibold whitespace-nowrap transition-colors shrink-0 ${on ? "bg-[#E3F2FD] text-[#1976D2]" : "text-[#616161] hover:bg-[#EEEEEE] hover:text-[#424242]"}`}
                                 >
-                                    <span className={`material-symbols-rounded text-[19px] ${on ? "text-[#1976D2]" : "text-[#9E9E9E]"}`}>{t.icon}</span>
+                                    <Icon name={t.icon} className={`text-[19px] ${on ? "text-[#1976D2]" : "text-[#9E9E9E]"}`} />
                                     {t.title}
                                 </button>
                             );
@@ -150,7 +151,7 @@ export function GuideBook() {
                                                         onClick={close}
                                                         className="group flex items-start gap-2.5 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#FAFCFE] transition-all"
                                                     >
-                                                        <span className="material-symbols-rounded text-[18px] text-[#1976D2] mt-0.5 shrink-0">arrow_circle_right</span>
+                                                        <i className="mdi mdi-arrow-right-circle text-[18px] text-[#1976D2] mt-0.5 shrink-0" />
                                                         <span className="min-w-0">
                                                             <span className="block text-[13px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors">{l.label}</span>
                                                             <span className="block text-[12px] text-[#757575] leading-snug mt-0.5">{l.desc}</span>
@@ -163,7 +164,7 @@ export function GuideBook() {
                                         {b.example && (
                                             <div className="mt-2.5 rounded-[4px] border border-[#BBDEFB] bg-[#FAFCFE] overflow-hidden">
                                                 <div className="flex items-center gap-1.5 px-4 pt-3">
-                                                    <span className="material-symbols-rounded text-[16px] text-[#1976D2]">lightbulb</span>
+                                                    <i className="mdi mdi-lightbulb text-[16px] text-[#1976D2]" />
                                                     <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#1976D2]">{tr("sharedUi.example")}</span>
                                                 </div>
                                                 <p className="px-4 pt-1.5 text-[13px] font-semibold text-[#212121]">{b.example.scenario}</p>

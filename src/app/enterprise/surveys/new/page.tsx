@@ -12,7 +12,7 @@ import {
     Rocket,
     Users,
     UserCheck,
-} from "lucide-react";
+} from "@/components/icons";
 import { Button, Card, CardHeader, Input, Field, Badge, PageHeader, jetbrainsMono } from "@/components/ds";
 
 interface Template {

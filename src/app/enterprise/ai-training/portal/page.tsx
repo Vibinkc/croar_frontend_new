@@ -118,7 +118,7 @@ function SimulationPortalContent() {
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-8 border-b border-slate-100">
                 <div className="flex items-center gap-4">
                     <button onClick={() => router.push('/enterprise/dashboard')} className="w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-indigo-600 transition-all flex items-center justify-center font-black">
-                        <span className="material-symbols-rounded text-xl">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-xl" />
                     </button>
                     <div>
                         <div className="flex items-center gap-1.5">
@@ -128,7 +128,7 @@ function SimulationPortalContent() {
                             </PageHelp>
                         </div>
                         <p className="text-slate-500 font-bold   text-[9px] flex items-center gap-2">
-                            <span className="material-symbols-rounded text-sm text-indigo-500">neurology</span>
+                            <i className="mdi mdi-brain text-sm text-indigo-500" />
                             {tr("aiTraining.practiceLabSubtitle")}
                         </p>
                     </div>
@@ -149,7 +149,7 @@ function SimulationPortalContent() {
                                     {tr("aiTraining.priorityAssignment")}
                                 </div>
                                 <div className="w-12 h-12 rounded-xl bg-white/20 text-white font-black flex items-center justify-center">
-                                    <span className="material-symbols-rounded text-xl">verified_user</span>
+                                    <i className="mdi mdi-shield-check text-xl" />
                                 </div>
                                 <div className="flex-1 space-y-2">
                                     <h3 className="text-xl font-black text-white tracking-tight  leading-tight">{as.scenario.title}</h3>
@@ -160,7 +160,7 @@ function SimulationPortalContent() {
                                         onClick={() => startSession(as.scenario.id, as.id)}
                                         className="flex-1 py-4 bg-white text-indigo-600 rounded-xl font-black text-[10px]   hover:bg-slate-900 hover:text-white transition-all shadow-xl flex items-center justify-center gap-2"
                                     >
-                                        <span className="material-symbols-rounded text-lg">play_arrow</span>
+                                        <i className="mdi mdi-play text-lg" />
                                         {tr("aiTraining.engageAi")}
                                     </button>
                                 </div>
@@ -180,7 +180,7 @@ function SimulationPortalContent() {
                     {scenarios.map((sc) => (
                         <div key={sc.id} className="group bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/20 p-8 flex flex-col gap-6 transition-all hover:border-indigo-100">
                             <div className="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 font-black flex items-center justify-center border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                                <span className="material-symbols-rounded text-xl">psychology</span>
+                                <i className="mdi mdi-brain text-xl" />
                             </div>
                             <div className="flex-1">
                                 <span className="text-[9px] font-black  tracking-[0.2em] text-indigo-500 mb-2 block">{sc.category}</span>
@@ -191,7 +191,7 @@ function SimulationPortalContent() {
                                 onClick={() => startSession(sc.id)}
                                 className="w-full py-4 bg-slate-50 text-slate-900 border border-slate-100 rounded-xl font-black text-[10px]   hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
                             >
-                                <span className="material-symbols-rounded text-lg">forum</span>
+                                <i className="mdi mdi-forum text-lg" />
                                 {tr("aiTraining.practiceChat")}
                             </button>
                         </div>

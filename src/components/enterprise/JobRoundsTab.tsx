@@ -248,7 +248,7 @@ export default function JobRoundsTab({
                                                     <div className="flex items-center gap-2 shrink-0">
                                                         {(a.generated_questions?.length || 0) > 0 ? (
                                                             <span className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-[#2E7D32]">
-                                                                <span className="material-symbols-rounded text-[16px]">check_circle</span>
+                                                                <i className="mdi mdi-check-circle text-[16px]" />
                                                                 {tr("jobRounds.questionsReady", { n: a.generated_questions?.length || 0 })}
                                                             </span>
                                                         ) : (
@@ -258,7 +258,7 @@ export default function JobRoundsTab({
                                                                 disabled={busy === `gen-${a.id}`}
                                                                 onClick={() => generate(a)}
                                                             >
-                                                                <span className="material-symbols-rounded text-[16px]">auto_awesome</span>
+                                                                <i className="mdi mdi-auto-fix text-[16px]" />
                                                                 {busy === `gen-${a.id}` ? tr("jobRounds.generating") : tr("jobRounds.generate")}
                                                             </Button>
                                                         )}
@@ -268,7 +268,7 @@ export default function JobRoundsTab({
                                                             aria-label={tr("jobRounds.removeAssessment")}
                                                             className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                                         >
-                                                            <span className="material-symbols-rounded text-[18px]">delete</span>
+                                                            <i className="mdi mdi-delete text-[18px]" />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -338,7 +338,7 @@ export default function JobRoundsTab({
                                                 onClick={() => { setOpenFor(stage.id); setError(""); }}
                                                 className="mt-1.5 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#1976D2] hover:text-[#1565C0] transition-colors"
                                             >
-                                                <span className="material-symbols-rounded text-[17px]">add_circle</span>
+                                                <i className="mdi mdi-plus-circle text-[17px]" />
                                                 {tr("jobRounds.addAssessment")}
                                             </button>
                                         )}

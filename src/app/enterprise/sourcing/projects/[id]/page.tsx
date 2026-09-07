@@ -10,7 +10,8 @@ import {
     FolderOpen, Search, Sparkles, ArrowRight, Bot, Loader2, Play, Pause, ChevronDown, ChevronUp, Plus,
     Filter, ThumbsUp, ExternalLink, Linkedin, Github, SlidersHorizontal, Radar, Mail, Phone, X,
     ChevronLeft, ChevronRight, Users, CheckCircle2,
-} from "lucide-react";
+} from "@/components/icons";
+import { Icon } from "@/components/ds";
 
 interface Project {
     project_id: string;

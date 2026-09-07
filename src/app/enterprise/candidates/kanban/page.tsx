@@ -10,7 +10,7 @@ import { formatDistanceToNow } from "date-fns";
 import SendEmailModal from "@/components/enterprise/SendEmailModal";
 import SendAssessmentModal from "@/components/enterprise/SendAssessmentModal";
 import SendOnboardingModal from "@/components/enterprise/SendOnboardingModal";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 // --- Interfaces ---
 
@@ -208,7 +208,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                     }}
                                     className="h-9 px-3 bg-[#2E7D32] hover:bg-[#136a33] text-white rounded-[4px] text-[12px] font-semibold transition-colors flex items-center gap-1.5"
                                 >
-                                    <span className="material-icons-outlined text-[16px]">visibility</span>
+                                    <i className="mdi mdi-eye text-[16px]" />
                                     {t("pipeline.viewOnboarding")}
                                 </button>
                             )
@@ -262,14 +262,14 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                                         }}
                                         className="h-9 px-3 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] text-[12px] font-semibold transition-colors flex items-center gap-1.5"
                                     >
-                                        <span className="material-icons-outlined text-[16px]">person_add</span>
+                                        <i className="mdi mdi-account-plus text-[16px]" />
                                         {t("pipeline.initiate")}
                                     </button>
                                 </div>
                             )
                         )}
                         <button onClick={onClose} className="w-9 h-9 flex items-center justify-center hover:bg-[#F5F6F8] rounded-[4px] text-[#9E9E9E] hover:text-[#4F4F4F] transition-colors shrink-0">
-                            <span className="material-icons-outlined text-[20px]">close</span>
+                            <i className="mdi mdi-close text-[20px]" />
                         </button>
                     </div>
                 </div>
@@ -281,7 +281,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                         <div className="bg-white rounded-[4px] p-5 border border-[#E0E0E0]">
                             <div className="flex items-center justify-between gap-3 mb-4">
                                 <h3 className="text-[14px] font-bold text-[#212121] flex items-center gap-2">
-                                    <span className="w-7 h-7 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">psychology</span></span>
+                                    <span className="w-7 h-7 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center"><i className="mdi mdi-brain text-[18px]" /></span>
                                     {t("pipeline.aiFitAnalysis")}
                                 </h3>
                                 <div className={`px-2.5 py-1 rounded-[4px] text-[12px] font-semibold border ${getScoreStyles(ai_match_score)}`}>
@@ -315,13 +315,13 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                             <div className="space-y-2.5">
                                 {feedback.fit_reason && (
                                     <div className="bg-[#E8F5E9]/50 border border-[#C8E6C9] p-3.5 rounded-[4px]">
-                                        <h4 className="text-[11px] font-bold text-[#2E7D32] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><span className="material-icons-outlined text-[15px]">check_circle</span>{t("pipeline.whyFit")}</h4>
+                                        <h4 className="text-[11px] font-bold text-[#2E7D32] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><i className="mdi mdi-check-circle text-[15px]" />{t("pipeline.whyFit")}</h4>
                                         <p className="text-[13px] text-[#4F4F4F] leading-relaxed">{feedback.fit_reason}</p>
                                     </div>
                                 )}
                                 {feedback.not_fit_reason && (
                                     <div className="bg-[#FFEBEE]/50 border border-[#F5C9C9] p-3.5 rounded-[4px]">
-                                        <h4 className="text-[11px] font-bold text-[#C62828] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><span className="material-icons-outlined text-[15px]">error</span>{t("pipeline.gapAnalysis")}</h4>
+                                        <h4 className="text-[11px] font-bold text-[#C62828] uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><i className="mdi mdi-alert-circle text-[15px]" />{t("pipeline.gapAnalysis")}</h4>
                                         <p className="text-[13px] text-[#4F4F4F] leading-relaxed">{feedback.not_fit_reason}</p>
                                     </div>
                                 )}
@@ -333,13 +333,13 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                     {feedback.highlights && feedback.highlights.length > 0 && (
                         <div>
                             <h3 className="text-[14px] font-bold text-[#212121] mb-3 flex items-center gap-2">
-                                <span className="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#EF6C00] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">star</span></span>
+                                <span className="w-7 h-7 rounded-[4px] bg-[#FFF3E0] text-[#EF6C00] flex items-center justify-center"><i className="mdi mdi-star text-[18px]" /></span>
                                 {t("pipeline.keyHighlights")}
                             </h3>
                             <ul className="space-y-2.5">
                                 {feedback.highlights.map((h: string, i: number) => (
                                     <li key={i} className="flex items-start gap-2 text-[13px] text-[#4F4F4F] leading-relaxed">
-                                        <span className="material-icons-outlined text-[#2E7D32] text-[18px] mt-0.5 shrink-0">check_circle</span>
+                                        <i className="mdi mdi-check-circle text-[#2E7D32] text-[18px] mt-0.5 shrink-0" />
                                         {h}
                                     </li>
                                 ))}
@@ -351,7 +351,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
                     {candidate.skills && candidate.skills.length > 0 && (
                         <div>
                             <h3 className="text-[14px] font-bold text-[#212121] mb-3 flex items-center gap-2">
-                                <span className="w-7 h-7 rounded-[4px] bg-[#E3F2FD] text-[#1565C0] flex items-center justify-center"><span className="material-icons-outlined text-[18px]">code</span></span>
+                                <span className="w-7 h-7 rounded-[4px] bg-[#E3F2FD] text-[#1565C0] flex items-center justify-center"><i className="mdi mdi-code-tags text-[18px]" /></span>
                                 {t("pipeline.skills")}
                             </h3>
                             <div className="flex flex-wrap gap-1.5">
@@ -849,7 +849,7 @@ export default function KanbanBoardPage() {
                             job's pipeline you're viewing without opening the Filters panel. Shares
                             selectedJobId with the Filters panel, so the two stay in sync. */}
                         <div className="relative flex-1 lg:flex-none lg:w-64">
-                            <span className="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none">work_outline</span>
+                            <i className="mdi mdi-briefcase-outline absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none" />
                             <select
                                 value={selectedJobId}
                                 onChange={(e) => setSelectedJobId(e.target.value)}
@@ -859,10 +859,10 @@ export default function KanbanBoardPage() {
                                 <option value="">{t("pipeline.allJobs")}</option>
                                 {jobs.map(job => <option key={job.id} value={job.id}>{job.title}</option>)}
                             </select>
-                            <span className="material-icons-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none">expand_more</span>
+                            <i className="mdi mdi-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none" />
                         </div>
                         <div className="relative group flex-1 lg:flex-none lg:w-80">
-                            <span className="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg group-focus-within:text-[#1976D2] transition-colors">search</span>
+                            <i className="mdi mdi-magnify absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg group-focus-within:text-[#1976D2] transition-colors" />
                             <input
                                 type="text"
                                 placeholder={t("pipeline.searchPlaceholder")}
@@ -876,7 +876,7 @@ export default function KanbanBoardPage() {
                             title={t("pipeline.toggleFilters")}
                             className={`flex items-center gap-2 px-4 h-11 rounded-[4px] transition-colors shrink-0 ${isFilterExpanded ? 'bg-[#1976D2] text-white' : 'bg-[#FAFAFA] border border-[#E0E0E0] text-[#616161] hover:bg-[#E0E0E0]'}`}
                         >
-                            <span className="material-icons-outlined text-xl">{isFilterExpanded ? 'filter_list_off' : 'filter_list'}</span>
+                            <Icon name={isFilterExpanded ? 'filter_list_off' : 'filter_list'} className="text-xl" />
                             <span className="text-[12px] font-semibold tracking-tight">{t("pipeline.filters")}</span>
                         </button>
                         {!isAllJobs && (
@@ -885,7 +885,7 @@ export default function KanbanBoardPage() {
                                 title={t("pipeline.sourceForJobAI")}
                                 className="flex items-center gap-2 px-4 h-11 rounded-[4px] bg-[#1976D2] text-white hover:bg-[#1565C0] transition-colors shrink-0"
                             >
-                                <span className="material-icons-outlined text-xl">person_search</span>
+                                <i className="mdi mdi-account-search text-xl" />
                                 <span className="text-[12px] font-semibold tracking-tight">{t("pipeline.source")}</span>
                             </button>
                         )}
@@ -907,7 +907,7 @@ export default function KanbanBoardPage() {
                                 <div className="space-y-1.5">
                                     <label htmlFor="filter-company" className="text-[9px] font-bold text-[#9E9E9E]   ml-1">{t("pipeline.enterpriseClient")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E0E0E0] rounded-[4px] hover:border-[#BBDEFB] transition-all">
-                                        <span className="material-icons-outlined text-[#9E9E9E] text-lg">corporate_fare</span>
+                                        <i className="mdi mdi-domain text-[#9E9E9E] text-lg" />
                                         <select
                                             id="filter-company"
                                             value={selectedCompanyId}
@@ -928,7 +928,7 @@ export default function KanbanBoardPage() {
                                 <div className="space-y-1.5">
                                     <label htmlFor="filter-job" className="text-[9px] font-bold text-[#9E9E9E]   ml-1">{t("pipeline.targetRequisition")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E0E0E0] rounded-[4px] hover:border-[#BBDEFB] transition-all">
-                                        <span className="material-icons-outlined text-[#9E9E9E] text-lg">work</span>
+                                        <i className="mdi mdi-briefcase text-[#9E9E9E] text-lg" />
                                         <select
                                             id="filter-job"
                                             value={selectedJobId}
@@ -949,7 +949,7 @@ export default function KanbanBoardPage() {
                                 <div className="space-y-1.5">
                                     <label htmlFor="filter-location" className="text-[9px] font-bold text-[#9E9E9E]   ml-1">{t("pipeline.geographicFocus")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E0E0E0] rounded-[4px] hover:border-[#BBDEFB] transition-all">
-                                        <span className="material-icons-outlined text-[#9E9E9E] text-lg">location_on</span>
+                                        <i className="mdi mdi-map-marker text-[#9E9E9E] text-lg" />
                                         <select
                                             id="filter-location"
                                             value={selectedLocation}
@@ -966,7 +966,7 @@ export default function KanbanBoardPage() {
                                 <div className="space-y-1.5">
                                     <label htmlFor="filter-score" className="text-[9px] font-bold text-[#9E9E9E]   ml-1">{t("pipeline.aiMatchAccuracy")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E0E0E0] rounded-[4px] hover:border-[#BBDEFB] transition-all">
-                                        <span className="material-icons text-[#1976D2] text-lg">bolt</span>
+                                        <i className="mdi mdi-lightning-bolt text-[#1976D2] text-lg" />
                                         <select
                                             id="filter-score"
                                             value={minMatchScore}
@@ -984,7 +984,7 @@ export default function KanbanBoardPage() {
                                 <div className="space-y-1.5">
                                     <label htmlFor="filter-period" className="text-[9px] font-bold text-[#9E9E9E]   ml-1">{t("pipeline.applicationRecency")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E0E0E0] rounded-[4px] hover:border-[#BBDEFB] transition-all">
-                                        <span className="material-icons-outlined text-[#9E9E9E] text-lg">calendar_today</span>
+                                        <i className="mdi mdi-calendar text-[#9E9E9E] text-lg" />
                                         <select
                                             id="filter-period"
                                             value={appliedPeriod}
@@ -1003,7 +1003,7 @@ export default function KanbanBoardPage() {
                                 <div className="space-y-1.5">
                                     <label htmlFor="filter-source" className="text-[9px] font-bold text-[#9E9E9E]   ml-1">{t("pipeline.originSource")}</label>
                                     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[#E0E0E0] rounded-[4px] hover:border-[#BBDEFB] transition-all">
-                                        <span className="material-icons-outlined text-[#9E9E9E] text-lg">share</span>
+                                        <i className="mdi mdi-share-variant text-[#9E9E9E] text-lg" />
                                         <select
                                             id="filter-source"
                                             value={selectedSource}
@@ -1033,11 +1033,11 @@ export default function KanbanBoardPage() {
                         </div>
                         <div className="flex flex-wrap gap-2 shrink-0">
                             <button onClick={() => goSourceForJob("chat")} className="px-4 py-2.5 rounded-[4px] bg-[#1976D2] text-white text-xs font-bold hover:bg-[#1565C0] transition-all flex items-center gap-1.5">
-                                <span className="material-symbols-rounded text-base">person_search</span>
+                                <i className="mdi mdi-account-search text-base" />
                                 {t("pipeline.sourceCandidates")}
                             </button>
                             <button onClick={() => goSourceForJob("pilot")} className="px-4 py-2.5 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-xs font-bold hover:border-[#1976D2]/40 transition-all flex items-center gap-1.5">
-                                <span className="material-symbols-rounded text-base">smart_toy</span>
+                                <i className="mdi mdi-robot text-base" />
                                 {t("pipeline.askCroarPilot")}
                             </button>
                         </div>
@@ -1051,14 +1051,14 @@ export default function KanbanBoardPage() {
                                 title={t("pipeline.previousRounds")}
                                 className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-[#E0E0E0] shadow-[0_4px_14px_rgba(0,0,0,0.12)] flex items-center justify-center text-[#4F4F4F] hover:text-[#1976D2] hover:border-[#1976D2]/40 transition-colors"
                             >
-                                <span className="material-symbols-rounded text-[20px]">chevron_left</span>
+                                <i className="mdi mdi-chevron-left text-[20px]" />
                             </button>
                             <button
                                 onClick={() => scrollBoard(1)}
                                 title={t("pipeline.moreRounds")}
                                 className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-[#E0E0E0] shadow-[0_4px_14px_rgba(0,0,0,0.12)] flex items-center justify-center text-[#4F4F4F] hover:text-[#1976D2] hover:border-[#1976D2]/40 transition-colors"
                             >
-                                <span className="material-symbols-rounded text-[20px]">chevron_right</span>
+                                <i className="mdi mdi-chevron-right text-[20px]" />
                             </button>
                         </>
                     )}
@@ -1160,31 +1160,31 @@ export default function KanbanBoardPage() {
                                                             <div className="flex flex-col gap-1 items-end shrink-0">
                                                                 {app.ai_interview_score != null && (
                                                                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm transition-all animate-in fade-in zoom-in duration-300">
-                                                                        <span className="material-icons text-[10px]">psychology</span>
+                                                                        <i className="mdi mdi-brain text-[10px]" />
                                                                         {t("pipeline.intShort")} {Math.round(app.ai_interview_score)}%
                                                                     </div>
                                                                 )}
                                                                 {app.ai_match_score !== undefined && (
                                                                     <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none ${getScoreStyles(app.ai_match_score)}`}>
-                                                                        <span className="material-icons text-[10px]">bolt</span>
+                                                                        <i className="mdi mdi-lightning-bolt text-[10px]" />
                                                                         {t("pipeline.aiShort")} {Math.round(app.ai_match_score)}%
                                                                     </div>
                                                                 )}
                                                                 {app.aptitude_score != null && app.aptitude_score > 0 && (
                                                                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-blue-50 text-blue-700 border border-blue-200 shadow-sm">
-                                                                        <span className="material-icons text-[10px]">psychology</span>
+                                                                        <i className="mdi mdi-brain text-[10px]" />
                                                                         {t("pipeline.aptShort")} {app.aptitude_score}%
                                                                     </div>
                                                                 )}
                                                                 {app.coding_score != null && app.coding_score > 0 && (
                                                                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
-                                                                        <span className="material-icons text-[10px]">code</span>
+                                                                        <i className="mdi mdi-code-tags text-[10px]" />
                                                                         {t("pipeline.codShort")} {app.coding_score}%
                                                                     </div>
                                                                 )}
                                                                 {app.assessment_score != null && app.aptitude_score == null && app.coding_score == null && (
                                                                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold leading-none bg-[#E3F2FD] text-[#1565C0] border border-[#BBDEFB] shadow-sm">
-                                                                        <span className="material-icons text-[10px]">quiz</span>
+                                                                        <i className="mdi mdi-help-box text-[10px]" />
                                                                         {t("pipeline.testShort")} {app.assessment_score}%
                                                                     </div>
                                                                 )}
@@ -1209,7 +1209,7 @@ export default function KanbanBoardPage() {
 
                                     {stageApps.length === 0 && (
                                         <div className="mt-1 rounded-[4px] border border-dashed border-[#E0E0E0] py-10 flex flex-col gap-2 items-center justify-center text-[#9E9E9E]">
-                                            <span className="material-icons-outlined text-[26px] text-[#BDBDBD]">inbox</span>
+                                            <i className="mdi mdi-inbox text-[26px] text-[#BDBDBD]" />
                                             <span className="text-[12px] font-medium">{t("pipeline.noCandidatesYet")}</span>
                                         </div>
                                     )}
@@ -1252,28 +1252,28 @@ export default function KanbanBoardPage() {
 
                             {canAccess("candidates:update") && !isAllJobs && (
                                 <button onClick={handleBulkMove} className="flex items-center gap-1.5 h-10 px-3.5 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
-                                    <span className="material-icons text-[18px]">arrow_forward</span>
+                                    <i className="mdi mdi-arrow-right text-[18px]" />
                                     {t("pipeline.moveToNextRound")}
                                 </button>
                             )}
 
                             {canAccess("communications:create") && (
                                 <button onClick={() => setIsEmailModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E0E0E0] text-[#424242] hover:bg-[#F5F6F8] rounded-[4px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
-                                    <span className="material-icons text-[18px]">email</span>
+                                    <i className="mdi mdi-email text-[18px]" />
                                     {t("pipeline.sendEmail")}
                                 </button>
                             )}
 
                             {canAccess("assessments:moderate") && (
                                 <button onClick={() => setIsAssessmentModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E0E0E0] text-[#424242] hover:bg-[#F5F6F8] rounded-[4px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
-                                    <span className="material-icons text-[18px]">psychology</span>
+                                    <i className="mdi mdi-brain text-[18px]" />
                                     {t("pipeline.sendAssessment")}
                                 </button>
                             )}
 
                             {canAccess("onboarding:moderate") && (
                                 <button onClick={() => setIsOnboardingModalOpen(true)} className="flex items-center gap-1.5 h-10 px-3.5 bg-white border border-[#E0E0E0] text-[#424242] hover:bg-[#F5F6F8] rounded-[4px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
-                                    <span className="material-icons-outlined text-[18px]">person_add</span>
+                                    <i className="mdi mdi-account-plus text-[18px]" />
                                     {t("pipeline.initiateOnboarding")}
                                 </button>
                             )}
@@ -1282,7 +1282,7 @@ export default function KanbanBoardPage() {
                                 <>
                                     <div className="w-px h-6 bg-[#E0E0E0] shrink-0" />
                                     <button onClick={handleBulkDelete} className="flex items-center gap-1.5 h-10 px-3 text-[#C62828] hover:bg-[#FFEBEE] rounded-[4px] text-[13px] font-semibold whitespace-nowrap shrink-0 transition-colors">
-                                        <span className="material-icons text-[18px]">delete</span>
+                                        <i className="mdi mdi-delete text-[18px]" />
                                         {t("common.delete")}
                                     </button>
                                 </>

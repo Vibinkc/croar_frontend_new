@@ -9,6 +9,7 @@ import Script from "next/script";
 import { Roboto } from "next/font/google";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
+import { Icon } from "@/components/ds";
 
 const hankenGrotesk = Roboto({ subsets: ["latin"], weight: ["300", "400", "500", "700"] });
 
@@ -290,7 +291,7 @@ function EnterpriseLoginContent() {
                                 {tr("auth.emailAddress")}
                             </label>
                             <div className="relative">
-                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] material-icons-outlined text-[19px]">email</span>
+                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] mdi mdi-email text-[19px]" />
                                 <input
                                     className="w-full h-11 pl-11 pr-4 bg-white border border-[#E0E0E0] rounded-[4px] text-[14px] text-[#212121] placeholder:text-[#9E9E9E] focus:outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                                     id="email"
@@ -317,7 +318,7 @@ function EnterpriseLoginContent() {
                                 </Link>
                             </div>
                             <div className="relative">
-                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] material-icons-outlined text-[19px]">lock</span>
+                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] mdi mdi-lock text-[19px]" />
                                 <input
                                     className="w-full h-11 pl-11 pr-11 bg-white border border-[#E0E0E0] rounded-[4px] text-[14px] text-[#212121] placeholder:text-[#9E9E9E] focus:outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                                     id="password"
@@ -332,16 +333,14 @@ function EnterpriseLoginContent() {
                                     onClick={() => setShowPassword(!showPassword)}
                                     className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] hover:text-[#424242] transition-colors"
                                 >
-                                    <span className="material-icons-outlined text-[19px]">
-                                        {showPassword ? "visibility_off" : "visibility"}
-                                    </span>
+                                    <Icon name={showPassword ? "visibility_off" : "visibility"} className="text-[19px]" />
                                 </button>
                             </div>
                         </div>
 
                         {error && (
                             <div className="p-3.5 rounded-[4px] bg-[#FFEBEE] border border-[#E53935]/20 flex items-center gap-2.5">
-                                <span className="material-icons-outlined text-[#E53935] text-[20px]">error</span>
+                                <i className="mdi mdi-alert-circle text-[#E53935] text-[20px]" />
                                 <span className="text-[13px] font-medium text-[#C62828]">{error}</span>
                             </div>
                         )}

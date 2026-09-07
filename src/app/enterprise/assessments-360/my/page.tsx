@@ -77,7 +77,7 @@ export default function X360MyAssessments() {
             {/* Action Required */}
             <section className="space-y-3.5">
                 <div className="flex items-center gap-2.5">
-                    <span className="material-symbols-rounded text-[#EF6C00] text-[19px]">pending_actions</span>
+                    <i className="mdi mdi-clipboard-clock text-[#EF6C00] text-[19px]" />
                     <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("assess360.actionRequired")}</h2>
                 </div>
 
@@ -91,7 +91,7 @@ export default function X360MyAssessments() {
                     <Card padding="none" className="overflow-hidden">
                         <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
                             <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5 text-[#BDBDBD]">
-                                <span className="material-symbols-rounded text-[32px]">done_all</span>
+                                <i className="mdi mdi-check-all text-[32px]" />
                             </div>
                             <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("assess360.allCaughtUp")}</h3>
                             <p className="text-[#757575] text-[14px] max-w-xs mx-auto">{tr("assess360.nothingAssigned")}</p>
@@ -128,7 +128,7 @@ export default function X360MyAssessments() {
             {!loading && completed.length > 0 && (
                 <section className="space-y-3.5">
                     <div className="flex items-center gap-2.5">
-                        <span className="material-symbols-rounded text-[#2E7D32] text-[19px]">task_alt</span>
+                        <i className="mdi mdi-check-circle-outline text-[#2E7D32] text-[19px]" />
                         <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("assess360.completed")}</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
@@ -142,7 +142,7 @@ export default function X360MyAssessments() {
                                         <p className="text-[13.5px] font-bold text-[#424242] truncate">{ass.ratee.first_name} {ass.ratee.last_name}</p>
                                         <p className="text-[12px] text-[#757575] truncate">{ass.cycle?.name}</p>
                                     </div>
-                                    <span className="material-symbols-rounded text-[#2E7D32] text-[20px] shrink-0">check_circle</span>
+                                    <i className="mdi mdi-check-circle text-[#2E7D32] text-[20px] shrink-0" />
                                 </div>
                             </Card>
                         ))}

@@ -7,7 +7,7 @@ import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
 import {
     Search, Filter, FolderOpen, Plus, Bookmark, Send, ThumbsUp, Loader2, X, Bot, MoreHorizontal, Lock,
-} from "lucide-react";
+} from "@/components/icons";
 
 interface Project {
     project_id: string;

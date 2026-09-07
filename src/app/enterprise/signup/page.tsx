@@ -269,7 +269,7 @@ export default function EnterpriseSignupPage() {
                     ) : signupEnabled === false ? (
                         <div className="text-center py-12 px-4">
                             <div className="w-16 h-16 bg-[#FFEBEE] text-[#E53935] rounded-[4px] flex items-center justify-center mx-auto mb-6">
-                                <span className="material-icons-outlined text-3xl">block</span>
+                                <i className="mdi mdi-block-helper text-3xl" />
                             </div>
                             <h3 className="text-[24px] font-extrabold text-[#212121] mb-3 tracking-[-0.4px]">{tr("auth.registrationClosed")}</h3>
                             <p className="text-[#757575] text-sm leading-relaxed mb-8">
@@ -285,7 +285,7 @@ export default function EnterpriseSignupPage() {
                     ) : success ? (
                         <div className="text-center py-8">
                             <div className="w-16 h-16 bg-[#E8F5E9] text-[#2E7D32] rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span className="material-icons-outlined text-3xl">check_circle</span>
+                                <i className="mdi mdi-check-circle text-3xl" />
                             </div>
                             <h3 className="text-[20px] font-extrabold text-[#212121] tracking-[-0.3px] mb-2">{tr("auth.accountCreated")}</h3>
                             <p className="text-[#757575]">{tr("auth.redirectingLogin")}</p>
@@ -327,7 +327,7 @@ export default function EnterpriseSignupPage() {
                             <div>
                                 <label htmlFor="company-name" className="block text-[12.5px] font-semibold text-[#424242] mb-1.5">{tr("auth.companyName")}</label>
                                 <div className="relative">
-                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] material-icons-outlined text-[19px]">corporate_fare</span>
+                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] mdi mdi-domain text-[19px]" />
                                     <input
                                         id="company-name"
                                         className="w-full h-11 pl-11 pr-4 bg-white border border-[#E0E0E0] rounded-[4px] text-[14px] text-[#212121] placeholder:text-[#9E9E9E] focus:outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
@@ -343,7 +343,7 @@ export default function EnterpriseSignupPage() {
                             <div>
                                 <label htmlFor="work-email" className="block text-[12.5px] font-semibold text-[#424242] mb-1.5">{tr("auth.workEmail")}</label>
                                 <div className="relative">
-                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] material-icons-outlined text-[19px]">email</span>
+                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] mdi mdi-email text-[19px]" />
                                     <input
                                         id="work-email"
                                         className="w-full h-11 pl-11 pr-4 bg-white border border-[#E0E0E0] rounded-[4px] text-[14px] text-[#212121] placeholder:text-[#9E9E9E] focus:outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
@@ -359,7 +359,7 @@ export default function EnterpriseSignupPage() {
                             <div>
                                 <label htmlFor="password" className="block text-[12.5px] font-semibold text-[#424242] mb-1.5">{tr("auth.password")}</label>
                                 <div className="relative">
-                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] material-icons-outlined text-[19px]">lock</span>
+                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] mdi mdi-lock text-[19px]" />
                                     <input
                                         id="password"
                                         className="w-full h-11 pl-11 pr-4 bg-white border border-[#E0E0E0] rounded-[4px] text-[14px] text-[#212121] placeholder:text-[#9E9E9E] focus:outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
@@ -374,7 +374,7 @@ export default function EnterpriseSignupPage() {
 
                             {error && (
                                 <div className="p-3.5 rounded-[4px] bg-[#FFEBEE] border border-[#E53935]/20 flex items-center gap-2.5">
-                                    <span className="material-icons-outlined text-[#E53935] text-[20px]">error</span>
+                                    <i className="mdi mdi-alert-circle text-[#E53935] text-[20px]" />
                                     <span className="text-[13px] font-medium text-[#C62828]">{error}</span>
                                 </div>
                             )}

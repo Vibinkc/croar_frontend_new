@@ -88,7 +88,7 @@ export default function X360Templates() {
                         className="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-[4px] text-[#757575] hover:bg-white hover:text-[#212121] border border-transparent hover:border-[#E0E0E0] transition-colors"
                         title={tr("assess360.backToAssessments")}
                     >
-                        <span className="material-symbols-rounded text-[20px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[20px]" />
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
@@ -104,7 +104,7 @@ export default function X360Templates() {
                             onClick={() => router.push('/enterprise/assessments-360/templates/new')}
                             className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-colors"
                         >
-                            <span className="material-symbols-rounded text-[17px]">add</span>
+                            <i className="mdi mdi-plus text-[17px]" />
                             {tr("assess360.newTemplate")}
                         </button>
                     </div>
@@ -121,7 +121,7 @@ export default function X360Templates() {
                             <div className={`text-[28px] font-semibold tracking-[-1px] text-[#212121] mt-2 ${jetbrainsMono.className}`}>{loading ? "—" : templates.length}</div>
                         </div>
                         <span className="w-10 h-10 rounded-[4px] flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#42A5F5,#1976D2)", boxShadow: "0 6px 14px rgba(25,118,210,0.28)" }}>
-                            <span className="material-symbols-rounded text-[18px]">description</span>
+                            <i className="mdi mdi-file-document-outline text-[18px]" />
                         </span>
                     </div>
                 </div>
@@ -133,7 +133,7 @@ export default function X360Templates() {
                             <div className={`text-[28px] font-semibold tracking-[-1px] text-[#212121] mt-2 ${jetbrainsMono.className}`}>{loading ? "—" : totalQuestions}</div>
                         </div>
                         <span className="w-10 h-10 rounded-[4px] flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#42A5F5,#1565C0)", boxShadow: "0 6px 14px rgba(21,101,192,0.25)" }}>
-                            <span className="material-symbols-rounded text-[18px]">quiz</span>
+                            <i className="mdi mdi-help-box text-[18px]" />
                         </span>
                     </div>
                 </div>
@@ -161,7 +161,7 @@ export default function X360Templates() {
             ) : filteredTemplates.length === 0 ? (
                 <Card padding="none" className="min-h-[420px] flex flex-col items-center justify-center p-16 md:p-20 text-center">
                     <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5 text-[#BDBDBD]">
-                        <span className="material-symbols-rounded text-[32px]">description</span>
+                        <i className="mdi mdi-file-document-outline text-[32px]" />
                     </div>
                     <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">
                         {searchQuery ? tr("assess360.noTemplatesSearch") : tr("assess360.noTemplatesYet")}
@@ -184,7 +184,7 @@ export default function X360Templates() {
                                 onClick={() => router.push('/enterprise/assessments-360/templates/new')}
                                 className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors"
                             >
-                                <span className="material-symbols-rounded text-[19px]">add</span> {tr("assess360.newTemplate")}
+                                <i className="mdi mdi-plus text-[19px]" /> {tr("assess360.newTemplate")}
                             </button>
                         )
                     )}
@@ -201,7 +201,7 @@ export default function X360Templates() {
                         >
                             <div className="flex items-start gap-3 min-w-0">
                                 <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0 transition-colors group-hover:bg-[#1976D2] group-hover:text-white">
-                                    <span className="material-symbols-rounded text-[20px]">description</span>
+                                    <i className="mdi mdi-file-document-outline text-[20px]" />
                                 </span>
                                 <div className="min-w-0 flex-1">
                                     <p className="text-[14.5px] font-bold text-[#212121] tracking-[-0.2px] leading-tight truncate group-hover:text-[#1976D2] transition-colors">{tpl.name}</p>
@@ -226,7 +226,7 @@ export default function X360Templates() {
                                             className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#E3F2FD] hover:text-[#1976D2] transition-colors"
                                             title={tr("assess360.editTemplate")}
                                         >
-                                            <span className="material-symbols-rounded text-[19px]">edit</span>
+                                            <i className="mdi mdi-pencil text-[19px]" />
                                         </button>
                                     )}
                                     {canAccess("assessments:moderate") && (
@@ -235,7 +235,7 @@ export default function X360Templates() {
                                             className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors"
                                             title={tr("assess360.deleteTemplate")}
                                         >
-                                            <span className="material-symbols-rounded text-[19px]">delete</span>
+                                            <i className="mdi mdi-delete text-[19px]" />
                                         </button>
                                     )}
                                 </div>

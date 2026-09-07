@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Icon } from "@/components/ds";
 
 interface ConfirmationModalProps {
     isOpen: boolean;
@@ -38,9 +39,7 @@ export default function ConfirmationModal({
                             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 ${
                                 isDestructive ? "bg-rose-50 text-rose-500" : "bg-indigo-50 text-[#1E88E5]"
                             }`}>
-                                <span className="material-symbols-rounded text-3xl">
-                                    {isDestructive ? "delete_forever" : "help_outline"}
-                                </span>
+                                <Icon name={isDestructive ? "delete_forever" : "help_outline"} className="text-3xl" />
                             </div>
                             
                             <h3 className="text-xl font-black text-slate-900 tracking-tight mb-2">{title}</h3>

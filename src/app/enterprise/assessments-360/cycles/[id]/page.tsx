@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { apiClient } from "@/utils/api";
-import { Badge, Card, StatGrid, StatCard, PageHelp, jetbrainsMono } from "@/components/ds";
+import { Badge, Card, StatGrid, StatCard, PageHelp, jetbrainsMono, Icon } from "@/components/ds";
 
 interface ProgressBreakdown {
     rater_relation: string;
@@ -74,7 +74,7 @@ export default function X360CycleProgress() {
                         className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#757575] hover:text-[#1976D2] hover:border-[#E0E0E0] transition-colors flex items-center justify-center shrink-0 shadow-sm"
                         aria-label={tr("assess360.goBack")}
                     >
-                        <span className="material-symbols-rounded text-[19px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[19px]" />
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
@@ -98,7 +98,7 @@ export default function X360CycleProgress() {
             <Card padding="none" className="overflow-hidden min-h-[420px]">
                 <div className="flex items-center justify-between px-5 py-3.5 bg-[#FAFAFA] border-b border-[#E0E0E0]">
                     <div className="flex items-center gap-2.5">
-                        <span className="material-symbols-rounded text-[#1976D2] text-[19px]">monitoring</span>
+                        <i className="mdi mdi-monitor-dashboard text-[#1976D2] text-[19px]" />
                         <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("assess360.progressByEmployee")}</h2>
                     </div>
                     {!loading && (
@@ -115,7 +115,7 @@ export default function X360CycleProgress() {
                 ) : progress.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
                         <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5 text-[#BDBDBD]">
-                            <span className="material-symbols-rounded text-[32px]">group_off</span>
+                            <i className="mdi mdi-account-off text-[32px]" />
                         </div>
                         <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("assess360.noRatees")}</h3>
                         <p className="text-[#757575] text-[14px] max-w-xs mx-auto">
@@ -137,7 +137,7 @@ export default function X360CycleProgress() {
                                         {/* Employee identity */}
                                         <div className="flex items-center gap-3 min-w-0 lg:w-[230px] shrink-0">
                                             <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                                <span className="material-symbols-rounded text-[22px]">account_circle</span>
+                                                <i className="mdi mdi-account-circle text-[22px]" />
                                             </span>
                                             <div className="min-w-0">
                                                 <p className="text-[14px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors truncate">{ratee.ratee_name}</p>
@@ -159,9 +159,9 @@ export default function X360CycleProgress() {
                                                                     : 'bg-[#FAFAFA] border-[#E0E0E0] text-[#757575]'
                                                             }`}
                                                         >
-                                                            <span className="material-symbols-rounded text-[15px] leading-none">{getRelationIcon(b.rater_relation)}</span>
+                                                            <Icon name={getRelationIcon(b.rater_relation)} className="text-[15px] leading-none" />
                                                             <span className="truncate">{b.rater_relation}</span>
-                                                            <span className="material-symbols-rounded text-[14px] leading-none">{done ? 'check_circle' : 'schedule'}</span>
+                                                            <Icon name={done ? 'check_circle' : 'schedule'} className="text-[14px] leading-none" />
                                                         </span>
                                                     );
                                                 })}
@@ -178,7 +178,7 @@ export default function X360CycleProgress() {
                                                         : <Badge tone="warning" dot>{tr("assess360.inProgress")}</Badge>}
                                                     {hasScore && (
                                                         <Badge tone="indigo">
-                                                            <span className="material-symbols-rounded text-[14px] leading-none">auto_awesome</span>
+                                                            <i className="mdi mdi-auto-fix text-[14px] leading-none" />
                                                             AI {ratee.ai_score}/10
                                                         </Badge>
                                                     )}
@@ -196,7 +196,7 @@ export default function X360CycleProgress() {
                                                     onClick={() => router.push(`/enterprise/assessments-360/reports/${ratee.ratee_id}/${cycleId}`)}
                                                     className="w-full inline-flex items-center justify-center gap-1.5 h-9 px-3 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[12.5px] font-semibold hover:bg-[#212121] hover:text-white hover:border-[#212121] transition-colors"
                                                 >
-                                                    <span className="material-symbols-rounded text-[16px]">analytics</span>
+                                                    <i className="mdi mdi-chart-box text-[16px]" />
                                                     {tr("assess360.fullInsightReport")}
                                                 </button>
                                             )}

@@ -29,7 +29,7 @@ import {
   Layers,
   CheckCircle2,
   AlertTriangle,
-} from "lucide-react";
+} from "@/components/icons";
 import {
   Button,
   Card,
@@ -40,8 +40,7 @@ import {
   StatCard,
   StatGrid,
   PageHeader,
-  jetbrainsMono,
-} from "@/components/ds";
+  jetbrainsMono, Icon } from "@/components/ds";
 
 // ---------------------------------------------------------------------------
 // A template is a reusable, CTC-driven salary package: its lines are *rules*
@@ -835,7 +834,7 @@ function ToggleRow({
     <div className={`rounded-[4px] border p-3 transition-colors ${checked ? "border-[#BBDEFB] bg-[#E3F2FD]/50" : "border-[#E0E0E0] bg-white"}`}>
       <div className="flex items-center gap-3">
         <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[4px] ${checked ? "bg-[#E3F2FD] text-[#1976D2]" : "bg-[#EEEEEE] text-[#757575]"}`}>
-          <span className="material-symbols-rounded text-[18px]">{icon}</span>
+          <Icon name={icon} className="text-[18px]" />
         </span>
         <div className="min-w-0 flex-1">
           <div className="text-[13.5px] font-semibold text-[#212121]">{title}</div>

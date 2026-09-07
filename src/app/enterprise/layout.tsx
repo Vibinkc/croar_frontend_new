@@ -10,6 +10,7 @@ import CommandPalette from "@/components/enterprise/CommandPalette";
 import { GuideProvider, Tour, HelpButton, GuideBook } from "@/components/guide";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 // Maps known nav labels to i18n keys (Talent Search section is translated in this slice;
 // other labels fall back to their English text until they're migrated).
@@ -418,7 +419,7 @@ export default function EnterprisePortalLayout({
                     aria-label={t("nav.openMenu")}
                     className="md:hidden w-9 h-9 rounded-[4px] hover:bg-white/15 flex items-center justify-center transition-colors"
                 >
-                    <span className="material-symbols-rounded text-[22px]">menu</span>
+                    <i className="mdi mdi-menu text-[22px]" />
                 </button>
                 <button
                     onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -426,7 +427,7 @@ export default function EnterprisePortalLayout({
                     title={t("nav.toggleSidebar")}
                     className="hidden md:flex w-9 h-9 rounded-[4px] hover:bg-white/15 items-center justify-center transition-colors shrink-0"
                 >
-                    <span className="material-symbols-rounded text-[21px]">dock_to_right</span>
+                    <i className="mdi mdi-dock-right text-[21px]" />
                 </button>
 
                 <Link href="/enterprise/dashboard" className="flex items-center gap-2 min-w-0 shrink-0 px-1">
@@ -440,7 +441,7 @@ export default function EnterprisePortalLayout({
                     title={t("nav.searchHint")}
                     className="flex-1 max-w-[600px] mx-auto h-9 rounded-[4px] bg-white/15 hover:bg-white/25 transition-colors flex items-center gap-2 px-3 text-white/85 min-w-0"
                 >
-                    <span className="material-symbols-rounded text-[20px] shrink-0">search</span>
+                    <i className="mdi mdi-magnify text-[20px] shrink-0" />
                     <span className="text-[13.5px] truncate text-left flex-1">{t("nav.searchPlaceholder")}</span>
                 </button>
 
@@ -451,7 +452,7 @@ export default function EnterprisePortalLayout({
                         title={t("nav.settings")}
                         className="hidden sm:flex w-9 h-9 rounded-full hover:bg-white/15 items-center justify-center transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[21px]">settings</span>
+                        <i className="mdi mdi-cog text-[21px]" />
                     </Link>
 
                     {/* The avatar is the only place the signed-in identity is stated now that
@@ -484,14 +485,14 @@ export default function EnterprisePortalLayout({
                                         onClick={() => setIsUserMenuOpen(false)}
                                         className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#424242] hover:bg-[#F5F6F8] transition-colors"
                                     >
-                                        <span className="material-symbols-rounded text-[19px] text-[#757575]">settings</span>
+                                        <i className="mdi mdi-cog text-[19px] text-[#757575]" />
                                         {t("nav.settings")}
                                     </Link>
                                     <button
                                         onClick={logout}
                                         className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                     >
-                                        <span className="material-symbols-rounded text-[19px]">logout</span>
+                                        <i className="mdi mdi-logout text-[19px]" />
                                         {t("general.logout")}
                                     </button>
                                 </div>
@@ -528,7 +529,7 @@ export default function EnterprisePortalLayout({
                             href="/enterprise/jobs"
                             className={`flex items-center gap-2 mb-3 mx-1 px-3.5 h-9 rounded-[4px] text-[12px] font-medium text-[#616161] hover:text-[#1976D2] hover:bg-[#F5F6F8] transition-colors ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
                         >
-                            <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                            <i className="mdi mdi-arrow-left text-[18px]" />
                             {!isSidebarCollapsed && navLabel("Back to Croar")}
                         </Link>
                     )}
@@ -556,7 +557,7 @@ export default function EnterprisePortalLayout({
                                             }`}
                                         >
                                             <span className="flex items-center gap-3">
-                                                <span className={`material-symbols-rounded text-[18px] ${hasActive ? 'text-[#1976D2]' : 'text-[#757575] group-hover/hdr:text-[#424242] transition-colors'}`}>{group.icon}</span>
+                                                <Icon name={group.icon} className={`text-[18px] ${hasActive ? 'text-[#1976D2]' : 'text-[#757575] group-hover/hdr:text-[#424242] transition-colors'}`} />
                                                 <span className="whitespace-nowrap">{navLabel(group.title)}</span>
                                             </span>
                                             <svg className={`w-3.5 h-3.5 ${hasActive ? 'text-[#1976D2]' : 'text-[#757575] group-hover/hdr:text-[#424242]'} transition-transform duration-200 ${open ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -576,7 +577,7 @@ export default function EnterprisePortalLayout({
                                                             className={navLinkClass(item.path)}
                                                             title={item.label}
                                                         >
-                                                            <span className={`material-symbols-rounded text-[18px] ${isActive ? 'text-[#1976D2]' : 'text-[#757575] group-hover:text-[#424242] transition-colors'}`}>{item.icon}</span>
+                                                            <Icon name={item.icon} className={`text-[18px] ${isActive ? 'text-[#1976D2]' : 'text-[#757575] group-hover:text-[#424242] transition-colors'}`} />
                                                         </Link>
                                                     );
                                                 })}
@@ -637,7 +638,7 @@ export default function EnterprisePortalLayout({
                         className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#616161] hover:bg-[#FFEBEE] hover:text-[#C62828] rounded-[4px] transition-colors duration-150 group cursor-pointer ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}
                         title={isSidebarCollapsed ? t("general.logout") : ''}
                     >
-                        <span className="material-symbols-rounded text-[18px] text-[#9E9E9E] group-hover:text-[#C62828]">logout</span>
+                        <i className="mdi mdi-logout text-[18px] text-[#9E9E9E] group-hover:text-[#C62828]" />
                         {!isSidebarCollapsed && <span className="text-[12.5px] font-medium">{t("general.logout")}</span>}
                     </button>
                 </div>

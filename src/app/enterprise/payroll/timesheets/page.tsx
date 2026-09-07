@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useI18n } from "@/context/I18nContext";
 import Link from "next/link";
-import { Filter, ChevronDown } from "lucide-react";
+import { Filter, ChevronDown } from "@/components/icons";
 import {
   calendarApi,
   payrollApi,
@@ -272,7 +272,7 @@ export default function TimesheetsPage() {
         ) : !cycleId ? (
           <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
             <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
-              <span className="material-symbols-rounded text-[32px] text-[#BDBDBD]">schedule</span>
+              <i className="mdi mdi-clock-outline text-[32px] text-[#BDBDBD]" />
             </div>
             <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("payroll.noPayrollCycle")}</h3>
             <p className="text-[#757575] text-[14px] max-w-xs mx-auto">{tr("payroll.noCycleTimesheetsHint")}</p>
@@ -280,7 +280,7 @@ export default function TimesheetsPage() {
         ) : rows.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
             <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
-              <span className="material-symbols-rounded text-[32px] text-[#BDBDBD]">schedule</span>
+              <i className="mdi mdi-clock-outline text-[32px] text-[#BDBDBD]" />
             </div>
             <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("payroll.noTimesheetsYet")}</h3>
             <p className="text-[#757575] text-[14px] max-w-xs mx-auto">

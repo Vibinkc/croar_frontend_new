@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { useCachedFetch } from "@/hooks/useCachedFetch";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 import ThemeToggle from "@/components/ThemeToggle";
 
 // JetBrains Mono — the design system's numeric/data typeface for stats & counts.
@@ -159,7 +159,7 @@ export default function EnterpriseDashboard() {
             {loadFailed && (
                 <div className="flex items-center justify-between gap-4 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3">
                     <div className="flex items-center gap-2.5 min-w-0">
-                        <span className="material-symbols-rounded text-[#E53935]">error</span>
+                        <i className="mdi mdi-alert-circle text-[#E53935]" />
                         <div className="min-w-0">
                             <p className="text-[13px] font-bold text-[#212121]">Couldn&apos;t load your dashboard stats</p>
                             <p className="text-[12px] text-[#757575] truncate">The numbers below may be unavailable. Check your connection and try again.</p>
@@ -205,13 +205,13 @@ export default function EnterpriseDashboard() {
                         <div className="flex flex-wrap gap-2.5 mt-6">
                             {canAccess("jobs:read") && (
                                 <Link href="/enterprise/croar-pilot" className="h-[44px] px-5 bg-[#1976D2] text-white rounded-[4px] text-[14px] font-semibold hover:bg-[#1565C0] transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.20)] flex items-center gap-2">
-                                    <span className="material-symbols-rounded text-[19px]">smart_toy</span>
+                                    <i className="mdi mdi-robot text-[19px]" />
                                     {t("dashboard.hireWithAI")}
                                 </Link>
                             )}
                             {canAccess("jobs:create") && (
                                 <Link href="/enterprise/jobs/create" className="h-[44px] px-5 bg-white border border-[#E0E0E0] text-[#1976D2] rounded-[4px] text-[14px] font-medium hover:bg-[#E3F2FD] transition-colors flex items-center gap-2">
-                                    <span className="material-symbols-rounded text-[19px]">add_box</span>
+                                    <i className="mdi mdi-plus-box text-[19px]" />
                                     {t("dashboard.postNewJob")}
                                 </Link>
                             )}
@@ -226,7 +226,7 @@ export default function EnterpriseDashboard() {
                                     className="w-9 h-9 rounded-[4px] flex items-center justify-center text-white mb-3"
                                     style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}
                                 >
-                                    <span className="material-symbols-rounded text-[19px]">{s.icon}</span>
+                                    <Icon name={s.icon} className="text-[19px]" />
                                 </span>
                                 <div className={`text-[26px] font-medium tracking-[-0.5px] text-[#212121] leading-none ${jetbrainsMono.className}`}>
                                     {isLoading ? '—' : s.value}
@@ -244,7 +244,7 @@ export default function EnterpriseDashboard() {
             {!isLoading && !loadFailed && !(stats.active_jobs > 0 && stats.total_candidates > 0) && (
                 <section className="bg-white border border-[#E0E0E0] rounded-[4px] p-6">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="material-symbols-rounded text-[#1976D2]">rocket_launch</span>
+                        <i className="mdi mdi-rocket-launch text-[#1976D2]" />
                         <h3 className="text-[15px] font-bold text-[#212121]">{t("dashboard.gettingStarted")}</h3>
                     </div>
                     <p className="text-[13px] text-[#757575] mb-5">{t("dashboard.gettingStartedDesc")}</p>
@@ -383,7 +383,7 @@ export default function EnterpriseDashboard() {
                             {pipelineTotal === 0 ? (
                                 <div className="flex flex-col items-center justify-center text-center py-10">
                                     <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
-                                        <span className="material-symbols-rounded text-2xl">donut_large</span>
+                                        <i className="mdi mdi-chart-donut text-2xl" />
                                     </div>
                                     <p className="text-[13px] text-[#757575]">{t("dashboard.noPipelineData")}</p>
                                 </div>
@@ -425,7 +425,7 @@ export default function EnterpriseDashboard() {
                         <Link href={module.path} key={module.title} className="group h-full">
                             <div className="relative bg-white border border-[#E0E0E0] p-5 rounded-[4px] hover:border-[#1976D2]/40 transition-colors duration-150 h-full overflow-hidden flex flex-col">
                                 <div className={`w-11 h-11 rounded-[4px] ${getColorClasses(module.color).bg} ${getColorClasses(module.color).text} flex items-center justify-center mb-4`}>
-                                    <span className="material-symbols-rounded text-xl">{module.icon}</span>
+                                    <Icon name={module.icon} className="text-xl" />
                                 </div>
                                 <h3 className="text-[15px] font-bold text-[#212121] tracking-[-0.2px] group-hover:text-[#1976D2] transition-colors">
                                     {module.title}
@@ -435,7 +435,7 @@ export default function EnterpriseDashboard() {
                                 </p>
                                 <div className="flex items-center gap-1 text-[12px] font-semibold text-[#1976D2]">
                                     {t("dashboard.open")}
-                                    <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                    <i className="mdi mdi-arrow-right text-base group-hover:translate-x-1 transition-transform" />
                                 </div>
                             </div>
                         </Link>
@@ -462,7 +462,7 @@ export default function EnterpriseDashboard() {
                                 return (
                                     <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
                                         <div className="w-12 h-12 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center mb-3">
-                                            <span className="material-symbols-rounded text-2xl">task_alt</span>
+                                            <i className="mdi mdi-check-circle-outline text-2xl" />
                                         </div>
                                         <p className="text-[14px] font-semibold text-[#212121]">You&apos;re all caught up</p>
                                         <p className="text-[12px] text-[#757575] mt-1">{t("dashboard.attentionEmpty")}</p>
@@ -474,13 +474,13 @@ export default function EnterpriseDashboard() {
                                     {items.map((i) => (
                                         <Link key={i.label} href="/enterprise/candidates/kanban" className="flex items-center gap-3 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#F5F6F8]/60 transition-colors group">
                                             <div className={`w-10 h-10 rounded-[4px] flex items-center justify-center shrink-0 ${i.color}`}>
-                                                <span className="material-symbols-rounded text-xl">{i.icon}</span>
+                                                <Icon name={i.icon} className="text-xl" />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <span className={`text-[19px] font-semibold text-[#212121] leading-none ${jetbrainsMono.className}`}>{i.count}</span>
                                                 <p className="text-[12px] text-[#757575] leading-tight mt-1">{i.label}</p>
                                             </div>
-                                            <span className="material-symbols-rounded text-[#BDBDBD] group-hover:text-[#1976D2] group-hover:translate-x-0.5 transition-all">chevron_right</span>
+                                            <i className="mdi mdi-chevron-right text-[#BDBDBD] group-hover:text-[#1976D2] group-hover:translate-x-0.5 transition-all" />
                                         </Link>
                                     ))}
                                 </div>
@@ -493,12 +493,12 @@ export default function EnterpriseDashboard() {
                             <div className="flex flex-wrap gap-2">
                                 {canAccess("jobs:read") && (
                                     <Link href="/enterprise/croar-pilot" className="px-3 py-2 rounded-[4px] bg-[#1976D2] text-white text-[12px] font-semibold hover:bg-[#1565C0] transition-colors flex items-center gap-1.5">
-                                        <span className="material-symbols-rounded text-base">smart_toy</span> {t("dashboard.hireWithAI")}
+                                        <i className="mdi mdi-robot text-base" /> {t("dashboard.hireWithAI")}
                                     </Link>
                                 )}
                                 {canAccess("candidates:read") && (
                                     <Link href="/enterprise/sourcing/chat" className="px-3 py-2 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[12px] font-semibold hover:bg-[#F5F6F8] transition-colors flex items-center gap-1.5">
-                                        <span className="material-symbols-rounded text-base">person_search</span> {t("dashboard.source")}
+                                        <i className="mdi mdi-account-search text-base" /> {t("dashboard.source")}
                                     </Link>
                                 )}
                             </div>

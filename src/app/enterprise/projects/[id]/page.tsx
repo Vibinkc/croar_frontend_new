@@ -95,7 +95,7 @@ export default function ProjectDetailsPage() {
                         onClick={() => window.history.back()}
                         className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[13px] font-semibold hover:bg-[#F5F6F8] transition-colors shadow-sm shrink-0"
                     >
-                        <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[18px]" />
                         {tr("common.back")}
                     </button>
                     <div className="min-w-0">
@@ -107,7 +107,7 @@ export default function ProjectDetailsPage() {
                 {/* Empty / not-found state */}
                 <Card padding="lg" className="flex flex-col items-center justify-center text-center py-16 md:py-24">
                     <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
-                        <span className="material-symbols-rounded text-[#BDBDBD] text-[34px]">folder_off</span>
+                        <i className="mdi mdi-folder-remove text-[#BDBDBD] text-[34px]" />
                     </div>
                     <h2 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("postOnboarding.projectNotFound")}</h2>
                     <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">

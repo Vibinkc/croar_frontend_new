@@ -20,7 +20,7 @@ import {
     AreaChart,
     Area
 } from 'recharts';
-import { jetbrainsMono, Button, Card, Badge, StatCard, StatGrid, Input, PageHelp } from "@/components/ds";
+import { jetbrainsMono, Button, Card, Badge, StatCard, StatGrid, Input, PageHelp, Icon } from "@/components/ds";
 import JobOwnershipPanel, { type Member } from "@/components/enterprise/JobOwnershipPanel";
 import JobPostingPanel from "@/components/enterprise/JobPostingPanel";
 import JobActivitiesTab from "@/components/enterprise/JobActivitiesTab";
@@ -369,12 +369,12 @@ export default function JobDetailPage() {
             <div className="px-4 sm:px-5 md:px-7 pb-20 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
                 <Card className="flex flex-col items-center justify-center text-center py-20 mt-6">
                     <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5 text-[#BDBDBD]">
-                        <span className="material-symbols-rounded text-3xl">work_off</span>
+                        <i className="mdi mdi-briefcase-off text-3xl" />
                     </div>
                     <h1 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("jobDetail.jobNotFound")}</h1>
                     <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-6">{tr("jobDetail.jobNotFoundDesc")}</p>
                     <Link href="/enterprise/jobs" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors">
-                        <span className="material-symbols-rounded text-[19px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[19px]" />
                         {tr("jobDetail.backToJobs")}
                     </Link>
                 </Card>
@@ -453,7 +453,7 @@ export default function JobDetailPage() {
                         className="w-10 h-10 flex items-center justify-center rounded-[4px] border border-[#E0E0E0] bg-white text-[#4F4F4F] hover:bg-[#FAFAFA] transition-all shrink-0"
                         aria-label={tr("jobDetail.goBack")}
                     >
-                        <span className="material-symbols-rounded text-xl">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-xl" />
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#9E9E9E] mb-0.5">
@@ -467,7 +467,7 @@ export default function JobDetailPage() {
                                 <Badge tone={statusMeta(job.status_id).tone} dot>{getStatusLabel(job.status_id)}</Badge>
                                 {job.location && (
                                     <span className="inline-flex items-center gap-1 text-[12.5px] font-medium text-[#757575]">
-                                        <span className="material-symbols-rounded text-[15px]">location_on</span>
+                                        <i className="mdi mdi-map-marker text-[15px]" />
                                         {job.location}
                                     </span>
                                 )}
@@ -478,7 +478,7 @@ export default function JobDetailPage() {
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
                     <Button variant="secondary" aria-label={tr("jobDetail.share")} className="w-10 h-10 px-0">
-                        <span className="material-symbols-rounded text-xl">share</span>
+                        <i className="mdi mdi-share-variant text-xl" />
                     </Button>
                     {canAccess("jobs:update") && (
                         <Link href={`/enterprise/jobs/${id}/edit`}>
@@ -513,7 +513,7 @@ export default function JobDetailPage() {
                                     aria-label={tr("jobDetail.scrollTabsLeft")}
                                     className="absolute left-0 top-0 bottom-[4px] z-20 w-8 flex items-center justify-center bg-white text-[#616161] hover:text-[#1976D2] transition-colors"
                                 >
-                                    <span className="material-symbols-rounded text-[22px]">chevron_left</span>
+                                    <i className="mdi mdi-chevron-left text-[22px]" />
                                 </button>
                                 {/* Fade so a half-cut tab reads as "there is more", not as a clipped label. */}
                                 <div className="absolute left-8 top-0 bottom-[4px] z-10 w-6 bg-gradient-to-r from-white to-transparent pointer-events-none" />
@@ -586,7 +586,7 @@ export default function JobDetailPage() {
                                     aria-label={tr("jobDetail.scrollTabsRight")}
                                     className="absolute right-0 top-0 bottom-[4px] z-20 w-8 flex items-center justify-center bg-white text-[#616161] hover:text-[#1976D2] transition-colors"
                                 >
-                                    <span className="material-symbols-rounded text-[22px]">chevron_right</span>
+                                    <i className="mdi mdi-chevron-right text-[22px]" />
                                 </button>
                             </>
                         )}
@@ -683,7 +683,7 @@ export default function JobDetailPage() {
 
                                     <div className="rounded-[4px] p-6 shadow-[0_10px_24px_rgba(25,118,210,0.3)]" style={{ background: "linear-gradient(135deg,#6E63E6,#1565C0)" }}>
                                         <div className="w-10 h-10 rounded-[4px] bg-white/15 flex items-center justify-center text-white mb-4">
-                                            <span className="material-symbols-rounded text-white">trending_up</span>
+                                            <i className="mdi mdi-trending-up text-white" />
                                         </div>
                                         <h4 className="text-[15px] font-bold text-white tracking-tight">{tr("jobDetail.quickInsight")}</h4>
                                         <p className="text-white/80 text-[11px] font-medium leading-relaxed mt-1">
@@ -702,7 +702,7 @@ export default function JobDetailPage() {
                                     {scoreTotal === 0 ? (
                                         <div className="flex flex-col items-center justify-center text-center py-10">
                                             <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
-                                                <span className="material-symbols-rounded text-2xl">donut_large</span>
+                                                <i className="mdi mdi-chart-donut text-2xl" />
                                             </div>
                                             <p className="text-[13px] text-[#757575]">{tr("jobDetail.noScoredCandidates")}</p>
                                         </div>
@@ -741,7 +741,7 @@ export default function JobDetailPage() {
                                     {!hasTimeData ? (
                                         <div className="flex flex-col items-center justify-center text-center py-14">
                                             <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
-                                                <span className="material-symbols-rounded text-2xl">show_chart</span>
+                                                <i className="mdi mdi-chart-line text-2xl" />
                                             </div>
                                             <p className="text-[13px] text-[#757575]">{tr("jobDetail.noApplicationsWindow")}</p>
                                         </div>
@@ -787,7 +787,7 @@ export default function JobDetailPage() {
                         <Card padding="none" className="overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex items-center gap-3 px-6 py-4 border-b border-[#EEEEEE]">
                                 <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                    <span className="material-symbols-rounded text-[20px]">info</span>
+                                    <i className="mdi mdi-information text-[20px]" />
                                 </span>
                                 <div>
                                     <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobDetail.jobDetailsTitle")}</h3>
@@ -822,7 +822,7 @@ export default function JobDetailPage() {
                                     ].map((d) => (
                                         <div key={d.label} className="flex items-start gap-3 p-4 rounded-[4px] bg-[#FAFAFA] border border-[#E0E0E0]">
                                             <span className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#1976D2] flex items-center justify-center shrink-0">
-                                                <span className="material-symbols-rounded text-[19px]">{d.icon}</span>
+                                                <Icon name={d.icon} className="text-[19px]" />
                                             </span>
                                             <div className="min-w-0">
                                                 <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9E9E9E]">{d.label}</p>
@@ -894,9 +894,9 @@ export default function JobDetailPage() {
                                                     </td>
                                                     <td className="px-6 py-3.5 text-right">
                                                         {c.already_applied ? (
-                                                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#2E7D32]"><span className="material-icons-outlined text-[14px]">how_to_reg</span>{tr("jobDetail.applied")}</span>
+                                                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#2E7D32]"><i className="mdi mdi-account-check text-[14px]" />{tr("jobDetail.applied")}</span>
                                                         ) : c.already_invited ? (
-                                                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1976D2]"><span className="material-icons-outlined text-[14px]">mark_email_read</span>{tr("jobDetail.invited")}</span>
+                                                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1976D2]"><i className="mdi mdi-email-check text-[14px]" />{tr("jobDetail.invited")}</span>
                                                         ) : (
                                                             <button
                                                                 onClick={() => inviteFromBank(c.id)}
@@ -904,7 +904,7 @@ export default function JobDetailPage() {
                                                                 title={!c.email ? tr("jobDetail.noEmailOnRecord") : tr("jobDetail.emailToApply")}
                                                                 className="h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[12px] font-semibold hover:bg-[#1565C0] disabled:opacity-50 transition-colors inline-flex items-center gap-1.5"
                                                             >
-                                                                <span className="material-icons-outlined text-[15px]">mail</span>
+                                                                <i className="mdi mdi-email text-[15px]" />
                                                                 {invitingCandId === c.id ? tr("jobDetail.sending") : tr("jobDetail.invite")}
                                                             </button>
                                                         )}
@@ -937,7 +937,7 @@ export default function JobDetailPage() {
                                 onClick={() => setSourcingView("hub")}
                                 className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0] transition-colors mb-4"
                             >
-                                <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                                <i className="mdi mdi-arrow-left text-[18px]" />
                                 {tr("jobSourcing.backToChannels")}
                             </button>
                             <JobPostingPanel
@@ -956,7 +956,7 @@ export default function JobDetailPage() {
                             onClick={() => setSourcingView("hub")}
                             className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0] transition-colors mb-4"
                         >
-                            <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                            <i className="mdi mdi-arrow-left text-[18px]" />
                             {tr("jobSourcing.backToChannels")}
                         </button>
                     )}
@@ -1007,7 +1007,7 @@ export default function JobDetailPage() {
                                                     <td className="px-6 py-3.5">
                                                         {c.profile_url ? (
                                                             <a href={c.profile_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[12px] font-semibold text-[#1976D2] hover:underline">
-                                                                {c.platform || tr("jobDetail.profile")} <span className="material-icons-outlined text-[14px]">open_in_new</span>
+                                                                {c.platform || tr("jobDetail.profile")} <i className="mdi mdi-open-in-new text-[14px]" />
                                                             </a>
                                                         ) : (
                                                             <span className="text-[12px] font-semibold text-[#616161]">{c.platform || "—"}</span>
@@ -1015,18 +1015,18 @@ export default function JobDetailPage() {
                                                     </td>
                                                     <td className="px-6 py-3.5">
                                                         {c.invite_status === "sent" ? (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E8F5E9] text-[#2E7D32] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">mark_email_read</span>{tr("jobDetail.sent")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E8F5E9] text-[#2E7D32] text-[11px] font-semibold"><i className="mdi mdi-email-check text-[14px]" />{tr("jobDetail.sent")}</span>
                                                         ) : c.invite_status === "failed" ? (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFEBEE] text-[#C62828] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">error</span>{tr("jobDetail.failed")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFEBEE] text-[#C62828] text-[11px] font-semibold"><i className="mdi mdi-alert-circle text-[14px]" />{tr("jobDetail.failed")}</span>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF3E0] text-[#EF6C00] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">drafts</span>{tr("jobDetail.notEmailed")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF3E0] text-[#EF6C00] text-[11px] font-semibold"><i className="mdi mdi-email-open text-[14px]" />{tr("jobDetail.notEmailed")}</span>
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-3.5">
                                                         {c.applied ? (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">how_to_reg</span>{tr("jobDetail.appliedInPipeline")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[11px] font-semibold"><i className="mdi mdi-account-check text-[14px]" />{tr("jobDetail.appliedInPipeline")}</span>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#EEEEEE] text-[#616161] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">hourglass_empty</span>{tr("jobDetail.awaiting")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#EEEEEE] text-[#616161] text-[11px] font-semibold"><i className="mdi mdi-timer-sand-empty text-[14px]" />{tr("jobDetail.awaiting")}</span>
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-3.5 text-right">
@@ -1039,7 +1039,7 @@ export default function JobDetailPage() {
                                                                 title={c.email ? tr("jobDetail.sendInviteTo", { email: c.email }) : tr("jobDetail.noEmailTestInbox")}
                                                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#1976D2] text-white text-[11.5px] font-bold hover:bg-[#1565C0] transition-colors disabled:opacity-60"
                                                             >
-                                                                <span className="material-icons-outlined text-[15px]">send</span>
+                                                                <i className="mdi mdi-send text-[15px]" />
                                                                 {sendingInviteKey === (c.email || c.profile_url || "").toLowerCase()
                                                                     ? tr("jobDetail.sending")
                                                                     : c.invite_status === "failed" ? tr("jobDetail.retryMail") : tr("jobDetail.sendMail")}
@@ -1111,7 +1111,7 @@ export default function JobDetailPage() {
                                                 <td colSpan={4} className="px-6 py-20 text-center">
                                                     <div className="flex flex-col items-center gap-3">
                                                         <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center text-[#BDBDBD]">
-                                                            <span className="material-symbols-rounded text-2xl">person_add</span>
+                                                            <i className="mdi mdi-account-plus text-2xl" />
                                                         </div>
                                                         <p className="text-[14px] text-[#757575]">{tr("jobDetail.noOnboardingProcesses")}</p>
                                                     </div>
@@ -1240,7 +1240,7 @@ export default function JobDetailPage() {
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
                                                         <button className="text-[#E0E0E0] hover:text-[#1976D2] transition-colors">
-                                                            <span className="material-symbols-rounded text-lg">arrow_forward</span>
+                                                            <i className="mdi mdi-arrow-right text-lg" />
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -1253,7 +1253,7 @@ export default function JobDetailPage() {
                                                 <td colSpan={5} className="px-6 py-20 text-center">
                                                     <div className="flex flex-col items-center gap-3">
                                                         <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center text-[#BDBDBD]">
-                                                            <span className="material-symbols-rounded text-2xl">person_search</span>
+                                                            <i className="mdi mdi-account-search text-2xl" />
                                                         </div>
                                                         <p className="text-[14px] text-[#757575]">{tr("jobDetail.noCandidatesStage")}</p>
                                                     </div>

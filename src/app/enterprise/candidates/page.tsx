@@ -21,7 +21,7 @@ import {
     Mail,
     Phone,
     Briefcase,
-} from "lucide-react";
+} from "@/components/icons";
 import { jetbrainsMono, PageHelp } from "@/components/ds";
 
 interface Job {

@@ -122,7 +122,7 @@ export default function CreditsPage() {
                 <span className="ml-2 text-base font-medium text-white/50">credits</span>
               </p>
             </div>
-            <span className="material-symbols-rounded text-white/80" style={{ fontSize: 40 }}>account_balance_wallet</span>
+            <span className="mdi mdi-wallet text-white/80" style={{ fontSize: 40 }} />
           </div>
           <div className="mt-6">
             <div className="mb-1 flex justify-between text-xs text-white/60">

@@ -20,7 +20,7 @@ export default function GenLanguageSelect({
     const { t } = useI18n();
     return (
         <label className={`inline-flex items-center gap-1.5 ${className}`} title={t("common.language")}>
-            <span className="material-symbols-rounded text-[17px] text-[#757575]">translate</span>
+            <i className="mdi mdi-translate text-[17px] text-[#757575]" />
             <select
                 value={value}
                 onChange={(e) => onChange(e.target.value as GenLanguage)}

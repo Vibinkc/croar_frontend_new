@@ -17,7 +17,7 @@ import {
   Video,
   PlusCircle,
   ChevronDown
-} from "lucide-react";
+} from "@/components/icons";
 
 interface Question {
   id: string;

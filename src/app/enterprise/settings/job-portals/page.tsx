@@ -15,9 +15,9 @@ import {
     Sparkles,
     ExternalLink,
     Unplug,
-} from "lucide-react";
+} from "@/components/icons";
 import { motion, AnimatePresence } from "framer-motion";
-import { jetbrainsMono, PageHelp } from "@/components/ds";
+import { jetbrainsMono, PageHelp, Icon } from "@/components/ds";
 
 interface Portal {
     key: string;

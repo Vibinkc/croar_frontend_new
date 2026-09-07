@@ -194,7 +194,7 @@ function RolesContent() {
                             <div>
                                 <div className="flex justify-between items-start mb-3">
                                     <div className={`w-9 h-9 rounded-[4px] flex items-center justify-center border ${role.is_system ? 'bg-[#212121] text-white border-[#212121]' : 'bg-[#E3F2FD] text-[#1976D2] border-[#BBDEFB]/80'}`}>
-                                        <span className="material-symbols-rounded text-[20px]">shield</span>
+                                        <i className="mdi mdi-shield text-[20px]" />
                                     </div>
                                     <div className="text-right">
                                         <div className="text-[10px] font-semibold text-[#757575] uppercase tracking-[0.06em]">{t("superAdmin.rank")}</div>
@@ -232,7 +232,7 @@ function RolesContent() {
                                         aria-label={t("superAdmin.deleteRole")}
                                         className="w-9 h-9 flex items-center justify-center bg-[#FFEBEE] border border-[#FFCDD2] text-[#C62828] rounded-[4px] hover:bg-[#E53935] hover:text-white hover:border-[#E53935] transition-all shrink-0"
                                     >
-                                        <span className="material-symbols-rounded text-[19px]">delete</span>
+                                        <i className="mdi mdi-delete text-[19px]" />
                                     </button>
                                 )}
                             </div>
@@ -248,7 +248,7 @@ function RolesContent() {
                         <div className="flex items-center justify-between p-6 border-b border-[#E0E0E0]">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
-                                    <span className="material-symbols-rounded text-[20px]">admin_panel_settings</span>
+                                    <i className="mdi mdi-shield-account text-[20px]" />
                                 </div>
                                 <div>
                                     <h3 className="text-[15px] font-bold text-[#212121]">{selectedRole ? t("superAdmin.editRole") : t("superAdmin.createRole")}</h3>
@@ -260,7 +260,7 @@ function RolesContent() {
                                 aria-label={t("superAdmin.close")}
                                 className="w-7 h-7 rounded-[3px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#424242] flex items-center justify-center transition-colors"
                             >
-                                <span className="material-symbols-rounded text-[19px]">close</span>
+                                <i className="mdi mdi-close text-[19px]" />
                             </button>
                         </div>
 
@@ -287,7 +287,7 @@ function RolesContent() {
 
                                 {selectedRole?.is_system && (
                                     <div className="flex items-start gap-2.5 rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] px-3.5 py-2.5">
-                                        <span className="material-symbols-rounded text-[18px] text-[#757575] mt-0.5">lock</span>
+                                        <i className="mdi mdi-lock text-[18px] text-[#757575] mt-0.5" />
                                         <p className="text-[12px] text-[#616161] leading-relaxed">
                                             {t("superAdmin.systemRoleNoticeStart")} <span className="font-semibold text-[#424242]">{t("superAdmin.systemRole")}</span>{t("superAdmin.systemRoleNoticeEnd")}
                                         </p>

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
-import { Search, Loader2, X, MoreHorizontal, ChevronDown, Plus, CheckCircle2, Mail } from "lucide-react";
+import { Search, Loader2, X, MoreHorizontal, ChevronDown, Plus, CheckCircle2, Mail } from "@/components/icons";
 import ConnectMailbox from "@/components/sourcing/ConnectMailbox";
 
 interface Connection {

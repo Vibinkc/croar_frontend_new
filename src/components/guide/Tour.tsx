@@ -150,7 +150,7 @@ export function Tour() {
                         aria-label={tr("sharedUi.closeTour")}
                         className="text-[#757575] hover:text-[#424242] transition-colors -mt-0.5 shrink-0"
                     >
-                        <span className="material-symbols-rounded text-[20px]">close</span>
+                        <i className="mdi mdi-close text-[20px]" />
                     </button>
                 </div>
                 <p className="text-[13px] leading-relaxed text-[#424242]">{step.body}</p>

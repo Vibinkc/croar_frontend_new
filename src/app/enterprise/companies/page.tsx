@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 interface Company {
     id: string;
@@ -167,7 +167,7 @@ export default function CompaniesPage() {
                         onClick={() => setShowAddModal(true)}
                         className="self-start md:self-center px-8 py-4 bg-[#1E88E5] text-white rounded-xl text-[10px] font-black   hover:bg-[#1565C0] transition-all shadow-2xl shadow-indigo-200 flex items-center gap-3 group active:scale-95"
                     >
-                        <span className="material-symbols-rounded text-xl group-hover:rotate-90 transition-transform">add</span>
+                        <i className="mdi mdi-plus text-xl group-hover:rotate-90 transition-transform" />
                         <span>{tr("general.addCompany")}</span>
                     </button>
                 )}
@@ -188,7 +188,7 @@ export default function CompaniesPage() {
                         className="bg-white p-6 rounded-xl border border-slate-100 flex items-center gap-6 group hover:border-indigo-100 transition-all shadow-sm"
                     >
                         <div className={`w-14 h-14 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
-                            <span className="material-symbols-rounded text-3xl">{stat.icon}</span>
+                            <Icon name={stat.icon} className="text-3xl" />
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-slate-400  ">{stat.label}</p>
@@ -221,7 +221,7 @@ export default function CompaniesPage() {
                         >
                             <div className="flex justify-between items-start mb-8">
                                 <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-[#1E88E5] border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
-                                    <span className="material-symbols-rounded text-3xl">corporate_fare</span>
+                                    <i className="mdi mdi-domain text-3xl" />
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
                                     <span className="px-3.5 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black border border-emerald-100">{tr("general.active")}</span>
@@ -233,11 +233,11 @@ export default function CompaniesPage() {
 
                             <div className="flex items-center gap-6 pt-8 border-t border-slate-50/80">
                                 <div className="flex items-center gap-2 text-slate-400">
-                                    <span className="material-symbols-rounded text-lg">location_on</span>
+                                    <i className="mdi mdi-map-marker text-lg" />
                                     <span className="text-[10px] font-black  ">{company.location || tr("general.headquarters")}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-slate-400">
-                                    <span className="material-symbols-rounded text-lg">calendar_today</span>
+                                    <i className="mdi mdi-calendar text-lg" />
                                     <span className="text-[10px] font-black  ">{new Date(company.created_at).toLocaleDateString()}</span>
                                 </div>
                             </div>
@@ -245,14 +245,14 @@ export default function CompaniesPage() {
                             {/* Hover Action Blob */}
                             <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-[#1E88E5]/5 rounded-full blur-2xl group-hover:bg-[#1E88E5]/10 transition-all"></div>
                             <div className="absolute bottom-10 right-10 w-12 h-12 bg-[#1E88E5] text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-xl">
-                                <span className="material-symbols-rounded">insights</span>
+                                <i className="mdi mdi-chart-timeline-variant" />
                             </div>
                         </motion.div>
                     ))}
 
                     {companies.length === 0 && (
                         <div className="col-span-full py-24 text-center bg-slate-50/50 rounded-2xl border-4 border-dashed border-slate-100">
-                            <span className="material-symbols-rounded text-7xl text-slate-200 mb-6">explore</span>
+                            <i className="mdi mdi-compass text-7xl text-slate-200 mb-6" />
                             <h3 className="text-2xl font-black text-slate-400  tracking-tighter">{tr("general.noCompaniesFound")}</h3>
                             <p className="text-slate-300 font-bold mt-2  text-xs ">{tr("general.clickAddCompany")}</p>
                         </div>
@@ -273,7 +273,7 @@ export default function CompaniesPage() {
                         <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-12 py-6 flex justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <button onClick={() => setSelectedCompany(null)} className="flex items-center gap-2 text-[10px] font-black   text-[#1E88E5] hover:text-[#1565C0] bg-indigo-50 px-4 py-2 rounded-xl transition-all">
-                                    <span className="material-symbols-rounded text-sm">arrow_back</span>
+                                    <i className="mdi mdi-arrow-left text-sm" />
                                     <span>{tr("common.back")}</span>
                                 </button>
                                 <span className="text-slate-200 font-black">/</span>
@@ -292,7 +292,7 @@ export default function CompaniesPage() {
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start mb-20 animate-in slide-in-from-bottom duration-700">
                                 <div className="lg:col-span-2">
                                     <div className="flex items-center gap-4 mb-4 text-[#1E88E5]">
-                                        <span className="material-symbols-rounded">business</span>
+                                        <i className="mdi mdi-office-building" />
                                         <span className="text-[10px] font-black">{tr("general.companyProfile")}</span>
                                     </div>
                                     <h2 className="text-7xl font-black text-slate-900 tracking-tighter  leading-[0.9] mb-8">{selectedCompany.name}</h2>
@@ -347,7 +347,7 @@ export default function CompaniesPage() {
                                         ].map((s, idx) => (
                                             <div key={idx} className="bg-white border border-slate-100 p-8 rounded-xl flex flex-col gap-4">
                                                 <div className={`w-12 h-12 ${s.bg} ${s.text} rounded-xl flex items-center justify-center`}>
-                                                    <span className="material-symbols-rounded text-2xl">{s.icon}</span>
+                                                    <Icon name={s.icon} className="text-2xl" />
                                                 </div>
                                                 <div>
                                                     <h4 className="text-4xl font-black text-slate-900 tracking-tighter">{s.value}</h4>
@@ -367,14 +367,14 @@ export default function CompaniesPage() {
                                                         <div key={job.id} className="group flex items-center justify-between p-6 bg-slate-50/50 hover:bg-indigo-50 rounded-xl border border-transparent hover:border-indigo-100 transition-all cursor-pointer">
                                                             <div className="flex items-center gap-6">
                                                                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-slate-400 group-hover:text-indigo-600 transition-colors shadow-sm">
-                                                                    <span className="material-symbols-rounded">work</span>
+                                                                    <i className="mdi mdi-briefcase" />
                                                                 </div>
                                                                 <div>
                                                                     <h4 className="font-bold text-slate-900 group-hover:text-indigo-900 transition-colors">{job.title}</h4>
                                                                     <p className="text-[10px] font-black text-slate-400   mt-1">{tr("general.postedOn", { date: new Date(job.created_at).toLocaleDateString() })}</p>
                                                                 </div>
                                                             </div>
-                                                            <span className="material-symbols-rounded text-slate-300 group-hover:text-indigo-400 transition-all group-hover:translate-x-1">arrow_forward_ios</span>
+                                                            <i className="mdi mdi-chevron-right text-slate-300 group-hover:text-indigo-400 transition-all group-hover:translate-x-1" />
                                                         </div>
                                                     ))}
                                                     {(companyAnalytics.recent_jobs || []).length === 0 && (

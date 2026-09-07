@@ -155,7 +155,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 onClick={() => setIsAddingTask({ isOpen: true, column: col })}
                                 className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#1E88E5] hover:border-[#1E88E5] transition-all flex items-center justify-center font-black"
                             >
-                                <span className="material-symbols-rounded text-lg">add</span>
+                                <i className="mdi mdi-plus text-lg" />
                             </button>
                         )}
                     </div>
@@ -189,7 +189,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                                 }}
                                                 className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition-all"
                                             >
-                                                <span className="material-symbols-rounded text-sm">delete</span>
+                                                <i className="mdi mdi-delete text-sm" />
                                             </button>
                                         )}
                                     </div>
@@ -207,13 +207,13 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                             </div>
                                         ) : (
                                             <div className="flex items-center gap-1 text-[9px] font-black text-slate-300  tracking-tight">
-                                                <span className="material-symbols-rounded text-[14px]">person_off</span>
+                                                <i className="mdi mdi-account-off text-[14px]" />
                                                 <span>{tr("forms.unassigned")}</span>
                                             </div>
                                         )}
                                         {task.due_date && (
                                             <div className="flex items-center gap-1 text-[9px] font-black text-rose-500/70  tracking-tight">
-                                                <span className="material-symbols-rounded text-[14px]">calendar_today</span>
+                                                <i className="mdi mdi-calendar text-[14px]" />
                                                 {new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                                             </div>
                                         )}
@@ -264,7 +264,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                         <div className="px-6 py-5 border-b border-[#E0E0E0] flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center border border-[#BBDEFB]/60 shrink-0">
-                                    <span className="material-symbols-rounded text-[20px]">add_task</span>
+                                    <i className="mdi mdi-playlist-plus text-[20px]" />
                                 </div>
                                 <div>
                                     <h3 className="text-[16px] font-bold text-[#212121] tracking-tight leading-tight">{tr("forms.addNewTask")}</h3>
@@ -275,7 +275,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 onClick={() => setIsAddingTask({ isOpen: false, column: "" })}
                                 className="w-8 h-8 rounded-[4px] bg-white border border-[#E0E0E0] text-[#616161] hover:bg-[#F5F6F8] hover:text-[#424242] transition-all flex items-center justify-center shadow-sm shrink-0"
                             >
-                                <span className="material-symbols-rounded text-[18px]">close</span>
+                                <i className="mdi mdi-close text-[18px]" />
                             </button>
                         </div>
 
@@ -297,7 +297,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 <div className="space-y-1.5">
                                     <label htmlFor="task-assignee" className="text-[11.5px] font-bold text-[#757575] ml-0.5">{tr("forms.assignTo")}</label>
                                     <div className="relative">
-                                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none">person</span>
+                                        <i className="mdi mdi-account absolute left-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none" />
                                         <select
                                             id="task-assignee"
                                             value={newTaskData.employee_id}
@@ -309,14 +309,14 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                                 <option key={m.id} value={m.id}>{m.first_name} {m.last_name}</option>
                                             ))}
                                         </select>
-                                        <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none">expand_more</span>
+                                        <i className="mdi mdi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none" />
                                     </div>
                                 </div>
 
                                 <div className="space-y-1.5">
                                     <label htmlFor="task-due-date" className="text-[11.5px] font-bold text-[#757575] ml-0.5">{tr("forms.dueDate")}</label>
                                     <div className="relative">
-                                        <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none">calendar_month</span>
+                                        <i className="mdi mdi-calendar-month absolute left-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none" />
                                         <input
                                             id="task-due-date"
                                             type="date"
@@ -348,7 +348,7 @@ export default function ProjectKanban({ projectId, columns, tasks, members, onRe
                                 form="add-task-form"
                                 className="w-full h-11 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(25,118,210,0.25)] transition-all flex items-center justify-center gap-2"
                             >
-                                <span className="material-symbols-rounded text-[18px]">send</span>
+                                <i className="mdi mdi-send text-[18px]" />
                                 {tr("forms.assignNotifyTeam")}
                             </button>
                         </div>

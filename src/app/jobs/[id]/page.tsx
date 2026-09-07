@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 interface ApplicationField {
     id: string;
@@ -214,7 +215,7 @@ export default function PublicJobPage() {
         return (
             <div className="min-h-screen bg-[#F5F6F8] flex flex-col items-center justify-center p-6 text-center">
                 <div className="w-16 h-16 bg-white border border-[#E0E0E0] rounded-[4px] flex items-center justify-center mb-6 text-[#BDBDBD]">
-                    <span className="material-icons-outlined text-3xl">search_off</span>
+                    <i className="mdi mdi-magnify-close text-3xl" />
                 </div>
                 <h1 className="text-[24px] font-extrabold tracking-[-0.4px] text-[#212121] mb-2">{t("candidate.jobNotFound")}</h1>
                 <p className="text-[#757575] max-w-sm mb-7">{t("candidate.jobNotFoundDesc")}</p>
@@ -361,15 +362,15 @@ export default function PublicJobPage() {
 
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[#9E9E9E] font-medium text-[14px]">
                         <div className="flex items-center gap-2">
-                            <span className="material-icons-outlined text-[#42A5F5] text-[20px]">location_on</span>
+                            <i className="mdi mdi-map-marker text-[#42A5F5] text-[20px]" />
                             {job.location || t("candidate.remote")}
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="material-icons-outlined text-[#42A5F5] text-[20px]">work</span>
+                            <i className="mdi mdi-briefcase text-[#42A5F5] text-[20px]" />
                             {job.experience_min || 0}-{job.experience_max || '5+'} {t("candidate.yrsExp")}
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="material-icons-outlined text-[#42A5F5] text-[20px]">payments</span>
+                            <i className="mdi mdi-cash-multiple text-[#42A5F5] text-[20px]" />
                             {job.salary_min ? `${job.salary_currency || 'INR'} ${job.salary_min.toLocaleString()}` : t("candidate.competitive")}
                             {job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : ''}
                             <span className="text-[12px] text-white/40">/ {job.salary_frequency || t("candidate.yr")}</span>
@@ -441,7 +442,7 @@ export default function PublicJobPage() {
                         {!isOpen ? (
                             <div className="text-center py-8">
                                 <div className="w-16 h-16 bg-[#F5F6F8] text-[#757575] rounded-[4px] flex items-center justify-center mx-auto mb-5">
-                                    <span className="material-icons-outlined text-[32px]">lock_clock</span>
+                                    <i className="mdi mdi-lock-clock text-[32px]" />
                                 </div>
                                 <h3 className="text-[20px] font-extrabold text-[#212121] tracking-[-0.3px] mb-2">{t("candidate.applicationsClosed")}</h3>
                                 <p className="text-[#757575] text-[14px] leading-relaxed">
@@ -451,7 +452,7 @@ export default function PublicJobPage() {
                         ) : applied ? (
                             <div className="text-center py-8 animate-in fade-in zoom-in duration-500">
                                 <div className="w-16 h-16 bg-[#E8F5E9] text-[#2E7D32] rounded-[4px] flex items-center justify-center mx-auto mb-5">
-                                    <span className="material-icons-outlined text-[34px]">check</span>
+                                    <i className="mdi mdi-check text-[34px]" />
                                 </div>
                                 <h3 className="text-[22px] font-extrabold text-[#212121] tracking-[-0.3px] mb-2">{t("candidate.applicationSent")}</h3>
                                 <p className="text-[#757575] text-[14px] leading-relaxed">
@@ -497,9 +498,7 @@ export default function PublicJobPage() {
                                                             }`}>
                                                             <div className={`w-9 h-9 rounded-[4px] flex items-center justify-center ${resumeFile ? "bg-[#1976D2] text-white" : "bg-[#F5F6F8] text-[#9E9E9E]"
                                                                 }`}>
-                                                                <span className="material-icons-outlined text-[18px]">
-                                                                    {resumeFile ? "description" : "upload_file"}
-                                                                </span>
+                                                                <Icon name={resumeFile ? "description" : "upload_file"} className="text-[18px]" />
                                                             </div>
                                                             <div className="flex-1 min-w-0">
                                                                 <p className={`text-[13px] font-medium truncate ${resumeFile ? "text-[#212121]" : "text-[#757575]"}`}>
@@ -518,7 +517,7 @@ export default function PublicJobPage() {
                                                 <div key={field.id} className="p-3.5 bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] flex items-center justify-between">
                                                     <div className="flex items-center gap-3 min-w-0">
                                                         <div className={`w-9 h-9 rounded-[4px] flex items-center justify-center shrink-0 ${isChecked ? 'bg-[#2E7D32] text-white' : 'bg-[#F5F6F8] text-[#9E9E9E]'}`}>
-                                                            <span className="material-icons-outlined text-[18px]">{getIcon(field.icon) || 'check_circle'}</span>
+                                                            <Icon name={getIcon(field.icon) || 'check_circle'} className="text-[18px]" />
                                                         </div>
                                                         <div className="flex flex-col min-w-0">
                                                             <label className="text-[12.5px] font-semibold text-[#424242] truncate">
@@ -546,7 +545,7 @@ export default function PublicJobPage() {
                                                     {field.label} {field.is_required && <span className="text-[#E53935]">*</span>}
                                                 </label>
                                                 <div className="relative">
-                                                    <span className="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none">{getIcon(field.icon)}</span>
+                                                    <Icon name={getIcon(field.icon)} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none" />
                                                     <input
                                                         type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : phoneField ? 'tel' : 'text'}
                                                         step="any"
@@ -580,9 +579,9 @@ export default function PublicJobPage() {
                                         className="w-full h-12 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] font-semibold text-[14px] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
                                     >
                                         {isSubmitting ? (
-                                            <span className="animate-spin material-icons-outlined text-[18px]">sync</span>
+                                            <span className="animate-spin mdi mdi-sync text-[18px]" />
                                         ) : (
-                                            <span className="material-icons-outlined text-[18px]">send</span>
+                                            <i className="mdi mdi-send text-[18px]" />
                                         )}
                                         {isSubmitting ? t("candidate.sending") : t("candidate.submitApplication")}
                                     </button>

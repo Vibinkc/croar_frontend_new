@@ -194,14 +194,14 @@ export default function ManageOrganizationAdmins({ params }: { params: Promise<{
                                             className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#E3F2FD] hover:text-[#1976D2] transition-colors"
                                             title={t("superAdmin.editAdmin")}
                                         >
-                                            <span className="material-icons-outlined text-[18px]">edit</span>
+                                            <i className="mdi mdi-pencil text-[18px]" />
                                         </button>
                                         <button
                                             onClick={() => handleDelete(admin.id)}
                                             className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors"
                                             title={t("superAdmin.removeAdmin")}
                                         >
-                                            <span className="material-icons-outlined text-[18px]">delete</span>
+                                            <i className="mdi mdi-delete text-[18px]" />
                                         </button>
                                     </div>
                                 </div>
@@ -217,7 +217,7 @@ export default function ManageOrganizationAdmins({ params }: { params: Promise<{
                         <div className="flex items-center justify-between mb-5">
                             <div className="flex items-center gap-2.5">
                                 <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
-                                    <span className="material-icons-outlined text-[18px]">person_add</span>
+                                    <i className="mdi mdi-account-plus text-[18px]" />
                                 </span>
                                 <h3 className="text-[15px] font-bold text-[#212121]">{t("superAdmin.addNewAdmin")}</h3>
                             </div>
@@ -225,7 +225,7 @@ export default function ManageOrganizationAdmins({ params }: { params: Promise<{
                                 onClick={() => setShowModal(false)}
                                 className="w-7 h-7 rounded-[3px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#424242] flex items-center justify-center transition-colors"
                             >
-                                <span className="material-icons-outlined text-[18px]">close</span>
+                                <i className="mdi mdi-close text-[18px]" />
                             </button>
                         </div>
 

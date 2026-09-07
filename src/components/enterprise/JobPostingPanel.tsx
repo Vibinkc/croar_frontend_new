@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type ElementType } from "react";
-import { CheckCircle2, AlertCircle, Send, Link2, Lock } from "lucide-react";
+import { CheckCircle2, AlertCircle, Send, Link2, Lock } from "@/components/icons";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 export interface JobPostingPanelProps {
     jobId: string;
@@ -384,9 +385,9 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
             {reach && !reach.reachable && (
                 <details className="rounded-[4px] border border-[#FFE0B2] bg-[#FFF3E0] px-3 py-2 group">
                     <summary className="text-[11.5px] font-bold text-[#E65100] flex items-center gap-1.5 cursor-pointer list-none">
-                        <span className="material-symbols-rounded text-[16px]">warning</span>
+                        <i className="mdi mdi-alert text-[16px]" />
                         {tr("publishHub.notReachableTitle")}
-                        <span className="material-symbols-rounded text-[16px] ml-auto transition-transform group-open:rotate-180">expand_more</span>
+                        <i className="mdi mdi-chevron-down text-[16px] ml-auto transition-transform group-open:rotate-180" />
                     </summary>
                     <p className="text-[11px] text-[#E65100] leading-relaxed mt-1.5">
                         {tr("publishHub.notReachableDesc", { url: reach.base || "—" })}
@@ -413,7 +414,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                             key={`${p.platform}-${i}`}
                             className="inline-flex items-center gap-1 text-[11px] font-semibold pl-2 pr-1 py-0.5 rounded-full bg-[#E8F5E9] text-[#2E7D32]"
                         >
-                            <span className="material-symbols-rounded text-[13px]">check_circle</span>
+                            <i className="mdi mdi-check-circle text-[13px]" />
                             {/* The catalogue's display name, not the row's storage key. */}
                             {nameFor(p.platform)}
                             <button
@@ -423,7 +424,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                 aria-label={tr("publishHub.removeFrom", { board: nameFor(p.platform) })}
                                 className="w-4 h-4 rounded-full flex items-center justify-center text-[#2E7D32]/60 hover:text-white hover:bg-[#2E7D32] transition-colors disabled:opacity-40"
                             >
-                                <span className="material-symbols-rounded text-[12px]">close</span>
+                                <i className="mdi mdi-close text-[12px]" />
                             </button>
                         </span>
                     ))}
@@ -436,7 +437,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
             {!accepting && (
                 <div className="p-3.5 rounded-[4px] border border-[#FFE0B2] bg-[#FFF3E0]">
                     <p className="text-[12px] font-bold text-[#E65100] flex items-center gap-1.5">
-                        <span className="material-symbols-rounded text-[17px]">visibility_off</span>
+                        <i className="mdi mdi-eye-off text-[17px]" />
                         {tr("publishHub.notLiveTitle")}
                     </p>
                     <p className="text-[11.5px] text-[#E65100] leading-relaxed mt-1">{tr("publishHub.notLiveDesc")}</p>
@@ -467,9 +468,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                     </span>
                                     <span className="block text-[12px] text-[#757575] leading-relaxed mt-1">{desc}</span>
                                 </span>
-                                <span className="material-symbols-rounded text-[20px] text-[#BDBDBD] group-hover:text-[#1976D2] transition-colors shrink-0">
-                                    chevron_right
-                                </span>
+                                <i className="mdi mdi-chevron-right text-[20px] text-[#BDBDBD] group-hover:text-[#1976D2] transition-colors shrink-0" />
                             </button>
                         )
                     )}
@@ -485,9 +484,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                             <span className="block text-[14px] font-bold text-[#212121]">{tr("publishHub.inboundTitle")}</span>
                             <span className="block text-[12px] text-[#757575] leading-relaxed mt-1">{tr("publishHub.inboundDesc")}</span>
                         </span>
-                        <span className="material-symbols-rounded text-[20px] text-[#BDBDBD] group-hover:text-[#1976D2] transition-colors shrink-0">
-                            chevron_right
-                        </span>
+                        <i className="mdi mdi-chevron-right text-[20px] text-[#BDBDBD] group-hover:text-[#1976D2] transition-colors shrink-0" />
                     </button>
 
                     {/* Croar has no inbound board integrations, so rather than an empty
@@ -529,7 +526,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                         >
                             {tr("publishHub.breadcrumbRoot")}
                         </button>
-                        <span className="material-symbols-rounded text-[15px] text-[#BDBDBD]">chevron_right</span>
+                        <i className="mdi mdi-chevron-right text-[15px] text-[#BDBDBD]" />
                         <span className="text-[#616161]">{tr("publishHub.inboundTitle")}</span>
                     </div>
 
@@ -590,9 +587,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                         disabled={checking}
                                         className="h-9 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[12px] font-bold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
                                     >
-                                        <span className={`material-symbols-rounded text-[17px] ${checking ? "animate-spin" : ""}`}>
-                                            {checking ? "progress_activity" : "refresh"}
-                                        </span>
+                                        <Icon name={checking ? "progress_activity" : "refresh"} className={`text-[17px] ${checking ? "animate-spin" : ""}`} />
                                         {tr("publishHub.inboundCheck")}
                                     </button>
                                     {checkResult && <span className="text-[11.5px] text-[#616161]">{checkResult}</span>}
@@ -704,7 +699,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                             >
                                 {tr("publishHub.breadcrumbRoot")}
                             </button>
-                            <span className="material-symbols-rounded text-[15px] text-[#BDBDBD]">chevron_right</span>
+                            <i className="mdi mdi-chevron-right text-[15px] text-[#BDBDBD]" />
                             <span className="text-[#616161]">{group.label}</span>
                         </div>
 
@@ -807,9 +802,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                                         isSel ? "text-[#1976D2]" : "text-[#616161] hover:text-[#1976D2]"
                                                     }`}
                                                 >
-                                                    <span className="material-symbols-rounded text-[17px]">
-                                                        {isSel ? "check_circle" : "add_circle"}
-                                                    </span>
+                                                    <Icon name={isSel ? "check_circle" : "add_circle"} className="text-[17px]" />
                                                     {isSel ? tr("publishHub.selected") : tr("publishHub.enable")}
                                                 </button>
                                             ) : (
@@ -819,7 +812,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center gap-1.5 text-[12px] font-bold text-[#E65100] hover:text-[#E65100] transition-colors"
                                                 >
-                                                    <span className="material-symbols-rounded text-[17px]">lock</span>
+                                                    <i className="mdi mdi-lock text-[17px]" />
                                                     {tr("publishHub.contactBoard")}
                                                 </a>
                                             )}

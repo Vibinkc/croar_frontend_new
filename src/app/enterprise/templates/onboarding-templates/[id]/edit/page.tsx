@@ -40,7 +40,7 @@ export default function EditOnboardingTemplatePage() {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-screen bg-[#FDFEFF]">
-                <div className="animate-spin material-icons-outlined text-indigo-500 text-6xl">sync</div>
+                <div className="animate-spin mdi mdi-sync text-indigo-500 text-6xl"></div>
             </div>
         );
     }
@@ -49,7 +49,7 @@ export default function EditOnboardingTemplatePage() {
         return (
             <div className="flex flex-col items-center justify-center h-screen text-center p-10 bg-[#FDFEFF]">
                 <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-xl shadow-slate-200 mb-6">
-                    <span className="material-icons-outlined text-5xl text-rose-500">error_outline</span>
+                    <i className="mdi mdi-alert-circle-outline text-5xl text-rose-500" />
                 </div>
                 <div>
                     <h4 className="text-xl font-black text-slate-900">{tr("templatesMgmt.templateNotFound")}</h4>
@@ -67,7 +67,7 @@ export default function EditOnboardingTemplatePage() {
                     href="/enterprise/templates/onboarding-templates"
                     className="w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-xl text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
                 >
-                    <span className="material-icons-outlined">arrow_back</span>
+                    <i className="mdi mdi-arrow-left" />
                 </Link>
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">{tr("templatesMgmt.editTemplate")}</h1>

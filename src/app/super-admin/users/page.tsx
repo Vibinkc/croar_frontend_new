@@ -13,7 +13,7 @@ import {
     UserCheck,
     UserX,
     Trash2,
-} from "lucide-react";
+} from "@/components/icons";
 import {
     PageHeader,
     StatCard,

@@ -128,7 +128,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                 <div className="flex items-center justify-between gap-3 mt-3">
                     <p className="text-[11.5px] text-[#757575]">{tr("jobNotes.visibleToTeam")}</p>
                     <Button onClick={addNote} disabled={!draft.trim() || isSaving}>
-                        <span className="material-symbols-rounded text-[18px]">add_comment</span>
+                        <i className="mdi mdi-comment-plus text-[18px]" />
                         {isSaving ? tr("jobNotes.saving") : tr("jobNotes.addNote")}
                     </Button>
                 </div>
@@ -177,7 +177,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                                         )}
                                         {note.is_pinned && (
                                             <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1976D2]">
-                                                <span className="material-symbols-rounded text-[14px]">push_pin</span>
+                                                <i className="mdi mdi-pin text-[14px]" />
                                                 {tr("jobNotes.pinned")}
                                             </span>
                                         )}
@@ -219,7 +219,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                                                 note.is_pinned ? "text-[#1976D2]" : "text-[#757575] hover:text-[#212121]"
                                             )}
                                         >
-                                            <span className="material-symbols-rounded text-[18px]">push_pin</span>
+                                            <i className="mdi mdi-pin text-[18px]" />
                                         </button>
                                         {isMine(note) && (
                                             <>
@@ -232,7 +232,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                                                     aria-label={tr("common.edit")}
                                                     className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] transition-colors"
                                                 >
-                                                    <span className="material-symbols-rounded text-[18px]">edit</span>
+                                                    <i className="mdi mdi-pencil text-[18px]" />
                                                 </button>
                                                 <button
                                                     onClick={() => removeNote(note.id)}
@@ -240,7 +240,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                                                     aria-label={tr("common.delete")}
                                                     className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                                 >
-                                                    <span className="material-symbols-rounded text-[18px]">delete</span>
+                                                    <i className="mdi mdi-delete text-[18px]" />
                                                 </button>
                                             </>
                                         )}

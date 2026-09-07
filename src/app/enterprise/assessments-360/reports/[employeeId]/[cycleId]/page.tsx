@@ -92,7 +92,7 @@ export default function X360ReportPage() {
             <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
                 <Card className="flex flex-col items-center justify-center p-16 md:p-20 text-center mt-6">
                     <div className="w-16 h-16 bg-[#FFEBEE] rounded-[4px] flex items-center justify-center mb-5 text-[#C62828]">
-                        <span className="material-symbols-rounded text-[32px]">error_outline</span>
+                        <i className="mdi mdi-alert-circle-outline text-[32px]" />
                     </div>
                     <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("assess360.reportNotFound")}</h3>
                     <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">
@@ -102,7 +102,7 @@ export default function X360ReportPage() {
                         onClick={() => router.back()}
                         className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[19px]">arrow_back</span> {tr("assess360.goBack")}
+                        <i className="mdi mdi-arrow-left text-[19px]" /> {tr("assess360.goBack")}
                     </button>
                 </Card>
             </div>
@@ -129,7 +129,7 @@ export default function X360ReportPage() {
                         onClick={() => router.back()}
                         className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[#757575] hover:text-[#424242] transition-colors mb-1.5"
                     >
-                        <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[18px]" />
                         {tr("common.back")}
                     </button>
                     <div className="flex items-center gap-1.5">
@@ -145,7 +145,7 @@ export default function X360ReportPage() {
                         onClick={() => window.print()}
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[13px] font-semibold hover:bg-[#F5F6F8] transition-colors shadow-sm"
                     >
-                        <span className="material-symbols-rounded text-[17px]">print</span>
+                        <i className="mdi mdi-printer text-[17px]" />
                         {tr("assess360.print")}
                     </button>
                 </div>
@@ -167,7 +167,7 @@ export default function X360ReportPage() {
                 {/* Radar Chart */}
                 <Card padding="none" className="overflow-hidden h-[500px] flex flex-col">
                     <div className="flex items-center gap-2.5 px-5 py-3.5 bg-[#FAFAFA] border-b border-[#E0E0E0]">
-                        <span className="material-symbols-rounded text-[#1976D2] text-[19px]">radar</span>
+                        <i className="mdi mdi-radar text-[#1976D2] text-[19px]" />
                         <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("assess360.competencyOverview")}</h2>
                     </div>
                     <div className="flex-1 w-full p-5">
@@ -189,7 +189,7 @@ export default function X360ReportPage() {
                 {/* Score Summary Table */}
                 <Card padding="none" className="overflow-hidden flex flex-col">
                     <div className="flex items-center gap-2.5 px-5 py-3.5 bg-[#FAFAFA] border-b border-[#E0E0E0]">
-                        <span className="material-symbols-rounded text-[#1976D2] text-[19px]">table_chart</span>
+                        <i className="mdi mdi-table text-[#1976D2] text-[19px]" />
                         <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("assess360.aggregateScores")}</h2>
                     </div>
                     <div className="flex-1 overflow-x-auto">
@@ -222,7 +222,7 @@ export default function X360ReportPage() {
             {/* Competency breakdown bars */}
             <Card padding="none" className="overflow-hidden">
                 <div className="flex items-center gap-2.5 px-5 py-3.5 bg-[#FAFAFA] border-b border-[#E0E0E0]">
-                    <span className="material-symbols-rounded text-[#1976D2] text-[19px]">bar_chart</span>
+                    <i className="mdi mdi-chart-bar text-[#1976D2] text-[19px]" />
                     <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("assess360.competencyBreakdown")}</h2>
                 </div>
                 <div className="p-5 space-y-4">
@@ -252,7 +252,7 @@ export default function X360ReportPage() {
                 {report.text_responses.length === 0 ? (
                     <Card className="flex flex-col items-center justify-center p-12 text-center">
                         <div className="w-14 h-14 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-4 text-[#BDBDBD]">
-                            <span className="material-symbols-rounded text-[28px]">chat_bubble_outline</span>
+                            <i className="mdi mdi-comment-outline text-[28px]" />
                         </div>
                         <p className="text-[#757575] text-[14px] font-medium">{tr("assess360.noQualitative")}</p>
                     </Card>

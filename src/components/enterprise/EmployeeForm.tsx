@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { apiClient, BACKEND_URL } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
-import { Button, Card, CardHeader, Input, Textarea, Select, Field, Badge, PageHeader, jetbrainsMono } from "@/components/ds";
+import { Button, Card, CardHeader, Input, Textarea, Select, Field, Badge, PageHeader, jetbrainsMono, Icon } from "@/components/ds";
 
 interface EmployeeFormProps {
     employeeId?: string;
@@ -333,7 +333,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                             : "text-[#616161] hover:text-[#424242]"
                         }`}
                     >
-                        <span className="material-symbols-rounded text-[18px]">{tab.icon}</span>
+                        <Icon name={tab.icon} className="text-[18px]" />
                         {tab.label}
                     </button>
                 ))}
@@ -530,7 +530,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                                     {formData.documents.map((doc, idx) => (
                                         <a key={idx} href={doc.file_path} target="_blank" className="flex items-center justify-between p-3 bg-[#FAFAFA] rounded-[4px] border border-[#E0E0E0] hover:border-[#E0E0E0] hover:bg-white transition-all">
                                             <span className="text-[13px] font-semibold text-[#424242]">{doc.name}</span>
-                                            <span className="material-symbols-rounded text-[18px] text-[#9E9E9E]">download</span>
+                                            <i className="mdi mdi-download text-[18px] text-[#9E9E9E]" />
                                         </a>
                                     ))}
                                     {formData.documents.length === 0 && <span className="text-[12.5px] text-[#9E9E9E]">{tr("forms.noDocumentsFound")}</span>}

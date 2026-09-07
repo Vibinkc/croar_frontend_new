@@ -360,14 +360,14 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                         className="flex items-center gap-2 bg-[#E3F2FD] border border-[#1976D2]/15 pl-2.5 pr-2 py-2 rounded-[4px] group cursor-grab active:cursor-grabbing hover:bg-[#E3E1F9] transition-colors animate-in fade-in slide-in-from-left-2 duration-300"
                                         style={{ animationDelay: `${idx * 50}ms` }}
                                     >
-                                        <span className="material-symbols-rounded text-[#757575] text-[18px]">drag_indicator</span>
+                                        <i className="mdi mdi-drag text-[#757575] text-[18px]" />
                                         <span className="text-[13px] font-semibold text-[#1976D2]">{col}</span>
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveColumn(col)}
                                             className="text-[#1976D2]/50 hover:text-[#E53935] transition-colors flex items-center"
                                         >
-                                            <span className="material-symbols-rounded text-[18px]">close</span>
+                                            <i className="mdi mdi-close text-[18px]" />
                                         </button>
                                     </Reorder.Item>
                                 ))}
@@ -385,7 +385,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     onClick={handleAddColumn}
                                     className="w-10 h-10 rounded-[4px] bg-[#EEEEEE] text-[#757575] hover:bg-[#1976D2] hover:text-white transition-colors flex items-center justify-center"
                                 >
-                                    <span className="material-symbols-rounded text-[20px]">add</span>
+                                    <i className="mdi mdi-plus text-[20px]" />
                                 </button>
                             </div>
                         </div>
@@ -420,7 +420,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                             onClick={() => handleRemoveMember(m.id)}
                                             className="w-9 h-9 rounded-[4px] text-[#9E9E9E] hover:text-[#E53935] hover:bg-[#FFEBEE] transition-colors flex items-center justify-center"
                                         >
-                                            <span className="material-symbols-rounded text-[20px]">delete</span>
+                                            <i className="mdi mdi-delete text-[20px]" />
                                         </button>
                                     </div>
                                 ))

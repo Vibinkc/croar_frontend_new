@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useGuide } from "./GuideProvider";
 import { useLocalStorage } from "./storage";
 import { useI18n } from "@/context/I18nContext";
+import { Icon } from "@/components/ds";
 
 /** Getting-started checklist. Links go to the action that completes each step. */
 const CHECKLIST: { id: string; label: string; href: string }[] = [
@@ -58,7 +59,7 @@ export function HelpButton() {
                                 className="w-full flex items-center gap-3 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#FAFCFE] transition-all text-left"
                             >
                                 <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                    <span className="material-symbols-rounded text-[20px]">menu_book</span>
+                                    <i className="mdi mdi-book-open-page-variant text-[20px]" />
                                 </span>
                                 <span className="min-w-0">
                                     <span className="block text-[13px] font-bold text-[#212121]">{tr("sharedUi.browseFullGuide")}</span>
@@ -71,7 +72,7 @@ export function HelpButton() {
                                 className="w-full flex items-center gap-3 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#FAFCFE] transition-all text-left"
                             >
                                 <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                    <span className="material-symbols-rounded text-[20px]">play_circle</span>
+                                    <i className="mdi mdi-play-circle text-[20px]" />
                                 </span>
                                 <span className="min-w-0">
                                     <span className="block text-[13px] font-bold text-[#212121]">{tr("sharedUi.takeProductTour")}</span>
@@ -92,7 +93,7 @@ export function HelpButton() {
                                                 aria-label={done[item.id] ? tr("sharedUi.markIncomplete") : tr("sharedUi.markComplete")}
                                                 className={`w-5 h-5 rounded-[3px] border flex items-center justify-center shrink-0 transition-colors ${done[item.id] ? "bg-[#1976D2] border-[#1976D2] text-white" : "border-[#CBD0D8] text-transparent hover:border-[#1976D2]"}`}
                                             >
-                                                <span className="material-symbols-rounded text-[15px]">check</span>
+                                                <i className="mdi mdi-check text-[15px]" />
                                             </button>
                                             <Link
                                                 href={item.href}
@@ -131,7 +132,7 @@ export function HelpButton() {
                 title={tr("sharedUi.helpGettingStarted")}
                 className="fixed bottom-5 right-5 z-[60] w-12 h-12 rounded-full bg-[#1976D2] text-white shadow-[0_10px_28px_rgba(25,118,210,0.4)] hover:bg-[#1565C0] transition-colors flex items-center justify-center"
             >
-                <span className="material-symbols-rounded text-[24px]">{helpOpen ? "close" : "question_mark"}</span>
+                <Icon name={helpOpen ? "close" : "question_mark"} className="text-[24px]" />
             </button>
         </>
     );

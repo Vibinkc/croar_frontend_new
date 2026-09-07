@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
+import { Icon } from "@/components/ds";
 
 interface Message {
     role: "user" | "assistant" | "system";
@@ -154,7 +155,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                             { label: t("automation.problemSolving"), score: session.report?.problem_solving_score, icon: 'psychology', color: 'emerald' }
                         ].map((m, i) => (
                             <div key={i} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col items-center gap-4 group hover:border-indigo-200 transition-all">
-                                <span className={`material-symbols-rounded text-${m.color}-500 text-3xl group-hover:scale-125 transition-transform`}>{m.icon}</span>
+                                <Icon name={m.icon} className={`text-${m.color}-500 text-3xl group-hover:scale-125 transition-transform`} />
                                 <div className="text-3xl font-black text-slate-900 tracking-tighter">{m.score || 0}/10</div>
                                 <span className="text-[10px] font-black text-slate-400  ">{m.label}</span>
                             </div>
@@ -164,7 +165,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                     <div className="bg-indigo-600 p-12 rounded-2xl text-white space-y-6 shadow-2xl shadow-indigo-100 relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none"></div>
                         <h3 className="text-xs font-black  tracking-[0.4em] flex items-center gap-3 opacity-70">
-                            <span className="material-symbols-rounded">neurology</span>
+                            <i className="mdi mdi-brain" />
                             {t("automation.executiveFeedback")}
                         </h3>
                         <p className="text-2xl font-bold leading-tight ">&quot;{session.feedback}&quot;</p>
@@ -173,13 +174,13 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <section className="space-y-6">
                             <h4 className="text-[10px] font-black text-emerald-600  tracking-[0.5em] px-2 flex items-center gap-2">
-                                <span className="material-symbols-rounded text-sm">stars</span> {t("automation.behavioralStrengths")}
+                                <i className="mdi mdi-star-circle text-sm" /> {t("automation.behavioralStrengths")}
                             </h4>
                             <div className="space-y-3">
                                 {session.report?.strengths?.map((s: string, i: number) => (
                                     <div key={i} className="bg-white p-5 rounded-xl border border-emerald-50 shadow-sm flex gap-4 items-center group hover:border-emerald-200 transition-all">
                                         <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
-                                            <span className="material-symbols-rounded text-lg">check_circle</span>
+                                            <i className="mdi mdi-check-circle text-lg" />
                                         </div>
                                         <span className="text-sm font-bold text-slate-700">{s}</span>
                                     </div>
@@ -188,13 +189,13 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         </section>
                         <section className="space-y-6">
                             <h4 className="text-[10px] font-black text-rose-600  tracking-[0.5em] px-2 flex items-center gap-2">
-                                <span className="material-symbols-rounded text-sm">trending_up</span> {t("automation.growthVector")}
+                                <i className="mdi mdi-trending-up text-sm" /> {t("automation.growthVector")}
                             </h4>
                             <div className="space-y-3">
                                 {session.report?.areas_for_improvement?.map((s: string, i: number) => (
                                     <div key={i} className="bg-white p-5 rounded-xl border border-rose-50 shadow-sm flex gap-4 items-center group hover:border-rose-200 transition-all">
                                         <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
-                                            <span className="material-symbols-rounded text-lg">bolt</span>
+                                            <i className="mdi mdi-lightning-bolt text-lg" />
                                         </div>
                                         <span className="text-sm font-bold text-slate-700">{s}</span>
                                     </div>
@@ -210,7 +211,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         >
                             <span className="flex items-center gap-3">
                                 {t("automation.returnToHub")}
-                                <span className="material-symbols-rounded group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                <i className="mdi mdi-arrow-right group-hover:translate-x-1 transition-transform" />
                             </span>
                         </button>
                     </div>
@@ -231,7 +232,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                     onClick={onClose}
                     className="flex items-center gap-3 w-full p-4 mb-8 border border-white/20 rounded-xl hover:bg-white/5 transition-colors text-sm font-bold text-white/50"
                 >
-                    <span className="material-symbols-rounded">arrow_back</span>
+                    <i className="mdi mdi-arrow-left" />
                     {t("automation.exitSimulation")}
                 </button>
 
@@ -249,7 +250,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         <div className="flex flex-col gap-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
-                                    <span className="material-symbols-rounded">smart_toy</span>
+                                    <i className="mdi mdi-robot" />
                                 </div>
                                 <div>
                                     <div className="text-xs font-black text-white">{session?.scenario.character_name}</div>
@@ -275,7 +276,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         {completing ? t("automation.analyzing") : (
                             <>
                                 <span>{t("automation.finalizeEvaluation")}</span>
-                                <span className="material-symbols-rounded text-sm group-hover:rotate-12 transition-transform">analytics</span>
+                                <i className="mdi mdi-chart-box text-sm group-hover:rotate-12 transition-transform" />
                             </>
                         )}
                     </button>
@@ -293,9 +294,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                                 className={`group py-12 border-b border-slate-50 flex gap-8 items-start animate-in slide-in-from-bottom-4 duration-500 ${m.role === 'assistant' ? 'bg-[#FAFAFA]/50 -mx-6 px-12 rounded-xl' : ''}`}
                             >
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md grow-0 shrink-0 ${m.role === 'assistant' ? 'bg-indigo-600 text-white' : 'bg-slate-900 text-white'}`}>
-                                    <span className="material-symbols-rounded text-xl">
-                                        {m.role === 'assistant' ? 'smart_toy' : 'person'}
-                                    </span>
+                                    <Icon name={m.role === 'assistant' ? 'smart_toy' : 'person'} className="text-xl" />
                                 </div>
                                 <div className="flex-1 pt-1">
                                     <div className="text-xs font-black text-slate-400   mb-3 flex items-center gap-3">
@@ -312,7 +311,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         {sending && (
                             <div className="py-12 flex gap-8 items-start animate-pulse">
                                 <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
-                                    <span className="material-symbols-rounded text-xl">smart_toy</span>
+                                    <i className="mdi mdi-robot text-xl" />
                                 </div>
                                 <div className="flex gap-2 p-4">
                                     <div className="w-1.5 h-1.5 bg-indigo-200 rounded-full animate-bounce"></div>
@@ -349,7 +348,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                             disabled={!input.trim() || sending}
                             className={`w-12 h-12 mb-1 rounded-xl flex items-center justify-center transition-all ${!input.trim() || sending ? 'bg-slate-50 text-slate-300' : 'bg-indigo-600 text-white shadow-xl hover:rotate-6 active:scale-90 hover:bg-slate-900 shadow-indigo-100'}`}
                         >
-                            <span className="material-symbols-rounded text-2xl font-black">arrow_upward</span>
+                            <i className="mdi mdi-arrow-up text-2xl font-black" />
                         </button>
                     </form>
                 </div>

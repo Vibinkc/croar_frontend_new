@@ -30,7 +30,7 @@ import {
   CheckCircle2,
   AlertCircle,
   HelpCircle
-} from "lucide-react";
+} from "@/components/icons";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

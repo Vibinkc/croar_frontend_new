@@ -19,7 +19,7 @@ import {
     Shield,
     RefreshCcw,
     Activity
-} from "lucide-react";
+} from "@/components/icons";
 
 // Currencies an organisation can operate in. Drives salary suggestions and pay labels.
 const ORG_CURRENCIES = ["INR", "MYR", "SGD", "USD", "EUR", "GBP", "AED", "AUD", "JPY", "KRW"];

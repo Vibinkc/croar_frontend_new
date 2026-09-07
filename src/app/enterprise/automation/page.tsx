@@ -17,7 +17,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import AutomationNodeModal from "./AutomationNodeModal";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -211,7 +211,7 @@ export default function AutomationCanvasPage() {
                 <div className="flex flex-col items-start text-left p-1">
                   <div className="flex items-center justify-between w-full mb-1">
                     <div className="flex items-center gap-1.5">
-                      <span className="material-symbols-rounded text-base animate-pulse" style={{ color }}>{icon}</span>
+                      <Icon name={icon} className="text-base animate-pulse" style={{ color }} />
                       <span className="text-[9.5px] font-extrabold uppercase tracking-wider" style={{ color }}>
                         {tr("automation.node" + auto.action_type.charAt(0).toUpperCase() + auto.action_type.slice(1))}
                       </span>
@@ -227,21 +227,21 @@ export default function AutomationCanvasPage() {
  
                   {auto.action_type === "assessment" && (
                     <div className="text-[10px] text-[#757575] font-semibold flex items-center gap-1">
-                      <span className="material-symbols-rounded text-[10px]">topic</span>
+                      <i className="mdi mdi-folder-text text-[10px]" />
                       {auto.topic || tr("automation.noTopic")} {tr("automation.qsCount", { count: auto.generated_questions?.length || 0 })}
                     </div>
                   )}
  
                   {auto.action_type === "interview" && (
                      <div className="text-[10px] text-[#757575] font-semibold flex items-center gap-1">
-                        <span className="material-symbols-rounded text-[10px]">event</span>
+                        <i className="mdi mdi-calendar text-[10px]" />
                         {auto.interview_type} • {tr("automation.slotsSuffix", { count: auto.time_slots?.length || 0 })}
                      </div>
                   )}
  
                   {auto.action_type === "mail" && auto.template_id && (
                     <div className="text-[10px] text-[#757575] font-semibold flex items-center gap-1">
-                        <span className="material-symbols-rounded text-[10px]">description</span>
+                        <i className="mdi mdi-file-document-outline text-[10px]" />
                         {tr("automation.templateAction")}
                     </div>
                   )}
@@ -331,12 +331,12 @@ export default function AutomationCanvasPage() {
             disabled={loading || !selectedJobId}
             className="flex items-center gap-2 h-9 px-4 rounded-[4px] border border-[#E0E0E0] text-[#4F4F4F] hover:bg-[#FAFAFA] hover:text-[#212121] transition-all font-semibold text-[13px] bg-white shadow-sm disabled:opacity-50 active:scale-95 shrink-0"
           >
-            <span className={`material-symbols-rounded text-lg ${loading ? 'animate-spin' : ''}`}>refresh</span>
+            <i className={`mdi mdi-refresh text-lg ${loading ? 'animate-spin' : ''}`} />
             {tr("automation.sync")}
           </button>
 
           <div className="flex items-center gap-2 relative">
-            <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none">work</span>
+            <i className="mdi mdi-briefcase absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none" />
             <select
               value={selectedJobId}
               onChange={(e) => setSelectedJobId(e.target.value)}
@@ -347,7 +347,7 @@ export default function AutomationCanvasPage() {
                 <option key={j.id} value={j.id}>{j.title}</option>
               ))}
             </select>
-            <span className="material-symbols-rounded absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none">expand_more</span>
+            <i className="mdi mdi-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none" />
           </div>
         </div>
       </div>
@@ -357,7 +357,7 @@ export default function AutomationCanvasPage() {
         {!selectedJobId ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <div className="w-16 h-16 rounded-[4px] bg-[#E3F2FD] flex items-center justify-center mb-4 border border-[#BBDEFB]">
-              <span className="material-symbols-rounded text-[#1976D2] text-3xl">account_tree</span>
+              <i className="mdi mdi-file-tree text-[#1976D2] text-3xl" />
             </div>
             <p className="text-[#212121] font-extrabold text-lg">{tr("automation.noJobSelected")}</p>
             <p className="text-[#757575] text-sm mt-1">{tr("automation.selectJobToViewCanvas")}</p>
@@ -372,7 +372,7 @@ export default function AutomationCanvasPage() {
         ) : nodes.length === 0 ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <div className="w-16 h-16 rounded-[4px] bg-[#FFF3E0] flex items-center justify-center mb-4 border border-[#FFE0B2]">
-              <span className="material-symbols-rounded text-[#EF6C00] text-3xl">info</span>
+              <i className="mdi mdi-information text-[#EF6C00] text-3xl" />
             </div>
             <p className="text-[#212121] font-extrabold text-lg">{tr("automation.noStages")}</p>
             <p className="text-[#757575] text-sm mt-1">{tr("automation.noHiringRoundsYet")}</p>
@@ -402,19 +402,19 @@ export default function AutomationCanvasPage() {
                 </span>
                 <div className="flex bg-white shadow-[0_12px_24px_rgba(0,0,0,0.08)] border border-[#E0E0E0] rounded-[4px] p-1 gap-1 pointer-events-auto">
                   <button onClick={() => openCreateModal("mail")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[4px] hover:bg-[#E3F2FD] text-[#1976D2] transition-colors" title={tr("automation.addMailAutomation")}>
-                    <span className="material-symbols-rounded text-[20px]">mark_email_unread</span>
+                    <i className="mdi mdi-email-mark-as-unread text-[20px]" />
                     <span className="text-[12.5px] font-semibold">{tr("automation.nodeMail")}</span>
                   </button>
                   <button onClick={() => openCreateModal("assessment")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[4px] hover:bg-[#FFF3E0] text-[#EF6C00] transition-colors" title={tr("automation.addAssessmentAutomation")}>
-                    <span className="material-symbols-rounded text-[20px]">psychology</span>
+                    <i className="mdi mdi-brain text-[20px]" />
                     <span className="text-[12.5px] font-semibold">{tr("automation.nodeAssessment")}</span>
                   </button>
                   <button onClick={() => openCreateModal("interview")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[4px] hover:bg-[#E8F5E9] text-[#2E7D32] transition-colors" title={tr("automation.addInterviewAutomation")}>
-                    <span className="material-symbols-rounded text-[20px]">event_available</span>
+                    <i className="mdi mdi-calendar-check text-[20px]" />
                     <span className="text-[12.5px] font-semibold">{tr("automation.nodeInterview")}</span>
                   </button>
                   <button onClick={() => openCreateModal("onboarding")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[4px] hover:bg-[#F3F9FE] text-[#42A5F5] transition-colors" title={tr("automation.addOnboardingAutomation")}>
-                    <span className="material-symbols-rounded text-[20px]">person_add</span>
+                    <i className="mdi mdi-account-plus text-[20px]" />
                     <span className="text-[12.5px] font-semibold">{tr("automation.nodeOnboarding")}</span>
                   </button>
                 </div>

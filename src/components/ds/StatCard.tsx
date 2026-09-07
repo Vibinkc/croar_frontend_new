@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "./cn";
+import { Icon } from "./Icon";
 import { jetbrainsMono } from "./fonts";
 
 export interface StatCardProps {
@@ -24,7 +25,7 @@ export function StatCard({ label, value, icon, gradient = DEFAULT_GRADIENT, glow
         return (
             <div className={cn("rounded-[4px] bg-white/[0.06] border border-white/10 p-4 backdrop-blur-sm hover:bg-white/[0.09] transition-colors", className)}>
                 <span className="w-9 h-9 rounded-[4px] flex items-center justify-center text-white mb-3" style={{ background: gradient, boxShadow: `0 6px 14px ${glow}` }}>
-                    <span className="material-symbols-rounded text-[19px]">{icon}</span>
+                    <Icon name={icon} className="text-[19px]" />
                 </span>
                 <div className={cn("text-[26px] font-semibold tracking-[-1px] text-white leading-none", jetbrainsMono.className)}>{value}</div>
                 <span className="block text-[10.5px] font-semibold uppercase tracking-[0.04em] text-white/45 mt-1.5">{label}</span>
@@ -40,7 +41,7 @@ export function StatCard({ label, value, icon, gradient = DEFAULT_GRADIENT, glow
                     <div className={cn("text-[30px] font-semibold tracking-[-1px] text-[#212121] mt-2", jetbrainsMono.className)}>{value}</div>
                 </div>
                 <span className="w-10 h-10 rounded-[4px] flex items-center justify-center text-white shrink-0" style={{ background: gradient, boxShadow: `0 6px 14px ${glow}` }}>
-                    <span className="material-symbols-rounded text-[20px]">{icon}</span>
+                    <Icon name={icon} className="text-[20px]" />
                 </span>
             </div>
         </div>

@@ -23,7 +23,7 @@ import {
     MoreHorizontal,
     Sparkles,
     Globe as GlobeIcon,
-} from "lucide-react";
+} from "@/components/icons";
 import PublishJobModal from "@/components/enterprise/PublishJobModal";
 import { Badge, PageHelp, EmptyState, Button, jetbrainsMono } from "@/components/ds";
 

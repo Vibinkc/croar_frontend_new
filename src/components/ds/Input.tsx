@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "./cn";
+import { Icon } from "./Icon";
 
 const fieldBase =
     "w-full rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed";
@@ -14,7 +15,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className
     }
     return (
         <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] material-icons-outlined text-[19px] pointer-events-none">{icon}</span>
+            <Icon name={icon} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none" />
             <input ref={ref} className={cn(fieldBase, "h-9 pl-10 pr-3", className)} {...props} />
         </div>
     );

@@ -9,12 +9,14 @@
  */
 export { cn } from "./cn";
 export { ds, BRAND_GRADIENT, HERO_BG, HERO_GLOW, shadow } from "./tokens";
-export { hankenGrotesk, jetbrainsMono } from "./fonts";
+export { roboto, robotoMono, hankenGrotesk, jetbrainsMono } from "./fonts";
 export { CroarMark, CroarLogo } from "./Brand";
 export { Button, type ButtonProps } from "./Button";
 export { Card, CardHeader, type CardProps } from "./Card";
 export { Input, Textarea, Select, Field, type InputProps } from "./Input";
 export { Badge, type BadgeProps } from "./Badge";
+export { Icon, type IconProps } from "./Icon";
+export { mdiFor, MATERIAL_TO_MDI, LUCIDE_TO_MDI } from "./iconMap";
 export { StatCard, StatGrid, type StatCardProps } from "./StatCard";
 export { PageHeader, type PageHeaderProps } from "./PageHeader";
 export { PageHelp, type PageHelpProps } from "./PageHelp";

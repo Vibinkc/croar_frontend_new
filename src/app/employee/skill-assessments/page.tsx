@@ -49,7 +49,7 @@ export default function EmployeeSkillAssessmentsPage() {
 
       {error && (
         <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
-          <span className="material-symbols-rounded text-[18px]">error</span> {error}
+          <i className="mdi mdi-alert-circle text-[18px]" /> {error}
         </div>
       )}
 
@@ -74,7 +74,7 @@ export default function EmployeeSkillAssessmentsPage() {
                 <div key={r.id} className="flex items-center justify-between gap-4 px-6 py-4">
                   <div className="flex min-w-0 items-center gap-3">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] bg-[#E3F2FD] text-[#1976D2]">
-                      <span className="material-symbols-rounded text-[22px]">quiz</span>
+                      <i className="mdi mdi-help-box text-[22px]" />
                     </span>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">

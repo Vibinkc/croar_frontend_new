@@ -20,9 +20,9 @@ import {
     Brain,
     DraftingCompass,
     RefreshCcw
-} from "lucide-react";
+} from "@/components/icons";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 interface Scenario {
     id: string;
@@ -269,7 +269,7 @@ export default function ScenarioManagement() {
             <AnimatePresence>
                 {toast && (
                     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className={`fixed top-10 right-10 z-[500] px-6 py-4 rounded-xl shadow-2xl font-black text-[10px]  tracking-[0.2em] flex items-center gap-3 ${toast.type === "success" ? "bg-slate-900 text-white" : "bg-rose-500 text-white"}`}>
-                        <span className="material-symbols-rounded text-lg text-emerald-400">{toast.type === "success" ? "verified" : "error"}</span>
+                        <Icon name={toast.type === "success" ? "verified" : "error"} className="text-lg text-emerald-400" />
                         {toast.msg}
                     </motion.div>
                 )}
@@ -284,7 +284,7 @@ export default function ScenarioManagement() {
                         <ArrowLeft className="w-4 h-4" />
                     </button>
                     <div className="w-9 h-9 bg-violet-50 text-[#1E88E5] rounded-xl flex items-center justify-center">
-                        <span className="material-symbols-rounded">architecture</span>
+                        <i className="mdi mdi-ruler-square" />
                     </div>
                     <div>
                         <div className="flex items-center gap-1.5">
@@ -319,7 +319,7 @@ export default function ScenarioManagement() {
                             }}
                             className="px-6 py-2.5 bg-[#1E88E5] text-white rounded-xl hover:bg-[#1565C0] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
-                            <span className="material-symbols-rounded text-base">add</span>
+                            <i className="mdi mdi-plus text-base" />
                             {tr("aiTraining.newScenario")}
                         </button>
                     )}
@@ -333,7 +333,7 @@ export default function ScenarioManagement() {
             </div>
             <div className="flex flex-col md:flex-row items-center gap-4">
                 <div className="flex-1 relative w-full group">
-                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#1E88E5]">search</span>
+                    <i className="mdi mdi-magnify absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#1E88E5]" />
                     <input
                         type="text"
                         value={searchQuery}
@@ -344,7 +344,7 @@ export default function ScenarioManagement() {
                 </div>
                 
                 <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-100 shadow-sm min-w-[200px]">
-                    <span className="material-symbols-rounded text-slate-400 ml-2 text-lg">filter_list</span>
+                    <i className="mdi mdi-filter-variant text-slate-400 ml-2 text-lg" />
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
@@ -381,7 +381,7 @@ export default function ScenarioManagement() {
                                             }}
                                             className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors"
                                         >
-                                            <span className="material-symbols-rounded text-[20px]">edit</span>
+                                            <i className="mdi mdi-pencil text-[20px]" />
                                         </button>
                                     )}
                                     {(canAccess("scenarios:delete") || role === "ADMIN") && (
@@ -389,7 +389,7 @@ export default function ScenarioManagement() {
                                             onClick={() => { setScenarioToDelete(sc.id); setIsDeleteModalOpen(true); }}
                                             className="p-1.5 text-slate-400 hover:text-rose-600 transition-colors"
                                         >
-                                            <span className="material-symbols-rounded text-[20px]">delete</span>
+                                            <i className="mdi mdi-delete text-[20px]" />
                                         </button>
                                     )}
                                 </div>
@@ -425,7 +425,7 @@ export default function ScenarioManagement() {
                 )) : (
                     <div className="col-span-full py-32 text-center bg-white rounded-2xl border border-dashed border-slate-100">
                         <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                            <span className="material-symbols-rounded text-4xl text-slate-200">psychology</span>
+                            <i className="mdi mdi-brain text-4xl text-slate-200" />
                         </div>
                         <h3 className="text-xl font-black text-slate-800 tracking-tight">{tr("general.noScenarios")}</h3>
                         <p className="text-xs text-slate-400 font-medium max-w-xs mx-auto mt-2">{tr("aiTraining.emptyStateDesc")}</p>

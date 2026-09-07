@@ -159,13 +159,13 @@ export default function X360FillAssessment() {
         <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center gap-3">
                 <button onClick={() => router.back()} className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] hover:bg-[#F5F6F8] transition-colors flex items-center justify-center shrink-0">
-                    <span className="material-symbols-rounded text-[19px]">arrow_back</span>
+                    <i className="mdi mdi-arrow-left text-[19px]" />
                 </button>
                 <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{tr("nav.assessment")}</h1>
             </header>
             <Card className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
                 <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5 text-[#BDBDBD]">
-                    <span className="material-symbols-rounded text-[32px]">search_off</span>
+                    <i className="mdi mdi-magnify-close text-[32px]" />
                 </div>
                 <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("assess360.assessmentNotFound")}</h3>
                 <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">{tr("assess360.assessmentNotFoundDesc")}</p>
@@ -181,7 +181,7 @@ export default function X360FillAssessment() {
                 <Card padding="lg" className="text-center">
                     <div className="max-w-2xl mx-auto py-6 md:py-10 space-y-7">
                         <div className="w-20 h-20 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center mx-auto animate-in zoom-in-95 duration-500">
-                            <span className="material-symbols-rounded text-[48px]">check_circle</span>
+                            <i className="mdi mdi-check-circle text-[48px]" />
                         </div>
 
                         <div className="space-y-3">
@@ -210,7 +210,7 @@ export default function X360FillAssessment() {
                                         >
                                             <div className="flex justify-between items-start mb-4">
                                                 <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
-                                                    <span className="material-symbols-rounded text-[20px]">person</span>
+                                                    <i className="mdi mdi-account text-[20px]" />
                                                 </span>
                                                 <Badge tone="neutral">{task.relation}</Badge>
                                             </div>
@@ -223,7 +223,7 @@ export default function X360FillAssessment() {
                         ) : (
                             <div className="pt-7 border-t border-[#E0E0E0] space-y-5">
                                 <p className="text-[#757575] text-[13.5px] flex items-center justify-center gap-2">
-                                    <span className="material-symbols-rounded text-[#2E7D32] text-[19px]">verified</span>
+                                    <i className="mdi mdi-check-decagram text-[#2E7D32] text-[19px]" />
                                     {tr("assess360.allAssignmentsComplete")}
                                 </p>
                                 <Button variant="dark" className="bg-[#212121] border-0 text-white hover:bg-[#1976D2]" icon="grid_view" onClick={() => router.push('/enterprise/assessments-360/portal')}>
@@ -244,7 +244,7 @@ export default function X360FillAssessment() {
             <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3 min-w-0">
                     <button onClick={() => router.back()} className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] hover:bg-[#F5F6F8] transition-colors flex items-center justify-center shrink-0">
-                        <span className="material-symbols-rounded text-[19px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[19px]" />
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
@@ -255,7 +255,7 @@ export default function X360FillAssessment() {
                             <PageHelp title={tr("assess360.giveFeedback")}>{tr("assess360.giveFeedbackHelp")}</PageHelp>
                         </div>
                         <p className="text-[12.5px] text-[#757575] mt-0.5 flex items-center gap-1.5">
-                            <span className="material-symbols-rounded text-[15px]">event_repeat</span>
+                            <i className="mdi mdi-calendar-refresh text-[15px]" />
                             {assignment.cycle.name}
                         </p>
                     </div>
@@ -267,7 +267,7 @@ export default function X360FillAssessment() {
                         <p className={`text-[15px] font-bold text-[#212121] ${jetbrainsMono.className}`}>{progress}% {tr("assess360.complete")}</p>
                     </div>
                     <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                        <span className="material-symbols-rounded text-[20px]">bolt</span>
+                        <i className="mdi mdi-lightning-bolt text-[20px]" />
                     </span>
                 </div>
             </header>

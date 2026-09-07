@@ -204,7 +204,7 @@ export function CareerPageHeader({
                         rel="noopener noreferrer"
                         className="h-9 px-3 rounded-[4px] bg-[#1976D2] text-white text-[12px] font-semibold hover:bg-[#1565C0] transition-colors inline-flex items-center gap-1.5"
                     >
-                        <span className="material-symbols-rounded text-[16px]">open_in_new</span>
+                        <i className="mdi mdi-open-in-new text-[16px]" />
                         {openLabel}
                     </a>
                 </div>

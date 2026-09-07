@@ -14,7 +14,7 @@ import {
     Calendar,
     FileEdit,
     Trash2,
-} from "lucide-react";
+} from "@/components/icons";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { Badge, StatCard, StatGrid, EmptyState, Button, PageHelp, jetbrainsMono } from "@/components/ds";
 

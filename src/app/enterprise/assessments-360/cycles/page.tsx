@@ -72,7 +72,7 @@ export default function X360CyclesList() {
                         className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#757575] hover:text-[#1976D2] hover:border-[#E0E0E0] transition-colors flex items-center justify-center shrink-0 shadow-sm"
                         aria-label={tr("assess360.goBack")}
                     >
-                        <span className="material-symbols-rounded text-[19px]">arrow_back</span>
+                        <i className="mdi mdi-arrow-left text-[19px]" />
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
@@ -87,7 +87,7 @@ export default function X360CyclesList() {
                         href="/enterprise/assessments-360/new"
                         className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-colors shrink-0"
                     >
-                        <span className="material-symbols-rounded text-[17px]">add</span>
+                        <i className="mdi mdi-plus text-[17px]" />
                         {tr("postOnboarding.newCycle")}
                     </Link>
                 )}
@@ -112,7 +112,7 @@ export default function X360CyclesList() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <div className="relative flex-1 md:flex-none">
-                    <span className="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none">filter_list</span>
+                    <i className="mdi mdi-filter-variant absolute left-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none" />
                     <Select
                         className="h-11 pl-10 pr-8 text-[13px] font-semibold text-[#424242] w-full md:w-auto md:min-w-[170px]"
                         value={statusFilter}
@@ -137,7 +137,7 @@ export default function X360CyclesList() {
                 ) : filteredCycles.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
                         <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5 text-[#BDBDBD]">
-                            <span className="material-symbols-rounded text-[32px]">sync</span>
+                            <i className="mdi mdi-sync text-[32px]" />
                         </div>
                         <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">
                             {searchQuery || statusFilter !== "all" ? tr("payroll.noCyclesMatch") : tr("assess360.noCyclesYet")}
@@ -154,7 +154,7 @@ export default function X360CyclesList() {
                         ) : (
                             canAccess("assessments:moderate") && (
                                 <Link href="/enterprise/assessments-360/new" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors">
-                                    <span className="material-symbols-rounded text-[19px]">add</span> {tr("postOnboarding.newCycle")}
+                                    <i className="mdi mdi-plus text-[19px]" /> {tr("postOnboarding.newCycle")}
                                 </Link>
                             )
                         )}
@@ -179,7 +179,7 @@ export default function X360CyclesList() {
                                     {/* Cycle Name */}
                                     <div className="flex items-center gap-3 min-w-0">
                                         <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                            <span className="material-symbols-rounded text-[18px]">refresh</span>
+                                            <i className="mdi mdi-refresh text-[18px]" />
                                         </span>
                                         <div className="min-w-0">
                                             <p className="text-[14px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors truncate">{cycle.name}</p>
@@ -196,7 +196,7 @@ export default function X360CyclesList() {
 
                                     {/* Timeline (desktop) */}
                                     <div className="hidden md:flex items-center gap-1.5 text-[12.5px] text-[#424242] min-w-0">
-                                        <span className="material-symbols-rounded text-[15px] text-[#9E9E9E] shrink-0">calendar_month</span>
+                                        <i className="mdi mdi-calendar-month text-[15px] text-[#9E9E9E] shrink-0" />
                                         <span className={`truncate ${jetbrainsMono.className}`}>
                                             {new Date(cycle.start_date).toLocaleDateString()}
                                             <span className="mx-1.5 text-[#BDBDBD]">→</span>
@@ -214,7 +214,7 @@ export default function X360CyclesList() {
                                             className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[12px] font-semibold hover:bg-[#212121] hover:text-white hover:border-[#212121] transition-colors"
                                         >
                                             {tr("assess360.trackProgress")}
-                                            <span className="material-symbols-rounded text-[15px]">trending_up</span>
+                                            <i className="mdi mdi-trending-up text-[15px]" />
                                         </button>
                                     </div>
                                 </div>

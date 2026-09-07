@@ -20,7 +20,7 @@ import {
   Layout,
   Terminal,
   Activity
-} from "lucide-react";
+} from "@/components/icons";
 
 interface Attempt {
   id: string;

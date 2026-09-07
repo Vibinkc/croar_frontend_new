@@ -276,7 +276,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     <option value="">{tr("forms2.selectTargetType")}</option>
                                     {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                                 </Select>
-                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]">expand_more</span>
+                                <i className="mdi mdi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]" />
                             </div>
                         </Field>
 
@@ -343,7 +343,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                     {formData.questions.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-14 text-center border border-dashed border-[#E0E0E0] rounded-[4px] bg-[#FAFAFA]/50">
                             <div className="w-14 h-14 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center mb-4">
-                                <span className="material-symbols-rounded text-[28px]">help_center</span>
+                                <i className="mdi mdi-help-circle text-[28px]" />
                             </div>
                             <h3 className="text-[15px] font-bold text-[#212121] mb-1">{tr("forms2.noQuestionsYet")}</h3>
                             <p className="text-[13px] text-[#757575] max-w-xs mx-auto">{tr("forms2.noQuestionsHint")}</p>
@@ -359,7 +359,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                             className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                             aria-label={tr("forms2.removeQuestion")}
                                         >
-                                            <span className="material-symbols-rounded text-[20px]">delete</span>
+                                            <i className="mdi mdi-delete text-[20px]" />
                                         </button>
                                     </div>
 
@@ -406,7 +406,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                             className="w-8 h-8 flex items-center justify-center rounded-[4px] text-[#BDBDBD] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors shrink-0"
                                                             aria-label={tr("forms2.removeOption")}
                                                         >
-                                                            <span className="material-symbols-rounded text-[18px]">close</span>
+                                                            <i className="mdi mdi-close text-[18px]" />
                                                         </button>
                                                     </div>
                                                 ))}
@@ -415,7 +415,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                     onClick={() => addOption(i)}
                                                     className="h-10 px-4 border border-dashed border-[#E0E0E0] rounded-[4px] text-[12px] font-semibold text-[#757575] hover:border-[#1976D2] hover:text-[#1976D2] transition-all flex items-center justify-center gap-1.5"
                                                 >
-                                                    <span className="material-symbols-rounded text-[18px]">add_circle</span>
+                                                    <i className="mdi mdi-plus-circle text-[18px]" />
                                                     <span>{tr("forms2.addChoice")}</span>
                                                 </button>
                                             </div>
@@ -446,7 +446,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                         <div className="p-5 border-b border-[#E0E0E0] flex justify-between items-center bg-[#FAFAFA]">
                             <div className="flex items-center gap-2.5">
                                 <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
-                                    <span className="material-symbols-rounded text-[20px]">psychology</span>
+                                    <i className="mdi mdi-brain text-[20px]" />
                                 </span>
                                 <h2 className="text-[16px] font-bold text-[#212121]">{tr("forms2.aiStrategyWizard")}</h2>
                             </div>
@@ -455,7 +455,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                 className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#424242] hover:bg-[#EEEEEE] transition-colors"
                                 aria-label={tr("common.close")}
                             >
-                                <span className="material-symbols-rounded text-[20px]">close</span>
+                                <i className="mdi mdi-close text-[20px]" />
                             </button>
                         </div>
                         <div className="p-6 space-y-5">
@@ -486,7 +486,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     </>
                                 ) : (
                                     <>
-                                        <span className="material-symbols-rounded text-[19px]">magic_button</span>
+                                        <i className="mdi mdi-auto-fix text-[19px]" />
                                         <span>{tr("forms2.generateStrategy")}</span>
                                     </>
                                 )}

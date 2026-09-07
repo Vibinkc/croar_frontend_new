@@ -8,7 +8,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 import {
     Sparkles, Mail, Reply, Clock, Plus, Trash2, GripVertical, Loader2, X, ArrowLeft, Users,
     Undo2, Redo2, Bold, Italic, Underline, List, ListOrdered, Link2, Image as ImageIcon,
-} from "lucide-react";
+} from "@/components/icons";
 
 interface Step { type: string; subject?: string; body: string; delay_days: number; cc?: string; bcc?: string; }
 interface Seq { sequence_id: string; name: string; owner?: string; privacy?: string; steps: Step[]; created_at?: string; }

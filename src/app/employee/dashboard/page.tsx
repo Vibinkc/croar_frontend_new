@@ -11,8 +11,7 @@ import {
 } from "@/utils/payroll/api";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import {
-  Badge, Card, CardHeader, HeroBand, PageHeader, StatCard, jetbrainsMono,
-} from "@/components/ds";
+  Badge, Card, CardHeader, HeroBand, PageHeader, StatCard, jetbrainsMono, Icon } from "@/components/ds";
 import NotLinkedNotice, { isNoEmployeeLink } from "@/components/employee/NotLinkedNotice";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useI18n } from "@/context/I18nContext";
@@ -130,7 +129,7 @@ export default function EmployeeDashboard() {
 
       {error && !isNoEmployeeLink(error) && (
         <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
-          <span className="material-symbols-rounded text-[18px]">error</span> {t("employee.dashLoadError")} {error}
+          <i className="mdi mdi-alert-circle text-[18px]" /> {t("employee.dashLoadError")} {error}
         </div>
       )}
 
@@ -154,10 +153,10 @@ export default function EmployeeDashboard() {
             </p>
             <div className="flex flex-wrap gap-2.5 mt-6">
               <Link href="/employee/leave" className="h-[44px] px-5 bg-[#1976D2] text-white rounded-[4px] text-[14px] font-semibold hover:bg-[#1565C0] transition-colors shadow-[0_8px_20px_rgba(25,118,210,0.4)] flex items-center gap-2">
-                <span className="material-symbols-rounded text-[19px]">event_available</span> {t("employee.requestLeave")}
+                <i className="mdi mdi-calendar-check text-[19px]" /> {t("employee.requestLeave")}
               </Link>
               <Link href="/employee/timesheets" className="h-[44px] px-5 bg-white/[0.08] border border-white/15 text-white rounded-[4px] text-[14px] font-semibold hover:bg-white/[0.14] transition-colors flex items-center gap-2">
-                <span className="material-symbols-rounded text-[19px]">schedule</span> {t("employee.markAttendance")}
+                <i className="mdi mdi-clock-outline text-[19px]" /> {t("employee.markAttendance")}
               </Link>
             </div>
           </div>
@@ -177,12 +176,12 @@ export default function EmployeeDashboard() {
             <Link href={m.path} key={m.titleKey} className="group h-full">
               <Card interactive className="h-full flex flex-col">
                 <div className={`w-11 h-11 rounded-[4px] ${moduleChip[m.color]} flex items-center justify-center mb-4`}>
-                  <span className="material-symbols-rounded text-xl">{m.icon}</span>
+                  <Icon name={m.icon} className="text-xl" />
                 </div>
                 <h3 className="text-[15px] font-bold text-[#212121] tracking-[-0.2px] group-hover:text-[#1976D2] transition-colors">{t(`employee.${m.titleKey}`)}</h3>
                 <p className="text-[13px] text-[#757575] leading-relaxed mt-1 mb-4 flex-1">{t(`employee.${m.descKey}`)}</p>
                 <div className="flex items-center gap-1 text-[12px] font-semibold text-[#1976D2]">
-                  {t("employee.open")} <span className="material-symbols-rounded text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                  {t("employee.open")} <i className="mdi mdi-arrow-right text-base group-hover:translate-x-1 transition-transform" />
                 </div>
               </Card>
             </Link>
@@ -198,7 +197,7 @@ export default function EmployeeDashboard() {
             {needsAttention.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
                 <div className="w-12 h-12 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center mb-3">
-                  <span className="material-symbols-rounded text-2xl">task_alt</span>
+                  <i className="mdi mdi-check-circle-outline text-2xl" />
                 </div>
                 <p className="text-[14px] font-semibold text-[#212121]">{t("employee.allCaughtUp")}</p>
                 <p className="text-[12px] text-[#757575] mt-1">{t("employee.tasksShowUpHere")}</p>
@@ -208,13 +207,13 @@ export default function EmployeeDashboard() {
                 {needsAttention.map((i) => (
                   <Link key={i.label} href={i.href} className="flex items-center gap-3 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#F5F6F8]/60 transition-colors group">
                     <div className={`w-10 h-10 rounded-[4px] flex items-center justify-center shrink-0 ${i.color}`}>
-                      <span className="material-symbols-rounded text-xl">{i.icon}</span>
+                      <Icon name={i.icon} className="text-xl" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className={`text-[19px] font-semibold text-[#212121] leading-none ${jetbrainsMono.className}`}>{i.count}</span>
                       <p className="text-[12px] text-[#757575] leading-tight mt-1">{i.label}</p>
                     </div>
-                    <span className="material-symbols-rounded text-[#BDBDBD] group-hover:text-[#1976D2] group-hover:translate-x-0.5 transition-all">chevron_right</span>
+                    <i className="mdi mdi-chevron-right text-[#BDBDBD] group-hover:text-[#1976D2] group-hover:translate-x-0.5 transition-all" />
                   </Link>
                 ))}
               </div>

@@ -156,7 +156,7 @@ export default function X360NewCycle() {
                                 so a workspace with none (or a failed load) would otherwise show a blank area. */}
                             {templates.length === 0 ? (
                                 <div className="rounded-[4px] border border-dashed border-[#D9DCE1] bg-[#FAFAFA] px-4 py-8 text-center">
-                                    <span className="material-symbols-rounded text-[26px] text-[#9E9E9E]">description</span>
+                                    <i className="mdi mdi-file-document-outline text-[26px] text-[#9E9E9E]" />
                                     <p className="mt-2 text-[13px] font-bold text-[#212121]">
                                         {tplError ? tr("assess360.loadFailed") : tr("assess360.noTemplatesWorkspace")}
                                     </p>
@@ -201,7 +201,7 @@ export default function X360NewCycle() {
                                         </div>
                                         {selected && (
                                             <span className="w-5 h-5 rounded-full bg-[#1976D2] text-white flex items-center justify-center shrink-0">
-                                                <span className="material-symbols-rounded text-[14px]">check</span>
+                                                <i className="mdi mdi-check text-[14px]" />
                                             </span>
                                         )}
                                     </div>
@@ -246,7 +246,7 @@ export default function X360NewCycle() {
                                 >
                                     <div className={`shrink-0 w-9 h-9 rounded-[4px] flex items-center justify-center font-extrabold text-[12px] uppercase transition-all ${selected ? 'bg-[#1976D2] text-white' : 'bg-[#E3F2FD] text-[#1976D2] border border-[#BBDEFB]/60'}`}>
                                         {selected ? (
-                                            <span className="material-symbols-rounded text-[18px]">check</span>
+                                            <i className="mdi mdi-check text-[18px]" />
                                         ) : (
                                             emp.first_name?.[0]
                                         )}

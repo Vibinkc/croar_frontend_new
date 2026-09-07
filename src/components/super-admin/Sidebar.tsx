@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
-import { CroarMark } from "@/components/ds";
+import { CroarMark, Icon } from "@/components/ds";
 
 export default function SuperAdminSidebar() {
     const pathname = usePathname();
@@ -73,7 +73,7 @@ export default function SuperAdminSidebar() {
                                                     : "text-[#BAC1CC] hover:bg-white/[0.04] hover:text-white border border-transparent font-medium"
                                             }`}
                                         >
-                                            <span className={`material-symbols-rounded text-[18px] ${active ? "text-[#42A5F5]" : "text-[#656D7A] group-hover:text-white transition-colors"}`}>{item.icon}</span>
+                                            <Icon name={item.icon} className={`text-[18px] ${active ? "text-[#42A5F5]" : "text-[#656D7A] group-hover:text-white transition-colors"}`} />
                                             <span className="whitespace-nowrap">{item.label}</span>
                                         </Link>
                                     );
@@ -102,7 +102,7 @@ export default function SuperAdminSidebar() {
                     onClick={logout}
                     className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#757575] hover:bg-white/[0.04] hover:text-rose-400 rounded-[4px] transition-colors duration-150 group"
                 >
-                    <span className="material-symbols-rounded text-[18px] text-[#525969] group-hover:text-rose-400">logout</span>
+                    <i className="mdi mdi-logout text-[18px] text-[#525969] group-hover:text-rose-400" />
                     <span className="text-[12.5px] font-medium">{t("superAdmin.logout")}</span>
                 </button>
             </div>

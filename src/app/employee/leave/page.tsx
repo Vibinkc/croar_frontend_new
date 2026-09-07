@@ -113,7 +113,7 @@ export default function MyLeavePage() {
 
       {error && (
         <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
-          <span className="material-symbols-rounded text-[18px]">error</span> {error}
+          <i className="mdi mdi-alert-circle text-[18px]" /> {error}
         </div>
       )}
 
@@ -194,13 +194,13 @@ export default function MyLeavePage() {
             <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0]">
               <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121]">{tr("employee.requestLeave")}</h2>
               <button onClick={() => setOpen(false)} aria-label={tr("employee.close")} className="w-8 h-8 rounded-[4px] text-[#757575] hover:bg-[#EEEEEE] flex items-center justify-center">
-                <span className="material-symbols-rounded text-[20px]">close</span>
+                <i className="mdi mdi-close text-[20px]" />
               </button>
             </div>
             <form onSubmit={apply} className="px-6 py-6 space-y-4">
               {formErr && (
                 <div className="flex items-center gap-2 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-3.5 py-2.5 text-[12.5px] font-medium text-[#C62828]">
-                  <span className="material-symbols-rounded text-[17px]">error</span> {formErr}
+                  <i className="mdi mdi-alert-circle text-[17px]" /> {formErr}
                 </div>
               )}
               <Field label={tr("employee.leaveType")} htmlFor="lv-type" required>

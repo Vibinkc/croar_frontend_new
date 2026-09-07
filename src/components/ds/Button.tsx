@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "./cn";
+import { Icon } from "./Icon";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger" | "dark";
 type Size = "sm" | "md" | "lg";
@@ -43,9 +44,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             className={cn(base, variants[variant], sizes[size], fullWidth && "w-full", block && "w-full sm:w-auto", className)}
             {...props}
         >
-            {icon && <span className={cn("material-symbols-rounded", iconSize[size])}>{icon}</span>}
+            {icon && <Icon name={icon} className={iconSize[size]} />}
             {children}
-            {trailingIcon && <span className={cn("material-symbols-rounded", iconSize[size])}>{trailingIcon}</span>}
+            {trailingIcon && <Icon name={trailingIcon} className={iconSize[size]} />}
         </button>
     )
 );

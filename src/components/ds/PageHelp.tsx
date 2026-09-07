@@ -50,11 +50,9 @@ export function PageHelp({ title = "About this page", children, className }: Pag
                 )}
             >
                 <span
-                    className="material-symbols-rounded text-[19px] leading-none"
+                    className="mdi mdi-information text-[19px] leading-none"
                     style={{ fontVariationSettings: `'FILL' ${open ? 1 : 0}, 'wght' 500, 'opsz' 20` }}
-                >
-                    info
-                </span>
+                 />
             </button>
 
             {open && (

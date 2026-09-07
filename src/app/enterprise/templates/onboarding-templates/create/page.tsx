@@ -15,7 +15,7 @@ export default function CreateOnboardingTemplatePage() {
                     href="/enterprise/templates/onboarding-templates"
                     className="w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-xl text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm"
                 >
-                    <span className="material-icons-outlined">arrow_back</span>
+                    <i className="mdi mdi-arrow-left" />
                 </Link>
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">{tr("templatesMgmt.createTemplate")}</h1>

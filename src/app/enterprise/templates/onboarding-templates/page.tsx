@@ -20,7 +20,7 @@ import {
     ArrowRight,
     ClipboardList,
     Layout
-} from "lucide-react";
+} from "@/components/icons";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { jetbrainsMono, PageHelp } from "@/components/ds";
 
@@ -178,7 +178,7 @@ export default function OnboardingTemplatesPage() {
             {/* Search Bar */}
             <div className="flex flex-col sm:flex-row items-center gap-3">
                 <div className="flex-1 relative group w-full">
-                    <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors text-[20px]">search</span>
+                    <i className="mdi mdi-magnify absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors text-[20px]" />
                     <input 
                         type="text"
                         placeholder={tr("templatesMgmt.searchOnboardingPlaceholder")}
@@ -249,7 +249,7 @@ export default function OnboardingTemplatesPage() {
                                                     className="w-8 h-8 flex items-center justify-center text-[#757575] hover:text-[#1976D2] hover:bg-[#E3F2FD] rounded-[4px] border border-transparent hover:border-[#BBDEFB]/60 transition-all"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
-                                                    <span className="material-symbols-rounded text-[18px]">edit</span>
+                                                    <i className="mdi mdi-pencil text-[18px]" />
                                                 </Link>
                                                 <button 
                                                     onClick={(e) => {
@@ -259,7 +259,7 @@ export default function OnboardingTemplatesPage() {
                                                     }}
                                                     className="w-8 h-8 flex items-center justify-center text-[#757575] hover:text-rose-500 hover:bg-rose-50 rounded-[4px] border border-transparent hover:border-rose-100 transition-all"
                                                 >
-                                                    <span className="material-symbols-rounded text-[18px]">delete</span>
+                                                    <i className="mdi mdi-delete text-[18px]" />
                                                 </button>
                                             </>
                                         )}

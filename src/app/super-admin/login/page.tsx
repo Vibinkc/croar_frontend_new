@@ -90,7 +90,7 @@ export default function SuperAdminLoginPage() {
                                     <label htmlFor="super-admin-login-email" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#757575] ml-0.5">{t("superAdmin.universalIdentity")}</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                            <span className="material-icons-outlined text-[18px] text-[#757575] group-focus-within:text-[#42A5F5] transition-colors">alternate_email</span>
+                                            <i className="mdi mdi-at text-[18px] text-[#757575] group-focus-within:text-[#42A5F5] transition-colors" />
                                         </div>
                                         <input
                                             id="super-admin-login-email"
@@ -108,7 +108,7 @@ export default function SuperAdminLoginPage() {
                                     <label htmlFor="super-admin-login-password" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#757575] ml-0.5">{t("superAdmin.accessProtocol")}</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                            <span className="material-icons-outlined text-[18px] text-[#757575] group-focus-within:text-[#42A5F5] transition-colors">lock</span>
+                                            <i className="mdi mdi-lock text-[18px] text-[#757575] group-focus-within:text-[#42A5F5] transition-colors" />
                                         </div>
                                         <input
                                             id="super-admin-login-password"
@@ -125,7 +125,7 @@ export default function SuperAdminLoginPage() {
 
                             {error && (
                                 <div className="bg-[#E53935]/10 border border-[#E53935]/25 p-3.5 rounded-[4px] flex items-center gap-2.5 animate-shake">
-                                    <span className="material-icons-outlined text-[#E53935] text-[20px]">security_update_warning</span>
+                                    <i className="mdi mdi-shield-alert text-[#E53935] text-[20px]" />
                                     <span className="text-[13px] font-semibold text-[#F08C8C]">{error}</span>
                                 </div>
                             )}
@@ -143,7 +143,7 @@ export default function SuperAdminLoginPage() {
                                 ) : (
                                     <>
                                         {t("superAdmin.establishConnection")}
-                                        <span className="material-icons-outlined text-[18px]">vpn_key</span>
+                                        <i className="mdi mdi-key text-[18px]" />
                                     </>
                                 )}
                             </button>

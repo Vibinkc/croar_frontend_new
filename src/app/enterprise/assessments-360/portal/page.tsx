@@ -163,7 +163,7 @@ export default function UnifiedEmployeePortal() {
 
                             {error && (
                                 <div className="flex items-start gap-2 p-3 bg-[#FFEBEE] text-[#C62828] rounded-[4px] text-[12.5px] font-medium border border-[#F6D5D5]">
-                                    <span className="material-symbols-rounded text-[18px] mt-px">error</span>
+                                    <i className="mdi mdi-alert-circle text-[18px] mt-px" />
                                     <span>{error}</span>
                                 </div>
                             )}
@@ -219,7 +219,7 @@ export default function UnifiedEmployeePortal() {
                         {totalTasks === 0 ? (
                             <Card padding="lg" className="py-20 text-center">
                                 <div className="w-16 h-16 bg-[#E8F5E9] text-[#2E7D32] rounded-[4px] flex items-center justify-center mx-auto mb-5">
-                                    <span className="material-symbols-rounded text-[34px]">task_alt</span>
+                                    <i className="mdi mdi-check-circle-outline text-[34px]" />
                                 </div>
                                 <h3 className="text-[17px] font-bold text-[#212121]">{tr("assess360.allCaughtUp")}</h3>
                                 <p className="text-[13.5px] text-[#757575] mt-1">{tr("assess360.noActiveTasks")}</p>
@@ -229,7 +229,7 @@ export default function UnifiedEmployeePortal() {
                                 {/* 360 Section */}
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
-                                        <span className="material-symbols-rounded text-[20px] text-[#1976D2]">group</span>
+                                        <i className="mdi mdi-account-group text-[20px] text-[#1976D2]" />
                                         <h3 className="text-[13px] font-bold text-[#212121]">{tr("assess360.feedback360")}</h3>
                                         <Badge tone="indigo" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{assessments.length}</span>
@@ -254,12 +254,12 @@ export default function UnifiedEmployeePortal() {
                                                     className="shrink-0 w-9 px-0"
                                                     aria-label={`${tr("assess360.review")} ${ass.ratee_name}`}
                                                 >
-                                                    <span className="material-symbols-rounded text-[18px]">arrow_forward</span>
+                                                    <i className="mdi mdi-arrow-right text-[18px]" />
                                                 </Button>
                                             </Card>
                                         )) : (
                                             <div className="py-10 bg-[#FAFAFA] rounded-[4px] border border-dashed border-[#E0E0E0] flex flex-col items-center justify-center gap-2 text-[#757575]">
-                                                <span className="material-symbols-rounded text-[26px] opacity-50">history_edu</span>
+                                                <i className="mdi mdi-school text-[26px] opacity-50" />
                                                 <p className="text-[12px] font-medium">{tr("assess360.noPendingReviews")}</p>
                                             </div>
                                         )}
@@ -269,7 +269,7 @@ export default function UnifiedEmployeePortal() {
                                 {/* Surveys Section */}
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
-                                        <span className="material-symbols-rounded text-[20px] text-[#2E7D32]">analytics</span>
+                                        <i className="mdi mdi-chart-box text-[20px] text-[#2E7D32]" />
                                         <h3 className="text-[13px] font-bold text-[#212121]">{tr("assess360.cultureSurveys")}</h3>
                                         <Badge tone="teal" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{surveys.length}</span>
@@ -280,7 +280,7 @@ export default function UnifiedEmployeePortal() {
                                             <Card key={srv.id} padding="sm" interactive className="group flex items-center justify-between gap-3">
                                                 <div className="flex items-center gap-3 min-w-0">
                                                     <div className="w-11 h-11 bg-[#E8F5E9] text-[#2E7D32] rounded-[4px] flex items-center justify-center shrink-0">
-                                                        <span className="material-symbols-rounded text-[20px]">assignment</span>
+                                                        <i className="mdi mdi-clipboard-text text-[20px]" />
                                                     </div>
                                                     <div className="min-w-0">
                                                         <h4 className="text-[14px] font-semibold text-[#212121] leading-tight truncate">{srv.instance_name}</h4>
@@ -294,12 +294,12 @@ export default function UnifiedEmployeePortal() {
                                                     className="shrink-0 w-9 px-0"
                                                     aria-label={`Fill ${srv.instance_name}`}
                                                 >
-                                                    <span className="material-symbols-rounded text-[18px]">edit_note</span>
+                                                    <i className="mdi mdi-note-edit text-[18px]" />
                                                 </Button>
                                             </Card>
                                         )) : (
                                             <div className="py-10 bg-[#FAFAFA] rounded-[4px] border border-dashed border-[#E0E0E0] flex flex-col items-center justify-center gap-2 text-[#757575]">
-                                                <span className="material-symbols-rounded text-[26px] opacity-50">poll</span>
+                                                <i className="mdi mdi-poll text-[26px] opacity-50" />
                                                 <p className="text-[12px] font-medium">{tr("assess360.allPulseCompleted")}</p>
                                             </div>
                                         )}
@@ -309,7 +309,7 @@ export default function UnifiedEmployeePortal() {
                                 {/* AI Lab Section */}
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
-                                        <span className="material-symbols-rounded text-[20px] text-[#EF6C00]">neurology</span>
+                                        <i className="mdi mdi-brain text-[20px] text-[#EF6C00]" />
                                         <h3 className="text-[13px] font-bold text-[#212121]">{tr("assess360.aiPracticeLab")}</h3>
                                         <Badge tone="warning" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{simulationAssignments.length}</span>
@@ -320,7 +320,7 @@ export default function UnifiedEmployeePortal() {
                                             <Card key={sim.id} padding="sm" interactive className="group flex flex-col gap-3.5">
                                                 <div className="flex items-center justify-between">
                                                     <div className="w-11 h-11 bg-[#FFF3E0] text-[#EF6C00] rounded-[4px] flex items-center justify-center shrink-0">
-                                                        <span className="material-symbols-rounded text-[20px]">psychology</span>
+                                                        <i className="mdi mdi-brain text-[20px]" />
                                                     </div>
                                                     <Badge tone="neutral">{tr("assess360.practice")}</Badge>
                                                 </div>
@@ -330,7 +330,7 @@ export default function UnifiedEmployeePortal() {
                                                 </div>
                                                 <div className="pt-3 border-t border-[#E0E0E0] flex items-center justify-between gap-3">
                                                     <div className="flex items-center gap-1.5 min-w-0">
-                                                        <span className="material-symbols-rounded text-[#EF6C00] text-[16px] shrink-0">record_voice_over</span>
+                                                        <i className="mdi mdi-account-voice text-[#EF6C00] text-[16px] shrink-0" />
                                                         <span className="text-[12px] text-[#757575] truncate">{sim.character}</span>
                                                     </div>
                                                     <Button
@@ -346,7 +346,7 @@ export default function UnifiedEmployeePortal() {
                                             </Card>
                                         )) : (
                                             <div className="py-10 bg-[#FAFAFA] rounded-[4px] border border-dashed border-[#E0E0E0] flex flex-col items-center justify-center gap-2 text-[#757575]">
-                                                <span className="material-symbols-rounded text-[26px] opacity-50">lock_open</span>
+                                                <i className="mdi mdi-lock-open text-[26px] opacity-50" />
                                                 <p className="text-[12px] font-medium">{tr("assess360.noLabSessions")}</p>
                                             </div>
                                         )}

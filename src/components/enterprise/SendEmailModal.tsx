@@ -213,7 +213,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                 <div className="flex justify-between items-center mb-6 shrink-0">
                     <h2 className="text-2xl font-black text-slate-800">{tr("forms2.emailCampaign")} ({candidateIds.length})</h2>
                     <button onClick={onClose} className="p-2 hover:bg-slate-50 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
-                        <span className="material-icons-outlined">close</span>
+                        <i className="mdi mdi-close" />
                     </button>
                 </div>
 
@@ -251,7 +251,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                                 disabled={isDrafting}
                                 className="bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
                             >
-                                {isDrafting ? <span className="animate-spin material-icons text-sm">refresh</span> : <span className="material-icons text-sm">auto_awesome</span>}
+                                {isDrafting ? <span className="animate-spin mdi mdi-refresh text-sm" /> : <i className="mdi mdi-auto-fix text-sm" />}
                                 {tr("forms2.aiDraft")}
                             </button>
                         </div>
@@ -358,7 +358,7 @@ export default function SendEmailModal({ isOpen, onClose, candidateIds, candidat
                             </>
                         ) : (
                             <>
-                                <span className="material-icons text-sm">send</span>
+                                <i className="mdi mdi-send text-sm" />
                                 {tr("forms2.sendEmail")}
                             </>
                         )}

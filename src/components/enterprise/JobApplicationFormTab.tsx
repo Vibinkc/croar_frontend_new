@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { Button, Card, Input, Select, cn } from "@/components/ds";
+import { Button, Card, Input, Select, cn, Icon } from "@/components/ds";
 
 export interface ApplicationField {
     id: string;
@@ -139,7 +139,7 @@ export default function JobApplicationFormTab({
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-semibold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[17px]">visibility</span>
+                        <i className="mdi mdi-eye text-[17px]" />
                         {tr("appForm.preview")}
                     </a>
                     <Button onClick={save} disabled={!isDirty || isSaving}>
@@ -155,7 +155,7 @@ export default function JobApplicationFormTab({
             )}
             {savedAt && !isDirty && !error && (
                 <div className="rounded-[4px] border border-[#BFE3CC] bg-[#E8F5E9] px-4 py-3 text-[12.5px] text-[#2E7D32] flex items-center gap-2">
-                    <span className="material-symbols-rounded text-[18px]">check_circle</span>
+                    <i className="mdi mdi-check-circle text-[18px]" />
                     {tr("appForm.saved")}
                 </div>
             )}
@@ -166,7 +166,7 @@ export default function JobApplicationFormTab({
                         <li key={f.id} className="p-4 sm:px-5">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                                 <span className="w-9 h-9 shrink-0 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
-                                    <span className="material-symbols-rounded text-[19px]">{f.icon || ICON_FOR[f.type]}</span>
+                                    <Icon name={f.icon || ICON_FOR[f.type]} className="text-[19px]" />
                                 </span>
 
                                 <div className="flex-1 min-w-0">
@@ -207,9 +207,7 @@ export default function JobApplicationFormTab({
                                         checked={f.is_required}
                                         onChange={e => update(f.id, { is_required: e.target.checked })}
                                     />
-                                    <span className="material-symbols-rounded text-[17px]">
-                                        {f.is_required ? "check_box" : "check_box_outline_blank"}
-                                    </span>
+                                    <Icon name={f.is_required ? "check_box" : "check_box_outline_blank"} className="text-[17px]" />
                                     <span className="text-[12.5px] font-semibold">{tr("appForm.required")}</span>
                                 </label>
 
@@ -221,7 +219,7 @@ export default function JobApplicationFormTab({
                                         aria-label={tr("appForm.moveUp")}
                                         className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] disabled:opacity-30 disabled:pointer-events-none transition-colors"
                                     >
-                                        <span className="material-symbols-rounded text-[18px]">arrow_upward</span>
+                                        <i className="mdi mdi-arrow-up text-[18px]" />
                                     </button>
                                     <button
                                         onClick={() => move(i, 1)}
@@ -230,7 +228,7 @@ export default function JobApplicationFormTab({
                                         aria-label={tr("appForm.moveDown")}
                                         className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] disabled:opacity-30 disabled:pointer-events-none transition-colors"
                                     >
-                                        <span className="material-symbols-rounded text-[18px]">arrow_downward</span>
+                                        <i className="mdi mdi-arrow-down text-[18px]" />
                                     </button>
                                     <button
                                         onClick={() => remove(f.id)}
@@ -238,7 +236,7 @@ export default function JobApplicationFormTab({
                                         aria-label={tr("appForm.removeField")}
                                         className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                     >
-                                        <span className="material-symbols-rounded text-[18px]">delete</span>
+                                        <i className="mdi mdi-delete text-[18px]" />
                                     </button>
                                 </div>
                             </div>
@@ -247,7 +245,7 @@ export default function JobApplicationFormTab({
 
                     {draft.length === 0 && (
                         <li className="px-5 py-12 text-center">
-                            <span className="material-symbols-rounded text-[30px] text-[#BDBDBD]">list_alt</span>
+                            <i className="mdi mdi-format-list-bulleted-square text-[30px] text-[#BDBDBD]" />
                             <p className="text-[13.5px] font-bold text-[#212121] mt-2">{tr("appForm.emptyTitle")}</p>
                             <p className="text-[12px] text-[#757575] mt-1">{tr("appForm.emptyDesc")}</p>
                         </li>
@@ -259,7 +257,7 @@ export default function JobApplicationFormTab({
                         onClick={addField}
                         className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#1976D2] hover:text-[#1565C0] transition-colors"
                     >
-                        <span className="material-symbols-rounded text-[18px]">add_circle</span>
+                        <i className="mdi mdi-plus-circle text-[18px]" />
                         {tr("appForm.addField")}
                     </button>
                 </div>

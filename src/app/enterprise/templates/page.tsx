@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
-import { PageHelp } from "@/components/ds";
+import { PageHelp, Icon } from "@/components/ds";
 
 // Reusable template cards styled under the design system rules.
 const TEMPLATE_CARDS = [
@@ -83,7 +83,7 @@ export default function TemplatesHubPage() {
                         >
                             <div className="flex items-start gap-4">
                                 <div className={`w-11 h-11 rounded-[4px] ${c.bgColor} ${c.iconColor} ${c.borderColor} border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
-                                    <span className="material-symbols-rounded text-[22px]">{c.icon}</span>
+                                    <Icon name={c.icon} className="text-[22px]" />
                                 </div>
                                 <div className="min-w-0 flex-1">
                                     <h3 className="text-[15px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors">{tr(c.labelKey)}</h3>
@@ -93,7 +93,7 @@ export default function TemplatesHubPage() {
 
                             <div className="mt-5 pt-4 border-t border-[#E0E0E0] flex items-center justify-between text-[#757575] group-hover:text-[#1976D2] transition-colors">
                                 <span className="text-[12.5px] font-semibold">{tr("general.manageTemplates")}</span>
-                                <span className="material-symbols-rounded text-[18px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                                <i className="mdi mdi-arrow-right text-[18px] group-hover:translate-x-0.5 transition-transform" />
                             </div>
                         </Link>
                     ))}
@@ -103,7 +103,7 @@ export default function TemplatesHubPage() {
             {/* Tip strip */}
             <div className="rounded-[4px] border border-[#BBDEFB]/60 bg-[#E3F2FD]/40 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="w-10 h-10 rounded-[4px] bg-white border border-[#E0E0E0] flex items-center justify-center text-[#1976D2] shadow-sm shrink-0">
-                    <span className="material-symbols-rounded text-[20px]">smart_toy</span>
+                    <i className="mdi mdi-robot text-[20px]" />
                 </div>
                 <div className="flex-1">
                     <p className="text-[13.5px] font-bold text-[#212121]">{tr("general.croarPilotCreates")}</p>
@@ -115,7 +115,7 @@ export default function TemplatesHubPage() {
                     href="/enterprise/croar-pilot"
                     className="h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[12.5px] font-semibold hover:bg-[#1565C0] transition-all flex items-center gap-1.5 shrink-0 shadow-sm"
                 >
-                    <span className="material-symbols-rounded text-[16px]">smart_toy</span>
+                    <i className="mdi mdi-robot text-[16px]" />
                     <span>{tr("general.openCroarPilot")}</span>
                 </Link>
             </div>

@@ -6,7 +6,7 @@ import {
     Mail, Send, Inbox, Trash2, Search, Filter,
     RotateCcw, MoreVertical, Star, Reply,
     ChevronRight, Brain, ChevronLeft, X
-} from 'lucide-react';
+} from "@/components/icons";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";

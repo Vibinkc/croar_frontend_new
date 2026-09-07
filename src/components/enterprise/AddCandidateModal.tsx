@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
-import { Button, Input, cn, jetbrainsMono } from "@/components/ds";
+import { Button, Input, cn, jetbrainsMono, Icon } from "@/components/ds";
 
 interface PoolCandidate {
     id: string;
@@ -233,7 +233,7 @@ export default function AddCandidateModal({
                                     aria-label={tr("common.cancel")}
                                     className="w-8 h-8 shrink-0 rounded-[4px] text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] transition-colors flex items-center justify-center"
                                 >
-                                    <span className="material-symbols-rounded text-[20px]">close</span>
+                                    <i className="mdi mdi-close text-[20px]" />
                                 </button>
                             </div>
 
@@ -251,7 +251,7 @@ export default function AddCandidateModal({
                                             mode === id ? "text-[#1976D2]" : "text-[#757575] hover:text-[#424242]"
                                         )}
                                     >
-                                        <span className="material-symbols-rounded text-[17px]">{icon}</span>
+                                        <Icon name={icon} className="text-[17px]" />
                                         {label}
                                         {mode === id && <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-[#1976D2] rounded-full" />}
                                     </button>
@@ -286,7 +286,7 @@ export default function AddCandidateModal({
                                 </p>
                             ) : results.length === 0 ? (
                                 <div className="py-12 px-6 text-center">
-                                    <span className="material-symbols-rounded text-[32px] text-[#BDBDBD]">person_search</span>
+                                    <i className="mdi mdi-account-search text-[32px] text-[#BDBDBD]" />
                                     <p className="text-[13.5px] font-bold text-[#212121] mt-2">
                                         {query ? tr("addCandidate.noMatches") : tr("addCandidate.poolEmpty")}
                                     </p>
@@ -321,14 +321,14 @@ export default function AddCandidateModal({
                                                 >
                                                     {added ? (
                                                         <>
-                                                            <span className="material-symbols-rounded text-[16px]">check</span>
+                                                            <i className="mdi mdi-check text-[16px]" />
                                                             {alreadyOn && !addedIds.has(c.id) ? tr("addCandidate.onJob") : tr("addCandidate.added")}
                                                         </>
                                                     ) : addingId === c.id ? (
                                                         tr("addCandidate.adding")
                                                     ) : (
                                                         <>
-                                                            <span className="material-symbols-rounded text-[16px]">add</span>
+                                                            <i className="mdi mdi-plus text-[16px]" />
                                                             {tr("addCandidate.add")}
                                                         </>
                                                     )}
@@ -360,9 +360,7 @@ export default function AddCandidateModal({
                                             isUploading && "opacity-60 cursor-wait"
                                         )}
                                     >
-                                        <span className="material-symbols-rounded text-[32px] text-[#1976D2]">
-                                            {isUploading ? "progress_activity" : "cloud_upload"}
-                                        </span>
+                                        <Icon name={isUploading ? "progress_activity" : "cloud_upload"} className="text-[32px] text-[#1976D2]" />
                                         <p className="text-[13.5px] font-bold text-[#212121] mt-2">
                                             {isUploading ? tr("addCandidate.cvReading") : tr("addCandidate.cvDrop")}
                                         </p>
@@ -379,7 +377,7 @@ export default function AddCandidateModal({
                                     {uploadResult && (
                                         <div className="mt-4 rounded-[4px] border border-[#BFE3CC] bg-[#E8F5E9] p-4">
                                             <div className="flex items-start gap-2.5">
-                                                <span className="material-symbols-rounded text-[20px] text-[#2E7D32]">check_circle</span>
+                                                <i className="mdi mdi-check-circle text-[20px] text-[#2E7D32]" />
                                                 <div className="min-w-0">
                                                     <p className="text-[13px] font-bold text-[#212121]">
                                                         {uploadResult.already_on_job
@@ -434,7 +432,7 @@ export default function AddCandidateModal({
 
                                     {inviteDone && (
                                         <div className="rounded-[4px] border border-[#BFE3CC] bg-[#E8F5E9] px-4 py-3 text-[12.5px] text-[#2E7D32] flex items-center gap-2">
-                                            <span className="material-symbols-rounded text-[18px]">check_circle</span>
+                                            <i className="mdi mdi-check-circle text-[18px]" />
                                             {inviteDone}
                                         </div>
                                     )}
@@ -454,7 +452,7 @@ export default function AddCandidateModal({
                                                 variant="secondary"
                                                 onClick={() => { void navigator.clipboard?.writeText(applyLink); setInviteDone(tr("addCandidate.linkCopied")); }}
                                             >
-                                                <span className="material-symbols-rounded text-[17px]">content_copy</span>
+                                                <i className="mdi mdi-content-copy text-[17px]" />
                                                 {tr("addCandidate.copy")}
                                             </Button>
                                         </div>

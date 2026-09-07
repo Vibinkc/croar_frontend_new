@@ -13,7 +13,7 @@ import {
     RefreshCcw,
     LayoutGrid,
     Shield
-} from "lucide-react";
+} from "@/components/icons";
 import { jetbrainsMono, PageHelp } from "@/components/ds";
 
 interface Permission {
@@ -174,7 +174,7 @@ function EnterpriseRolesContent() {
                             onClick={handleOpenCreate}
                             className="h-8 px-4 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] text-[13px] font-semibold transition-all flex items-center gap-1.5 shadow-sm"
                         >
-                            <span className="material-symbols-rounded text-[16px]">add</span>
+                            <i className="mdi mdi-plus text-[16px]" />
                             {tr("general.createRole")}
                         </button>
                     )}
@@ -218,7 +218,7 @@ function EnterpriseRolesContent() {
                     {/* Search and Filter Bar */}
                     <div className="flex flex-col md:flex-row items-center gap-4">
                         <div className="relative flex-1 group">
-                            <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors text-[20px]">search</span>
+                            <i className="mdi mdi-magnify absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors text-[20px]" />
                             <input 
                                 type="text"
                                 placeholder={tr("general.searchRolesPlaceholder")}
@@ -228,7 +228,7 @@ function EnterpriseRolesContent() {
                             />
                         </div>
                         <div className="flex items-center gap-2 bg-white border border-[#E0E0E0] px-3 h-10 rounded-[4px] shadow-sm">
-                            <span className="material-symbols-rounded text-[#9E9E9E] text-[20px]">filter_list</span>
+                            <i className="mdi mdi-filter-variant text-[#9E9E9E] text-[20px]" />
                             <select 
                                 className="bg-transparent text-[12px] font-bold text-[#424242] outline-none pr-2 cursor-pointer"
                                 value={typeFilter}
@@ -255,7 +255,7 @@ function EnterpriseRolesContent() {
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center border border-[#BBDEFB]/80 shrink-0">
-                                        <span className="material-symbols-rounded text-[22px] text-[#1976D2]">security</span>
+                                        <i className="mdi mdi-shield text-[22px] text-[#1976D2]" />
                                     </div>
                                     <div>
                                         <h2 className="text-[17px] font-bold text-[#212121] tracking-tight leading-tight">{selectedRole ? tr("general.configureRole") : tr("general.createNewRole")}</h2>
@@ -327,7 +327,7 @@ function EnterpriseRolesContent() {
                                     )}
                                     
                                     <div className="relative group">
-                                        <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors text-[20px]">search</span>
+                                        <i className="mdi mdi-magnify absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors text-[20px]" />
                                         <input 
                                             type="text"
                                             placeholder={tr("general.searchModuleResource")}
@@ -434,14 +434,14 @@ function EnterpriseRolesContent() {
                                                     onClick={() => handleOpenEdit(role)}
                                                     className="w-8 h-8 flex items-center justify-center text-[#757575] hover:text-[#1976D2] hover:bg-[#E3F2FD] rounded-[4px] border border-transparent hover:border-[#BBDEFB]/60 transition-all"
                                                 >
-                                                    <span className="material-symbols-rounded text-lg">edit</span>
+                                                    <i className="mdi mdi-pencil text-lg" />
                                                 </button>
                                                 {!role.is_system && (
                                                     <button 
                                                         onClick={() => handleDelete(role.id)}
                                                         className="w-8 h-8 flex items-center justify-center text-[#757575] hover:text-rose-500 hover:bg-rose-50 rounded-[4px] border border-transparent hover:border-rose-100 transition-all"
                                                     >
-                                                        <span className="material-symbols-rounded text-lg">delete</span>
+                                                        <i className="mdi mdi-delete text-lg" />
                                                     </button>
                                                 )}
                                             </div>

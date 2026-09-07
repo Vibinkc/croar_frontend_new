@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/context/I18nContext";
-import { Search, Filter, ChevronDown } from "lucide-react";
+import { Search, Filter, ChevronDown } from "@/components/icons";
 import {
   payrollApi,
   leaveApi,
@@ -348,7 +348,7 @@ export default function LeavePage() {
           ) : pendingShown.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-12 md:p-16 text-center">
               <div className="w-14 h-14 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-4">
-                <span className="material-symbols-rounded text-[28px] text-[#BDBDBD]">pending_actions</span>
+                <i className="mdi mdi-clipboard-clock text-[28px] text-[#BDBDBD]" />
               </div>
               <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#212121] mb-1.5">{tr("payroll.noPendingLeave")}</h3>
               <p className="text-[#757575] text-[13.5px] max-w-xs mx-auto">{tr("payroll.pendingLeaveEmpty")}</p>
@@ -458,7 +458,7 @@ export default function LeavePage() {
           ) : balances.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-12 md:p-16 text-center">
               <div className="w-14 h-14 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-4">
-                <span className="material-symbols-rounded text-[28px] text-[#BDBDBD]">account_balance_wallet</span>
+                <i className="mdi mdi-wallet text-[28px] text-[#BDBDBD]" />
               </div>
               <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#212121] mb-1.5">{tr("payroll.noBalances")}</h3>
               <p className="text-[#757575] text-[13.5px] max-w-xs mx-auto">{tr("payroll.balancesEmpty")}</p>

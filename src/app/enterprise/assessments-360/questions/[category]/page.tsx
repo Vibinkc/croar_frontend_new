@@ -14,7 +14,7 @@ import {
     Trash2,
     FolderOpen,
     ListChecks,
-} from "lucide-react";
+} from "@/components/icons";
 import { Button, Card, Badge, Field, Textarea, Select, PageHelp, jetbrainsMono } from "@/components/ds";
 
 interface Question {
@@ -150,7 +150,7 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                                         <option value="RATING">{tr("assess360.ratingInterface")}</option>
                                         <option value="TEXT">{tr("assess360.exploratoryText")}</option>
                                     </Select>
-                                    <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none">expand_more</span>
+                                    <i className="mdi mdi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[19px] pointer-events-none" />
                                 </div>
                             </Field>
 

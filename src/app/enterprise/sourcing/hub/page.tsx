@@ -27,7 +27,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
-import { Badge, Button, EmptyState, PageHeader, cn } from "@/components/ds";
+import { Badge, Button, EmptyState, PageHeader, cn, Icon } from "@/components/ds";
 
 type Row = Record<string, string>;
 
@@ -114,7 +114,7 @@ function IconAction({
                     : "text-[#9E9E9E] hover:bg-[#F5F6F8] hover:text-[#1976D2]"
             )}
         >
-            <span className="material-symbols-rounded text-[20px]">{icon}</span>
+            <Icon name={icon} className="text-[20px]" />
         </button>
     );
 }
@@ -127,7 +127,7 @@ function Caption({ children }: { children: React.ReactNode }) {
 function Line({ icon, children, tone }: { icon: string; children: React.ReactNode; tone?: string }) {
     return (
         <span className={cn("flex items-center gap-1.5 text-[12.5px] min-w-0", tone || "text-[#4F4F4F]")}>
-            <span className="material-symbols-rounded text-[16px] text-[#9E9E9E] shrink-0">{icon}</span>
+            <Icon name={icon} className="text-[16px] text-[#9E9E9E] shrink-0" />
             <span className="truncate">{children}</span>
         </span>
     );
@@ -146,7 +146,7 @@ function Checkbox({ checked, onChange, label }: { checked: boolean; onChange: ()
                 checked ? "bg-[#1976D2] border-[#1976D2] text-white" : "bg-white border-[#E0E0E0] hover:border-[#1976D2]"
             )}
         >
-            {checked && <span className="material-symbols-rounded text-[14px] leading-none">check</span>}
+            {checked && <i className="mdi mdi-check text-[14px] leading-none" />}
         </button>
     );
 }
@@ -166,7 +166,7 @@ function Panel({ title, children, className }: { title: string; children: React.
 function NoData({ text }: { text: string }) {
     return (
         <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
-            <span className="material-symbols-rounded text-[26px] text-[#E0E0E0]">inbox</span>
+            <i className="mdi mdi-inbox text-[26px] text-[#E0E0E0]" />
             <p className="text-[12.5px] text-[#9E9E9E]">{text}</p>
         </div>
     );
@@ -207,16 +207,14 @@ function Section({
                 onClick={onToggle}
                 className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-[#FAFAFA] transition-colors"
             >
-                <span className="material-symbols-rounded text-[18px] text-[#9E9E9E]">{icon}</span>
+                <Icon name={icon} className="text-[18px] text-[#9E9E9E]" />
                 <span className="flex-1 text-[13px] font-semibold text-[#212121]">{title}</span>
                 {count ? (
                     <span className="text-[10px] font-bold w-[18px] h-[18px] rounded-full bg-[#1976D2] text-white flex items-center justify-center">
                         {count}
                     </span>
                 ) : null}
-                <span className={cn("material-symbols-rounded text-[18px] text-[#BDBDBD] transition-transform", !open && "-rotate-90")}>
-                    expand_more
-                </span>
+                <span className={cn("mdi mdi-chevron-down text-[18px] text-[#BDBDBD] transition-transform", !open && "-rotate-90")} />
             </button>
             {open && <div className="px-4 pb-4 flex flex-col gap-2">{children}</div>}
         </div>
@@ -235,10 +233,10 @@ function Chips({ values, onRemove }: { values: string[]; onRemove: (v: string) =
                     key={v}
                     className="inline-flex items-center gap-1 text-[11.5px] font-semibold pl-1.5 pr-1 py-1 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32]"
                 >
-                    <span className="material-symbols-rounded text-[14px]">check_circle</span>
+                    <i className="mdi mdi-check-circle text-[14px]" />
                     {v}
                     <button type="button" onClick={() => onRemove(v)} aria-label={`Remove ${v}`} className="hover:text-[#0A6B55]">
-                        <span className="material-symbols-rounded text-[15px]">cancel</span>
+                        <i className="mdi mdi-close-circle text-[15px]" />
                     </button>
                 </span>
             ))}
@@ -630,7 +628,7 @@ export default function SourcingHub() {
                         <>
                             {sample && (
                                 <div className="px-4 py-2.5 bg-[#FFF3E0] border-b border-[#F5D9A8] flex items-start gap-2">
-                                    <span className="material-symbols-rounded text-[18px] text-[#EF6C00] shrink-0">science</span>
+                                    <i className="mdi mdi-flask text-[18px] text-[#EF6C00] shrink-0" />
                                     <p className="text-[12.5px] text-[#8A5A05] leading-relaxed">{tr("hub.sampleBanner")}</p>
                                 </div>
                             )}
@@ -710,7 +708,7 @@ export default function SourcingHub() {
                                                         {p.profile_url && (
                                                             <a href={p.profile_url} target="_blank" rel="noopener noreferrer"
                                                                title={tr("hub.openProfile")} className="text-[#9E9E9E] hover:text-[#1976D2]">
-                                                                <span className="material-symbols-rounded text-[15px]">link</span>
+                                                                <i className="mdi mdi-link-variant text-[15px]" />
                                                             </a>
                                                         )}
                                                         {sample && <Badge tone="warning">{tr("hub.sampleTag")}</Badge>}
@@ -750,7 +748,7 @@ export default function SourcingHub() {
                                                             {p.email ? (
                                                                 <a href={`mailto:${p.email}`}
                                                                    className="flex items-center gap-1.5 text-[12.5px] text-[#2E7D32] hover:underline min-w-0">
-                                                                    <span className="material-symbols-rounded text-[16px] shrink-0">mail</span>
+                                                                    <i className="mdi mdi-email text-[16px] shrink-0" />
                                                                     <span className="truncate">{p.email}</span>
                                                                 </a>
                                                             ) : (
@@ -811,7 +809,7 @@ export default function SourcingHub() {
 
                         {sample && (
                             <div className="px-6 py-2 bg-[#FFF3E0] border-b border-[#F5D9A8] flex items-center gap-2 shrink-0">
-                                <span className="material-symbols-rounded text-[17px] text-[#EF6C00]">science</span>
+                                <i className="mdi mdi-flask text-[17px] text-[#EF6C00]" />
                                 <p className="text-[12px] text-[#8A5A05]">{tr("hub.sampleTagLong")}</p>
                             </div>
                         )}
@@ -829,7 +827,7 @@ export default function SourcingHub() {
                                 {viewing.profile_url && (
                                     <a href={viewing.profile_url} target="_blank" rel="noopener noreferrer"
                                        className="inline-flex items-center gap-1 mt-2 text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0]">
-                                        <span className="material-symbols-rounded text-[16px]">open_in_new</span>
+                                        <i className="mdi mdi-open-in-new text-[16px]" />
                                         {tr("hub.openProfile")}
                                     </a>
                                 )}
@@ -968,7 +966,7 @@ export default function SourcingHub() {
                             </label>
 
                             <div className="relative">
-                                <span className="material-symbols-rounded text-[18px] text-[#9E9E9E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+                                <i className="mdi mdi-magnify text-[18px] text-[#9E9E9E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                                 <input className={cn(INPUT, "pl-9")} value={jobQuery} placeholder={tr("hub.searchJobs")}
                                        onChange={(e) => setJobQuery(e.target.value)} />
                             </div>
@@ -990,7 +988,7 @@ export default function SourcingHub() {
                                             {j.department && <span className="block text-[12px] text-[#757575] truncate">{j.department}</span>}
                                         </span>
                                         {j.status && <span className="w-2 h-2 rounded-full bg-[#1976D2] shrink-0" title={j.status} />}
-                                        <span className="material-symbols-rounded text-[20px] text-[#1976D2]">add</span>
+                                        <i className="mdi mdi-plus text-[20px] text-[#1976D2]" />
                                     </button>
                                 ))}
                                 {shownJobs.length === 0 && (
@@ -1041,7 +1039,7 @@ export default function SourcingHub() {
                             </div>
 
                             <div className="relative">
-                                <span className="material-symbols-rounded text-[18px] text-[#9E9E9E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+                                <i className="mdi mdi-magnify text-[18px] text-[#9E9E9E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                                 <input className={cn(INPUT, "pl-9")} value={folderQuery} placeholder={tr("hub.searchFolders")}
                                        onChange={(e) => setFolderQuery(e.target.value)} />
                             </div>
@@ -1058,7 +1056,7 @@ export default function SourcingHub() {
                                         className="w-full py-2.5 px-1 flex items-center gap-3 text-left rounded-[4px] hover:bg-[#FAFAFA] transition-colors disabled:opacity-50"
                                     >
                                         <span className="w-9 h-9 shrink-0 rounded-full bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
-                                            <span className="material-symbols-rounded text-[19px]">folder</span>
+                                            <i className="mdi mdi-folder text-[19px]" />
                                         </span>
                                         <span className="min-w-0 flex-1">
                                             <span className="block text-[13.5px] font-semibold text-[#212121] truncate">{f.name}</span>
@@ -1066,7 +1064,7 @@ export default function SourcingHub() {
                                                 {tr("hub.folderCandidates", { count: f.candidate_count })}
                                             </span>
                                         </span>
-                                        <span className="material-symbols-rounded text-[20px] text-[#1976D2]">add</span>
+                                        <i className="mdi mdi-plus text-[20px] text-[#1976D2]" />
                                     </button>
                                 ))}
                                 {shownFolders.length === 0 && (

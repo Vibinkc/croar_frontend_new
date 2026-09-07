@@ -16,7 +16,7 @@ import {
     CalendarClock,
     Send,
     BarChart3,
-} from "lucide-react";
+} from "@/components/icons";
 import { StatGrid, StatCard, Badge, Button, EmptyState, PageHelp, jetbrainsMono } from "@/components/ds";
 
 export default function SurveyDashboard() {

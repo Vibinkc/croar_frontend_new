@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/components/payroll/AuthProvider";
 import { DialogProvider } from "@/components/payroll/DialogProvider";
 import { isSelfServiceUser } from "@/utils/payroll/auth";
-import { CroarMark } from "@/components/ds";
+import { CroarMark, Icon } from "@/components/ds";
 import { useI18n } from "@/context/I18nContext";
 
 const NAV = [
@@ -90,7 +90,7 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
                             <div className="space-y-0.5">
                                 {NAV.map((item) => (
                                     <Link key={item.path} href={item.path} className={navLinkClass(item.path)}>
-                                        <span className="material-symbols-rounded text-[20px]">{item.icon}</span>
+                                        <Icon name={item.icon} className="text-[20px]" />
                                         <span className="text-[13px] font-semibold whitespace-nowrap">{t(`employee.${item.labelKey}`)}</span>
                                     </Link>
                                 ))}
@@ -116,7 +116,7 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
                             onClick={logout}
                             className="group w-full flex items-center gap-3 px-3 h-10 rounded-[4px] text-[#757575] hover:bg-white/[0.04] hover:text-rose-400 transition-colors"
                         >
-                            <span className="material-symbols-rounded text-[20px] text-[#525969] group-hover:text-rose-400">logout</span>
+                            <i className="mdi mdi-logout text-[20px] text-[#525969] group-hover:text-rose-400" />
                             <span className="text-[13px] font-semibold">{t("employee.logout")}</span>
                         </button>
                     </div>
