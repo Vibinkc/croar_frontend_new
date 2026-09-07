@@ -652,34 +652,6 @@ export default function EnterprisePortalLayout({
                     </nav>
                 </div>
 
-                {/* Sidebar Footer User Info */}
-                <div className={`p-3 border-t border-[#E0E0E0] shrink-0 ${isSidebarCollapsed ? 'px-1' : ''}`}>
-                    {!isSidebarCollapsed && (
-                        <div className="mb-3">
-                            <LanguageSwitcher />
-                        </div>
-                    )}
-                    <div className={`flex items-center gap-2.5 mb-3 px-2 ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}>
-                        <div className="w-8 h-8 rounded-[4px] bg-[#1976D2] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_8px_rgba(25,118,210,0.3)]">
-                            {user ? user.charAt(0).toUpperCase() : 'R'}
-                        </div>
-                        {!isSidebarCollapsed && (
-                            <div className="flex-1 min-w-0">
-                                <p className="text-[12px] font-medium text-[#424242] truncate">{user || "recruiter@techcorp.com"}</p>
-                                <p className="text-[10px] text-[#757575]">{role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Recruiter'}</p>
-                            </div>
-                        )}
-                    </div>
-
-                    <button
-                        onClick={logout}
-                        className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#616161] hover:bg-[#FFEBEE] hover:text-[#C62828] rounded-[4px] transition-colors duration-150 group cursor-pointer ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}
-                        title={isSidebarCollapsed ? t("general.logout") : ''}
-                    >
-                        <i className="mdi mdi-logout text-[18px] text-[#9E9E9E] group-hover:text-[#C62828]" />
-                        {!isSidebarCollapsed && <span className="text-[12.5px] font-medium">{t("general.logout")}</span>}
-                    </button>
-                </div>
             </aside>
 
             {/* Main Content Area */}
