@@ -42,6 +42,8 @@ const NAV_I18N: Record<string, string> = {
     "Profile Sourcing": "nav.profileSourcing",
     "Sourcing Hub": "nav.sourcingHub",
     "Candidates List": "nav.candidatesList",
+    "Matches": "nav.matches",
+    "Reports": "nav.reports",
     "Advanced Search": "nav.advancedSearch",
     "Folders": "nav.folders",
     "Shortlisted Talent": "nav.shortlistedTalent",
@@ -163,6 +165,8 @@ export default function EnterprisePortalLayout({
                 "/enterprise/candidates": "candidates:read",
                 "/enterprise/candidates/search": "candidates:read",
                 "/enterprise/candidates/folders": "candidates:read",
+                "/enterprise/matches": "candidates:read",
+                "/enterprise/reports": "candidates:read",
                 "/enterprise/sourcing/hub": "candidates:read",
                 "/enterprise/communication": "communications:read",
                 "/enterprise/automation": "automation:read",
@@ -246,6 +250,7 @@ export default function EnterprisePortalLayout({
                 { label: "Candidates List", icon: "format_list_bulleted", path: "/enterprise/candidates", permission: "candidates:read" },
                 { label: "Advanced Search", icon: "search", path: "/enterprise/candidates/search", permission: "candidates:read" },
                 { label: "Folders", icon: "folder", path: "/enterprise/candidates/folders", permission: "candidates:read" },
+                { label: "Matches", icon: "how_to_reg", path: "/enterprise/matches", permission: "candidates:read" },
             ]
         },
         {
@@ -316,6 +321,10 @@ export default function EnterprisePortalLayout({
             title: "General",
             icon: "settings",
             items: [
+                // Manatal files Reports under Settings & Analytics; General is Croar's equivalent.
+                // It sits first because it is the one item here people open weekly rather than
+                // when something needs configuring.
+                { label: "Reports", icon: "leaderboard", path: "/enterprise/reports", permission: "candidates:read" },
                 { label: "Settings", icon: "settings", path: "/enterprise/settings", permission: "organization:read" },
                 { label: "Integrations", icon: "extension", path: "/enterprise/integrations", permission: "jobs:read" },
                 { label: "Credits", icon: "account_balance_wallet", path: "/enterprise/credits", permission: "organization:read" },
