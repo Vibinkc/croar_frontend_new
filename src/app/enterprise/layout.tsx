@@ -166,6 +166,7 @@ export default function EnterprisePortalLayout({
                 "/enterprise/candidates/search": "candidates:read",
                 "/enterprise/candidates/folders": "candidates:read",
                 "/enterprise/matches": "candidates:read",
+                "/enterprise/matches/recommendations": "candidates:read",
                 "/enterprise/reports": "candidates:read",
                 "/enterprise/sourcing/hub": "candidates:read",
                 "/enterprise/communication": "communications:read",

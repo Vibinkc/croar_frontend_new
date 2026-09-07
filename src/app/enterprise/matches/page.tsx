@@ -1,19 +1,20 @@
 "use client";
 
 /**
- * Matches — for each open job, the people you already have who fit it.
+ * Matches — every candidate↔job pairing in the company, in one table.
  *
- * Manatal opens its Recruitment Center on this screen and the reason is a real one: most
- * companies have already met the person they are about to spend three weeks sourcing. Someone
- * applied for a different role last quarter, was strong, and lost. Nothing surfaces them again.
+ * This is what Manatal means by a "match": the association record, not a recommendation. Their
+ * screen is a flat, sortable, filterable list of Candidate Name / Position Name / Match Stage /
+ * Dropped across every job, and it earns its place because a pipeline board only ever shows one
+ * job at a time. "Where is everyone, right now" has nowhere else to live.
  *
- * The screen is built to be argued with rather than trusted. Every row shows the skills the
- * candidate HAS and the ones they are MISSING, because a bare "87%" invites a confidence the
- * number has not earned — it is set overlap on a skills list, not a judgement about a person.
- * A recruiter reading "8 of 10, no Kubernetes" can make the call themselves.
+ * Dropped pairings stay in the list rather than disappearing. A dropped candidate is still
+ * someone you considered, and hiding them makes the record of who you looked at shrink quietly
+ * over time.
  *
- * Adding someone here puts them on the pipeline and nothing more: no email is sent, which is
- * the same promise the Sourcing Hub makes, and for the same reason.
+ * The recommendation engine that was briefly on this route now sits at /matches/recommendations
+ * and is linked from the header — it answers "who SHOULD be on this job?", which is a different
+ * question and was never what Manatal's Matches meant.
  */
 
 import { useCallback, useEffect, useState } from "react";
@@ -21,151 +22,159 @@ import Link from "next/link";
 import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
-import { Badge, Button, EmptyState, Icon, PageHeader } from "@/components/ds";
+import { Badge, Button, EmptyState, Icon, PageHeader, cn } from "@/components/ds";
 
-interface Match {
+interface Row {
+    application_id: string;
     candidate_id: string;
-    full_name?: string | null;
-    email?: string | null;
-    headline?: string | null;
-    location?: string | null;
-    source_platform?: string | null;
-    total_experience?: number | null;
-    score: number;
-    skill_percent: number;
-    experience_fit?: number | null;
-    matched_skills: string[];
-    missing_skills: string[];
-    matched_count: number;
-    required_count: number;
-}
-
-interface JobMatches {
+    candidate_name?: string | null;
+    candidate_email?: string | null;
     job_id: string;
-    title: string;
+    job_title: string;
     department?: string | null;
-    location?: string | null;
+    stage: number;
+    status_id: number;
     status?: string | null;
-    required_skills: string[];
-    has_required_skills: boolean;
-    match_count: number;
-    matches: Match[];
+    dropped: boolean;
+    source?: string | null;
+    match_score?: number | null;
+    applied_at?: string | null;
 }
 
-interface Summary {
-    open_jobs: number;
-    jobs_with_required_skills: number;
-    candidates_total: number;
-    candidates_with_skills: number;
+type Sort = "candidate" | "job" | "stage" | "applied";
+
+const TONES: [string, string][] = [
+    ["#E3F2FD", "#1976D2"], ["#E8F5E9", "#2E7D32"], ["#FFF3E0", "#EF6C00"],
+    ["#E3F2FD", "#1565C0"], ["#FFEBEE", "#C62828"], ["#EEEEEE", "#4F4F4F"],
+];
+function toneFor(seed: string): [string, string] {
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+    return TONES[h % TONES.length];
 }
 
-/** Score colour, banded like the per-job Reports tab so the two screens agree. */
-function band(score: number) {
-    if (score >= 80) return { bg: "#E8F5E9", fg: "#2E7D32", key: "strong" };
-    if (score >= 60) return { bg: "#E3F2FD", fg: "#1976D2", key: "good" };
-    if (score >= 40) return { bg: "#FFF3E0", fg: "#EF6C00", key: "fair" };
-    return { bg: "#EEEEEE", fg: "#757575", key: "weak" };
-}
-
-function ScoreChip({ score }: { score: number }) {
-    const b = band(score);
+function Avatar({ name }: { name: string }) {
+    const [bg, fg] = toneFor(name);
     return (
-        <span
-            className="w-12 h-12 rounded-full flex flex-col items-center justify-center shrink-0 tabular-nums"
-            style={{ background: b.bg, color: b.fg }}
-        >
-            <span className="text-[15px] font-medium leading-none">{Math.round(score)}</span>
-            <span className="text-[8.5px] uppercase tracking-wide opacity-80 leading-none mt-0.5">fit</span>
+        <span className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-[12px] font-medium"
+              style={{ background: bg, color: fg }}>
+            {name.trim().charAt(0).toUpperCase() || "?"}
         </span>
     );
 }
 
-const SELECT =
+/** Status pill. Terminal states read differently from in-flight ones, so they are toned apart. */
+function StageBadge({ status, dropped }: { status?: string | null; dropped: boolean }) {
+    if (dropped) return <Badge tone="danger">{status || "Rejected"}</Badge>;
+    const tone =
+        status === "Hired" ? "success" :
+        status === "Offered" ? "teal" :
+        status === "Withdrawn" ? "neutral" : "info";
+    return <Badge tone={tone as "success" | "teal" | "neutral" | "info"}>{status || "—"}</Badge>;
+}
+
+const CONTROL =
     "h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] text-[#212121] outline-none focus:border-[#1976D2]";
 
 export default function MatchesPage() {
     const { t: tr } = useI18n();
     const { token, isLoading: authLoading } = useAuth();
 
-    const [jobs, setJobs] = useState<JobMatches[]>([]);
-    const [summary, setSummary] = useState<Summary | null>(null);
-    const [pool, setPool] = useState(0);
-    const [minScore, setMinScore] = useState(40);
+    const [rows, setRows] = useState<Row[]>([]);
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    const [sort, setSort] = useState<Sort>("applied");
+    const [direction, setDirection] = useState<"asc" | "desc">("desc");
+    const [q, setQ] = useState("");
+    const [jobId, setJobId] = useState("");
+    const [statusId, setStatusId] = useState("");
+    const [dropped, setDropped] = useState("");
+    const [showFilters, setShowFilters] = useState(false);
+    const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
+    const [statuses, setStatuses] = useState<{ id: number; name: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [busy, setBusy] = useState("");
-    const [added, setAdded] = useState<Record<string, boolean>>({});
-    const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-    const [toast, setToast] = useState("");
-
-    const say = (m: string) => {
-        setToast(m);
-        window.setTimeout(() => setToast(""), 3400);
-    };
 
     const load = useCallback(async () => {
         if (!token) return;
         setLoading(true);
         setError("");
         try {
-            const headers = { Authorization: `Bearer ${token}` };
-            const [m, s] = await Promise.all([
-                fetch(`${BACKEND_URL}/api/v1/enterprise/matches?min_score=${minScore}`, { headers }),
-                fetch(`${BACKEND_URL}/api/v1/enterprise/matches/summary`, { headers }),
-            ]);
-            if (!m.ok) {
-                const d = await m.json().catch(() => ({}));
-                setError(typeof d.detail === "string" ? d.detail : tr("matches.loadFailed"));
+            const p = new URLSearchParams({
+                sort, direction, page: String(page), page_size: String(pageSize),
+            });
+            if (q.trim()) p.set("q", q.trim());
+            if (jobId) p.set("job_id", jobId);
+            if (statusId) p.set("status_id", statusId);
+            if (dropped) p.set("dropped", dropped);
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/matches?${p}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const body = await res.json();
+            if (!res.ok) {
+                setError(typeof body.detail === "string" ? body.detail : tr("matches.loadFailed"));
+                setRows([]);
                 return;
             }
-            const data = await m.json();
-            setJobs(data.jobs || []);
-            setPool(data.candidate_pool || 0);
-            if (s.ok) setSummary(await s.json());
+            setRows(body.results || []);
+            setTotal(body.total || 0);
         } catch {
             setError(tr("matches.loadFailed"));
         } finally {
             setLoading(false);
         }
-    }, [token, minScore, tr]);
+    }, [token, sort, direction, page, pageSize, q, jobId, statusId, dropped, tr]);
+
+    const loadFilters = useCallback(async () => {
+        if (!token) return;
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/matches/filters`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (res.ok) {
+                const d = await res.json();
+                setJobs(d.jobs || []);
+                setStatuses(d.statuses || []);
+            }
+        } catch {
+            /* the filter panel falls back to its "any" options */
+        }
+    }, [token]);
 
     useEffect(() => {
         if (!authLoading && token) void load();
     }, [authLoading, token, load]);
+    useEffect(() => {
+        if (!authLoading && token) void loadFilters();
+    }, [authLoading, token, loadFilters]);
 
-    const addToJob = async (jobId: string, m: Match) => {
-        if (!token) return;
-        const key = `${jobId}:${m.candidate_id}`;
-        setBusy(key);
-        try {
-            const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/candidates`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-                // Distinct from "Added manually" so the pipeline's own reporting can tell that
-                // this hire came from a recommendation rather than from someone applying.
-                body: JSON.stringify({ candidate_id: m.candidate_id, source: "Matches" }),
-            });
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) {
-                say(typeof data.detail === "string" ? data.detail : tr("matches.addFailed"));
-                return;
-            }
-            setAdded((a) => ({ ...a, [key]: true }));
-            say(data.already_on_job ? tr("matches.alreadyOnJob") : tr("matches.addedToJob"));
-        } finally {
-            setBusy("");
+    const sortBy = (col: Sort) => {
+        if (sort === col) setDirection((d) => (d === "asc" ? "desc" : "asc"));
+        else {
+            setSort(col);
+            setDirection("asc");
         }
+        setPage(1);
     };
 
-    // A blank screen has several very different causes, and the recruiter cannot tell them
-    // apart. Say which one it is rather than showing the same empty state for all of them.
-    const diagnosis = (() => {
-        if (!summary) return null;
-        if (summary.open_jobs === 0) return tr("matches.noOpenJobs");
-        if (summary.jobs_with_required_skills === 0) return tr("matches.noRequiredSkills");
-        if (summary.candidates_with_skills === 0) return tr("matches.noCandidateSkills");
-        return null;
-    })();
+    const Th = ({ col, children, align = "left" }: { col?: Sort; children: React.ReactNode; align?: "left" | "right" }) => (
+        <th className={cn("py-2.5 px-3 text-[11px] uppercase tracking-wide text-[#757575] font-medium",
+                          align === "right" ? "text-right" : "text-left")}>
+            {col ? (
+                <button type="button" onClick={() => sortBy(col)} className="inline-flex items-center gap-1 hover:text-[#1976D2]">
+                    {children}
+                    <Icon name={sort === col ? (direction === "asc" ? "chevron-up" : "chevron-down") : "unfold-more-horizontal"}
+                          className={cn("text-[15px]", sort === col ? "text-[#1976D2]" : "text-[#BDBDBD]")} />
+                </button>
+            ) : children}
+        </th>
+    );
+
+    const lastPage = Math.max(1, Math.ceil(total / pageSize));
+    const from = total ? (page - 1) * pageSize + 1 : 0;
+    const to = Math.min(page * pageSize, total);
+    const filtersOn = !!(q || jobId || statusId || dropped);
 
     return (
         <div className="flex flex-col h-full min-h-0">
@@ -176,14 +185,13 @@ export default function MatchesPage() {
                     icon="how_to_reg"
                     actions={
                         <div className="flex items-center gap-2">
-                            <label className="text-[12.5px] text-[#616161] flex items-center gap-2">
-                                {tr("matches.minScore")}
-                                <select className={SELECT} value={minScore} onChange={(e) => setMinScore(Number(e.target.value))}>
-                                    {[0, 20, 40, 60, 80].map((v) => (
-                                        <option key={v} value={v}>{v}%</option>
-                                    ))}
-                                </select>
-                            </label>
+                            <Link href="/enterprise/matches/recommendations">
+                                <Button size="sm" variant="secondary" icon="auto-fix">{tr("matches.recommendations")}</Button>
+                            </Link>
+                            <Button size="sm" variant={showFilters || filtersOn ? "primary" : "secondary"}
+                                    icon="filter-variant" onClick={() => setShowFilters((v) => !v)}>
+                                {tr("matches.filters")}
+                            </Button>
                             <Button size="sm" variant="secondary" icon="refresh" onClick={() => void load()} disabled={loading}>
                                 {tr("matches.refresh")}
                             </Button>
@@ -192,176 +200,135 @@ export default function MatchesPage() {
                 />
             </div>
 
-            <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
+            <div className="flex-1 flex flex-col min-h-0 px-6 py-4">
                 {error && (
-                    <p className="mb-4 text-[12.5px] text-[#C62828] bg-[#FFEBEE] rounded-[4px] px-3 py-2">{error}</p>
+                    <p className="mb-3 text-[12.5px] text-[#C62828] bg-[#FFEBEE] rounded-[4px] px-3 py-2">{error}</p>
                 )}
 
-                {summary && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                        {([
-                            [tr("matches.openJobs"), summary.open_jobs, "briefcase"],
-                            [tr("matches.jobsScored"), summary.jobs_with_required_skills, "playlist-check"],
-                            [tr("matches.candidatePool"), pool || summary.candidates_total, "account-group"],
-                            [tr("matches.withSkills"), summary.candidates_with_skills, "star"],
-                        ] as [string, number, string][]).map(([label, value, icon]) => (
-                            <div key={label} className="bg-white border border-[#E0E0E0] rounded-[4px] p-4 flex items-center gap-3">
-                                <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
-                                    <Icon name={icon} className="text-[19px]" />
+                {showFilters && (
+                    <div className="mb-3 bg-white border border-[#E0E0E0] rounded-[4px] p-3 flex flex-wrap items-end gap-3">
+                        <label className="flex flex-col gap-1">
+                            <span className="text-[11.5px] text-[#757575]">{tr("matches.search")}</span>
+                            <input className={cn(CONTROL, "w-[220px]")} value={q} placeholder={tr("matches.searchPlaceholder")}
+                                   onChange={(e) => { setQ(e.target.value); setPage(1); }} />
+                        </label>
+                        <label className="flex flex-col gap-1">
+                            <span className="text-[11.5px] text-[#757575]">{tr("matches.job")}</span>
+                            <select className={cn(CONTROL, "w-[200px]")} value={jobId}
+                                    onChange={(e) => { setJobId(e.target.value); setPage(1); }}>
+                                <option value="">{tr("matches.anyJob")}</option>
+                                {jobs.map((j) => <option key={j.id} value={j.id}>{j.title}</option>)}
+                            </select>
+                        </label>
+                        <label className="flex flex-col gap-1">
+                            <span className="text-[11.5px] text-[#757575]">{tr("matches.stage")}</span>
+                            <select className={cn(CONTROL, "w-[160px]")} value={statusId}
+                                    onChange={(e) => { setStatusId(e.target.value); setPage(1); }}>
+                                <option value="">{tr("matches.anyStage")}</option>
+                                {statuses.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                            </select>
+                        </label>
+                        <label className="flex flex-col gap-1">
+                            <span className="text-[11.5px] text-[#757575]">{tr("matches.dropped")}</span>
+                            <select className={cn(CONTROL, "w-[130px]")} value={dropped}
+                                    onChange={(e) => { setDropped(e.target.value); setPage(1); }}>
+                                <option value="">{tr("matches.all")}</option>
+                                <option value="false">{tr("matches.notDropped")}</option>
+                                <option value="true">{tr("matches.onlyDropped")}</option>
+                            </select>
+                        </label>
+                        {filtersOn && (
+                            <Button size="sm" variant="ghost"
+                                    onClick={() => { setQ(""); setJobId(""); setStatusId(""); setDropped(""); setPage(1); }}>
+                                {tr("matches.clear")}
+                            </Button>
+                        )}
+                    </div>
+                )}
+
+                <div className="flex-1 min-h-0 bg-white border border-[#E0E0E0] rounded-[4px] flex flex-col overflow-hidden">
+                    {loading ? (
+                        <div className="flex-1 flex justify-center items-center py-20">
+                            <div className="w-6 h-6 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
+                        </div>
+                    ) : rows.length === 0 ? (
+                        <EmptyState icon="how_to_reg" tone="muted"
+                                    title={filtersOn ? tr("matches.noneMatchFilters") : tr("matches.emptyTitle")}
+                                    description={filtersOn ? tr("matches.noneMatchFiltersDesc") : tr("matches.emptyDesc")}
+                                    className="flex-1" />
+                    ) : (
+                        <>
+                            <div className="flex-1 overflow-auto">
+                                <table className="w-full border-collapse min-w-[760px]">
+                                    <thead className="sticky top-0 bg-[#F5F6F8] border-b border-[#E0E0E0] z-10">
+                                        <tr>
+                                            <Th col="candidate">{tr("matches.candidateName")}</Th>
+                                            <Th col="job">{tr("matches.positionName")}</Th>
+                                            <Th col="stage">{tr("matches.matchStage")}</Th>
+                                            <Th>{tr("matches.droppedCol")}</Th>
+                                            <Th>{tr("matches.source")}</Th>
+                                            <Th col="applied" align="right">{tr("matches.applied")}</Th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-[#EEEEEE]">
+                                        {rows.map((r) => (
+                                            <tr key={r.application_id} className="hover:bg-[#FAFAFA] transition-colors">
+                                                <td className="py-2.5 px-3">
+                                                    <span className="flex items-center gap-2.5 min-w-0">
+                                                        <Avatar name={r.candidate_name || "?"} />
+                                                        <span className="min-w-0">
+                                                            <Link href={`/enterprise/candidates?candidate=${r.candidate_id}`}
+                                                                  className="block text-[13.5px] text-[#1976D2] hover:underline truncate">
+                                                                {r.candidate_name || tr("matches.unnamed")}
+                                                            </Link>
+                                                            {r.candidate_email && (
+                                                                <span className="block text-[11.5px] text-[#757575] truncate">{r.candidate_email}</span>
+                                                            )}
+                                                        </span>
+                                                    </span>
+                                                </td>
+                                                <td className="py-2.5 px-3">
+                                                    <Link href={`/enterprise/jobs/${r.job_id}`} className="text-[13px] text-[#1976D2] hover:underline">
+                                                        {r.job_title}
+                                                    </Link>
+                                                    {r.department && <span className="block text-[11.5px] text-[#757575]">{r.department}</span>}
+                                                </td>
+                                                <td className="py-2.5 px-3"><StageBadge status={r.status} dropped={r.dropped} /></td>
+                                                <td className="py-2.5 px-3 text-[13px] text-[#424242]">
+                                                    {r.dropped ? tr("matches.yes") : tr("matches.no")}
+                                                </td>
+                                                <td className="py-2.5 px-3 text-[12.5px] text-[#616161]">{r.source || "—"}</td>
+                                                <td className="py-2.5 px-3 text-right text-[12.5px] text-[#616161] tabular-nums">
+                                                    {r.applied_at ? r.applied_at.slice(0, 10) : "—"}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="border-t border-[#E0E0E0] px-4 py-2.5 flex items-center justify-end gap-4 flex-wrap">
+                                <label className="text-[12.5px] text-[#616161] flex items-center gap-2">
+                                    {tr("matches.perPage")}
+                                    <select className={cn(CONTROL, "h-8")} value={pageSize}
+                                            onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
+                                        {[20, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
+                                    </select>
+                                </label>
+                                <span className="text-[12.5px] text-[#616161] tabular-nums">
+                                    {tr("matches.range", { from, to, total })}
                                 </span>
-                                <span className="min-w-0">
-                                    <span className="block text-[20px] font-medium text-[#212121] tabular-nums leading-none">{value}</span>
-                                    <span className="block text-[11.5px] text-[#757575] mt-1">{label}</span>
+                                <span className="flex items-center gap-1">
+                                    <Button size="sm" variant="ghost" icon="chevron-left" aria-label={tr("matches.prev")}
+                                            disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>{""}</Button>
+                                    <Button size="sm" variant="ghost" icon="chevron-right" aria-label={tr("matches.next")}
+                                            disabled={page >= lastPage} onClick={() => setPage((p) => p + 1)}>{""}</Button>
                                 </span>
                             </div>
-                        ))}
-                    </div>
-                )}
-
-                {diagnosis && (
-                    <div className="mb-4 flex items-start gap-2 bg-[#FFF3E0] border border-[#FFE0B2] rounded-[4px] px-3 py-2.5">
-                        <Icon name="information" className="text-[18px] text-[#EF6C00] shrink-0" />
-                        <p className="text-[12.5px] text-[#8A5A05] leading-relaxed">{diagnosis}</p>
-                    </div>
-                )}
-
-                {loading ? (
-                    <div className="flex justify-center py-20">
-                        <div className="w-6 h-6 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
-                    </div>
-                ) : jobs.length === 0 ? (
-                    <div className="bg-white border border-[#E0E0E0] rounded-[4px]">
-                        <EmptyState icon="how_to_reg" title={tr("matches.emptyTitle")} description={tr("matches.emptyDesc")} />
-                    </div>
-                ) : (
-                    <div className="flex flex-col gap-4">
-                        {jobs.map((job) => {
-                            const open = expanded[job.job_id] ?? true;
-                            return (
-                                <section key={job.job_id} className="bg-white border border-[#E0E0E0] rounded-[4px] overflow-hidden">
-                                    <header className="px-4 py-3 bg-[#F5F6F8] border-b border-[#E0E0E0] flex items-center gap-3 flex-wrap">
-                                        <button
-                                            type="button"
-                                            onClick={() => setExpanded((e) => ({ ...e, [job.job_id]: !open }))}
-                                            className="flex items-center gap-2 min-w-0"
-                                        >
-                                            <Icon name={open ? "chevron-down" : "chevron-right"} className="text-[18px] text-[#757575]" />
-                                            <Link href={`/enterprise/jobs/${job.job_id}`} className="text-[14.5px] font-medium text-[#1976D2] hover:underline truncate">
-                                                {job.title}
-                                            </Link>
-                                        </button>
-                                        {job.department && <span className="text-[12.5px] text-[#757575]">{job.department}</span>}
-                                        {job.location && (
-                                            <span className="text-[12.5px] text-[#757575] inline-flex items-center gap-1">
-                                                <Icon name="map-marker" className="text-[15px]" />{job.location}
-                                            </span>
-                                        )}
-                                        <span className="ml-auto text-[12.5px] text-[#616161] tabular-nums">
-                                            {tr("matches.nMatches", { count: job.match_count })}
-                                        </span>
-                                    </header>
-
-                                    {open && (
-                                        !job.has_required_skills ? (
-                                            // The single most common reason a job shows nothing, and it is
-                                            // fixable in one click — so say it and link there.
-                                            <div className="px-4 py-6 flex items-start gap-2.5">
-                                                <Icon name="information" className="text-[18px] text-[#EF6C00] shrink-0" />
-                                                <p className="text-[12.5px] text-[#616161] leading-relaxed">
-                                                    {tr("matches.jobNoSkills")}{" "}
-                                                    <Link href={`/enterprise/jobs/${job.job_id}`} className="text-[#1976D2] hover:underline font-medium">
-                                                        {tr("matches.addSkills")}
-                                                    </Link>
-                                                </p>
-                                            </div>
-                                        ) : job.matches.length === 0 ? (
-                                            <p className="px-4 py-6 text-[12.5px] text-[#757575]">{tr("matches.noneForJob")}</p>
-                                        ) : (
-                                            <div className="divide-y divide-[#EEEEEE]">
-                                                {job.matches.map((m) => {
-                                                    const key = `${job.job_id}:${m.candidate_id}`;
-                                                    const done = !!added[key];
-                                                    return (
-                                                        <div key={m.candidate_id} className="p-4 flex items-start gap-3 hover:bg-[#FAFAFA] transition-colors">
-                                                            <ScoreChip score={m.score} />
-                                                            <div className="min-w-0 flex-1">
-                                                                <div className="flex items-center gap-2 flex-wrap">
-                                                                    <span className="text-[14px] font-medium text-[#212121]">
-                                                                        {m.full_name || tr("matches.unnamed")}
-                                                                    </span>
-                                                                    {m.source_platform && <Badge tone="neutral">{m.source_platform}</Badge>}
-                                                                    {done && <Badge tone="success">{tr("matches.added")}</Badge>}
-                                                                </div>
-                                                                {m.headline && <p className="text-[12.5px] text-[#4F4F4F] mt-0.5">{m.headline}</p>}
-
-                                                                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[12px] text-[#757575]">
-                                                                    <span className="tabular-nums">
-                                                                        {tr("matches.skillsCovered", { matched: m.matched_count, total: m.required_count })}
-                                                                    </span>
-                                                                    {m.experience_fit !== null && m.experience_fit !== undefined && (
-                                                                        <span className="tabular-nums">
-                                                                            {tr("matches.experienceFit", { pct: Math.round(m.experience_fit) })}
-                                                                        </span>
-                                                                    )}
-                                                                    {m.location && (
-                                                                        <span className="inline-flex items-center gap-1">
-                                                                            <Icon name="map-marker" className="text-[15px]" />{m.location}
-                                                                        </span>
-                                                                    )}
-                                                                    {m.email && (
-                                                                        <a href={`mailto:${m.email}`} className="inline-flex items-center gap-1 text-[#2E7D32] hover:underline">
-                                                                            <Icon name="email" className="text-[15px]" />{m.email}
-                                                                        </a>
-                                                                    )}
-                                                                </div>
-
-                                                                {/* Has and hasn't, side by side. The gap is what makes the
-                                                                    score arguable instead of something to defer to. */}
-                                                                <div className="flex flex-wrap gap-1.5 mt-2">
-                                                                    {m.matched_skills.map((s) => (
-                                                                        <span key={s} className="text-[11.5px] px-2 py-0.5 rounded-[3px] bg-[#E8F5E9] text-[#2E7D32]">
-                                                                            {s}
-                                                                        </span>
-                                                                    ))}
-                                                                    {m.missing_skills.map((s) => (
-                                                                        <span key={s} className="text-[11.5px] px-2 py-0.5 rounded-[3px] bg-[#EEEEEE] text-[#757575] line-through decoration-[#BDBDBD]">
-                                                                            {s}
-                                                                        </span>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="flex items-center gap-2 shrink-0">
-                                                                <Button
-                                                                    size="sm"
-                                                                    icon="briefcase-plus"
-                                                                    disabled={done || busy === key}
-                                                                    onClick={() => void addToJob(job.job_id, m)}
-                                                                >
-                                                                    {done ? tr("matches.added") : tr("matches.addToJob")}
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        )
-                                    )}
-                                </section>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {/* Stated once, at the bottom, where someone who has been adding people will see it. */}
-                <p className="text-[11.5px] text-[#757575] mt-4 leading-relaxed">{tr("matches.noNotify")}</p>
-            </div>
-
-            {toast && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[220] px-4 py-2.5 rounded-[4px] bg-[#212121] text-white text-[12.5px] font-medium shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
-                    {toast}
+                        </>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 }
